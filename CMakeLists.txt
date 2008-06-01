@@ -196,6 +196,7 @@ ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 # define destination dirs (relative to prefix)
 #
 SET(HUGINDATADIR share/hugin)
+SET(MASKEDDATADIR share/maskeditor)
 SET(DATADIR share)
 SET(BINDIR  bin)
 SET(LOCALEDIR share/locale) 
@@ -320,6 +321,7 @@ SET(CPACK_SOURCE_IGNORE_FILES
 "/nona_gui/nona_gui$"
 "/stitch_project/hugin_stitch_project$"
 "/deghosting/hugin_hdrmerge$" 
+"/maskeditor/maskeditor$"
 "/build/"
 "/CVS/"
 "/\\\\.libs/"

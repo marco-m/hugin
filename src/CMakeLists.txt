@@ -31,6 +31,7 @@ ENDIF(VIPS_FOUND)
 IF(wxWidgets_FOUND)
   INCLUDE(${wxWidgets_USE_FILE})
   add_subdirectory(hugin1)
+  add_subdirectory(maskeditor)
 ENDIF(wxWidgets_FOUND)
 
 add_subdirectory(translations)
