@@ -23,6 +23,8 @@
 
 #include "MaskEdMainFrame.h"
 #include <wx/xrc/xmlres.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
 
 BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_new_project"), MaskEdMainFrame::OnNew)
@@ -38,9 +40,11 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_exit"), MaskEdMainFrame::OnQuit)
     EVT_MENU(XRCID("action_about_maskeditor"), MaskEdMainFrame::OnAbout)
     EVT_MOTION(MaskEdMainFrame::OnMotion)
+    EVT_PAINT(MaskEdMainFrame::OnPaint)
 END_EVENT_TABLE()
 
 MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent)
+: m_bLoaded(false)
 {
     wxYield();
     
@@ -56,7 +60,15 @@ void MaskEdMainFrame::OnNew(wxCommandEvent &event)
 
 void MaskEdMainFrame::OnOpen(wxCommandEvent &event)
 {
-
+    wxString filter = wxT("JPEG files (*.jpg)|*.jpg|tiff files (*.tif)|*.tif|All files (*.*)|*.*");
+    wxFileDialog dialog(this, wxT("Open Image"), wxEmptyString,
+        wxEmptyString, filter, wxOPEN);
+    if(dialog.ShowModal() == wxID_OK)
+    {
+        wxString path = dialog.GetPath();
+        m_bLoaded = m_img.LoadFile(path);
+        this->Refresh();
+    }
 }
 
 void MaskEdMainFrame::OnSave(wxCommandEvent &event)
@@ -106,3 +118,12 @@ void MaskEdMainFrame::OnMotion(wxMouseEvent &event)
     }
 }
 
+void MaskEdMainFrame::OnPaint(wxPaintEvent &event)
+{
+    wxPaintDC dc(this);
+    if(m_bLoaded)
+    { wxTrace("%d %d\n", m_img.GetWidth(), m_img.GetHeight());
+        wxBitmap bmp(m_img, dc);
+        dc.DrawBitmap(bmp, 0, 0);
+    }
+}

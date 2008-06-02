@@ -29,6 +29,8 @@
 
 class MaskEdMainFrame : public wxFrame 
 {
+    wxImage m_img;
+    bool    m_bLoaded;
 public:
     MaskEdMainFrame(wxWindow *parent);
     
@@ -43,6 +45,7 @@ public:
     void OnAbout(wxCommandEvent& event);
 
     void OnMotion(wxMouseEvent& event);
+    void OnPaint(wxPaintEvent& event);
 
     DECLARE_EVENT_TABLE();
 };
