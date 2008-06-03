@@ -122,8 +122,8 @@ void MaskEdMainFrame::OnPaint(wxPaintEvent &event)
 {
     wxPaintDC dc(this);
     if(m_bLoaded)
-    { wxTrace("%d %d\n", m_img.GetWidth(), m_img.GetHeight());
-        wxBitmap bmp(m_img, dc);
+    { 
+        wxBitmap bmp(m_img);
         dc.DrawBitmap(bmp, 0, 0);
     }
 }
