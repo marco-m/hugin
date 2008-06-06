@@ -204,6 +204,7 @@ SET(ICONDIR share/icons)
 SET(LINKDIR share/applications)
 SET(LIBDIR  lib${LIB_SUFFIX})
 SET(INSTALL_XRC_DIR ${CMAKE_INSTALL_PREFIX}/share/hugin/xrc)
+SET(INSTALL_ME_XRC_DIR ${CMAKE_INSTALL_PREFIX}/share/maskeditor/xrc)
 
 # setup bundle install prefix
 IF (APPLE)

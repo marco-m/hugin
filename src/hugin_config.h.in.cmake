@@ -49,6 +49,7 @@
 
 /* Location for XRC files and other data, as defined during configuration*/
 #define INSTALL_XRC_DIR "${INSTALL_XRC_DIR}/"
+#define INSTALL_ME_XRC_DIR "${INSTALL_ME_XRC_DIR}/"
 
 /* Use exiv2, if found */
 #cmakedefine EXIV2_FOUND 1

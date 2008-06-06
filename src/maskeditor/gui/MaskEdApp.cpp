@@ -57,7 +57,7 @@ bool MaskEdApp::OnInit()
 
 #else
     // add the locale directory specified during configure
-    m_xrcPrefix = wxT(INSTALL_XRC_DIR);
+    m_xrcPrefix = wxT(INSTALL_ME_XRC_DIR);
 
 #endif
 
