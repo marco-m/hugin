@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+    <object class="wxToolBar" name="main_toolbar">
+      <style>wxTB_FLAT|wxTB_HORIZONTAL</style>
+      <bitmapsize>24,24</bitmapsize>
+      <margins></margins>
+      <packing>1</packing>
+      <separation>5</separation>
+      <object class="tool" name="action_new_project">
+        <label>tool</label>
+        <tooltip>Create New Project</tooltip>
+        <longhelp>New Project</longhelp>
+        <bitmap>data/filenew.png</bitmap>
+      </object>
+      <object class="tool" name="action_open_project">
+        <label>tool</label>
+        <tooltip></tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/fileopen.png</bitmap>
+      </object>
+      <object class="tool" name="action_save_project">
+        <label>tool</label>
+        <tooltip></tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/filesave.png</bitmap>
+      </object>
+      <object class="tool" name="action_save_project_as">
+        <label>tool</label>
+        <tooltip></tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/filesaveas.png</bitmap>
+      </object>
+      <object class="separator" />
+    </object>
+ </resource>

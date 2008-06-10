@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Id:  MaskEdApp.cpp $
+ *  $Rev$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -27,6 +27,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 #include "hugin_utils/utils.h"
+#include "appbase/command.h"
 
 IMPLEMENT_APP(MaskEdApp)
 
@@ -71,6 +72,9 @@ bool MaskEdApp::OnInit()
 
     // Load XRC resources
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_frame.xrc"));
+    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_menubar.xrc"));
+    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_toolbar.xrc"));
+    //wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_clientwnd.xrc"));
     
     MaskEdMainFrame *frame = new MaskEdMainFrame(NULL);
     frame->Show();

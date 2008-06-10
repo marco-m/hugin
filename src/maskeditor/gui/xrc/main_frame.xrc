@@ -1,104 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
-	<object class="wxFrame" name="MaskEdMainFrame">
-		<style>wxDEFAULT_FRAME_STYLE|wxSYSTEM_MENU|wxTAB_TRAVERSAL</style>
-		<size>784,535</size>
-		<title>Mask Editor</title>
-		<object class="wxMenuBar" name="main_menubar">
-			<label>main__menubar</label>
-			<object class="wxMenu" name="menuFile">
-				<label>_File</label>
-				<object class="wxMenuItem" name="action_new_project">
-					<label>&amp;New...\tCtrl-n</label>
-					<help>New</help>
-				</object>
-				<object class="wxMenuItem" name="action_open_project">
-					<label>&amp;Open...\tCtrl-o</label>
-					<help>Open existing project</help>
-				</object>
-				<object class="separator" />
-				<object class="wxMenuItem" name="action_load_pto_file">
-					<label>&amp;Load PTO File...\tCtrl-l</label>
-					<help>Load PTO file</help>
-				</object>
-				<object class="wxMenuItem" name="action_load_images">
-					<label>Load &amp;Images...</label>
-					<help>Load Remapped Images</help>
-				</object>
-				<object class="separator" />
-				<object class="wxMenuItem" name="action_save_project">
-					<label>Save Project\tCtrl-s</label>
-					<help>Save Project File</help>
-				</object>
-				<object class="wxMenuItem" name="action_save_project_as">
-					<label>Save Project &amp;As...</label>
-					<help>Save Project As</help>
-				</object>
-				<object class="wxMenuItem" name="action_save_image">
-					<label>Save Image</label>
-					<help>Save image with mask</help>
-				</object>
-				<object class="separator" />
-				<object class="wxMenuItem" name="action_exit">
-					<label>&amp;Exit\tCtrl-x</label>
-					<help>Terminate Application</help>
-				</object>
-			</object>
-			<object class="wxMenu" name="menuEdit">
-				<label>_Edit</label>
-				<object class="wxMenuItem" name="action_use_brush">
-					<label>&amp;Brush\tCtrl-b</label>
-					<help>Create Mask from Brushstrokes</help>
-				</object>
-				<object class="wxMenuItem" name="action_add_polygon_point">
-					<label>&amp;Add point</label>
-					<help>Add point in mask polygon</help>
-				</object>
-				<object class="separator" />
-				<object class="wxMenuItem" name="action_edit_preferences">
-					<label>&amp;Preferences...</label>
-					<help>Edit user preference</help>
-				</object>
-			</object>
-			<object class="wxMenu" name="menuHelp">
-				<label>_Help</label>
-				<object class="wxMenuItem" name="action_about_maskeditor">
-					<label>&amp;About\tCtrl-h</label>
-					<help>About Mask Editor</help>
-				</object>
-			</object>
-		</object>
-		<object class="wxToolBar" name="m_toolBar">
-			<style>wxTB_FLAT|wxTB_HORIZONTAL</style>
-			<bitmapsize>24,24</bitmapsize>
-			<margins></margins>
-			<packing>1</packing>
-			<separation>5</separation>
-			<object class="tool" name="action_new_project">
-				<label>tool</label>
-				<tooltip>Create New Project</tooltip>
-				<longhelp>New Project</longhelp>
-				<bitmap>data/filenew.png</bitmap>
-			</object>
-			<object class="tool" name="action_open_project">
-				<label>tool</label>
-				<tooltip></tooltip>
-				<longhelp></longhelp>
-				<bitmap>data/fileopen.png</bitmap>
-			</object>
-			<object class="tool" name="action_save_project">
-				<label>tool</label>
-				<tooltip></tooltip>
-				<longhelp></longhelp>
-				<bitmap>data/filesave.png</bitmap>
-			</object>
-			<object class="tool" name="action_save_project_as">
-				<label>tool</label>
-				<tooltip></tooltip>
-				<longhelp></longhelp>
-				<bitmap>data/filesaveas.png</bitmap>
-			</object>
-			<object class="separator" />
-		</object>
-	</object>
-</resource>
+  <object class="wxFrame" name="MaskEdMainFrame">
+    <style>wxDEFAULT_FRAME_STYLE|wxSYSTEM_MENU|wxTAB_TRAVERSAL</style>
+    <size>784,535</size>
+    <title>Mask Editor</title>
+    <!--
+    <object class="wxSplitterWindow" name="main_clientwnd">
+      <style>wxSP_3D|wxSP_LIVE_UPDATE</style>
+      <sashpos>0</sashpos>
+      <gravity>0</gravity>
+      <minsize>0</minsize>
+      <orientation>horizontal</orientation>
+      <object class="wxScrolledWindow" name="m_MaskEditWnd">
+        <style>wxDOUBLE_BORDER|wxHSCROLL|wxVSCROLL</style>
+        <bg>#808080</bg>
+      </object>
+      <object class="wxScrolledWindow" name="m_MaskEdPreviewWnd">
+        <style>wxDOUBLE_BORDER|wxHSCROLL</style>
+      </object>
+    </object> -->
+    </object>
+  </resource>

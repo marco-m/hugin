@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Id:  MaskEdMainFrame.cpp $
+ *  $Rev$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -21,10 +21,13 @@
  *
  */
 
+#include "huginapp/ImageCache.h"
 #include "MaskEdMainFrame.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
+
+using HuginBase::ImageCache;
 
 BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_new_project"), MaskEdMainFrame::OnNew)
@@ -39,8 +42,8 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_edit_preferences"), MaskEdMainFrame::OnPreference)
     EVT_MENU(XRCID("action_exit"), MaskEdMainFrame::OnQuit)
     EVT_MENU(XRCID("action_about_maskeditor"), MaskEdMainFrame::OnAbout)
-    EVT_MOTION(MaskEdMainFrame::OnMotion)
-    EVT_PAINT(MaskEdMainFrame::OnPaint)
+    //EVT_MOTION(MaskEdMainFrame::OnMotion)
+    //EVT_PAINT(MaskEdMainFrame::OnPaint)
 END_EVENT_TABLE()
 
 MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent)
@@ -49,6 +52,23 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent)
     wxYield();
     
     wxXmlResource::Get()->LoadFrame(this, parent, wxT("MaskEdMainFrame"));
+    
+    SetMenuBar(wxXmlResource::Get()->LoadMenuBar(this, wxT("main_menubar")));
+
+    SetToolBar(wxXmlResource::Get()->LoadToolBar(this, wxT("main_toolbar")));
+    
+    wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
+
+    m_MaskEdClientWnd = new MaskEdClientWnd(this, wxID_ANY, wxPoint(0,0), GetClientSize());
+    //m_MaskEdClientWnd = XRCCTRL(*this, "main_clientwnd", MaskEdClientWnd);
+
+    topSizer->Add(m_MaskEdClientWnd, 1, wxEXPAND | wxALL);
+
+    SetSizer(topSizer);
+    //topSizer->Fit(this);
+    //topSizer->SetSizeHints(this);
+    
+
     CreateStatusBar();
     SetStatusText(wxT("Ready"));
 }
@@ -66,7 +86,10 @@ void MaskEdMainFrame::OnOpen(wxCommandEvent &event)
     if(dialog.ShowModal() == wxID_OK)
     {
         wxString path = dialog.GetPath();
-        m_bLoaded = m_img.LoadFile(path);
+        //m_bLoaded = m_img.LoadFile(path);
+        //GlobalCmdHist::getInstance()->addCommand(new LoadImagesCmd(m_MaskMgr, filesv));
+        m_MaskEdClientWnd->LoadFile(path);
+        //ImageCache::EntryPtr e = ImageCache::getInstance().getImage(std::string(path.mb_str()));
         this->Refresh();
     }
 }
@@ -118,12 +141,12 @@ void MaskEdMainFrame::OnMotion(wxMouseEvent &event)
     }
 }
 
-void MaskEdMainFrame::OnPaint(wxPaintEvent &event)
-{
-    wxPaintDC dc(this);
-    if(m_bLoaded)
-    { 
-        wxBitmap bmp(m_img);
-        dc.DrawBitmap(bmp, 0, 0);
-    }
-}
+//void MaskEdMainFrame::OnPaint(wxPaintEvent &event)
+//{
+//    wxPaintDC dc(this);
+//    if(m_bLoaded)
+//    { 
+//        wxBitmap bmp(m_img);
+//        dc.DrawBitmap(bmp, 0, 0);
+//    }
+//}

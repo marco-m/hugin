@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdApp.h
+/** @file MaskEdPreviewWnd.cpp
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -21,17 +21,12 @@
  *
  */
 
-#ifndef _MASKEDAPP_H
-#define _MASKEDAPP_H
+#include "MaskEdPreviewWnd.h"
 
-#include <wx/wx.h>
-
-class MaskEdApp : public wxApp 
-{
-    wxString m_xrcPrefix;
-    wxString m_utilsBinDir;
-public:
-    virtual bool OnInit();
-};
-
-#endif
+MaskEdPreviewWnd::MaskEdPreviewWnd(wxWindow *parent,
+                     wxWindowID winid,
+                     const wxPoint& pos,
+                     const wxSize& size,
+                     long style,
+                     const wxString& name)
+                     : wxScrolledWindow(parent, winid, pos, size, style, name) {}

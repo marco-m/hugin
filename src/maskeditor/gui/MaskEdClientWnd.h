@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdApp.h
+/** @file MaskEdClientWnd.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -20,18 +20,28 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
-#ifndef _MASKEDAPP_H
-#define _MASKEDAPP_H
+#ifndef MASKEDCLIENTWND_H
+#define MASKEDCLIENTWND_H
 
 #include <wx/wx.h>
+#include <wx/splitter.h>
+#include "MaskEditingWnd.h"
+#include "MaskEdPreviewWnd.h"
 
-class MaskEdApp : public wxApp 
+class MaskEdClientWnd : public wxSplitterWindow
 {
-    wxString m_xrcPrefix;
-    wxString m_utilsBinDir;
+    MaskEditingWnd  *m_MaskEditingWnd;
+    MaskEdPreviewWnd  *m_MaskEdPreviewWnd;
+    wxString         m_Filename;
 public:
-    virtual bool OnInit();
+    MaskEdClientWnd(wxWindow *parent, wxWindowID id = wxID_ANY,
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
+                     long style = wxSP_3D|wxSP_LIVE_UPDATE,
+                     const wxString& name = wxT("splitter"));
+    void LoadFile(const wxString &filename);
+    wxString GetFile() const;
+    void Draw();
 };
 
 #endif

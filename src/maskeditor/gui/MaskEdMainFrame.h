@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Id: MaskEdMainFrame.h  $
+ *  $Rev$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -25,12 +25,16 @@
 #define _MASKEDMAINFRAME_H
 
 #include <wx/wx.h>
-
+#include "MaskEdClientWnd.h"
+#include "MaskEditingWnd.h"
+#include "MaskEdPreviewWnd.h"
 
 class MaskEdMainFrame : public wxFrame 
 {
     wxImage m_img;
     bool    m_bLoaded;
+    MaskEdClientWnd* m_MaskEdClientWnd;         //area for editing and previewing input images 
+
 public:
     MaskEdMainFrame(wxWindow *parent);
     
@@ -45,7 +49,7 @@ public:
     void OnAbout(wxCommandEvent& event);
 
     void OnMotion(wxMouseEvent& event);
-    void OnPaint(wxPaintEvent& event);
+    //void OnPaint(wxPaintEvent& event);
 
     DECLARE_EVENT_TABLE();
 };
