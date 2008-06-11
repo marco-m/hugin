@@ -7,6 +7,6 @@ IF(wxWidgets_FOUND)
   ENDIF(WIN32)
 
   add_subdirectory(gui)
-  
+  #add_subdirectory(maskmgr)
 ENDIF(wxWidgets_FOUND)
 

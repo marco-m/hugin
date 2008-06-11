@@ -27,7 +27,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 #include "hugin_utils/utils.h"
-#include "appbase/command.h"
+#include "hugin_config.h"
 
 IMPLEMENT_APP(MaskEdApp)
 

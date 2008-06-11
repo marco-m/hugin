@@ -26,7 +26,7 @@
 
 #include <wx/wx.h>
 #include "MaskEdClientWnd.h"
-#include "MaskEditingWnd.h"
+#include "MaskEdEditWnd.h"
 #include "MaskEdPreviewWnd.h"
 
 class MaskEdMainFrame : public wxFrame 
@@ -37,7 +37,8 @@ class MaskEdMainFrame : public wxFrame
 
 public:
     MaskEdMainFrame(wxWindow *parent);
-    
+    ~MaskEdMainFrame();
+
     void OnNew(wxCommandEvent& event);
     void OnOpen(wxCommandEvent& event);
     void OnLoadPTO(wxCommandEvent& event);

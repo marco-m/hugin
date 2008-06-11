@@ -31,14 +31,19 @@ MaskEdClientWnd::MaskEdClientWnd(wxWindow *parent, wxWindowID id,
                      const wxString& name)
                      : wxSplitterWindow(parent, id, pos, size, style, name)
 {
-    m_MaskEditingWnd = new MaskEditingWnd(this, wxID_ANY, wxPoint(0,0), wxSize(size.GetWidth(), size.GetHeight()/2)); //XRCCTRL(*this, "m_MaskEditingWnd", MaskEditingWnd);
+    m_MaskEdEditWnd = new MaskEdEditWnd(this, wxID_ANY, wxPoint(0,0), wxSize(size.GetWidth(), size.GetHeight()/2)); //XRCCTRL(*this, "m_MaskEdEditWnd", MaskEdEditWnd);
     m_MaskEdPreviewWnd = new MaskEdPreviewWnd(this, wxID_ANY, wxPoint(0, size.GetHeight()/2), wxSize(size.GetWidth(), size.GetHeight()/2)); //XRCCTRL(*this, "m_MaskEdPreviewWnd", MaskEdPreviewWnd);
 }
 
+MaskEdClientWnd::~MaskEdClientWnd()
+{
+    delete m_MaskEdEditWnd;
+    delete m_MaskEdPreviewWnd;
+}   
 void MaskEdClientWnd::LoadFile(const wxString &filename)
 {
     m_Filename = filename;
-    m_MaskEditingWnd->LoadImage(filename);
+    m_MaskEdEditWnd->LoadImage(filename);
 }
 
 wxString MaskEdClientWnd::GetFile() const 

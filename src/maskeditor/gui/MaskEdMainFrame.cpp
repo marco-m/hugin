@@ -73,6 +73,11 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent)
     SetStatusText(wxT("Ready"));
 }
 
+MaskEdMainFrame::~MaskEdMainFrame()
+{
+    delete m_MaskEdClientWnd;
+}
+
 void MaskEdMainFrame::OnNew(wxCommandEvent &event)
 {
 
@@ -80,7 +85,7 @@ void MaskEdMainFrame::OnNew(wxCommandEvent &event)
 
 void MaskEdMainFrame::OnOpen(wxCommandEvent &event)
 {
-    wxString filter = wxT("JPEG files (*.jpg)|*.jpg|tiff files (*.tif)|*.tif|All files (*.*)|*.*");
+    wxString filter = wxT("JPEG files (*.jpg;*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|tiff files (*.tif)|*.tif|All files (*.*)|*.*");
     wxFileDialog dialog(this, wxT("Open Image"), wxEmptyString,
         wxEmptyString, filter, wxOPEN);
     if(dialog.ShowModal() == wxID_OK)

@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdClientWnd.h
+/** @file BrushStroke.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -20,30 +20,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef MASKEDCLIENTWND_H
-#define MASKEDCLIENTWND_H
+#ifndef BRUSHSTROKE_H
+#define BRUSHSTROKE_H
 
 #include <wx/wx.h>
-#include <wx/splitter.h>
-#include "MaskEdEditWnd.h"
-#include "MaskEdPreviewWnd.h"
+#include <vector>
 
-class MaskEdClientWnd : public wxSplitterWindow
+struct BrushStroke
 {
-    MaskEdEditWnd      *m_MaskEdEditWnd;
-    MaskEdPreviewWnd    *m_MaskEdPreviewWnd;
-    wxString            m_Filename;
-public:
-    MaskEdClientWnd(wxWindow *parent, wxWindowID id = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxSP_3D|wxSP_LIVE_UPDATE,
-                     const wxString& name = wxT("splitter"));
-    ~MaskEdClientWnd();
-
-    void LoadFile(const wxString &filename);
-    wxString GetFile() const;
-    void Draw();
+    std::vector<wxPoint> pt;
+    int width;
 };
 
 #endif

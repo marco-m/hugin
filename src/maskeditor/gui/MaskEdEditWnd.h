@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEditingWnd.h
+/** @file MaskEdEditWnd.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -21,25 +21,30 @@
  *
  */
 
-#ifndef MASKEDITINGWND_H
-#define MASKEDITINGWND_H
+#ifndef MASKEDEDITWND_H
+#define MASKEDEDITWND_H
 
 #include <wx/wx.h>
-
-class MaskEditingWnd : public wxScrolledWindow
+#include "BrushStroke.h"
+class MaskEdEditWnd : public wxScrolledWindow
 {
     wxBitmap *m_bimg;
+    BrushStroke m_brushstroke;
 public:
-    MaskEditingWnd(wxWindow *parent,
+    MaskEdEditWnd(wxWindow *parent,
                      wxWindowID winid = wxID_ANY,
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize,
                      long style = wxScrolledWindowStyle | wxDOUBLE_BORDER,
                      const wxString& name = wxPanelNameStr);
-    ~MaskEditingWnd();
+    ~MaskEdEditWnd();
+
     void LoadImage(const wxString &filename);
     void OnPaint(wxPaintEvent &event);
-    void OnScrollEvt(wxScrollEvent &event);
+    void OnMouseButtonDown(wxMouseEvent &event);
+    void OnLeftMouseButtonUp(wxMouseEvent &event);
+    void OnRightMouseButtonUp(wxMouseEvent &event);
+    void OnMotion(wxMouseEvent &event);
     void Draw();
 
     DECLARE_EVENT_TABLE()
