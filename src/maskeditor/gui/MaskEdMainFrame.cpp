@@ -59,15 +59,12 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent)
     
     wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
 
-    m_MaskEdClientWnd = new MaskEdClientWnd(this, wxID_ANY, wxPoint(0,0), GetClientSize());
+    m_MaskEdClientWnd = new MaskEdClientWnd(this);
     //m_MaskEdClientWnd = XRCCTRL(*this, "main_clientwnd", MaskEdClientWnd);
 
-    topSizer->Add(m_MaskEdClientWnd, 1, wxEXPAND | wxALL);
+    topSizer->Add(m_MaskEdClientWnd, 1, wxEXPAND | wxALL | wxFIXED_MINSIZE);
 
-    SetSizer(topSizer);
-    //topSizer->Fit(this);
-    //topSizer->SetSizeHints(this);
-    
+    SetSizerAndFit(topSizer);
 
     CreateStatusBar();
     SetStatusText(wxT("Ready"));

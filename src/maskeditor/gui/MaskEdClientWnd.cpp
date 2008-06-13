@@ -31,8 +31,12 @@ MaskEdClientWnd::MaskEdClientWnd(wxWindow *parent, wxWindowID id,
                      const wxString& name)
                      : wxSplitterWindow(parent, id, pos, size, style, name)
 {
-    m_MaskEdEditWnd = new MaskEdEditWnd(this, wxID_ANY, wxPoint(0,0), wxSize(size.GetWidth(), size.GetHeight()/2)); //XRCCTRL(*this, "m_MaskEdEditWnd", MaskEdEditWnd);
-    m_MaskEdPreviewWnd = new MaskEdPreviewWnd(this, wxID_ANY, wxPoint(0, size.GetHeight()/2), wxSize(size.GetWidth(), size.GetHeight()/2)); //XRCCTRL(*this, "m_MaskEdPreviewWnd", MaskEdPreviewWnd);
+    m_MaskEdEditWnd = new MaskEdEditWnd(this);
+    m_MaskEdPreviewWnd = new MaskEdPreviewWnd(this);
+    SetMinimumPaneSize(20);
+    m_MaskEdEditWnd->Show();
+    m_MaskEdPreviewWnd->Show();
+    SplitHorizontally(m_MaskEdEditWnd, m_MaskEdPreviewWnd);
 }
 
 MaskEdClientWnd::~MaskEdClientWnd()

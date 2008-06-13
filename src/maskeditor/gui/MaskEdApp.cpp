@@ -78,6 +78,7 @@ bool MaskEdApp::OnInit()
     
     MaskEdMainFrame *frame = new MaskEdMainFrame(NULL);
     frame->Show();
+    frame->Maximize();
     SetTopWindow(frame);
     return true;
 }

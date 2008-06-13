@@ -72,6 +72,7 @@ void MaskEdEditWnd::LoadImage(const wxString &filename)
 void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
 {
     wxPaintDC dc(this);
+    //DoPrepareDC(dc);
     int x,y;
     x = GetScrollPos(wxSB_HORIZONTAL);
     y = GetScrollPos(wxSB_VERTICAL);
@@ -128,6 +129,7 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
         if(m_brushstroke.pt.size() > 0)
         {
             wxClientDC dc(this);
+            //DoPrepareDC(dc);
             wxPen *pen;
             if(event.LeftIsDown())
                 pen = new wxPen(*wxRED, 1);
