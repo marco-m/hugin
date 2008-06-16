@@ -6,7 +6,7 @@
         <label>_File</label>
         <object class="wxMenuItem" name="action_new_project">
           <label>&amp;New...\tCtrl-n</label>
-          <help>New</help>
+          <help>New Project</help>
         </object>
         <object class="wxMenuItem" name="action_open_project">
           <label>&amp;Open...\tCtrl-o</label>
@@ -42,6 +42,15 @@
       </object>
       <object class="wxMenu" name="menuEdit">
         <label>_Edit</label>
+        <object class="wxMenuItem" name="action_zoom_in">
+          <label>Zoom In\t+</label>
+          <help>Zoom In</help>
+        </object>
+        <object class="wxMenuItem" name="action_zoom_out">
+          <label>Zoom Out\t-</label>
+          <help>Zoom Out</help>
+        </object>
+        <object class="separator" />
         <object class="wxMenuItem" name="action_use_brush">
           <label>&amp;Brush\tCtrl-b</label>
           <help>Create Mask from Brushstrokes</help>

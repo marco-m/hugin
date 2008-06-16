@@ -1,7 +1,7 @@
 # Application name
 set( PROGNAME maskeditor )
 
-
+include_directories( ${CMAKE_SOURCE_DIR}/src/hugin1 )
 
 IF(wxWidgets_FOUND)
   IF(WIN32)
@@ -12,9 +12,17 @@ IF(wxWidgets_FOUND)
 
 	# sources
 	set(maskeditor_SOURCES
-	gui/MaskEdApp.cpp gui/MaskEdMainFrame.cpp 
-	gui/MaskEdClientWnd.cpp gui/MaskEdEditWnd.cpp gui/MaskEdPreviewWnd.cpp
-	core/MaskMgr.cpp)
+				gui/MaskEdApp.h gui/MaskEdApp.cpp
+				gui/MaskEdMainFrame.h gui/MaskEdMainFrame.cpp 
+				gui/MaskEdClientWnd.h gui/MaskEdClientWnd.cpp 
+				gui/MaskEdEditWnd.h gui/MaskEdEditWnd.cpp 
+				gui/MaskEdPreviewWnd.h gui/MaskEdPreviewWnd.cpp
+				core/BrushStroke.h
+				core/MaskPoly.h
+				core/MaskMgr.h core/MaskMgr.cpp
+				core/MaskFileMgr.h core/MaskFileMgr.cpp
+				core/PTOFileMgr.h core/PTOFileMgr.cpp 
+				core/MaskEdCommand.h core/MaskEdCommand.cpp)
 	
 	IF (WIN32)
 	  ADD_EXECUTABLE( ${PROGNAME} WIN32 ${maskeditor_SOURCES})
@@ -26,6 +34,6 @@ IF(wxWidgets_FOUND)
 	install(TARGETS ${PROGNAME} DESTINATION ${BINDIR})
 
   add_subdirectory(gui)
-  #add_subdirectory(maskmgr)
+  
 ENDIF(wxWidgets_FOUND)
 

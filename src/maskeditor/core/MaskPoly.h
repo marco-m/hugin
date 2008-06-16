@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdPreviewWnd.h
+/** @file MaskPoly.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -20,28 +20,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef MASKEDPREVIEWWND_H
-#define MASKEDPREVIEWWND_H
+
+#ifndef MASKPOLY_H
+#define MASKPOLY_H
 
 #include <wx/wx.h>
-#include <string>
-#include <vector>
 
-class MaskEdPreviewWnd : public wxScrolledWindow
+struct MaskPoly
 {
-    std::vector<wxBitmap*>  m_bimgs;
-    std::vector<bool>       m_selected;
-public:
-    MaskEdPreviewWnd(wxWindow *parent, wxWindowID winid = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxScrolledWindowStyle | wxDOUBLE_BORDER,
-                     const wxString& name = wxPanelNameStr);
-
-    void Init();
-    void LoadImages(std::vector<std::string> &filesv);
-    void LoadImage(std::string &filename);
-    std::vector<bool> getSelected() const;
+    std::vector<wxPoint> pt;
 };
-
 #endif

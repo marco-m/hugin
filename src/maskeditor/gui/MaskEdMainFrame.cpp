@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -30,24 +30,29 @@
 using HuginBase::ImageCache;
 
 BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
-    EVT_MENU(XRCID("action_new_project"), MaskEdMainFrame::OnNew)
-    EVT_BUTTON(XRCID("action_new_project"), MaskEdMainFrame::OnNew)
-    EVT_MENU(XRCID("action_open_project"), MaskEdMainFrame::OnOpen)
-    EVT_BUTTON(XRCID("action_open_project"), MaskEdMainFrame::OnOpen)
+    EVT_MENU(XRCID("action_new_project"), MaskEdMainFrame::OnNewProject)
+    EVT_BUTTON(XRCID("action_new_project"), MaskEdMainFrame::OnNewProject)
+    EVT_MENU(XRCID("action_open_project"), MaskEdMainFrame::OnOpenProject)
+    EVT_BUTTON(XRCID("action_open_project"), MaskEdMainFrame::OnOpenProject)
     EVT_MENU(XRCID("action_load_pto_file"), MaskEdMainFrame::OnLoadPTO)
-    EVT_MENU(XRCID("action_save_project"), MaskEdMainFrame::OnSave)
-    EVT_BUTTON(XRCID("action_save_project"), MaskEdMainFrame::OnSave)
+    EVT_MENU(XRCID("action_load_images"), MaskEdMainFrame::OnLoadImages)
+    EVT_MENU(XRCID("action_save_project"), MaskEdMainFrame::OnSaveProject)
+    EVT_BUTTON(XRCID("action_save_project"), MaskEdMainFrame::OnSaveProject)
+    EVT_MENU(XRCID("action_save_project_as"), MaskEdMainFrame::OnSaveProjectAs)
     EVT_MENU(XRCID("action_use_brush"), MaskEdMainFrame::OnBStroke)
     EVT_MENU(XRCID("action_add_polygon_point"), MaskEdMainFrame::OnAddPoint)
     EVT_MENU(XRCID("action_edit_preferences"), MaskEdMainFrame::OnPreference)
     EVT_MENU(XRCID("action_exit"), MaskEdMainFrame::OnQuit)
     EVT_MENU(XRCID("action_about_maskeditor"), MaskEdMainFrame::OnAbout)
+    EVT_MENU(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
+    EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
+    EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
+    EVT_BUTTON(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
     //EVT_MOTION(MaskEdMainFrame::OnMotion)
     //EVT_PAINT(MaskEdMainFrame::OnPaint)
 END_EVENT_TABLE()
 
-MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent)
-: m_bLoaded(false)
+MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
 {
     wxYield();
     
@@ -75,28 +80,43 @@ MaskEdMainFrame::~MaskEdMainFrame()
     delete m_MaskEdClientWnd;
 }
 
-void MaskEdMainFrame::OnNew(wxCommandEvent &event)
+void MaskEdMainFrame::OnNewProject(wxCommandEvent &event)
 {
 
 }
 
-void MaskEdMainFrame::OnOpen(wxCommandEvent &event)
+void MaskEdMainFrame::OnOpenProject(wxCommandEvent &event)
+{
+    wxString filter = wxT("Mask Project File (*.mep)|*.mep|All files (*.*)|*.*");
+    wxFileDialog dialog(this, wxT("Open Project"), wxEmptyString,
+        wxEmptyString, filter, wxOPEN);
+
+    if(dialog.ShowModal() == wxID_OK)
+    {
+        m_MaskEdClientWnd->LoadProject(dialog.GetPath());
+    }
+}
+
+void MaskEdMainFrame::OnLoadImages(wxCommandEvent &event)
 {
     wxString filter = wxT("JPEG files (*.jpg;*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|tiff files (*.tif)|*.tif|All files (*.*)|*.*");
     wxFileDialog dialog(this, wxT("Open Image"), wxEmptyString,
-        wxEmptyString, filter, wxOPEN);
+        wxEmptyString, filter, wxOPEN | wxFD_MULTIPLE);
     if(dialog.ShowModal() == wxID_OK)
     {
-        wxString path = dialog.GetPath();
-        //m_bLoaded = m_img.LoadFile(path);
-        //GlobalCmdHist::getInstance()->addCommand(new LoadImagesCmd(m_MaskMgr, filesv));
-        m_MaskEdClientWnd->LoadFile(path);
-        //ImageCache::EntryPtr e = ImageCache::getInstance().getImage(std::string(path.mb_str()));
+        wxArrayString paths;
+        dialog.GetPaths(paths);
+        m_MaskEdClientWnd->LoadImages(paths);
         this->Refresh();
     }
 }
 
-void MaskEdMainFrame::OnSave(wxCommandEvent &event)
+void MaskEdMainFrame::OnSaveProject(wxCommandEvent &event)
+{
+
+}
+
+void MaskEdMainFrame::OnSaveProjectAs(wxCommandEvent &event)
 {
 
 }
@@ -131,24 +151,15 @@ void MaskEdMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
         wxOK | wxICON_INFORMATION, this);
 }
 
-void MaskEdMainFrame::OnMotion(wxMouseEvent &event)
+void MaskEdMainFrame::OnZoomIn(wxCommandEvent &event)
 {
-    if(event.Dragging())
-    {
-        wxClientDC dc (this);
-        wxPen pen(*wxRED, 1);
-        dc.SetPen(pen);
-        dc.DrawPoint(event.GetPosition());
-        dc.SetPen(wxNullPen);
-    }
+    m_scale += 0.1;
+    m_MaskEdClientWnd->Zoom(m_scale);
 }
 
-//void MaskEdMainFrame::OnPaint(wxPaintEvent &event)
-//{
-//    wxPaintDC dc(this);
-//    if(m_bLoaded)
-//    { 
-//        wxBitmap bmp(m_img);
-//        dc.DrawBitmap(bmp, 0, 0);
-//    }
-//}
+void MaskEdMainFrame::OnZoomOut(wxCommandEvent &event)
+{
+    if(m_scale <= 0.1) return;
+    m_scale -= 0.1;
+    m_MaskEdClientWnd->Zoom(m_scale);
+}

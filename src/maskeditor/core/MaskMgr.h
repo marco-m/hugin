@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -24,9 +24,28 @@
 #ifndef MASKMGR_H
 #define MASKMGR_H
 
-class MaskMgr
-{
+#include <vector>
+#include <string>
+//#include "appbase/Singleton.h"
 
+class MaskMgr /*: public Singleton<MaskMgr>*/
+{
+    std::vector<std::string> m_imgfiles;
+
+    static MaskMgr *m_instance;
+    MaskMgr();
+    ~MaskMgr();
+
+    void Init();
+public:
+    static MaskMgr *getInstance();
+
+    void LoadPTOFile(std::string filename);
+    void LoadImages(std::vector<std::string> &filesv);
+    void LoadImage(std::string filename);
+    void LoadMaskProject(std::string filename);
+
+    std::vector<std::string> getImages();
 };
 
 #endif

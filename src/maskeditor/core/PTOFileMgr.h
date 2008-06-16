@@ -1,9 +1,9 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdPreviewWnd.h
+/** @file PTOFileMgr.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Id$
+ *  $Rev$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -20,28 +20,30 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef MASKEDPREVIEWWND_H
-#define MASKEDPREVIEWWND_H
 
-#include <wx/wx.h>
+#ifndef PTOFILEMGR_H
+#define PTOFILEMGR_H
+
 #include <string>
 #include <vector>
 
-class MaskEdPreviewWnd : public wxScrolledWindow
+class PTOFileMgr
 {
-    std::vector<wxBitmap*>  m_bimgs;
-    std::vector<bool>       m_selected;
-public:
-    MaskEdPreviewWnd(wxWindow *parent, wxWindowID winid = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxScrolledWindowStyle | wxDOUBLE_BORDER,
-                     const wxString& name = wxPanelNameStr);
+    std::string m_PTOfile;
+    std::vector<std::string> m_files;
+
+    static PTOFileMgr *m_instance;
+
+    PTOFileMgr();
+    ~PTOFileMgr();
 
     void Init();
-    void LoadImages(std::vector<std::string> &filesv);
-    void LoadImage(std::string &filename);
-    std::vector<bool> getSelected() const;
+public:
+    static PTOFileMgr* getInstance();
+
+    void LoadPTOFile(std::string filename);
+    std::vector<std::string> getFiles();
+    std::string getFile(int index);
 };
 
 #endif

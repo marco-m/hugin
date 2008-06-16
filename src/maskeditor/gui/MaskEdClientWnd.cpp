@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -20,10 +20,20 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#include <algorithm>
+#include <vector>
 #include "huginapp/ImageCache.h"
 #include "MaskEdClientWnd.h"
+#include "../core/MaskMgr.h"
+#include <wx/wx.h>
 #include <wx/xrc/xmlres.h>
 
+using namespace std;
+
+string wxStringTostring(wxString str)
+{
+    return string(str.mb_str());
+}
 MaskEdClientWnd::MaskEdClientWnd(wxWindow *parent, wxWindowID id,
                      const wxPoint& pos,
                      const wxSize& size,
@@ -33,6 +43,7 @@ MaskEdClientWnd::MaskEdClientWnd(wxWindow *parent, wxWindowID id,
 {
     m_MaskEdEditWnd = new MaskEdEditWnd(this);
     m_MaskEdPreviewWnd = new MaskEdPreviewWnd(this);
+    
     SetMinimumPaneSize(20);
     m_MaskEdEditWnd->Show();
     m_MaskEdPreviewWnd->Show();
@@ -44,13 +55,34 @@ MaskEdClientWnd::~MaskEdClientWnd()
     delete m_MaskEdEditWnd;
     delete m_MaskEdPreviewWnd;
 }   
-void MaskEdClientWnd::LoadFile(const wxString &filename)
+void MaskEdClientWnd::LoadProject(const wxString &filename)
 {
-    m_Filename = filename;
-    m_MaskEdEditWnd->LoadImage(filename);
+    
+    MaskMgr::getInstance()->LoadMaskProject(string(filename.mb_str()));
+    m_MaskEdEditWnd->LoadImages(MaskMgr::getInstance()->getImages());
+    m_MaskEdPreviewWnd->LoadImages(MaskMgr::getInstance()->getImages());
+}
+
+void MaskEdClientWnd::LoadImages(const wxArrayString &filesv)
+{
+    vector<string> strfilesv;
+    transform(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(strfilesv), wxStringTostring);
+    MaskMgr::getInstance()->LoadImages(strfilesv);
+    m_MaskEdEditWnd->LoadImages(strfilesv);
+    m_MaskEdPreviewWnd->LoadImages(strfilesv);
 }
 
 wxString MaskEdClientWnd::GetFile() const 
 {
-    return m_Filename;
+    return wxT("");
+}
+
+void MaskEdClientWnd::Zoom(float scale, wxRect region)
+{
+    m_MaskEdEditWnd->Zoom(scale);
+}
+
+float MaskEdClientWnd::GetZoomLevel() const 
+{
+    return m_MaskEdEditWnd->GetZoomLevel();
 }

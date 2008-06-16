@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -21,7 +21,11 @@
  *
  */
 
+#include "huginapp/ImageCache.h"
 #include "MaskEdPreviewWnd.h"
+
+using HuginBase::ImageCache;
+using namespace std;
 
 MaskEdPreviewWnd::MaskEdPreviewWnd(wxWindow *parent,
                      wxWindowID winid,
@@ -30,3 +34,37 @@ MaskEdPreviewWnd::MaskEdPreviewWnd(wxWindow *parent,
                      long style,
                      const wxString& name)
                      : wxScrolledWindow(parent, winid, pos, size, style, name) {}
+
+void MaskEdPreviewWnd::Init()
+{
+    m_bimgs.clear();
+    m_selected.clear();
+}
+void MaskEdPreviewWnd::LoadImages(vector<string> &filesv)
+{
+    for(vector<string>::iterator it = filesv.begin(); it != filesv.end(); it++)
+    {
+        LoadImage(*it);
+    }
+}
+
+void MaskEdPreviewWnd::LoadImage(string &filename)
+{
+    if(filename != "")
+    {
+        ImageCache::EntryPtr e = ImageCache::getInstance().getImage(filename);
+        HuginBase::ImageCache::ImageCacheRGB8Ptr img = e->get8BitImage();
+        if (img) {
+            m_bimgs.push_back(new wxBitmap( wxImage(img->width(),
+                       img->height(),
+                       (unsigned char *) img->data(),
+                       true)));
+        } 
+    }
+}
+
+vector<bool> MaskEdPreviewWnd::getSelected() const 
+{
+    return m_selected;
+}
+

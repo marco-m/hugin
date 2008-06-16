@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -31,23 +31,26 @@
 
 class MaskEdMainFrame : public wxFrame 
 {
-    wxImage m_img;
-    bool    m_bLoaded;
-    MaskEdClientWnd* m_MaskEdClientWnd;         //area for editing and previewing input images 
+    float               m_scale;
+    MaskEdClientWnd*    m_MaskEdClientWnd;         //area for editing and previewing input images 
 
 public:
     MaskEdMainFrame(wxWindow *parent);
     ~MaskEdMainFrame();
 
-    void OnNew(wxCommandEvent& event);
-    void OnOpen(wxCommandEvent& event);
+    void OnNewProject(wxCommandEvent& event);
+    void OnOpenProject(wxCommandEvent& event);
     void OnLoadPTO(wxCommandEvent& event);
-    void OnSave(wxCommandEvent& event);
+    void OnLoadImages(wxCommandEvent& event);
+    void OnSaveProject(wxCommandEvent& event);
+    void OnSaveProjectAs(wxCommandEvent& event);
     void OnBStroke(wxCommandEvent& event);
     void OnAddPoint(wxCommandEvent& event);
     void OnPreference(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    void OnZoomIn(wxCommandEvent& event);
+    void OnZoomOut(wxCommandEvent& event);
 
     void OnMotion(wxMouseEvent& event);
     //void OnPaint(wxPaintEvent& event);

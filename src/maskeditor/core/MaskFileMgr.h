@@ -1,9 +1,9 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdPreviewWnd.h
+/** @file MaskFileMgr.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Id$
+ *  $Rev$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -20,28 +20,36 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef MASKEDPREVIEWWND_H
-#define MASKEDPREVIEWWND_H
 
-#include <wx/wx.h>
+#ifndef MASKFILEMGR_H
+#define MASKFILEMGR_H
+
 #include <string>
 #include <vector>
-
-class MaskEdPreviewWnd : public wxScrolledWindow
+/**
+ *  @class MaskFileMgr
+ *  @brief singleton class used for managing mask project files
+ */
+class MaskFileMgr
 {
-    std::vector<wxBitmap*>  m_bimgs;
-    std::vector<bool>       m_selected;
-public:
-    MaskEdPreviewWnd(wxWindow *parent, wxWindowID winid = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxScrolledWindowStyle | wxDOUBLE_BORDER,
-                     const wxString& name = wxPanelNameStr);
+    std::string m_maskfile;
+    std::vector<std::string> m_imgfiles;
+    std::string m_ptofile;
 
+    static MaskFileMgr *m_instance;
+
+    MaskFileMgr();
+    ~MaskFileMgr();
     void Init();
-    void LoadImages(std::vector<std::string> &filesv);
-    void LoadImage(std::string &filename);
-    std::vector<bool> getSelected() const;
-};
+public:
+    static MaskFileMgr* getInstance();
 
+    void LoadFile(std::string filename);
+
+    std::string getPTOFile();
+    std::vector<std::string> getImgFiles();
+    int getImgFileCount();
+    std::string getImgFile(int index);
+
+};
 #endif

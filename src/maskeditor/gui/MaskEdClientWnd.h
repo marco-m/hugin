@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -30,9 +30,9 @@
 
 class MaskEdClientWnd : public wxSplitterWindow
 {
-    MaskEdEditWnd      *m_MaskEdEditWnd;
+    MaskEdEditWnd       *m_MaskEdEditWnd;
     MaskEdPreviewWnd    *m_MaskEdPreviewWnd;
-    wxString            m_Filename;
+
 public:
     MaskEdClientWnd(wxWindow *parent, wxWindowID id = wxID_ANY,
                      const wxPoint& pos = wxDefaultPosition,
@@ -41,9 +41,15 @@ public:
                      const wxString& name = wxT("splitter"));
     ~MaskEdClientWnd();
 
-    void LoadFile(const wxString &filename);
+    void LoadProject(const wxString &filename);
+    void SaveProject();                         //save the currently loaded project
+    void SaveProjectAs(const wxString &filename);
+    void LoadImages(const wxArrayString &filenames);
+
+    void Zoom(float scale = 1.0, wxRect region = wxRect());
+    float GetZoomLevel() const;
     wxString GetFile() const;
-    void Draw();
+    
 };
 
 #endif

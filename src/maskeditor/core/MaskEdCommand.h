@@ -1,9 +1,9 @@
 // -*- c-basic-offset: 4 -*-
-/** @file BrushStroke.h
+/** @file MaskEdCommand.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -20,16 +20,35 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef BRUSHSTROKE_H
-#define BRUSHSTROKE_H
 
-#include <wx/wx.h>
-#include <vector>
+#ifndef MASKEDCOMMAND_H
+#define MASKEDCOMMAND_H
 
-struct BrushStroke
+#include "appbase/Command.h"
+#include "appbase/CommandHistory.h"
+#include "MaskMgr.h"
+#include "BrushStroke.h"
+#include "MaskPoly.h"
+
+template<class StringType = std::string>
+class AddBrushStrokeCmd : public AppBase::Command<StringType>
 {
-    std::vector<wxPoint> pt;
-    int width;
+    BrushStroke m_stroke;
+public:
+    AddBrushStrokeCmd(MaskMgr *maskmgr);
+    void execute();
+    void undo();
+    void redo();
 };
 
+template<class StringType = std::string>
+class AddPolygonCmd : public AppBase::Command<StringType>
+{
+    MaskPoly m_poly;
+public:
+    AddPolygonCmd(MaskMgr *maskmgr);
+    void execute();
+    void undo();
+    void redo();
+};
 #endif

@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -21,4 +21,52 @@
  *
  */
 
+#include "huginapp/ImageCache.h"
 #include "MaskMgr.h"
+#include "MaskFileMgr.h"
+
+using namespace std;
+using HuginBase::ImageCache;
+
+MaskMgr* MaskMgr::m_instance = 0;
+MaskMgr::MaskMgr(){}
+MaskMgr::~MaskMgr() {}
+
+//TODO: check for loading duplicate images 
+
+MaskMgr* MaskMgr::getInstance()
+{
+    if(m_instance)
+        return m_instance;
+    return m_instance = new MaskMgr();
+}
+
+void MaskMgr::Init()
+{
+    m_imgfiles.clear();
+}
+
+void MaskMgr::LoadImage(string filename)
+{
+    ImageCache::getInstance().getImage(filename);
+    m_imgfiles.push_back(filename);
+}
+
+void MaskMgr::LoadImages(vector<string> &filesv)
+{
+   /* for(vector<string>::iterator it = filesv.begin(); it != filesv.end(); it++)
+        ImageCache::getInstance().getImage(*it);*/
+    copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
+}
+
+void MaskMgr::LoadMaskProject(string filename)
+{
+    Init();
+    MaskFileMgr::getInstance()->LoadFile(filename);
+    LoadImages(MaskFileMgr::getInstance()->getImgFiles());
+}
+
+vector<string> MaskMgr::getImages()
+{
+    return m_imgfiles;
+}
