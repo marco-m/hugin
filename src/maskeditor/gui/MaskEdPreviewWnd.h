@@ -39,8 +39,8 @@ public:
                      const wxString& name = wxPanelNameStr);
 
     void Init();
-    void LoadImages(std::vector<std::string> &filesv);
-    void LoadImage(std::string &filename);
+    void LoadImages(const std::vector<std::string> &filesv);
+    void LoadImage(const std::string &filename);
     std::vector<bool> getSelected() const;
 };
 

@@ -22,7 +22,10 @@ IF(wxWidgets_FOUND)
 				core/MaskMgr.h core/MaskMgr.cpp
 				core/MaskFileMgr.h core/MaskFileMgr.cpp
 				core/PTOFileMgr.h core/PTOFileMgr.cpp 
-				core/MaskEdCommand.h core/MaskEdCommand.cpp)
+				core/MaskEdCommand.h core/MaskEdCommand.cpp
+				core/ISegmentation.h
+				segmentation/polyed_basic/polyed_basic.h segmentation/polyed_basic/polyed_basic.cpp
+				segmentation/lazysnapping/lazysnapping.h segmentation/lazysnapping/lazysnapping.cpp)
 	
 	IF (WIN32)
 	  ADD_EXECUTABLE( ${PROGNAME} WIN32 ${maskeditor_SOURCES})

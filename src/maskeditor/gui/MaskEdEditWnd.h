@@ -29,15 +29,17 @@
 #include "../core/BrushStroke.h"
 #include "../core/MaskPoly.h"
 
+enum MaskEdEditMode_t { ME_BSTROKE = 1, ME_POLY };
+
 class MaskEdEditWnd : public wxScrolledWindow
 {
     std::vector<wxBitmap*>  m_bimgs;            //local cache
     std::vector<std::string> m_imgfiles;
-    std::vector<bool>       m_selected;         //index of 
+    std::vector<bool>       m_selected;         //index of selected images
     BrushStroke             m_brushstroke;
     MaskPoly                m_poly;
     float                   m_scale;
-    
+    int                     m_edmode;           //editing mode
 public:
     MaskEdEditWnd(wxWindow *parent,
                      wxWindowID winid = wxID_ANY,
@@ -50,12 +52,14 @@ public:
     void Init();
     void LoadImage(const wxString &filename);
     void LoadImage(const std::string &filename);
-    void LoadImages(std::vector<std::string> &filesv);
+    void LoadImages(const std::vector<std::string> &filesv);
     void ReloadImages();
 
     void SetDisplayImages(std::vector<bool> selection);
     void Zoom(float scale = 1.0, wxRect region = wxRect());
     float GetZoomLevel() const;
+    
+    void SetEditMode(MaskEdEditMode_t edmode);
 
     void OnPaint(wxPaintEvent &event);
     void OnMouseButtonDown(wxMouseEvent &event);

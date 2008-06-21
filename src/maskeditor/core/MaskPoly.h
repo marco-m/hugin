@@ -29,5 +29,7 @@
 struct MaskPoly
 {
     std::vector<wxPoint> pt;
+    void clear() { pt.clear(); }
+    void add(wxPoint newpt) { pt.push_back(newpt); }
 };
 #endif

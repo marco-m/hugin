@@ -128,12 +128,12 @@ void MaskEdMainFrame::OnLoadPTO(wxCommandEvent &event)
 
 void MaskEdMainFrame::OnBStroke(wxCommandEvent &event)
 {
-
+    m_MaskEdClientWnd->SetEditMode(ME_BSTROKE);
 }
 
 void MaskEdMainFrame::OnAddPoint(wxCommandEvent &event)
 {
-
+    m_MaskEdClientWnd->SetEditMode(ME_POLY);
 }
 
 void MaskEdMainFrame::OnPreference(wxCommandEvent &event)

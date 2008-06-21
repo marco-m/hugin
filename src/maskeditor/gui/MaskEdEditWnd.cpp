@@ -32,7 +32,7 @@ BEGIN_EVENT_TABLE(MaskEdEditWnd, wxScrolledWindow)
     EVT_LEFT_DOWN(MaskEdEditWnd::OnMouseButtonDown)
     EVT_LEFT_UP(MaskEdEditWnd::OnLeftMouseButtonUp)
     EVT_RIGHT_DOWN(MaskEdEditWnd::OnMouseButtonDown)
-    EVT_RIGHT_UP(MaskEdEditWnd::OnLeftMouseButtonUp)
+    EVT_RIGHT_UP(MaskEdEditWnd::OnRightMouseButtonUp)
     EVT_MOTION(MaskEdEditWnd::OnMotion)
     EVT_PAINT(MaskEdEditWnd::OnPaint)
 END_EVENT_TABLE()
@@ -61,6 +61,11 @@ void MaskEdEditWnd::Init()
     m_brushstroke.clear();
 }
 
+void MaskEdEditWnd::SetEditMode(MaskEdEditMode_t edmode)
+{
+    m_edmode = edmode;
+}
+
 void MaskEdEditWnd::LoadImage(const wxString &filename)
 {
     LoadImage(string(filename.mb_str()));
@@ -83,11 +88,11 @@ void MaskEdEditWnd::LoadImage(const string &filename)
     }
 }
 
-void MaskEdEditWnd::LoadImages(vector<string> &filesv)
+void MaskEdEditWnd::LoadImages(const vector<string> &filesv)
 {
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
     //creates local cache of images
-    for(vector<string>::iterator it = filesv.begin(); it != filesv.end(); it++)
+    for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
     {
         LoadImage(*it);
         /*ImageCache::EntryPtr e = ImageCache::getInstance().getImage(*it);
@@ -131,18 +136,37 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         //    dc.SetPen(wxNullPen);
         //}
     }
+    if(m_poly.pt.size() > 0) {
+        std::vector<wxPoint>::iterator it = m_poly.pt.begin();
+        wxPoint pt = *it + wxPoint(-x,-y);
+        wxPen pen(*wxRED, 1);
+        dc.SetPen(pen);
+        for(it++; it != m_poly.pt.end(); it++)
+        {
+            dc.DrawLine(pt, *it + wxPoint(-x,-y));
+            pt = *it + wxPoint(-x,-y);
+        }
+        dc.SetPen(wxNullPen);
+    }
 }
 
 void MaskEdEditWnd::OnMouseButtonDown(wxMouseEvent &event)
 {
-    m_brushstroke.pt.clear();
+    m_brushstroke.clear();
     event.Skip();
 }
 
 void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 {
     //GlobalCmdHist::getInstance()->addCommand(new MaskMgrAddBrushStroke(m_brushstroke));
-    m_brushstroke.pt.clear();
+    if(m_edmode == ME_BSTROKE)
+        m_brushstroke.clear();
+    else if(m_edmode == ME_POLY) {
+        int x, y;
+        x = GetScrollPos(wxSB_HORIZONTAL);
+        y = GetScrollPos(wxSB_VERTICAL);
+        m_poly.add(event.GetPosition() + wxPoint(x, y));
+    }
     event.Skip();
     Refresh();
 }
@@ -150,13 +174,18 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
 {
     //background
-    m_brushstroke.pt.clear();
+    if(m_edmode == ME_BSTROKE)
+        m_brushstroke.clear();
+    else if(m_edmode == ME_POLY) {
+        //end of creating polygon
+        m_poly.clear();
+    }
     event.Skip();
     Refresh();
 }
 void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
 {
-    if(event.Dragging() && !event.MiddleIsDown() && m_bimgs.size() > 0)
+    if(event.Dragging() && !event.MiddleIsDown() && m_bimgs.size() > 0 && m_edmode == ME_BSTROKE)
     {
         int x, y;
         x = GetScrollPos(wxSB_HORIZONTAL);

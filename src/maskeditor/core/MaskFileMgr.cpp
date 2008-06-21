@@ -25,6 +25,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <exception>
 #include "MaskFileMgr.h"
 
 using namespace std;
@@ -51,7 +52,7 @@ void MaskFileMgr::Init()
 void MaskFileMgr::LoadFile(std::string filename)
 {
     if(filename.empty())
-        throw exception("invalid filename");
+        throw;// exception("invalid filename");
     wxString path(filename.c_str(), wxConvUTF8);
     wxString prefix;
     
@@ -95,7 +96,7 @@ vector<string> MaskFileMgr::getImgFiles()
 string MaskFileMgr::getImgFile(int index)
 {
     if(index < 0 || index >= m_imgfiles.size() || m_imgfiles.empty())
-        throw exception("invalid index");
+        throw;// exception("invalid index");
     return m_imgfiles[index];
 }
 

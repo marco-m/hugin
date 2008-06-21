@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdCommand.h
+/** @file lazysnapping.cpp
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -20,35 +20,5 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#include "lazysnapping.h"
 
-#ifndef MASKEDCOMMAND_H
-#define MASKEDCOMMAND_H
-
-#include "appbase/Command.h"
-#include "appbase/CommandHistory.h"
-#include "MaskMgr.h"
-#include "BrushStroke.h"
-#include "MaskPoly.h"
-
-template<class StringType = std::string>
-class AddBrushStrokeCmd : public AppBase::Command<StringType>
-{
-    BrushStroke m_stroke;
-public:
-    AddBrushStrokeCmd(MaskMgr *maskmgr);
-    void execute();
-    void undo();
-    void redo();
-};
-
-template<class StringType = std::string>
-class AddPolygonCmd : public AppBase::Command<StringType>
-{
-    MaskPoly m_poly;
-public:
-    AddPolygonCmd(MaskMgr *maskmgr);
-    void execute();
-    void undo();
-    void redo();
-};
-#endif

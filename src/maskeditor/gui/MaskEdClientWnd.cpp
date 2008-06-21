@@ -86,3 +86,8 @@ float MaskEdClientWnd::GetZoomLevel() const
 {
     return m_MaskEdEditWnd->GetZoomLevel();
 }
+
+void MaskEdClientWnd::SetEditMode(MaskEdEditMode_t edmode)
+{
+    m_MaskEdEditWnd->SetEditMode(edmode);
+}

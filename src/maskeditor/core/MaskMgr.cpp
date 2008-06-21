@@ -46,20 +46,20 @@ void MaskMgr::Init()
     m_imgfiles.clear();
 }
 
-void MaskMgr::LoadImage(string filename)
+void MaskMgr::LoadImage(const string &filename)
 {
     ImageCache::getInstance().getImage(filename);
     m_imgfiles.push_back(filename);
 }
 
-void MaskMgr::LoadImages(vector<string> &filesv)
+void MaskMgr::LoadImages(const vector<string> &filesv)
 {
    /* for(vector<string>::iterator it = filesv.begin(); it != filesv.end(); it++)
         ImageCache::getInstance().getImage(*it);*/
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
 }
 
-void MaskMgr::LoadMaskProject(string filename)
+void MaskMgr::LoadMaskProject(const string &filename)
 {
     Init();
     MaskFileMgr::getInstance()->LoadFile(filename);

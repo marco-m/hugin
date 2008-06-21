@@ -40,15 +40,15 @@ void MaskEdPreviewWnd::Init()
     m_bimgs.clear();
     m_selected.clear();
 }
-void MaskEdPreviewWnd::LoadImages(vector<string> &filesv)
+void MaskEdPreviewWnd::LoadImages(const vector<string> &filesv)
 {
-    for(vector<string>::iterator it = filesv.begin(); it != filesv.end(); it++)
+    for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
     {
         LoadImage(*it);
     }
 }
 
-void MaskEdPreviewWnd::LoadImage(string &filename)
+void MaskEdPreviewWnd::LoadImage(const string &filename)
 {
     if(filename != "")
     {

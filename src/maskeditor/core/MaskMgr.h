@@ -40,10 +40,10 @@ class MaskMgr /*: public Singleton<MaskMgr>*/
 public:
     static MaskMgr *getInstance();
 
-    void LoadPTOFile(std::string filename);
-    void LoadImages(std::vector<std::string> &filesv);
-    void LoadImage(std::string filename);
-    void LoadMaskProject(std::string filename);
+    void LoadPTOFile(const std::string &filename);
+    void LoadImages(const std::vector<std::string> &filesv);
+    void LoadImage(const std::string &filename);
+    void LoadMaskProject(const std::string &filename);
 
     std::vector<std::string> getImages();
 };

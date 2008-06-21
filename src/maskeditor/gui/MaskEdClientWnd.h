@@ -49,6 +49,7 @@ public:
     void Zoom(float scale = 1.0, wxRect region = wxRect());
     float GetZoomLevel() const;
     wxString GetFile() const;
+    void SetEditMode(MaskEdEditMode_t edmode);
     
 };
 

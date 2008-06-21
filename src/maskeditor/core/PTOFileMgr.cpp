@@ -82,6 +82,6 @@ vector<string> PTOFileMgr::getFiles()
 string PTOFileMgr::getFile(int index)
 {
     if(index < 0 || index >= m_files.size() || m_files.empty())
-        throw exception("invalid index");
+        throw;// exception("invalid index");
     return m_files[index];
 }   
