@@ -40,11 +40,11 @@ class MaskFileMgr
 
     MaskFileMgr();
     ~MaskFileMgr();
-    void Init();
+    void init();
 public:
     static MaskFileMgr* getInstance();
 
-    void LoadFile(std::string filename);
+    void loadFile(std::string filename);
 
     std::string getPTOFile();
     std::vector<std::string> getImgFiles();

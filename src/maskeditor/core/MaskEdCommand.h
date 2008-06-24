@@ -24,31 +24,40 @@
 #ifndef MASKEDCOMMAND_H
 #define MASKEDCOMMAND_H
 
+#include <string>
 #include "appbase/Command.h"
 #include "appbase/CommandHistory.h"
 #include "MaskMgr.h"
 #include "BrushStroke.h"
 #include "MaskPoly.h"
 
-template<class StringType = std::string>
-class AddBrushStrokeCmd : public AppBase::Command<StringType>
+class BrushStrokeCmd : public AppBase::Command<std::string>
 {
-    BrushStroke m_stroke;
+    MaskMgr         *m_maskmgr;
+    BrushStroke     m_stroke;
+    int             m_index;
 public:
-    AddBrushStrokeCmd(MaskMgr *maskmgr);
+    BrushStrokeCmd(MaskMgr *maskmgr, BrushStroke stroke, int index);
     void execute();
     void undo();
     void redo();
 };
 
-template<class StringType = std::string>
-class AddPolygonCmd : public AppBase::Command<StringType>
+class PolygonCmd : public AppBase::Command<std::string>
 {
-    MaskPoly m_poly;
+    MaskPoly    m_poly;
+    MaskMgr     *m_maskmgr;
+    int         m_index;
 public:
-    AddPolygonCmd(MaskMgr *maskmgr);
+    PolygonCmd(MaskMgr *maskmgr, MaskPoly m_poly, int m_index);
     void execute();
     void undo();
     void redo();
 };
+//
+//class BrushStrokeCmdHist : public AppBase::CommandHistory<BrushStrokeCmd>
+//{
+//
+//};
 #endif
+

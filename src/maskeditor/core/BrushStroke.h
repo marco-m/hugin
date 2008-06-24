@@ -30,6 +30,7 @@ struct BrushStroke
 {
     std::vector<wxPoint> pt;
     int width;
+    int label;
     void clear() { pt.clear(); width = 1;}
 };
 

@@ -44,10 +44,11 @@ public:
     void LoadProject(const wxString &filename);
     void SaveProject();                         //save the currently loaded project
     void SaveProjectAs(const wxString &filename);
-    void LoadImages(const wxArrayString &filenames);
+    void saveMask(int i, const wxString &filename);
+    void loadImages(const wxArrayString &filenames);
 
-    void Zoom(float scale = 1.0, wxRect region = wxRect());
-    float GetZoomLevel() const;
+    void zoom(float scale = 1.0, wxRect region = wxRect());
+    float getZoomLevel() const;
     wxString GetFile() const;
     void SetEditMode(MaskEdEditMode_t edmode);
     

@@ -28,6 +28,7 @@
 #include <vector>
 #include "../core/BrushStroke.h"
 #include "../core/MaskPoly.h"
+#include "../core/MaskEdCommand.h"
 
 enum MaskEdEditMode_t { ME_BSTROKE = 1, ME_POLY };
 
@@ -36,10 +37,14 @@ class MaskEdEditWnd : public wxScrolledWindow
     std::vector<wxBitmap*>  m_bimgs;            //local cache
     std::vector<std::string> m_imgfiles;
     std::vector<bool>       m_selected;         //index of selected images
+    int                     m_active;           //index of image on which mask is drawn
     BrushStroke             m_brushstroke;
     MaskPoly                m_poly;
     float                   m_scale;
     int                     m_edmode;           //editing mode
+
+    AppBase::CommandHistory<AppBase::Command<std::string> >   m_MaskEdCmdHist;
+
 public:
     MaskEdEditWnd(wxWindow *parent,
                      wxWindowID winid = wxID_ANY,
@@ -49,15 +54,15 @@ public:
                      const wxString& name = wxPanelNameStr);
     ~MaskEdEditWnd();
 
-    void Init();
-    void LoadImage(const wxString &filename);
-    void LoadImage(const std::string &filename);
-    void LoadImages(const std::vector<std::string> &filesv);
-    void ReloadImages();
+    void init();
+    void loadImage(const wxString &filename);
+    void loadImage(const std::string &filename);
+    void loadImages(const std::vector<std::string> &filesv);
+    void reloadImages();
 
-    void SetDisplayImages(std::vector<bool> selection);
-    void Zoom(float scale = 1.0, wxRect region = wxRect());
-    float GetZoomLevel() const;
+    void setDisplayImages(std::vector<bool> selection);
+    void zoom(float scale = 1.0, wxRect region = wxRect());
+    float getZoomLevel() const;
     
     void SetEditMode(MaskEdEditMode_t edmode);
 

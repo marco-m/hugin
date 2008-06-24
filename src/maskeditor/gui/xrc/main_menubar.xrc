@@ -34,6 +34,10 @@
           <label>Save Image</label>
           <help>Save image with mask</help>
         </object>
+        <object class="wxMenuItem" name="action_save_mask">
+          <label>Save Mask</label>
+          <help>Save mask</help>
+        </object>
         <object class="separator" />
         <object class="wxMenuItem" name="action_exit">
           <label>&amp;Exit\tCtrl-x</label>
@@ -42,6 +46,15 @@
       </object>
       <object class="wxMenu" name="menuEdit">
         <label>_Edit</label>
+        <object class="wxMenuItem" name="action_undo">
+          <label>Undo\tCtrl+Z</label>
+          <help>Undo Last Action</help>
+        </object>
+        <object class="wxMenuItem" name="action_redo">
+          <label>Redo\tCtrl+Y</label>
+          <help>Redo Last Action</help>
+        </object>
+        <object class="separator" />
         <object class="wxMenuItem" name="action_zoom_in">
           <label>Zoom In\t+</label>
           <help>Zoom In</help>

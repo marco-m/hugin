@@ -44,13 +44,15 @@ public:
     void OnLoadImages(wxCommandEvent& event);
     void OnSaveProject(wxCommandEvent& event);
     void OnSaveProjectAs(wxCommandEvent& event);
+    void OnSaveImage(wxCommandEvent& event);
+    void OnSaveMask(wxCommandEvent& event);
     void OnBStroke(wxCommandEvent& event);
     void OnAddPoint(wxCommandEvent& event);
     void OnPreference(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
-    void OnZoomIn(wxCommandEvent& event);
-    void OnZoomOut(wxCommandEvent& event);
+    void OnzoomIn(wxCommandEvent& event);
+    void OnzoomOut(wxCommandEvent& event);
 
     void OnMotion(wxMouseEvent& event);
     //void OnPaint(wxPaintEvent& event);

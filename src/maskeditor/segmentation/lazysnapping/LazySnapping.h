@@ -1,9 +1,9 @@
 // -*- c-basic-offset: 4 -*-
-/** @file lazysnapping.cpp
+/** @file lazysnapping.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Id$
+ *  $Id: lazysnapping.h 3138 2008-06-21 03:20:03Z fmannan $
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -20,5 +20,28 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "lazysnapping.h"
+#ifndef LAZYSNAPPING_H
+#define LAZYSNAPPING_H
 
+#include <vector>
+#include <string>
+#include "../../core/ISegmentation.h"
+class LazySnapping : public ISegmentation
+{
+    wxBitmap *m_mask;
+public:
+    LazySnapping();    
+    LazySnapping(const std::string &filename);
+    ~LazySnapping();
+
+    void init();
+    void reset();
+    std::string name();
+    void markPixels(std::vector<PixelCoord> coords, Label label);
+    void setRegion(std::vector<PixelCoord> coords, Label label);
+    void setImage(unsigned char* data, int row, int col, int depth);
+    void setImage(const std::string &filename);
+    wxMask* getMask() const;
+    wxBitmap* getMaskBitmap() const;
+};
+#endif

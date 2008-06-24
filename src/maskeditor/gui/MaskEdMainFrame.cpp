@@ -39,15 +39,17 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_save_project"), MaskEdMainFrame::OnSaveProject)
     EVT_BUTTON(XRCID("action_save_project"), MaskEdMainFrame::OnSaveProject)
     EVT_MENU(XRCID("action_save_project_as"), MaskEdMainFrame::OnSaveProjectAs)
+    EVT_MENU(XRCID("action_save_image"), MaskEdMainFrame::OnSaveImage)
+    EVT_MENU(XRCID("action_save_mask"), MaskEdMainFrame::OnSaveMask)
     EVT_MENU(XRCID("action_use_brush"), MaskEdMainFrame::OnBStroke)
     EVT_MENU(XRCID("action_add_polygon_point"), MaskEdMainFrame::OnAddPoint)
     EVT_MENU(XRCID("action_edit_preferences"), MaskEdMainFrame::OnPreference)
     EVT_MENU(XRCID("action_exit"), MaskEdMainFrame::OnQuit)
     EVT_MENU(XRCID("action_about_maskeditor"), MaskEdMainFrame::OnAbout)
-    EVT_MENU(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
-    EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
-    EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
-    EVT_BUTTON(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
+    EVT_MENU(XRCID("action_zoom_in"), MaskEdMainFrame::OnzoomIn)
+    EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnzoomIn)
+    EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnzoomOut)
+    EVT_BUTTON(XRCID("action_zoom_out"), MaskEdMainFrame::OnzoomOut)
     //EVT_MOTION(MaskEdMainFrame::OnMotion)
     //EVT_PAINT(MaskEdMainFrame::OnPaint)
 END_EVENT_TABLE()
@@ -73,6 +75,7 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
 
     CreateStatusBar();
     SetStatusText(wxT("Ready"));
+    MaskMgr::getInstance()->setSegmentationOption(0); //TODO: move to OnPreference
 }
 
 MaskEdMainFrame::~MaskEdMainFrame()
@@ -106,7 +109,7 @@ void MaskEdMainFrame::OnLoadImages(wxCommandEvent &event)
     {
         wxArrayString paths;
         dialog.GetPaths(paths);
-        m_MaskEdClientWnd->LoadImages(paths);
+        m_MaskEdClientWnd->loadImages(paths);
         this->Refresh();
     }
 }
@@ -118,6 +121,23 @@ void MaskEdMainFrame::OnSaveProject(wxCommandEvent &event)
 
 void MaskEdMainFrame::OnSaveProjectAs(wxCommandEvent &event)
 {
+
+}
+
+void MaskEdMainFrame::OnSaveImage(wxCommandEvent &event)
+{
+
+}
+
+void MaskEdMainFrame::OnSaveMask(wxCommandEvent &event)
+{
+    //wxString filter = wxT("JPEG files (*.jpg;*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|tiff files (*.tif)|*.tif|All files (*.*)|*.*");
+    wxFileDialog dialog(this, wxT("Save Mask"), wxEmptyString,
+        wxEmptyString, wxEmptyString, wxSAVE);
+    if(dialog.ShowModal() == wxID_OK)
+    {
+        m_MaskEdClientWnd->saveMask(0, dialog.GetPath());
+    }
 
 }
 
@@ -151,15 +171,15 @@ void MaskEdMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
         wxOK | wxICON_INFORMATION, this);
 }
 
-void MaskEdMainFrame::OnZoomIn(wxCommandEvent &event)
+void MaskEdMainFrame::OnzoomIn(wxCommandEvent &event)
 {
     m_scale += 0.1;
-    m_MaskEdClientWnd->Zoom(m_scale);
+    m_MaskEdClientWnd->zoom(m_scale);
 }
 
-void MaskEdMainFrame::OnZoomOut(wxCommandEvent &event)
+void MaskEdMainFrame::OnzoomOut(wxCommandEvent &event)
 {
     if(m_scale <= 0.1) return;
     m_scale -= 0.1;
-    m_MaskEdClientWnd->Zoom(m_scale);
+    m_MaskEdClientWnd->zoom(m_scale);
 }

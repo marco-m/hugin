@@ -39,15 +39,15 @@ PTOFileMgr* PTOFileMgr::getInstance()
     return m_instance = new PTOFileMgr();
 }
 
-void PTOFileMgr::Init()
+void PTOFileMgr::init()
 {
     m_files.clear();
     m_PTOfile = "";
 } 
 
-void PTOFileMgr::LoadPTOFile(std::string filename)
+void PTOFileMgr::loadPTOFile(std::string filename)
 {
-    Init();
+    init();
     try {
         ifstream fin(filename.c_str());
         string buffer, token;
@@ -68,7 +68,7 @@ void PTOFileMgr::LoadPTOFile(std::string filename)
             }
         }
     }catch(exception &e) {
-        Init();
+        init();
         throw e;
     }
 

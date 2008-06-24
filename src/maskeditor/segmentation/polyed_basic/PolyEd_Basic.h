@@ -1,9 +1,9 @@
 // -*- c-basic-offset: 4 -*-
-/** @file polyed_basic.cpp
+/** @file polyed_basic.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Id$
+ *  $Id: polyed_basic.h 3138 2008-06-21 03:20:03Z fmannan $
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -20,6 +20,29 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifndef POLYED_BASIC_H
+#define POLYED_BASIC_H
+#include <wx/wx.h>
+#include <vector>
+#include <string>
+#include "../../core/ISegmentation.h"
+class PolyEd_Basic : public ISegmentation
+{
+    wxBitmap *m_mask;
+public:
+    PolyEd_Basic();
+    PolyEd_Basic(const std::string &filename);
+    ~PolyEd_Basic();
 
-#include "polyed_basic.h"
+    void init();
+    void reset();
+    std::string name();
+    void markPixels(std::vector<PixelCoord> coords, Label label);
+    void setRegion(std::vector<PixelCoord> coords, Label label);
+    void setImage(unsigned char* data, int row, int col, int depth);
+    void setImage(const std::string &filename);
+    wxMask* getMask() const;
+    wxBitmap* getMaskBitmap() const;
+};
 
+#endif

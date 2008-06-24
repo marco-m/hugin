@@ -24,6 +24,7 @@
 #include "huginapp/ImageCache.h"
 #include "MaskEdEditWnd.h"
 #include "MaskEdClientWnd.h"
+#include "../core/ISegmentation.h"
 
 using HuginBase::ImageCache;
 using namespace std;
@@ -43,7 +44,7 @@ MaskEdEditWnd::MaskEdEditWnd(wxWindow *parent,
                      const wxSize& size,
                      long style,
                      const wxString& name)
-                     : wxScrolledWindow(parent, winid, pos, size, style, name), m_scale(1.0)
+                     : wxScrolledWindow(parent, winid, pos, size, style, name), m_scale(1.0), m_active(0)
 {
     
 }
@@ -53,7 +54,7 @@ MaskEdEditWnd::~MaskEdEditWnd()
     m_bimgs.clear();
 }
 
-void MaskEdEditWnd::Init()
+void MaskEdEditWnd::init()
 {
     m_bimgs.clear();
     m_imgfiles.clear();
@@ -66,11 +67,11 @@ void MaskEdEditWnd::SetEditMode(MaskEdEditMode_t edmode)
     m_edmode = edmode;
 }
 
-void MaskEdEditWnd::LoadImage(const wxString &filename)
+void MaskEdEditWnd::loadImage(const wxString &filename)
 {
-    LoadImage(string(filename.mb_str()));
+    loadImage(string(filename.mb_str()));
 }
-void MaskEdEditWnd::LoadImage(const string &filename)
+void MaskEdEditWnd::loadImage(const string &filename)
 {
     if(filename != "")
     {
@@ -81,6 +82,8 @@ void MaskEdEditWnd::LoadImage(const string &filename)
                        img->height(),
                        (unsigned char *) img->data(),
                        true);
+            wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(filename)->getMaskBitmap();
+            img_temp.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
             img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
             m_bimgs.push_back(new wxBitmap(img_temp));
         } 
@@ -88,21 +91,13 @@ void MaskEdEditWnd::LoadImage(const string &filename)
     }
 }
 
-void MaskEdEditWnd::LoadImages(const vector<string> &filesv)
+void MaskEdEditWnd::loadImages(const vector<string> &filesv)
 {
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
     //creates local cache of images
     for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
     {
-        LoadImage(*it);
-        /*ImageCache::EntryPtr e = ImageCache::getInstance().getImage(*it);
-        HuginBase::ImageCache::ImageCacheRGB8Ptr img = e->get8BitImage();
-        if (img) {
-            m_bimgs.push_back(new wxBitmap( wxImage(img->width(),
-                       img->height(),
-                       (unsigned char *) img->data(),
-                       true)));
-        } */
+        loadImage(*it);
     }
 }
 
@@ -114,11 +109,13 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
     x = GetScrollPos(wxSB_HORIZONTAL);
     y = GetScrollPos(wxSB_VERTICAL);
     int i = 0;
+    //dc.SetDeviceOrigin(-x, -y);
+    //dc.SetUserScale(m_scale, m_scale);
     for(vector<wxBitmap*>::iterator it = m_bimgs.begin(); it != m_bimgs.end(); it++, i++)
     {
         //if(!m_selected[i]) continue;
-        dc.DrawBitmap(**it, -x, -y);
-
+        dc.DrawBitmap(**it, -x, -y, true); 
+        
         //ignore this case for the timebeing
         ////drawing is not really needed here but just in case the window is refershed
         ////while the brushstroke is drawn
@@ -137,16 +134,17 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         //}
     }
     if(m_poly.pt.size() > 0) {
-        std::vector<wxPoint>::iterator it = m_poly.pt.begin();
-        wxPoint pt = *it + wxPoint(-x,-y);
-        wxPen pen(*wxRED, 1);
-        dc.SetPen(pen);
-        for(it++; it != m_poly.pt.end(); it++)
+        wxPoint *pts = new wxPoint[m_poly.pt.size()];
+        dc.SetPen(*wxRED);
+        dc.SetBrush(*wxTRANSPARENT_BRUSH);
+        //copy(m_poly.pt.begin(), m_poly.pt.end(), pts);
+        int i = 0;
+        for(vector<wxPoint>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
         {
-            dc.DrawLine(pt, *it + wxPoint(-x,-y));
-            pt = *it + wxPoint(-x,-y);
+            pts[i].x = it->x * m_scale - x;
+            pts[i].y = it->y * m_scale - y;
         }
-        dc.SetPen(wxNullPen);
+        dc.DrawPolygon(m_poly.pt.size(), pts);
     }
 }
 
@@ -158,14 +156,18 @@ void MaskEdEditWnd::OnMouseButtonDown(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 {
-    //GlobalCmdHist::getInstance()->addCommand(new MaskMgrAddBrushStroke(m_brushstroke));
     if(m_edmode == ME_BSTROKE)
+    {
+        m_brushstroke.label = ISegmentation::FGND;
+        m_MaskEdCmdHist.addCommand(new BrushStrokeCmd(MaskMgr::getInstance(), m_brushstroke, m_active));
         m_brushstroke.clear();
+    }
     else if(m_edmode == ME_POLY) {
         int x, y;
         x = GetScrollPos(wxSB_HORIZONTAL);
         y = GetScrollPos(wxSB_VERTICAL);
-        m_poly.add(event.GetPosition() + wxPoint(x, y));
+        wxPoint pos = event.GetPosition()+wxPoint(x,y);
+        m_poly.add(wxPoint(pos.x/m_scale, pos.y/m_scale));
     }
     event.Skip();
     Refresh();
@@ -173,11 +175,17 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
 {
-    //background
     if(m_edmode == ME_BSTROKE)
+    {
+        m_brushstroke.label = ISegmentation::BKGND;
+        m_MaskEdCmdHist.addCommand(new BrushStrokeCmd(MaskMgr::getInstance(), m_brushstroke, m_active));
         m_brushstroke.clear();
+    }
     else if(m_edmode == ME_POLY) {
         //end of creating polygon
+        m_poly.label = ISegmentation::FGND;
+        m_MaskEdCmdHist.addCommand(new PolygonCmd(MaskMgr::getInstance(), m_poly, m_active));
+        reloadImages();
         m_poly.clear();
     }
     event.Skip();
@@ -204,25 +212,25 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
             dc.SetPen(wxNullPen);
         }
         m_brushstroke.pt.push_back(event.GetPosition() + wxPoint(x, y));
-        
     }
 }
 
-void MaskEdEditWnd::ReloadImages()
+void MaskEdEditWnd::reloadImages()
 {
     m_bimgs.clear();
     for(vector<string>::iterator it = m_imgfiles.begin(); it != m_imgfiles.end(); it++)
-        LoadImage(*it);
+        loadImage(*it);
 }   
 
-void MaskEdEditWnd::Zoom(float scale, wxRect region)
+void MaskEdEditWnd::zoom(float scale, wxRect region)
 {
     m_scale = scale;
-    ReloadImages();
+    reloadImages();
+    //SetScrollbars( 1, 1, m_bimgs[0]->GetWidth()*m_scale, m_bimgs[0]->GetHeight()*m_scale);
     Refresh();
 }
 
-float MaskEdEditWnd::GetZoomLevel() const
+float MaskEdEditWnd::getZoomLevel() const
 {
     return m_scale;
 }

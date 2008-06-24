@@ -38,9 +38,9 @@ public:
                      long style = wxScrolledWindowStyle | wxDOUBLE_BORDER,
                      const wxString& name = wxPanelNameStr);
 
-    void Init();
-    void LoadImages(const std::vector<std::string> &filesv);
-    void LoadImage(const std::string &filename);
+    void init();
+    void loadImages(const std::vector<std::string> &filesv);
+    void loadImage(const std::string &filename);
     std::vector<bool> getSelected() const;
 };
 

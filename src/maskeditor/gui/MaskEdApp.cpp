@@ -33,7 +33,7 @@ IMPLEMENT_APP(MaskEdApp)
 
 bool MaskEdApp::OnInit()
 {
-    DEBUG_TRACE("MaskEdApp::OnInit()");
+    DEBUG_TRACE("MaskEdApp::Oninit()");
 
 #if defined __WXMSW__
     TCHAR szModulePath[MAX_PATH];
@@ -64,10 +64,10 @@ bool MaskEdApp::OnInit()
 
     wxFileSystem::AddHandler(new wxArchiveFSHandler);
 
-    // Init Image handlers
+    // init Image handlers
     wxInitAllImageHandlers();
 
-    // Init XRC handlers
+    // init XRC handlers
     wxXmlResource::Get()->InitAllHandlers();
 
     // Load XRC resources

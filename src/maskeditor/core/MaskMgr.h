@@ -26,24 +26,32 @@
 
 #include <vector>
 #include <string>
+#include "ISegmentation.h"
 //#include "appbase/Singleton.h"
 
 class MaskMgr /*: public Singleton<MaskMgr>*/
 {
-    std::vector<std::string> m_imgfiles;
-
-    static MaskMgr *m_instance;
+    std::vector<std::string>    m_imgfiles;
+    std::vector<ISegmentation*> m_segmentation; //each image will have its own instance
+    std::vector<std::string> m_segmentation_options; //this should be done dynamically
+   
+    int                      m_segmentation_index;
+    static MaskMgr          *m_instance;
     MaskMgr();
     ~MaskMgr();
 
-    void Init();
+    void init();
 public:
     static MaskMgr *getInstance();
 
-    void LoadPTOFile(const std::string &filename);
-    void LoadImages(const std::vector<std::string> &filesv);
-    void LoadImage(const std::string &filename);
-    void LoadMaskProject(const std::string &filename);
+    void setSegmentationOption(int index);  // set segmentation technique
+    ISegmentation* getSegmentation(int index); //get the segmentation instance used for a particular input image
+    ISegmentation* getSegmentation(const std::string &filename);
+    std::vector<std::string> getSegmentationOptions();
+    void loadPTOFile(const std::string &filename);
+    void loadImages(const std::vector<std::string> &filesv);
+    void loadImage(const std::string &filename);
+    void loadMaskProject(const std::string &filename);
 
     std::vector<std::string> getImages();
 };

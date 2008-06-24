@@ -35,20 +35,20 @@ MaskEdPreviewWnd::MaskEdPreviewWnd(wxWindow *parent,
                      const wxString& name)
                      : wxScrolledWindow(parent, winid, pos, size, style, name) {}
 
-void MaskEdPreviewWnd::Init()
+void MaskEdPreviewWnd::init()
 {
     m_bimgs.clear();
     m_selected.clear();
 }
-void MaskEdPreviewWnd::LoadImages(const vector<string> &filesv)
+void MaskEdPreviewWnd::loadImages(const vector<string> &filesv)
 {
     for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
     {
-        LoadImage(*it);
+        loadImage(*it);
     }
 }
 
-void MaskEdPreviewWnd::LoadImage(const string &filename)
+void MaskEdPreviewWnd::loadImage(const string &filename)
 {
     if(filename != "")
     {

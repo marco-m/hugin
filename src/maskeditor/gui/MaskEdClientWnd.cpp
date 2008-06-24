@@ -58,18 +58,24 @@ MaskEdClientWnd::~MaskEdClientWnd()
 void MaskEdClientWnd::LoadProject(const wxString &filename)
 {
     
-    MaskMgr::getInstance()->LoadMaskProject(string(filename.mb_str()));
-    m_MaskEdEditWnd->LoadImages(MaskMgr::getInstance()->getImages());
-    m_MaskEdPreviewWnd->LoadImages(MaskMgr::getInstance()->getImages());
+    MaskMgr::getInstance()->loadMaskProject(string(filename.mb_str()));
+    m_MaskEdEditWnd->loadImages(MaskMgr::getInstance()->getImages());
+    m_MaskEdPreviewWnd->loadImages(MaskMgr::getInstance()->getImages());
 }
 
-void MaskEdClientWnd::LoadImages(const wxArrayString &filesv)
+void MaskEdClientWnd::loadImages(const wxArrayString &filesv)
 {
     vector<string> strfilesv;
     transform(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(strfilesv), wxStringTostring);
-    MaskMgr::getInstance()->LoadImages(strfilesv);
-    m_MaskEdEditWnd->LoadImages(strfilesv);
-    m_MaskEdPreviewWnd->LoadImages(strfilesv);
+    MaskMgr::getInstance()->loadImages(strfilesv);
+    m_MaskEdEditWnd->loadImages(strfilesv);
+    m_MaskEdPreviewWnd->loadImages(strfilesv);
+}
+
+void MaskEdClientWnd::saveMask(int index, const wxString &filename)
+{
+    wxBitmap *bmp = MaskMgr::getInstance()->getSegmentation(index)->getMaskBitmap();
+    bmp->SaveFile(filename, wxBITMAP_TYPE_BMP);
 }
 
 wxString MaskEdClientWnd::GetFile() const 
@@ -77,14 +83,14 @@ wxString MaskEdClientWnd::GetFile() const
     return wxT("");
 }
 
-void MaskEdClientWnd::Zoom(float scale, wxRect region)
+void MaskEdClientWnd::zoom(float scale, wxRect region)
 {
-    m_MaskEdEditWnd->Zoom(scale);
+    m_MaskEdEditWnd->zoom(scale);
 }
 
-float MaskEdClientWnd::GetZoomLevel() const 
+float MaskEdClientWnd::getZoomLevel() const 
 {
-    return m_MaskEdEditWnd->GetZoomLevel();
+    return m_MaskEdEditWnd->getZoomLevel();
 }
 
 void MaskEdClientWnd::SetEditMode(MaskEdEditMode_t edmode)

@@ -3,7 +3,7 @@
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
- *  $Rev$
+ *  $Id$
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -37,11 +37,11 @@ class PTOFileMgr
     PTOFileMgr();
     ~PTOFileMgr();
 
-    void Init();
+    void init();
 public:
     static PTOFileMgr* getInstance();
 
-    void LoadPTOFile(std::string filename);
+    void loadPTOFile(std::string filename);
     std::vector<std::string> getFiles();
     std::string getFile(int index);
 };

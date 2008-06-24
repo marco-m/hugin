@@ -42,14 +42,14 @@ MaskFileMgr* MaskFileMgr::getInstance()
     return m_instance = new MaskFileMgr();
 }
 
-void MaskFileMgr::Init()
+void MaskFileMgr::init()
 {
     m_maskfile = "";
     m_ptofile = "";
     m_imgfiles.clear();
 }
 
-void MaskFileMgr::LoadFile(std::string filename)
+void MaskFileMgr::loadFile(std::string filename)
 {
     if(filename.empty())
         throw;// exception("invalid filename");
@@ -58,7 +58,7 @@ void MaskFileMgr::LoadFile(std::string filename)
     
     wxFileName::SplitPath(path, &prefix, NULL, NULL);
     string   strprefix = string(prefix.mb_str()) + "/";
-    Init();
+    init();
     try
     {
         ifstream fin(filename.c_str());
@@ -83,7 +83,7 @@ void MaskFileMgr::LoadFile(std::string filename)
             }
         }
     }catch(exception &e) {
-        Init();
+        init();
         throw e;
     }
 }
