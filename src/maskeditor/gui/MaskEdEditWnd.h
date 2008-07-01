@@ -64,7 +64,7 @@ public:
     void zoom(float scale = 1.0, wxRect region = wxRect());
     float getZoomLevel() const;
     
-    void SetEditMode(MaskEdEditMode_t edmode);
+    void setEditMode(MaskEdEditMode_t edmode);
 
     void OnPaint(wxPaintEvent &event);
     void OnMouseButtonDown(wxMouseEvent &event);

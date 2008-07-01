@@ -27,6 +27,8 @@
 #include <vector>
 #include "BrushStroke.h"
 #include "MaskPoly.h"
+#include "Pixel.h"
+
 class ISegmentation
 {
 protected:
@@ -35,12 +37,7 @@ protected:
     unsigned char* m_mask;
 public:
     enum Label { BKGND, FGND };
- /*   struct PixelCoord
-    {
-        int r, c;
-    };*/
-    typedef wxPoint PixelCoord;
-
+   
     ISegmentation() : m_mask(0) {}
     virtual ~ISegmentation() { delete m_mask; }
     virtual void init() = 0;
@@ -52,6 +49,7 @@ public:
     virtual void setImage(const std::string &filename) = 0;
     virtual wxMask* getMask() const = 0;
     virtual wxBitmap* getMaskBitmap() const = 0;
+    virtual std::vector<wxPoint> getOutline() const = 0;
 };
 
 #endif

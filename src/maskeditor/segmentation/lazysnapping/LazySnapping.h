@@ -26,9 +26,46 @@
 #include <vector>
 #include <string>
 #include "../../core/ISegmentation.h"
+#include "maxflow/graph.h"
+
+const double SIGMA = 2.0f;
+const double LAMBDA = 1.0f;
+
 class LazySnapping : public ISegmentation
 {
+    typedef float captype;
+
     wxBitmap *m_mask;
+    HuginBase::ImageCache::ImageCacheRGB8Ptr m_img;
+    unsigned char *m_data;
+    std::vector<wxPoint> m_outline;
+    int m_width, m_height, m_depth;
+    Graph::node_id *m_nodes;
+    Graph          *m_graph;
+    
+    double m_lambda, m_sigma;
+    
+    typedef std::map<PixelCoord, ISegmentation::Label, cmp_pixel_coord> tSeed;
+    typedef std::map<PixelColor, int> tObjColorMap;
+    tSeed   m_seeds;
+    tObjColorMap m_fgnd, m_bkgnd;
+
+    std::vector<PixelCoord> m_clusters; //centers of clusters
+    void    smooth(float sigma);
+    void    watershed();
+    void    meanshift();
+    void    KMeansCluster(int nclusters);
+    void    preprocess();
+    captype computeLikelihood(int p);
+    captype computePrior(int p, int q);
+    void    buildGraph();
+    int     getNeighbor(int p, int n);
+    double  distPixel(int p, int q) const;
+    double  distSqrPixelIntensity(int p, int q) const;
+    void    getRC(int p, int *r, int *c) const;
+    PixelColor getPixelValue(int p) const;
+    PixelColor getPixelValue(int r, int c) const;
+    PixelColor getPixelValue(wxPoint pt) const;
 public:
     LazySnapping();    
     LazySnapping(const std::string &filename);
@@ -37,11 +74,14 @@ public:
     void init();
     void reset();
     std::string name();
+
     void markPixels(std::vector<PixelCoord> coords, Label label);
     void setRegion(std::vector<PixelCoord> coords, Label label);
     void setImage(unsigned char* data, int row, int col, int depth);
     void setImage(const std::string &filename);
+    std::vector<wxPoint> getBoundingPolygon() const;
     wxMask* getMask() const;
     wxBitmap* getMaskBitmap() const;
+    std::vector<wxPoint> getOutline() const;
 };
 #endif

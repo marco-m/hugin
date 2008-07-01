@@ -75,7 +75,7 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
 
     CreateStatusBar();
     SetStatusText(wxT("Ready"));
-    MaskMgr::getInstance()->setSegmentationOption(0); //TODO: move to OnPreference
+    MaskMgr::getInstance()->setSegmentationOption(1); //TODO: move to OnPreference
 }
 
 MaskEdMainFrame::~MaskEdMainFrame()
@@ -96,7 +96,7 @@ void MaskEdMainFrame::OnOpenProject(wxCommandEvent &event)
 
     if(dialog.ShowModal() == wxID_OK)
     {
-        m_MaskEdClientWnd->LoadProject(dialog.GetPath());
+        m_MaskEdClientWnd->loadProject(dialog.GetPath());
     }
 }
 
@@ -148,12 +148,12 @@ void MaskEdMainFrame::OnLoadPTO(wxCommandEvent &event)
 
 void MaskEdMainFrame::OnBStroke(wxCommandEvent &event)
 {
-    m_MaskEdClientWnd->SetEditMode(ME_BSTROKE);
+    m_MaskEdClientWnd->setEditMode(ME_BSTROKE);
 }
 
 void MaskEdMainFrame::OnAddPoint(wxCommandEvent &event)
 {
-    m_MaskEdClientWnd->SetEditMode(ME_POLY);
+    m_MaskEdClientWnd->setEditMode(ME_POLY);
 }
 
 void MaskEdMainFrame::OnPreference(wxCommandEvent &event)

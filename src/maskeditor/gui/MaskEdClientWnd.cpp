@@ -55,7 +55,7 @@ MaskEdClientWnd::~MaskEdClientWnd()
     delete m_MaskEdEditWnd;
     delete m_MaskEdPreviewWnd;
 }   
-void MaskEdClientWnd::LoadProject(const wxString &filename)
+void MaskEdClientWnd::loadProject(const wxString &filename)
 {
     
     MaskMgr::getInstance()->loadMaskProject(string(filename.mb_str()));
@@ -78,7 +78,7 @@ void MaskEdClientWnd::saveMask(int index, const wxString &filename)
     bmp->SaveFile(filename, wxBITMAP_TYPE_BMP);
 }
 
-wxString MaskEdClientWnd::GetFile() const 
+wxString MaskEdClientWnd::getFile() const 
 {
     return wxT("");
 }
@@ -93,7 +93,7 @@ float MaskEdClientWnd::getZoomLevel() const
     return m_MaskEdEditWnd->getZoomLevel();
 }
 
-void MaskEdClientWnd::SetEditMode(MaskEdEditMode_t edmode)
+void MaskEdClientWnd::setEditMode(MaskEdEditMode_t edmode)
 {
-    m_MaskEdEditWnd->SetEditMode(edmode);
+    m_MaskEdEditWnd->setEditMode(edmode);
 }

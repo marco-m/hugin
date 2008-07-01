@@ -62,7 +62,7 @@ void MaskEdEditWnd::init()
     m_brushstroke.clear();
 }
 
-void MaskEdEditWnd::SetEditMode(MaskEdEditMode_t edmode)
+void MaskEdEditWnd::setEditMode(MaskEdEditMode_t edmode)
 {
     m_edmode = edmode;
 }

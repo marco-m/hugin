@@ -34,7 +34,7 @@ MaskMgr* MaskMgr::m_instance = 0;
 MaskMgr::MaskMgr() : m_segmentation_index(-1) 
 {
     string opts[] = {"PolyEd_Basic", "LazySnapping" };
-    m_segmentation_options.assign(opts, opts+1);
+    m_segmentation_options.assign(opts, opts+2);
 }
 MaskMgr::~MaskMgr() 
 {
@@ -77,6 +77,7 @@ ISegmentation* MaskMgr::getSegmentation(const string &filename)
     vector<string>::iterator it = find(m_imgfiles.begin(), m_imgfiles.end(), filename);
     if(it != m_imgfiles.end())
         return getSegmentation(it - m_imgfiles.begin());
+    return NULL;
 }
 
 vector<string> MaskMgr::getSegmentationOptions()

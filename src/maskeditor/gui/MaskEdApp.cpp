@@ -74,7 +74,6 @@ bool MaskEdApp::OnInit()
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_frame.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_menubar.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_toolbar.xrc"));
-    //wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_clientwnd.xrc"));
     
     MaskEdMainFrame *frame = new MaskEdMainFrame(NULL);
     frame->Show();

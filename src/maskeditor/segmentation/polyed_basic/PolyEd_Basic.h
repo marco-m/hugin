@@ -43,6 +43,7 @@ public:
     void setImage(const std::string &filename);
     wxMask* getMask() const;
     wxBitmap* getMaskBitmap() const;
+    std::vector<wxPoint> getOutline() const;
 };
 
 #endif

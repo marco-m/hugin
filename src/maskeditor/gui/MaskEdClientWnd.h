@@ -41,16 +41,16 @@ public:
                      const wxString& name = wxT("splitter"));
     ~MaskEdClientWnd();
 
-    void LoadProject(const wxString &filename);
-    void SaveProject();                         //save the currently loaded project
-    void SaveProjectAs(const wxString &filename);
+    void loadProject(const wxString &filename);
+    void saveProject();                         //save the currently loaded project
+    void saveProjectAs(const wxString &filename);
     void saveMask(int i, const wxString &filename);
     void loadImages(const wxArrayString &filenames);
 
     void zoom(float scale = 1.0, wxRect region = wxRect());
     float getZoomLevel() const;
-    wxString GetFile() const;
-    void SetEditMode(MaskEdEditMode_t edmode);
+    wxString getFile() const;
+    void setEditMode(MaskEdEditMode_t edmode);
     
 };
 
