@@ -5,7 +5,6 @@
  *
  *  $Id: Panorama.h 1947 2007-04-15 20:46:00Z dangelo $
  *
- *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
  *  License as published by the Free Software Foundation; either
@@ -127,7 +126,8 @@ public:
         int searchDepth = std::max(200, hugin_utils::roundi(log(nKeypoints)/log(1000)*130));
         DEBUG_DEBUG("search depth: " << searchDepth);
         annMaxPtsVisit(searchDepth);
-        // perform nearest neighbour matching
+		
+        // perform nearest neighbor matching
         ANNcoord * acord = const_cast<float *>(&(*(key.descriptor.begin())));
         m_KDTree->annkPriSearch(acord,
                                 m_k,                   // number of near neighbors
@@ -140,7 +140,7 @@ public:
         // maximum distance of the second match, before the first one is accepted.
         double minGoodDist = 1.6*m_dists[0];
         if (m_keypoints[m_nnIdx[0]].imageNr == imageOfKeypoint) {
-            // nearest neighbour in same image, no matches
+            // nearest neighbor in same image, no matches
             return ret;
         }
         usedImages.insert(m_keypoints[m_nnIdx[0]].imageNr);
@@ -158,8 +158,8 @@ public:
                     // TODO: check consistency of other matches, too?
                     if (set_contains(usedImages, imageOfKeypoint)) {
                         // a self match (both points in the same image)
-                        // has been found. This is probably due tu a
-                        // repetetive or ambigous image structure. 
+                        // has been found. This is probably due to a
+                        // repetitive or ambiguous image structure. 
                         // Don't return any matches.
                         return ret;
                     }
@@ -170,7 +170,7 @@ public:
                 }
             } else {
                 // this image has not been seen before, if it is
-                // close to the best match, it and all closer neighbours
+                // close to the best match, it and all closer neighbors
                 // might be good matches.
                 // Or all are bad matches.
                 if (m_dists[i] < minGoodDist) {
@@ -183,7 +183,7 @@ public:
                     if (set_contains(usedImages, imageOfKeypoint)) {
                         // a self match (both points in the same image)
                         // has been found. This is probably due tu a
-                        // repetetive or ambigous image structure. 
+                        // repetetive or ambiguous image structure. 
                         // Don't return any matches.
                         return ret;
                     }

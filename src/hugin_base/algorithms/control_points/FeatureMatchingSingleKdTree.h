@@ -33,17 +33,17 @@ namespace HuginBase {
 		}
 		
 		// getter method for control points
-		virtual const FPMVector & getControlPoints() const
+		virtual const CPVector& getControlPoints() const
 		{ 
 			// [TODO] if(!hasRunSuccessfully()) DEBUG;
 			return o_controlPoints;
 		}
 		
 		// matching function
-		static HuginBase::FPMVector& match(const PanoramaData& pano);
+		static HuginBase::CPVector& match(const PanoramaData& pano);
 		
 	protected:
-		FPMVector o_controlPoints;
+		CPVector o_controlPoints;
 	};
 
 }

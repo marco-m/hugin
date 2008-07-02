@@ -13,9 +13,9 @@ namespace HuginBase {
 	using namespace hugin_utils;
 	
 	// matching function
-	static HuginBase::FPMVector& FeatureMatchingSingleKdTree::match(const PanoramaData& pano) {
+	static HuginBase::CPVector& FeatureMatchingSingleKdTree::match(const PanoramaData& pano) {
 		
-		FPMVector allMatches;
+		CPVector allMatches;
 		
 		// prepare kd tree
 		KDTreeKeypointMatcher matcher;
@@ -38,7 +38,8 @@ namespace HuginBase {
 				// find the nearest matching point
 				ImageKeypoint onematch = matcher.match(*itkey, *it);
 				if (onematch != NULL)
-					allMatches.push_back(FeaturePointMatch(im, onematch.imageNr, itkey, onematch.keypoint));
+					allMatches.push_back(ControlPoint(im, itkey->pos.x, itkey->pos.y,
+													  onematch.imageNr, onematch.keypoint->pos.x, onematch.keypoint->pos.y));
 				
 				// mark matched points and remove them from further matching.
 				for (unsigned j=0; j < matches.size(); j++) {

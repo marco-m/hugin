@@ -9,6 +9,8 @@
 
 #include "KDTreeKeypointMatcher.h"
 
+namespace HuginBase {
+	
 /** 
 * create KDTree from the feature descriptors stored in the panorama.
 *
@@ -140,4 +142,6 @@ int KDTreeKeypointMatcher::getKeypointIdxOfMatch(unsigned int matchNr) const
 {
 	assert(matchNr < m_k);
 	return (m_nnIdx[matchNr]);
+}
+
 }

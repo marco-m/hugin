@@ -1,9 +1,10 @@
 // -*- c-basic-offset: 4 -*-
-/** @file PanoramaDataLegacySupport.h
+/** @file FeatureMatcher.h
  *
+ *  @author Onur Kucuktunc <onurcc@gmail.com>
  *  @author Pablo d'Angelo <pablo.dangelo@web.de>
  *
- *  $Id: Panorama.h 1947 2007-04-15 20:46:00Z dangelo $
+ *  $Id: FeatureMatcher.h 1947 2007-04-15 20:46:00Z dangelo $
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public

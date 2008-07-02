@@ -37,7 +37,6 @@
 namespace HuginBase {
     
     class PanoramaData;
-
     
     /**
      *
@@ -71,7 +70,47 @@ namespace HuginBase {
         {
             o_successful = runAlgorithm();
         }
-        
+		
+		/*
+		// Euclidean distance calculation for two keypoints
+		virtual float fm_eucdist(const HuginBase::Keypoint& p1, const HuginBase::Keypoint& p2)
+		{
+			float sum = 0;
+			std::vector<float>::const_iterator it2 = p2.descriptor.begin();
+			
+			for(std::vector<float>::const_iterator it1 = p1.descriptor.begin();
+				it1 != p1.descriptor.end(); ++it1, ++it2)
+			{
+				float d = *it1 - *it2;
+				d *= d;
+				sum += d;
+			}
+			
+			return pow(sum,0.5f);
+		}
+		
+		// Euclidean distance calculation for two keypoints with an upper bound given
+		virtual float fm_eucdist_ub(const HuginBase::Keypoint& p1, const HuginBase::Keypoint& p2, float ub)
+		{
+			float sum = 0;
+			std::vector<float>::const_iterator it2 = p2.descriptor.begin();
+			float ub2 = ub * ub;
+			
+			for(std::vector<float>::const_iterator it1 = p1.descriptor.begin();
+				it1 != p1.descriptor.end(); ++it1, ++it2)
+			{
+				float d = *it1 - *it2;
+				d *= d;
+				sum += d;
+				
+				// check if the distance exceeds upper bound
+				if (sum > ub2)
+					return std::numeric_limits<float>::infinity();
+			}
+			
+			return pow(sum,0.5f);
+		}
+        */
 #if 0
         /// runs the algorithm.
         template<class AlgorithmClass>
@@ -184,6 +223,5 @@ namespace HuginBase {
         
     };
     
-
 }; // namespace
 #endif // _H

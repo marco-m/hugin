@@ -12,6 +12,8 @@
 
 #include <ANN/ANN.h>
 
+namespace HuginBase {
+	
 struct ImageKeypoint
 {
     ImageKeypoint(unsigned int image, unsigned int keyNr, const Keypoint & key)
@@ -82,5 +84,7 @@ private:
 	/// number of nearest neighbours
 	unsigned int m_k;
 };
+
+}
 
 #endif

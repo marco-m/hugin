@@ -32,6 +32,7 @@ class Descriptor
     public:
     Descriptor(APImage* i, HessianDetector* hd);
     double _gaussWeighting(int x, int y, double stdev);
+    double _getMaxima(int x,int y);
 
 
 
@@ -48,7 +49,6 @@ class Descriptor
     APImage* image;
     HessianDetector* hd;
 
-    double _getMaxima(int x,int y);
     double _euclidianDistance(int x1, int y1, int x2, int y2);
     //double _initDescriptor(double* desciptor);
     void _GaborResponse(int x,int y,double maxima,double* descriptor);

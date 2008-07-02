@@ -54,6 +54,8 @@
 #include "base_wx/MyProgressDialog.h"
 #include "hugin/config_defaults.h"
 
+#include "FeatureExtractorZoran.h" // Onur
+
 using namespace PT;
 using namespace PTools;
 using namespace utils;
@@ -392,9 +394,25 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
     */
 
     bool createCtrlP = m_pano->getNrOfCtrlPoints() == 0;
-
-    ProgressReporterDialog progress(5, _("Aligning images"), _("Finding corresponding points"));
+	
+	// Onur
+	// generate keypoints
+    ProgressReporterDialog progress(6, _("Aligning images"), _("Extracting keypoints"));
     wxString alignMsg;
+	FeatureExtractorZoran fez;
+	cout << "generate keypoints" << endl;
+	for (int imageNr=0; imageNr < m_pano->getNrOfImages(); imageNr++) {
+		std::string fn = m_pano->getSrcImage(imageNr).getFilename();
+		std::vector<HuginBase::Keypoint> points = fez.extractFeatures(fn);
+		cout << points.size() << " keypoints generated for " << fn << endl;
+		HuginBase::PanoImage img = m_pano->getImage(imageNr);
+		img.setKeypoints(points);
+		m_pano->setImage(imageNr,img);
+	}
+	
+	// find matching keypoints to create control points
+	progress.increaseProgress(1.0, std::string(wxString(_("Finding corresponding points")).mb_str(wxConvLocal)));
+	
     if (createCtrlP) {
         AutoCtrlPointCreator matcher;
         CPVector cps = matcher.automatch(*m_pano, imgs, nFeatures);

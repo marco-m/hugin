@@ -41,6 +41,10 @@
 #include "hugin/AutoCtrlPointCreator.h"
 #include "hugin/CommandHistory.h"
 
+// Onur
+#include "panodata/PanoramaData.h"
+#include "FeatureMatchingLinearSearch.h"
+
 #include "base_wx/MyExternalCmdExecDialog.h"
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
@@ -103,21 +107,22 @@ CPVector AutoCtrlPointCreator::automatch(Panorama & pano,
 {
     CPVector cps;
     int t = wxConfigBase::Get()->Read(wxT("/AutoPano/Type"),HUGIN_AP_TYPE);
-    if (t < 0) {
+    //if (t < 0) { // Onur
 
-        wxString tmp[2];
+        wxString tmp[3];
     	tmp[0] = _("Autopano (version 1.03 or greater), from http://autopano.kolor.com");
     	tmp[1] = _("Autopano-Sift, from http://user.cs.tu-berlin.de/~nowozin/autopano-sift/");
+    	tmp[2] = _("Feature Descriptor/Matching Algorithm"); // Onur
     	// determine autopano type
     	wxSingleChoiceDialog d(NULL,  _("Choose which autopano program should be used\n"), _("Select autopano type"),
-	   	 	       2, tmp, NULL);
+	   	 	       3, tmp, NULL);
         
         if (d.ShowModal() == wxID_OK) {
             t = d.GetSelection();
         } else {
             return cps;
         }
-    }
+    //}
     
 #ifdef __WXMAC__
     if(t==0)
@@ -142,6 +147,17 @@ CPVector AutoCtrlPointCreator::automatch(Panorama & pano,
 	    // autopano-sift
 	    AutoPanoSift matcher;
 	    cps = matcher.automatch(pano, imgs, nFeatures);
+	    break;
+	}
+	case 2: // Onur
+	{
+	    // feature matching
+		HuginBase::Panorama pano2 = pano;
+		HuginBase::PanoramaData* panodata = pano2.getNewCopy();
+		HuginBase::FeatureMatchingLinearSearch matcher(*panodata);
+		matcher.runAlgorithm();
+	    cps = matcher.getControlPoints();
+		printf("%d matches found\n", cps.size());
 	    break;
 	}
 	default:

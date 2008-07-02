@@ -3,7 +3,7 @@
  *
  *  @author Pablo d'Angelo <pablo.dangelo@web.de>
  *
- *  $Id: Panorama.h 1947 2007-04-15 20:46:00Z dangelo $
+ *  $Id: FeatureExtractorZoran.h 1947 2007-04-15 20:46:00Z dangelo $
  *
  *  This is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -25,44 +25,11 @@
 #include "HessianDetector.h"
 #include "Descriptor.h"
 
+#include "panodata/PanoImage.h"
 
-template <class Image>
-void extractFeaturesZoran(Image image)
+class FeatureExtractorZoran
 {
-    APImage im1(image);
-
-    im1.integrate();
-
-    HessianDetector hd1(&im1,nrPoints, HD_BOX_FILTERS,1);
-
-    if(!hd1.detect()) {
-        cout << "Detection of points failed!";
-        return 1;
-    }
-
-    Descriptor d1(&im1,&hd1);
-    d1.setPoints(hd1.getPoints());
-    //d.orientate();
-    d1.createDescriptors();
-
-    // copy descriptors to our data structure
-    std::vector<Keypoint> result;
-    Keypoint p;
-    p.descriptor.resize(d1.descriptors.size());
-    p.laplacianSign = 1;
-
-    vector<vector<int> >::iterator iter1 = d1.interestPoints->begin();
-    vector<vector<double> >::iterator iterDesc = d1.descriptors.begin();
-
-    //int c=0;
-    while( iter1 != interestPoints->end()) {
-         vector<int > tmp2=*iter1;
-         p.pos = FDiff2D(tmp2[1], tmp2[0]);
-         double r = _getMaxima(tmp2[0], tmp2[1])*HD_INIT_KERNEL_SIZE;
-         p.scale = 1/(r*r);
-         std::vector<double>::iterator destIt = p.descriptor = *iterDesc;
-         result.push_back(p);
-    }
-    return p;
-}
+public:
+	std::vector<HuginBase::Keypoint> extractFeatures(std::string image);
+};
 

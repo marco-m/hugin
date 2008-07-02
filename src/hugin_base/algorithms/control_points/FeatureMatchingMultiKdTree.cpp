@@ -7,11 +7,12 @@
 
 #include "FeatureMatchingMultiKdTree.h"
 
+namespace HuginBase {
 
 // matching function
-static HuginBase::FPMVector& FeatureMatchingMultiKdTree::match(const PanoramaData& pano) {
+static HuginBase::CPVector& FeatureMatchingMultiKdTree::match(const PanoramaData& pano) {
 	
-	FPMVector allMatches;
+	CPVector allMatches;
 	
 	// prepare k-d trees
 	KDTreeKeypointMatcher matcher[pano.getNrOfImages()];
@@ -44,4 +45,6 @@ static HuginBase::FPMVector& FeatureMatchingMultiKdTree::match(const PanoramaDat
 	}
 	
 	return allMatches;
+}
+
 }
