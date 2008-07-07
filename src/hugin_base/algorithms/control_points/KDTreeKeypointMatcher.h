@@ -11,12 +11,13 @@
 #define _CTRLPNTSALGORITHMS_FEATURE_MATCHING_KDTREE_H
 
 #include <ANN/ANN.h>
+#include <panodata/Panorama.h>
 
 namespace HuginBase {
 	
 struct ImageKeypoint
 {
-    ImageKeypoint(unsigned int image, unsigned int keyNr, const Keypoint & key)
+    ImageKeypoint(unsigned int image, unsigned int keyNr, const HuginBase::Keypoint& key)
 	{
         imageNr = image;
         keypointNr = keyNr;
@@ -25,7 +26,7 @@ struct ImageKeypoint
 
 	unsigned int imageNr;
 	unsigned int keypointNr;
-	Keypoint keypoint;
+	HuginBase::Keypoint keypoint;
 };
 
 class KDTreeKeypointMatcher {
@@ -33,7 +34,7 @@ class KDTreeKeypointMatcher {
 public:
 	// constructors
 	KDTreeKeypointMatcher() 
-	: m_KDTree(0), m_allPoints(0), m_k(5)
+	: m_KDTree(0), m_allPoints(0), m_k(2)
 	{
 		m_nnIdx = new ANNidx[m_k];
 		m_dists = new ANNdist[m_k];
@@ -63,16 +64,55 @@ public:
 	void create(const PanoramaData & pano, const UIntSet & imgs);
 	
 	// search methods
-	ImageKeypoint match(const Keypoint & key, unsigned int imageOfKeypoint);
+	ImageKeypoint* match(const HuginBase::Keypoint& key, unsigned int imageOfKeypoint);
 	
 	// helper methods
 	int getKeypointIdxOfMatch(unsigned int matchNr) const;
+	
+	// Euclidean distance calculation for two keypoints
+	virtual float fm_eucdist(const HuginBase::Keypoint& p1, const HuginBase::Keypoint& p2)
+	{
+		float sum = 0;
+		std::vector<float>::const_iterator it2 = p2.descriptor.begin();
+		
+		for(std::vector<float>::const_iterator it1 = p1.descriptor.begin();
+			it1 != p1.descriptor.end(); ++it1, ++it2)
+		{
+			float d = *it1 - *it2;
+			d *= d;
+			sum += d;
+		}
+		
+		return pow(sum,0.5f);
+	}
+	
+	// Euclidean distance calculation for two keypoints with an upper bound given
+	virtual float fm_eucdist_ub(const HuginBase::Keypoint& p1, const HuginBase::Keypoint& p2, float ub)
+	{
+		float sum = 0;
+		std::vector<float>::const_iterator it2 = p2.descriptor.begin();
+		float ub2 = ub * ub;
+		
+		for(std::vector<float>::const_iterator it1 = p1.descriptor.begin();
+			it1 != p1.descriptor.end(); ++it1, ++it2)
+		{
+			float d = *it1 - *it2;
+			d *= d;
+			sum += d;
+			
+			// check if the distance exceeds upper bound
+			if (sum > ub2)
+				return std::numeric_limits<float>::infinity();
+		}
+		
+		return pow(sum,0.5f);
+	}
 	
 private:
 	ANNkd_tree * m_KDTree;
 	
 	/// vector to hold all descriptors
-	vector<ImageKeypoint> m_keypoints;
+	std::vector<ImageKeypoint> m_keypoints;
 	
 	/// array with pointers to all keypoint descriptors
 	ANNpointArray m_allPoints;

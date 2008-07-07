@@ -44,6 +44,8 @@
 // Onur
 #include "panodata/PanoramaData.h"
 #include "FeatureMatchingLinearSearch.h"
+#include "FeatureMatchingSingleKdTree.h"
+#include "FeatureMatchingMultiKdTree.h"
 
 #include "base_wx/MyExternalCmdExecDialog.h"
 #include "base_wx/platform.h"
@@ -109,13 +111,15 @@ CPVector AutoCtrlPointCreator::automatch(Panorama & pano,
     int t = wxConfigBase::Get()->Read(wxT("/AutoPano/Type"),HUGIN_AP_TYPE);
     //if (t < 0) { // Onur
 
-        wxString tmp[3];
+        wxString tmp[5];
     	tmp[0] = _("Autopano (version 1.03 or greater), from http://autopano.kolor.com");
     	tmp[1] = _("Autopano-Sift, from http://user.cs.tu-berlin.de/~nowozin/autopano-sift/");
-    	tmp[2] = _("Feature Descriptor/Matching Algorithm"); // Onur
+    	tmp[2] = _("Feature Matching with Linear Search"); // Onur
+    	tmp[3] = _("Feature Matching with Single KDTree"); // Onur
+    	tmp[4] = _("Feature Matching with Multiple KDTree"); // Onur
     	// determine autopano type
     	wxSingleChoiceDialog d(NULL,  _("Choose which autopano program should be used\n"), _("Select autopano type"),
-	   	 	       3, tmp, NULL);
+	   	 	       5, tmp, NULL);
         
         if (d.ShowModal() == wxID_OK) {
             t = d.GetSelection();
@@ -151,10 +155,32 @@ CPVector AutoCtrlPointCreator::automatch(Panorama & pano,
 	}
 	case 2: // Onur
 	{
-	    // feature matching
+	    // feature matching with linear search
 		HuginBase::Panorama pano2 = pano;
 		HuginBase::PanoramaData* panodata = pano2.getNewCopy();
 		HuginBase::FeatureMatchingLinearSearch matcher(*panodata);
+		matcher.runAlgorithm();
+	    cps = matcher.getControlPoints();
+		printf("%d matches found\n", cps.size());
+	    break;
+	}
+	case 3: // Onur
+	{
+	    // feature matching with single kd-tree
+		HuginBase::Panorama pano2 = pano;
+		HuginBase::PanoramaData* panodata = pano2.getNewCopy();
+		HuginBase::FeatureMatchingSingleKdTree matcher(*panodata);
+		matcher.runAlgorithm();
+	    cps = matcher.getControlPoints();
+		printf("%d matches found\n", cps.size());
+	    break;
+	}
+	case 4: // Onur
+	{
+	    // feature matching with multiple kd-trees
+		HuginBase::Panorama pano2 = pano;
+		HuginBase::PanoramaData* panodata = pano2.getNewCopy();
+		HuginBase::FeatureMatchingMultiKdTree matcher(*panodata);
 		matcher.runAlgorithm();
 	    cps = matcher.getControlPoints();
 		printf("%d matches found\n", cps.size());

@@ -53,6 +53,13 @@ panotools/PanoToolsInterface.cpp
 panotools/PanoToolsOptimizerWrapper.cpp
 vigra_ext/emor.cpp
 vigra_ext/MultiThreadOperations.cpp
+algorithms/control_points/APImage.cpp
+algorithms/control_points/HessianDetector
+algorithms/control_points/Descriptor.cpp
+algorithms/control_points/FeatureExtractorZoran.cpp
+algorithms/control_points/FeatureMatchingLinearSearch.cpp
+algorithms/control_points/FeatureMatchingSingleKdTree.cpp
+algorithms/control_points/FeatureMatchingMultiKdTree.cpp
 )
 
 IF (${HUGIN_SHARED_LIBS})

@@ -16,7 +16,7 @@
 
 namespace HuginBase {
 	
-	class FeatureMatchingSingleKdTree : public FeatureMatchingAlgorithm
+	class FeatureMatchingSingleKdTree : public PanoramaAlgorithm
 	{
 		
 	public:
@@ -39,8 +39,13 @@ namespace HuginBase {
 			return o_controlPoints;
 		}
 		
+		//
+		virtual bool modifiesPanoramaData() const {
+			return o_successful;
+		}
+		
 		// matching function
-		static HuginBase::CPVector& match(const PanoramaData& pano);
+		virtual CPVector match(const PanoramaData& pano);
 		
 	protected:
 		CPVector o_controlPoints;

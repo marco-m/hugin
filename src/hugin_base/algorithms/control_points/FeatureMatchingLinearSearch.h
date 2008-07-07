@@ -13,6 +13,7 @@
 
 #include <algorithm/PanoramaAlgorithm.h>
 #include <panodata/Panorama.h>
+#include <vigra_ext/ransac.h>
 #include <cmath>
 #include <limits>
 
@@ -32,7 +33,25 @@ public:
 	// function to find the control points in the panorama
 	virtual bool runAlgorithm()
 	{
-		o_controlPoints = match(o_panorama, upper_bound_for_distance); //TODO
+		// match keypoints, create control points
+		o_controlPoints = match(o_panorama, upper_bound_for_distance);
+		
+		// run RANSAC
+		/*for (std::vector<ControlPoint>::const_iterator itkey=o_controlPoints.begin();
+			 itkey != o_controlPoints.end(); ++itkey)
+		{
+			int im1 = itkey->image1Nr;
+			int im2 = itkey->image2Nr;
+			
+			// find all the control points from im1 to im2
+			CPVector points;
+			points.insert(*itkey);
+			
+			// 
+			while()
+		}
+		int result = Ransac::compute(vigCoeff2, vqEst, points, 0.99, 0.3);
+		*/
 		return true; // let's hope so.
 	}
 	
@@ -40,10 +59,6 @@ public:
 	virtual const CPVector& getControlPoints() const
 	{ 
 		// [TODO] if(!hasRunSuccessfully()) DEBUG;
-		//CPVector v;
-		//ControlPoint cp(0, 2263.00, 1830.00, 1, 534.30, 1482.18);
-		//o_controlPoints.push_back(cp); // test
-		//o_controlPoints = v;
 		return o_controlPoints;
 	}
 	

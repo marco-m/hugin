@@ -24,7 +24,7 @@ void KDTreeKeypointMatcher::create(const PanoramaData & pano)
 		imgs.insert(im);
 	
 	// call the create function with all images
-	create(pano, &imgs);
+	create(pano, imgs);
 }
 
 /** 
@@ -33,7 +33,7 @@ void KDTreeKeypointMatcher::create(const PanoramaData & pano)
 * @param pano Panorama from which the keypoints are taken.
 * @param images Only use keypoints from the specified images.
 */
-void KDTreeKeypointMatcher::create(const PanoramaData & pano, const UIntSet & imgs)
+void KDTreeKeypointMatcher::create(const PanoramaData& pano, const UIntSet& imgs)
 {
 	int nKeypoints=0;
 	int dim=0;
@@ -54,14 +54,14 @@ void KDTreeKeypointMatcher::create(const PanoramaData & pano, const UIntSet & im
 	ANNpointArray pointsPtr = m_allPoints;
 	
 	// for all images
+	int j=0;
 	for (UIntSet::iterator it=imgs.begin(); it != imgs.end(); ++it) {
 		
 		// get all keypoints in this image
 		const std::vector<Keypoint> & keypoints = pano.getImage(*it).getKeypoints();
 		
 		// iterate over the keypoints
-		int j=0;
-		for (vector<Keypoint>::const_iterator itkey=keypoints.begin();
+		for (std::vector<Keypoint>::const_iterator itkey=keypoints.begin();
 			 itkey != keypoints.end(); ++itkey) 
 		{
 			// create an ImageKeypoint
@@ -71,7 +71,8 @@ void KDTreeKeypointMatcher::create(const PanoramaData & pano, const UIntSet & im
 			m_keypoints.push_back(ik);
 			
 			// add as an ANNpoint
-			ANNpoint *pt = const_cast<float *>(&(*(key.descriptor.begin())));
+			HuginBase::Keypoint kp = *itkey;
+			ANNpoint pt = const_cast<float *>(&(*(kp.descriptor.begin())));
 			*pointsPtr = pt;
 			
 			pointsPtr++;
@@ -84,16 +85,21 @@ void KDTreeKeypointMatcher::create(const PanoramaData & pano, const UIntSet & im
 	m_KDTree = new ANNkd_tree (m_allPoints,            // the data points
 							   nKeypoints,             // number of points
 							   dim);                   // dimension of space
+	
+	// print out the summary
+	printf("KDTree created with %d %d-d keypoints\n", m_KDTree->nPoints(), m_KDTree->theDim());
 }
 
 
 // match a single keypoint
 // TODO: kNN search instead of priority search
 // TODO: modify the decision part
-ImageKeypoint KDTreeKeypointMatcher::match(const Keypoint & key, unsigned int imageOfKeypoint)
+ImageKeypoint* KDTreeKeypointMatcher::match(const Keypoint& key, unsigned int imageOfKeypoint)
 {
 	
 	int nKeypoints = m_keypoints.size();
+	
+	/*
 	int searchDepth = std::max(200, hugin_utils::roundi(log(nKeypoints)/log(1000)*130));
 	DEBUG_DEBUG("search depth: " << searchDepth);
 	annMaxPtsVisit(searchDepth);
@@ -105,6 +111,15 @@ ImageKeypoint KDTreeKeypointMatcher::match(const Keypoint & key, unsigned int im
 							m_nnIdx,             // nearest neighbors (returned)
 							m_dists,             // distance (returned)
 							0.0);                // error bound
+	*/
+	// perform nearest neighbor matching
+	ANNcoord * acord = const_cast<float *>(&(*(key.descriptor.begin())));
+	m_KDTree->annkSearch( 
+						 acord,				// query point 
+						 m_k,				// number of near neighbors to find 
+						 m_nnIdx,			// nearest neighbor array (modified) 
+						 m_dists,			// dist to near neighbors (modified) 
+						 0.0);				// error bound 	
 	
 	// keep the list of rejected images
 	UIntSet rejectedImages;
@@ -121,11 +136,12 @@ ImageKeypoint KDTreeKeypointMatcher::match(const Keypoint & key, unsigned int im
 			continue;
 		
 		// check for nearest neighbors using 0.6 rule
-		float dist1 = eucdist(key, m_keypoints[m_nnIdx[i]].keypoint);
-		float dist2 = eucdist(key, m_keypoints[m_nnIdx[i+1]].keypoint);
+		float dist1 = fm_eucdist(key, m_keypoints[m_nnIdx[i]].keypoint);
+		float dist2 = fm_eucdist(key, m_keypoints[m_nnIdx[i+1]].keypoint);
 		if (dist1/dist2 < 0.6)
 		{
-			return m_keypoints[m_nnIdx[i]];
+			//printf("found with d=%f\n", dist1);
+			return &m_keypoints[m_nnIdx[i]];
 		}
 		else if (m_keypoints[m_nnIdx[i]].imageNr == m_keypoints[m_nnIdx[i+1]].imageNr) {
 			rejectedImages.insert(m_keypoints[m_nnIdx[i]].imageNr);
@@ -135,7 +151,7 @@ ImageKeypoint KDTreeKeypointMatcher::match(const Keypoint & key, unsigned int im
 	
 	// All matches are bad. Need to check more nearest neighbours.
 	// Be conservative and report no matches
-	return NULL;
+	return (ImageKeypoint*) NULL;
 }
 
 int KDTreeKeypointMatcher::getKeypointIdxOfMatch(unsigned int matchNr) const
