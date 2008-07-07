@@ -12,6 +12,7 @@
 
 #include <ANN/ANN.h>
 #include <panodata/Panorama.h>
+#include <limits>
 
 namespace HuginBase {
 	
