@@ -23,6 +23,7 @@
 
 #include "huginapp/ImageCache.h"
 #include "MaskEdMainFrame.h"
+#include "MaskEdPrefDlg.h"
 #include <wx/xrc/xmlres.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
@@ -50,8 +51,6 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnzoomIn)
     EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnzoomOut)
     EVT_BUTTON(XRCID("action_zoom_out"), MaskEdMainFrame::OnzoomOut)
-    //EVT_MOTION(MaskEdMainFrame::OnMotion)
-    //EVT_PAINT(MaskEdMainFrame::OnPaint)
 END_EVENT_TABLE()
 
 MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
@@ -67,20 +66,23 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
     wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
 
     m_MaskEdClientWnd = new MaskEdClientWnd(this);
-    //m_MaskEdClientWnd = XRCCTRL(*this, "main_clientwnd", MaskEdClientWnd);
 
     topSizer->Add(m_MaskEdClientWnd, 1, wxEXPAND | wxALL | wxFIXED_MINSIZE);
 
     SetSizerAndFit(topSizer);
+    
+    MaskMgr::getInstance()->setSegmentationOption(0);
 
     CreateStatusBar();
     SetStatusText(wxT("Ready"));
-    MaskMgr::getInstance()->setSegmentationOption(1); //TODO: move to OnPreference
+    
 }
 
 MaskEdMainFrame::~MaskEdMainFrame()
 {
     delete m_MaskEdClientWnd;
+    //delete MaskMgr::getInstance();
+    //delete ImageCache::getInstance();
 }
 
 void MaskEdMainFrame::OnNewProject(wxCommandEvent &event)
@@ -158,7 +160,11 @@ void MaskEdMainFrame::OnAddPoint(wxCommandEvent &event)
 
 void MaskEdMainFrame::OnPreference(wxCommandEvent &event)
 {
-
+    //wxDialog dlg;
+    //wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("MaskEdPrefDlg"));
+    //dlg.ShowModal();
+    MaskEdPrefDlg prefdlg(this);
+    prefdlg.ShowModal();
 }
 void MaskEdMainFrame::OnQuit(wxCommandEvent &event)
 {

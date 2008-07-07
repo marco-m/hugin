@@ -39,6 +39,13 @@ struct PixelColor
 {
     unsigned char r, g, b;
     PixelColor(unsigned char r = 0, unsigned char g = 0, unsigned char b = 0): r(r), g(g), b(b){}
+    unsigned char& operator[](int index) 
+    {
+        if(index == 0) return r;
+        else if(index == 1) return g;
+        else if(index == 2) return b;
+        else throw std::exception();
+    }
     friend bool operator<(const PixelColor &pa, const PixelColor &pb);
 };
 

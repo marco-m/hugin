@@ -52,6 +52,7 @@ public:
     void loadImages(const std::vector<std::string> &filesv);
     void loadImage(const std::string &filename);
     void loadMaskProject(const std::string &filename);
+    void reload();  //reloads all images
 
     std::vector<std::string> getImages();
 };

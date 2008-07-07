@@ -41,6 +41,7 @@ MaskMgr::~MaskMgr()
     /*if(m_segmentation)
         m_segmentation->reset();
     delete m_segmentation;*/
+    m_segmentation.clear();
 }
 
 //TODO: check for loading duplicate images 
@@ -65,6 +66,7 @@ void MaskMgr::setSegmentationOption(int index)
     /*m_segmentation = segmentation;
     m_segmentation->init();*/
     m_segmentation_index = index;
+    reload();
 }
 
 ISegmentation* MaskMgr::getSegmentation(int index) //get the segmenetation instance responsible for ith image
@@ -107,6 +109,17 @@ void MaskMgr::loadMaskProject(const string &filename)
     init();
     MaskFileMgr::getInstance()->loadFile(filename);
     loadImages(MaskFileMgr::getInstance()->getImgFiles());
+}
+
+void MaskMgr::reload()
+{
+    if(!m_imgfiles.empty()) {
+        vector<string> tmp;
+        copy(m_imgfiles.begin(), m_imgfiles.end(), back_insert_iterator<vector<string> >(tmp));
+        m_segmentation.clear();
+        m_imgfiles.clear();
+        loadImages(tmp);
+    }
 }
 
 vector<string> MaskMgr::getImages()

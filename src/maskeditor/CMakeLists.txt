@@ -2,7 +2,7 @@
 set( PROGNAME maskeditor )
 
 include_directories( ${CMAKE_SOURCE_DIR}/src/hugin1 )
-
+include_directories( ${CMAKE_SOURCE_DIR}/src/maskeditor/core )
 IF(wxWidgets_FOUND)
   IF(WIN32)
     IF ("${wxWidgets_CONFIGURATION}" STREQUAL "mswu")
@@ -17,6 +17,7 @@ IF(wxWidgets_FOUND)
 				gui/MaskEdClientWnd.h gui/MaskEdClientWnd.cpp 
 				gui/MaskEdEditWnd.h gui/MaskEdEditWnd.cpp 
 				gui/MaskEdPreviewWnd.h gui/MaskEdPreviewWnd.cpp
+				gui/MaskEdPrefDlg.h gui/MaskEdPrefDlg.cpp
 				core/BrushStroke.h
 				core/MaskPoly.h
 				core/MaskMgr.h core/MaskMgr.cpp
@@ -28,7 +29,9 @@ IF(wxWidgets_FOUND)
 				segmentation/polyed_basic/PolyEd_Basic.h segmentation/polyed_basic/PolyEd_Basic.cpp
 				segmentation/lazysnapping/LazySnapping.h segmentation/lazysnapping/LazySnapping.cpp
 				segmentation/lazysnapping/maxflow/graph.cpp
-				segmentation/lazysnapping/maxflow/maxflow.cpp)
+				segmentation/lazysnapping/maxflow/maxflow.cpp
+				segmentation/lazysnapping/kmeans/KMeans.hpp
+				segmentation/lazysnapping/watershed.cxx)
 	
 	IF (WIN32)
 	  ADD_EXECUTABLE( ${PROGNAME} WIN32 ${maskeditor_SOURCES})

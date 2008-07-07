@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file Pixel.cpp
+/** @file MaskEdPrefDlg.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -21,25 +21,20 @@
  *
  */
 
-#include "Pixel.h"
+#ifndef MASKEDPREFDLG_H
+#define MASKEDPREFDLG_H
 
-bool operator<(const PixelColor &pa, const PixelColor &pb)
+#include <wx/wx.h>
+
+class MaskEdPrefDlg : public wxDialog
 {
-    if(pa.r == pb.r) {
-        if(pa.g == pb.g)
-            return pa.b < pb.b;
-        else 
-            return pa.g < pb.g;
-    }
-    return pa.r < pb.r;
-}
+    int    m_ichoice;
+public:
+    MaskEdPrefDlg(wxWindow *parent);
+    ~MaskEdPrefDlg();
 
-bool operator<(const Pixel &pa, const Pixel &pb)
-{
-    if(pa.coord == pb.coord) {
-        return pa.rgb < pb.rgb;
-    } else if(pa.coord.y == pb.coord.y)
-        return pa.coord.x < pb.coord.x;
-    return pa.coord.y < pb.coord.y;
-}
+    void OnOk(wxCommandEvent &event);
 
+    DECLARE_EVENT_TABLE()
+};
+#endif

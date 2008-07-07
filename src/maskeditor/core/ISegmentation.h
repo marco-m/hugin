@@ -36,7 +36,7 @@ protected:
     std::string m_filename;
     unsigned char* m_mask;
 public:
-    enum Label { BKGND, FGND };
+    enum Label { NOLABEL, BKGND, FGND };
    
     ISegmentation() : m_mask(0) {}
     virtual ~ISegmentation() { delete m_mask; }
