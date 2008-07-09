@@ -57,6 +57,7 @@ algorithms/control_points/APImage.cpp
 algorithms/control_points/HessianDetector
 algorithms/control_points/Descriptor.cpp
 algorithms/control_points/FeatureExtractorZoran.cpp
+algorithms/control_points/KDTreeKeypointMatcher.cpp
 algorithms/control_points/FeatureMatchingLinearSearch.cpp
 algorithms/control_points/FeatureMatchingSingleKdTree.cpp
 algorithms/control_points/FeatureMatchingMultiKdTree.cpp

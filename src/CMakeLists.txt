@@ -8,7 +8,7 @@ IF (MSVC)
   include_directories( ${CMAKE_SOURCE_DIR}/src/foreign/getopt/include )
 ELSE (MSVC)
   # need to specify boost thread library
-  set(common_libs huginbase huginjhead
+  set(common_libs huginbase huginjhead huginANN
       ${Boost_thread_LIBRARIES} ${PANO_LIBRARIES} huginlevmar)
 ENDIF (MSVC)
 

@@ -43,9 +43,9 @@
 
 // Onur
 #include "panodata/PanoramaData.h"
-#include "FeatureMatchingLinearSearch.h"
-#include "FeatureMatchingSingleKdTree.h"
-#include "FeatureMatchingMultiKdTree.h"
+#include "algorithms/control_point/FeatureMatchingLinearSearch.h"
+#include "algorithms/control_point/FeatureMatchingSingleKdTree.h"
+#include "algorithms/control_point/FeatureMatchingMultiKdTree.h"
 
 #include "base_wx/MyExternalCmdExecDialog.h"
 #include "base_wx/platform.h"
