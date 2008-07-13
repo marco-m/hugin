@@ -30,9 +30,14 @@
 #include "hugin_config.h"
 
 IMPLEMENT_APP(MaskEdApp)
+MaskEdApp* MaskEdApp::m_instance = 0;
+MaskEdApp::MaskEdApp()
+{
+    m_instance = this;
+}
 
 bool MaskEdApp::OnInit()
-{
+{   
     DEBUG_TRACE("MaskEdApp::Oninit()");
 
 #if defined __WXMSW__
@@ -61,7 +66,7 @@ bool MaskEdApp::OnInit()
     m_xrcPrefix = wxT(INSTALL_ME_XRC_DIR);
 
 #endif
-
+    //wxConfigBase::Get()->
     wxFileSystem::AddHandler(new wxArchiveFSHandler);
 
     // init Image handlers
@@ -81,4 +86,19 @@ bool MaskEdApp::OnInit()
     frame->Maximize();
     SetTopWindow(frame);
     return true;
+}
+
+const MaskEdApp* MaskEdApp::getMaskEdApp()
+{
+    return m_instance;
+}
+
+const wxString& MaskEdApp::getXRCPath() const 
+{
+    return m_xrcPrefix;
+}
+
+const wxString& MaskEdApp::getUtilsBinDir() const
+{
+    return m_utilsBinDir;
 }

@@ -44,7 +44,8 @@ MaskEdEditWnd::MaskEdEditWnd(wxWindow *parent,
                      const wxSize& size,
                      long style,
                      const wxString& name)
-                     : wxScrolledWindow(parent, winid, pos, size, style, name), m_scale(1.0), m_active(0)
+                     : wxScrolledWindow(parent, winid, pos, size, style, name), m_scale(1.0), m_active(0),
+                     m_max_width(0), m_max_height(0), m_bShowOverlappedRect(false)
 {
     
 }
@@ -56,10 +57,15 @@ MaskEdEditWnd::~MaskEdEditWnd()
 
 void MaskEdEditWnd::init()
 {
+    m_bShowOverlappedRect = false;
     m_bimgs.clear();
     m_imgfiles.clear();
     m_selected.clear();
     m_brushstroke.clear();
+    m_max_width = 0;
+    m_max_height = 0;
+    m_canvas_size.clear();
+    m_pos.clear();
 }
 
 void MaskEdEditWnd::setEditMode(MaskEdEditMode_t edmode)
@@ -77,7 +83,18 @@ void MaskEdEditWnd::loadImage(const string &filename)
     {
         ImageCache::EntryPtr e = ImageCache::getInstance().getImage(filename);
         HuginBase::ImageCache::ImageCacheRGB8Ptr img = e->get8BitImage();
+        vigra::ImageImportInfo info(filename.c_str());
+        vigra::Size2D sz = info.getCanvasSize();
+        vigra::Diff2D pos = info.getPosition();
+        m_canvas_size.push_back(wxPoint(sz.width(), sz.height()));
+        m_pos.push_back(wxPoint(pos.x, pos.y));
+        m_selected.push_back(true);
+        m_max_width = sz.width() > m_max_width ? sz.width() : m_max_width;
+        m_max_height = sz.height() > m_max_height ? sz.height() : m_max_height;
         if (img) {
+            m_max_width = img->width() > m_max_width ? img->width() : m_max_width;
+            m_max_height = img->height() > m_max_height ? img->height() : m_max_height;
+
             wxImage img_temp(img->width(),
                        img->height(),
                        (unsigned char *) img->data(),
@@ -87,18 +104,55 @@ void MaskEdEditWnd::loadImage(const string &filename)
             img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
             m_bimgs.push_back(new wxBitmap(img_temp));
         } 
-        SetScrollbars( 1, 1, m_bimgs[0]->GetWidth(), m_bimgs[0]->GetHeight());
+        SetScrollbars( 1, 1, m_max_width, m_max_height);
     }
 }
 
 void MaskEdEditWnd::loadImages(const vector<string> &filesv)
 {
+    //remove_copy_if(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles), );
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
     //creates local cache of images
     for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
     {
         loadImage(*it);
     }
+}
+
+void MaskEdEditWnd::findOverlappingRect(int i, int j, wxRect &rect)
+{
+    wxRect rectA, rectB;
+    
+    //rectA is the leftmost rectangle
+    if(m_pos[i].x < m_pos[j].x) {
+        rectA = wxRect(m_pos[i], wxSize(m_bimgs[i]->GetWidth(), m_bimgs[i]->GetHeight()));
+        rectB = wxRect(m_pos[j], wxSize(m_bimgs[j]->GetWidth(), m_bimgs[j]->GetHeight()));
+    } else {
+        rectA = wxRect(m_pos[j], wxSize(m_bimgs[j]->GetWidth(), m_bimgs[j]->GetHeight()));
+        rectB = wxRect(m_pos[i], wxSize(m_bimgs[i]->GetWidth(), m_bimgs[i]->GetHeight()));
+    }
+    
+    //set upper-left corner
+    rect.x = rectB.x;
+    if(rectB.y < rectA.y)
+        rect.y = rectA.y;
+    else
+        rect.y = rectB.y;
+
+    //set bottom-right corner
+    wxPoint brA = rectA.GetBottomRight();
+    wxPoint brB = rectB.GetBottomRight();
+    wxPoint br;
+    if(brB.y < brA.y) {
+        br.y = brB.y;
+    } else {
+        br.y = brA.y;
+    }
+    if(brB.x < brA.x)
+        br.x = brB.x;
+    else
+        br.x = brA.x;
+    rect.SetBottomRight(br);
 }
 
 void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
@@ -109,13 +163,25 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
     x = GetScrollPos(wxSB_HORIZONTAL);
     y = GetScrollPos(wxSB_VERTICAL);
     int i = 0;
+    int lastDrawn = -1;
     //dc.SetDeviceOrigin(-x, -y);
     //dc.SetUserScale(m_scale, m_scale);
     for(vector<wxBitmap*>::iterator it = m_bimgs.begin(); it != m_bimgs.end(); it++, i++)
     {
-        //if(!m_selected[i]) continue;
-        dc.DrawBitmap(**it, -x, -y, true); 
-        
+        if(!m_selected[i]) continue;
+        dc.DrawBitmap(**it, -x + m_pos[i].x, -y + m_pos[i].y, true); 
+        if(m_bShowOverlappedRect && lastDrawn > -1) {
+            wxRect rect;
+            findOverlappingRect(lastDrawn, i, rect);
+            wxPen pen = dc.GetPen();
+            wxBrush brush = dc.GetBrush();
+            dc.SetPen(*wxRED);
+            dc.SetBrush(*wxTRANSPARENT_BRUSH);
+            dc.DrawRectangle(rect);
+            dc.SetPen(pen);
+            dc.SetBrush(brush);
+        }
+        lastDrawn = i;
         //ignore this case for the timebeing
         ////drawing is not really needed here but just in case the window is refershed
         ////while the brushstroke is drawn
@@ -141,8 +207,8 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         int i = 0;
         for(vector<wxPoint>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
         {
-            pts[i].x = it->x * m_scale - x;
-            pts[i].y = it->y * m_scale - y;
+            pts[i].x = it->x * m_scale - x + m_pos[m_active].x;
+            pts[i].y = it->y * m_scale - y + m_pos[m_active].y;
         }
         dc.DrawPolygon(m_poly.pt.size(), pts);
     }
@@ -156,6 +222,7 @@ void MaskEdEditWnd::OnMouseButtonDown(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 {
+    if(m_bimgs.empty()) return;
     if(m_edmode == ME_BSTROKE)
     {
         m_brushstroke.label = ISegmentation::FGND;
@@ -166,7 +233,7 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
         int x, y;
         x = GetScrollPos(wxSB_HORIZONTAL);
         y = GetScrollPos(wxSB_VERTICAL);
-        wxPoint pos = event.GetPosition()+wxPoint(x,y);
+        wxPoint pos = event.GetPosition()+wxPoint(x,y)-m_pos[m_active];
         m_poly.add(wxPoint(pos.x/m_scale, pos.y/m_scale));
     }
     event.Skip();
@@ -175,6 +242,7 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
 {
+    if(m_bimgs.empty()) return;
     if(m_edmode == ME_BSTROKE)
     {
         m_brushstroke.label = ISegmentation::BKGND;
@@ -208,10 +276,10 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
             else 
                 pen = new wxPen(*wxBLUE, 1);
             dc.SetPen(*pen);
-            dc.DrawLine(m_brushstroke.pt.back() - wxPoint(x, y), event.GetPosition());
+            dc.DrawLine(m_brushstroke.pt.back() - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
             dc.SetPen(wxNullPen);
         }
-        m_brushstroke.pt.push_back(event.GetPosition() + wxPoint(x, y));
+        m_brushstroke.pt.push_back(event.GetPosition() + wxPoint(x, y) - m_pos[m_active]);
     }
 }
 
@@ -234,3 +302,21 @@ float MaskEdEditWnd::getZoomLevel() const
 {
     return m_scale;
 }
+
+void MaskEdEditWnd::setDisplayImages(const std::map<int, std::pair<std::string, bool> > &selection)
+{
+    
+}
+
+void MaskEdEditWnd::setSelectedImage(int index, bool state)
+{
+    m_selected[index] = state;
+    this->Refresh();
+}
+
+void MaskEdEditWnd::toggleShowOverlappedRect()
+{
+    m_bShowOverlappedRect = m_bShowOverlappedRect ? false : true;
+    Refresh();
+}
+

@@ -27,12 +27,12 @@
 #include <string>
 #include "../../core/ISegmentation.h"
 #include "maxflow/graph.h"
-
+#include "KMlocal/KMlocal.h"
 
 const double SIGMA = 2.0f;
 const double LAMBDA = 1.0f;
 const int    NCLUSTERS = 64;
-const int    CLUSTERCOORDDIM = 3; // 3:RGB, 5:RGB + (r,c)
+const int    CLUSTERCOORDDIM = 5; // 3:RGB, 5:RGB + (r,c)
 
 class LazySnapping : public ISegmentation
 {
@@ -54,7 +54,7 @@ class LazySnapping : public ISegmentation
     tSeed   m_seeds;
     tObjColorMap m_fgnd, m_bkgnd;
 
-    typedef float ClusterCoordType;
+    typedef KMcoord ClusterCoordType;
     template<typename T, int CDIM = CLUSTERCOORDDIM>
     struct ClusterCoord
     {
@@ -114,7 +114,8 @@ class LazySnapping : public ISegmentation
     typedef std::vector<std::pair<ClusterCoord<ClusterCoordType>, ISegmentation::Label> > tCluster;
     tCluster m_clusters;        //centers of clusters
     int     *m_cluster_asgn;    //datapoint assignment to a cluster
-    int     m_nclusters;
+    int      m_nclusters;
+    double  *m_cluster_sqDist;
 
     void    watershed();
     void    preprocess();

@@ -17,6 +17,7 @@ IF(wxWidgets_FOUND)
 				gui/MaskEdClientWnd.h gui/MaskEdClientWnd.cpp 
 				gui/MaskEdEditWnd.h gui/MaskEdEditWnd.cpp 
 				gui/MaskEdPreviewWnd.h gui/MaskEdPreviewWnd.cpp
+				gui/MaskEdThumbnailPreviewCtrl.h gui/MaskEdThumbnailPreviewCtrl.cpp
 				gui/MaskEdPrefDlg.h gui/MaskEdPrefDlg.cpp
 				core/BrushStroke.h
 				core/MaskPoly.h
@@ -30,8 +31,18 @@ IF(wxWidgets_FOUND)
 				segmentation/lazysnapping/LazySnapping.h segmentation/lazysnapping/LazySnapping.cpp
 				segmentation/lazysnapping/maxflow/graph.cpp
 				segmentation/lazysnapping/maxflow/maxflow.cpp
-				segmentation/lazysnapping/kmeans/KMeans.hpp
-				segmentation/lazysnapping/watershed.cxx)
+				#segmentation/lazysnapping/kmeans/KMeans.hpp
+				segmentation/lazysnapping/watershed.cxx
+				segmentation/lazysnapping/KMlocal/KCtree.cpp
+				segmentation/lazysnapping/KMlocal/KCutil.cpp
+				segmentation/lazysnapping/KMlocal/KM_ANN.cpp
+				segmentation/lazysnapping/KMlocal/KMcenters.cpp
+				segmentation/lazysnapping/KMlocal/KMdata.cpp
+				segmentation/lazysnapping/KMlocal/KMeans.cpp
+				segmentation/lazysnapping/KMlocal/KMfilterCenters.cpp
+				segmentation/lazysnapping/KMlocal/KMlocal.cpp
+				segmentation/lazysnapping/KMlocal/KMrand.cpp
+				segmentation/lazysnapping/KMlocal/KMterm.cpp)
 	
 	IF (WIN32)
 	  ADD_EXECUTABLE( ${PROGNAME} WIN32 ${maskeditor_SOURCES})

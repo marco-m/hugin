@@ -26,11 +26,13 @@
 #include <wx/wx.h>
 #include <string>
 #include <vector>
+#include <map>
 
 class MaskEdPreviewWnd : public wxScrolledWindow
 {
     std::vector<wxBitmap*>  m_bimgs;
-    std::vector<bool>       m_selected;
+    std::map<int, std::pair<std::string, bool> >  m_selected;
+    wxBoxSizer             *m_boxsizer;
 public:
     MaskEdPreviewWnd(wxWindow *parent, wxWindowID winid = wxID_ANY,
                      const wxPoint& pos = wxDefaultPosition,
@@ -41,7 +43,9 @@ public:
     void init();
     void loadImages(const std::vector<std::string> &filesv);
     void loadImage(const std::string &filename);
-    std::vector<bool> getSelected() const;
+    std::map<int, std::pair<std::string,bool> > getSelected() const;
+
+    void OnSelection(wxCommandEvent &event);
 };
 
 #endif

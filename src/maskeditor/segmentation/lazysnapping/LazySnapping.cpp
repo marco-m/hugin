@@ -23,13 +23,16 @@
 #include <memory>
 #include "huginapp/ImageCache.h"
 #include "LazySnapping.h"
-#include "kmeans/KMeans.hpp"
+//#include "kmeans/KMeans.hpp"
+#include "KMlocal/KMlocal.h"
 #include "watershed.cxx"
 
 using namespace std;
 using HuginBase::ImageCache;
 
 #define SAFE_DELETE(x) { if(x) delete x; x = 0; }
+#define SAFE_DELETE_ARRAY(x) { if(x) delete [] x; x = 0; }
+
 double SQR(double x) { return x * x; }
 /**
  * General utility functions
@@ -86,10 +89,10 @@ void LazySnapping::reset()
     m_depth = 0;
     m_cnodes = 0;
     m_outline.clear();
-    SAFE_DELETE(m_nodes);
+    SAFE_DELETE_ARRAY(m_nodes);
     SAFE_DELETE(m_graph);
-    SAFE_DELETE(m_data);
-    SAFE_DELETE(m_cluster_asgn);
+    SAFE_DELETE_ARRAY(m_data);
+    SAFE_DELETE_ARRAY(m_cluster_asgn);
 }
 
 void LazySnapping::getRC(int p, int *r, int *c) const
@@ -100,28 +103,61 @@ void LazySnapping::getRC(int p, int *r, int *c) const
 
 void LazySnapping::preprocess()
 {
+    int i,j;
     //create clusters
     m_cnodes = m_width * m_height;
     ClusterCoordType *data = new ClusterCoordType[m_cnodes * CLUSTERCOORDDIM];
     //assert(m_depth == 3);
-    for(int i = 0; i < m_cnodes; i++)
-    {
-        *(data + i * CLUSTERCOORDDIM) = (ClusterCoordType) *(m_data + i * m_depth);
-        *(data + i * CLUSTERCOORDDIM + 1) = (ClusterCoordType) *(m_data + i * m_depth + 1);
-        *(data + i * CLUSTERCOORDDIM + 2) = (ClusterCoordType) *(m_data + i * m_depth + 2);
-        //*(data + i * CLUSTERCOORDDIM + 3) = (ClusterCoordType) r;
-        //*(data + i * CLUSTERCOORDDIM + 4) = (ClusterCoordType) c;
-    }
+    //for(i = 0; i < m_cnodes; i++)
+    //{
+    //    *(data + i * CLUSTERCOORDDIM) = (ClusterCoordType) *(m_data + i * m_depth);
+    //    *(data + i * CLUSTERCOORDDIM + 1) = (ClusterCoordType) *(m_data + i * m_depth + 1);
+    //    *(data + i * CLUSTERCOORDDIM + 2) = (ClusterCoordType) *(m_data + i * m_depth + 2);
+    //    //*(data + i * CLUSTERCOORDDIM + 3) = (ClusterCoordType) r;
+    //    //*(data + i * CLUSTERCOORDDIM + 4) = (ClusterCoordType) c;
+    //}
 
-    KMeans<ClusterCoordType> kmeans(data, m_width * m_height, CLUSTERCOORDDIM, m_nclusters);
+    /*KMeans<ClusterCoordType> kmeans(data, m_width * m_height, CLUSTERCOORDDIM, m_nclusters);
     ClusterCoordType *clusters = 0;
     kmeans.doClustering(&clusters, &m_cluster_asgn);
     m_clusters.clear();
-    for(int i = 0; i < m_nclusters; i++)
+    for(i = 0; i < m_nclusters; i++)
     {
         m_clusters.push_back(
             make_pair(
             ClusterCoord<ClusterCoordType,CLUSTERCOORDDIM>((clusters + i * CLUSTERCOORDDIM)), 
+            NOLABEL)
+            );
+    }*/
+    KMterm term(100, 0, 0, 0, 0.10, 0.10, 3, 0.50, 10, 0.95);
+    KMdata dataPts(CLUSTERCOORDDIM, m_cnodes);
+    //kmUniformPts(dataPts.getPts(), m_cnodes, CLUSTERCOORDDIM);
+    KMpointArray	pa = dataPts.getPts();
+    //fillup the points
+    int r, c;
+    for(i = 0; i < m_cnodes; i++)
+    {
+        pa[i][0] = (KMcoord) *(m_data + i * m_depth);
+        pa[i][1] = (KMcoord) *(m_data + i * m_depth + 1);
+        pa[i][2] = (KMcoord) *(m_data + i * m_depth + 2);
+        getRC(i, &r, &c);
+        pa[i][3] = (KMcoord) r;
+        pa[i][4] = (KMcoord) c;
+    }
+    dataPts.buildKcTree();
+    KMfilterCenters ctrs(m_nclusters, dataPts);
+    KMlocalLloyds   kmAlg(ctrs, term);
+    ctrs = kmAlg.execute();
+    m_cluster_asgn = new int[m_cnodes];
+    m_cluster_sqDist = new double[m_cnodes];
+    ctrs.getAssignments(m_cluster_asgn, m_cluster_sqDist);
+    KMcenterArray pctrs = ctrs.getCtrPts();
+    m_clusters.clear();
+    for(i = 0; i < m_nclusters; i++)
+    {
+        m_clusters.push_back(
+            make_pair(
+            ClusterCoord<ClusterCoordType,CLUSTERCOORDDIM>(pctrs[i]), 
             NOLABEL)
             );
     }
@@ -199,7 +235,9 @@ int LazySnapping::getNeighbor(int p, int n)
 LazySnapping::captype LazySnapping::computePrior(int p, int q)
 {
     //return exp(-getDistSqrPixelIntensity(p, q)/(2*m_sigma*m_sigma)) * (1.0/getDistPixel(p,q));
-    return 1.0/getDistSqrPixelIntensity(p, q);
+    double d = getDistSqrPixelIntensity(p, q);
+    if(fabs(d) < 1e-16) return 255*2; //
+    return 1.0/d;
 }
 
 void LazySnapping::computeLikelihood(int p, captype &f, captype &b)
@@ -294,54 +332,6 @@ void LazySnapping::markCluster(PixelCoord p, Label label)
         assert(0);
 }
 
-//ClusterCoord LazySnapping::findCluster(PixelCoord p)
-//{
-//    tCluster::iterator it = m_clusters.begin();
-//    PixelCoord center = it->first;
-//    double dmin = getDistSqrPixel(p, center);
-//    double d;
-//    for(it++; it != m_clusters.end(); it++)
-//    {
-//        d = getDistSqrPixel(p, it->first);
-//        if(d < dmin){
-//            dmin = d;
-//            center = it->first;
-//        }
-//    }
-//    return center;
-//}
-//
-//ClusterCoord LazySnapping::findCluster(int p)
-//{
-//    int r, c;
-//    getRC(p, &r, &c);
-//    PixelCoord pp(c, r);
-//    return findCluster(pp);
-//}
-//template<typename T, int CDIM>
-//ClusterCoord<T,CDIM> LazySnapping::findCluster(ClusterCoord p)
-//{
-//    /*tCluster::iterator it = m_clusters.begin();
-//    PixelCoord center = it->first;
-//    double dmin = getDistSqrPixel(p, center);
-//    double d;
-//    for(it++; it != m_clusters.end(); it++)
-//    {
-//        d = getDistSqrPixel(p, it->first);
-//        if(d < dmin){
-//            dmin = d;
-//            center = it->first;
-//        }
-//    }*/
-//    ClusterCoord<T,CDIM> center;
-//    return center;
-//}
-
-//int LazySnapping::findCluster(int p)
-//{
-//    return m_cluster_asgn[p];
-//}
-
 void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
 {
     captype f, b;
@@ -383,14 +373,13 @@ void LazySnapping::segment()
 
 void LazySnapping::setMask(int node, Label label)
 {
- //   assert(0);
     int r, c;
     getRC(node, &r, &c);
     wxMemoryDC dc(*m_mask);
-    //if(label == BKGND)
+    if(label == BKGND)
         dc.SetPen(*wxBLACK);
-    //else
-    //    dc.SetPen(*wxWHITE);
+    else
+        dc.SetPen(*wxWHITE);
     dc.DrawPoint(c, r);
     assert(dc.IsOk());
 }

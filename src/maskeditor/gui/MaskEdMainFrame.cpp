@@ -22,6 +22,7 @@
  */
 
 #include "huginapp/ImageCache.h"
+#include "MaskEdApp.h"
 #include "MaskEdMainFrame.h"
 #include "MaskEdPrefDlg.h"
 #include <wx/xrc/xmlres.h>
@@ -42,27 +43,38 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_save_project_as"), MaskEdMainFrame::OnSaveProjectAs)
     EVT_MENU(XRCID("action_save_image"), MaskEdMainFrame::OnSaveImage)
     EVT_MENU(XRCID("action_save_mask"), MaskEdMainFrame::OnSaveMask)
-    EVT_MENU(XRCID("action_use_brush"), MaskEdMainFrame::OnBStroke)
-    EVT_MENU(XRCID("action_add_polygon_point"), MaskEdMainFrame::OnAddPoint)
+    EVT_MENU(XRCID("action_draw_bstroke"), MaskEdMainFrame::OnBStroke)
+    EVT_BUTTON(XRCID("action_draw_bstroke"), MaskEdMainFrame::OnBStroke)
+    EVT_MENU(XRCID("action_draw_polygon"), MaskEdMainFrame::OnAddPoint)
+    EVT_BUTTON(XRCID("action_draw_polygon"), MaskEdMainFrame::OnAddPoint)
     EVT_MENU(XRCID("action_edit_preferences"), MaskEdMainFrame::OnPreference)
     EVT_MENU(XRCID("action_exit"), MaskEdMainFrame::OnQuit)
     EVT_MENU(XRCID("action_about_maskeditor"), MaskEdMainFrame::OnAbout)
-    EVT_MENU(XRCID("action_zoom_in"), MaskEdMainFrame::OnzoomIn)
-    EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnzoomIn)
-    EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnzoomOut)
-    EVT_BUTTON(XRCID("action_zoom_out"), MaskEdMainFrame::OnzoomOut)
+    EVT_MENU(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
+    EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
+    EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
+    EVT_BUTTON(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
+    EVT_MENU(XRCID("action_show_overlap"), MaskEdMainFrame::OnShowOverlap)
+    EVT_BUTTON(XRCID("action_show_overlap"), MaskEdMainFrame::OnShowOverlap)
 END_EVENT_TABLE()
 
 MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
 {
     wxYield();
-    
+
     wxXmlResource::Get()->LoadFrame(this, parent, wxT("MaskEdMainFrame"));
     
     SetMenuBar(wxXmlResource::Get()->LoadMenuBar(this, wxT("main_menubar")));
 
     SetToolBar(wxXmlResource::Get()->LoadToolBar(this, wxT("main_toolbar")));
-    
+
+#ifdef __WXMSW__
+   wxIcon appIcon(MaskEdApp::getMaskEdApp()->getXRCPath() + wxT("data/mask_editor_icon_48x48.ico"), wxBITMAP_TYPE_ICO);
+#else
+   wxIcon appIcon(MaskEdApp::getMaskEdApp()->getXRCPath() + wxT("data/mask_editor_icon_48x48.png"), wxBITMAP_TYPE_PNG);
+#endif
+    SetIcon(appIcon);
+
     wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
 
     m_MaskEdClientWnd = new MaskEdClientWnd(this);
@@ -75,7 +87,6 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
 
     CreateStatusBar();
     SetStatusText(wxT("Ready"));
-    
 }
 
 MaskEdMainFrame::~MaskEdMainFrame()
@@ -104,7 +115,7 @@ void MaskEdMainFrame::OnOpenProject(wxCommandEvent &event)
 
 void MaskEdMainFrame::OnLoadImages(wxCommandEvent &event)
 {
-    wxString filter = wxT("JPEG files (*.jpg;*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|tiff files (*.tif)|*.tif|All files (*.*)|*.*");
+    wxString filter = wxT("Image files (*.jpg;*.jpeg;*.tif;*.png;*.bmp)|*.jpg;*.JPG;*.jpeg;*.JPEG;*.tif;*.tiff;*.png;*.bmp|JPEG files (*.jpg;*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|Tiff files (*.tif;*.tiff)|*.tif|BMP files (*.bmp)|*.bmp|All files (*.*)|*.*");
     wxFileDialog dialog(this, wxT("Open Image"), wxEmptyString,
         wxEmptyString, filter, wxOPEN | wxFD_MULTIPLE);
     if(dialog.ShowModal() == wxID_OK)
@@ -177,15 +188,20 @@ void MaskEdMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
         wxOK | wxICON_INFORMATION, this);
 }
 
-void MaskEdMainFrame::OnzoomIn(wxCommandEvent &event)
+void MaskEdMainFrame::OnZoomIn(wxCommandEvent &event)
 {
     m_scale += 0.1;
     m_MaskEdClientWnd->zoom(m_scale);
 }
 
-void MaskEdMainFrame::OnzoomOut(wxCommandEvent &event)
+void MaskEdMainFrame::OnZoomOut(wxCommandEvent &event)
 {
     if(m_scale <= 0.1) return;
     m_scale -= 0.1;
     m_MaskEdClientWnd->zoom(m_scale);
+}
+
+void MaskEdMainFrame::OnShowOverlap(wxCommandEvent &event)
+{
+    m_MaskEdClientWnd->toggleShowOverlappedRect();
 }

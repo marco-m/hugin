@@ -22,10 +22,14 @@
  */
 
 #include "huginapp/ImageCache.h"
+#include "MaskEdClientWnd.h"
 #include "MaskEdPreviewWnd.h"
-
+#include "MaskEdThumbnailPreviewCtrl.h"
+#include <wx/filename.h>
 using HuginBase::ImageCache;
 using namespace std;
+
+#define ID_THNAIL_SELECT (wxID_HIGHEST + 1)
 
 MaskEdPreviewWnd::MaskEdPreviewWnd(wxWindow *parent,
                      wxWindowID winid,
@@ -33,13 +37,21 @@ MaskEdPreviewWnd::MaskEdPreviewWnd(wxWindow *parent,
                      const wxSize& size,
                      long style,
                      const wxString& name)
-                     : wxScrolledWindow(parent, winid, pos, size, style, name) {}
+                     : wxScrolledWindow(parent, winid, pos, size, style, name) 
+{
+    m_boxsizer = new wxBoxSizer(wxHORIZONTAL);
+    SetSizer(m_boxsizer);
+    m_boxsizer->SetSizeHints(this);
+    SetScrollbars(20, 20, 50, 50);
+}
 
 void MaskEdPreviewWnd::init()
 {
     m_bimgs.clear();
     m_selected.clear();
+    m_boxsizer->Clear(true);
 }
+
 void MaskEdPreviewWnd::loadImages(const vector<string> &filesv)
 {
     for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
@@ -52,19 +64,40 @@ void MaskEdPreviewWnd::loadImage(const string &filename)
 {
     if(filename != "")
     {
-        ImageCache::EntryPtr e = ImageCache::getInstance().getImage(filename);
+        ImageCache::EntryPtr e = ImageCache::getInstance().getSmallImage(filename);
         HuginBase::ImageCache::ImageCacheRGB8Ptr img = e->get8BitImage();
         if (img) {
+            int index = m_bimgs.size();
+            m_selected[index] = make_pair(filename, true);
             m_bimgs.push_back(new wxBitmap( wxImage(img->width(),
                        img->height(),
                        (unsigned char *) img->data(),
                        true)));
+            wxString fullpath(filename.c_str(), wxConvUTF8);
+            wxString name;
+            wxFileName::SplitPath(fullpath, NULL, &name, NULL);
+            m_boxsizer->Add(new MaskEdThumbnailPreviewCtrl(this, ID_THNAIL_SELECT + index, name,
+                fullpath,
+                wxDefaultPosition, wxDefaultSize, wxCHK_2STATE,
+                wxDefaultValidator, fullpath),
+                1, wxALIGN_LEFT | wxALL, 5);
+            ((MaskEdThumbnailPreviewCtrl*)this->FindWindowById(ID_THNAIL_SELECT + index, this))->SetValue(true);
+            this->Connect(ID_THNAIL_SELECT + index, wxEVT_COMMAND_CHECKBOX_CLICKED,
+                wxCommandEventHandler(MaskEdPreviewWnd::OnSelection));
+            this->Refresh();
         } 
     }
 }
 
-vector<bool> MaskEdPreviewWnd::getSelected() const 
+map<int,pair<string,bool> > MaskEdPreviewWnd::getSelected() const 
 {
     return m_selected;
+}
+
+void MaskEdPreviewWnd::OnSelection(wxCommandEvent &event)
+{
+    int index = event.GetId() - ID_THNAIL_SELECT;
+    (m_selected[index]).second = event.IsChecked();
+    ((MaskEdClientWnd*)m_parent)->getMaskEdEditWnd()->setSelectedImage(index, m_selected[index].second);
 }
 

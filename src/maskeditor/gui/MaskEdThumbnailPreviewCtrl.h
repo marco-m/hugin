@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskEdApp.h
+/** @file MaskEdThumbnailPreviewCtrl.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -20,25 +20,22 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
-#ifndef _MASKEDAPP_H
-#define _MASKEDAPP_H
-
+#ifndef MASKEDTHUMBNAILPREVIEWCTRL_H
+#define MASKEDTHUMBNAILPREVIEWCTRL_H
 #include <wx/wx.h>
-
-class MaskEdApp : public wxApp 
+class MaskEdThumbnailPreviewCtrl : public wxCheckBox
 {
-    wxString m_xrcPrefix;
-    wxString m_utilsBinDir;
-    static MaskEdApp* m_instance;
 public:
-    MaskEdApp();
-
-    virtual bool OnInit();
-
-    static const MaskEdApp* getMaskEdApp();
-    const wxString& getXRCPath() const;
-    const wxString& getUtilsBinDir() const;
+    MaskEdThumbnailPreviewCtrl(wxWindow *parent,
+               wxWindowID id,
+               const wxString& label,
+               const wxString& imgFilename = wxT(""),
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
+               long style = 0,
+               const wxValidator& validator = wxDefaultValidator,
+               const wxString& name = wxCheckBoxNameStr);
+    ~MaskEdThumbnailPreviewCtrl();
 };
 
 #endif

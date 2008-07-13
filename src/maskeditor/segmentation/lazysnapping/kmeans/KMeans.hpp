@@ -26,6 +26,7 @@
 
 #include <boost/random.hpp>
 #include <time.h>
+#include <fstream>
 
 template <typename T>
 class KMeans
@@ -86,9 +87,8 @@ const double KMeans<T>::EPS = 1E-04;
 
 template<typename T>
 KMeans<T>::KMeans(T *data, int nelem, int dim, int nclusters) : m_data(data),m_nelems(nelem), m_ndim(dim),  
-m_nclusters(nclusters), m_clusters(0), m_asgns(0)
+m_nclusters(nclusters), m_clusters(0), m_asgns(0), m_bupdated(true)
 {
-    m_bupdated = true;
     rng.seed(time(0));
 }
 
@@ -112,7 +112,6 @@ void KMeans<T>::getClusters(T **clusters, int **asgn)
 {
     if(m_bupdated)
         cluster(clusters, asgn);
-    return m_clusters;
 }
 
 template<typename T>
@@ -123,25 +122,20 @@ void KMeans<T>::doClustering(T **clusters, int **asgn, int nclusters)
         m_bupdated = true;
     }
     if(!m_bupdated) {
-           if(*clusters)
-        delete *clusters;
-    *clusters = new T[m_nclusters * m_ndim];
-    memcpy(*clusters, m_clusters, sizeof(T) * m_nclusters * m_ndim);
+        if(*clusters)
+            delete *clusters;
+        *clusters = new T[m_nclusters * m_ndim];
+        memcpy(*clusters, m_clusters, sizeof(T) * m_nclusters * m_ndim);
 
-    if(*asgn)
-        delete *asgn;
-    *asgn = new int[m_nelems];
-    memcpy(*asgn, m_asgns, sizeof(int) * m_nelems);
-    return;
+        if(*asgn)
+            delete *asgn;
+        *asgn = new int[m_nelems];
+        memcpy(*asgn, m_asgns, sizeof(int) * m_nelems);
+        return;
     }
     
     m_bupdated = false;
     
-    //cluster computation
-    //generate centroids
-    T* minvals = getExtremas<T, std::less<T> >(m_data, m_nelems, m_ndim);
-    T* maxvals = getExtremas<T, std::greater<T> >(m_data, m_nelems, m_ndim);
-
     if(m_clusters)
         delete m_clusters;
     m_clusters = new T[m_nclusters * m_ndim];
@@ -151,15 +145,40 @@ void KMeans<T>::doClustering(T **clusters, int **asgn, int nclusters)
     m_asgns = new int[m_nelems];
     memset(m_asgns, 0xff, sizeof(int) * m_nelems); //init to -1
 
+    //cluster computation
+    //generate centroids
+    T* minvals = getExtremas<T, std::less<T> >(m_data, m_nelems, m_ndim);
+    T* maxvals = getExtremas<T, std::greater<T> >(m_data, m_nelems, m_ndim);
     int i, j;
+#define KMEANS_LOG
+#ifdef KMEANS_LOG
+    ofstream fout("data.txt");
+    //input data
+    for(i = 0; i < m_nelems; i++)
+    {
+        for(j = 0; j < m_ndim; j++)
+        {
+            fout << m_data[i*m_ndim + j] << " ";
+        }
+        fout << endl;
+    }
+#endif
+    
     for(i = 0; i < m_ndim; i++) //for each dimension
     {
         boost::uniform_real<T> unidist(minvals[i], maxvals[i]);
         boost::variate_generator<boost::mt19937&, boost::uniform_real<T> > sampler(rng, unidist);
         for(j = 0; j < m_nclusters; j++) //consider each row j as the centroid of jth cluster and the columns are the dimensions
+        {
             m_clusters[j * m_ndim + i] = sampler();
+#ifdef KMEANS_LOG
+            fout << m_clusters[j * m_ndim + i] << " ";
+#endif
+        }
     }
-
+#ifdef KMEANS_LOG
+    fout << endl;
+#endif
     //naive K-means implementation
     //update centroid until convergence
     bool bUpdated = true;
@@ -209,5 +228,8 @@ void KMeans<T>::doClustering(T **clusters, int **asgn, int nclusters)
         delete *asgn;
     *asgn = new int[m_nelems];
     memcpy(*asgn, m_asgns, sizeof(int) * m_nelems);
+#ifdef KMEANS_LOG
+    fout.close();
+#endif
 }
 #endif

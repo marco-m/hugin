@@ -51,8 +51,9 @@ public:
     void OnPreference(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
-    void OnzoomIn(wxCommandEvent& event);
-    void OnzoomOut(wxCommandEvent& event);
+    void OnZoomIn(wxCommandEvent& event);
+    void OnZoomOut(wxCommandEvent& event);
+    void OnShowOverlap(wxCommandEvent& event);
 
     void OnMotion(wxMouseEvent& event);
     //void OnPaint(wxPaintEvent& event);

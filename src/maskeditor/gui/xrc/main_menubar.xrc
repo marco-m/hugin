@@ -64,11 +64,16 @@
           <help>Zoom Out</help>
         </object>
         <object class="separator" />
-        <object class="wxMenuItem" name="action_use_brush">
-          <label>&amp;Brush\tCtrl-b</label>
+        <object class="wxMenuItem" name="action_show_overlap">
+          <label>&amp;Show Overlap</label>
+          <help>Show overlapped region between selected images</help>
+        </object>
+        <object class="separator" />
+        <object class="wxMenuItem" name="action_draw_bstroke">
+          <label>&amp;Brush\tCtrl-B</label>
           <help>Create Mask from Brushstrokes</help>
         </object>
-        <object class="wxMenuItem" name="action_add_polygon_point">
+        <object class="wxMenuItem" name="action_draw_polygon">
           <label>&amp;Add point</label>
           <help>Add point in mask polygon</help>
         </object>

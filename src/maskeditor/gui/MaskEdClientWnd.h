@@ -41,6 +41,9 @@ public:
                      const wxString& name = wxT("splitter"));
     ~MaskEdClientWnd();
 
+    MaskEdEditWnd * getMaskEdEditWnd();
+    MaskEdPreviewWnd * getMaskEdPreviewWnd();
+
     void loadProject(const wxString &filename);
     void saveProject();                         //save the currently loaded project
     void saveProjectAs(const wxString &filename);
@@ -51,6 +54,7 @@ public:
     float getZoomLevel() const;
     wxString getFile() const;
     void setEditMode(MaskEdEditMode_t edmode);
+    void toggleShowOverlappedRect();
     
 };
 

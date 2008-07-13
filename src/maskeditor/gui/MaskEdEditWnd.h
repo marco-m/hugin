@@ -26,6 +26,7 @@
 
 #include <wx/wx.h>
 #include <vector>
+#include <map>
 #include "../core/BrushStroke.h"
 #include "../core/MaskPoly.h"
 #include "../core/MaskEdCommand.h"
@@ -36,12 +37,19 @@ class MaskEdEditWnd : public wxScrolledWindow
 {
     std::vector<wxBitmap*>  m_bimgs;            //local cache
     std::vector<std::string> m_imgfiles;
+    int                     m_max_width;
+    int                     m_max_height;
+    std::vector<wxPoint>    m_pos;
+    std::vector<wxPoint>    m_canvas_size;
+    std::vector<wxRect>     m_overlapped_rect;
     std::vector<bool>       m_selected;         //index of selected images
+    std::vector<int>        m_ordered_index;
     int                     m_active;           //index of image on which mask is drawn
     BrushStroke             m_brushstroke;
     MaskPoly                m_poly;
     float                   m_scale;
     int                     m_edmode;           //editing mode
+    bool                    m_bShowOverlappedRect;
 
     AppBase::CommandHistory<AppBase::Command<std::string> >   m_MaskEdCmdHist;
 
@@ -60,11 +68,14 @@ public:
     void loadImages(const std::vector<std::string> &filesv);
     void reloadImages();
 
-    void setDisplayImages(std::vector<bool> selection);
+    void findOverlappingRect(int i, int j, wxRect &rect);
+    void setDisplayImages(const std::map<int, std::pair<std::string, bool> > &selection);
+    void setSelectedImage(int index, bool state);
     void zoom(float scale = 1.0, wxRect region = wxRect());
     float getZoomLevel() const;
     
     void setEditMode(MaskEdEditMode_t edmode);
+    void toggleShowOverlappedRect();
 
     void OnPaint(wxPaintEvent &event);
     void OnMouseButtonDown(wxMouseEvent &event);

@@ -55,6 +55,17 @@ MaskEdClientWnd::~MaskEdClientWnd()
     delete m_MaskEdEditWnd;
     delete m_MaskEdPreviewWnd;
 }   
+
+MaskEdEditWnd* MaskEdClientWnd::getMaskEdEditWnd()
+{
+    return m_MaskEdEditWnd;
+}
+
+MaskEdPreviewWnd* MaskEdClientWnd::getMaskEdPreviewWnd()
+{
+    return m_MaskEdPreviewWnd;
+}
+
 void MaskEdClientWnd::loadProject(const wxString &filename)
 {
     
@@ -96,4 +107,9 @@ float MaskEdClientWnd::getZoomLevel() const
 void MaskEdClientWnd::setEditMode(MaskEdEditMode_t edmode)
 {
     m_MaskEdEditWnd->setEditMode(edmode);
+}
+
+void MaskEdClientWnd::toggleShowOverlappedRect()
+{
+    m_MaskEdEditWnd->toggleShowOverlappedRect();
 }
