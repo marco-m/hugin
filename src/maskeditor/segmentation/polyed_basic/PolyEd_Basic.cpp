@@ -58,7 +58,7 @@ void PolyEd_Basic::setRegion(vector<PixelCoord> coords, Label label)
     wxPoint *coords_pt = new wxPoint[coords.size()];
     copy(coords.begin(), coords.end(), coords_pt);
     dc.DrawPolygon(coords.size(), coords_pt);
-    delete coords_pt;
+    delete []coords_pt;
 }
 
 void PolyEd_Basic::setImage(unsigned char* data, int row, int col, int depth)

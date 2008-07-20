@@ -20,7 +20,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#include <vector>
+#include <string>
 #include "huginapp/ImageCache.h"
 #include "MaskEdApp.h"
 #include "MaskEdMainFrame.h"
@@ -29,6 +30,7 @@
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 
+using namespace std;
 using HuginBase::ImageCache;
 
 BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
@@ -54,8 +56,12 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
     EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
     EVT_BUTTON(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
+    EVT_MENU(XRCID("action_set_roi"), MaskEdMainFrame::OnSetROI)
+    EVT_BUTTON(XRCID("action_set_roi"), MaskEdMainFrame::OnSetROI)
     EVT_MENU(XRCID("action_show_overlap"), MaskEdMainFrame::OnShowOverlap)
     EVT_BUTTON(XRCID("action_show_overlap"), MaskEdMainFrame::OnShowOverlap)
+    EVT_COMBOBOX(XRCID("m_comboSegChoice"), MaskEdMainFrame::OnSegSelUpdate)
+    //EVT_SIZE(MaskEdMainFrame::OnSize)
 END_EVENT_TABLE()
 
 MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
@@ -65,8 +71,8 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
     wxXmlResource::Get()->LoadFrame(this, parent, wxT("MaskEdMainFrame"));
     
     SetMenuBar(wxXmlResource::Get()->LoadMenuBar(this, wxT("main_menubar")));
-
-    SetToolBar(wxXmlResource::Get()->LoadToolBar(this, wxT("main_toolbar")));
+    wxToolBar *tb = wxXmlResource::Get()->LoadToolBar(this, wxT("main_toolbar"));
+    SetToolBar(tb);
 
 #ifdef __WXMSW__
    wxIcon appIcon(MaskEdApp::getMaskEdApp()->getXRCPath() + wxT("data/mask_editor_icon_48x48.ico"), wxBITMAP_TYPE_ICO);
@@ -76,15 +82,23 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
     SetIcon(appIcon);
 
     wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
-
-    m_MaskEdClientWnd = new MaskEdClientWnd(this);
+    wxSize sz = GetClientSize();
+    m_MaskEdClientWnd = new MaskEdClientWnd(this, wxID_ANY, wxDefaultPosition,sz);
 
     topSizer->Add(m_MaskEdClientWnd, 1, wxEXPAND | wxALL | wxFIXED_MINSIZE);
 
     SetSizerAndFit(topSizer);
     
     MaskMgr::getInstance()->setSegmentationOption(0);
-
+	wxWindow *pWnd = tb;
+#ifdef __WXMSW__
+	pWnd = this;
+#endif
+    vector<string> options = MaskMgr::getInstance()->getSegmentationOptions();
+    for(vector<string>::iterator it = options.begin(); it != options.end(); it++)
+		XRCCTRL(*pWnd, "m_comboSegChoice", wxComboBox)->Append(wxString(it->c_str(), wxConvUTF8));
+	XRCCTRL(*pWnd, "m_comboSegChoice", wxComboBox)->SetValue(wxString(options[0].c_str(), wxConvUTF8));
+								     
     CreateStatusBar();
     SetStatusText(wxT("Ready"));
 }
@@ -94,6 +108,13 @@ MaskEdMainFrame::~MaskEdMainFrame()
     delete m_MaskEdClientWnd;
     //delete MaskMgr::getInstance();
     //delete ImageCache::getInstance();
+}
+
+void MaskEdMainFrame::OnSize(wxSizeEvent &event)
+{
+    wxSize sz = event.GetSize();
+    if(m_MaskEdClientWnd)
+        m_MaskEdClientWnd->SetSashPosition(sz.GetHeight()*0.75);
 }
 
 void MaskEdMainFrame::OnNewProject(wxCommandEvent &event)
@@ -201,7 +222,22 @@ void MaskEdMainFrame::OnZoomOut(wxCommandEvent &event)
     m_MaskEdClientWnd->zoom(m_scale);
 }
 
+void MaskEdMainFrame::OnSetROI(wxCommandEvent &event)
+{
+
+}
+
 void MaskEdMainFrame::OnShowOverlap(wxCommandEvent &event)
 {
     m_MaskEdClientWnd->toggleShowOverlappedRect();
+}
+
+void MaskEdMainFrame::OnSegSelUpdate(wxCommandEvent &event)
+{
+    wxWindow *pWnd = GetToolBar();
+#ifdef __WXMSW__
+    pWnd = this;
+#endif
+   int ichoice = XRCCTRL(*pWnd, "m_comboSegChoice", wxComboBox)->GetSelection();
+   MaskMgr::getInstance()->setSegmentationOption(ichoice);    
 }

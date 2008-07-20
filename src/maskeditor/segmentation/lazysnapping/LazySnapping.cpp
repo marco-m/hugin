@@ -27,13 +27,14 @@
 #include "KMlocal/KMlocal.h"
 #include "watershed.cxx"
 
+#define INF     1000000
 using namespace std;
 using HuginBase::ImageCache;
 
 #define SAFE_DELETE(x) { if(x) delete x; x = 0; }
 #define SAFE_DELETE_ARRAY(x) { if(x) delete [] x; x = 0; }
 
-double SQR(double x) { return x * x; }
+inline double SQR(double x) { return x * x; }
 /**
  * General utility functions
  */
@@ -46,19 +47,17 @@ bool operator<(const LazySnapping::ClusterCoord<T,CDIM> &a, const LazySnapping::
     return true;
 }
 /**
- *
+ * LazySnapping Implementation
  */
 LazySnapping::LazySnapping() 
 : m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
-m_cluster_asgn(0)
+m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0)
 {
     m_name = "LazySnapping";
 }
 LazySnapping::LazySnapping(const string &filename) 
 : m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
-m_cluster_asgn(0)
+m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0)
 {
     m_name = "LazySnapping";
     setImage(filename);
@@ -73,6 +72,8 @@ void LazySnapping::init()
     if(m_width > 0 && m_height > 0)
     {
         m_mask = new wxBitmap(m_width, m_height, 1);
+        /*SAFE_DELETE(m_tmp_bmp);
+        m_tmp_bmp = new wxBitmap(m_width, m_height, 1);*/
         preprocess();
         buildGraph();
         wxMemoryDC dc(*m_mask);
@@ -92,7 +93,6 @@ void LazySnapping::reset()
     SAFE_DELETE_ARRAY(m_nodes);
     SAFE_DELETE(m_graph);
     SAFE_DELETE_ARRAY(m_data);
-    SAFE_DELETE_ARRAY(m_cluster_asgn);
 }
 
 void LazySnapping::getRC(int p, int *r, int *c) const
@@ -101,80 +101,28 @@ void LazySnapping::getRC(int p, int *r, int *c) const
     *c = p%m_width;
 }
 
+int LazySnapping::getIndex(int r, int c) const
+{
+    return r * m_width + c;
+}
+
 void LazySnapping::preprocess()
 {
-    int i,j;
-    //create clusters
     m_cnodes = m_width * m_height;
-    ClusterCoordType *data = new ClusterCoordType[m_cnodes * CLUSTERCOORDDIM];
-    //assert(m_depth == 3);
-    //for(i = 0; i < m_cnodes; i++)
-    //{
-    //    *(data + i * CLUSTERCOORDDIM) = (ClusterCoordType) *(m_data + i * m_depth);
-    //    *(data + i * CLUSTERCOORDDIM + 1) = (ClusterCoordType) *(m_data + i * m_depth + 1);
-    //    *(data + i * CLUSTERCOORDDIM + 2) = (ClusterCoordType) *(m_data + i * m_depth + 2);
-    //    //*(data + i * CLUSTERCOORDDIM + 3) = (ClusterCoordType) r;
-    //    //*(data + i * CLUSTERCOORDDIM + 4) = (ClusterCoordType) c;
-    //}
-
-    /*KMeans<ClusterCoordType> kmeans(data, m_width * m_height, CLUSTERCOORDDIM, m_nclusters);
-    ClusterCoordType *clusters = 0;
-    kmeans.doClustering(&clusters, &m_cluster_asgn);
-    m_clusters.clear();
-    for(i = 0; i < m_nclusters; i++)
-    {
-        m_clusters.push_back(
-            make_pair(
-            ClusterCoord<ClusterCoordType,CLUSTERCOORDDIM>((clusters + i * CLUSTERCOORDDIM)), 
-            NOLABEL)
-            );
-    }*/
-    KMterm term(100, 0, 0, 0, 0.10, 0.10, 3, 0.50, 10, 0.95);
-    KMdata dataPts(CLUSTERCOORDDIM, m_cnodes);
-    //kmUniformPts(dataPts.getPts(), m_cnodes, CLUSTERCOORDDIM);
-    KMpointArray	pa = dataPts.getPts();
-    //fillup the points
-    int r, c;
-    for(i = 0; i < m_cnodes; i++)
-    {
-        pa[i][0] = (KMcoord) *(m_data + i * m_depth);
-        pa[i][1] = (KMcoord) *(m_data + i * m_depth + 1);
-        pa[i][2] = (KMcoord) *(m_data + i * m_depth + 2);
-        getRC(i, &r, &c);
-        pa[i][3] = (KMcoord) r;
-        pa[i][4] = (KMcoord) c;
-    }
-    dataPts.buildKcTree();
-    KMfilterCenters ctrs(m_nclusters, dataPts);
-    KMlocalLloyds   kmAlg(ctrs, term);
-    ctrs = kmAlg.execute();
-    m_cluster_asgn = new int[m_cnodes];
-    m_cluster_sqDist = new double[m_cnodes];
-    ctrs.getAssignments(m_cluster_asgn, m_cluster_sqDist);
-    KMcenterArray pctrs = ctrs.getCtrPts();
-    m_clusters.clear();
-    for(i = 0; i < m_nclusters; i++)
-    {
-        m_clusters.push_back(
-            make_pair(
-            ClusterCoord<ClusterCoordType,CLUSTERCOORDDIM>(pctrs[i]), 
-            NOLABEL)
-            );
-    }
 }
 
 PixelColor LazySnapping::getPixelValue(int p) const 
 {
     PixelColor color;
-    color.r = m_data[p];
-    color.g = m_data[p + 1];
-    color.b = m_data[p + 2];
+    color.r = *(m_data + p * m_depth);
+    color.g = *(m_data + p * m_depth + 1);
+    color.b = *(m_data + p * m_depth + 2);
     return color;
 }
 
 PixelColor LazySnapping::getPixelValue(int r, int c) const 
 {
-    return getPixelValue( (r * m_width + c) * m_depth );
+    return getPixelValue( (r * m_width + c) );
 }
 
 PixelColor LazySnapping::getPixelValue(wxPoint pt) const 
@@ -218,7 +166,7 @@ int LazySnapping::getNeighbor(int p, int n)
                  1,  1,
                  1,  0,
                  1, -1,
-                 /*0, -1,
+               /*0, -1,
                 -1, -1,
                 -1,  0,
                 -1,  1,*/};
@@ -236,8 +184,7 @@ LazySnapping::captype LazySnapping::computePrior(int p, int q)
 {
     //return exp(-getDistSqrPixelIntensity(p, q)/(2*m_sigma*m_sigma)) * (1.0/getDistPixel(p,q));
     double d = getDistSqrPixelIntensity(p, q);
-    if(fabs(d) < 1e-16) return 255*2; //
-    return 1.0/d;
+    return 1.0/(d + 1.0);
 }
 
 void LazySnapping::computeLikelihood(int p, captype &f, captype &b)
@@ -251,17 +198,19 @@ void LazySnapping::computeLikelihood(int p, captype &f, captype &b)
     PixelColor clr = getPixelValue(p);
     //ClusterCoordType pp[CLUSTERCOORDDIM] = {clr.r, clr.g, clr.b};
     ClusterCoord<ClusterCoordType> cc(clr, r, c);
-    for(tCluster::iterator it = m_clusters.begin(); it != m_clusters.end(); it++)
+    for(tCluster::iterator it = m_fgnd_clusters.begin(); it != m_fgnd_clusters.end(); it++)
     {
         //d = getDistSqrPixel(it->first, pp);
         //d = EuclideanDistSqr<ClusterCoord<ClusterCoordType>, double>(&(it->first), &cc, CLUSTERCOORDDIM);
-        d = cc.getDistSqr(it->first);
-        if(it->second == FGND) {
-            if(df < 0 || d < df)
-                df = d;
-        } else if(db < 0 || d < db) {
-            db = d;
-        }
+        d = cc.getDistSqr(*it);
+        if(df < 0 || d < df)
+           df = d;
+    }
+    for(tCluster::iterator it = m_bkgnd_clusters.begin(); it != m_bkgnd_clusters.end(); it++)
+    {
+        d = cc.getDistSqr(*it);
+        if(db < 0 || d < db)
+           db = d;
     }
     //df = sqrt(df);
     //db = sqrt(db);
@@ -281,24 +230,72 @@ void LazySnapping::buildGraph()
         m_nodes[i] = m_graph->add_node();
 
     captype cap, rev_cap;
+    m_K = -1;
     for(i = 0; i < m_cnodes; i++)
         for(n = 0; n < 4; n++)
            if((j = getNeighbor(i, n)) > -1)
             {
-                cap = rev_cap = computePrior(i, j);
+                cap = rev_cap = m_lambda * computePrior(i, j);
                 if(m_K < 0 || cap > m_K)
                     m_K = cap;
                 m_graph->add_edge(m_nodes[i], m_nodes[j], cap, rev_cap);
             }
 }
 
+void LazySnapping::getPixelsOnLine(const vector<PixelCoord> coords, vector<PixelCoord> &line)
+{
+    wxPoint pa,pb;
+    int dx, dy;
+    float m, t;
+    vector<PixelCoord>::const_iterator it = coords.begin();
+    pa = *it;
+    for(it++; it != coords.end(); it++)
+    {
+        line.push_back(pa);
+        pb = *it;        
+        //DDA line drawing algorithm
+        pa.y = m_height - pa.y;
+        pb.y = m_height - pb.y;
+        dx = pb.x - pa.x;
+        dy = pb.y - pa.y; // y coord: m_height - y;
+        t = 0.5;
+        if(abs(dx) > abs(dy)) {
+            m = dy /(float) dx;
+            dx = dx < 0 ? -1 : 1;
+            m *= dx;
+            t += pa.y;
+            while(pa.x != pb.x)
+            {
+                pa.x += dx;
+                t += m;
+                line.push_back(wxPoint(pa.x, m_height - t));
+            }
+        } else if(dy != 0) {
+            m = dx /(float) dy;
+            dy = dy < 0 ? -1 : 1;
+            m *= dy;
+            t += pa.x;
+            while(pa.y != pb.y)
+            {
+                pa.y += dy;
+                t += m;
+                line.push_back(wxPoint(t, m_height - pa.y));
+            }
+        }
+        //
+        pa = pb;
+    }
+}
+
 void LazySnapping::markPixels(vector<PixelCoord> coords, Label label)
 {
+    vector<PixelCoord> newcoords;
     for(vector<PixelCoord>::iterator it = coords.begin(); it != coords.end(); it++)
     {
         if(m_seeds.find(*it) == m_seeds.end()) //if the pixel wasn't previously marked
         {
             m_seeds[*it] = label;
+            newcoords.push_back(*it);
             //update stats
             PixelColor p = getPixelValue(*it);
             if(label == BKGND) {
@@ -313,23 +310,82 @@ void LazySnapping::markPixels(vector<PixelCoord> coords, Label label)
                     m_fgnd[p] = 0;
             }
             //mark clusters
-            markCluster(*it, label); /*pc = findCluster(*it);*/
+            //markCluster(*it, label); /*pc = findCluster(*it);*/
         }
-    }   
+    }  
+    //update cluster
+    updateCluster(newcoords, label);
+
+    if(m_fgnd_seeds.empty() || m_bkgnd_seeds.empty()) return;
+
     //update graph
-    updateGraph(coords, label);
+    updateGraph(newcoords, label);
 
     //perform segmentation
     segment();
 }
 
-void LazySnapping::markCluster(PixelCoord p, Label label)
+void LazySnapping::assignPoints(KMdata &dataPts, const vector<PixelCoord> &seeds)
 {
-    int i = p.y * m_width + p.x;
-    if(m_clusters[m_cluster_asgn[i]].second == NOLABEL)
-        m_clusters[m_cluster_asgn[i]].second = label;
-    else if(m_clusters[m_cluster_asgn[i]].second != label)
-        assert(0);
+    KMpointArray	pa = dataPts.getPts();
+    int i,j;
+    i = 0;
+    for(vector<PixelCoord>::const_iterator it = seeds.begin(); it != seeds.end(); it++, i++)
+    {
+        j = it->y * m_width + it->x;
+        pa[i][0] = (KMcoord) *(m_data + j * m_depth);
+        pa[i][1] = (KMcoord) *(m_data + j * m_depth + 1);
+        pa[i][2] = (KMcoord) *(m_data + j * m_depth + 2);
+        if(CLUSTERCOORDDIM == 5) {
+            pa[i][3] = (KMcoord) it->y;
+            pa[i][4] = (KMcoord) it->x;
+        }
+    } 
+}
+
+void LazySnapping::updateCluster(vector<PixelCoord> coords, Label label)
+{
+    if(label == FGND) {
+        copy(coords.begin(), coords.end(), back_insert_iterator<vector<PixelCoord> >(m_fgnd_seeds));
+        updateCluster(m_fgnd_seeds, m_fgnd_clusters);
+    } else {
+        copy(coords.begin(), coords.end(), back_insert_iterator<vector<PixelCoord> >(m_bkgnd_seeds));
+        updateCluster(m_bkgnd_seeds, m_bkgnd_clusters);
+    }
+}
+
+void LazySnapping::updateCluster(std::vector<PixelCoord> &seeds, LazySnapping::tCluster &clusters)
+{
+    if(seeds.empty()) 
+        return;
+    KMterm term(100, 0, 0, 0, 0.10, 0.10, 3, 0.50, 10, 0.95);
+
+    KMdata dataPts(CLUSTERCOORDDIM, seeds.size());
+
+    //fillup the points
+    assignPoints(dataPts, seeds);
+    
+    dataPts.buildKcTree();
+
+    KMfilterCenters ctrs(m_nclusters, dataPts);
+
+    KMlocalLloyds   kmAlg(ctrs, term);
+    
+    ctrs = kmAlg.execute();
+    
+    //m_cluster_asgn = new int[m_cnodes];
+    //m_cluster_sqDist = new double[m_cnodes];
+    //ctrs.getAssignments(m_cluster_asgn, m_cluster_sqDist);
+    
+    clusters.clear();
+    
+    KMcenterArray pctrs = ctrs.getCtrPts();
+    
+    for(int i = 0; i < m_nclusters; i++)
+    {
+        clusters.push_back(
+            ClusterCoord<ClusterCoordType,CLUSTERCOORDDIM>(pctrs[i]));
+    }
 }
 
 void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
@@ -340,9 +396,9 @@ void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
     {
         i = (*it).y * m_width + (*it).x;
         if(label == FGND) {
-            m_graph->add_tweights(m_nodes[i], m_K, 0);
+            m_graph->set_tweights(m_nodes[i], INF, 0);
         } else {
-            m_graph->add_tweights(m_nodes[i], 0, m_K);
+            m_graph->set_tweights(m_nodes[i], 0, INF);
         }
     }
     
@@ -352,7 +408,7 @@ void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
         PixelCoord p(c, r);
         if(m_seeds.find(p) == m_seeds.end()) { //if current pixel is not marked as seed
             computeLikelihood(i, f, b);
-            m_graph->add_tweights(m_nodes[i], f, b);
+            m_graph->add_tweights(m_nodes[i], b, f);
         }
     }
 }
@@ -360,7 +416,7 @@ void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
 void LazySnapping::segment()
 {
     Graph::flowtype flow = m_graph->maxflow();
-    //go through each node and find out what segment it is in
+    //go through each node and find out the segment it is in
     for(int i = 0; i < m_cnodes; i++)
     {
         if(m_graph->what_segment(m_nodes[i]) == Graph::SOURCE) {
@@ -376,16 +432,37 @@ void LazySnapping::setMask(int node, Label label)
     int r, c;
     getRC(node, &r, &c);
     wxMemoryDC dc(*m_mask);
-    if(label == BKGND)
+    assert(dc.IsOk());
+    wxPen pen = dc.GetPen();
+    wxBrush brush = dc.GetBrush();
+    if(label == FGND) {
         dc.SetPen(*wxBLACK);
-    else
+        dc.SetBrush(*wxBLACK);
+    }else {
         dc.SetPen(*wxWHITE);
+        dc.SetBrush(*wxWHITE);
+    }
     dc.DrawPoint(c, r);
+    //dc.DrawCircle(c, r, 5);
+    dc.SetPen(pen);
+    dc.SetBrush(brush);
     assert(dc.IsOk());
 }
 
 void LazySnapping::setRegion(vector<PixelCoord> coords, Label label)
-{}
+{
+    wxMemoryDC dc(*m_mask);
+    assert(dc.IsOk());
+    
+    if(label == ISegmentation::FGND)
+        dc.SetBrush(*wxBLACK_BRUSH);
+    else
+        dc.SetBrush(*wxWHITE_BRUSH);
+    wxPoint *coords_pt = new wxPoint[coords.size()];
+    copy(coords.begin(), coords.end(), coords_pt);
+    dc.DrawPolygon(coords.size(), coords_pt);
+    delete []coords_pt;
+}
 void LazySnapping::setImage(unsigned char* data, int row, int col, int depth)
 {
     reset();

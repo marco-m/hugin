@@ -30,8 +30,8 @@
 #include "KMlocal/KMlocal.h"
 
 const double SIGMA = 2.0f;
-const double LAMBDA = 1.0f;
-const int    NCLUSTERS = 64;
+const double LAMBDA = 66.0f;
+const int    NCLUSTERS = 8; //64
 const int    CLUSTERCOORDDIM = 5; // 3:RGB, 5:RGB + (r,c)
 
 class LazySnapping : public ISegmentation
@@ -39,6 +39,7 @@ class LazySnapping : public ISegmentation
     typedef float captype;
 
     wxBitmap *m_mask;
+    //wxBitmap *m_tmp_bmp;         //used for drawing lines and getting all pixel from it
     HuginBase::ImageCache::ImageCacheRGB8Ptr m_img;
     unsigned char *m_data;
     std::vector<wxPoint> m_outline;
@@ -53,6 +54,7 @@ class LazySnapping : public ISegmentation
     typedef std::map<PixelColor, int> tObjColorMap;
     tSeed   m_seeds;
     tObjColorMap m_fgnd, m_bkgnd;
+    std::vector<PixelCoord> m_fgnd_seeds, m_bkgnd_seeds;
 
     typedef KMcoord ClusterCoordType;
     template<typename T, int CDIM = CLUSTERCOORDDIM>
@@ -111,11 +113,12 @@ class LazySnapping : public ISegmentation
         }
     };
     //typedef std::map<ClusterCoord<ClusterCoordType>, ISegmentation::Label> tCluster;
-    typedef std::vector<std::pair<ClusterCoord<ClusterCoordType>, ISegmentation::Label> > tCluster;
-    tCluster m_clusters;        //centers of clusters
-    int     *m_cluster_asgn;    //datapoint assignment to a cluster
+    //typedef std::vector<std::pair<ClusterCoord<ClusterCoordType>, ISegmentation::Label> > tCluster;
+    typedef std::vector<ClusterCoord<ClusterCoordType> > tCluster;
+    tCluster m_fgnd_clusters, m_bkgnd_clusters;        //centers of clusters
+    //int     *m_cluster_asgn;    //datapoint assignment to a cluster
     int      m_nclusters;
-    double  *m_cluster_sqDist;
+    //double  *m_cluster_sqDist;
 
     void    watershed();
     void    preprocess();
@@ -124,9 +127,10 @@ class LazySnapping : public ISegmentation
     void    segment();                      //perform segmentation
     void    setMask(int node, Label label);
 
-    //int findCluster(int p);              //finds the cluster that contains pixel p
-    //ClusterCoord findCluster(ClusterCoord p);
-    void    markCluster(PixelCoord p, Label label); //mark the cluster containing pixel p with label l
+    void    updateCluster(vector<PixelCoord> coords, Label label);
+    void    updateCluster(vector<PixelCoord> &seeds, tCluster &cluster);
+    void    assignPoints(KMdata &dataPts, const std::vector<PixelCoord> &seeds);
+    void    getPixelsOnLine(const vector<PixelCoord> coords, vector<PixelCoord> &line);
 
     void    buildGraph();
     void    updateGraph(std::vector<PixelCoord> coords, Label label);
@@ -135,6 +139,7 @@ class LazySnapping : public ISegmentation
     double  getDistSqrPixel(int p, int q) const;
     double  getDistPixel(int p, int q) const;
     double  getDistSqrPixelIntensity(int p, int q) const;
+    int     getIndex(int r, int c) const;
     void    getRC(int p, int *r, int *c) const;
     PixelColor getPixelValue(int p) const;
     PixelColor getPixelValue(int r, int c) const;

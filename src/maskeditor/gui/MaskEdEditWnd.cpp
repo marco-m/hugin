@@ -162,11 +162,11 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
     int x,y;
     x = GetScrollPos(wxSB_HORIZONTAL);
     y = GetScrollPos(wxSB_VERTICAL);
-    int i = 0;
+    int i = m_bimgs.size() - 1;
     int lastDrawn = -1;
     //dc.SetDeviceOrigin(-x, -y);
-    //dc.SetUserScale(m_scale, m_scale);
-    for(vector<wxBitmap*>::iterator it = m_bimgs.begin(); it != m_bimgs.end(); it++, i++)
+    dc.SetUserScale(m_scale, m_scale);
+    for(vector<wxBitmap*>::reverse_iterator it = m_bimgs.rbegin(); it != m_bimgs.rend(); it++, i--)
     {
         if(!m_selected[i]) continue;
         dc.DrawBitmap(**it, -x + m_pos[i].x, -y + m_pos[i].y, true); 
@@ -227,6 +227,7 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
     {
         m_brushstroke.label = ISegmentation::FGND;
         m_MaskEdCmdHist.addCommand(new BrushStrokeCmd(MaskMgr::getInstance(), m_brushstroke, m_active));
+        reloadImages();
         m_brushstroke.clear();
     }
     else if(m_edmode == ME_POLY) {
@@ -247,6 +248,7 @@ void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
     {
         m_brushstroke.label = ISegmentation::BKGND;
         m_MaskEdCmdHist.addCommand(new BrushStrokeCmd(MaskMgr::getInstance(), m_brushstroke, m_active));
+        reloadImages();
         m_brushstroke.clear();
     }
     else if(m_edmode == ME_POLY) {
@@ -270,14 +272,16 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
         {
             wxClientDC dc(this);
             //DoPrepareDC(dc);
+            wxPen oldpen = dc.GetPen();
             wxPen *pen;
+
             if(event.LeftIsDown())
                 pen = new wxPen(*wxRED, 1);
             else 
                 pen = new wxPen(*wxBLUE, 1);
             dc.SetPen(*pen);
             dc.DrawLine(m_brushstroke.pt.back() - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
-            dc.SetPen(wxNullPen);
+            dc.SetPen(oldpen);
         }
         m_brushstroke.pt.push_back(event.GetPosition() + wxPoint(x, y) - m_pos[m_active]);
     }
@@ -293,7 +297,7 @@ void MaskEdEditWnd::reloadImages()
 void MaskEdEditWnd::zoom(float scale, wxRect region)
 {
     m_scale = scale;
-    reloadImages();
+    //reloadImages();
     //SetScrollbars( 1, 1, m_bimgs[0]->GetWidth()*m_scale, m_bimgs[0]->GetHeight()*m_scale);
     Refresh();
 }

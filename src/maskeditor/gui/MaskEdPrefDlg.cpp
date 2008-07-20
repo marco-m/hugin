@@ -37,7 +37,8 @@ MaskEdPrefDlg::MaskEdPrefDlg(wxWindow *parent)
     vector<string> options = MaskMgr::getInstance()->getSegmentationOptions();
     for(vector<string>::iterator it = options.begin(); it != options.end(); it++)
         XRCCTRL(*this, "m_comboSegChoice", wxComboBox)->Append(wxString(it->c_str(), wxConvUTF8));
-    XRCCTRL(*this, "m_comboSegChoice", wxComboBox)->SetValue(wxString(options.front().c_str(), wxConvUTF8));
+    int index = MaskMgr::getInstance()->getSegmentationOptionSelected();
+    XRCCTRL(*this, "m_comboSegChoice", wxComboBox)->SetValue(wxString(options[index].c_str(), wxConvUTF8));
 }
 
 MaskEdPrefDlg::~MaskEdPrefDlg() {}

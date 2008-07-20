@@ -57,11 +57,23 @@
         <bitmap>data/poly.png</bitmap>
       </object>
       <object class="separator" />
+      <object class="tool" name="action_set_roi">
+        <label>tool</label>
+        <tooltip>Set Region of Interest</tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/roi.png</bitmap>
+      </object>
       <object class="tool" name="action_show_overlap">
         <label>tool</label>
         <tooltip>Show overlapped region between selected images</tooltip>
         <longhelp></longhelp>
         <bitmap>data/rectoverlap.png</bitmap>
+      </object>
+      <object class="separator" />
+      <object class="wxComboBox" name="m_comboSegChoice">
+        <style>wxCB_DROPDOWN|wxCB_READONLY</style>
+        <value></value>
+        <content />
       </object>
     </object>
  </resource>

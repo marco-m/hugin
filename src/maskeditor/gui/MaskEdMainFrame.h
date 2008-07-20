@@ -53,8 +53,11 @@ public:
     void OnAbout(wxCommandEvent& event);
     void OnZoomIn(wxCommandEvent& event);
     void OnZoomOut(wxCommandEvent& event);
+    void OnSetROI(wxCommandEvent& event);
     void OnShowOverlap(wxCommandEvent& event);
+    void OnSegSelUpdate(wxCommandEvent& event);
 
+    void OnSize(wxSizeEvent& event);
     void OnMotion(wxMouseEvent& event);
     //void OnPaint(wxPaintEvent& event);
 

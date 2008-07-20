@@ -87,6 +87,11 @@ vector<string> MaskMgr::getSegmentationOptions()
     return m_segmentation_options;
 }
 
+int MaskMgr::getSegmentationOptionSelected() const 
+{
+    return m_segmentation_index;
+}
+
 void MaskMgr::loadImage(const string &filename)
 {
     ImageCache::getInstance().getImage(filename);

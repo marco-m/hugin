@@ -48,6 +48,7 @@ public:
     ISegmentation* getSegmentation(int index); //get the segmentation instance used for a particular input image
     ISegmentation* getSegmentation(const std::string &filename);
     std::vector<std::string> getSegmentationOptions();
+    int getSegmentationOptionSelected() const;
     void loadPTOFile(const std::string &filename);
     void loadImages(const std::vector<std::string> &filesv);
     void loadImage(const std::string &filename);
