@@ -28,7 +28,7 @@ class PreviewPanel;
 class wxToolBar;
 class wxToggleButton;
 class wxCheckBox;
-
+class MaskEdClientWnd;
 /** The image preview frame
  *
  *  Contains the ImagePreviewPanel and various controls for it.
@@ -53,9 +53,14 @@ public:
     void OnUpdate(wxCommandEvent& event);
     
     void updateProgressDisplay();
+    void initPreviewMode();
+    void setPreviewMode();
+    void setMaskEditorMode();
 protected:
     void OnClose(wxCloseEvent& e);
 
+    void OnMaskEditor(wxCommandEvent & e);
+    void OnExitMaskEditor(wxCommandEvent &e);
     void OnChangeDisplayedImgs(wxCommandEvent & e);
     void OnAutoPreviewToggle(wxCommandEvent & e);
     void OnCenterHorizontally(wxCommandEvent & e);
@@ -81,6 +86,7 @@ private:
 
     PT::Panorama & m_pano;
 
+    MaskEdClientWnd *m_MaskEdClientWnd;
     PreviewPanel * m_PreviewPanel;
     wxToolBar * m_ToolBar;
     wxSlider * m_HFOVSlider;

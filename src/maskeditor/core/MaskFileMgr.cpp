@@ -26,10 +26,11 @@
 #include <fstream>
 #include <sstream>
 #include <exception>
+#include "hugin_utils/utils.h"
 #include "MaskFileMgr.h"
 
 using namespace std;
-
+using namespace hugin_utils;
 MaskFileMgr* MaskFileMgr::m_instance = 0;
 
 MaskFileMgr::MaskFileMgr() {}
@@ -53,11 +54,8 @@ void MaskFileMgr::loadFile(std::string filename)
 {
     if(filename.empty())
         throw;// exception("invalid filename");
-    wxString path(filename.c_str(), wxConvUTF8);
-    wxString prefix;
+    string strprefix = hugin_utils::getPathPrefix(filename) + "/";
     
-    wxFileName::SplitPath(path, &prefix, NULL, NULL);
-    string   strprefix = string(prefix.mb_str()) + "/";
     init();
     try
     {

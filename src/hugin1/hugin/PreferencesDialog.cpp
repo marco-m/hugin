@@ -199,12 +199,12 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
     XRCCTRL(*this, "prefs_AutoPanoSIFTExe_custom", wxCheckBox)->Hide();
     cfg->Write(wxT("/AutoPanoSift/AutopanoExeCustom"), HUGIN_APSIFT_EXE_CUSTOM);
 
-    MY_BOOL_VAL("prefs_enblend_Custom", false);
+    MY_BOOL_VAL("prefs_enblend_Custom", HUGIN_ENBLEND_EXE_CUSTOM);
     XRCCTRL(*this, "prefs_enblend_Custom", wxCheckBox)->Hide();
     cfg->Write(wxT("/Enblend/Custom"), HUGIN_ENBLEND_EXE_CUSTOM);
 
-    MY_BOOL_VAL("prefs_enblend_enfuseCustom", false);
-    XRCCTRL(*this, "prefs_AutoPanoSIFTExe_custom", wxCheckBox)->Hide();
+    MY_BOOL_VAL("prefs_enblend_enfuseCustom", HUGIN_ENFUSE_EXE_CUSTOM);
+    XRCCTRL(*this, "prefs_enblend_enfuseCustom", wxCheckBox)->Hide();
     cfg->Write(wxT("/Enfuse/Custom"), HUGIN_ENFUSE_EXE_CUSTOM);    
 #endif
 
@@ -226,6 +226,7 @@ PreferencesDialog::~PreferencesDialog()
 
     DEBUG_TRACE("end dtor");
 }
+
 
 void PreferencesDialog::OnApply(wxCommandEvent & e)
 {
@@ -311,7 +312,7 @@ void PreferencesDialog::OnEnblendExe(wxCommandEvent & e)
 #ifdef __WXMSW__
 		     _("Executables (*.exe)|*.exe"),
 #else
-		     wxT(""),
+		     wxT("*"),
 #endif
                     wxOPEN, wxDefaultPosition);
     if (dlg.ShowModal() == wxID_OK) {
@@ -327,7 +328,7 @@ void PreferencesDialog::OnEnfuseExe(wxCommandEvent & e)
 #ifdef __WXMSW__
 		     _("Executables (*.exe)|*.exe"),
 #else
-		     wxT(""),
+		     wxT("*"),
 #endif
                     wxOPEN, wxDefaultPosition);
     if (dlg.ShowModal() == wxID_OK) {
@@ -964,5 +965,6 @@ void PreferencesDialog::UpdateConfigData()
     cfg->Write(wxT("/Enfuse/Exe"), MY_G_STR_VAL("prefs_enblend_EnfuseExe"));
     cfg->Write(wxT("/Enfuse/Args"), MY_G_STR_VAL("prefs_enblend_EnfuseArgs"));
 
+    cfg->Flush();
     UpdateDisplayData(0);
 }

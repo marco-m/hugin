@@ -44,6 +44,7 @@
 #include "hugin/PreviewPanel.h"
 #include "hugin/ImagesPanel.h"
 #include "hugin/CommandHistory.h"
+#include "MaskEdClientWnd.h"
 
 #include <vigra_ext/ImageTransforms.h>
 
@@ -83,6 +84,8 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
     EVT_TOOL(XRCID("preview_show_all_tool"), PreviewFrame::OnShowAll)
     EVT_TOOL(XRCID("preview_show_none_tool"), PreviewFrame::OnShowNone)
     EVT_TOOL(XRCID("preview_num_transform"), PreviewFrame::OnNumTransform)
+    EVT_TOOL(XRCID("preview_mask_editor"), PreviewFrame::OnMaskEditor)
+    EVT_TOOL(XRCID("action_exit_maskeditor"), PreviewFrame::OnExitMaskEditor)
     EVT_TEXT_ENTER( -1 , PreviewFrame::OnTextCtrlChanged)
 
     EVT_BUTTON(ID_EXPOSURE_DEFAULT, PreviewFrame::OnDefaultExposure)
@@ -119,8 +122,43 @@ PreviewFrame::PreviewFrame(wxFrame * frame, PT::Panorama &pano)
 
     m_topsizer = new wxBoxSizer( wxVERTICAL );
 
+    // create our preview panel
+    m_PreviewPanel = new PreviewPanel();
+    m_PreviewPanel->Create(this);
+    m_PreviewPanel->Init(this, &m_pano);
+
+    //create mask editor client window
+    wxSize sz = GetClientSize();
+    //m_MaskEdClientWnd = new MaskEdClientWnd(this, wxID_ANY, wxDefaultPosition, sz);
+
+    initPreviewMode();    
+}
+
+PreviewFrame::~PreviewFrame()
+{
+    DEBUG_TRACE("dtor writing config");
+    wxConfigBase * config = wxConfigBase::Get();
+    wxSize sz = GetClientSize();
+
+    StoreFramePosition(this, wxT("PreviewFrame"));
+
+    if ( (!this->IsIconized()) && (! this->IsMaximized()) && this->IsShown()) {
+        config->Write(wxT("/PreviewFrame/isShown"), 1l);
+    } else {
+        config->Write(wxT("/PreviewFrame/isShown"), 0l);
+    }
+
+    bool checked = m_ToolBar->GetToolState(XRCID("preview_auto_update_tool"));
+    config->Write(wxT("/PreviewFrame/autoUpdate"), checked ? 1l: 0l);
+    config->Write(wxT("/PreviewFrame/blendMode"), m_BlendModeChoice->GetSelection());
+    m_pano.removeObserver(this);
+    DEBUG_TRACE("dtor end");
+}
+
+void PreviewFrame::initPreviewMode()
+{
     m_ToggleButtonSizer = new wxStaticBoxSizer(
-        new wxStaticBox(this, -1, _("displayed images")),
+          new wxStaticBox(this, -1, _("displayed images")),
     wxHORIZONTAL );
 
 	m_ButtonPanel = new wxScrolledWindow(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
@@ -139,11 +177,6 @@ PreviewFrame::PreviewFrame(wxFrame * frame, PT::Panorama &pano)
     wxFlexGridSizer * flexSizer = new wxFlexGridSizer(2,0,5,5);
     flexSizer->AddGrowableCol(0);
     flexSizer->AddGrowableRow(0);
-
-    // create our preview panel
-    m_PreviewPanel = new PreviewPanel();
-    m_PreviewPanel->Create(this);
-    m_PreviewPanel->Init(this, &pano);
 
     flexSizer->Add(m_PreviewPanel,
                   1,        // not vertically stretchable
@@ -301,8 +334,6 @@ PreviewFrame::PreviewFrame(wxFrame * frame, PT::Panorama &pano)
 
     m_topsizer->Add(blendModeSizer, 0, wxEXPAND | wxALL, 5);
 
-    
-    
 #ifdef HasPANO13
     m_projParamSizer = new wxStaticBoxSizer(
     new wxStaticBox(this, -1, _("Projection Parameters")),
@@ -385,25 +416,35 @@ PreviewFrame::PreviewFrame(wxFrame * frame, PT::Panorama &pano)
 
 }
 
-PreviewFrame::~PreviewFrame()
+void PreviewFrame::setMaskEditorMode()
 {
-    DEBUG_TRACE("dtor writing config");
-    wxConfigBase * config = wxConfigBase::Get();
-    wxSize sz = GetClientSize();
 
-    StoreFramePosition(this, wxT("PreviewFrame"));
+}
 
-    if ( (!this->IsIconized()) && (! this->IsMaximized()) && this->IsShown()) {
-        config->Write(wxT("/PreviewFrame/isShown"), 1l);
-    } else {
-        config->Write(wxT("/PreviewFrame/isShown"), 0l);
-    }
+void PreviewFrame::OnMaskEditor(wxCommandEvent & e)
+{
+    m_HFOVSlider->Hide();
+    m_VFOVSlider->Hide();
+    SetTitle(wxT("Mask Editor Mode"));
+    delete m_ToolBar;
+    m_ToolBar = wxXmlResource::Get()->LoadToolBar(this, wxT("masked_main_toolbar"));
+    DEBUG_ASSERT(m_ToolBar);
+    // create tool bar
+    SetToolBar(m_ToolBar);
+    /*m_topsizer->Hide(m_topsizer, true);
+    m_topsizer->Layout();*/
+}
 
-    bool checked = m_ToolBar->GetToolState(XRCID("preview_auto_update_tool"));
-    config->Write(wxT("/PreviewFrame/autoUpdate"), checked ? 1l: 0l);
-    config->Write(wxT("/PreviewFrame/blendMode"), m_BlendModeChoice->GetSelection());
-    m_pano.removeObserver(this);
-    DEBUG_TRACE("dtor end");
+void PreviewFrame::OnExitMaskEditor(wxCommandEvent &e)
+{
+    SetTitle(wxT("Preview"));
+    delete m_ToolBar;
+    m_ToolBar = wxXmlResource::Get()->LoadToolBar(this, wxT("preview_toolbar"));
+    DEBUG_ASSERT(m_ToolBar);
+    // create tool bar
+    SetToolBar(m_ToolBar);
+    m_HFOVSlider->Show();
+    m_VFOVSlider->Show();
 }
 
 void PreviewFrame::OnChangeDisplayedImgs(wxCommandEvent & e)

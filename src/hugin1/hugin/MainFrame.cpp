@@ -180,6 +180,7 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
     : cp_frame(0), pano(pano), m_doRestoreLayout(false), m_help(0)
 {
+    preview_frame = 0;
     m_progressMax = 1;
     m_progress = 0;
 
@@ -193,7 +194,11 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
         {
             wxMemoryDC dc;
             dc.SelectObject(bitmap);
+#ifdef __WXMAC__
+            wxFont font(9, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+#else
             wxFont font(8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+#endif
             dc.SetFont(font);
             dc.SetTextForeground(*wxBLACK);
             dc.SetTextBackground(*wxWHITE);
@@ -206,7 +211,7 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
 #endif
             dc.GetTextExtent(version, &tw, &th);
             // place text on bitmap.
-            dc.DrawText(version, bitmap.GetWidth() - tw - 5, bitmap.GetHeight() - th - 5);
+            dc.DrawText(version, bitmap.GetWidth() - tw - 3, bitmap.GetHeight() - th - 3);
         }
        
 #ifdef __unix__
@@ -484,6 +489,12 @@ void MainFrame::OnExit(wxCloseEvent & e)
        }
        wxLogError(_("forced close"));
     }
+
+    if(preview_frame)
+    {
+       preview_frame->Close(true);
+    }
+
     ImageCache::getInstance().flush();
     //Close(TRUE);
     this->Destroy();
@@ -612,27 +623,23 @@ void MainFrame::LoadProjectFile(const wxString & filename)
 {
     DEBUG_TRACE("");
     m_filename = filename;
+
     // remove old images from cache
     // hmm probably not a good idea, if the project is reloaded..
-    //ImageCache::getInstance().flush();
-
-    wxFileName fname(filename);
-    wxString path = fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    // ImageCache::getInstance().flush();
 
     SetStatusText( _("Open project:   ") + filename);
 
-    // get the global config object
-    wxConfigBase* config = wxConfigBase::Get();
-    std::ifstream file((const char *)filename.mb_str(HUGIN_CONV_FILENAME));
-    if (file.good()) {
+    wxFileName fname(filename);
+    wxString path = fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    if (fname.IsOk() && fname.FileExists()) {
         wxBusyCursor wait;
         GlobalCmdHist::getInstance().addCommand(
-            new wxLoadPTProjectCmd(pano,file, (const char *)path.mb_str(HUGIN_CONV_FILENAME))
-            );
+           new wxLoadPTProjectCmd(pano,(const char *)filename.mb_str(HUGIN_CONV_FILENAME), (const char *)path.mb_str(HUGIN_CONV_FILENAME))
+           );
         DEBUG_DEBUG("project contains " << pano.getNrOfImages() << " after load");
-        opt_panel->setOptimizeVector(pano.getOptimizeVector());
+        opt_panel->setModeCustom();
         SetStatusText(_("Project opened"));
-        config->Write(wxT("/actualPath"), path);  // remember for later
         this->SetTitle(fname.GetName() + wxT(".") + fname.GetExt() + wxT(" - hugin"));
         if (! (fname.GetExt() == wxT("pto"))) {
             // do not remember filename if its not a hugin project
@@ -640,6 +647,9 @@ void MainFrame::LoadProjectFile(const wxString & filename)
             // incompatible one
             m_filename = wxT("");
         }
+        // get the global config object
+        wxConfigBase* config = wxConfigBase::Get();
+        config->Write(wxT("/actualPath"), path);  // remember for later
     } else {
         SetStatusText( _("Error opening project:   ") + filename);
         DEBUG_ERROR("Could not open file " << filename);
@@ -716,6 +726,14 @@ void MainFrame::OnNewProject(wxCommandEvent & e)
     ImageCache::getInstance().flush();
     this->SetTitle(wxT("hugin"));
     pano.clearDirty();
+
+    // Setup pano with options from preferences
+    PanoramaOptions opts = pano.getOptions();
+    wxConfigBase* config = wxConfigBase::Get();
+    opts.enblendOptions = config->Read(wxT("Enblend/Args"),wxT(HUGIN_ENBLEND_ARGS)).mb_str(wxConvLocal);
+    opts.enfuseOptions = config->Read(wxT("Enfuse/Args"),wxT(HUGIN_ENFUSE_ARGS)).mb_str(wxConvLocal);
+    pano.setOptions(opts);
+
     wxCommandEvent dummy;
     preview_frame->OnUpdate(dummy);
 }
@@ -1069,7 +1087,7 @@ void MainFrame::OnTipOfDay(wxCommandEvent& WXUNUSED(e))
 	
     DEBUG_INFO("Reading tips from " << strFile.mb_str(wxConvLocal));
     wxTipProvider *tipProvider = new LocalizedFileTipProvider(strFile, nValue);
-    bShowAtStartup = wxShowTip(this, tipProvider);
+    bShowAtStartup = wxShowTip(this, tipProvider,(nValue ? true:false));
 
     //store startup preferences
     nValue = (bShowAtStartup ? tipProvider->GetCurrentTip() : 0);

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource>
+    <object class="wxToolBar" name="masked_main_toolbar">
+      <style>wxTB_FLAT|wxTB_HORIZONTAL</style>
+      <bitmapsize>24,24</bitmapsize>
+      <margins></margins>
+      <packing>1</packing>
+      <separation>5</separation>
+      <object class="tool" name="action_zoom_in">
+        <label>tool</label>
+        <tooltip>Zoom In</tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/zoomin.xpm</bitmap>
+      </object>
+      <object class="tool" name="action_zoom_out">
+        <label>tool</label>
+        <tooltip>Zoom Out</tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/zoomout.xpm</bitmap>
+      </object>
+      <object class="separator" />
+      <object class="tool" name="action_draw_bstroke">
+        <label>tool</label>
+        <tooltip>Brush Stroke</tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/bstroke.png</bitmap>
+      </object>
+      <object class="tool" name="action_draw_polygon">
+        <label>tool</label>
+        <tooltip>Draw Polygon</tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/poly.png</bitmap>
+      </object>
+      <object class="separator" />
+      <object class="tool" name="action_set_roi">
+        <label>tool</label>
+        <tooltip>Set Region of Interest</tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/roi.png</bitmap>
+      </object>
+      <object class="tool" name="action_show_overlap">
+        <label>tool</label>
+        <tooltip>Show overlapped region between selected images</tooltip>
+        <longhelp></longhelp>
+        <bitmap>data/rectoverlap.png</bitmap>
+      </object>
+      <object class="separator" />
+      <object class="wxComboBox" name="m_comboSegChoice">
+        <style>wxCB_DROPDOWN|wxCB_READONLY</style>
+        <value></value>
+        <content />
+      </object>
+      <object class="tool" name="action_exit_maskeditor">
+        <label>Exit</label>
+        <tooltip>Exit Mask Editing Mode</tooltip>
+        <longhelp></longhelp>
+      </object>
+    </object>
+ </resource>

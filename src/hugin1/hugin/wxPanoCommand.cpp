@@ -233,6 +233,14 @@ void wxAddImagesCmd::execute()
             }
         }
 
+        // check the image hasn't disappeared on us since the HFOV dialog was
+        // opened
+        wxString fn(srcImg.getFilename().c_str(),HUGIN_CONV_FILENAME);
+        if (!wxFileName::FileExists(fn)) {
+            DEBUG_INFO("Image: " << fn.mb_str() << " has disappeared, skipping...");
+            continue;
+        }
+
         // FIXME: check if the exif information
         // indicates this image matches a already used lens
         for (unsigned int i=0; i < pano.getNrOfImages(); i++) {
@@ -299,6 +307,7 @@ void wxLoadPTProjectCmd::execute()
 
     PanoramaMemento newPano;
     int ptoVersion = 0;
+    std::ifstream in(filename.c_str());
     if (newPano.loadPTScript(in, ptoVersion, prefix)) {
         pano.setMemento(newPano);
         PanoramaOptions opts = pano.getOptions();
@@ -399,6 +408,7 @@ void wxLoadPTProjectCmd::execute()
     } else {
         DEBUG_ERROR("could not load panotools script");
     }
+    in.close();
     pano.changeFinished();
 }
 

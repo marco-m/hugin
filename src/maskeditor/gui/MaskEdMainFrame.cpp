@@ -83,7 +83,7 @@ MaskEdMainFrame::MaskEdMainFrame(wxWindow *parent) : m_scale(1.0)
 
     wxBoxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
     wxSize sz = GetClientSize();
-    m_MaskEdClientWnd = new MaskEdClientWnd(this, wxID_ANY, wxDefaultPosition,sz);
+    m_MaskEdClientWnd = new MaskEdClientWnd(this, wxID_ANY, wxDefaultPosition, sz);
 
     topSizer->Add(m_MaskEdClientWnd, 1, wxEXPAND | wxALL | wxFIXED_MINSIZE);
 

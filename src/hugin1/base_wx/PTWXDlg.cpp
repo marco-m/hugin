@@ -131,18 +131,29 @@ static int PTInfoDlgWX ( int command, char* argument )	// Display info: same arg
                 // we need to ensure that there is are enough lines in the dialog..
                 // create progress dialog
                 dlg = new wxProgressDialog(_("Panorama Tools"),
-                                           _("\n\n\n"), 100, NULL,
+#ifdef __WXMAC__
+                                           _("0123456789012345678901234567890123456789012345\n\n\n\n\n"),
+#else
+                                           _("0123456789012345678901234567890123456789012345\n\n\n"),
+#endif
+                                           100, NULL,
                                            wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_ELAPSED_TIME);
                 if (dlg == 0) {
                     return FALSE;
                 }
+#if wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 8
+                dlg->Pulse(wxString(argument, wxConvLocal));
+#elif wxMAJOR_VERSION == 2
                 dlg->Update(0, wxString(argument, wxConvLocal));
+#endif
             }
             return TRUE;
         case _setProgress:
             if (dlg) {
                 if( *argument != 0 )
                 {
+                    bool cont;
+
                     if( *argument != '+' )
                     {
                         strcpy( mainMessage, argument );
@@ -152,7 +163,12 @@ static int PTInfoDlgWX ( int command, char* argument )	// Display info: same arg
                     {
                         sprintf( text,"%s%s", mainMessage, &(argument[1]) );
                     }
-                    if (! dlg->Update(0, wxString(text, wxConvLocal))) {
+#if wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 8
+                    cont = dlg->Pulse(wxString(argument, wxConvLocal));
+#elif wxMAJOR_VERSION == 2
+                    cont = dlg->Update(1, wxString(argument, wxConvLocal));
+#endif
+                    if (! cont) {
                         return FALSE;
                     }
                 }

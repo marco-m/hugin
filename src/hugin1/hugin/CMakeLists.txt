@@ -20,6 +20,9 @@ ELSE(APPLE)
   set( PROGNAME hugin )
 ENDIF(APPLE)
 
+include_directories( ${CMAKE_SOURCE_DIR}/src/maskeditor/gui)
+include_directories( ${CMAKE_SOURCE_DIR}/src/maskeditor/core)
+
 # sources
 set(hugin_SOURCES
 huginApp.cpp ImagesList.cpp AutoCtrlPointCreator.cpp

@@ -28,6 +28,10 @@
 
 #include "panoinc_WX.h"
 
+#ifdef __WXMAC__
+#include <wx/sysopt.h>
+#endif
+
 #include "panoinc.h"
 
 
@@ -105,6 +109,11 @@ bool huginApp::OnInit()
 {
     DEBUG_TRACE("=========================== huginApp::OnInit() begin ===================");
     SetAppName(wxT("hugin"));
+
+#ifdef __WXMAC__
+    // do not use the native list control on OSX (it is very slow with the control point list window)
+    wxSystemOptions::SetOption(wxT("mac.listctrl.always_use_generic"), 1);
+#endif
 
     // register our custom pano tools dialog handlers
     registerPTWXDlgFcn();
@@ -234,6 +243,7 @@ bool huginApp::OnInit()
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_frame.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("optimize_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("pano_panel.xrc"));
+    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("masked_main_toolbar.xrc"));
 #endif
 
 #ifdef __WXMAC__
@@ -299,6 +309,8 @@ bool huginApp::OnInit()
     PanoramaOptions opts = pano.getOptions();
     opts.outputFormat = PanoramaOptions::TIFF;
     opts.blendMode = PanoramaOptions::ENBLEND_BLEND;
+    opts.enblendOptions = config->Read(wxT("Enblend/Args"),wxT(HUGIN_ENBLEND_ARGS)).mb_str(wxConvLocal);
+    opts.enfuseOptions = config->Read(wxT("Enfuse/Args"),wxT(HUGIN_ENFUSE_ARGS)).mb_str(wxConvLocal);
     pano.setOptions(opts);
 
     if (argc > 1) {
