@@ -30,8 +30,8 @@
 #include "KMlocal/KMlocal.h"
 
 const double SIGMA = 2.0f;
-const double LAMBDA = 66.0f;
-const int    NCLUSTERS = 8; //64
+const double LAMBDA = 50.0f;
+const int    NCLUSTERS = 64;
 const int    CLUSTERCOORDDIM = 5; // 3:RGB, 5:RGB + (r,c)
 
 class LazySnapping : public ISegmentation

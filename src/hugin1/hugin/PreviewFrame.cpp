@@ -44,7 +44,7 @@
 #include "hugin/PreviewPanel.h"
 #include "hugin/ImagesPanel.h"
 #include "hugin/CommandHistory.h"
-#include "MaskEdClientWnd.h"
+#include "MaskEdEditWnd.h"
 
 #include <vigra_ext/ImageTransforms.h>
 
@@ -94,6 +94,14 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
     EVT_CHOICE(ID_BLEND_CHOICE, PreviewFrame::OnBlendChoice)
     EVT_CHOICE(ID_PROJECTION_CHOICE, PreviewFrame::OnProjectionChoice)
     EVT_CHOICE(ID_OUTPUTMODE_CHOICE, PreviewFrame::OnOutputChoice)
+
+    EVT_TOOL(XRCID("action_draw_bstroke"), PreviewFrame::OnBStroke)
+    EVT_TOOL(XRCID("action_draw_polygon"), PreviewFrame::OnAddPoint)
+    EVT_TOOL(XRCID("action_zoom_in"), PreviewFrame::OnZoomIn)
+    EVT_TOOL(XRCID("action_zoom_out"), PreviewFrame::OnZoomOut)
+    EVT_TOOL(XRCID("action_set_roi"), PreviewFrame::OnSetROI)
+    EVT_TOOL(XRCID("action_show_overlap"), PreviewFrame::OnShowOverlap)
+    EVT_COMBOBOX(XRCID("m_comboSegChoice"), PreviewFrame::OnSegSelUpdate)
 #ifdef USE_TOGGLE_BUTTON
     EVT_TOGGLEBUTTON(-1, PreviewFrame::OnChangeDisplayedImgs)
 #else
@@ -103,6 +111,7 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
 //    EVT_SCROLL_THUMBRELEASE(PreviewFrame::OnChangeFOV)
 //    EVT_SCROLL_ENDSCROLL(PreviewFrame::OnChangeFOV)
 //    EVT_SCROLL_THUMBTRACK(PreviewFrame::OnChangeFOV)
+    
 END_EVENT_TABLE()
 
 #define PF_STYLE (wxMAXIMIZE_BOX | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN)
@@ -110,7 +119,7 @@ END_EVENT_TABLE()
 PreviewFrame::PreviewFrame(wxFrame * frame, PT::Panorama &pano)
     : wxFrame(frame,-1, _("Panorama preview"), wxDefaultPosition, wxDefaultSize,
               PF_STYLE),
-      m_pano(pano)
+      m_pano(pano), m_scale(1.0)
 {
 	DEBUG_TRACE("");
 
@@ -129,9 +138,13 @@ PreviewFrame::PreviewFrame(wxFrame * frame, PT::Panorama &pano)
 
     //create mask editor client window
     wxSize sz = GetClientSize();
-    //m_MaskEdClientWnd = new MaskEdClientWnd(this, wxID_ANY, wxDefaultPosition, sz);
+    m_MaskEdEditWnd = new MaskEdEditWnd(this);
+    m_MaskEdEditWnd->init(this, &m_pano);
 
-    initPreviewMode();    
+    initPreviewMode(); 
+    initMaskEditorMode();
+
+    m_mode = PREVIEW_MODE;
 }
 
 PreviewFrame::~PreviewFrame()
@@ -147,11 +160,19 @@ PreviewFrame::~PreviewFrame()
     } else {
         config->Write(wxT("/PreviewFrame/isShown"), 0l);
     }
+    
+    if(m_mode == PREVIEW_MODE)
+    {
+        bool checked = m_ToolBar->GetToolState(XRCID("preview_auto_update_tool"));
+        config->Write(wxT("/PreviewFrame/autoUpdate"), checked ? 1l: 0l);
+        config->Write(wxT("/PreviewFrame/blendMode"), m_BlendModeChoice->GetSelection());
+    }
+    config->Write(wxT("/PreviewFrame/Mode"), m_mode);
 
-    bool checked = m_ToolBar->GetToolState(XRCID("preview_auto_update_tool"));
-    config->Write(wxT("/PreviewFrame/autoUpdate"), checked ? 1l: 0l);
-    config->Write(wxT("/PreviewFrame/blendMode"), m_BlendModeChoice->GetSelection());
     m_pano.removeObserver(this);
+
+    delete m_MaskEdEditWnd;
+
     DEBUG_TRACE("dtor end");
 }
 
@@ -174,11 +195,11 @@ void PreviewFrame::initPreviewMode()
 
     m_topsizer->Add(m_ToggleButtonSizer, 0, wxEXPAND | wxADJUST_MINSIZE | wxBOTTOM, 5);
 
-    wxFlexGridSizer * flexSizer = new wxFlexGridSizer(2,0,5,5);
-    flexSizer->AddGrowableCol(0);
-    flexSizer->AddGrowableRow(0);
+    m_flexSizer = new wxFlexGridSizer(2,0,5,5);
+    m_flexSizer->AddGrowableCol(0);
+    m_flexSizer->AddGrowableRow(0);
 
-    flexSizer->Add(m_PreviewPanel,
+    m_flexSizer->Add(m_PreviewPanel,
                   1,        // not vertically stretchable
                   wxEXPAND | // horizontally stretchable
                   wxALL,    // draw border all around
@@ -196,7 +217,7 @@ void PreviewFrame::initPreviewMode()
     m_VFOVSlider->SetTickFreq(5,0);
     m_VFOVSlider->SetToolTip(_("drag to change the vertical field of view"));
 
-    flexSizer->Add(m_VFOVSlider, 0, wxEXPAND);
+    m_flexSizer->Add(m_VFOVSlider, 0, wxEXPAND);
 
     m_HFOVSlider = new wxSlider(this, -1, 1,
                                 1, 360,
@@ -210,19 +231,19 @@ void PreviewFrame::initPreviewMode()
 
     m_HFOVSlider->SetToolTip(_("drag to change the horizontal field of view"));
 
-    flexSizer->Add(m_HFOVSlider, 0, wxEXPAND);
+    m_flexSizer->Add(m_HFOVSlider, 0, wxEXPAND);
 
-    m_topsizer->Add(flexSizer,
+    m_topsizer->Add(m_flexSizer,
                   1,        // vertically stretchable
                   wxEXPAND | // horizontally stretchable
                   wxALL,    // draw border all around
                   5);       // border width
 
-    wxStaticBoxSizer * blendModeSizer = new wxStaticBoxSizer(
+    m_blendModeSizer = new wxStaticBoxSizer(
         new wxStaticBox(this, -1, _("Preview Options")),
         wxHORIZONTAL);
 
-    blendModeSizer->Add(new wxStaticText(this, -1, _("projection (f):")),
+    m_blendModeSizer->Add(new wxStaticText(this, -1, _("projection (f):")),
                         0,        // not vertically strechable
                         wxALL | wxALIGN_CENTER_VERTICAL, // draw border all around
                         5);       // border width
@@ -258,14 +279,14 @@ void PreviewFrame::initPreviewMode()
 #endif
     m_ProjectionChoice->SetSelection(2);
 
-    blendModeSizer->Add(m_ProjectionChoice,
+    m_blendModeSizer->Add(m_ProjectionChoice,
                         0,
                         wxALL | wxALIGN_CENTER_VERTICAL,
                         5);
 
     //////////////////////////////////////////////////////
     // Blend mode
-    blendModeSizer->Add(new wxStaticText(this, -1, _("Blend mode:")),
+    m_blendModeSizer->Add(new wxStaticText(this, -1, _("Blend mode:")),
                         0,        // not vertically strechable
                         wxALL | wxALIGN_CENTER_VERTICAL, // draw border all around
                         5);       // border width
@@ -280,14 +301,14 @@ void PreviewFrame::initPreviewMode()
                                      2, m_choices);
     m_BlendModeChoice->SetSelection((PreviewPanel::BlendMode) oldMode);
 
-    blendModeSizer->Add(m_BlendModeChoice,
+    m_blendModeSizer->Add(m_BlendModeChoice,
                         0,
                         wxALL | wxALIGN_CENTER_VERTICAL,
                         5);
 
     //////////////////////////////////////////////////////
     // LDR, HDR
-    blendModeSizer->Add(new wxStaticText(this, -1, _("Output:")),
+    m_blendModeSizer->Add(new wxStaticText(this, -1, _("Output:")),
                         0,        // not vertically strechable
                         wxALL | wxALIGN_CENTER_VERTICAL, // draw border all around
                         5);       // border width
@@ -298,21 +319,21 @@ void PreviewFrame::initPreviewMode()
                                       wxDefaultPosition, wxDefaultSize,
                                       2, m_choices);
     m_outputModeChoice->SetSelection(0);
-    blendModeSizer->Add(m_outputModeChoice,
+    m_blendModeSizer->Add(m_outputModeChoice,
                         0,
                         wxALL | wxALIGN_CENTER_VERTICAL,
                         5);
 
     /////////////////////////////////////////////////////
     // exposure
-    blendModeSizer->Add(new wxStaticText(this, -1, _("EV:")),
+    m_blendModeSizer->Add(new wxStaticText(this, -1, _("EV:")),
                           0,        // not vertically strechable
                           wxALL | wxALIGN_CENTER_VERTICAL, // draw border all around
                           5);       // border width
     
     m_defaultExposureBut = new wxBitmapButton(this, ID_EXPOSURE_DEFAULT,
                                               wxArtProvider::GetBitmap(wxART_REDO));
-    blendModeSizer->Add(m_defaultExposureBut, 0, wxLEFT | wxRIGHT, 5);
+    m_blendModeSizer->Add(m_defaultExposureBut, 0, wxLEFT | wxRIGHT, 5);
 
 //    m_decExposureBut = new wxBitmapButton(this, ID_EXPOSURE_DECREASE,
 //                                          wxArtProvider::GetBitmap(wxART_GO_BACK));
@@ -320,7 +341,7 @@ void PreviewFrame::initPreviewMode()
 
     m_exposureTextCtrl = new wxTextCtrl(this, ID_EXPOSURE_TEXT, _("0"),
                                         wxDefaultPosition,wxSize(50,-1), wxTE_PROCESS_ENTER);
-    blendModeSizer->Add(m_exposureTextCtrl,
+    m_blendModeSizer->Add(m_exposureTextCtrl,
                           0,        // not vertically strechable
                           wxLEFT | wxTOP | wxBOTTOM  | wxALIGN_CENTER_VERTICAL, // draw border all around
                           5);       // border width
@@ -330,9 +351,9 @@ void PreviewFrame::initPreviewMode()
                                          wxDefaultSize, wxSP_VERTICAL);
     m_exposureSpinBut->SetRange(-0x8000, 0x7fff);
     m_exposureSpinBut->SetValue(0);
-    blendModeSizer->Add(m_exposureSpinBut, 0, wxALIGN_CENTER_VERTICAL);
+    m_blendModeSizer->Add(m_exposureSpinBut, 0, wxALIGN_CENTER_VERTICAL);
 
-    m_topsizer->Add(blendModeSizer, 0, wxEXPAND | wxALL, 5);
+    m_topsizer->Add(m_blendModeSizer, 0, wxEXPAND | wxALL, 5);
 
 #ifdef HasPANO13
     m_projParamSizer = new wxStaticBoxSizer(
@@ -416,35 +437,46 @@ void PreviewFrame::initPreviewMode()
 
 }
 
-void PreviewFrame::setMaskEditorMode()
+void PreviewFrame::initMaskEditorMode()
 {
-
+    m_topsizer->Add(m_MaskEdEditWnd, 1, wxEXPAND | wxALL);
+    m_topsizer->Hide(m_MaskEdEditWnd, true);
 }
 
 void PreviewFrame::OnMaskEditor(wxCommandEvent & e)
 {
-    m_HFOVSlider->Hide();
-    m_VFOVSlider->Hide();
+    m_mode = MASKEDITOR_MODE;
+    //m_HFOVSlider->Hide();
+    //m_VFOVSlider->Hide();
     SetTitle(wxT("Mask Editor Mode"));
     delete m_ToolBar;
     m_ToolBar = wxXmlResource::Get()->LoadToolBar(this, wxT("masked_main_toolbar"));
     DEBUG_ASSERT(m_ToolBar);
     // create tool bar
     SetToolBar(m_ToolBar);
-    /*m_topsizer->Hide(m_topsizer, true);
-    m_topsizer->Layout();*/
+    m_topsizer->Hide(m_flexSizer, true);
+    m_topsizer->Hide(m_blendModeSizer, true);
+    m_topsizer->Show(m_MaskEdEditWnd, true, true);
+    m_topsizer->Layout();
+    m_MaskEdEditWnd->ForceUpdate();
 }
 
 void PreviewFrame::OnExitMaskEditor(wxCommandEvent &e)
 {
+    m_mode = PREVIEW_MODE;
     SetTitle(wxT("Preview"));
     delete m_ToolBar;
     m_ToolBar = wxXmlResource::Get()->LoadToolBar(this, wxT("preview_toolbar"));
     DEBUG_ASSERT(m_ToolBar);
     // create tool bar
     SetToolBar(m_ToolBar);
-    m_HFOVSlider->Show();
-    m_VFOVSlider->Show();
+    //m_HFOVSlider->Show();
+    //m_VFOVSlider->Show();
+    m_topsizer->Hide(m_MaskEdEditWnd, true);
+    m_topsizer->Show(m_flexSizer, true, true);
+    m_topsizer->Show(m_blendModeSizer, true, true);
+    m_topsizer->Layout();
+    m_PreviewPanel->ForceUpdate();
 }
 
 void PreviewFrame::OnChangeDisplayedImgs(wxCommandEvent & e)
@@ -696,15 +728,25 @@ void PreviewFrame::OnStraighten(wxCommandEvent & e)
     }
 }
 
+void PreviewFrame::ForceUpdate()
+{
+    if(m_mode == PREVIEW_MODE)
+        m_PreviewPanel->ForceUpdate();
+    else
+        m_MaskEdEditWnd->ForceUpdate();
+}
+
 void PreviewFrame::OnUpdate(wxCommandEvent& event)
 {
-    m_PreviewPanel->ForceUpdate();
+    /*m_PreviewPanel->*/ForceUpdate();
 }
 
 void PreviewFrame::updatePano()
 {
-    if (m_ToolBar->GetToolState(XRCID("preview_auto_update_tool"))) {
-        m_PreviewPanel->ForceUpdate();
+    if(m_mode == MASKEDITOR_MODE)
+        ForceUpdate();
+    else if (m_ToolBar->GetToolState(XRCID("preview_auto_update_tool"))) {
+        /*m_PreviewPanel->*/ForceUpdate();
     }
 }
 
@@ -992,5 +1034,67 @@ void PreviewFrame::updateProgressDisplay()
     // process user events as well :( Unfortunately, there is not portable workaround...
 //    wxYield();
 #endif
+}
+
+void PreviewFrame::OnBStroke(wxCommandEvent &event)
+{
+    m_MaskEdEditWnd->setEditMode(ME_BSTROKE);
+}
+
+void PreviewFrame::OnAddPoint(wxCommandEvent &event)
+{
+    m_MaskEdEditWnd->setEditMode(ME_POLY);
+}
+
+//void PreviewFrame::OnPreference(wxCommandEvent &event)
+//{
+//    //wxDialog dlg;
+//    //wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("MaskEdPrefDlg"));
+//    //dlg.ShowModal();
+//    MaskEdPrefDlg prefdlg(this);
+//    prefdlg.ShowModal();
+//}
+void PreviewFrame::OnQuit(wxCommandEvent &event)
+{
+    Close(true);
+}
+
+void PreviewFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
+{
+    wxMessageBox(wxT("Mask Editor"), wxT("About Mask Editor"),
+        wxOK | wxICON_INFORMATION, this);
+}
+
+void PreviewFrame::OnZoomIn(wxCommandEvent &event)
+{
+    m_scale += 0.1;
+    m_MaskEdEditWnd->zoom(m_scale);
+}
+
+void PreviewFrame::OnZoomOut(wxCommandEvent &event)
+{
+    if(m_scale <= 0.1) return;
+    m_scale -= 0.1;
+    m_MaskEdEditWnd->zoom(m_scale);
+}
+
+void PreviewFrame::OnSetROI(wxCommandEvent &event)
+{
+
+}
+
+void PreviewFrame::OnShowOverlap(wxCommandEvent &event)
+{
+    m_MaskEdEditWnd->toggleShowOverlappedRect();
+}
+
+void PreviewFrame::OnSegSelUpdate(wxCommandEvent &event)
+{
+    wxWindow *pWnd = GetToolBar();
+#ifdef __WXMSW__
+    pWnd = this;
+#endif
+   int ichoice = XRCCTRL(*pWnd, "m_comboSegChoice", wxComboBox)->GetSelection();
+   MaskMgr::getInstance()->setSegmentationOption(ichoice);    
 }
 

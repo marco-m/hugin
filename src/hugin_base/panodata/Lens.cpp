@@ -1,8 +1,8 @@
 // -*- c-basic-offset: 4 -*-
 
-/** @file PanoramaMemento.cpp
+/** @file Lens.cpp
  *
- *  @brief implementation of PanoramaMemento Class
+ *  @brief implementation of Lens Class
  *
  *  @author Pablo d'Angelo <pablo.dangelo@web.de>
  *

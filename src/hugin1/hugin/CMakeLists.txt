@@ -20,15 +20,15 @@ ELSE(APPLE)
   set( PROGNAME hugin )
 ENDIF(APPLE)
 
-include_directories( ${CMAKE_SOURCE_DIR}/src/maskeditor/gui)
 include_directories( ${CMAKE_SOURCE_DIR}/src/maskeditor/core)
+include_directories( ${CMAKE_SOURCE_DIR}/src/maskeditor/segmentation)
 
 # sources
 set(hugin_SOURCES
 huginApp.cpp ImagesList.cpp AutoCtrlPointCreator.cpp
 MainFrame.cpp CPImageCtrl.cpp CPEditorPanel.cpp LensPanel.cpp 
 ImagesPanel.cpp CommandHistory.cpp PanoPanel.cpp NonaOptionsDialog.cpp
-PreviewFrame.cpp PreviewPanel.cpp CropPanel.cpp OptimizePhotometricPanel.cpp
+PreviewFrame.cpp PreviewPanel.cpp MaskEdEditWnd.cpp CropPanel.cpp OptimizePhotometricPanel.cpp
 OptimizePanel.cpp CPListFrame.cpp
 TextKillFocusHandler.cpp PanoDruid.cpp PreferencesDialog.cpp
 LocalizedFileTipProvider.cpp 
@@ -100,7 +100,7 @@ ELSE (APPLE)
   ADD_EXECUTABLE( ${PROGNAME} ${hugin_SOURCES} )
 ENDIF(APPLE)
 
-target_link_libraries( ${PROGNAME} ${common_libs} ${image_libs} huginbasewx ${wxWidgets_LIBRARIES})
+target_link_libraries( ${PROGNAME} maskeditor_core maskeditor_segmentation ${common_libs} ${image_libs} huginbasewx ${wxWidgets_LIBRARIES})
 
 IF (APPLE)
   IF (NOT MAC_SELF_CONTAINED_BUNDLE)

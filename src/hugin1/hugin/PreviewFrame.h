@@ -28,7 +28,7 @@ class PreviewPanel;
 class wxToolBar;
 class wxToggleButton;
 class wxCheckBox;
-class MaskEdClientWnd;
+class MaskEdEditWnd;
 /** The image preview frame
  *
  *  Contains the ImagePreviewPanel and various controls for it.
@@ -54,9 +54,13 @@ public:
     
     void updateProgressDisplay();
     void initPreviewMode();
+    void initMaskEditorMode();
     void setPreviewMode();
     void setMaskEditorMode();
+
 protected:
+    void ForceUpdate();
+
     void OnClose(wxCloseEvent& e);
 
     void OnMaskEditor(wxCommandEvent & e);
@@ -82,11 +86,26 @@ protected:
 
     // update the panorama display
     void updatePano();
+
+    // mask editor functionalities
+    void OnBStroke(wxCommandEvent& event);
+    void OnAddPoint(wxCommandEvent& event);
+    //void OnPreference(wxCommandEvent& event);
+    void OnQuit(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+    void OnZoomIn(wxCommandEvent& event);
+    void OnZoomOut(wxCommandEvent& event);
+    void OnSetROI(wxCommandEvent& event);
+    void OnShowOverlap(wxCommandEvent& event);
+    void OnSegSelUpdate(wxCommandEvent& event);
+
 private:
+    enum tMode { PREVIEW_MODE, MASKEDITOR_MODE };
+    float          m_scale;
 
     PT::Panorama & m_pano;
 
-    MaskEdClientWnd *m_MaskEdClientWnd;
+    MaskEdEditWnd *m_MaskEdEditWnd;
     PreviewPanel * m_PreviewPanel;
     wxToolBar * m_ToolBar;
     wxSlider * m_HFOVSlider;
@@ -100,7 +119,7 @@ private:
 
     wxString m_choices[3];
     int m_oldProjFormat;
-
+    tMode m_mode;
 //    wxButton * m_updatePreview;
 //    wxCheckBox * m_autoCB;
 
@@ -109,6 +128,8 @@ private:
 	wxStaticBoxSizer * m_ToggleButtonSizer;
 
     wxBoxSizer * m_topsizer;
+    wxFlexGridSizer * m_flexSizer;
+    wxStaticBoxSizer * m_blendModeSizer;
     wxStaticBoxSizer * m_projParamSizer;
     std::vector<wxStaticText *> m_projParamNamesLabel;
     std::vector<wxTextCtrl *>   m_projParamTextCtrl;
