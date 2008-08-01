@@ -20,12 +20,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+
 #include <memory>
 #include "huginapp/ImageCache.h"
 #include "LazySnapping.h"
 //#include "kmeans/KMeans.hpp"
 #include "KMlocal/KMlocal.h"
 #include "watershed.cxx"
+#include <wx/wx.h>
 
 #define INF     1000000
 using namespace std;
@@ -46,6 +48,13 @@ bool operator<(const LazySnapping::ClusterCoord<T,CDIM> &a, const LazySnapping::
             return false;
     return true;
 }
+struct PixelCoordToWxPoint
+{
+     wxPoint operator()(const PixelCoord &p)
+     {
+        return wxPoint(p.x, p.y);
+     }
+};
 /**
  * LazySnapping Implementation
  */
@@ -62,16 +71,40 @@ m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0
     m_name = "LazySnapping";
     setImage(filename);
 }
+
+LazySnapping::LazySnapping(const string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask)
+: m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
+m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0)
+{
+    m_name = "LazySnapping";
+    setImage(imgId, img, mask);
+}
+
 LazySnapping::~LazySnapping() 
 {
     reset();
 }
 
-void LazySnapping::init()
+void LazySnapping::setMemento(IMaskEdMemento *memento)
+{
+
+}
+
+IMaskEdMemento* LazySnapping::createMemento()
+{
+    return 0;
+}
+
+void LazySnapping::init(vigra::BImage *mask)
 {
     if(m_width > 0 && m_height > 0)
     {
-        m_mask = new wxBitmap(m_width, m_height, 1);
+        if(!mask)
+            m_mask = new wxBitmap(m_width, m_height, 1);
+        else {
+            assert(mask->width() == m_width && mask->height() == m_height);
+            m_mask = new wxBitmap((const char*)mask->data(), mask->width(), mask->height());
+        }
         /*SAFE_DELETE(m_tmp_bmp);
         m_tmp_bmp = new wxBitmap(m_width, m_height, 1);*/
         preprocess();
@@ -125,7 +158,7 @@ PixelColor LazySnapping::getPixelValue(int r, int c) const
     return getPixelValue( (r * m_width + c) );
 }
 
-PixelColor LazySnapping::getPixelValue(wxPoint pt) const 
+PixelColor LazySnapping::getPixelValue(PixelCoord pt) const 
 {
     return getPixelValue(pt.y, pt.x);
 }
@@ -244,7 +277,7 @@ void LazySnapping::buildGraph()
 
 void LazySnapping::getPixelsOnLine(const vector<PixelCoord> coords, vector<PixelCoord> &line)
 {
-    wxPoint pa,pb;
+    PixelCoord pa,pb;
     int dx, dy;
     float m, t;
     vector<PixelCoord>::const_iterator it = coords.begin();
@@ -268,7 +301,7 @@ void LazySnapping::getPixelsOnLine(const vector<PixelCoord> coords, vector<Pixel
             {
                 pa.x += dx;
                 t += m;
-                line.push_back(wxPoint(pa.x, m_height - t));
+                line.push_back(PixelCoord(pa.x, m_height - t));
             }
         } else if(dy != 0) {
             m = dx /(float) dy;
@@ -279,7 +312,7 @@ void LazySnapping::getPixelsOnLine(const vector<PixelCoord> coords, vector<Pixel
             {
                 pa.y += dy;
                 t += m;
-                line.push_back(wxPoint(t, m_height - pa.y));
+                line.push_back(PixelCoord(t, m_height - pa.y));
             }
         }
         //
@@ -459,7 +492,8 @@ void LazySnapping::setRegion(vector<PixelCoord> coords, Label label)
     else
         dc.SetBrush(*wxWHITE_BRUSH);
     wxPoint *coords_pt = new wxPoint[coords.size()];
-    copy(coords.begin(), coords.end(), coords_pt);
+    //copy(coords.begin(), coords.end(), coords_pt);
+    transform(coords.begin(), coords.end(), coords_pt, PixelCoordToWxPoint());
     dc.DrawPolygon(coords.size(), coords_pt);
     delete []coords_pt;
 }
@@ -473,6 +507,7 @@ void LazySnapping::setImage(unsigned char* data, int row, int col, int depth)
     memcpy(m_data, data, sizeof(unsigned char) * m_width * m_height * m_depth);
     init();
 }
+
 void LazySnapping::setImage(const std::string &filename)
 {
     m_filename = filename;
@@ -487,6 +522,19 @@ void LazySnapping::setImage(const std::string &filename)
     memcpy(m_data, m_img->data(), sizeof(unsigned char) * m_width * m_height * m_depth);
     init();    
 }
+
+void LazySnapping::setImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *mask)
+{
+    m_filename = imgId;
+    assert(img);
+    m_width = img->width();
+    m_height = img->height();
+    m_depth = 3;
+    m_data = new unsigned char[m_width * m_height * m_depth];
+    memcpy(m_data, img->data(), sizeof(unsigned char) * m_width * m_height * m_depth);
+    init(mask);    
+}
+
 wxMask* LazySnapping::getMask() const
 {
     return new wxMask(*m_mask, *wxWHITE);

@@ -24,10 +24,10 @@
 #ifndef MASKMGR_H
 #define MASKMGR_H
 
+#include "vigra/stdimage.hxx"
 #include <vector>
 #include <string>
 #include "ISegmentation.h"
-//#include "appbase/Singleton.h"
 
 class MaskMgr /*: public Singleton<MaskMgr>*/
 {
@@ -50,7 +50,11 @@ public:
     std::vector<std::string> getSegmentationOptions();
     int getSegmentationOptionSelected() const;
     void loadPTOFile(const std::string &filename);
-    void loadImages(const std::vector<std::string> &filesv);
+
+    void loadImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *alpha = NULL);
+    void loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas);
+    void loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs);
+    void loadImage(const std::vector<std::string> &filesv);
     void loadImage(const std::string &filename);
     void loadMaskProject(const std::string &filename);
     void reload();  //reloads all images

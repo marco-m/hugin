@@ -45,8 +45,11 @@
 #include "hugin/ImagesPanel.h"
 #include "hugin/CommandHistory.h"
 #include "MaskEdEditWnd.h"
+#include "MaskMgr.h"
 
 #include <vigra_ext/ImageTransforms.h>
+#include <vector>
+#include <string>
 
 extern "C" {
 #ifdef HasPANO13
@@ -57,6 +60,7 @@ extern "C" {
 }
 
 using namespace utils;
+using namespace std;
 
 // a random id, hope this doesn't break something..
 enum {
@@ -101,6 +105,8 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
     EVT_TOOL(XRCID("action_zoom_out"), PreviewFrame::OnZoomOut)
     EVT_TOOL(XRCID("action_set_roi"), PreviewFrame::OnSetROI)
     EVT_TOOL(XRCID("action_show_overlap"), PreviewFrame::OnShowOverlap)
+    EVT_TOOL(XRCID("action_undo"), PreviewFrame::OnUndo)
+    EVT_TOOL(XRCID("action_redo"), PreviewFrame::OnRedo)
     EVT_COMBOBOX(XRCID("m_comboSegChoice"), PreviewFrame::OnSegSelUpdate)
 #ifdef USE_TOGGLE_BUTTON
     EVT_TOGGLEBUTTON(-1, PreviewFrame::OnChangeDisplayedImgs)
@@ -446,19 +452,32 @@ void PreviewFrame::initMaskEditorMode()
 void PreviewFrame::OnMaskEditor(wxCommandEvent & e)
 {
     m_mode = MASKEDITOR_MODE;
-    //m_HFOVSlider->Hide();
-    //m_VFOVSlider->Hide();
+
     SetTitle(wxT("Mask Editor Mode"));
     delete m_ToolBar;
     m_ToolBar = wxXmlResource::Get()->LoadToolBar(this, wxT("masked_main_toolbar"));
     DEBUG_ASSERT(m_ToolBar);
     // create tool bar
     SetToolBar(m_ToolBar);
+    MaskMgr::getInstance()->setSegmentationOption(0);
+	wxWindow *pWnd = m_ToolBar;
+#ifdef __WXMSW__
+	pWnd = this;
+#endif
+    vector<string> options = MaskMgr::getInstance()->getSegmentationOptions();
+    for(vector<string>::iterator it = options.begin(); it != options.end(); it++)
+		XRCCTRL(*pWnd, "m_comboSegChoice", wxComboBox)->Append(wxString(it->c_str(), wxConvUTF8));
+	XRCCTRL(*pWnd, "m_comboSegChoice", wxComboBox)->SetValue(wxString(options[0].c_str(), wxConvUTF8));
+
     m_topsizer->Hide(m_flexSizer, true);
     m_topsizer->Hide(m_blendModeSizer, true);
     m_topsizer->Show(m_MaskEdEditWnd, true, true);
     m_topsizer->Layout();
-    m_MaskEdEditWnd->ForceUpdate();
+
+    vector<pair<vigra::BRGBImage*, vigra::BImage*> > remapimgs = m_PreviewPanel->getRemappedImages();
+    MaskMgr::getInstance()->loadImage(remapimgs);
+    m_MaskEdEditWnd->loadImage(remapimgs);
+    //m_MaskEdEditWnd->ForceUpdate();
 }
 
 void PreviewFrame::OnExitMaskEditor(wxCommandEvent &e)
@@ -470,8 +489,7 @@ void PreviewFrame::OnExitMaskEditor(wxCommandEvent &e)
     DEBUG_ASSERT(m_ToolBar);
     // create tool bar
     SetToolBar(m_ToolBar);
-    //m_HFOVSlider->Show();
-    //m_VFOVSlider->Show();
+
     m_topsizer->Hide(m_MaskEdEditWnd, true);
     m_topsizer->Show(m_flexSizer, true, true);
     m_topsizer->Show(m_blendModeSizer, true, true);
@@ -1086,6 +1104,16 @@ void PreviewFrame::OnSetROI(wxCommandEvent &event)
 void PreviewFrame::OnShowOverlap(wxCommandEvent &event)
 {
     m_MaskEdEditWnd->toggleShowOverlappedRect();
+}
+
+void PreviewFrame::OnUndo(wxCommandEvent &event)
+{
+    m_MaskEdEditWnd->undo();
+}
+
+void PreviewFrame::OnRedo(wxCommandEvent &event)
+{
+    m_MaskEdEditWnd->redo();
 }
 
 void PreviewFrame::OnSegSelUpdate(wxCommandEvent &event)

@@ -23,12 +23,12 @@
 #ifndef BRUSHSTROKE_H
 #define BRUSHSTROKE_H
 
-#include <wx/wx.h>
 #include <vector>
+#include "Pixel.h"
 
 struct BrushStroke
 {
-    std::vector<wxPoint> pt;
+    std::vector<PixelCoord> pt;
     int width;
     int label;
     void clear() { pt.clear(); width = 1;}

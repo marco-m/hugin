@@ -27,7 +27,7 @@
 #include <vector>
 
 #include <base_wx/ImageCache.h>
-
+#include <vigra/stdimage.hxx>
 #include <vigra_ext/ROIImage.h>
 
 class wxImage;
@@ -62,6 +62,10 @@ public:
     // forces an update of all images.
     void ForceUpdate();
 
+    // used by maskeditor to get source images
+    std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > getRemappedImages();
+    void setAlpha(std::vector<vigra::BImage*> alphas);
+
     // select which images should be shown.
 //    void SetDisplayedImages(const PT::UIntSet &images);
     
@@ -77,8 +81,8 @@ private:
 
     // remaps the images, called automatically if autopreview is enabled.
     void updatePreview();
-
-    void mapPreviewImage(unsigned int imgNr);
+    
+    std::pair<vigra::BRGBImage*, vigra::BImage*> mapPreviewImage(HuginBase::UIntSet &displayedImages, vigra::Diff2D *p_panoImgSize = NULL);
 
     /** recalculate panorama to fit the panel */
     void OnResize(wxSizeEvent & e);

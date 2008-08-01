@@ -41,7 +41,7 @@ public:
                      const wxString& name = wxPanelNameStr);
 
     void init();
-    void loadImages(const std::vector<std::string> &filesv);
+    void loadImage(const std::vector<std::string> &filesv);
     void loadImage(const std::string &filename);
     std::map<int, std::pair<std::string,bool> > getSelected() const;
 

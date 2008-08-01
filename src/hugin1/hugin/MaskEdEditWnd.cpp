@@ -42,6 +42,7 @@
 #include <math.h>
 #include "ISegmentation.h"
 #include "MaskEdEditWnd.h"
+#include "MaskMgr.h"
 
 using namespace PT;
 using namespace std;
@@ -68,8 +69,8 @@ MaskEdEditWnd::MaskEdEditWnd(wxWindow *parent,
                      long style,
                      const wxString& name)
                      : wxScrolledWindow(parent, winid, pos, size, style, name), m_scale(1.0), m_active(0),
-                     m_max_width(0), m_max_height(0), m_bShowOverlappedRect(false),
-                     m_state_rendering(false), m_rerender(false), m_imgsDirty(true)
+                     m_max_width(0), m_max_height(0), m_bShowOverlappedRect(false)
+                     //m_state_rendering(false), m_rerender(false), m_imgsDirty(true)
 {
     MaskMgr::getInstance()->setSegmentationOption(0);
 }
@@ -97,9 +98,9 @@ void MaskEdEditWnd::init()
     m_max_height = 0;
     m_canvas_size.clear();
     m_pos.clear();
-    m_state_rendering = false;
+    /*m_state_rendering = false;
     m_rerender = false;
-    m_imgsDirty = true;
+    m_imgsDirty = true;*/
 }
 
 void MaskEdEditWnd::setEditMode(MaskEdEditMode_t edmode)
@@ -111,6 +112,7 @@ void MaskEdEditWnd::loadImage(const wxString &filename)
 {
     loadImage(string(filename.mb_str()));
 }
+
 void MaskEdEditWnd::loadImage(const string &filename)
 {
     if(filename != "")
@@ -142,7 +144,7 @@ void MaskEdEditWnd::loadImage(const string &filename)
     }
 }
 
-void MaskEdEditWnd::loadImages(const vector<string> &filesv)
+void MaskEdEditWnd::loadImage(const vector<string> &filesv)
 {
     //remove_copy_if(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles), );
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
@@ -151,6 +153,39 @@ void MaskEdEditWnd::loadImages(const vector<string> &filesv)
     {
         loadImage(*it);
     }
+}
+
+void MaskEdEditWnd::loadImage(const vigra::BRGBImage* img, vigra::BImage *alpha)
+{
+    if(!img) return;
+    m_canvas_size.push_back(wxPoint(img->width(), img->height()));
+    m_pos.push_back(wxPoint(0, 0));
+    m_selected.push_back(true);
+    m_max_width = img->width() > m_max_width ? img->width() : m_max_width;
+    m_max_height = img->height() > m_max_height ? img->height() : m_max_height;
+    wxImage img_temp(img->width(),
+               img->height(),
+               (unsigned char *) img->data(),
+               true);
+    //wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(filename)->getMaskBitmap();
+    //img_temp.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
+    img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
+    m_bimgs.push_back(new wxBitmap(img_temp));
+    
+    SetScrollbars( 1, 1, m_max_width, m_max_height);
+}
+
+void MaskEdEditWnd::loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas)
+{
+    vector<vigra::BImage*>::iterator it_alpha = alphas.begin();
+    for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, it_alpha++)
+        loadImage(*it, *it_alpha);
+}
+
+void MaskEdEditWnd::loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs)
+{
+    for(vector<pair<vigra::BRGBImage*, vigra::BImage*> >::iterator it = imgs.begin(); it != imgs.end(); it++)
+        loadImage(it->first, it->second);
 }
 
 void MaskEdEditWnd::findOverlappingRect(int i, int j, wxRect &rect)
@@ -536,7 +571,7 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
         //copy(m_poly.pt.begin(), m_poly.pt.end(), pts);
         int i = 0;
-        for(vector<wxPoint>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
+        for(vector<PixelCoord>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
         {
             pts[i].x = it->x * m_scale - x + m_pos[m_active].x;
             pts[i].y = it->y * m_scale - y + m_pos[m_active].y;
@@ -566,7 +601,7 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
         x = GetScrollPos(wxSB_HORIZONTAL);
         y = GetScrollPos(wxSB_VERTICAL);
         wxPoint pos = event.GetPosition()+wxPoint(x,y)-m_pos[m_active];
-        m_poly.add(wxPoint(pos.x/m_scale, pos.y/m_scale));
+        m_poly.add(PixelCoord(pos.x/m_scale, pos.y/m_scale));
     }
     event.Skip();
     Refresh();
@@ -611,10 +646,12 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
             else 
                 pen = new wxPen(*wxBLUE, 1);
             dc.SetPen(*pen);
-            dc.DrawLine(m_brushstroke.pt.back() - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
+            wxPoint lastPt(m_brushstroke.pt.back().x, m_brushstroke.pt.back().y);
+            dc.DrawLine(lastPt - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
             dc.SetPen(oldpen);
         }
-        m_brushstroke.pt.push_back(event.GetPosition() + wxPoint(x, y) - m_pos[m_active]);
+        wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
+        m_brushstroke.pt.push_back(PixelCoord(newPt.x, newPt.y));
     }
 }
 
@@ -655,3 +692,12 @@ void MaskEdEditWnd::toggleShowOverlappedRect()
     Refresh();
 }
 
+void MaskEdEditWnd::undo()
+{
+    m_MaskEdCmdHist.undo();
+}
+
+void MaskEdEditWnd::redo()
+{
+    m_MaskEdCmdHist.redo();
+}

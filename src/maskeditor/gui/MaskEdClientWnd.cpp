@@ -71,17 +71,17 @@ void MaskEdClientWnd::loadProject(const wxString &filename)
 {
     
     MaskMgr::getInstance()->loadMaskProject(string(filename.mb_str()));
-    m_MaskEdEditWnd->loadImages(MaskMgr::getInstance()->getImages());
-    m_MaskEdPreviewWnd->loadImages(MaskMgr::getInstance()->getImages());
+    m_MaskEdEditWnd->loadImage(MaskMgr::getInstance()->getImages());
+    m_MaskEdPreviewWnd->loadImage(MaskMgr::getInstance()->getImages());
 }
 
-void MaskEdClientWnd::loadImages(const wxArrayString &filesv)
+void MaskEdClientWnd::loadImage(const wxArrayString &filesv)
 {
     vector<string> strfilesv;
     transform(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(strfilesv), wxStringTostring);
-    MaskMgr::getInstance()->loadImages(strfilesv);
-    m_MaskEdEditWnd->loadImages(strfilesv);
-    m_MaskEdPreviewWnd->loadImages(strfilesv);
+    MaskMgr::getInstance()->loadImage(strfilesv);
+    m_MaskEdEditWnd->loadImage(strfilesv);
+    m_MaskEdPreviewWnd->loadImage(strfilesv);
 }
 
 void MaskEdClientWnd::saveMask(int index, const wxString &filename)
@@ -113,4 +113,14 @@ void MaskEdClientWnd::setEditMode(MaskEdEditMode_t edmode)
 void MaskEdClientWnd::toggleShowOverlappedRect()
 {
     m_MaskEdEditWnd->toggleShowOverlappedRect();
+}
+
+void MaskEdClientWnd::undo()
+{
+    m_MaskEdEditWnd->undo();
+}
+
+void MaskEdClientWnd::redo()
+{
+    m_MaskEdEditWnd->redo();
 }

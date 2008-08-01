@@ -52,7 +52,7 @@ void MaskEdPreviewWnd::init()
     m_boxsizer->Clear(true);
 }
 
-void MaskEdPreviewWnd::loadImages(const vector<string> &filesv)
+void MaskEdPreviewWnd::loadImage(const vector<string> &filesv)
 {
     for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
     {

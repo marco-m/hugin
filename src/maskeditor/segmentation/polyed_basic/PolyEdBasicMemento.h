@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskPoly.h
+/** @file PolyEdBasicMemento.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -20,17 +20,22 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifndef POLYEDBASICMEMENTO_H
+#define POLYEDBASICMEMENTO_H
 
-#ifndef MASKPOLY_H
-#define MASKPOLY_H
+#include "IMaskEdMemento.h"
 
-#include "Pixel.h"
-
-struct MaskPoly
+class PolyEd_Basic;
+class wxBitmap;
+class PolyEdBasicMemento : public IMaskEdMemento
 {
-    std::vector<PixelCoord> pt;
-    int label;
-    void clear() { pt.clear(); }
-    void add(PixelCoord newpt) { pt.push_back(newpt); }
+    wxBitmap *m_mask;
+    int       m_width;
+    int       m_height;
+public:
+    PolyEdBasicMemento(wxBitmap *mask, int width, int height);
+
+    friend class PolyEd_Basic;
 };
+
 #endif

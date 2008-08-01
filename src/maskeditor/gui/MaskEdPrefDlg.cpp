@@ -22,7 +22,7 @@
  */
 #include <string>
 #include <vector>
-#include "../core/MaskMgr.h"
+#include "MaskMgr.h"
 #include "MaskEdPrefDlg.h"
 #include <wx/xrc/xmlres.h>
 

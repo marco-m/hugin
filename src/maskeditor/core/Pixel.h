@@ -23,18 +23,32 @@
 
 #ifndef PIXEL_H
 #define PIXEL_H
-#include <wx/wx.h>
-/* struct PixelCoord
-    {
-        int r, c;
-        PixelCoord(int r, int c) : r(r), c(c) {}
-        PixelCoord(wxPoint pt) : r(pt.y), c(pt.x) {}
-        wxPoint operator=(PixelCoord &p) 
-        {
-            return wxPoint(p.c, p.r);
-        }
-    };*/
-typedef wxPoint PixelCoord;
+
+#include <exception>
+
+class PixelCoord
+{
+public:
+    int x, y;
+    PixelCoord() : x(0), y(0) {}
+    PixelCoord(int x, int y) : x(x), y(y) {}
+   
+    PixelCoord(const PixelCoord &p) { x = p.x; y = p.y; }
+    PixelCoord operator=(const PixelCoord& p) { x = p.x; y = p.y;  return *this; }
+    // comparison
+    bool operator==(const PixelCoord& p) const { return x == p.x && y == p.y; }
+    bool operator!=(const PixelCoord& p) const { return !(*this == p); }
+
+    // arithmetic operations (component wise)
+    PixelCoord operator+(const PixelCoord& p) const { return PixelCoord(x + p.x, y + p.y); }
+    PixelCoord operator-(const PixelCoord& p) const { return PixelCoord(x - p.x, y - p.y); }
+
+    PixelCoord& operator+=(const PixelCoord& p) { x += p.x; y += p.y; return *this; }
+    PixelCoord& operator-=(const PixelCoord& p) { x -= p.x; y -= p.y; return *this; }
+    
+    PixelCoord operator-() const { return PixelCoord(-x, -y); }
+};
+
 struct PixelColor
 {
     unsigned char r, g, b;

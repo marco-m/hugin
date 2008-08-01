@@ -48,13 +48,16 @@ public:
     void saveProject();                         //save the currently loaded project
     void saveProjectAs(const wxString &filename);
     void saveMask(int i, const wxString &filename);
-    void loadImages(const wxArrayString &filenames);
+    void loadImage(const wxArrayString &filenames);
 
     void zoom(float scale = 1.0, wxRect region = wxRect());
     float getZoomLevel() const;
     wxString getFile() const;
     void setEditMode(MaskEdEditMode_t edmode);
     void toggleShowOverlappedRect();
+
+    void undo();
+    void redo();
     
 };
 

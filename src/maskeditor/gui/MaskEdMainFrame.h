@@ -46,6 +46,8 @@ public:
     void OnSaveProjectAs(wxCommandEvent& event);
     void OnSaveImage(wxCommandEvent& event);
     void OnSaveMask(wxCommandEvent& event);
+    void OnUndo(wxCommandEvent &event);
+    void OnRedo(wxCommandEvent &event);
     void OnBStroke(wxCommandEvent& event);
     void OnAddPoint(wxCommandEvent& event);
     void OnPreference(wxCommandEvent& event);

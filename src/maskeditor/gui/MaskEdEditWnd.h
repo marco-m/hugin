@@ -65,7 +65,7 @@ public:
     void init();
     void loadImage(const wxString &filename);
     void loadImage(const std::string &filename);
-    void loadImages(const std::vector<std::string> &filesv);
+    void loadImage(const std::vector<std::string> &filesv);
     void reloadImages();
 
     void findOverlappingRect(int i, int j, wxRect &rect);
@@ -76,6 +76,8 @@ public:
     
     void setEditMode(MaskEdEditMode_t edmode);
     void toggleShowOverlappedRect();
+    void undo();
+    void redo();
 
     void OnPaint(wxPaintEvent &event);
     void OnMouseButtonDown(wxMouseEvent &event);

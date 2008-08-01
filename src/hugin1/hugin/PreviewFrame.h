@@ -98,7 +98,8 @@ protected:
     void OnSetROI(wxCommandEvent& event);
     void OnShowOverlap(wxCommandEvent& event);
     void OnSegSelUpdate(wxCommandEvent& event);
-
+    void OnUndo(wxCommandEvent& event);
+    void OnRedo(wxCommandEvent& event);
 private:
     enum tMode { PREVIEW_MODE, MASKEDITOR_MODE };
     float          m_scale;

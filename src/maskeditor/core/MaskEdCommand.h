@@ -27,15 +27,17 @@
 #include <string>
 #include "appbase/Command.h"
 #include "appbase/CommandHistory.h"
-#include "MaskMgr.h"
 #include "BrushStroke.h"
 #include "MaskPoly.h"
 
+class MaskMgr;
+class IMaskEdMemento;
 class BrushStrokeCmd : public AppBase::Command<std::string>
 {
     MaskMgr         *m_maskmgr;
     BrushStroke     m_stroke;
     int             m_index;
+    IMaskEdMemento  *m_memento;
 public:
     BrushStrokeCmd(MaskMgr *maskmgr, BrushStroke stroke, int index);
     void execute();
@@ -48,6 +50,7 @@ class PolygonCmd : public AppBase::Command<std::string>
     MaskPoly    m_poly;
     MaskMgr     *m_maskmgr;
     int         m_index;
+    IMaskEdMemento  *m_memento;
 public:
     PolygonCmd(MaskMgr *maskmgr, MaskPoly m_poly, int m_index);
     void execute();

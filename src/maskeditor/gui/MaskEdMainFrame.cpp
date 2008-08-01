@@ -29,6 +29,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
+#include "MaskMgr.h"
 
 using namespace std;
 using HuginBase::ImageCache;
@@ -52,6 +53,8 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_edit_preferences"), MaskEdMainFrame::OnPreference)
     EVT_MENU(XRCID("action_exit"), MaskEdMainFrame::OnQuit)
     EVT_MENU(XRCID("action_about_maskeditor"), MaskEdMainFrame::OnAbout)
+    EVT_MENU(XRCID("action_undo"), MaskEdMainFrame::OnUndo)
+    EVT_MENU(XRCID("action_redo"), MaskEdMainFrame::OnRedo)
     EVT_MENU(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
     EVT_BUTTON(XRCID("action_zoom_in"), MaskEdMainFrame::OnZoomIn)
     EVT_MENU(XRCID("action_zoom_out"), MaskEdMainFrame::OnZoomOut)
@@ -143,7 +146,7 @@ void MaskEdMainFrame::OnLoadImages(wxCommandEvent &event)
     {
         wxArrayString paths;
         dialog.GetPaths(paths);
-        m_MaskEdClientWnd->loadImages(paths);
+        m_MaskEdClientWnd->loadImage(paths);
         this->Refresh();
     }
 }
@@ -188,6 +191,16 @@ void MaskEdMainFrame::OnBStroke(wxCommandEvent &event)
 void MaskEdMainFrame::OnAddPoint(wxCommandEvent &event)
 {
     m_MaskEdClientWnd->setEditMode(ME_POLY);
+}
+
+void MaskEdMainFrame::OnUndo(wxCommandEvent &event)
+{
+    m_MaskEdClientWnd->undo();
+}
+
+void MaskEdMainFrame::OnRedo(wxCommandEvent &event)
+{
+    m_MaskEdClientWnd->redo();
 }
 
 void MaskEdMainFrame::OnPreference(wxCommandEvent &event)

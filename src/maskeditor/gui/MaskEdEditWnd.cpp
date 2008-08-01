@@ -25,7 +25,8 @@
 #include "MaskEdEditWnd.h"
 #include "MaskEdClientWnd.h"
 #include "../core/ISegmentation.h"
-
+#include "MaskMgr.h"
+#include <wx/wx.h>
 using HuginBase::ImageCache;
 using namespace std;
 
@@ -108,7 +109,7 @@ void MaskEdEditWnd::loadImage(const string &filename)
     }
 }
 
-void MaskEdEditWnd::loadImages(const vector<string> &filesv)
+void MaskEdEditWnd::loadImage(const vector<string> &filesv)
 {
     //remove_copy_if(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles), );
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
@@ -205,7 +206,7 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
         //copy(m_poly.pt.begin(), m_poly.pt.end(), pts);
         int i = 0;
-        for(vector<wxPoint>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
+        for(vector<PixelCoord>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
         {
             pts[i].x = it->x * m_scale - x + m_pos[m_active].x;
             pts[i].y = it->y * m_scale - y + m_pos[m_active].y;
@@ -235,7 +236,7 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
         x = GetScrollPos(wxSB_HORIZONTAL);
         y = GetScrollPos(wxSB_VERTICAL);
         wxPoint pos = event.GetPosition()+wxPoint(x,y)-m_pos[m_active];
-        m_poly.add(wxPoint(pos.x/m_scale, pos.y/m_scale));
+        m_poly.add(PixelCoord(pos.x/m_scale, pos.y/m_scale));
     }
     event.Skip();
     Refresh();
@@ -280,10 +281,12 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
             else 
                 pen = new wxPen(*wxBLUE, 1);
             dc.SetPen(*pen);
-            dc.DrawLine(m_brushstroke.pt.back() - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
+            wxPoint lastPt(m_brushstroke.pt.back().x, m_brushstroke.pt.back().y);
+            dc.DrawLine(lastPt - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
             dc.SetPen(oldpen);
         }
-        m_brushstroke.pt.push_back(event.GetPosition() + wxPoint(x, y) - m_pos[m_active]);
+        wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
+        m_brushstroke.pt.push_back(PixelCoord(newPt.x, newPt.y));
     }
 }
 
@@ -324,3 +327,14 @@ void MaskEdEditWnd::toggleShowOverlappedRect()
     Refresh();
 }
 
+void MaskEdEditWnd::undo()
+{
+    m_MaskEdCmdHist.undo();
+    reloadImages();
+}
+
+void MaskEdEditWnd::redo()
+{
+    m_MaskEdCmdHist.redo();
+    reloadImages();
+}

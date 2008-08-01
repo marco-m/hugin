@@ -23,11 +23,15 @@
 
 #ifndef ISEGMENTATION_H
 #define ISEGMENTATION_H
-#include <wx/wx.h>
 #include <vector>
 #include "BrushStroke.h"
 #include "MaskPoly.h"
 #include "Pixel.h"
+#include "IMaskEdMemento.h"
+
+class wxMask;
+class wxBitmap;
+class wxPoint;
 
 class ISegmentation
 {
@@ -40,13 +44,19 @@ public:
    
     ISegmentation() : m_mask(0) {}
     virtual ~ISegmentation() { delete m_mask; }
-    virtual void init() = 0;
+
+    virtual void init(vigra::BImage *mask = 0) = 0;
     virtual void reset() = 0;
     std::string name() { return m_name; }
+
+    virtual void setMemento(IMaskEdMemento *memento) = 0;
+    virtual IMaskEdMemento* createMemento() = 0;
+
     virtual void markPixels(std::vector<PixelCoord> coords, Label label) = 0;
     virtual void setRegion(std::vector<PixelCoord> coords, Label label) = 0;
     virtual void setImage(unsigned char* data, int row, int col, int depth) = 0;
     virtual void setImage(const std::string &filename) = 0;
+    virtual void setImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *mask = 0) = 0;
     virtual wxMask* getMask() const = 0;
     virtual wxBitmap* getMaskBitmap() const = 0;
     virtual std::vector<wxPoint> getOutline() const = 0;

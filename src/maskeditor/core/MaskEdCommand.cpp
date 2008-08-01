@@ -20,8 +20,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#include "vigra/stdimage.hxx"
+
 #include <vector>
 #include "MaskEdCommand.h"
+#include "MaskMgr.h"
+#include "IMaskEdMemento.h"
 
 using namespace std;
 
@@ -34,15 +38,14 @@ BrushStrokeCmd::BrushStrokeCmd(MaskMgr *maskmgr, BrushStroke stroke, int index)
 void BrushStrokeCmd::execute()
 {
     //store previous state (memento pattern)
-    //m_maskmgr->getSegmentation()->getMemento()...
-    //...
+    m_memento = m_maskmgr->getSegmentation(m_index)->createMemento();
     m_maskmgr->getSegmentation(m_index)->markPixels(m_stroke.pt, (ISegmentation::Label)m_stroke.label);
 }
 
 void BrushStrokeCmd::undo()
 {
    //set to previous state (these should be done in the base class)
-   //m_maskmgr->getSegmentation()->setState(...)...
+    m_maskmgr->getSegmentation(m_index)->setMemento(m_memento);
 }
 
 void BrushStrokeCmd::redo()
@@ -56,12 +59,13 @@ PolygonCmd::PolygonCmd(MaskMgr *maskmgr, MaskPoly poly, int index)
 
 void PolygonCmd::execute()
 {
+    m_memento = m_maskmgr->getSegmentation(m_index)->createMemento();
     m_maskmgr->getSegmentation(m_index)->setRegion(m_poly.pt, (ISegmentation::Label)m_poly.label);
 }
 
 void PolygonCmd::undo()
 {
-
+    m_maskmgr->getSegmentation(m_index)->setMemento(m_memento);
 }
 
 void PolygonCmd::redo()

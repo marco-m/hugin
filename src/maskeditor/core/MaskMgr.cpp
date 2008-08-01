@@ -20,12 +20,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#include <sstream>
 #include "huginapp/ImageCache.h"
-#include "MaskMgr.h"
-#include "MaskFileMgr.h"
 #include "../segmentation/polyed_basic/PolyEd_Basic.h"
 #include "../segmentation/lazysnapping/LazySnapping.h"
+#include "vigra/stdimage.hxx"
+#include "MaskMgr.h"
+#include "MaskFileMgr.h"
 
 using namespace std;
 using HuginBase::ImageCache;
@@ -94,7 +95,7 @@ int MaskMgr::getSegmentationOptionSelected() const
 
 void MaskMgr::loadImage(const string &filename)
 {
-    ImageCache::getInstance().getImage(filename);
+    //ImageCache::getInstance().getImage(filename);
     m_imgfiles.push_back(filename);
     if(m_segmentation_options[m_segmentation_index] ==  "PolyEd_Basic")
         m_segmentation.push_back(new PolyEd_Basic(filename));
@@ -102,18 +103,60 @@ void MaskMgr::loadImage(const string &filename)
         m_segmentation.push_back(new LazySnapping(filename));
 }
 
-void MaskMgr::loadImages(const vector<string> &filesv)
+void MaskMgr::loadImage(const vector<string> &filesv)
 {
     //copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
     for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
         loadImage(*it);
 }
 
+void MaskMgr::loadImage(const string &imgId, const vigra::BRGBImage* img, vigra::BImage *alpha)
+{
+    m_imgfiles.push_back(imgId);
+    if(m_segmentation_options[m_segmentation_index] ==  "PolyEd_Basic")
+        m_segmentation.push_back(new PolyEd_Basic(imgId, img, alpha));
+    else if(m_segmentation_options[m_segmentation_index] == "LazySnapping")
+        m_segmentation.push_back(new LazySnapping(imgId, img, alpha));
+}
+
+void MaskMgr::loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas)
+{
+    int i = 0;
+    ostringstream imgId;
+    if(alphas.size() == imgs.size()) {
+        vector<vigra::BImage*>::iterator it_alpha = alphas.begin();
+        for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, it_alpha++) 
+        {
+            imgId << i;
+            loadImage(imgId.str(), *it, *it_alpha);
+        }
+    } else {
+        for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, i++)
+        {
+            imgId << i;
+            loadImage(imgId.str(), *it);
+        }
+    }
+}
+
+void MaskMgr::loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs)
+{
+    init();
+    int i = 0;
+    ostringstream imgId;
+    for(vector<pair<vigra::BRGBImage*, vigra::BImage*> >::iterator it = imgs.begin(); it != imgs.end(); it++, i++)
+    {
+        imgId << i;
+        loadImage(imgId.str(), it->first, it->second);
+        imgId.clear();
+    }
+}
+
 void MaskMgr::loadMaskProject(const string &filename)
 {
     init();
     MaskFileMgr::getInstance()->loadFile(filename);
-    loadImages(MaskFileMgr::getInstance()->getImgFiles());
+    loadImage(MaskFileMgr::getInstance()->getImgFiles());
 }
 
 void MaskMgr::reload()
@@ -123,7 +166,7 @@ void MaskMgr::reload()
         copy(m_imgfiles.begin(), m_imgfiles.end(), back_insert_iterator<vector<string> >(tmp));
         m_segmentation.clear();
         m_imgfiles.clear();
-        loadImages(tmp);
+        loadImage(tmp);
     }
 }
 

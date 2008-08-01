@@ -97,7 +97,6 @@ bool PreviewPanel::Create(wxWindow* parent, wxWindowID id,
     return true;
 }
 
-
 void PreviewPanel::Init(PreviewFrame *parent, PT::Panorama * panorama )
 {
     pano = panorama;
@@ -213,6 +212,19 @@ void PreviewPanel::SetAutoUpdate(bool enabled)
     }
 }
 
+vector<pair<vigra::BRGBImage*, vigra::BImage*> > PreviewPanel::getRemappedImages()
+{
+    vector<pair<vigra::BRGBImage*, vigra::BImage*> > vec;
+    UIntSet set;
+    for(int i = 0; i < pano->getNrOfImages(); i++)
+    {
+        set.insert(i);
+        vec.push_back(mapPreviewImage(set));
+        set.erase(i);
+    }
+    return vec;
+}
+
 /** just apply exposure and response to linear data
  */
 template <class OP>
@@ -233,6 +245,222 @@ struct ExposureResponseFunctor2
     }
 };
 
+pair<vigra::BRGBImage*,vigra::BImage*> PreviewPanel::mapPreviewImage(UIntSet &displayedImages, vigra::Diff2D *p_panoImgSize)
+{
+    double finalWidth = pano->getOptions().getWidth();
+    double finalHeight = pano->getOptions().getHeight();
+
+    vigra::Diff2D panoImgSize = Diff2D(GetClientSize().GetWidth(), GetClientSize().GetHeight());
+
+    double ratioPano = finalWidth / finalHeight;
+    double ratioPanel = (double)panoImgSize.x / (double)panoImgSize.y;
+
+    DEBUG_DEBUG("panorama ratio: " << ratioPano << "  panel ratio: " << ratioPanel);
+
+    if (ratioPano < ratioPanel) {
+        // panel is wider than pano
+        panoImgSize.x = ((int) (panoImgSize.y * ratioPano));
+        DEBUG_DEBUG("portrait: " << panoImgSize);
+    } else {
+        // panel is taller than pano
+        panoImgSize.y = ((int)(panoImgSize.x / ratioPano));
+        DEBUG_DEBUG("landscape: " << panoImgSize);
+    }
+
+    PanoramaOptions opts = pano->getOptions();
+    opts.setWidth(panoImgSize.x, false);
+    opts.setHeight(panoImgSize.y);
+    //m_panoImgSize.y = opts.getHeight();
+    // always use bilinear for preview.
+
+    // reset ROI. The preview needs to draw the parts outside the ROI, too!
+    opts.setROI(Rect2D(opts.getSize()));
+    opts.interpolator = vigra_ext::INTERP_BILINEAR;
+    
+    vigra::BRGBImage *panoImg8 = new vigra::BRGBImage(panoImgSize);
+    vigra::BImage* alpha = new vigra::BImage(panoImgSize);
+    try {
+        //vigra::BasicImageView<RGBValue<unsigned char> > *panoImg8((RGBValue<unsigned char> *)panoImage.GetData(), panoImage.GetWidth(), panoImage.GetHeight());
+        FRGBImage panoImg(panoImgSize);
+        
+        // the empty panorama roi
+//        Rect2D panoROI;
+        DEBUG_DEBUG("about to stitch images, pano size: " << panoImgSize);
+        
+        if (displayedImages.size() > 0) {
+            if (opts.outputMode == PanoramaOptions::OUTPUT_HDR) {
+                DEBUG_DEBUG("HDR output merge");
+
+                ReduceToHDRFunctor<RGBValue<float> > hdrmerge;
+                ReduceStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
+                stitcher.stitch(opts, displayedImages,
+                                destImageRange(panoImg), destImage(*alpha),
+                                m_remapCache,
+                                hdrmerge);
+                /*
+                std::vector<RemappedPanoImage<FRGBImage, BImage> *> remapped;
+                // get all remapped images
+                for (UIntSet::const_iterator it = displayedImages.begin();
+                     it != displayedImages.end(); ++it)
+                {
+                    remapped.push_back(m_remapCache.getRemapped(pano, opts, *it, *parentWindow));
+                }
+                reduceROIImages(remapped,
+                                destImageRange(panoImg), destImage(*alpha),
+                                hdrmerge);
+                */
+#ifdef DEBUG_REMAP
+{
+    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce.tif"); \
+            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
+}
+{
+    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce_*alpha.tif"); \
+            vigra::exportImage(vigra::srcImageRange(*alpha), exi); \
+}
+#endif
+
+                // find min and max
+                vigra::FindMinMax<float> minmax;   // init functor
+                vigra::inspectImageIf(srcImageRange(panoImg), srcImage(*alpha),
+                                    minmax);
+                double min = std::max(minmax.min, 1e-6f);
+                double max = minmax.max;
+
+#if 0
+                for (int i=0; i<3; i++) {
+                    if (minmax.min[i]> 1e-6 && minmax.min[i] < min)
+                        min = minmax.min[i];
+                }
+                double max = DBL_MIN;
+                for (int i=0; i<3; i++) {
+                    if (minmax.max[i]> 1e-6 && minmax.max[i] > max)
+                        max = minmax.max[i];
+                }
+#endif
+
+                int mapping = wxConfigBase::Get()->Read(wxT("/ImageCache/MappingFloat"), HUGIN_IMGCACHE_MAPPING_FLOAT);
+                applyMapping(srcImageRange(panoImg), destImage(*panoImg8), min, max, mapping);
+
+            } else {
+                    // LDR output
+    //            FileRemapper<BRGBImage, BImage> m;
+                switch (m_blendMode) {
+                case BLEND_COPY:
+                {
+                    StackingBlender blender;
+    //                SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
+                    SimpleStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
+                    stitcher.stitch(opts, displayedImages,
+                                    destImageRange(panoImg), destImage(*alpha),
+                                    m_remapCache,
+                                    blender);
+                    break;
+                }
+                case BLEND_DIFFERENCE:
+                {
+                    ReduceToDifferenceFunctor<RGBValue<float> > func;
+                    ReduceStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
+                    stitcher.stitch(opts, displayedImages,
+                                    destImageRange(panoImg), destImage(*alpha),
+                                    m_remapCache,
+                                    func);
+                    break;
+    /*
+    
+                    WeightedStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
+                    stitcher.stitch(opts, m_displayedImages,
+                                    destImageRange(panoImg), destImage(*alpha),
+                                    m_remapCache);
+                    break;
+    */
+                }
+    /*
+                case BLEND_DIFFERENCE:
+                {
+                    DifferenceBlender blender;
+                    SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
+                    stitcher.stitch(opts, m_displayedImages,
+                                    destImageRange(panoImg), destImage(*alpha),
+                                    m_remapCache,
+                                    blender);
+                    break;
+                }
+    */
+                }
+
+                
+#ifdef DEBUG_REMAP
+{
+    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_AfterRemap.tif"); \
+            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
+}
+{
+    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_AfterRemapalpha.tif"); \
+            vigra::exportImage(vigra::srcImageRange(*alpha), exi); \
+}
+#endif
+
+                // apply default exposure and convert to 8 bit
+                SrcPanoImage src = pano->getSrcImage(0);
+
+                // apply the exposure
+                double scale = 1.0/pow(2.0,opts.outputExposureValue);
+
+                vigra::transformImage(srcImageRange(panoImg), destImage(panoImg),
+                                      vigra::functor::Arg1()*vigra::functor::Param(scale));
+
+                DEBUG_DEBUG("LDR output, with response: " << src.getResponseType());
+                if (src.getResponseType() == SrcPanoImage::RESPONSE_LINEAR) {
+                    vigra::copyImage(srcImageRange(panoImg), destImage(*panoImg8));
+//                    vigra::transformImage(srcImageRange(panoImg), destImage(*panoImg8),
+//                                          vigra::functor::Arg1()*vigra::functor::Param(255));
+                } else {
+                // create suitable lut for response
+                    typedef  std::vector<double> LUT;
+                    LUT lut;
+                    switch(src.getResponseType())
+                    {
+                        case SrcPanoImage::RESPONSE_EMOR:
+                            EMoR::createEMoRLUT(src.getEMoRParams(), lut);
+                            break;
+                        case SrcPanoImage::RESPONSE_GAMMA:
+                            lut.resize(256);
+                            createGammaLUT(1/src.getGamma(), lut);
+                            break;
+                        default:
+                            vigra_fail("Unknown or unsupported response function type");
+                            break;
+                    }
+                    // scale lut
+                    for (size_t i=0; i < lut.size(); i++) 
+                        lut[i] = lut[i]*255;
+                    typedef vigra::RGBValue<float> FRGB;
+                    LUTFunctor<FRGB, LUT> lutf(lut);
+
+                    vigra::transformImage(srcImageRange(panoImg), destImage(*panoImg8),
+                                          lutf);
+                }
+            }
+        }
+
+#ifdef DEBUG_REMAP
+{
+    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin05_preview_final.tif"); \
+            vigra::exportImage(vigra::srcImageRange(*panoImg8), exi); \
+}
+#endif
+
+
+    } catch (std::exception & e) {
+        m_state_rendering = false;
+        DEBUG_ERROR("error during stitching: " << e.what());
+        wxMessageBox(wxString(e.what(), wxConvLocal), _("Error during Stitching"));
+    }
+    if(p_panoImgSize)
+        *p_panoImgSize = panoImgSize;
+    return make_pair(panoImg8, alpha);
+}
 
 void PreviewPanel::updatePreview()
 {
@@ -277,216 +505,223 @@ void PreviewPanel::updatePreview()
 //    bool corrLens = cor != 0;
 
     wxBusyCursor wait;
-    double finalWidth = pano->getOptions().getWidth();
-    double finalHeight = pano->getOptions().getHeight();
-
-    m_panoImgSize = Diff2D(GetClientSize().GetWidth(), GetClientSize().GetHeight());
-
-    double ratioPano = finalWidth / finalHeight;
-    double ratioPanel = (double)m_panoImgSize.x / (double)m_panoImgSize.y;
-
-    DEBUG_DEBUG("panorama ratio: " << ratioPano << "  panel ratio: " << ratioPanel);
-
-    if (ratioPano < ratioPanel) {
-        // panel is wider than pano
-        m_panoImgSize.x = ((int) (m_panoImgSize.y * ratioPano));
-        DEBUG_DEBUG("portrait: " << m_panoImgSize);
-    } else {
-        // panel is taller than pano
-        m_panoImgSize.y = ((int)(m_panoImgSize.x / ratioPano));
-        DEBUG_DEBUG("landscape: " << m_panoImgSize);
-    }
-
-    PanoramaOptions opts = pano->getOptions();
-    opts.setWidth(m_panoImgSize.x, false);
-    opts.setHeight(m_panoImgSize.y);
-    //m_panoImgSize.y = opts.getHeight();
-    // always use bilinear for preview.
-
-    // reset ROI. The preview needs to draw the parts outside the ROI, too!
-    opts.setROI(Rect2D(opts.getSize()));
-    opts.interpolator = vigra_ext::INTERP_BILINEAR;
-
-    // create images
-    wxImage panoImage(m_panoImgSize.x, m_panoImgSize.y);
-    try {
-        vigra::BasicImageView<RGBValue<unsigned char> > panoImg8((RGBValue<unsigned char> *)panoImage.GetData(), panoImage.GetWidth(), panoImage.GetHeight());
-        FRGBImage panoImg(m_panoImgSize);
-        BImage alpha(m_panoImgSize);
-        // the empty panorama roi
-//        Rect2D panoROI;
-        DEBUG_DEBUG("about to stitch images, pano size: " << m_panoImgSize);
-        UIntSet displayedImages = pano->getActiveImages();
-        if (displayedImages.size() > 0) {
-            if (opts.outputMode == PanoramaOptions::OUTPUT_HDR) {
-                DEBUG_DEBUG("HDR output merge");
-
-                ReduceToHDRFunctor<RGBValue<float> > hdrmerge;
-                ReduceStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
-                stitcher.stitch(opts, displayedImages,
-                                destImageRange(panoImg), destImage(alpha),
-                                m_remapCache,
-                                hdrmerge);
-                /*
-                std::vector<RemappedPanoImage<FRGBImage, BImage> *> remapped;
-                // get all remapped images
-                for (UIntSet::const_iterator it = displayedImages.begin();
-                     it != displayedImages.end(); ++it)
-                {
-                    remapped.push_back(m_remapCache.getRemapped(pano, opts, *it, *parentWindow));
-                }
-                reduceROIImages(remapped,
-                                destImageRange(panoImg), destImage(alpha),
-                                hdrmerge);
-                */
-#ifdef DEBUG_REMAP
-{
-    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce.tif"); \
-            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
-}
-{
-    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce_Alpha.tif"); \
-            vigra::exportImage(vigra::srcImageRange(alpha), exi); \
-}
-#endif
-
-                // find min and max
-                vigra::FindMinMax<float> minmax;   // init functor
-                vigra::inspectImageIf(srcImageRange(panoImg), srcImage(alpha),
-                                    minmax);
-                double min = std::max(minmax.min, 1e-6f);
-                double max = minmax.max;
-
-#if 0
-                for (int i=0; i<3; i++) {
-                    if (minmax.min[i]> 1e-6 && minmax.min[i] < min)
-                        min = minmax.min[i];
-                }
-                double max = DBL_MIN;
-                for (int i=0; i<3; i++) {
-                    if (minmax.max[i]> 1e-6 && minmax.max[i] > max)
-                        max = minmax.max[i];
-                }
-#endif
-
-                int mapping = wxConfigBase::Get()->Read(wxT("/ImageCache/MappingFloat"), HUGIN_IMGCACHE_MAPPING_FLOAT);
-                applyMapping(srcImageRange(panoImg), destImage(panoImg8), min, max, mapping);
-
-            } else {
-                    // LDR output
-    //            FileRemapper<BRGBImage, BImage> m;
-                switch (m_blendMode) {
-                case BLEND_COPY:
-                {
-                    StackingBlender blender;
-    //                SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
-                    SimpleStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
-                    stitcher.stitch(opts, displayedImages,
-                                    destImageRange(panoImg), destImage(alpha),
-                                    m_remapCache,
-                                    blender);
-                    break;
-                }
-                case BLEND_DIFFERENCE:
-                {
-                    ReduceToDifferenceFunctor<RGBValue<float> > func;
-                    ReduceStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
-                    stitcher.stitch(opts, displayedImages,
-                                    destImageRange(panoImg), destImage(alpha),
-                                    m_remapCache,
-                                    func);
-                    break;
-    /*
-    
-                    WeightedStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
-                    stitcher.stitch(opts, m_displayedImages,
-                                    destImageRange(panoImg), destImage(alpha),
-                                    m_remapCache);
-                    break;
-    */
-                }
-    /*
-                case BLEND_DIFFERENCE:
-                {
-                    DifferenceBlender blender;
-                    SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
-                    stitcher.stitch(opts, m_displayedImages,
-                                    destImageRange(panoImg), destImage(alpha),
-                                    m_remapCache,
-                                    blender);
-                    break;
-                }
-    */
-                }
-
-                
-#ifdef DEBUG_REMAP
-{
-    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_AfterRemap.tif"); \
-            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
-}
-{
-    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_AfterRemapAlpha.tif"); \
-            vigra::exportImage(vigra::srcImageRange(alpha), exi); \
-}
-#endif
-
-                // apply default exposure and convert to 8 bit
-                SrcPanoImage src = pano->getSrcImage(0);
-
-                // apply the exposure
-                double scale = 1.0/pow(2.0,opts.outputExposureValue);
-
-                vigra::transformImage(srcImageRange(panoImg), destImage(panoImg),
-                                      vigra::functor::Arg1()*vigra::functor::Param(scale));
-
-                DEBUG_DEBUG("LDR output, with response: " << src.getResponseType());
-                if (src.getResponseType() == SrcPanoImage::RESPONSE_LINEAR) {
-                    vigra::copyImage(srcImageRange(panoImg), destImage(panoImg8));
+    pair<vigra::BRGBImage*, vigra::BImage*> panoImg8_alpha;
+    panoImg8_alpha = mapPreviewImage(pano->getActiveImages(), &m_panoImgSize);
+    vigra::BRGBImage *panoImg8 = panoImg8_alpha.first;
+    wxImage panoImage(panoImg8->width(), panoImg8->height(),
+                       (unsigned char *) panoImg8->data(), true);
+    //delete panoImg8_alpha.first;
+    //delete panoImg8_alpha.second;
+//    double finalWidth = pano->getOptions().getWidth();
+//    double finalHeight = pano->getOptions().getHeight();
+//
+//    m_panoImgSize = Diff2D(GetClientSize().GetWidth(), GetClientSize().GetHeight());
+//
+//    double ratioPano = finalWidth / finalHeight;
+//    double ratioPanel = (double)m_panoImgSize.x / (double)m_panoImgSize.y;
+//
+//    DEBUG_DEBUG("panorama ratio: " << ratioPano << "  panel ratio: " << ratioPanel);
+//
+//    if (ratioPano < ratioPanel) {
+//        // panel is wider than pano
+//        m_panoImgSize.x = ((int) (m_panoImgSize.y * ratioPano));
+//        DEBUG_DEBUG("portrait: " << m_panoImgSize);
+//    } else {
+//        // panel is taller than pano
+//        m_panoImgSize.y = ((int)(m_panoImgSize.x / ratioPano));
+//        DEBUG_DEBUG("landscape: " << m_panoImgSize);
+//    }
+//
+//    PanoramaOptions opts = pano->getOptions();
+//    opts.setWidth(m_panoImgSize.x, false);
+//    opts.setHeight(m_panoImgSize.y);
+//    //m_panoImgSize.y = opts.getHeight();
+//    // always use bilinear for preview.
+//
+//    // reset ROI. The preview needs to draw the parts outside the ROI, too!
+//    opts.setROI(Rect2D(opts.getSize()));
+//    opts.interpolator = vigra_ext::INTERP_BILINEAR;
+//
+//    // create images
+//    wxImage panoImage(m_panoImgSize.x, m_panoImgSize.y);
+//    try {
+//        vigra::BasicImageView<RGBValue<unsigned char> > panoImg8((RGBValue<unsigned char> *)panoImage.GetData(), panoImage.GetWidth(), panoImage.GetHeight());
+//        FRGBImage panoImg(m_panoImgSize);
+//        BImage alpha(m_panoImgSize);
+//        // the empty panorama roi
+////        Rect2D panoROI;
+//        DEBUG_DEBUG("about to stitch images, pano size: " << m_panoImgSize);
+//        UIntSet displayedImages = pano->getActiveImages();
+//        if (displayedImages.size() > 0) {
+//            if (opts.outputMode == PanoramaOptions::OUTPUT_HDR) {
+//                DEBUG_DEBUG("HDR output merge");
+//
+//                ReduceToHDRFunctor<RGBValue<float> > hdrmerge;
+//                ReduceStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
+//                stitcher.stitch(opts, displayedImages,
+//                                destImageRange(panoImg), destImage(alpha),
+//                                m_remapCache,
+//                                hdrmerge);
+//                /*
+//                std::vector<RemappedPanoImage<FRGBImage, BImage> *> remapped;
+//                // get all remapped images
+//                for (UIntSet::const_iterator it = displayedImages.begin();
+//                     it != displayedImages.end(); ++it)
+//                {
+//                    remapped.push_back(m_remapCache.getRemapped(pano, opts, *it, *parentWindow));
+//                }
+//                reduceROIImages(remapped,
+//                                destImageRange(panoImg), destImage(alpha),
+//                                hdrmerge);
+//                */
+//#ifdef DEBUG_REMAP
+//{
+//    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce.tif"); \
+//            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
+//}
+//{
+//    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce_Alpha.tif"); \
+//            vigra::exportImage(vigra::srcImageRange(alpha), exi); \
+//}
+//#endif
+//
+//                // find min and max
+//                vigra::FindMinMax<float> minmax;   // init functor
+//                vigra::inspectImageIf(srcImageRange(panoImg), srcImage(alpha),
+//                                    minmax);
+//                double min = std::max(minmax.min, 1e-6f);
+//                double max = minmax.max;
+//
+//#if 0
+//                for (int i=0; i<3; i++) {
+//                    if (minmax.min[i]> 1e-6 && minmax.min[i] < min)
+//                        min = minmax.min[i];
+//                }
+//                double max = DBL_MIN;
+//                for (int i=0; i<3; i++) {
+//                    if (minmax.max[i]> 1e-6 && minmax.max[i] > max)
+//                        max = minmax.max[i];
+//                }
+//#endif
+//
+//                int mapping = wxConfigBase::Get()->Read(wxT("/ImageCache/MappingFloat"), HUGIN_IMGCACHE_MAPPING_FLOAT);
+//                applyMapping(srcImageRange(panoImg), destImage(panoImg8), min, max, mapping);
+//
+//            } else {
+//                    // LDR output
+//    //            FileRemapper<BRGBImage, BImage> m;
+//                switch (m_blendMode) {
+//                case BLEND_COPY:
+//                {
+//                    StackingBlender blender;
+//    //                SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
+//                    SimpleStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
+//                    stitcher.stitch(opts, displayedImages,
+//                                    destImageRange(panoImg), destImage(alpha),
+//                                    m_remapCache,
+//                                    blender);
+//                    break;
+//                }
+//                case BLEND_DIFFERENCE:
+//                {
+//                    ReduceToDifferenceFunctor<RGBValue<float> > func;
+//                    ReduceStitcher<FRGBImage, BImage> stitcher(*pano, *parentWindow);
+//                    stitcher.stitch(opts, displayedImages,
+//                                    destImageRange(panoImg), destImage(alpha),
+//                                    m_remapCache,
+//                                    func);
+//                    break;
+//    /*
+//    
+//                    WeightedStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
+//                    stitcher.stitch(opts, m_displayedImages,
+//                                    destImageRange(panoImg), destImage(alpha),
+//                                    m_remapCache);
+//                    break;
+//    */
+//                }
+//    /*
+//                case BLEND_DIFFERENCE:
+//                {
+//                    DifferenceBlender blender;
+//                    SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
+//                    stitcher.stitch(opts, m_displayedImages,
+//                                    destImageRange(panoImg), destImage(alpha),
+//                                    m_remapCache,
+//                                    blender);
+//                    break;
+//                }
+//    */
+//                }
+//
+//                
+//#ifdef DEBUG_REMAP
+//{
+//    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_AfterRemap.tif"); \
+//            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
+//}
+//{
+//    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_AfterRemapAlpha.tif"); \
+//            vigra::exportImage(vigra::srcImageRange(alpha), exi); \
+//}
+//#endif
+//
+//                // apply default exposure and convert to 8 bit
+//                SrcPanoImage src = pano->getSrcImage(0);
+//
+//                // apply the exposure
+//                double scale = 1.0/pow(2.0,opts.outputExposureValue);
+//
+//                vigra::transformImage(srcImageRange(panoImg), destImage(panoImg),
+//                                      vigra::functor::Arg1()*vigra::functor::Param(scale));
+//
+//                DEBUG_DEBUG("LDR output, with response: " << src.getResponseType());
+//                if (src.getResponseType() == SrcPanoImage::RESPONSE_LINEAR) {
+//                    vigra::copyImage(srcImageRange(panoImg), destImage(panoImg8));
+////                    vigra::transformImage(srcImageRange(panoImg), destImage(panoImg8),
+////                                          vigra::functor::Arg1()*vigra::functor::Param(255));
+//                } else {
+//                // create suitable lut for response
+//                    typedef  std::vector<double> LUT;
+//                    LUT lut;
+//                    switch(src.getResponseType())
+//                    {
+//                        case SrcPanoImage::RESPONSE_EMOR:
+//                            EMoR::createEMoRLUT(src.getEMoRParams(), lut);
+//                            break;
+//                        case SrcPanoImage::RESPONSE_GAMMA:
+//                            lut.resize(256);
+//                            createGammaLUT(1/src.getGamma(), lut);
+//                            break;
+//                        default:
+//                            vigra_fail("Unknown or unsupported response function type");
+//                            break;
+//                    }
+//                    // scale lut
+//                    for (size_t i=0; i < lut.size(); i++) 
+//                        lut[i] = lut[i]*255;
+//                    typedef vigra::RGBValue<float> FRGB;
+//                    LUTFunctor<FRGB, LUT> lutf(lut);
+//
 //                    vigra::transformImage(srcImageRange(panoImg), destImage(panoImg8),
-//                                          vigra::functor::Arg1()*vigra::functor::Param(255));
-                } else {
-                // create suitable lut for response
-                    typedef  std::vector<double> LUT;
-                    LUT lut;
-                    switch(src.getResponseType())
-                    {
-                        case SrcPanoImage::RESPONSE_EMOR:
-                            EMoR::createEMoRLUT(src.getEMoRParams(), lut);
-                            break;
-                        case SrcPanoImage::RESPONSE_GAMMA:
-                            lut.resize(256);
-                            createGammaLUT(1/src.getGamma(), lut);
-                            break;
-                        default:
-                            vigra_fail("Unknown or unsupported response function type");
-                            break;
-                    }
-                    // scale lut
-                    for (size_t i=0; i < lut.size(); i++) 
-                        lut[i] = lut[i]*255;
-                    typedef vigra::RGBValue<float> FRGB;
-                    LUTFunctor<FRGB, LUT> lutf(lut);
-
-                    vigra::transformImage(srcImageRange(panoImg), destImage(panoImg8),
-                                          lutf);
-                }
-            }
-        }
-
-#ifdef DEBUG_REMAP
-{
-    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin05_preview_final.tif"); \
-            vigra::exportImage(vigra::srcImageRange(panoImg8), exi); \
-}
-#endif
-
-
-    } catch (std::exception & e) {
-        m_state_rendering = false;
-        DEBUG_ERROR("error during stitching: " << e.what());
-        wxMessageBox(wxString(e.what(), wxConvLocal), _("Error during Stitching"));
-    }
+//                                          lutf);
+//                }
+//            }
+//        }
+//
+//#ifdef DEBUG_REMAP
+//{
+//    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin05_preview_final.tif"); \
+//            vigra::exportImage(vigra::srcImageRange(panoImg8), exi); \
+//}
+//#endif
+//
+//
+//    } catch (std::exception & e) {
+//        m_state_rendering = false;
+//        DEBUG_ERROR("error during stitching: " << e.what());
+//        wxMessageBox(wxString(e.what(), wxConvLocal), _("Error during Stitching"));
+//    }
 
 
     // update the transform for pano -> erect coordinates

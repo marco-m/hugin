@@ -20,28 +20,74 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+
 #include "huginapp/ImageCache.h"
 #include "PolyEd_Basic.h"
+#include "PolyEdBasicMemento.h"
+#include <wx/wx.h>
+
 using namespace std;
 using HuginBase::ImageCache;
-PolyEd_Basic::PolyEd_Basic() : m_mask(0)
-{
-    init();
-}
-PolyEd_Basic::PolyEd_Basic(const string &filename) : m_mask(0)
-{
-    init();
-    setImage(filename);
-}
-PolyEd_Basic::~PolyEd_Basic() {}
 
-void PolyEd_Basic::init()
+struct PixelCoordToWxPoint
+{
+     wxPoint operator()(const PixelCoord &p)
+     {
+        return wxPoint(p.x, p.y);
+     }
+};
+
+PolyEd_Basic::PolyEd_Basic() : m_mask(0)
 {
     m_name = "PolyEd_Basic";
 }
+PolyEd_Basic::PolyEd_Basic(const string &filename) : m_mask(0)
+{
+    m_name = "PolyEd_Basic";
+    setImage(filename);
+}
+PolyEd_Basic::PolyEd_Basic(const string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask) : m_mask(0)
+{
+    m_name = "PolyEd_Basic";
+    setImage(imgId, img, mask);
+}
+PolyEd_Basic::~PolyEd_Basic() {}
+
+void PolyEd_Basic::setMemento(IMaskEdMemento *memento)
+{
+    if(m_mask)
+        delete m_mask;
+    m_mask = ((PolyEdBasicMemento*)memento)->m_mask;
+    m_width = ((PolyEdBasicMemento*)memento)->m_width;
+    m_height = ((PolyEdBasicMemento*)memento)->m_height;
+}
+
+IMaskEdMemento* PolyEd_Basic::createMemento()
+{
+    return new PolyEdBasicMemento(m_mask, m_width, m_height);
+}
+
+void PolyEd_Basic::init(vigra::BImage *mask)
+{
+    if(m_width > 0 && m_height > 0)
+    {
+        if(!mask)
+            m_mask = new wxBitmap(m_width, m_height, 1);
+        else {
+            assert(mask->width() == m_width && mask->height() == m_height);
+            m_mask = new wxBitmap((const char*)mask->data(), mask->width(), mask->height());
+        }
+        wxMemoryDC dc(*m_mask);
+        dc.SetBackground(*wxWHITE_BRUSH);
+        dc.Clear();
+    }
+}
 
 void PolyEd_Basic::reset()
-{}
+{
+    m_width = 0;
+    m_height = 0;
+}
 
 void PolyEd_Basic::markPixels(vector<PixelCoord> coords, Label label)
 {}
@@ -56,7 +102,8 @@ void PolyEd_Basic::setRegion(vector<PixelCoord> coords, Label label)
     else
         dc.SetBrush(*wxWHITE_BRUSH);
     wxPoint *coords_pt = new wxPoint[coords.size()];
-    copy(coords.begin(), coords.end(), coords_pt);
+    //copy(coords.begin(), coords.end(), coords_pt);
+    transform(coords.begin(), coords.end(), coords_pt, PixelCoordToWxPoint());
     dc.DrawPolygon(coords.size(), coords_pt);
     delete []coords_pt;
 }
@@ -69,20 +116,34 @@ void PolyEd_Basic::setImage(unsigned char* data, int row, int col, int depth)
 
 void PolyEd_Basic::setImage(const std::string &filename)
 {
-    init();
+    reset();
     m_filename = filename;
 
     if(m_mask)
         delete m_mask;
     ImageCache::EntryPtr e = ImageCache::getInstance().getImage(filename);
     HuginBase::ImageCache::ImageCacheRGB8Ptr img = e->get8BitImage();
-    m_mask = new wxBitmap(img->width(), img->height(), 1);
-    wxMemoryDC dc(*m_mask);
-    assert(dc.IsOk());
-    //dc.SetBrush(*wxWHITE_BRUSH);
-    //dc.SetBrush(*wxBLACK_BRUSH);
-    dc.SetBackground(*wxWHITE_BRUSH);
-    dc.Clear();
+    m_width = img->width();
+    m_height = img->height();
+    init();
+    //m_mask = new wxBitmap(img->width(), img->height(), 1);
+    //wxMemoryDC dc(*m_mask);
+    //assert(dc.IsOk());
+    ////dc.SetBrush(*wxWHITE_BRUSH);
+    ////dc.SetBrush(*wxBLACK_BRUSH);
+    //dc.SetBackground(*wxWHITE_BRUSH);
+    //dc.Clear();
+}
+
+void PolyEd_Basic::setImage(const string &imgId, const vigra::BRGBImage* img, vigra::BImage *mask)
+{
+    reset();
+    m_filename = imgId;
+    assert(img);
+    
+    m_width = img->width();
+    m_height = img->height();
+    init(mask);    
 }
 
 wxMask* PolyEd_Basic::getMask() const

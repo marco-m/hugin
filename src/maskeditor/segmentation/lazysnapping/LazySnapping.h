@@ -23,11 +23,13 @@
 #ifndef LAZYSNAPPING_H
 #define LAZYSNAPPING_H
 
+#include <vigra/stdimage.hxx>
+
 #include <vector>
 #include <string>
-#include "../../core/ISegmentation.h"
 #include "maxflow/graph.h"
 #include "KMlocal/KMlocal.h"
+#include "../../core/ISegmentation.h"
 
 const double SIGMA = 2.0f;
 const double LAMBDA = 50.0f;
@@ -40,7 +42,7 @@ class LazySnapping : public ISegmentation
 
     wxBitmap *m_mask;
     //wxBitmap *m_tmp_bmp;         //used for drawing lines and getting all pixel from it
-    HuginBase::ImageCache::ImageCacheRGB8Ptr m_img;
+    //HuginBase::ImageCache::ImageCacheRGB8Ptr m_img;
     unsigned char *m_data;
     std::vector<wxPoint> m_outline;
     int m_width, m_height, m_depth;
@@ -143,20 +145,25 @@ class LazySnapping : public ISegmentation
     void    getRC(int p, int *r, int *c) const;
     PixelColor getPixelValue(int p) const;
     PixelColor getPixelValue(int r, int c) const;
-    PixelColor getPixelValue(wxPoint pt) const;
+    PixelColor getPixelValue(PixelCoord pt) const;
 public:
     LazySnapping();    
     LazySnapping(const std::string &filename);
+    LazySnapping(const std::string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask);
     ~LazySnapping();
 
-    void init();
+    void init(vigra::BImage *mask = 0);
     void reset();
     std::string name();
+
+    void setMemento(IMaskEdMemento *memento);
+    IMaskEdMemento* createMemento();
 
     void markPixels(std::vector<PixelCoord> coords, Label label);
     void setRegion(std::vector<PixelCoord> coords, Label label);
     void setImage(unsigned char* data, int row, int col, int depth);
     void setImage(const std::string &filename);
+    void setImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *mask = 0);
     std::vector<wxPoint> getBoundingPolygon() const;
     wxMask* getMask() const;
     wxBitmap* getMaskBitmap() const;

@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file MaskPoly.h
+/** @file IMaskEdMemento.h
  *
  *  @author Fahim Mannan <fmannan@gmail.com>
  *
@@ -20,17 +20,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifndef IMASKEDMEMENTO_H
+#define IMASKEDMEMENTO_H
 
-#ifndef MASKPOLY_H
-#define MASKPOLY_H
-
-#include "Pixel.h"
-
-struct MaskPoly
+class IMaskEdMemento
 {
-    std::vector<PixelCoord> pt;
-    int label;
-    void clear() { pt.clear(); }
-    void add(PixelCoord newpt) { pt.push_back(newpt); }
+
 };
+
 #endif

@@ -46,10 +46,6 @@ class MaskEdEditWnd : public wxScrolledWindow, public PT::PanoramaObserver
     
     //vigra::Diff2D m_panoImgSize;
 
-    bool m_state_rendering;
-    bool m_rerender;
-    bool m_imgsDirty;
-
     int                     m_max_width;
     int                     m_max_height;
     std::vector<wxPoint>    m_pos;
@@ -77,9 +73,12 @@ public:
 
     void init(PreviewFrame *parent, PT::Panorama * pano );
     void init();
+    void loadImage(const vigra::BRGBImage* img, vigra::BImage *alpha = NULL);
+    void loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas);
+    void loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs);
     void loadImage(const wxString &filename);
     void loadImage(const std::string &filename);
-    void loadImages(const std::vector<std::string> &filesv);
+    void loadImage(const std::vector<std::string> &filesv);
     void reloadImages();
 
     void findOverlappingRect(int i, int j, wxRect &rect);
@@ -90,6 +89,9 @@ public:
     
     void setEditMode(MaskEdEditMode_t edmode);
     void toggleShowOverlappedRect();
+
+    void undo();
+    void redo();
 
     void updatePreview();
     void ForceUpdate();
