@@ -43,9 +43,10 @@
 
 // Onur
 #include "panodata/PanoramaData.h"
-#include "algorithms/control_points/FeatureMatchingLinearSearch.h"
-#include "algorithms/control_points/FeatureMatchingSingleKdTree.h"
-#include "algorithms/control_points/FeatureMatchingMultiKdTree.h"
+#include "algorithms/control_points/FeatureMatchingLinearSearch.h" // Onur
+#include "algorithms/control_points/FeatureMatchingSingleKdTree.h" // algorithms/control_points/
+#include "algorithms/control_points/FeatureMatchingMultiKdTree.h" // algorithms/control_points/
+#include "time.h"
 
 #include "base_wx/MyExternalCmdExecDialog.h"
 #include "base_wx/platform.h"
@@ -156,10 +157,14 @@ CPVector AutoCtrlPointCreator::automatch(Panorama & pano,
 	case 2: // Onur
 	{
 	    // feature matching with linear search
+		int clk = clock();
 		HuginBase::Panorama pano2 = pano;
 		HuginBase::PanoramaData* panodata = pano2.getNewCopy();
 		HuginBase::FeatureMatchingLinearSearch matcher(*panodata);
+		cout << "Linear Search (init): " << (clock()-clk)/CLK_TCK << " seconds" << endl;
+		clk = clock();
 		matcher.runAlgorithm();
+		cout << "Linear Search (run): " << (clock()-clk)/CLK_TCK << " seconds" << endl;
 	    cps = matcher.getControlPoints();
 		printf("%d matches found\n", cps.size());
 	    break;
@@ -167,10 +172,14 @@ CPVector AutoCtrlPointCreator::automatch(Panorama & pano,
 	case 3: // Onur
 	{
 	    // feature matching with single kd-tree
+		int clk = clock();
 		HuginBase::Panorama pano2 = pano;
 		HuginBase::PanoramaData* panodata = pano2.getNewCopy();
 		HuginBase::FeatureMatchingSingleKdTree matcher(*panodata);
+		cout << "Single kd-tree (init): " << (clock()-clk)/CLK_TCK << " seconds" << endl;
+		clk = clock();
 		matcher.runAlgorithm();
+		cout << "Single kd-tree (run): " << (clock()-clk)/CLK_TCK << " seconds" << endl;
 	    cps = matcher.getControlPoints();
 		printf("%d matches found\n", cps.size());
 	    break;
@@ -178,10 +187,14 @@ CPVector AutoCtrlPointCreator::automatch(Panorama & pano,
 	case 4: // Onur
 	{
 	    // feature matching with multiple kd-trees
+		int clk = clock();
 		HuginBase::Panorama pano2 = pano;
 		HuginBase::PanoramaData* panodata = pano2.getNewCopy();
 		HuginBase::FeatureMatchingMultiKdTree matcher(*panodata);
+		cout << "Multiple kd-tree (init): " << (clock()-clk)/CLK_TCK << " seconds" << endl;
+		clk = clock();
 		matcher.runAlgorithm();
+		cout << "Multiple kd-tree (run): " << (clock()-clk)/CLK_TCK << " seconds" << endl;
 	    cps = matcher.getControlPoints();
 		printf("%d matches found\n", cps.size());
 	    break;

@@ -33,7 +33,9 @@ using namespace std;
 //initial kernel size, representing scale 1.2
 #define HD_INIT_KERNEL_SIZE 9
 
+#ifndef PI
 #define PI 3.14159265
+#endif
 
 class HessianDetector
  {

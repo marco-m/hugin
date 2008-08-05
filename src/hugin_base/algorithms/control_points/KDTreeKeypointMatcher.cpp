@@ -72,7 +72,14 @@ void KDTreeKeypointMatcher::create(const PanoramaData& pano, const UIntSet& imgs
 			
 			// add as an ANNpoint
 			HuginBase::Keypoint kp = *itkey;
-			ANNpoint pt = const_cast<float *>(&(*(kp.descriptor.begin())));
+			//ANNpoint pt = const_cast<float *>(&(*(kp.descriptor.begin())));
+			ANNpoint pt = annAllocPt(dim,0);
+			int ptind = 0;
+			for (std::vector<float>::const_iterator ptkey=kp.descriptor.begin();
+				ptkey != kp.descriptor.end(); ++ptkey) {
+				pt[ptind++] = *ptkey;
+			}
+			
 			*pointsPtr = pt;
 			
 			pointsPtr++;

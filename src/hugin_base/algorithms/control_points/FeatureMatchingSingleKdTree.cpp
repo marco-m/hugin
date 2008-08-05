@@ -39,8 +39,8 @@ namespace HuginBase {
 				{
 					allMatches.push_back(ControlPoint(im, itkey->pos.y, itkey->pos.x,
 													  onematch->imageNr, onematch->keypoint.pos.y, onematch->keypoint.pos.x));
-					printf("(%d,%f,%f) with (%d,%f,%f)\n",im, itkey->pos.y, itkey->pos.x,
-						   onematch->imageNr, onematch->keypoint.pos.y, onematch->keypoint.pos.x);
+					//printf("(%d,%f,%f) with (%d,%f,%f)\n",im, itkey->pos.y, itkey->pos.x,
+					//	   onematch->imageNr, onematch->keypoint.pos.y, onematch->keypoint.pos.x);
 					
 					// mark this controlpoint as matched
 					matchedPoints.insert(matcher.getKeypointIdxOfMatch(0));

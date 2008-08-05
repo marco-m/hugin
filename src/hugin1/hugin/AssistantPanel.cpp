@@ -442,8 +442,16 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
     }
 
     // optimize panorama
-
     Panorama optPano = m_pano->getSubset(imgs);
+	
+	// clear out the CPs with large distances after optimization
+	//for (int cpnum=0; cpnum<m_pano->getNrOfCtrlPoints(); cpnum++)  {
+//		ControlPoint cp = m_pano->getCtrlPoint(cpnum);
+//		if (cp.error > 10) {
+//			cout << "CP with " << cp.error << " found and removed!" << endl;
+//			m_pano->removeCtrlPoint(cpnum--);
+//		}
+//	}
 
     // set TIFF_m with enblend
     PanoramaOptions opts = m_pano->getOptions();
