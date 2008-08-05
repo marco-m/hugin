@@ -291,7 +291,7 @@ pair<vigra::BRGBImage*,vigra::BImage*> PreviewPanel::mapPreviewImage(UIntSet &di
     
     vigra::BRGBImage *panoImg8 = new vigra::BRGBImage(panoImgSize);
     vigra::BImage *alpha = NULL;
-    if(index != -1 && m_alphas.size() <= index) {
+    if(index == -1 || m_alphas.size() <= index) {
         alpha = new vigra::BImage(panoImgSize);
         m_alphas.push_back(alpha);
     } else {
