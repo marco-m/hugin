@@ -687,6 +687,7 @@ void PreviewFrame::OnClose(wxCloseEvent& event)
         DEBUG_DEBUG("closing");
         this->Destroy();
     }
+    m_PreviewPanel->freeAlpha();
 }
 
 void PreviewFrame::OnAutoPreviewToggle(wxCommandEvent & e)
@@ -750,8 +751,9 @@ void PreviewFrame::ForceUpdate()
 {
     if(m_mode == PREVIEW_MODE)
         m_PreviewPanel->ForceUpdate();
-    else
+    else {
         m_MaskEdEditWnd->ForceUpdate();
+    }
 }
 
 void PreviewFrame::OnUpdate(wxCommandEvent& event)

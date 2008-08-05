@@ -121,6 +121,7 @@ void MaskMgr::loadImage(const string &imgId, const vigra::BRGBImage* img, vigra:
 
 void MaskMgr::loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas)
 {
+    init();
     int i = 0;
     ostringstream imgId;
     if(alphas.size() == imgs.size()) {
@@ -164,8 +165,9 @@ void MaskMgr::reload()
     if(!m_imgfiles.empty()) {
         vector<string> tmp;
         copy(m_imgfiles.begin(), m_imgfiles.end(), back_insert_iterator<vector<string> >(tmp));
-        m_segmentation.clear();
-        m_imgfiles.clear();
+        /*m_segmentation.clear();
+        m_imgfiles.clear();*/
+        init();
         loadImage(tmp);
     }
 }

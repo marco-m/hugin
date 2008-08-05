@@ -21,13 +21,13 @@
  *
  */
 
-#include <memory>
 #include "huginapp/ImageCache.h"
 #include "LazySnapping.h"
-//#include "kmeans/KMeans.hpp"
+#include <wx/wx.h>
+#include <memory>
 #include "KMlocal/KMlocal.h"
 #include "watershed.cxx"
-#include <wx/wx.h>
+#include "LazySnappingMemento.h"
 
 #define INF     1000000
 using namespace std;
@@ -92,7 +92,7 @@ void LazySnapping::setMemento(IMaskEdMemento *memento)
 
 IMaskEdMemento* LazySnapping::createMemento()
 {
-    return 0;
+    return new LazySnappingMemento();
 }
 
 void LazySnapping::init(vigra::BImage *mask)

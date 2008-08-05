@@ -102,6 +102,7 @@ void PreviewPanel::Init(PreviewFrame *parent, PT::Panorama * panorama )
     pano = panorama;
     parentWindow = parent;
     pano->addObserver(this);
+    m_alphas.clear();
 }
 
 
@@ -225,6 +226,17 @@ vector<pair<vigra::BRGBImage*, vigra::BImage*> > PreviewPanel::getRemappedImages
     return vec;
 }
 
+void PreviewPanel::setAlpha(std::vector<vigra::BImage*> alphas)
+{
+    m_alphas.clear();
+    copy(alphas.begin(), alphas.end(), back_inserter<vector<vigra::BImage*> >(m_alphas));
+}
+
+void PreviewPanel::freeAlpha()
+{
+    m_alphas.clear();
+}
+
 /** just apply exposure and response to linear data
  */
 template <class OP>
@@ -245,7 +257,7 @@ struct ExposureResponseFunctor2
     }
 };
 
-pair<vigra::BRGBImage*,vigra::BImage*> PreviewPanel::mapPreviewImage(UIntSet &displayedImages, vigra::Diff2D *p_panoImgSize)
+pair<vigra::BRGBImage*,vigra::BImage*> PreviewPanel::mapPreviewImage(UIntSet &displayedImages, vigra::Diff2D *p_panoImgSize, int index)
 {
     double finalWidth = pano->getOptions().getWidth();
     double finalHeight = pano->getOptions().getHeight();
@@ -278,7 +290,14 @@ pair<vigra::BRGBImage*,vigra::BImage*> PreviewPanel::mapPreviewImage(UIntSet &di
     opts.interpolator = vigra_ext::INTERP_BILINEAR;
     
     vigra::BRGBImage *panoImg8 = new vigra::BRGBImage(panoImgSize);
-    vigra::BImage* alpha = new vigra::BImage(panoImgSize);
+    vigra::BImage *alpha = NULL;
+    if(index != -1 && m_alphas.size() <= index) {
+        alpha = new vigra::BImage(panoImgSize);
+        m_alphas.push_back(alpha);
+    } else {
+        alpha = m_alphas[index];
+    }
+    assert(alpha != NULL);
     try {
         //vigra::BasicImageView<RGBValue<unsigned char> > *panoImg8((RGBValue<unsigned char> *)panoImage.GetData(), panoImage.GetWidth(), panoImage.GetHeight());
         FRGBImage panoImg(panoImgSize);
@@ -506,7 +525,8 @@ void PreviewPanel::updatePreview()
 
     wxBusyCursor wait;
     pair<vigra::BRGBImage*, vigra::BImage*> panoImg8_alpha;
-    panoImg8_alpha = mapPreviewImage(pano->getActiveImages(), &m_panoImgSize);
+    HuginBase::UIntSet activeImgs = pano->getActiveImages();
+    panoImg8_alpha = mapPreviewImage(activeImgs, &m_panoImgSize);
     vigra::BRGBImage *panoImg8 = panoImg8_alpha.first;
     wxImage panoImage(panoImg8->width(), panoImg8->height(),
                        (unsigned char *) panoImg8->data(), true);

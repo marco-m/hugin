@@ -26,7 +26,9 @@
 
 class LazySnappingMemento : public IMaskEdMemento
 {
-
+public:
+    LazySnappingMemento() {}
+    ~LazySnappingMemento();
 };
 
 #endif

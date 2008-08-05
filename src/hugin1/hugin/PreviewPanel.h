@@ -40,6 +40,7 @@ class PreviewFrame;
 class PreviewPanel : public wxPanel, public PT::PanoramaObserver
 {
     typedef PT::RemappedPanoImage<vigra::BRGBImage, vigra::BImage> RemappedImage;
+    std::vector<vigra::BImage*> m_alphas;
 public:
 
     /** ctor.
@@ -65,7 +66,7 @@ public:
     // used by maskeditor to get source images
     std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > getRemappedImages();
     void setAlpha(std::vector<vigra::BImage*> alphas);
-
+    void freeAlpha();
     // select which images should be shown.
 //    void SetDisplayedImages(const PT::UIntSet &images);
     
@@ -82,7 +83,7 @@ private:
     // remaps the images, called automatically if autopreview is enabled.
     void updatePreview();
     
-    std::pair<vigra::BRGBImage*, vigra::BImage*> mapPreviewImage(HuginBase::UIntSet &displayedImages, vigra::Diff2D *p_panoImgSize = NULL);
+    std::pair<vigra::BRGBImage*, vigra::BImage*> mapPreviewImage(HuginBase::UIntSet &displayedImages, vigra::Diff2D *p_panoImgSize = NULL, int index = -1);
 
     /** recalculate panorama to fit the panel */
     void OnResize(wxSizeEvent & e);

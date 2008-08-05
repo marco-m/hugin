@@ -77,7 +77,8 @@ MaskEdEditWnd::MaskEdEditWnd(wxWindow *parent,
 
 MaskEdEditWnd::~MaskEdEditWnd() 
 {
-    m_bimgs.clear();
+    init();
+    m_pano->removeObserver(this);
 }
 
 void MaskEdEditWnd::init(PreviewFrame *parent, PT::Panorama * panorama )
@@ -91,6 +92,7 @@ void MaskEdEditWnd::init()
 {
     m_bShowOverlappedRect = false;
     m_bimgs.clear();
+    m_wximgs.clear();
     m_imgfiles.clear();
     m_selected.clear();
     m_brushstroke.clear();
@@ -135,9 +137,13 @@ void MaskEdEditWnd::loadImage(const string &filename)
                        img->height(),
                        (unsigned char *) img->data(),
                        true);
+            m_wximgs.push_back(new wxImage(img->width(),
+                       img->height(),
+                       (unsigned char *) img->data(),
+                       true));
             wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(filename)->getMaskBitmap();
             img_temp.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
-            img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
+            //img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
             m_bimgs.push_back(new wxBitmap(img_temp));
         } 
         SetScrollbars( 1, 1, m_max_width, m_max_height);
@@ -146,6 +152,7 @@ void MaskEdEditWnd::loadImage(const string &filename)
 
 void MaskEdEditWnd::loadImage(const vector<string> &filesv)
 {
+    init();
     //remove_copy_if(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles), );
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
     //creates local cache of images
@@ -155,9 +162,10 @@ void MaskEdEditWnd::loadImage(const vector<string> &filesv)
     }
 }
 
-void MaskEdEditWnd::loadImage(const vigra::BRGBImage* img, vigra::BImage *alpha)
+void MaskEdEditWnd::loadImage(const string &imgId, const vigra::BRGBImage* img, vigra::BImage *alpha)
 {
     if(!img) return;
+    m_imgfiles.push_back(imgId);
     m_canvas_size.push_back(wxPoint(img->width(), img->height()));
     m_pos.push_back(wxPoint(0, 0));
     m_selected.push_back(true);
@@ -167,9 +175,15 @@ void MaskEdEditWnd::loadImage(const vigra::BRGBImage* img, vigra::BImage *alpha)
                img->height(),
                (unsigned char *) img->data(),
                true);
-    //wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(filename)->getMaskBitmap();
-    //img_temp.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
-    img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
+    m_wximgs.push_back(new wxImage(img->width(),
+                       img->height(),
+                       (unsigned char *) img->data(),
+                       true));
+    //MaskMgr::getInstance()->loadImage(imgId, img, alpha);
+    wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(imgId)->getMaskBitmap();
+    img_temp.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
+    //img_temp.SetAlpha((unsigned char*) alpha->data(), true);
+    //img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
     m_bimgs.push_back(new wxBitmap(img_temp));
     
     SetScrollbars( 1, 1, m_max_width, m_max_height);
@@ -177,16 +191,47 @@ void MaskEdEditWnd::loadImage(const vigra::BRGBImage* img, vigra::BImage *alpha)
 
 void MaskEdEditWnd::loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas)
 {
+    init();
+    stringstream ss;
+    int i = 0;
     vector<vigra::BImage*>::iterator it_alpha = alphas.begin();
-    for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, it_alpha++)
-        loadImage(*it, *it_alpha);
+    for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, it_alpha++, i++)
+    {
+        ss << i;
+        loadImage(ss.str(), *it, *it_alpha);
+        ss.clear();
+    }
+    m_active = i - 1;
 }
 
 void MaskEdEditWnd::loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs)
 {
-    for(vector<pair<vigra::BRGBImage*, vigra::BImage*> >::iterator it = imgs.begin(); it != imgs.end(); it++)
-        loadImage(it->first, it->second);
+    init();
+    stringstream ss;
+    int i = 0; 
+    for(vector<pair<vigra::BRGBImage*, vigra::BImage*> >::iterator it = imgs.begin(); it != imgs.end(); it++, i++)
+    {
+        ss << i;
+        loadImage(ss.str(), it->first, it->second);
+        ss.clear();
+    }
+    m_active = i - 1;
 }
+
+//std::vector<vigra::BImage*> MaskEdEditWnd::getAlpha()
+//{
+//    vector<vigra::BImage*> vec;
+//    wxBitmap *mask;
+//    for(vector<string>::iterator it = m_imgfiles.begin(); it != m_imgfiles.end(); it++) 
+//    {
+//        mask = MaskMgr::getInstance()->getSegmentation(*it)->getMaskBitmap();
+//        
+//        //vigra::BasicImageView<vigra::UInt8> *panoImg8((vigra::UInt8*)mask->GEGetData(), panoImage.GetWidth(), panoImage.GetHeight())
+//        //vigra::BImage *bimask = new vigra::BImage(mask->GetWidth(), mask->GetHeight());
+//        //vigra::initImageWithFunctor(destImage(*bimask), CopyWxBitmap<vigra::UInt8, mask->GetWidth(), mask->GetHeight()>());
+//        vec.push_back()
+//    }
+//}
 
 void MaskEdEditWnd::findOverlappingRect(int i, int j, wxRect &rect)
 {
@@ -224,305 +269,16 @@ void MaskEdEditWnd::findOverlappingRect(int i, int j, wxRect &rect)
     rect.SetBottomRight(br);
 }
 
-void MaskEdEditWnd::updatePreview()
-{
-    init();
-    HuginBase::SrcPanoImage panoImg;
-    HuginBase::UIntSet activeImages = m_pano->getActiveImages();
-    for(HuginBase::UIntSet::iterator it = activeImages.begin(); it != activeImages.end(); it++)
-    {
-        panoImg = m_pano->getSrcImage(*it);
-        MaskMgr::getInstance()->loadImage(panoImg.getFilename());
-        loadImage(panoImg.getFilename());
-    }
-}
-//void MaskEdEditWnd::updatePreview(int imgIndex)
-//{
-//    DEBUG_TRACE("");
-//
-//    // we can accidentally end up here recursively, because wxWidgets
-//    // allows user input during redraw of the progress in the bottom
-//    if (m_state_rendering) {
-//        DEBUG_DEBUG("m_state_rendering == true, aborting rendering");
-//        m_rerender = true;
-//        return;
-//    }
-//
-//    DEBUG_DEBUG("m_state_rendering = true");
-//    m_state_rendering = true;
-//    m_rerender = false;
-//
-//    long nthreads = wxConfigBase::Get()->Read(wxT("/Nona/NumberOfThreads"), wxThread::GetCPUCount());
-//    if (nthreads < 1) nthreads = 1;
-//    vigra_ext::ThreadManager::get().setNThreads(nthreads);
-//
-//
-//	{
-//	  // Even though the frame is hidden, the panel is not
-//	  // so check the parent instead
-//	  if (m_parentWindow) {
-//  		if (m_parentWindow->IsShown() && (! m_parentWindow->IsIconized())) {
-//		  DEBUG_INFO("Parent window shown - updating");
-//		} else {
-//		  DEBUG_INFO("Parent window hidden - not updating");
-//                  m_state_rendering = false;
-//		  return;
-//		}
-//	  }
-//	}
-////    bool seaming = wxConfigBase::Get()->Read("/PreviewPanel/UseSeaming",0l) != 0;
-//
-//    // temporary bitmap for our remapped image
-//    // calculate the image size from panel widht, height from vfov
-//
-////    long cor = wxConfigBase::Get()->Read("/PreviewPanel/correctDistortion",0l);
-////    bool corrLens = cor != 0;
-//
-//    wxBusyCursor wait;
-//    double finalWidth = m_pano->getOptions().getWidth();
-//    double finalHeight = m_pano->getOptions().getHeight();
-//
-//    m_panoImgSize = Diff2D(GetClientSize().GetWidth(), GetClientSize().GetHeight());
-//
-//    double ratioPano = finalWidth / finalHeight;
-//    double ratioPanel = (double)m_panoImgSize.x / (double)m_panoImgSize.y;
-//
-//    DEBUG_DEBUG("panorama ratio: " << ratioPano << "  panel ratio: " << ratioPanel);
-//
-//    if (ratioPano < ratioPanel) {
-//        // panel is wider than pano
-//        m_panoImgSize.x = ((int) (m_panoImgSize.y * ratioPano));
-//        DEBUG_DEBUG("portrait: " << m_panoImgSize);
-//    } else {
-//        // panel is taller than pano
-//        m_panoImgSize.y = ((int)(m_panoImgSize.x / ratioPano));
-//        DEBUG_DEBUG("landscape: " << m_panoImgSize);
-//    }
-//
-//    PanoramaOptions opts = m_pano->getOptions();
-//    opts.setWidth(m_panoImgSize.x, false);
-//    opts.setHeight(m_panoImgSize.y);
-//    //m_panoImgSize.y = opts.getHeight();
-//    // always use bilinear for preview.
-//
-//    // reset ROI. The preview needs to draw the parts outside the ROI, too!
-//    opts.setROI(Rect2D(opts.getSize()));
-//    opts.interpolator = vigra_ext::INTERP_BILINEAR;
-//
-//    // create images
-//    wxImage panoImage(m_panoImgSize.x, m_panoImgSize.y);
-//    try {
-//        vigra::BasicImageView<RGBValue<unsigned char> > panoImg8((RGBValue<unsigned char> *)panoImage.GetData(), panoImage.GetWidth(), panoImage.GetHeight());
-//        FRGBImage panoImg(m_panoImgSize);
-//        BImage alpha(m_panoImgSize);
-//        // the empty panorama roi
-////        Rect2D panoROI;
-//        DEBUG_DEBUG("about to stitch images, pano size: " << m_panoImgSize);
-//        UIntSet displayedImages = m_pano->getActiveImages();
-//        if (displayedImages.size() > 0) {
-//            if (opts.outputMode == PanoramaOptions::OUTPUT_HDR) {
-//                DEBUG_DEBUG("HDR output merge");
-//
-//                ReduceToHDRFunctor<RGBValue<float> > hdrmerge;
-//                ReduceStitcher<FRGBImage, BImage> stitcher(*m_pano, *m_parentWindow);
-//                stitcher.stitch(opts, displayedImages,
-//                                destImageRange(panoImg), destImage(alpha),
-//                                m_remapCache,
-//                                hdrmerge);
-//                /*
-//                std::vector<RemappedPanoImage<FRGBImage, BImage> *> remapped;
-//                // get all remapped images
-//                for (UIntSet::const_iterator it = displayedImages.begin();
-//                     it != displayedImages.end(); ++it)
-//                {
-//                    remapped.push_back(m_remapCache.getRemapped(pano, opts, *it, *m_parentWindow));
-//                }
-//                reduceROIImages(remapped,
-//                                destImageRange(panoImg), destImage(alpha),
-//                                hdrmerge);
-//                */
-//#ifdef DEBUG_REMAP
-//{
-//    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce.tif"); \
-//            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
-//}
-//{
-//    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_HDR_Reduce_Alpha.tif"); \
-//            vigra::exportImage(vigra::srcImageRange(alpha), exi); \
-//}
-//#endif
-//
-//                // find min and max
-//                vigra::FindMinMax<float> minmax;   // init functor
-//                vigra::inspectImageIf(srcImageRange(panoImg), srcImage(alpha),
-//                                    minmax);
-//                double min = std::max(minmax.min, 1e-6f);
-//                double max = minmax.max;
-//
-//#if 0
-//                for (int i=0; i<3; i++) {
-//                    if (minmax.min[i]> 1e-6 && minmax.min[i] < min)
-//                        min = minmax.min[i];
-//                }
-//                double max = DBL_MIN;
-//                for (int i=0; i<3; i++) {
-//                    if (minmax.max[i]> 1e-6 && minmax.max[i] > max)
-//                        max = minmax.max[i];
-//                }
-//#endif
-//
-//                int mapping = wxConfigBase::Get()->Read(wxT("/ImageCache/MappingFloat"), HUGIN_IMGCACHE_MAPPING_FLOAT);
-//                applyMapping(srcImageRange(panoImg), destImage(panoImg8), min, max, mapping);
-//
-//            } else {
-//                    // LDR output
-//    //            FileRemapper<BRGBImage, BImage> m;
-//                switch (m_blendMode) {
-//                case BLEND_COPY:
-//                {
-//                    StackingBlender blender;
-//    //                SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
-//                    SimpleStitcher<FRGBImage, BImage> stitcher(*m_pano, *m_parentWindow);
-//                    stitcher.stitch(opts, displayedImages,
-//                                    destImageRange(panoImg), destImage(alpha),
-//                                    m_remapCache,
-//                                    blender);
-//                    break;
-//                }
-//                case BLEND_DIFFERENCE:
-//                {
-//                    ReduceToDifferenceFunctor<RGBValue<float> > func;
-//                    ReduceStitcher<FRGBImage, BImage> stitcher(*pano, *m_parentWindow);
-//                    stitcher.stitch(opts, displayedImages,
-//                                    destImageRange(panoImg), destImage(alpha),
-//                                    m_remapCache,
-//                                    func);
-//                    break;
-//    /*
-//    
-//                    WeightedStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
-//                    stitcher.stitch(opts, m_displayedImages,
-//                                    destImageRange(panoImg), destImage(alpha),
-//                                    m_remapCache);
-//                    break;
-//    */
-//                }
-//    /*
-//                case BLEND_DIFFERENCE:
-//                {
-//                    DifferenceBlender blender;
-//                    SimpleStitcher<BRGBImage, BImage> stitcher(pano, *(MainFrame::Get()));
-//                    stitcher.stitch(opts, m_displayedImages,
-//                                    destImageRange(panoImg), destImage(alpha),
-//                                    m_remapCache,
-//                                    blender);
-//                    break;
-//                }
-//    */
-//                }
-//
-//                
-//#ifdef DEBUG_REMAP
-//{
-//    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin04_preview_AfterRemap.tif"); \
-//            vigra::exportImage(vigra::srcImageRange(panoImg), exi); \
-//}
-//{
-//    vigra::ImageExportInfo exi(DEBUG_FILE_PREFIX "hugin04_preview_AfterRemapAlpha.tif"); \
-//            vigra::exportImage(vigra::srcImageRange(alpha), exi); \
-//}
-//#endif
-//
-//                // apply default exposure and convert to 8 bit
-//                SrcPanoImage src = pano->getSrcImage(0);
-//
-//                // apply the exposure
-//                double scale = 1.0/pow(2.0,opts.outputExposureValue);
-//
-//                vigra::transformImage(srcImageRange(panoImg), destImage(panoImg),
-//                                      vigra::functor::Arg1()*vigra::functor::Param(scale));
-//
-//                DEBUG_DEBUG("LDR output, with response: " << src.getResponseType());
-//                if (src.getResponseType() == SrcPanoImage::RESPONSE_LINEAR) {
-//                    vigra::copyImage(srcImageRange(panoImg), destImage(panoImg8));
-////                    vigra::transformImage(srcImageRange(panoImg), destImage(panoImg8),
-////                                          vigra::functor::Arg1()*vigra::functor::Param(255));
-//                } else {
-//                // create suitable lut for response
-//                    typedef  std::vector<double> LUT;
-//                    LUT lut;
-//                    switch(src.getResponseType())
-//                    {
-//                        case SrcPanoImage::RESPONSE_EMOR:
-//                            EMoR::createEMoRLUT(src.getEMoRParams(), lut);
-//                            break;
-//                        case SrcPanoImage::RESPONSE_GAMMA:
-//                            lut.resize(256);
-//                            createGammaLUT(1/src.getGamma(), lut);
-//                            break;
-//                        default:
-//                            vigra_fail("Unknown or unsupported response function type");
-//                            break;
-//                    }
-//                    // scale lut
-//                    for (size_t i=0; i < lut.size(); i++) 
-//                        lut[i] = lut[i]*255;
-//                    typedef vigra::RGBValue<float> FRGB;
-//                    LUTFunctor<FRGB, LUT> lutf(lut);
-//
-//                    vigra::transformImage(srcImageRange(panoImg), destImage(panoImg8),
-//                                          lutf);
-//                }
-//            }
-//        }
-//
-//#ifdef DEBUG_REMAP
-//{
-//    vigra::ImageExportInfo exi( DEBUG_FILE_PREFIX "hugin05_preview_final.tif"); \
-//            vigra::exportImage(vigra::srcImageRange(panoImg8), exi); \
-//}
-//#endif
-//
-//
-//    } catch (std::exception & e) {
-//        m_state_rendering = false;
-//        DEBUG_ERROR("error during stitching: " << e.what());
-//        wxMessageBox(wxString(e.what(), wxConvLocal), _("Error during Stitching"));
-//    }
-//
-//
-//    // update the transform for pano -> erect coordinates
-//    if (m_pano2erect) delete m_pano2erect;
-//    SrcPanoImage src;
-//    src.setProjection(SrcPanoImage::EQUIRECTANGULAR);
-//    src.setHFOV(360);
-//    src.setSize(Size2D(360,180));
-//    m_pano2erect = new PTools::Transform;
-//    m_pano2erect->createTransform(src, opts);
-//
-//    if (m_panoBitmap) {
-//        delete m_panoBitmap;
-//    }
-//    m_panoBitmap = new wxBitmap(panoImage);
-//
-//
-//    // always redraw
-//    wxClientDC dc(this);
-//    DrawPreview(dc);
-//
-//    m_state_rendering = false;
-//    DEBUG_DEBUG("m_state_rendering = false");
-//    m_rerender = false;
-//}
-
 void MaskEdEditWnd::ForceUpdate()
 {
-    updatePreview();
+    //updatePreview();
+    Refresh();
 }
 
 
 void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
 {
+    if(m_bimgs.empty()) return;
     wxPaintDC dc(this);
     //DoPrepareDC(dc);
     int x,y;
@@ -532,10 +288,13 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
     int lastDrawn = -1;
     //dc.SetDeviceOrigin(-x, -y);
     dc.SetUserScale(m_scale, m_scale);
-    for(vector<wxBitmap*>::reverse_iterator it = m_bimgs.rbegin(); it != m_bimgs.rend(); it++, i--)
+    UIntSet displayedImgs = m_pano->getActiveImages();
+    //for(vector<wxBitmap*>::reverse_iterator it = m_bimgs.rbegin(); it != m_bimgs.rend(); it++, i--)
+    for(UIntSet::iterator it = displayedImgs.begin(); it != displayedImgs.end(); it++)
     {
-        if(!m_selected[i]) continue;
-        dc.DrawBitmap(**it, -x + m_pos[i].x, -y + m_pos[i].y, true); 
+        //if(!m_selected[i]) continue;
+        i = *it;
+        dc.DrawBitmap(*m_bimgs[i], -x + m_pos[i].x, -y + m_pos[i].y, true); 
         if(m_bShowOverlappedRect && lastDrawn > -1) {
             wxRect rect;
             findOverlappingRect(lastDrawn, i, rect);
@@ -588,12 +347,13 @@ void MaskEdEditWnd::OnMouseButtonDown(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 {
-    if(m_bimgs.empty()) return;
+    if(m_bimgs.empty() || m_active < 0) return;
     if(m_edmode == ME_BSTROKE)
     {
         m_brushstroke.label = ISegmentation::FGND;
         m_MaskEdCmdHist.addCommand(new BrushStrokeCmd(MaskMgr::getInstance(), m_brushstroke, m_active));
-        reloadImages();
+        //reloadImages();
+        updateMask(m_active);
         m_brushstroke.clear();
     }
     else if(m_edmode == ME_POLY) {
@@ -609,19 +369,21 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
 {
-    if(m_bimgs.empty()) return;
+    if(m_bimgs.empty() || m_active < 0) return;
     if(m_edmode == ME_BSTROKE)
     {
         m_brushstroke.label = ISegmentation::BKGND;
         m_MaskEdCmdHist.addCommand(new BrushStrokeCmd(MaskMgr::getInstance(), m_brushstroke, m_active));
-        reloadImages();
+        //reloadImages();
+        updateMask(m_active);
         m_brushstroke.clear();
     }
     else if(m_edmode == ME_POLY) {
         //end of creating polygon
         m_poly.label = ISegmentation::FGND;
         m_MaskEdCmdHist.addCommand(new PolygonCmd(MaskMgr::getInstance(), m_poly, m_active));
-        reloadImages();
+        //reloadImages();
+        updateMask(m_active);
         m_poly.clear();
     }
     event.Skip();
@@ -655,12 +417,36 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
     }
 }
 
-void MaskEdEditWnd::reloadImages()
+//void MaskEdEditWnd::reloadImages()
+//{
+//    m_bimgs.clear();
+//    for(vector<string>::iterator it = m_imgfiles.begin(); it != m_imgfiles.end(); it++)
+//        loadImage(*it);
+//}   
+
+void MaskEdEditWnd::updateMask(int nimgId)
 {
-    m_bimgs.clear();
-    for(vector<string>::iterator it = m_imgfiles.begin(); it != m_imgfiles.end(); it++)
-        loadImage(*it);
-}   
+    wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(m_imgfiles[nimgId])->getMaskBitmap();
+    wxImage img = *m_wximgs[nimgId];
+    img.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
+    delete m_bimgs[nimgId];
+    m_bimgs[nimgId] = new wxBitmap(img);
+}
+
+void MaskEdEditWnd::updateMask(string &imgId)
+{
+   //wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(imgId)->getMaskBitmap();
+   vector<string>::iterator it = find(m_imgfiles.begin(), m_imgfiles.end(), imgId);
+   if(it != m_imgfiles.end())
+   {
+        int index = it - m_imgfiles.begin();
+        updateMask(index);
+        /*wxImage img = *m_wximgs[index];
+        img.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
+        delete m_bimgs[index];
+        m_bimgs[index] = new wxBitmap(img);*/
+   }
+}
 
 void MaskEdEditWnd::zoom(float scale, wxRect region)
 {
@@ -701,3 +487,15 @@ void MaskEdEditWnd::redo()
 {
     m_MaskEdCmdHist.redo();
 }
+
+void MaskEdEditWnd::panoramaImagesChanged(PT::Panorama &pano, const PT::UIntSet & imgNr)
+{
+    Refresh();
+    UIntSet activeImgs = pano.getActiveImages();
+    if(activeImgs.empty()) {
+        m_active = -1;
+        return;
+    }
+    m_active = *activeImgs.rbegin();
+}
+

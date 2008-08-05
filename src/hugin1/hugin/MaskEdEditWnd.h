@@ -40,8 +40,9 @@ class MaskEdEditWnd : public wxScrolledWindow, public PT::PanoramaObserver
 {
     PT::Panorama            *m_pano;
     PreviewFrame            *m_parentWindow;
-    //wxBitmap                *m_panoBitmap;
-    std::vector<wxBitmap*>  m_bimgs;            //local cache
+
+    std::vector<wxImage*>    m_wximgs;
+    std::vector<wxBitmap*>   m_bimgs;            //local cache for display
     std::vector<std::string> m_imgfiles;
     
     //vigra::Diff2D m_panoImgSize;
@@ -73,13 +74,17 @@ public:
 
     void init(PreviewFrame *parent, PT::Panorama * pano );
     void init();
-    void loadImage(const vigra::BRGBImage* img, vigra::BImage *alpha = NULL);
+    void loadImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *alpha = NULL);
     void loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas);
     void loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs);
     void loadImage(const wxString &filename);
     void loadImage(const std::string &filename);
     void loadImage(const std::vector<std::string> &filesv);
-    void reloadImages();
+    //void reloadImages();
+    void updateMask(int imdId);
+    void updateMask(std::string &imgId);
+
+    std::vector<vigra::BImage*> getAlpha();
 
     void findOverlappingRect(int i, int j, wxRect &rect);
     void setDisplayImages(const std::map<int, std::pair<std::string, bool> > &selection);
@@ -93,7 +98,10 @@ public:
     void undo();
     void redo();
 
-    void updatePreview();
+    //void panoramaChanged(PT::Panorama &pano);
+    void panoramaImagesChanged(PT::Panorama &pano, const PT::UIntSet & imgNr);
+
+    //void updatePreview();
     void ForceUpdate();
     //void DrawPreview(wxDC &dc);
 
