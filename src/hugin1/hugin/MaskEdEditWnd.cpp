@@ -218,20 +218,30 @@ void MaskEdEditWnd::loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BI
     m_active = i - 1;
 }
 
-//std::vector<vigra::BImage*> MaskEdEditWnd::getAlpha()
-//{
-//    vector<vigra::BImage*> vec;
-//    wxBitmap *mask;
-//    for(vector<string>::iterator it = m_imgfiles.begin(); it != m_imgfiles.end(); it++) 
-//    {
-//        mask = MaskMgr::getInstance()->getSegmentation(*it)->getMaskBitmap();
-//        
-//        //vigra::BasicImageView<vigra::UInt8> *panoImg8((vigra::UInt8*)mask->GEGetData(), panoImage.GetWidth(), panoImage.GetHeight())
-//        //vigra::BImage *bimask = new vigra::BImage(mask->GetWidth(), mask->GetHeight());
-//        //vigra::initImageWithFunctor(destImage(*bimask), CopyWxBitmap<vigra::UInt8, mask->GetWidth(), mask->GetHeight()>());
-//        vec.push_back()
-//    }
-//}
+struct BRGBToBImage
+{
+public:
+    vigra::BImage::value_type operator() (const vigra::BRGBImage::value_type &p) const
+    {
+        return ((p.red() + p.green() + p.blue())/3) > 0 ? 255 : 0;
+    }
+};
+
+std::vector<vigra::BImage*> MaskEdEditWnd::getAlpha()
+{
+    vector<vigra::BImage*> vec;
+    wxBitmap *mask;
+    for(vector<string>::iterator it = m_imgfiles.begin(); it != m_imgfiles.end(); it++) 
+    {
+        mask = MaskMgr::getInstance()->getSegmentation(*it)->getMaskBitmap();
+        wxImage img = mask->ConvertToImage();
+        vigra::BasicImageView<RGBValue<unsigned char> > panoImg8((RGBValue<unsigned char> *)img.GetData(), img.GetWidth(), img.GetHeight());
+        vigra::BImage *bimg = new vigra::BImage(mask->GetWidth(), mask->GetHeight());
+        vigra::transformImage(srcImageRange(panoImg8), destImage(*bimg), BRGBToBImage());
+        vec.push_back(bimg);
+    }
+    return vec;
+}
 
 void MaskEdEditWnd::findOverlappingRect(int i, int j, wxRect &rect)
 {

@@ -494,6 +494,8 @@ void PreviewFrame::OnExitMaskEditor(wxCommandEvent &e)
     m_topsizer->Show(m_flexSizer, true, true);
     m_topsizer->Show(m_blendModeSizer, true, true);
     m_topsizer->Layout();
+    vector<vigra::BImage*> alphas = m_MaskEdEditWnd->getAlpha();
+    m_PreviewPanel->setAlpha(alphas);
     m_PreviewPanel->ForceUpdate();
 }
 

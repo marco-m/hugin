@@ -34,7 +34,10 @@ class MaskMgr /*: public Singleton<MaskMgr>*/
     std::vector<std::string>    m_imgfiles;
     std::vector<ISegmentation*> m_segmentation; //each image will have its own instance
     std::vector<std::string> m_segmentation_options; //this should be done dynamically
-   
+    std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > m_imgs_alpha;
+    
+    enum tLoadType { LOADFILE, LOADMEM };
+    tLoadType                m_loadtype;
     int                      m_segmentation_index;
     static MaskMgr          *m_instance;
     MaskMgr();
@@ -52,8 +55,8 @@ public:
     void loadPTOFile(const std::string &filename);
 
     void loadImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *alpha = NULL);
-    void loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas);
-    void loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs);
+    //void loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas, bool breload = false);
+    void loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs, bool reload = false);
     void loadImage(const std::vector<std::string> &filesv);
     void loadImage(const std::string &filename);
     void loadMaskProject(const std::string &filename);

@@ -95,6 +95,7 @@ int MaskMgr::getSegmentationOptionSelected() const
 
 void MaskMgr::loadImage(const string &filename)
 {
+    m_loadtype = LOADFILE;
     //ImageCache::getInstance().getImage(filename);
     m_imgfiles.push_back(filename);
     if(m_segmentation_options[m_segmentation_index] ==  "PolyEd_Basic")
@@ -112,6 +113,7 @@ void MaskMgr::loadImage(const vector<string> &filesv)
 
 void MaskMgr::loadImage(const string &imgId, const vigra::BRGBImage* img, vigra::BImage *alpha)
 {
+    m_loadtype = LOADMEM;
     m_imgfiles.push_back(imgId);
     if(m_segmentation_options[m_segmentation_index] ==  "PolyEd_Basic")
         m_segmentation.push_back(new PolyEd_Basic(imgId, img, alpha));
@@ -119,33 +121,38 @@ void MaskMgr::loadImage(const string &imgId, const vigra::BRGBImage* img, vigra:
         m_segmentation.push_back(new LazySnapping(imgId, img, alpha));
 }
 
-void MaskMgr::loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas)
-{
-    init();
-    int i = 0;
-    ostringstream imgId;
-    if(alphas.size() == imgs.size()) {
-        vector<vigra::BImage*>::iterator it_alpha = alphas.begin();
-        for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, it_alpha++) 
-        {
-            imgId << i;
-            loadImage(imgId.str(), *it, *it_alpha);
-        }
-    } else {
-        for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, i++)
-        {
-            imgId << i;
-            loadImage(imgId.str(), *it);
-        }
-    }
-}
+//void MaskMgr::loadImage(const std::vector<vigra::BRGBImage*> &imgs, std::vector<vigra::BImage*> &alphas)
+//{
+//    init();
+//    int i = 0;
+//    ostringstream imgId;
+//    if(alphas.size() == imgs.size()) {
+//        vector<vigra::BImage*>::iterator it_alpha = alphas.begin();
+//        for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, it_alpha++) 
+//        {
+//            imgId << i;
+//            loadImage(imgId.str(), *it, *it_alpha);
+//        }
+//    } else {
+//        for(vector<vigra::BRGBImage*>::const_iterator it = imgs.begin(); it != imgs.end(); it++, i++)
+//        {
+//            imgId << i;
+//            loadImage(imgId.str(), *it);
+//        }
+//    }
+//}
 
-void MaskMgr::loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs)
+void MaskMgr::loadImage(std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > &imgs, bool breload)
 {
     init();
     int i = 0;
     ostringstream imgId;
-    for(vector<pair<vigra::BRGBImage*, vigra::BImage*> >::iterator it = imgs.begin(); it != imgs.end(); it++, i++)
+    if(!breload) {
+        m_imgs_alpha.clear();
+        copy(imgs.begin(), imgs.end(), back_insert_iterator<std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > >(m_imgs_alpha));
+    }
+    m_imgfiles.clear();
+    for(vector<pair<vigra::BRGBImage*, vigra::BImage*> >::iterator it = m_imgs_alpha.begin(); it != m_imgs_alpha.end(); it++, i++)
     {
         imgId << i;
         loadImage(imgId.str(), it->first, it->second);
@@ -162,13 +169,17 @@ void MaskMgr::loadMaskProject(const string &filename)
 
 void MaskMgr::reload()
 {
-    if(!m_imgfiles.empty()) {
-        vector<string> tmp;
-        copy(m_imgfiles.begin(), m_imgfiles.end(), back_insert_iterator<vector<string> >(tmp));
-        /*m_segmentation.clear();
-        m_imgfiles.clear();*/
-        init();
-        loadImage(tmp);
+    if(m_loadtype == LOADFILE) {
+        if(!m_imgfiles.empty()) {
+            vector<string> tmp;
+            copy(m_imgfiles.begin(), m_imgfiles.end(), back_insert_iterator<vector<string> >(tmp));
+            /*m_segmentation.clear();
+            m_imgfiles.clear();*/
+            init();
+            loadImage(tmp);
+        }
+    }else {
+        loadImage(m_imgs_alpha, true);
     }
 }
 
