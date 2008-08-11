@@ -43,7 +43,7 @@
 
 // Onur
 #include "panodata/PanoramaData.h"
-#include "algorithms/control_points/FeatureMatchingLinearSearch.h" // Onur
+#include "algorithms/control_points/FeatureMatchingLinearSearch.h" // 
 #include "algorithms/control_points/FeatureMatchingSingleKdTree.h" // algorithms/control_points/
 #include "algorithms/control_points/FeatureMatchingMultiKdTree.h" // algorithms/control_points/
 #include "time.h"

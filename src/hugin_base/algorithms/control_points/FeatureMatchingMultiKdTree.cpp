@@ -62,8 +62,8 @@ CPVector FeatureMatchingMultiKdTree::match(const PanoramaData& pano) {
 			if (nearest_image != -1) {
 				allMatches.push_back(ControlPoint(im, itkey->pos.y, itkey->pos.x,
 												  nearest_image, nearest_point.pos.y, nearest_point.pos.x));
-				printf("(%d,%f,%f) with (%d,%f,%f)\n",im, itkey->pos.y, itkey->pos.x,
-					   nearest_image, nearest_point.pos.y, nearest_point.pos.x);
+				//printf("(%d,%f,%f) with (%d,%f,%f)\n",im, itkey->pos.y, itkey->pos.x,
+				//	   nearest_image, nearest_point.pos.y, nearest_point.pos.x);
 			}			
 		}
 	}

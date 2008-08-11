@@ -54,7 +54,7 @@
 #include "base_wx/MyProgressDialog.h"
 #include "hugin/config_defaults.h"
 
-#include "algorithms/control_points/FeatureExtractorZoran.h" // Onur
+#include "algorithms/control_points/FeatureExtractorZoran.h" // 
 
 using namespace PT;
 using namespace PTools;

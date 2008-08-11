@@ -13,7 +13,7 @@ namespace HuginBase {
 CPVector FeatureMatchingLinearSearch::match(const PanoramaData& pano, float upper_bound_for_distance) {
 	
 	CPVector allMatches;
-	float nearest_keypoint_distance;
+	float nearest_keypoint_distance, old_nearest_keypoint_distance;
 	Keypoint nearest_point;
 	int nearest_image;
 	
@@ -40,9 +40,13 @@ CPVector FeatureMatchingLinearSearch::match(const PanoramaData& pano, float uppe
 				{
 					
 					// calculate euclidean distance
-					float dist = fm_eucdist_ub(*itkey, *itkey2, upper_bound_for_distance);
+					//float dist = fm_eucdist_ub(*itkey, *itkey2, upper_bound_for_distance);
+					float dist = fm_eucdist(*itkey, *itkey2);
 					if (dist < nearest_keypoint_distance)
 					{
+						// save the distance of second nearest match
+						old_nearest_keypoint_distance = nearest_keypoint_distance;
+						
 						nearest_keypoint_distance = dist;
 						nearest_point = *itkey2;
 						nearest_image = im2;
@@ -50,13 +54,13 @@ CPVector FeatureMatchingLinearSearch::match(const PanoramaData& pano, float uppe
 				}
 			}
 			
-			// if a match found within a neighborhood defined by upperbound,
-			// add to the matching list
-			if (nearest_image != -1) {
+			// if a good match found, add to the matching list
+			if (nearest_image != -1 && 
+				nearest_keypoint_distance/old_nearest_keypoint_distance < 0.6) {
 				allMatches.push_back(ControlPoint(im, itkey->pos.y, itkey->pos.x,
 												  nearest_image, nearest_point.pos.y, nearest_point.pos.x));
-				printf("(%d,%f,%f) with (%d,%f,%f)\n",im, itkey->pos.y, itkey->pos.x,
-					   nearest_image, nearest_point.pos.y, nearest_point.pos.x);
+				//printf("(%d,%f,%f) with (%d,%f,%f)\n",im, itkey->pos.y, itkey->pos.x,
+				//	   nearest_image, nearest_point.pos.y, nearest_point.pos.x);
 			}
 				
 		}
