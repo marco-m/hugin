@@ -43,10 +43,14 @@
 
 // Onur
 #include "panodata/PanoramaData.h"
-#include "algorithms/control_points/FeatureMatchingLinearSearch.h" // 
+#include "algorithms/control_points/FeatureMatchingLinearSearch.h" // algorithms/control_points/
 #include "algorithms/control_points/FeatureMatchingSingleKdTree.h" // algorithms/control_points/
 #include "algorithms/control_points/FeatureMatchingMultiKdTree.h" // algorithms/control_points/
+
 #include "time.h"
+#ifndef CLK_TCK
+#define CLK_TCK CLOCKS_PER_SEC
+#endif
 
 #include "base_wx/MyExternalCmdExecDialog.h"
 #include "base_wx/platform.h"

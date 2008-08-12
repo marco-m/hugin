@@ -52,6 +52,7 @@ public:
 	// destructor
 	~KDTreeKeypointMatcher()
 	{
+		printf("Destructor of KDTreeKeypointMatcher called\n");
 		if (m_KDTree)
 			delete m_KDTree;
 		if (m_allPoints)

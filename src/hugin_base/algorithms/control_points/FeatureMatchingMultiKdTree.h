@@ -30,7 +30,7 @@ public:
 	virtual bool runAlgorithm()
 	{
 		o_controlPoints = match(o_panorama);
-		return true; // let's hope so.
+		return true;
 	}
 	
 	// getter method for control points
