@@ -121,6 +121,7 @@ private:
     wxString m_choices[3];
     int m_oldProjFormat;
     tMode m_mode;
+    bool m_bPanoChanged;
 //    wxButton * m_updatePreview;
 //    wxCheckBox * m_autoCB;
 

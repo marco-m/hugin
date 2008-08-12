@@ -23,22 +23,13 @@
 
 #include <config.h>
 
-#include "panoinc_WX.h"
 #include "panoinc.h"
-
-#include <vigra/basicimageview.hxx>
-#include "vigra_ext/blend.h"
-#include "PT/Stitcher.h"
-
 
 #include "base_wx/ImageCache.h"
 #include "hugin/PreviewFrame.h"
 #include "hugin/MainFrame.h"
 #include "hugin/CommandHistory.h"
-#include "hugin/config_defaults.h"
-#include "hugin/huginApp.h"
-//#include "hugin/ImageProcessing.h"
-#include <vigra_ext/ROIImage.h>
+
 #include <math.h>
 #include "ISegmentation.h"
 #include "MaskEdEditWnd.h"
@@ -117,37 +108,37 @@ void MaskEdEditWnd::loadImage(const wxString &filename)
 
 void MaskEdEditWnd::loadImage(const string &filename)
 {
-    if(filename != "")
-    {
-        ImageCache::EntryPtr e = ImageCache::getInstance().getImage(filename);
-        HuginBase::ImageCache::ImageCacheRGB8Ptr img = e->get8BitImage();
-        vigra::ImageImportInfo info(filename.c_str());
-        vigra::Size2D sz = info.getCanvasSize();
-        vigra::Diff2D pos = info.getPosition();
-        m_canvas_size.push_back(wxPoint(sz.width(), sz.height()));
-        m_pos.push_back(wxPoint(pos.x, pos.y));
-        m_selected.push_back(true);
-        m_max_width = sz.width() > m_max_width ? sz.width() : m_max_width;
-        m_max_height = sz.height() > m_max_height ? sz.height() : m_max_height;
-        if (img) {
-            m_max_width = img->width() > m_max_width ? img->width() : m_max_width;
-            m_max_height = img->height() > m_max_height ? img->height() : m_max_height;
+    if(filename == "")
+        return;
+    
+    ImageCache::EntryPtr e = ImageCache::getInstance().getImage(filename);
+    HuginBase::ImageCache::ImageCacheRGB8Ptr img = e->get8BitImage();
+    vigra::ImageImportInfo info(filename.c_str());
+    vigra::Size2D sz = info.getCanvasSize();
+    vigra::Diff2D pos = info.getPosition();
+    m_canvas_size.push_back(wxPoint(sz.width(), sz.height()));
+    m_pos.push_back(wxPoint(pos.x, pos.y));
+    m_selected.push_back(true);
+    m_max_width = sz.width() > m_max_width ? sz.width() : m_max_width;
+    m_max_height = sz.height() > m_max_height ? sz.height() : m_max_height;
+    if (img) {
+        m_max_width = img->width() > m_max_width ? img->width() : m_max_width;
+        m_max_height = img->height() > m_max_height ? img->height() : m_max_height;
 
-            wxImage img_temp(img->width(),
-                       img->height(),
-                       (unsigned char *) img->data(),
-                       true);
-            m_wximgs.push_back(new wxImage(img->width(),
-                       img->height(),
-                       (unsigned char *) img->data(),
-                       true));
-            wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(filename)->getMaskBitmap();
-            img_temp.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
-            //img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
-            m_bimgs.push_back(new wxBitmap(img_temp));
-        } 
-        SetScrollbars( 1, 1, m_max_width, m_max_height);
-    }
+        wxImage img_temp(img->width(),
+                   img->height(),
+                   (unsigned char *) img->data(),
+                   true);
+        m_wximgs.push_back(new wxImage(img->width(),
+                   img->height(),
+                   (unsigned char *) img->data(),
+                   true));
+        wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(filename)->getMaskBitmap();
+        img_temp.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
+        //img_temp.Rescale(img->width()*m_scale, img->height()*m_scale);
+        m_bimgs.push_back(new wxBitmap(img_temp));
+    } 
+    SetScrollbars( 1, 1, m_max_width, m_max_height);
 }
 
 void MaskEdEditWnd::loadImage(const vector<string> &filesv)
@@ -285,29 +276,23 @@ void MaskEdEditWnd::ForceUpdate()
     Refresh();
 }
 
-
 void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
 {
-    if(m_bimgs.empty()) return;
     wxPaintDC dc(this);
-    //DoPrepareDC(dc);
+    DoPrepareDC(dc);
     int x,y;
-    x = GetScrollPos(wxSB_HORIZONTAL);
-    y = GetScrollPos(wxSB_VERTICAL);
-    int i = m_bimgs.size() - 1;
+    x = 0;//GetScrollPos(wxSB_HORIZONTAL);
+    y = 0;//GetScrollPos(wxSB_VERTICAL);
     int lastDrawn = -1;
     //dc.SetDeviceOrigin(-x, -y);
     dc.SetUserScale(m_scale, m_scale);
-    UIntSet displayedImgs = m_pano->getActiveImages();
-    //for(vector<wxBitmap*>::reverse_iterator it = m_bimgs.rbegin(); it != m_bimgs.rend(); it++, i--)
-    for(UIntSet::iterator it = displayedImgs.begin(); it != displayedImgs.end(); it++)
+    UIntSet activeImgs = m_pano->getActiveImages();
+    for(UIntSet::iterator it = activeImgs.begin(); it != activeImgs.end(); it++)
     {
-        //if(!m_selected[i]) continue;
-        i = *it;
-        dc.DrawBitmap(*m_bimgs[i], -x + m_pos[i].x, -y + m_pos[i].y, true); 
+        dc.DrawBitmap(*m_bimgs[*it], -x + m_pos[*it].x, -y + m_pos[*it].y, true); 
         if(m_bShowOverlappedRect && lastDrawn > -1) {
             wxRect rect;
-            findOverlappingRect(lastDrawn, i, rect);
+            findOverlappingRect(lastDrawn, *it, rect);
             wxPen pen = dc.GetPen();
             wxBrush brush = dc.GetBrush();
             dc.SetPen(*wxRED);
@@ -316,23 +301,7 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
             dc.SetPen(pen);
             dc.SetBrush(brush);
         }
-        lastDrawn = i;
-        //ignore this case for the timebeing
-        ////drawing is not really needed here but just in case the window is refershed
-        ////while the brushstroke is drawn
-        //if(m_brushstroke.pt.size() > 1)
-        //{
-        //    std::vector<wxPoint>::iterator it = m_brushstroke.pt.begin();
-        //    wxPoint pt = *it + wxPoint(-x,-y);
-        //    wxPen pen(*wxRED, 1);
-        //    dc.SetPen(pen);
-        //    for(it++; it != m_brushstroke.pt.end(); it++)
-        //    {
-        //        dc.DrawLine(pt, *it + wxPoint(-x,-y));
-        //        pt = *it + wxPoint(-x,-y);
-        //    }
-        //    dc.SetPen(wxNullPen);
-        //}
+        lastDrawn = *it;
     }
     if(m_poly.pt.size() > 0) {
         wxPoint *pts = new wxPoint[m_poly.pt.size()];
@@ -342,8 +311,8 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         int i = 0;
         for(vector<PixelCoord>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
         {
-            pts[i].x = it->x * m_scale - x + m_pos[m_active].x;
-            pts[i].y = it->y * m_scale - y + m_pos[m_active].y;
+            pts[i].x = it->x /* m_scale - x*/ + m_pos[m_active].x;
+            pts[i].y = it->y /* m_scale - y*/ + m_pos[m_active].y;
         }
         dc.DrawPolygon(m_poly.pt.size(), pts);
     }
@@ -357,7 +326,7 @@ void MaskEdEditWnd::OnMouseButtonDown(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 {
-    if(m_bimgs.empty() || m_active < 0) return;
+    if(m_bimgs.empty()) return;
     if(m_edmode == ME_BSTROKE)
     {
         m_brushstroke.label = ISegmentation::FGND;
@@ -379,7 +348,7 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 
 void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
 {
-    if(m_bimgs.empty() || m_active < 0) return;
+    if(m_bimgs.empty()) return;
     if(m_edmode == ME_BSTROKE)
     {
         m_brushstroke.label = ISegmentation::BKGND;
@@ -401,15 +370,22 @@ void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
 }
 void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
 {
+    wxPoint pos = event.GetPosition(); 
+    ((wxFrame*)(GetParent()->GetParent()))->GetStatusBar()->SetStatusText(wxString::Format(_T("(%d,%d)"),pos.x, pos.y));
     if(event.Dragging() && !event.MiddleIsDown() && m_bimgs.size() > 0 && m_edmode == ME_BSTROKE)
     {
         int x, y;
         x = GetScrollPos(wxSB_HORIZONTAL);
         y = GetScrollPos(wxSB_VERTICAL);
+        
+        wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
+        newPt.x /= m_scale;
+        newPt.y /= m_scale;
         if(m_brushstroke.pt.size() > 0)
         {
             wxClientDC dc(this);
-            //DoPrepareDC(dc);
+            DoPrepareDC(dc);
+            dc.SetUserScale(m_scale, m_scale);
             wxPen oldpen = dc.GetPen();
             wxPen *pen;
 
@@ -419,10 +395,10 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
                 pen = new wxPen(*wxBLUE, 1);
             dc.SetPen(*pen);
             wxPoint lastPt(m_brushstroke.pt.back().x, m_brushstroke.pt.back().y);
-            dc.DrawLine(lastPt - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
+            //dc.DrawLine(lastPt - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
+            dc.DrawLine(lastPt, newPt);
             dc.SetPen(oldpen);
         }
-        wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
         m_brushstroke.pt.push_back(PixelCoord(newPt.x, newPt.y));
     }
 }
@@ -462,7 +438,7 @@ void MaskEdEditWnd::zoom(float scale, wxRect region)
 {
     m_scale = scale;
     //reloadImages();
-    //SetScrollbars( 1, 1, m_bimgs[0]->GetWidth()*m_scale, m_bimgs[0]->GetHeight()*m_scale);
+    SetScrollbars( 1, 1, m_max_width*m_scale, m_max_height*m_scale);
     Refresh();
 }
 

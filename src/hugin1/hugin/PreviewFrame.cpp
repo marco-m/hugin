@@ -125,7 +125,7 @@ END_EVENT_TABLE()
 PreviewFrame::PreviewFrame(wxFrame * frame, PT::Panorama &pano)
     : wxFrame(frame,-1, _("Panorama preview"), wxDefaultPosition, wxDefaultSize,
               PF_STYLE),
-      m_pano(pano), m_scale(1.0)
+      m_pano(pano), m_scale(1.0), m_bPanoChanged(true)
 {
 	DEBUG_TRACE("");
 
@@ -473,10 +473,13 @@ void PreviewFrame::OnMaskEditor(wxCommandEvent & e)
     m_topsizer->Hide(m_blendModeSizer, true);
     m_topsizer->Show(m_MaskEdEditWnd, true, true);
     m_topsizer->Layout();
-
-    vector<pair<vigra::BRGBImage*, vigra::BImage*> > remapimgs = m_PreviewPanel->getRemappedImages();
-    MaskMgr::getInstance()->loadImage(remapimgs);
-    m_MaskEdEditWnd->loadImage(remapimgs);
+    
+    if(m_bPanoChanged) {
+        m_bPanoChanged = false;
+        vector<pair<vigra::BRGBImage*, vigra::BImage*> > remapimgs = m_PreviewPanel->getRemappedImages();
+        MaskMgr::getInstance()->loadImage(remapimgs);
+        m_MaskEdEditWnd->loadImage(remapimgs);
+    }
     //m_MaskEdEditWnd->ForceUpdate();
 }
 
@@ -522,6 +525,8 @@ void PreviewFrame::OnChangeDisplayedImgs(wxCommandEvent & e)
 
 void PreviewFrame::panoramaChanged(Panorama &pano)
 {
+    m_bPanoChanged = true;
+
     const PanoramaOptions & opts = pano.getOptions();
 
     wxString projection;

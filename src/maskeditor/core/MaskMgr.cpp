@@ -25,18 +25,23 @@
 #include "../segmentation/polyed_basic/PolyEd_Basic.h"
 #include "../segmentation/lazysnapping/LazySnapping.h"
 #include "vigra/stdimage.hxx"
+#include "vigra/impex.hxx"
 #include "MaskMgr.h"
 #include "MaskFileMgr.h"
+#include <wx/wx.h>
 
 using namespace std;
+using namespace vigra;
 using HuginBase::ImageCache;
 
 MaskMgr* MaskMgr::m_instance = 0;
+
 MaskMgr::MaskMgr() : m_segmentation_index(-1) 
 {
     string opts[] = {"PolyEd_Basic", "LazySnapping" };
     m_segmentation_options.assign(opts, opts+2);
 }
+
 MaskMgr::~MaskMgr() 
 {
     /*if(m_segmentation)
@@ -46,7 +51,6 @@ MaskMgr::~MaskMgr()
 }
 
 //TODO: check for loading duplicate images 
-
 MaskMgr* MaskMgr::getInstance()
 {
     if(m_instance)
@@ -186,4 +190,34 @@ void MaskMgr::reload()
 vector<string> MaskMgr::getImages()
 {
     return m_imgfiles;
+}
+
+struct BRGBToBImage
+{
+public:
+    vigra::BImage::value_type operator() (const vigra::BRGBImage::value_type &p) const
+    {
+        return ((p.red() + p.green() + p.blue())/3) > 0 ? 255 : 0;
+    }
+};
+
+void MaskMgr::saveMask(const std::string &prefix, const std::string &fileExt)
+{
+    int i = 0;
+    wxBitmap *mask = 0;
+    for(std::vector<ISegmentation*>::iterator it = m_segmentation.begin(); it != m_segmentation.end(); it++, i++)
+    {
+        stringstream ss;
+        ss << prefix << "_" << i << "." << fileExt;
+        vigra::ImageExportInfo exi( ss.str().c_str() ); 
+
+        mask = (*it)->getMaskBitmap();
+        wxImage img = mask->ConvertToImage();
+        vigra::BasicImageView<RGBValue<unsigned char> > panoImg8((RGBValue<unsigned char> *)img.GetData(), img.GetWidth(), img.GetHeight());
+        vigra::BImage bimg(mask->GetWidth(), mask->GetHeight());
+        vigra::transformImage(srcImageRange(panoImg8), destImage(bimg), BRGBToBImage());
+        //vec.push_back(bimg);
+
+        vigra::exportImage(vigra::srcImageRange(bimg), exi);
+    }
 }

@@ -61,7 +61,7 @@
 #include "base_wx/ImageCache.h"
 
 #include "base_wx/huginConfig.h"
-
+#include "MaskMgr.h"
 
 
 using namespace PT;
@@ -506,12 +506,15 @@ void MainFrame::OnSaveProject(wxCommandEvent & e)
     DEBUG_TRACE("");
     try {
     wxFileName scriptName = m_filename;
+    std::string path;
+   
     if (m_filename == wxT("")) {
         OnSaveProjectAs(e);
         scriptName = m_filename;
+        path = getPathPrefix(std::string(scriptName.GetFullPath().mb_str(HUGIN_CONV_FILENAME)));
     } else {
         // the project file is just a PTOptimizer script...
-        std::string path = getPathPrefix(std::string(scriptName.GetFullPath().mb_str(HUGIN_CONV_FILENAME)));
+        path = getPathPrefix(std::string(scriptName.GetFullPath().mb_str(HUGIN_CONV_FILENAME)));
         DEBUG_DEBUG("stripping " << path << " from image filenames");
         std::ofstream script(scriptName.GetFullPath().mb_str(HUGIN_CONV_FILENAME));
         PT::OptimizeVector optvec = opt_panel->getOptimizeVector();
@@ -549,6 +552,7 @@ void MainFrame::OnSaveProject(wxCommandEvent & e)
                                                               makefile);
         }
     }
+    MaskMgr::getInstance()->saveMask(path + "mask");
     SetStatusText(wxString::Format(_("saved project %s"), m_filename.c_str()),0);
     this->SetTitle(scriptName.GetName() + wxT(".") + scriptName.GetExt() + wxT(" - hugin"));
     pano.clearDirty();

@@ -35,7 +35,8 @@ enum MaskEdEditMode_t { ME_BSTROKE = 1, ME_POLY };
 
 class MaskEdEditWnd : public wxScrolledWindow
 {
-    std::vector<wxBitmap*>  m_bimgs;            //local cache
+    std::vector<wxImage*>    m_wximgs;
+    std::vector<wxBitmap*>   m_bimgs;            //local cache
     std::vector<std::string> m_imgfiles;
     int                     m_max_width;
     int                     m_max_height;
@@ -66,7 +67,10 @@ public:
     void loadImage(const wxString &filename);
     void loadImage(const std::string &filename);
     void loadImage(const std::vector<std::string> &filesv);
-    void reloadImages();
+    //void reloadImages();
+
+    void updateMask(int imdId);
+    void updateMask(std::string &imgId);
 
     void findOverlappingRect(int i, int j, wxRect &rect);
     void setDisplayImages(const std::map<int, std::pair<std::string, bool> > &selection);

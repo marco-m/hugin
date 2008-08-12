@@ -34,7 +34,8 @@ class MaskMgr /*: public Singleton<MaskMgr>*/
     std::vector<std::string>    m_imgfiles;
     std::vector<ISegmentation*> m_segmentation; //each image will have its own instance
     std::vector<std::string> m_segmentation_options; //this should be done dynamically
-    std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > m_imgs_alpha;
+    typedef std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > tImgAlphaPair;
+    tImgAlphaPair m_imgs_alpha;
     
     enum tLoadType { LOADFILE, LOADMEM };
     tLoadType                m_loadtype;
@@ -46,6 +47,8 @@ class MaskMgr /*: public Singleton<MaskMgr>*/
     void init();
 public:
     static MaskMgr *getInstance();
+
+    void saveMask(const std::string &prefix, const std::string &fileExt = "tif");
 
     void setSegmentationOption(int index);  // set segmentation technique
     ISegmentation* getSegmentation(int index); //get the segmentation instance used for a particular input image
