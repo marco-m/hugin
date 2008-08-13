@@ -70,5 +70,26 @@ void PolygonCmd::undo()
 
 void PolygonCmd::redo()
 {
-
+    m_maskmgr->getSegmentation(m_index)->setMemento(m_memento);
 }
+
+//
+PolyVertexAddCmd::PolyVertexAddCmd(MaskPoly *poly, int x, int y) : m_poly(poly), x(x), y(y)
+{}
+
+void PolyVertexAddCmd::execute()
+{
+    m_poly->add(PixelCoord(x, y));
+}
+
+void PolyVertexAddCmd::undo()
+{
+    m_poly->pt.pop_back();
+}
+
+void PolyVertexAddCmd::redo()
+{
+    execute();
+}
+
+

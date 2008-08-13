@@ -57,6 +57,27 @@ public:
     void undo();
     void redo();
 };
+
+class PolyVertexAddCmd : public AppBase::Command<std::string>
+{
+    MaskPoly *m_poly;
+    int x, y;
+public:
+    PolyVertexAddCmd(MaskPoly *m_poly, int x, int y);
+    void execute();
+    void undo();
+    void redo();
+};
+
+class PolyVertexMoveCmd : public AppBase::Command<std::string>
+{
+public:
+    PolyVertexMoveCmd(MaskPoly *m_poly, int index, int x, int y);
+    void execute();
+    void undo();
+    void redo();
+};
+
 //
 //class BrushStrokeCmdHist : public AppBase::CommandHistory<BrushStrokeCmd>
 //{

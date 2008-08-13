@@ -8,6 +8,7 @@ SET(XRCFILES
     run_stitcher_frame.xrc
     main_menu.xrc
     main_tool.xrc
+    masked_main_toolbar.xrc
     edit_text.xrc
     about.xrc
     help.xrc

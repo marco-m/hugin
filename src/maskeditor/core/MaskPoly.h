@@ -25,12 +25,43 @@
 #define MASKPOLY_H
 
 #include "Pixel.h"
+#include <algorithm>
+
+#define MASKPOLYRANGE 4
 
 struct MaskPoly
 {
-    std::vector<PixelCoord> pt;
     int label;
-    void clear() { pt.clear(); }
+    int iMouseOver;
+    std::vector<PixelCoord> pt;
+
+    void clear() { iMouseOver = -1; pt.clear(); }
     void add(PixelCoord newpt) { pt.push_back(newpt); }
+    std::vector<PixelCoord>::iterator begin() { return pt.begin(); }
+    std::vector<PixelCoord>::iterator end() { return pt.end(); }
+    std::vector<PixelCoord>::size_type size() { return pt.size(); }
+    int  findVertex(const PixelCoord &p)
+    {   
+        iMouseOver = -1;
+        int i = 0;
+        for(std::vector<PixelCoord>::iterator it = pt.begin(); it != pt.end(); it++, i++)
+        {
+            if(abs(it->x - p.x) <= MASKPOLYRANGE && abs(it->y - p.y) <= MASKPOLYRANGE) {
+                iMouseOver = i;
+                break;
+            }
+        }
+        return iMouseOver;
+    }
+
+    bool isMouseOver(PixelCoord &p) 
+    {
+        return (iMouseOver != -1) ? (p == pt[iMouseOver]) : false;
+    }
+
+    bool isMouseOver(int i)
+    {
+        return iMouseOver == i;
+    }
 };
 #endif

@@ -37,16 +37,16 @@ struct PixelCoordToWxPoint
      }
 };
 
-PolyEd_Basic::PolyEd_Basic() : m_mask(0)
+PolyEd_Basic::PolyEd_Basic() : m_mask(0), m_width(0), m_height(0)
 {
     m_name = "PolyEd_Basic";
 }
-PolyEd_Basic::PolyEd_Basic(const string &filename) : m_mask(0)
+PolyEd_Basic::PolyEd_Basic(const string &filename) : m_mask(0), m_width(0), m_height(0)
 {
     m_name = "PolyEd_Basic";
     setImage(filename);
 }
-PolyEd_Basic::PolyEd_Basic(const string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask) : m_mask(0)
+PolyEd_Basic::PolyEd_Basic(const string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask) : m_mask(0), m_width(0), m_height(0)
 {
     m_name = "PolyEd_Basic";
     setImage(imgId, img, mask);
@@ -71,15 +71,15 @@ void PolyEd_Basic::init(vigra::BImage *mask)
 {
     if(m_width > 0 && m_height > 0)
     {
-        if(!mask)
+        if(!mask) {
             m_mask = new wxBitmap(m_width, m_height, 1);
-        else {
+            wxMemoryDC dc(*m_mask);
+            dc.SetBackground(*wxWHITE_BRUSH);
+            dc.Clear();
+        } else {
             assert(mask->width() == m_width && mask->height() == m_height);
             m_mask = new wxBitmap((const char*)mask->data(), mask->width(), mask->height());
         }
-        wxMemoryDC dc(*m_mask);
-        dc.SetBackground(*wxWHITE_BRUSH);
-        dc.Clear();
     }
 }
 

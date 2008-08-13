@@ -48,12 +48,13 @@ class MaskEdEditWnd : public wxScrolledWindow
     int                     m_active;           //index of image on which mask is drawn
     BrushStroke             m_brushstroke;
     MaskPoly                m_poly;
+    //bool                    m_bVertexDrag;
+    int                     m_ptSelected;
     float                   m_scale;
     int                     m_edmode;           //editing mode
     bool                    m_bShowOverlappedRect;
 
     AppBase::CommandHistory<AppBase::Command<std::string> >   m_MaskEdCmdHist;
-
 public:
     MaskEdEditWnd(wxWindow *parent,
                      wxWindowID winid = wxID_ANY,
@@ -84,7 +85,9 @@ public:
     void redo();
 
     void OnPaint(wxPaintEvent &event);
-    void OnMouseButtonDown(wxMouseEvent &event);
+    void OnEraseBackground(wxEraseEvent &event);
+    void OnLeftMouseButtonDown(wxMouseEvent &event);
+    void OnLeftMouseButtonDClick(wxMouseEvent &event);
     void OnLeftMouseButtonUp(wxMouseEvent &event);
     void OnRightMouseButtonUp(wxMouseEvent &event);
     void OnMotion(wxMouseEvent &event);
