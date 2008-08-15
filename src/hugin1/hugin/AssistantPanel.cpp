@@ -54,7 +54,7 @@
 #include "base_wx/MyProgressDialog.h"
 #include "hugin/config_defaults.h"
 
-#include "algorithms/control_points/FeatureExtractorZoran.h" // 
+#include "algorithms/control_points/FeatureExtractorZoran.h" // algorithms/control_points/
 
 using namespace PT;
 using namespace PTools;
@@ -383,7 +383,7 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
 
     long nFeatures = wxConfigBase::Get()->Read(wxT("/Assistant/nControlPoints"), HUGIN_ASS_NCONTROLPOINTS); 
 
-    /*
+    // Onur: uncommented
     bool createCtrlP = true;
     // TODO: handle existing control points properly instead of adding them twice.
     if (m_pano->getNrOfCtrlPoints() > 0) {
@@ -391,9 +391,10 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
                      _("Skip control point creation?"), wxICON_QUESTION | wxYES_NO);
         createCtrlP = a != wxYES;
     }
-    */
+    
 
-    bool createCtrlP = m_pano->getNrOfCtrlPoints() == 0;
+	// Onur: problematic when user adds new images after aligning once
+    // bool createCtrlP = m_pano->getNrOfCtrlPoints() == 0;
 	
 	// Onur
 	// generate keypoints
@@ -401,17 +402,24 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
     wxString alignMsg;
 	FeatureExtractorZoran fez;
 	cout << "generate keypoints" << endl;
+	double progressIncrement = 1.0/m_pano->getNrOfImages();
+	// for each image in panorama
 	for (int imageNr=0; imageNr < m_pano->getNrOfImages(); imageNr++) {
-		std::string fn = m_pano->getSrcImage(imageNr).getFilename();
-		std::vector<HuginBase::Keypoint> points = fez.extractFeatures(fn);
-		cout << points.size() << " keypoints generated for " << fn << endl;
-		HuginBase::PanoImage img = m_pano->getImage(imageNr);
-		img.setKeypoints(points);
-		m_pano->setImage(imageNr,img);
+		// check if we have extracted Zoran keypoints before
+		if (m_pano->getImage(imageNr).getKeypoints().size() == 0)
+		{
+			std::string fn = m_pano->getSrcImage(imageNr).getFilename();
+			std::vector<HuginBase::Keypoint> points = fez.extractFeatures(fn);
+			cout << points.size() << " keypoints generated for " << fn << endl;
+			HuginBase::PanoImage img = m_pano->getImage(imageNr);
+			img.setKeypoints(points);
+			m_pano->setImage(imageNr,img);
+		}
+		progress.increaseProgress(progressIncrement, std::string(wxString(_("Extracting keypoints")).mb_str(wxConvLocal)));
 	}
 	
 	// find matching keypoints to create control points
-	progress.increaseProgress(1.0, std::string(wxString(_("Finding corresponding points")).mb_str(wxConvLocal)));
+	progress.increaseProgress(0.0, std::string(wxString(_("Finding corresponding points")).mb_str(wxConvLocal)));
 	
     if (createCtrlP) {
         AutoCtrlPointCreator matcher;
@@ -443,15 +451,6 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
 
     // optimize panorama
     Panorama optPano = m_pano->getSubset(imgs);
-	
-	// clear out the CPs with large distances after optimization
-	//for (int cpnum=0; cpnum<m_pano->getNrOfCtrlPoints(); cpnum++)  {
-//		ControlPoint cp = m_pano->getCtrlPoint(cpnum);
-//		if (cp.error > 10) {
-//			cout << "CP with " << cp.error << " found and removed!" << endl;
-//			m_pano->removeCtrlPoint(cpnum--);
-//		}
-//	}
 
     // set TIFF_m with enblend
     PanoramaOptions opts = m_pano->getOptions();

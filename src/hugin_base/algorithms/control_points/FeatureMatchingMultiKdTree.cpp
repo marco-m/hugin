@@ -20,12 +20,8 @@ CPVector FeatureMatchingMultiKdTree::match(const PanoramaData& pano) {
 	{
 		UIntSet single_image;
 		single_image.insert(im);
-		matcher[im] = KDTreeKeypointMatcher(2); // k-d tree with k = 2
 		matcher[im].create(pano, single_image);
 	}
-	
-	// keep track of matched points, to avoid re-matching them.
-	UIntSet matchedPoints; // TODO: this strategy cannot be applied to multiple case
 	
 	// for each image in panorama
 	ImageKeypoint* onematch;
@@ -41,7 +37,7 @@ CPVector FeatureMatchingMultiKdTree::match(const PanoramaData& pano) {
 			int nearest_image = -1;
 			
 			// find the nearest matching point
-			for (int tree=im+1; tree < pano.getNrOfImages(); tree++)
+			for (int tree=0; tree < pano.getNrOfImages(); tree++) //im+1
 			{
 				onematch = matcher[tree].match(*itkey, im);
 				

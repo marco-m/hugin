@@ -275,6 +275,9 @@ void ImagesPanel::SIFTMatching(wxCommandEvent & e)
     long nFeatures = XRCCTRL(*this, "images_points_per_overlap"
                             , wxSpinCtrl)->GetValue();
 
+	// TODO: keypoints in selected images should be added before calling 
+	// automatic CP creator
+	
     AutoCtrlPointCreator matcher;
     CPVector cps = matcher.automatch(*pano, selImg, nFeatures);
     wxString msg;
