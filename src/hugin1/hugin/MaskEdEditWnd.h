@@ -57,6 +57,7 @@ class MaskEdEditWnd : public wxScrolledWindow, public PT::PanoramaObserver
     int                     m_active;           //index of image on which mask is drawn
     BrushStroke             m_brushstroke;
     MaskPoly                m_poly;
+    int                     m_ptSelected;
     float                   m_scale;
     int                     m_edmode;           //editing mode
     bool                    m_bShowOverlappedRect;
@@ -106,7 +107,8 @@ public:
     //void DrawPreview(wxDC &dc);
 
     void OnPaint(wxPaintEvent &event);
-    void OnMouseButtonDown(wxMouseEvent &event);
+    void OnEraseBackground(wxEraseEvent &event);
+    void OnLeftMouseButtonDown(wxMouseEvent &event);
     void OnLeftMouseButtonUp(wxMouseEvent &event);
     void OnRightMouseButtonUp(wxMouseEvent &event);
     void OnMotion(wxMouseEvent &event);

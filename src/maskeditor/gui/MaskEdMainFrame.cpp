@@ -46,6 +46,7 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_MENU(XRCID("action_save_project_as"), MaskEdMainFrame::OnSaveProjectAs)
     EVT_MENU(XRCID("action_save_image"), MaskEdMainFrame::OnSaveImage)
     EVT_MENU(XRCID("action_save_mask"), MaskEdMainFrame::OnSaveMask)
+    EVT_MENU(XRCID("action_save_mask_metadata"), MaskEdMainFrame::OnSaveMaskMetadata)
     EVT_MENU(XRCID("action_draw_bstroke"), MaskEdMainFrame::OnBStroke)
     EVT_BUTTON(XRCID("action_draw_bstroke"), MaskEdMainFrame::OnBStroke)
     EVT_MENU(XRCID("action_draw_polygon"), MaskEdMainFrame::OnAddPoint)
@@ -122,7 +123,8 @@ void MaskEdMainFrame::OnSize(wxSizeEvent &event)
 
 void MaskEdMainFrame::OnNewProject(wxCommandEvent &event)
 {
-
+    m_scale = 1.0;
+    m_MaskEdClientWnd->newProject();
 }
 
 void MaskEdMainFrame::OnOpenProject(wxCommandEvent &event)
@@ -176,6 +178,18 @@ void MaskEdMainFrame::OnSaveMask(wxCommandEvent &event)
         m_MaskEdClientWnd->saveMask(0, dialog.GetPath());
     }
 
+}
+
+void MaskEdMainFrame::OnSaveMaskMetadata(wxCommandEvent &event)
+{
+    wxFileDialog dialog(this, wxT("Save Mask Metadata - File Prefix"), wxEmptyString,
+        wxEmptyString, wxEmptyString, wxSAVE);
+    if(dialog.ShowModal() == wxID_OK)
+    {
+        //m_MaskEdClientWnd->saveMask(0, dialog.GetPath());
+        wxString wxprefix = dialog.GetPath();
+        MaskMgr::getInstance()->saveMaskMetaData(string(wxprefix.mb_str()));
+    }
 }
 
 void MaskEdMainFrame::OnLoadPTO(wxCommandEvent &event)

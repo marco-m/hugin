@@ -43,12 +43,14 @@ class MaskMgr /*: public Singleton<MaskMgr>*/
     static MaskMgr          *m_instance;
     MaskMgr();
     ~MaskMgr();
-
-    void init();
+   
 public:
     static MaskMgr *getInstance();
 
+    void init();
+
     void saveMask(const std::string &prefix, const std::string &fileExt = "tif");
+    void saveMaskMetaData(const std::string &prefix);
 
     void setSegmentationOption(int index);  // set segmentation technique
     ISegmentation* getSegmentation(int index); //get the segmentation instance used for a particular input image

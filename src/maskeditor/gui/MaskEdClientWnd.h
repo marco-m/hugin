@@ -44,6 +44,7 @@ public:
     MaskEdEditWnd * getMaskEdEditWnd();
     MaskEdPreviewWnd * getMaskEdPreviewWnd();
 
+    void newProject(const wxString &filename = _T(""));
     void loadProject(const wxString &filename);
     void saveProject();                         //save the currently loaded project
     void saveProjectAs(const wxString &filename);

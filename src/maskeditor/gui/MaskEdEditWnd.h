@@ -35,6 +35,7 @@ enum MaskEdEditMode_t { ME_BSTROKE = 1, ME_POLY };
 
 class MaskEdEditWnd : public wxScrolledWindow
 {
+    wxBitmap                *m_display_bmp;
     std::vector<wxImage*>    m_wximgs;
     std::vector<wxBitmap*>   m_bimgs;            //local cache
     std::vector<std::string> m_imgfiles;
@@ -48,13 +49,15 @@ class MaskEdEditWnd : public wxScrolledWindow
     int                     m_active;           //index of image on which mask is drawn
     BrushStroke             m_brushstroke;
     MaskPoly                m_poly;
-    //bool                    m_bVertexDrag;
     int                     m_ptSelected;
     float                   m_scale;
     int                     m_edmode;           //editing mode
     bool                    m_bShowOverlappedRect;
 
     AppBase::CommandHistory<AppBase::Command<std::string> >   m_MaskEdCmdHist;
+
+    void updateDisplayBitmap(bool clear = false);
+    void createDisplayBitmap();
 public:
     MaskEdEditWnd(wxWindow *parent,
                      wxWindowID winid = wxID_ANY,
@@ -65,7 +68,7 @@ public:
     ~MaskEdEditWnd();
 
     void init();
-    void loadImage(const wxString &filename);
+    //void loadImage(const wxString &filename);
     void loadImage(const std::string &filename);
     void loadImage(const std::vector<std::string> &filesv);
     //void reloadImages();
@@ -74,7 +77,7 @@ public:
     void updateMask(std::string &imgId);
 
     void findOverlappingRect(int i, int j, wxRect &rect);
-    void setDisplayImages(const std::map<int, std::pair<std::string, bool> > &selection);
+    //void setDisplayImages(const std::map<int, std::pair<std::string, bool> > &selection);
     void setSelectedImage(int index, bool state);
     void zoom(float scale = 1.0, wxRect region = wxRect());
     float getZoomLevel() const;
@@ -84,6 +87,7 @@ public:
     void undo();
     void redo();
 
+    void OnSize(wxSizeEvent &event);
     void OnPaint(wxPaintEvent &event);
     void OnEraseBackground(wxEraseEvent &event);
     void OnLeftMouseButtonDown(wxMouseEvent &event);

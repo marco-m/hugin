@@ -47,7 +47,8 @@ MaskMgr::~MaskMgr()
     /*if(m_segmentation)
         m_segmentation->reset();
     delete m_segmentation;*/
-    m_segmentation.clear();
+    //m_segmentation.clear();
+    init();
 }
 
 //TODO: check for loading duplicate images 
@@ -219,5 +220,18 @@ void MaskMgr::saveMask(const std::string &prefix, const std::string &fileExt)
         //vec.push_back(bimg);
 
         vigra::exportImage(vigra::srcImageRange(bimg), exi);
+    }
+}
+
+void MaskMgr::saveMaskMetaData(const std::string &prefix)
+{
+    int i = 0;
+    
+    for(std::vector<ISegmentation*>::iterator it = m_segmentation.begin(); it != m_segmentation.end(); it++, i++)
+    {
+        stringstream ss;
+        ss << prefix << "_" << i << ".ls";
+        
+        (*it)->saveMaskMetaData(ss.str());
     }
 }

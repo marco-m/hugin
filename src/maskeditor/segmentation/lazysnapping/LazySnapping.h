@@ -36,8 +36,12 @@ const double LAMBDA = 50.0f;
 const int    NCLUSTERS = 64;
 const int    CLUSTERCOORDDIM = 5; // 3:RGB, 5:RGB + (r,c)
 
+class LazySnappingMemento;
+
 class LazySnapping : public ISegmentation
 {
+    LazySnappingMemento *m_memento;
+
     typedef float captype;
 
     wxBitmap *m_mask;
@@ -158,6 +162,8 @@ public:
 
     void setMemento(IMaskEdMemento *memento);
     IMaskEdMemento* createMemento();
+
+    void saveMaskMetaData(const std::string &filename);
 
     void markPixels(std::vector<PixelCoord> coords, Label label);
     void setRegion(std::vector<PixelCoord> coords, Label label);

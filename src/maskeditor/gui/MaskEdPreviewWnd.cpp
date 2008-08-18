@@ -58,6 +58,7 @@ void MaskEdPreviewWnd::loadImage(const vector<string> &filesv)
     {
         loadImage(*it);
     }
+    Refresh();
 }
 
 void MaskEdPreviewWnd::loadImage(const string &filename)

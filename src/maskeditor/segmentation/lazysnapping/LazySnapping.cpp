@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#include <fstream>
 #include "huginapp/ImageCache.h"
 #include "LazySnapping.h"
 #include <wx/wx.h>
@@ -60,13 +60,15 @@ struct PixelCoordToWxPoint
  */
 LazySnapping::LazySnapping() 
 : m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0)
+m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
+m_memento(0)
 {
     m_name = "LazySnapping";
 }
 LazySnapping::LazySnapping(const string &filename) 
 : m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0)
+m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
+m_memento(0)
 {
     m_name = "LazySnapping";
     setImage(filename);
@@ -74,7 +76,8 @@ m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0
 
 LazySnapping::LazySnapping(const string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask)
 : m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0)
+m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
+m_memento(0)
 {
     m_name = "LazySnapping";
     setImage(imgId, img, mask);
@@ -87,12 +90,37 @@ LazySnapping::~LazySnapping()
 
 void LazySnapping::setMemento(IMaskEdMemento *memento)
 {
-
+    if(m_mask)
+        delete m_mask;
+    m_mask = ((LazySnappingMemento*)memento)->m_mask;
+    m_width = ((LazySnappingMemento*)memento)->m_width;
+    m_height = ((LazySnappingMemento*)memento)->m_height;
+    //int n = ((LazySnappingMemento*)memento)->m_nseeds;
+    //while(n > 0)
+    //    m_seeds.e
 }
 
 IMaskEdMemento* LazySnapping::createMemento()
 {
-    return new LazySnappingMemento();
+    m_memento = new LazySnappingMemento(m_mask, m_width, m_height, 
+        m_seeds.size(), m_fgnd_seeds.size(), m_bkgnd_seeds.size(),
+        m_fgnd_clusters.size(), m_bkgnd_clusters.size());
+    return m_memento;
+}
+
+void LazySnapping::saveMaskMetaData(const string &filename)
+{
+    fstream fout(filename.c_str(), ios::out);
+    fout << "#LazySnapping" << endl;
+    fout << "F " << m_fgnd_seeds.size() << endl;
+    for(vector<PixelCoord>::iterator it = m_fgnd_seeds.begin(); it != m_fgnd_seeds.end(); it++)
+        fout << it->x << " " << it->y << endl;
+
+    fout << "B " << m_bkgnd_seeds.size() << endl;
+    for(vector<PixelCoord>::iterator it = m_bkgnd_seeds.begin(); it != m_bkgnd_seeds.end(); it++)
+        fout << it->x << " " << it->y << endl;
+    
+    fout.close();
 }
 
 void LazySnapping::init(vigra::BImage *mask)
@@ -322,7 +350,9 @@ void LazySnapping::getPixelsOnLine(const vector<PixelCoord> coords, vector<Pixel
 
 void LazySnapping::markPixels(vector<PixelCoord> coords, Label label)
 {
+    //vector<PixelCoord> line;
     vector<PixelCoord> newcoords;
+    //getPixelsOnLine(coords, line);
     for(vector<PixelCoord>::iterator it = coords.begin(); it != coords.end(); it++)
     {
         if(m_seeds.find(*it) == m_seeds.end()) //if the pixel wasn't previously marked
@@ -346,6 +376,9 @@ void LazySnapping::markPixels(vector<PixelCoord> coords, Label label)
             //markCluster(*it, label); /*pc = findCluster(*it);*/
         }
     }  
+    //update memento
+    m_memento->setSeeds(newcoords, label);
+
     //update cluster
     updateCluster(newcoords, label);
 

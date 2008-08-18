@@ -52,6 +52,8 @@ public:
     virtual void setMemento(IMaskEdMemento *memento) = 0;
     virtual IMaskEdMemento* createMemento() = 0;
 
+    virtual void saveMaskMetaData(const std::string &filename) = 0;
+
     virtual void markPixels(std::vector<PixelCoord> coords, Label label) = 0;
     virtual void setRegion(std::vector<PixelCoord> coords, Label label) = 0;
     virtual void setImage(unsigned char* data, int row, int col, int depth) = 0;

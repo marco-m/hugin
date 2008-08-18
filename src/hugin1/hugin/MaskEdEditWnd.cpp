@@ -44,13 +44,16 @@ using HuginBase::ImageCache;
 
 typedef RGBValue<unsigned char> BRGBValue;
 
+const int POLY_DRAW_VWIDTH = 4;
+
 BEGIN_EVENT_TABLE(MaskEdEditWnd, wxScrolledWindow)
-    EVT_LEFT_DOWN(MaskEdEditWnd::OnMouseButtonDown)
+    EVT_LEFT_DOWN(MaskEdEditWnd::OnLeftMouseButtonDown)
     EVT_LEFT_UP(MaskEdEditWnd::OnLeftMouseButtonUp)
-    EVT_RIGHT_DOWN(MaskEdEditWnd::OnMouseButtonDown)
+    //EVT_RIGHT_DOWN(MaskEdEditWnd::OnMouseButtonDown)
     EVT_RIGHT_UP(MaskEdEditWnd::OnRightMouseButtonUp)
     EVT_MOTION(MaskEdEditWnd::OnMotion)
     EVT_PAINT(MaskEdEditWnd::OnPaint)
+    EVT_ERASE_BACKGROUND(MaskEdEditWnd::OnEraseBackground)
 END_EVENT_TABLE()
 
 MaskEdEditWnd::MaskEdEditWnd(wxWindow *parent,
@@ -276,6 +279,11 @@ void MaskEdEditWnd::ForceUpdate()
     Refresh();
 }
 
+void MaskEdEditWnd::OnEraseBackground(wxEraseEvent &event)
+{
+    event.Skip();
+}
+
 void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
 {
     wxPaintDC dc(this);
@@ -309,18 +317,34 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
         //copy(m_poly.pt.begin(), m_poly.pt.end(), pts);
         int i = 0;
-        for(vector<PixelCoord>::iterator it = m_poly.pt.begin(); it != m_poly.pt.end(); it++,i++)
+        for(vector<PixelCoord>::iterator it = m_poly.begin(); it != m_poly.end(); it++,i++)
         {
             pts[i].x = it->x /* m_scale - x*/ + m_pos[m_active].x;
             pts[i].y = it->y /* m_scale - y*/ + m_pos[m_active].y;
+            int offset = POLY_DRAW_VWIDTH/2;
+            if(m_poly.isMouseOver(*it))
+                offset *= 2;
+            dc.DrawRectangle(pts[i].x - offset, pts[i].y - offset,
+                offset * 2, offset * 2);
         }
         dc.DrawPolygon(m_poly.pt.size(), pts);
     }
 }
 
-void MaskEdEditWnd::OnMouseButtonDown(wxMouseEvent &event)
+void MaskEdEditWnd::OnLeftMouseButtonDown(wxMouseEvent &event)
 {
-    m_brushstroke.clear();
+    //m_brushstroke.clear();
+    wxPoint pos = event.GetPosition(); 
+    int x, y;
+    x = GetScrollPos(wxSB_HORIZONTAL);
+    y = GetScrollPos(wxSB_VERTICAL);
+    
+    wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
+    pos.x /= m_scale;
+    pos.y /= m_scale;
+    if(m_edmode == ME_POLY) {
+        m_ptSelected = m_poly.findVertex(PixelCoord(pos.x, pos.y));
+    }
     event.Skip();
 }
 
@@ -336,11 +360,16 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
         m_brushstroke.clear();
     }
     else if(m_edmode == ME_POLY) {
-        int x, y;
-        x = GetScrollPos(wxSB_HORIZONTAL);
-        y = GetScrollPos(wxSB_VERTICAL);
-        wxPoint pos = event.GetPosition()+wxPoint(x,y)-m_pos[m_active];
-        m_poly.add(PixelCoord(pos.x/m_scale, pos.y/m_scale));
+        if(m_ptSelected == -1) {
+            int x, y;
+            x = GetScrollPos(wxSB_HORIZONTAL);
+            y = GetScrollPos(wxSB_VERTICAL);
+            wxPoint pos = event.GetPosition()+wxPoint(x,y)-m_pos[m_active];
+            //m_poly.add(PixelCoord(pos.x/m_scale, pos.y/m_scale));
+            m_MaskEdCmdHist.addCommand(new PolyVertexAddCmd(&m_poly, pos.x/m_scale, pos.y/m_scale));
+        } else {
+            m_ptSelected = -1;
+        }
     }
     event.Skip();
     Refresh();
@@ -349,15 +378,13 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
 void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
 {
     if(m_bimgs.empty()) return;
-    if(m_edmode == ME_BSTROKE)
-    {
+    if(m_edmode == ME_BSTROKE) {
         m_brushstroke.label = ISegmentation::BKGND;
         m_MaskEdCmdHist.addCommand(new BrushStrokeCmd(MaskMgr::getInstance(), m_brushstroke, m_active));
         //reloadImages();
         updateMask(m_active);
         m_brushstroke.clear();
-    }
-    else if(m_edmode == ME_POLY) {
+    } else if(m_edmode == ME_POLY) {
         //end of creating polygon
         m_poly.label = ISegmentation::FGND;
         m_MaskEdCmdHist.addCommand(new PolygonCmd(MaskMgr::getInstance(), m_poly, m_active));
@@ -368,38 +395,56 @@ void MaskEdEditWnd::OnRightMouseButtonUp(wxMouseEvent &event)
     event.Skip();
     Refresh();
 }
+
 void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
 {
+    if(m_bimgs.empty()) return;
     wxPoint pos = event.GetPosition(); 
-    ((wxFrame*)(GetParent()->GetParent()))->GetStatusBar()->SetStatusText(wxString::Format(_T("(%d,%d)"),pos.x, pos.y));
-    if(event.Dragging() && !event.MiddleIsDown() && m_bimgs.size() > 0 && m_edmode == ME_BSTROKE)
+    int x, y;
+    x = GetScrollPos(wxSB_HORIZONTAL);
+    y = GetScrollPos(wxSB_VERTICAL);
+    
+    wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
+    newPt.x /= m_scale;
+    newPt.y /= m_scale;
+
+    ((wxFrame*)(GetParent()->GetParent()))->GetStatusBar()->SetStatusText(wxString::Format(_T("(%d,%d) (%d, %d)"),pos.x, pos.y, newPt.x, newPt.y));
+    
+    if(event.Dragging() && !event.MiddleIsDown() && m_bimgs.size() > 0)
     {
-        int x, y;
-        x = GetScrollPos(wxSB_HORIZONTAL);
-        y = GetScrollPos(wxSB_VERTICAL);
-        
-        wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
-        newPt.x /= m_scale;
-        newPt.y /= m_scale;
-        if(m_brushstroke.pt.size() > 0)
-        {
-            wxClientDC dc(this);
+        if(m_edmode == ME_BSTROKE) {
+            if(m_brushstroke.pt.size() > 0) {
+                wxClientDC dc(this);
+                DoPrepareDC(dc);
+                dc.SetUserScale(m_scale, m_scale);
+                wxPen oldpen = dc.GetPen();
+                wxPen *pen;
+
+                if(event.LeftIsDown())
+                    pen = new wxPen(*wxRED, 1);
+                else 
+                    pen = new wxPen(*wxBLUE, 1);
+                dc.SetPen(*pen);
+                wxPoint lastPt(m_brushstroke.pt.back().x, m_brushstroke.pt.back().y);
+                //dc.DrawLine(lastPt - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
+                dc.DrawLine(lastPt, newPt);
+                dc.SetPen(oldpen);
+            }
+            m_brushstroke.pt.push_back(PixelCoord(newPt.x, newPt.y));
+        } else if(event.LeftIsDown() && m_ptSelected != -1) {
+            m_poly.pt[m_ptSelected] = PixelCoord(newPt.x, newPt.y);
+            Refresh();
+        }
+    } else {
+        int index = m_poly.findVertex(PixelCoord(newPt.x, newPt.y));
+        if(index != -1) {
+            Refresh(); //TODO: do blitting rather than refreshing
+            /*wxClientDC dc(this);
             DoPrepareDC(dc);
             dc.SetUserScale(m_scale, m_scale);
-            wxPen oldpen = dc.GetPen();
-            wxPen *pen;
-
-            if(event.LeftIsDown())
-                pen = new wxPen(*wxRED, 1);
-            else 
-                pen = new wxPen(*wxBLUE, 1);
-            dc.SetPen(*pen);
-            wxPoint lastPt(m_brushstroke.pt.back().x, m_brushstroke.pt.back().y);
-            //dc.DrawLine(lastPt - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
-            dc.DrawLine(lastPt, newPt);
-            dc.SetPen(oldpen);
+            dc.DrawRectangle(m_poly.pt[index].x - POLY_DRAW_VWIDTH, m_poly.pt[index].y - POLY_DRAW_VWIDTH, 
+                POLY_DRAW_VWIDTH * 2, POLY_DRAW_VWIDTH * 2);*/
         }
-        m_brushstroke.pt.push_back(PixelCoord(newPt.x, newPt.y));
     }
 }
 

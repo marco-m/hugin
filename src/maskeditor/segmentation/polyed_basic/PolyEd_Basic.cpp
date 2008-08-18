@@ -67,19 +67,25 @@ IMaskEdMemento* PolyEd_Basic::createMemento()
     return new PolyEdBasicMemento(m_mask, m_width, m_height);
 }
 
+void PolyEd_Basic::saveMaskMetaData(const string &filename)
+{
+    
+}
+
 void PolyEd_Basic::init(vigra::BImage *mask)
 {
     if(m_width > 0 && m_height > 0)
     {
         if(!mask) {
             m_mask = new wxBitmap(m_width, m_height, 1);
-            wxMemoryDC dc(*m_mask);
-            dc.SetBackground(*wxWHITE_BRUSH);
-            dc.Clear();
         } else {
             assert(mask->width() == m_width && mask->height() == m_height);
             m_mask = new wxBitmap((const char*)mask->data(), mask->width(), mask->height());
+            //FIX:the mask that is passed is not a true alpha mask
         }
+        wxMemoryDC dc(*m_mask);
+        dc.SetBackground(*wxWHITE_BRUSH);
+        dc.Clear();
     }
 }
 

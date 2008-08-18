@@ -20,4 +20,27 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+//#include "ISegmentation.h"
+#include "Pixel.h"
+#include <algorithm>
+#include <vector>
 #include "LazySnappingMemento.h"
+
+using namespace std;
+
+LazySnappingMemento::LazySnappingMemento(wxBitmap *mask, int width, int height, int prev_nseeds, 
+                                         int fgnd_nseeds, int bkgnd_nseeds,  
+                                         int fgnd_cluster_size, int bkgnd_cluster_size)
+: m_mask(mask), m_width(width), m_height(height), m_nseeds(prev_nseeds),
+m_fgnd_nseeds(fgnd_nseeds), m_bkgnd_nseeds(m_bkgnd_nseeds),
+m_fgnd_cluster_size(fgnd_cluster_size), m_bkgnd_cluster_size(bkgnd_cluster_size)
+{}
+
+LazySnappingMemento::~LazySnappingMemento() {}
+
+void LazySnappingMemento::setSeeds(const vector<PixelCoord> &seeds, int label)
+{   
+    m_label = label;
+    //copy the newly added seeds
+    copy(seeds.begin(), seeds.end(), back_insert_iterator<vector<PixelCoord> >(m_seeds));
+}

@@ -67,9 +67,17 @@ MaskEdPreviewWnd* MaskEdClientWnd::getMaskEdPreviewWnd()
     return m_MaskEdPreviewWnd;
 }
 
+void MaskEdClientWnd::newProject(const wxString &filename)
+{
+    MaskMgr::getInstance()->init();
+    m_MaskEdEditWnd->init();
+    m_MaskEdPreviewWnd->init();
+    m_MaskEdEditWnd->Refresh();
+    m_MaskEdPreviewWnd->Refresh();
+}
+
 void MaskEdClientWnd::loadProject(const wxString &filename)
 {
-    
     MaskMgr::getInstance()->loadMaskProject(string(filename.mb_str()));
     m_MaskEdEditWnd->loadImage(MaskMgr::getInstance()->getImages());
     m_MaskEdPreviewWnd->loadImage(MaskMgr::getInstance()->getImages());
@@ -77,6 +85,7 @@ void MaskEdClientWnd::loadProject(const wxString &filename)
 
 void MaskEdClientWnd::loadImage(const wxArrayString &filesv)
 {
+    newProject();
     vector<string> strfilesv;
     transform(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(strfilesv), wxStringTostring);
     MaskMgr::getInstance()->loadImage(strfilesv);

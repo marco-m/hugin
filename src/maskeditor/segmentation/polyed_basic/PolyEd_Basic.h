@@ -47,6 +47,8 @@ public:
     void setMemento(IMaskEdMemento *memento);
     IMaskEdMemento* createMemento();
 
+    void saveMaskMetaData(const std::string &filename);
+
     void markPixels(std::vector<PixelCoord> coords, Label label);
     void setRegion(std::vector<PixelCoord> coords, Label label);
     void setImage(unsigned char* data, int row, int col, int depth);

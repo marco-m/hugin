@@ -23,12 +23,28 @@
 #ifndef LAZYSNAPPINGMEMENTO_H
 #define LAZYSNAPPINGMEMENTO_H
 #include "IMaskEdMemento.h"
+//#include "Pixel.h"
+#include <vector>
+//#include "LazySnapping.h"
+
+class wxBitmap;
 
 class LazySnappingMemento : public IMaskEdMemento
 {
+    wxBitmap *m_mask;
+    int m_width, m_height, m_depth;
+    std::vector<PixelCoord> m_seeds;
+    int m_nseeds;        //previous number of seeds of type label
+    int m_fgnd_nseeds, m_bkgnd_nseeds;
+    int m_fgnd_cluster_size, m_bkgnd_cluster_size;
+    int m_label;
+
+    friend class LazySnapping;
 public:
-    LazySnappingMemento() {}
+    LazySnappingMemento(wxBitmap *mask, int width, int height, int prev_nseeds, int m_fgnd_nseeds, int m_bkgnd_nseeds, int fgnd_cluster_size, int bkgnd_cluster_size);
     ~LazySnappingMemento();
+
+    void setSeeds(const std::vector<PixelCoord> &seeds, int label);
 };
 
 #endif
