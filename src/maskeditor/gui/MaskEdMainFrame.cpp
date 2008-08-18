@@ -171,11 +171,12 @@ void MaskEdMainFrame::OnSaveImage(wxCommandEvent &event)
 void MaskEdMainFrame::OnSaveMask(wxCommandEvent &event)
 {
     //wxString filter = wxT("JPEG files (*.jpg;*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|tiff files (*.tif)|*.tif|All files (*.*)|*.*");
-    wxFileDialog dialog(this, wxT("Save Mask"), wxEmptyString,
+    wxFileDialog dialog(this, wxT("Save Mask: Enter prefix"), wxEmptyString,
         wxEmptyString, wxEmptyString, wxSAVE);
     if(dialog.ShowModal() == wxID_OK)
     {
-        m_MaskEdClientWnd->saveMask(0, dialog.GetPath());
+        //m_MaskEdClientWnd->saveMask(0, dialog.GetPath());
+        MaskMgr::getInstance()->saveMask(string(dialog.GetPath().mb_str()));
     }
 
 }
