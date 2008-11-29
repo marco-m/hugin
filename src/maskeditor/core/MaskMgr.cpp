@@ -29,9 +29,11 @@
 #include "MaskMgr.h"
 #include "MaskFileMgr.h"
 #include <wx/wx.h>
+#include "hugin_utils/utils.h"
 
 using namespace std;
 using namespace vigra;
+using namespace hugin_utils;
 using HuginBase::ImageCache;
 
 MaskMgr* MaskMgr::m_instance = 0;
@@ -172,6 +174,11 @@ void MaskMgr::loadMaskProject(const string &filename)
     loadImage(MaskFileMgr::getInstance()->getImgFiles());
 }
 
+void MaskMgr::saveMaskProject(const string &filename)
+{
+    MaskFileMgr::getInstance()->saveFile(filename, m_imgfiles);
+}
+
 void MaskMgr::reload()
 {
     if(m_loadtype == LOADFILE) {
@@ -206,10 +213,15 @@ void MaskMgr::saveMask(const std::string &prefix, const std::string &fileExt)
 {
     int i = 0;
     wxBitmap *mask = 0;
+    string pathprefix = prefix;//, filename;
     for(std::vector<ISegmentation*>::iterator it = m_segmentation.begin(); it != m_segmentation.end(); it++, i++)
     {
         stringstream ss;
-        ss << prefix << "_" << i << "." << fileExt;
+        //pathprefix = getPathPrefix(m_imgfiles[i]);
+        //filename = stripExtension(stripPath(m_imgfiles[i]));
+        pathprefix = stripExtension(m_imgfiles[i]);
+        //ss << prefix << "_" << i << "." << fileExt;
+        ss << pathprefix << "_mask." << fileExt;
         vigra::ImageExportInfo exi( ss.str().c_str() ); 
 
         mask = (*it)->getMaskBitmap();

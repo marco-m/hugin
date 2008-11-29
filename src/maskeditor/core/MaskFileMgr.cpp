@@ -86,6 +86,23 @@ void MaskFileMgr::loadFile(std::string filename)
     }
 }
 
+void MaskFileMgr::saveFile(const std::string &filename, const std::vector<std::string> &imgfiles)
+{
+    if(filename.empty())
+        throw;
+    try {
+        ofstream fout(filename.c_str());
+        fout << "# remapped images" << endl;
+        for(vector<string>::const_iterator it = imgfiles.begin(); it != imgfiles.end(); it++) 
+        {
+            string imgfile = hugin_utils::stripPath(*it);
+            fout << "ri " << imgfile << endl;
+        }
+    }catch(exception &e) {
+        throw e;
+    }
+}
+
 vector<string> MaskFileMgr::getImgFiles()
 {
     return m_imgfiles;

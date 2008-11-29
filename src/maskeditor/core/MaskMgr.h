@@ -33,11 +33,11 @@ class MaskMgr /*: public Singleton<MaskMgr>*/
 {
     std::vector<std::string>    m_imgfiles;
     std::vector<ISegmentation*> m_segmentation; //each image will have its own instance
-    std::vector<std::string> m_segmentation_options; //this should be done dynamically
+    std::vector<std::string> m_segmentation_options; //this should be set dynamically
     typedef std::vector<std::pair<vigra::BRGBImage*, vigra::BImage*> > tImgAlphaPair;
     tImgAlphaPair m_imgs_alpha;
     
-    enum tLoadType { LOADFILE, LOADMEM };
+    enum tLoadType { LOADFILE, LOADMEM }; //an image can be loaded from file or from cache
     tLoadType                m_loadtype;
     int                      m_segmentation_index;
     static MaskMgr          *m_instance;
@@ -65,6 +65,9 @@ public:
     void loadImage(const std::vector<std::string> &filesv);
     void loadImage(const std::string &filename);
     void loadMaskProject(const std::string &filename);
+    
+    void saveMaskProject(const std::string &filename);
+
     void reload();  //reloads all images
 
     std::vector<std::string> getImages();

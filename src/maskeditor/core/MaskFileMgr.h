@@ -45,7 +45,7 @@ public:
     static MaskFileMgr* getInstance();
 
     void loadFile(std::string filename);
-
+    void saveFile(const std::string &filename, const std::vector<std::string>& imgfiles);
     std::string getPTOFile();
     std::vector<std::string> getImgFiles();
     int getImgFileCount();

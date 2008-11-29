@@ -25,8 +25,10 @@
 #include "PolyEd_Basic.h"
 #include "PolyEdBasicMemento.h"
 #include <wx/wx.h>
+#include "vigra/transformimage.hxx"
 
 using namespace std;
+using namespace vigra;
 using HuginBase::ImageCache;
 
 struct PixelCoordToWxPoint
@@ -72,20 +74,29 @@ void PolyEd_Basic::saveMaskMetaData(const string &filename)
     
 }
 
+struct BinaryMask
+{
+    vigra::BImage::value_type operator()(const vigra::BImage::value_type &p) const
+    {
+        return p > 0 ? 255 : 0; //((p.red() + p.green() + p.blue())/3) > 0 ? 255 : 0;
+    }
+};
+
 void PolyEd_Basic::init(vigra::BImage *mask)
 {
     if(m_width > 0 && m_height > 0)
     {
         if(!mask) {
             m_mask = new wxBitmap(m_width, m_height, 1);
+            wxMemoryDC dc(*m_mask);
+            dc.SetBackground(*wxWHITE_BRUSH);
+            dc.Clear();
         } else {
             assert(mask->width() == m_width && mask->height() == m_height);
-            m_mask = new wxBitmap((const char*)mask->data(), mask->width(), mask->height());
-            //FIX:the mask that is passed is not a true alpha mask
+            vigra::BImage binmask(mask->width(), mask->height());
+            vigra::transformImage(srcImageRange(*mask), destImage(binmask), BinaryMask());
+            m_mask = new wxBitmap((const char*)binmask.data(), binmask.width(), binmask.height());
         }
-        wxMemoryDC dc(*m_mask);
-        dc.SetBackground(*wxWHITE_BRUSH);
-        dc.Clear();
     }
 }
 

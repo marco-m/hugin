@@ -31,6 +31,7 @@
 
 #define INF     1000000
 using namespace std;
+using namespace vigra;
 using HuginBase::ImageCache;
 
 #define SAFE_DELETE(x) { if(x) delete x; x = 0; }
@@ -122,24 +123,35 @@ void LazySnapping::saveMaskMetaData(const string &filename)
     
     fout.close();
 }
-
+struct BinaryMask
+{
+    vigra::BImage::value_type operator()(const vigra::BImage::value_type &p) const
+    {
+        return p > 0 ? 255 : 0; //((p.red() + p.green() + p.blue())/3) > 0 ? 255 : 0;
+    }
+};
 void LazySnapping::init(vigra::BImage *mask)
 {
     if(m_width > 0 && m_height > 0)
     {
-        if(!mask)
+        if(!mask) {
             m_mask = new wxBitmap(m_width, m_height, 1);
-        else {
+            wxMemoryDC dc(*m_mask);
+            dc.SetBackground(*wxWHITE_BRUSH);
+            dc.Clear();
+        } else {
             assert(mask->width() == m_width && mask->height() == m_height);
-            m_mask = new wxBitmap((const char*)mask->data(), mask->width(), mask->height());
+            vigra::BImage binmask(mask->width(), mask->height());
+            vigra::transformImage(srcImageRange(*mask), destImage(binmask), BinaryMask());
+            m_mask = new wxBitmap((const char*)binmask.data(), binmask.width(), binmask.height());
         }
         /*SAFE_DELETE(m_tmp_bmp);
         m_tmp_bmp = new wxBitmap(m_width, m_height, 1);*/
         preprocess();
         buildGraph();
-        wxMemoryDC dc(*m_mask);
+        /*wxMemoryDC dc(*m_mask);
         dc.SetBackground(*wxWHITE_BRUSH);
-        dc.Clear();
+        dc.Clear();*/
     }
 }
 
