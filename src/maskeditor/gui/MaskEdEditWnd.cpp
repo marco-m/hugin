@@ -41,7 +41,7 @@ BEGIN_EVENT_TABLE(MaskEdEditWnd, wxScrolledWindow)
     EVT_RIGHT_UP(MaskEdEditWnd::OnRightMouseButtonUp)
     EVT_MOTION(MaskEdEditWnd::OnMotion)
     EVT_PAINT(MaskEdEditWnd::OnPaint)
-    EVT_ERASE_BACKGROUND(MaskEdEditWnd::OnEraseBackground)
+    //EVT_ERASE_BACKGROUND(MaskEdEditWnd::OnEraseBackground)
     EVT_SIZE(MaskEdEditWnd::OnSize)
 END_EVENT_TABLE()
 
@@ -84,6 +84,9 @@ void MaskEdEditWnd::init()
     SetScrollbars( 1, 1, m_max_width, m_max_height);
 }
 
+///
+/// All the images are rendered onto the display bitmap
+///
 void MaskEdEditWnd::createDisplayBitmap()
 {
     if(m_display_bmp) 
@@ -91,10 +94,10 @@ void MaskEdEditWnd::createDisplayBitmap()
     m_display_bmp = 0;
    
     wxSize sz = GetClientSize();
-    int width = std::max(sz.GetWidth(), m_max_width);
-    int height = std::max(sz.GetHeight(), m_max_height);
+    int width = m_max_width;//std::max(sz.GetWidth(), m_max_width);
+    int height = m_max_height;//std::max(sz.GetHeight(), m_max_height);
     if(width > 0 && height > 0)
-        m_display_bmp = new wxBitmap(2 * width, 2 * height);
+        m_display_bmp = new wxBitmap(width, height);
 }
 
 
@@ -103,11 +106,26 @@ void MaskEdEditWnd::setEditMode(MaskEdEditMode_t edmode)
     m_edmode = edmode;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////
+/// Image Loading
+/// --------------
+/// \brief Loading images is basically storing the image filenames which is used for 
+/// retrieving the desired image from the ImageCache. If the image was not loaded before
+/// then the ImageCache will load it from the filesystem otherwise it will just retrieve
+/// it from memory.
+/////////////////////////////////////////////////////////////////////////////////////////
+
 //void MaskEdEditWnd::loadImage(const wxString &filename)
 //{
 //    loadImage(string(filename.mb_str()));
 //}
 
+/////////////////////////////////////////////////////////////////////////////////////////
+/// loadImage
+/// ---------
+/// Retrieves an image from the image cache using the filename, extracts the starting
+/// position and stores it as wxImage (without mask) and wxBitmap (with mask).
+/////////////////////////////////////////////////////////////////////////////////////////
 void MaskEdEditWnd::loadImage(const string &filename)
 {
     if(filename == "")
@@ -148,7 +166,7 @@ void MaskEdEditWnd::loadImage(const string &filename)
 void MaskEdEditWnd::loadImage(const vector<string> &filesv)
 {
     init();
-    //remove_copy_if(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles), );
+  
     copy(filesv.begin(), filesv.end(), back_insert_iterator<vector<string> >(m_imgfiles));
     //creates local cache of images
     for(vector<string>::const_iterator it = filesv.begin(); it != filesv.end(); it++)
@@ -196,13 +214,30 @@ void MaskEdEditWnd::findOverlappingRect(int i, int j, wxRect &rect)
     rect.SetBottomRight(br);
 }
 
+void MaskEdEditWnd::Draw(wxDC &dc)
+{
+    //dc.SetUserScale(m_scale, m_scale);
+    if(m_display_bmp) {
+        //center the bitmap
+        wxSize sz = GetClientSize();
+        int x, y;
+        x = (sz.GetWidth() - m_display_bmp_scaled->GetWidth())/2;
+        y = (sz.GetHeight() - m_display_bmp_scaled->GetHeight())/2;
+        x = x > 0 ? x : 0;
+        y = y > 0 ? y : 0;
+        m_origin_x = x;
+        m_origin_y = y;
+        // draw the bitmap
+        dc.DrawBitmap(*m_display_bmp_scaled, m_origin_x, m_origin_y);
+    }
+}
 void MaskEdEditWnd::OnEraseBackground(wxEraseEvent &event)
 {
     if(m_display_bmp) {
         wxClientDC dc(this);
         DoPrepareDC(dc);
-        dc.SetUserScale(m_scale, m_scale);
-        dc.DrawBitmap(*m_display_bmp,0, 0);
+        //dc.SetUserScale(m_scale, m_scale);
+        Draw(dc);
     } else
         event.Skip();
 }
@@ -216,11 +251,23 @@ void MaskEdEditWnd::updateDisplayBitmap(bool clear)
     wxMemoryDC dc(*m_display_bmp);
     int i = m_bimgs.size() - 1;
     int lastDrawn = -1;
-    if(clear) {
-        dc.SetBackground(*wxWHITE_BRUSH);
-        dc.Clear();
+    
+    //draw checker board pattern on the bitmap
+    dc.SetPen(*wxTRANSPARENT_PEN);
+    
+    int stepSize = 8;
+    for(int i = 0; i < m_display_bmp->GetWidth(); i+=stepSize) {
+        for(int j = 0; j < m_display_bmp->GetHeight(); j+=stepSize) {
+            if((i/stepSize+j/stepSize)&1)
+                 dc.SetBrush(*wxGREY_BRUSH);
+            else
+                dc.SetBrush(*wxLIGHT_GREY_BRUSH);
+            dc.DrawRectangle(i, j, stepSize, stepSize);
+        }
     }
-    //dc.SetUserScale(m_scale, m_scale);
+    // draw the bitmaps
+    dc.SetPen(wxNullPen);
+    dc.SetBrush(wxNullBrush);
     for(vector<wxBitmap*>::reverse_iterator it = m_bimgs.rbegin(); it != m_bimgs.rend(); it++, i--)
     {
         if(!m_selected[i]) continue;
@@ -238,17 +285,24 @@ void MaskEdEditWnd::updateDisplayBitmap(bool clear)
         }
         lastDrawn = i;
     }
+    wxImage img = m_display_bmp->ConvertToImage();
+    m_display_bmp_scaled = new wxBitmap(img.Scale(img.GetWidth() * m_scale, img.GetHeight() * m_scale));
 }
 
 void MaskEdEditWnd::OnSize(wxSizeEvent &event)
 {
     wxSize sz = event.GetSize();
     if(m_display_bmp) {
-        if(m_display_bmp->GetWidth() < sz.GetWidth() 
+        /*if(m_display_bmp->GetWidth() < sz.GetWidth() 
             || m_display_bmp->GetHeight() < sz.GetHeight()) {
             createDisplayBitmap();
             updateDisplayBitmap();
-        }
+        }*/
+        //wxClientDC dc(this);
+        //DoPrepareDC(dc);
+        ////dc.SetUserScale(m_scale, m_scale);
+        //Draw(dc);
+        Refresh();
     }
 }
 
@@ -256,9 +310,12 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
 {
     wxPaintDC dc(this);
     DoPrepareDC(dc);
-    dc.SetUserScale(m_scale, m_scale);
-    if(m_display_bmp)
-        dc.DrawBitmap(*m_display_bmp, 0, 0);
+    //dc.SetUserScale(m_scale, m_scale);
+    
+    // for fast display, draw onto m_display_bmp and then draw m_display_bmp
+    if(m_display_bmp) { 
+        Draw(dc);
+    }
     //int x,y;
     //x = 0;//GetScrollPos(wxSB_HORIZONTAL);
     //y = 0;//GetScrollPos(wxSB_VERTICAL);
@@ -303,14 +360,14 @@ void MaskEdEditWnd::OnPaint(wxPaintEvent &event)
         wxPoint *pts = new wxPoint[m_poly.size()];
         dc.SetPen(*wxRED);
         dc.SetBrush(*wxTRANSPARENT_BRUSH);
-        //copy(m_poly.pt.begin(), m_poly.pt.end(), pts);
+        
         int i = 0;
         for(vector<PixelCoord>::iterator it = m_poly.begin(); it != m_poly.end(); it++,i++)
         {
-            pts[i].x = it->x /* m_scale - x*/ + m_pos[m_active].x;
-            pts[i].y = it->y /* m_scale - y*/ + m_pos[m_active].y;
-            int offset = POLY_DRAW_VWIDTH/2;
-            if(m_poly.isMouseOver(*it))
+            pts[i].x = it->x * m_scale + m_pos[m_active].x + m_origin_x;
+            pts[i].y = it->y * m_scale + m_pos[m_active].y + m_origin_y;
+            int offset = POLY_DRAW_VWIDTH/2; //width of the rectangle denoting the point
+            if(m_poly.isMouseOver(*it)) //enlarge the rectangle denoting point for easier selection
                 offset *= 2;
             dc.DrawRectangle(pts[i].x - offset, pts[i].y - offset,
                 offset * 2, offset * 2);
@@ -374,7 +431,7 @@ void MaskEdEditWnd::OnLeftMouseButtonUp(wxMouseEvent &event)
             int x, y;
             x = GetScrollPos(wxSB_HORIZONTAL);
             y = GetScrollPos(wxSB_VERTICAL);
-            wxPoint pos = event.GetPosition()+wxPoint(x,y)-m_pos[m_active];
+            wxPoint pos = event.GetPosition()+wxPoint(x,y)-m_pos[m_active]-wxPoint(m_origin_x, m_origin_y);
             //m_poly.add(PixelCoord(pos.x/m_scale, pos.y/m_scale));
             m_MaskEdCmdHist.addCommand(new PolyVertexAddCmd(&m_poly, pos.x/m_scale, pos.y/m_scale));
         } else {
@@ -419,7 +476,7 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
     x = GetScrollPos(wxSB_HORIZONTAL);
     y = GetScrollPos(wxSB_VERTICAL);
     
-    wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active];
+    wxPoint newPt = event.GetPosition() + wxPoint(x, y) - m_pos[m_active] - wxPoint(m_origin_x, m_origin_y);
     newPt.x /= m_scale;
     newPt.y /= m_scale;
 
@@ -430,8 +487,8 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
         if(m_edmode == ME_BSTROKE) {
             if(m_brushstroke.pt.size() > 0) {
                 wxClientDC dc(this);
-                DoPrepareDC(dc);
-                dc.SetUserScale(m_scale, m_scale);
+                //DoPrepareDC(dc);
+                //dc.SetUserScale(m_scale, m_scale);
                 wxPen oldpen = dc.GetPen();
                 wxPen *pen;
 
@@ -441,8 +498,8 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
                     pen = new wxPen(*wxBLUE, 1);
                 dc.SetPen(*pen);
                 wxPoint lastPt(m_brushstroke.pt.back().x, m_brushstroke.pt.back().y);
-                //dc.DrawLine(lastPt - wxPoint(x, y) + m_pos[m_active], event.GetPosition());
-                dc.DrawLine(lastPt, newPt);
+                dc.DrawLine(wxPoint(lastPt.x * m_scale, lastPt.y * m_scale) - wxPoint(x, y) + m_pos[m_active] + wxPoint(m_origin_x, m_origin_y), 
+                    event.GetPosition());
                 dc.SetPen(oldpen);
             }
             m_brushstroke.pt.push_back(PixelCoord(newPt.x, newPt.y));
@@ -463,17 +520,12 @@ void MaskEdEditWnd::OnMotion(wxMouseEvent &event)
     }
 }
 
-//void MaskEdEditWnd::reloadImages()
-//{
-//    m_bimgs.clear();
-//    for(vector<string>::iterator it = m_imgfiles.begin(); it != m_imgfiles.end(); it++)
-//        loadImage(*it);
-//}   
-
 void MaskEdEditWnd::zoom(float scale, wxRect region)
 {
     m_scale = scale;
-    //reloadImages();
+    
+    wxImage tmpImg = m_display_bmp->ConvertToImage();
+    m_display_bmp_scaled = new wxBitmap(tmpImg.Scale(m_display_bmp->GetWidth() * m_scale, m_display_bmp->GetHeight()*m_scale, wxIMAGE_QUALITY_HIGH));
     SetScrollbars( 1, 1, m_max_width*m_scale, m_max_height*m_scale);
     Refresh();
 }
@@ -517,7 +569,6 @@ void MaskEdEditWnd::undo()
     updateMask(m_active);
     updateDisplayBitmap(true);
     Refresh();
-    //reloadImages();
 }
 
 void MaskEdEditWnd::redo()
@@ -526,7 +577,6 @@ void MaskEdEditWnd::redo()
     updateMask(m_active);
     updateDisplayBitmap(true);
     Refresh();
-    //reloadImages();
 }
 
 void MaskEdEditWnd::updateMask(int nimgId)
@@ -536,6 +586,18 @@ void MaskEdEditWnd::updateMask(int nimgId)
     img.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
     delete m_bimgs[nimgId];
     m_bimgs[nimgId] = new wxBitmap(img);
+    // draw mask contour
+    vector<vector<wxPoint> > contours = MaskMgr::getInstance()->getSegmentation(m_imgfiles[nimgId])->getMaskContours();
+    if(contours.size() > 0) {
+        wxMemoryDC dc(*m_bimgs[nimgId]);
+        dc.SetPen(*wxRED_PEN);
+        for(vector<vector<wxPoint> >::iterator i = contours.begin(); i != contours.end(); i++) {
+            for(vector<wxPoint>::iterator j =  i->begin(); j != i->end(); j++) {
+                dc.DrawPoint(*j);
+            }
+        }
+        dc.SetPen(wxNullPen);
+    }
     updateDisplayBitmap(true);
 }
 

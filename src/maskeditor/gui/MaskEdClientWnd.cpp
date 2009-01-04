@@ -44,7 +44,7 @@ MaskEdClientWnd::MaskEdClientWnd(wxWindow *parent, wxWindowID id,
     m_MaskEdEditWnd = new MaskEdEditWnd(this, wxID_ANY, wxDefaultPosition, wxSize(size.GetWidth(), size.GetHeight()*0.75));
     m_MaskEdPreviewWnd = new MaskEdPreviewWnd(this, wxID_ANY, wxDefaultPosition, wxSize(size.GetWidth(), size.GetHeight()*0.25));
     
-    SetMinimumPaneSize(20);
+    SetMinimumPaneSize(size.GetHeight() * 0.25);
     //SetSashPosition(size.GetHeight() * 0.75);
     m_MaskEdEditWnd->Show();
     m_MaskEdPreviewWnd->Show();

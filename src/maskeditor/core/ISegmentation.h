@@ -61,7 +61,7 @@ public:
     virtual void setImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *mask = 0) = 0;
     virtual wxMask* getMask() const = 0;
     virtual wxBitmap* getMaskBitmap() const = 0;
-    virtual std::vector<wxPoint> getOutline() const = 0;
+    virtual std::vector<std::vector<wxPoint> > getMaskContours() const = 0;
 };
 
 #endif

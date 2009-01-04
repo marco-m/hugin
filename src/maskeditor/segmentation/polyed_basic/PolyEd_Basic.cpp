@@ -173,9 +173,9 @@ wxBitmap* PolyEd_Basic::getMaskBitmap() const
     return m_mask;
 }
 
-vector<wxPoint> PolyEd_Basic::getOutline() const
+vector<vector<wxPoint> > PolyEd_Basic::getMaskContours() const
 {
-    vector<wxPoint> outline;
+    vector<vector<wxPoint> > outline;
     return outline;
 }
 

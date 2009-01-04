@@ -33,7 +33,7 @@
 
 const double SIGMA = 2.0f;
 const double LAMBDA = 50.0f;
-const int    NCLUSTERS = 64;
+const int    NCLUSTERS = 16;
 const int    CLUSTERCOORDDIM = 5; // 3:RGB, 5:RGB + (r,c)
 
 class LazySnappingMemento;
@@ -48,11 +48,11 @@ class LazySnapping : public ISegmentation
     //wxBitmap *m_tmp_bmp;         //used for drawing lines and getting all pixel from it
     //HuginBase::ImageCache::ImageCacheRGB8Ptr m_img;
     unsigned char *m_data;
-    std::vector<wxPoint> m_outline;
+    //std::vector<wxPoint> m_outline;
     int m_width, m_height, m_depth;
     Graph::node_id *m_nodes;
     Graph          *m_graph;
-    int             m_cnodes;       //number of nodes it can be no. of pixels or nodes after preprocessing
+    int             m_cnodes;       //number of nodes. It can be no. of pixels or nodes after preprocessing
     double          m_lambda, m_sigma;
     captype         m_K;
 
@@ -150,6 +150,9 @@ class LazySnapping : public ISegmentation
     PixelColor getPixelValue(int p) const;
     PixelColor getPixelValue(int r, int c) const;
     PixelColor getPixelValue(PixelCoord pt) const;
+
+    void traceContour(int x, int y, unsigned char *mask, int contour_val, std::vector<wxPoint> &contour) const;
+    void floodFill(int x, int y, unsigned char *mask, int val, int fill_val) const;
 public:
     LazySnapping();    
     LazySnapping(const std::string &filename);
@@ -174,6 +177,6 @@ public:
     wxMask* getMask() const;
     wxBitmap* getMaskBitmap() const;
     wxBitmap* getImage() const;                 //get working image
-    std::vector<wxPoint> getOutline() const;
+    std::vector<std::vector<wxPoint> > getMaskContours() const;
 };
 #endif

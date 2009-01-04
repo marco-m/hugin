@@ -56,7 +56,7 @@ public:
     void setImage(const std::string &imgId, const vigra::BRGBImage* img, vigra::BImage *mask = 0);
     wxMask* getMask() const;
     wxBitmap* getMaskBitmap() const;
-    std::vector<wxPoint> getOutline() const;
+    std::vector<std::vector<wxPoint> > getMaskContours() const;
 };
 
 #endif

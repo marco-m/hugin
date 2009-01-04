@@ -35,7 +35,10 @@ enum MaskEdEditMode_t { ME_BSTROKE = 1, ME_POLY };
 
 class MaskEdEditWnd : public wxScrolledWindow
 {
-    wxBitmap                *m_display_bmp;
+    wxBitmap                *m_display_bmp;      // used as back-buffer
+    wxBitmap                *m_display_bmp_scaled; //scaled version that is actually displayed
+    int                      m_origin_x;         // x origin of the scaled bitmap
+    int                      m_origin_y;         // y origin of the scaled bitmap
     std::vector<wxImage*>    m_wximgs;
     std::vector<wxBitmap*>   m_bimgs;            //local cache
     std::vector<std::string> m_imgfiles;
@@ -72,6 +75,8 @@ public:
     void loadImage(const std::string &filename);
     void loadImage(const std::vector<std::string> &filesv);
     //void reloadImages();
+
+    void Draw(wxDC &dc);
 
     void updateMask(int imdId);
     void updateMask(std::string &imgId);

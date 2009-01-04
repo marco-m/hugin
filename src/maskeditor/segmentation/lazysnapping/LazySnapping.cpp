@@ -162,7 +162,7 @@ void LazySnapping::reset()
     m_height = 0;
     m_depth = 0;
     m_cnodes = 0;
-    m_outline.clear();
+//    m_outline.clear();
     SAFE_DELETE_ARRAY(m_nodes);
     SAFE_DELETE(m_graph);
     SAFE_DELETE_ARRAY(m_data);
@@ -590,9 +590,86 @@ wxBitmap* LazySnapping::getMaskBitmap() const
     return m_mask;
 }
 
-vector<wxPoint> LazySnapping::getOutline() const
+void LazySnapping::floodFill(int x, int y, unsigned char *mask, int val, int fill_val) const
 {
-    return m_outline;
+    //if not valid
+    if(y < 0 || y >= m_height || x < 0 || x >= m_width || mask[y * m_width + x] != val)
+        return;
+    mask[y * m_width + x] = fill_val;
+    floodFill(x - 1, y, mask, val, fill_val);
+    floodFill(x, y + 1, mask, val, fill_val);
+    floodFill(x + 1, y + 1, mask, val, fill_val);
+    floodFill(x, y - 1, mask, val, fill_val);
+}
+
+void LazySnapping::traceContour(int x, int y, unsigned char *mask, int contour_val, vector<wxPoint> &contour) const
+{
+    // directions (dx, dy) or (col, row)
+    int dir[8][2] = { {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1},
+                      {-1, 0}, {-1, -1}};
+    int dir_map[8] = {7, 7, 1, 1, 3, 3, 5, 5}; //mapping of incoming and outgoing direction
+    int in_dir, out_dir;
+    int startx = x;
+    int starty = y;
+    int cx, cy;
+    int i;
+    cx = x;
+    cy = y;
+    in_dir = 2; //initially coming from the left
+    do {
+        contour.push_back(wxPoint(cx, cy));
+        // determine next point on the boundary
+        for(i = 0; i < 8; i++) {
+            out_dir = (i + dir_map[in_dir]) % 8;
+            if(cx + dir[out_dir][0] >= 0 && cx + dir[out_dir][0] < m_width &&
+                cy + dir[out_dir][1] >= 0 && cy + dir[out_dir][1] < m_height &&
+                mask[(cy + dir[out_dir][1]) * m_width + cx + dir[out_dir][0]] == contour_val) {
+                mask[(cy + dir[out_dir][1]) * m_width + cx + dir[out_dir][0]] = 129;
+                cx += dir[out_dir][0];
+                cy += dir[out_dir][1];
+                in_dir = out_dir;
+                break;
+            }
+        }
+    } while(!(cx == startx && cy == starty));
+}
+
+vector<vector<wxPoint> > LazySnapping::getMaskContours() const
+{
+    ///\brief find all the closed black regions
+    vector<vector<wxPoint> > contours;
+#if 0
+    // create a working copy of m_mask 
+    unsigned char *mask = new unsigned char [m_width * m_height];
+    // fetch the bitmap data...there's no better way other than converting into wxImage
+    // and then retrieving the data from a single channel
+    wxImage img = m_mask->ConvertToImage();
+    img.SaveFile(wxT("J:\\hugin-devel\\test\\testimages\\lowres\\mask0.tif"));
+    unsigned char *mask_tmp = new unsigned char[ m_width * m_height * 3];
+    memcpy(mask_tmp, img.GetData(), sizeof(unsigned char) * m_width * m_height * 3);
+    for(int i = 0; i < m_height; i++) {
+        for(int j = 0; j < m_width; j++) {
+            mask[i * m_width + j] = mask_tmp[(i * m_width + j)];
+        }
+    }
+    delete [] mask_tmp;
+    //find an edge which hasn't been traversed yet
+    for(int i = 0; i < m_height; i++) {
+        for(int j = 0; j < m_width; j++) {
+            if(mask[i * m_width + j] == 0) {
+                floodFill(j, i, mask, mask[i * m_width + j], 128);
+                vector<wxPoint> contour;
+                traceContour(j, i, mask, 128, contour);
+                contours.push_back(contour);
+            }
+        }
+    }
+    
+    //wxBitmap bmp((char*)mask, m_width, m_height);
+    //bmp.SaveFile(wxT("J:\\hugin-devel\\test\\testimages\\lowres\\mask1.bmp"), wxBITMAP_TYPE_BMP);
+    delete [] mask;
+#endif
+    return contours;
 }
 
 wxBitmap* LazySnapping::getImage() const
