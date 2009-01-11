@@ -60,14 +60,14 @@ struct PixelCoordToWxPoint
  * LazySnapping Implementation
  */
 LazySnapping::LazySnapping() 
-: m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
+: m_mask(0), m_mask_data(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
 m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
 m_memento(0)
 {
     m_name = "LazySnapping";
 }
 LazySnapping::LazySnapping(const string &filename) 
-: m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
+: m_mask(0), m_mask_data(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
 m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
 m_memento(0)
 {
@@ -76,7 +76,7 @@ m_memento(0)
 }
 
 LazySnapping::LazySnapping(const string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask)
-: m_mask(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
+: m_mask(0), m_mask_data(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
 m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
 m_memento(0)
 {
@@ -93,17 +93,17 @@ void LazySnapping::setMemento(IMaskEdMemento *memento)
 {
     if(m_mask)
         delete m_mask;
+    if(m_mask_data)
+        delete m_mask_data;
     m_mask = ((LazySnappingMemento*)memento)->m_mask;
+    m_mask_data = ((LazySnappingMemento*)memento)->m_mask_data;
     m_width = ((LazySnappingMemento*)memento)->m_width;
     m_height = ((LazySnappingMemento*)memento)->m_height;
-    //int n = ((LazySnappingMemento*)memento)->m_nseeds;
-    //while(n > 0)
-    //    m_seeds.e
 }
 
 IMaskEdMemento* LazySnapping::createMemento()
 {
-    m_memento = new LazySnappingMemento(m_mask, m_width, m_height, 
+    m_memento = new LazySnappingMemento(m_mask, m_mask_data, m_width, m_height, 
         m_seeds.size(), m_fgnd_seeds.size(), m_bkgnd_seeds.size(),
         m_fgnd_clusters.size(), m_bkgnd_clusters.size());
     return m_memento;
@@ -136,6 +136,8 @@ void LazySnapping::init(vigra::BImage *mask)
     {
         if(!mask) {
             m_mask = new wxBitmap(m_width, m_height, 1);
+            m_mask_data = new unsigned char[m_width * m_height];
+            memset(m_mask_data, 0xff, m_width * m_height);
             wxMemoryDC dc(*m_mask);
             dc.SetBackground(*wxWHITE_BRUSH);
             dc.Clear();
@@ -143,6 +145,7 @@ void LazySnapping::init(vigra::BImage *mask)
             assert(mask->width() == m_width && mask->height() == m_height);
             vigra::BImage binmask(mask->width(), mask->height());
             vigra::transformImage(srcImageRange(*mask), destImage(binmask), BinaryMask());
+            memcpy(m_mask_data, (unsigned char*) binmask.data(), binmask.width() * binmask.height());
             m_mask = new wxBitmap((const char*)binmask.data(), binmask.width(), binmask.height());
         }
         /*SAFE_DELETE(m_tmp_bmp);
@@ -516,9 +519,11 @@ void LazySnapping::setMask(int node, Label label)
     if(label == FGND) {
         dc.SetPen(*wxBLACK);
         dc.SetBrush(*wxBLACK);
+        m_mask_data[getIndex(r, c)] = 0;
     }else {
         dc.SetPen(*wxWHITE);
         dc.SetBrush(*wxWHITE);
+        m_mask_data[getIndex(r, c)] = 255;
     }
     dc.DrawPoint(c, r);
     //dc.DrawCircle(c, r, 5);
@@ -597,9 +602,13 @@ void LazySnapping::floodFill(int x, int y, unsigned char *mask, int val, int fil
         return;
     mask[y * m_width + x] = fill_val;
     floodFill(x - 1, y, mask, val, fill_val);
+    floodFill(x - 1, y + 1, mask, val, fill_val);
     floodFill(x, y + 1, mask, val, fill_val);
     floodFill(x + 1, y + 1, mask, val, fill_val);
-    floodFill(x, y - 1, mask, val, fill_val);
+    floodFill(x + 1, y, mask, val, fill_val);
+    floodFill(x + 1, y - 1, mask, val, fill_val);
+    floodFill(x , y - 1, mask, val, fill_val);
+    floodFill(x - 1, y - 1, mask, val, fill_val);
 }
 
 void LazySnapping::traceContour(int x, int y, unsigned char *mask, int contour_val, vector<wxPoint> &contour) const
@@ -609,6 +618,8 @@ void LazySnapping::traceContour(int x, int y, unsigned char *mask, int contour_v
                       {-1, 0}, {-1, -1}};
     int dir_map[8] = {7, 7, 1, 1, 3, 3, 5, 5}; //mapping of incoming and outgoing direction
     int in_dir, out_dir;
+    vector<int> direction;
+    int back_index = 0;
     int startx = x;
     int starty = y;
     int cx, cy;
@@ -617,7 +628,10 @@ void LazySnapping::traceContour(int x, int y, unsigned char *mask, int contour_v
     cy = y;
     in_dir = 2; //initially coming from the left
     do {
-        contour.push_back(wxPoint(cx, cy));
+        if(back_index == 0) {
+            contour.push_back(wxPoint(cx, cy));
+            direction.push_back(in_dir);
+        }
         // determine next point on the boundary
         for(i = 0; i < 8; i++) {
             out_dir = (i + dir_map[in_dir]) % 8;
@@ -628,8 +642,25 @@ void LazySnapping::traceContour(int x, int y, unsigned char *mask, int contour_v
                 cx += dir[out_dir][0];
                 cy += dir[out_dir][1];
                 in_dir = out_dir;
+                back_index = 0;
                 break;
             }
+        }
+        if(i == 8) { // next point was not found
+            /*contour.pop_back();
+            direction.pop_back();
+            wxPoint pt = contour.back();
+            cx = pt.x;
+            cy = pt.y;
+            in_dir = direction.back();
+            contour.pop_back();
+            direction.pop_back();*/
+            back_index++;
+            if(back_index >= contour.size()) break;
+            wxPoint pt = contour[contour.size() - back_index - 1];
+            cx = pt.x;
+            cy = pt.y;
+            in_dir = direction[direction.size() - back_index - 1];
         }
     } while(!(cx == startx && cy == starty));
 }
@@ -638,21 +669,22 @@ vector<vector<wxPoint> > LazySnapping::getMaskContours() const
 {
     ///\brief find all the closed black regions
     vector<vector<wxPoint> > contours;
-#if 0
+
     // create a working copy of m_mask 
     unsigned char *mask = new unsigned char [m_width * m_height];
+    memcpy(mask, m_mask_data, m_width * m_height);
     // fetch the bitmap data...there's no better way other than converting into wxImage
     // and then retrieving the data from a single channel
-    wxImage img = m_mask->ConvertToImage();
-    img.SaveFile(wxT("J:\\hugin-devel\\test\\testimages\\lowres\\mask0.tif"));
-    unsigned char *mask_tmp = new unsigned char[ m_width * m_height * 3];
-    memcpy(mask_tmp, img.GetData(), sizeof(unsigned char) * m_width * m_height * 3);
-    for(int i = 0; i < m_height; i++) {
+    //wxImage img = m_mask->ConvertToImage();
+    //img.SaveFile(wxT("J:\\hugin-devel\\test\\testimages\\lowres\\mask0.tif"));
+    //unsigned char *mask_tmp = new unsigned char[ m_width * m_height * 3];
+    //memcpy(mask_tmp, img.GetData(), sizeof(unsigned char) * m_width * m_height * 3);
+    /*for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {
             mask[i * m_width + j] = mask_tmp[(i * m_width + j)];
         }
-    }
-    delete [] mask_tmp;
+    }*/
+    //delete [] mask_tmp;
     //find an edge which hasn't been traversed yet
     for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {
@@ -661,14 +693,27 @@ vector<vector<wxPoint> > LazySnapping::getMaskContours() const
                 vector<wxPoint> contour;
                 traceContour(j, i, mask, 128, contour);
                 contours.push_back(contour);
+            } else if(j > 0 && mask[i * m_width + j - 1] == 128 && mask[i * m_width + j] == 255) { //hole
+                vector<wxPoint> contour;
+                traceContour(j-1, i, mask, 128, contour);
+                contours.push_back(contour);
             }
         }
     }
     
-    //wxBitmap bmp((char*)mask, m_width, m_height);
+    //wxBitmap bmp((char*)m_mask_data, m_width, m_height, 1);
     //bmp.SaveFile(wxT("J:\\hugin-devel\\test\\testimages\\lowres\\mask1.bmp"), wxBITMAP_TYPE_BMP);
-    delete [] mask;
-#endif
+    FILE *fout = fopen("J:\\hugin-devel\\test\\testimages\\lowres\\mask1.pgm", "w");
+    fprintf(fout,"P2\n%d %d\n255\n", m_width, m_height);
+    for(int i = 0; i < m_height; i++) {
+        for(int j = 0; j < m_width; j++) {
+            fprintf(fout, "%d ", mask[i * m_width + j]);
+        }
+        fprintf(fout,"\n");
+    }
+    //delete [] mask;
+    //delete [] mask_tmp;
+
     return contours;
 }
 

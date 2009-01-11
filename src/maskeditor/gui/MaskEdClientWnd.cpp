@@ -124,6 +124,11 @@ void MaskEdClientWnd::toggleShowOverlappedRect()
     m_MaskEdEditWnd->toggleShowOverlappedRect();
 }
 
+void MaskEdClientWnd::toggleShowContour()
+{
+    m_MaskEdEditWnd->toggleShowContour();
+}
+
 void MaskEdClientWnd::undo()
 {
     m_MaskEdEditWnd->undo();

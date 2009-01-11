@@ -56,6 +56,7 @@ public:
     wxString getFile() const;
     void setEditMode(MaskEdEditMode_t edmode);
     void toggleShowOverlappedRect();
+    void toggleShowContour();
 
     void undo();
     void redo();

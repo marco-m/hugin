@@ -33,7 +33,7 @@
 
 const double SIGMA = 2.0f;
 const double LAMBDA = 50.0f;
-const int    NCLUSTERS = 16;
+const int    NCLUSTERS = 64;
 const int    CLUSTERCOORDDIM = 5; // 3:RGB, 5:RGB + (r,c)
 
 class LazySnappingMemento;
@@ -45,9 +45,10 @@ class LazySnapping : public ISegmentation
     typedef float captype;
 
     wxBitmap *m_mask;
+    unsigned char *m_mask_data;    // raw pixels
     //wxBitmap *m_tmp_bmp;         //used for drawing lines and getting all pixel from it
     //HuginBase::ImageCache::ImageCacheRGB8Ptr m_img;
-    unsigned char *m_data;
+    unsigned char *m_data;         // input image
     //std::vector<wxPoint> m_outline;
     int m_width, m_height, m_depth;
     Graph::node_id *m_nodes;

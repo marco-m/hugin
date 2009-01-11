@@ -28,10 +28,10 @@
 
 using namespace std;
 
-LazySnappingMemento::LazySnappingMemento(wxBitmap *mask, int width, int height, int prev_nseeds, 
+LazySnappingMemento::LazySnappingMemento(wxBitmap *mask, unsigned char *mask_data, int width, int height, int prev_nseeds, 
                                          int fgnd_nseeds, int bkgnd_nseeds,  
                                          int fgnd_cluster_size, int bkgnd_cluster_size)
-: m_mask(mask), m_width(width), m_height(height), m_nseeds(prev_nseeds),
+: m_mask(mask), m_mask_data(mask_data), m_width(width), m_height(height), m_nseeds(prev_nseeds),
 m_fgnd_nseeds(fgnd_nseeds), m_bkgnd_nseeds(m_bkgnd_nseeds),
 m_fgnd_cluster_size(fgnd_cluster_size), m_bkgnd_cluster_size(bkgnd_cluster_size)
 {}

@@ -32,6 +32,7 @@ class wxBitmap;
 class LazySnappingMemento : public IMaskEdMemento
 {
     wxBitmap *m_mask;
+    unsigned char *m_mask_data;
     int m_width, m_height, m_depth;
     std::vector<PixelCoord> m_seeds;
     int m_nseeds;        //previous number of seeds of type label
@@ -41,7 +42,7 @@ class LazySnappingMemento : public IMaskEdMemento
 
     friend class LazySnapping;
 public:
-    LazySnappingMemento(wxBitmap *mask, int width, int height, int prev_nseeds, int m_fgnd_nseeds, int m_bkgnd_nseeds, int fgnd_cluster_size, int bkgnd_cluster_size);
+    LazySnappingMemento(wxBitmap *mask, unsigned char *mask_data, int width, int height, int prev_nseeds, int m_fgnd_nseeds, int m_bkgnd_nseeds, int fgnd_cluster_size, int bkgnd_cluster_size);
     ~LazySnappingMemento();
 
     void setSeeds(const std::vector<PixelCoord> &seeds, int label);

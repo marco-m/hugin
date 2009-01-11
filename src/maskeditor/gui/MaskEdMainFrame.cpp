@@ -64,6 +64,7 @@ BEGIN_EVENT_TABLE(MaskEdMainFrame, wxFrame)
     EVT_BUTTON(XRCID("action_set_roi"), MaskEdMainFrame::OnSetROI)
     EVT_MENU(XRCID("action_show_overlap"), MaskEdMainFrame::OnShowOverlap)
     EVT_BUTTON(XRCID("action_show_overlap"), MaskEdMainFrame::OnShowOverlap)
+    EVT_BUTTON(XRCID("action_show_contour"), MaskEdMainFrame::OnShowContour)
     EVT_COMBOBOX(XRCID("m_comboSegChoice"), MaskEdMainFrame::OnSegSelUpdate)
     //EVT_SIZE(MaskEdMainFrame::OnSize)
 END_EVENT_TABLE()
@@ -259,6 +260,11 @@ void MaskEdMainFrame::OnSetROI(wxCommandEvent &event)
 void MaskEdMainFrame::OnShowOverlap(wxCommandEvent &event)
 {
     m_MaskEdClientWnd->toggleShowOverlappedRect();
+}
+
+void MaskEdMainFrame::OnShowContour(wxCommandEvent &event)
+{
+    m_MaskEdClientWnd->toggleShowContour();
 }
 
 void MaskEdMainFrame::OnSegSelUpdate(wxCommandEvent &event)

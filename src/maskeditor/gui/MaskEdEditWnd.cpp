@@ -563,6 +563,13 @@ void MaskEdEditWnd::toggleShowOverlappedRect()
     Refresh();
 }
 
+void MaskEdEditWnd::toggleShowContour()
+{
+    m_bShowContour = m_bShowContour ? false : true;
+    updateMask(m_active);
+    Refresh();
+}
+
 void MaskEdEditWnd::undo()
 {
     m_MaskEdCmdHist.undo();
@@ -581,22 +588,41 @@ void MaskEdEditWnd::redo()
 
 void MaskEdEditWnd::updateMask(int nimgId)
 {
-    wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(m_imgfiles[nimgId])->getMaskBitmap();
+    static unsigned char bInv = 0;
     wxImage img = *m_wximgs[nimgId];
-    img.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
     delete m_bimgs[nimgId];
-    m_bimgs[nimgId] = new wxBitmap(img);
-    // draw mask contour
-    vector<vector<wxPoint> > contours = MaskMgr::getInstance()->getSegmentation(m_imgfiles[nimgId])->getMaskContours();
-    if(contours.size() > 0) {
-        wxMemoryDC dc(*m_bimgs[nimgId]);
-        dc.SetPen(*wxRED_PEN);
-        for(vector<vector<wxPoint> >::iterator i = contours.begin(); i != contours.end(); i++) {
-            for(vector<wxPoint>::iterator j =  i->begin(); j != i->end(); j++) {
-                dc.DrawPoint(*j);
+    if(!m_bShowContour) {
+        wxBitmap *mask = MaskMgr::getInstance()->getSegmentation(m_imgfiles[nimgId])->getMaskBitmap();
+        img.SetMaskFromImage(mask->ConvertToImage(), 0, 0, 0);
+        m_bimgs[nimgId] = new wxBitmap(img);
+    } else {
+        m_bimgs[nimgId] = new wxBitmap(img);
+        // draw mask contour
+        vector<vector<wxPoint> > contours = MaskMgr::getInstance()->getSegmentation(m_imgfiles[nimgId])->getMaskContours();
+        if(contours.size() > 0) {
+            wxMemoryDC dc(*m_bimgs[nimgId]);
+            wxPen pen;
+            /*if(bInv)
+                pen = wxPen(wxColor(128, 128, 128),2, wxSHORT_DASH);
+            else 
+                pen = wxPen(wxColor(128, 128, 128),2, wxDOT_DASH);*/
+            /*wxDash dash[2][3] = {{2,1,2}, {1,2,1}};
+            pen.SetDashes(3, dash[bInv]);*/
+            pen = wxPen(wxColor(255, 0, 0),2, wxSOLID);
+            bInv = !bInv;
+            dc.SetPen(pen);
+            
+            for(vector<vector<wxPoint> >::iterator i = contours.begin(); i != contours.end(); i++) {
+                vector<wxPoint>::iterator j =  i->begin();
+                wxPoint pt = *j;
+                for(j++; j != i->end(); j++) {
+                    //dc.DrawPoint(*j);
+                    dc.DrawLine(pt, *j);
+                    pt = *j;
+                }
             }
+            dc.SetPen(wxNullPen);
         }
-        dc.SetPen(wxNullPen);
     }
     updateDisplayBitmap(true);
 }

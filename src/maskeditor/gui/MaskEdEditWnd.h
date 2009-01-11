@@ -56,6 +56,7 @@ class MaskEdEditWnd : public wxScrolledWindow
     float                   m_scale;
     int                     m_edmode;           //editing mode
     bool                    m_bShowOverlappedRect;
+    bool                    m_bShowContour;     
 
     AppBase::CommandHistory<AppBase::Command<std::string> >   m_MaskEdCmdHist;
 
@@ -89,6 +90,7 @@ public:
     
     void setEditMode(MaskEdEditMode_t edmode);
     void toggleShowOverlappedRect();
+    void toggleShowContour();
     void undo();
     void redo();
 
