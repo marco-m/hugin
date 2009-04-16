@@ -157,7 +157,7 @@ void createCtrlPoints(Panorama & pano, int img1, const ImageType & leftImg, int 
         std::cout << "Trying to find " << nPoints << " corners... ";
     }
 
-    vigra_ext::findInterestPointsOnGrid(srcImageRange(leftImg, GreenAccessor<RGBValue<VT> >()), scale, 5*nPoints, grid, points);
+    vigra_ext::findInterestPointsOnGrid(srcImageRange(leftImg, GreenAccessor<VT>()), scale, 5*nPoints, grid, points);
 
     double scaleFactor = 1<<pyrLevel;
 
@@ -551,7 +551,7 @@ int main(int argc, char *argv[])
             break;
         case 'h':
             usage(argv[0]);
-            return 1;
+            return 0;
 	case 's':
 	    param.pyrLevel = atoi(optarg);
 	    if (param.pyrLevel<0 || param.pyrLevel >8) {

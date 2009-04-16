@@ -88,14 +88,9 @@ bool OptimizePhotometricPanel::Create(wxWindow *parent, wxWindowID id, const wxP
     topsizer->Add(panel, 1, wxEXPAND, 0);
     SetSizer(topsizer);
 
-#ifdef DEBUG
-    SetBackgroundColour(wxTheColourDatabase->Find(wxT("RED")));
-    panel->SetBackgroundColour(wxTheColourDatabase->Find(wxT("BLUE")));
-#endif
-
     m_only_active_images_cb = XRCCTRL(*this, "optimize_photo_only_active_images", wxCheckBox);
     DEBUG_ASSERT(m_only_active_images_cb);
-    m_only_active_images_cb->SetValue(wxConfigBase::Get()->Read(wxT("/OptimizeOptimizePhotometricPanelPanel/OnlyActiveImages"),1l));
+    m_only_active_images_cb->SetValue(wxConfigBase::Get()->Read(wxT("/OptimizeOptimizePhotometricPanelPanel/OnlyActiveImages"),1l) != 0);
 
     m_vig_list = XRCCTRL(*this, "optimize_photo_vig_list", wxCheckListBox);
     DEBUG_ASSERT(m_vig_list);
@@ -549,7 +544,7 @@ void OptimizePhotometricPanel::runOptimizer(const UIntSet & imgs)
 
     // display information about the estimation process:
     int ret = wxMessageBox(wxString::Format(_("Photometric optimization results:\nAverage difference (RMSE) between overlapping pixels: %.2f gray values (0..255)\n\nApply results?"), error*255),
-                           _("Photometric optimization finished"), wxYES_NO | wxICON_INFORMATION);
+                           _("Photometric optimization finished"), wxYES_NO | wxICON_INFORMATION,this);
 
     if (ret == wxYES) {
         DEBUG_DEBUG("Applying vignetting corr");

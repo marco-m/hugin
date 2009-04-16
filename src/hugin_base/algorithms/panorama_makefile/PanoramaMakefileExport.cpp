@@ -45,7 +45,13 @@ using namespace vigra;
 vector<UIntSet> getHDRStacks(const PanoramaData & pano, UIntSet allImgs)
 {
     vector<UIntSet> result;
-    if(pano.getNrOfImages() == 0) return result;
+
+    // if no images are available, return empty result vector
+    if ( allImgs.empty() )
+    {
+        return result;
+    }
+
     UIntSet stack;
 
     do {
@@ -56,11 +62,13 @@ vector<UIntSet> getHDRStacks(const PanoramaData & pano, UIntSet allImgs)
         // find all images that have a suitable overlap.
         SrcPanoImage simg = pano.getSrcImage(srcImg);
         double maxShift = simg.getHFOV() / 10.0;
+        double minShift = 360.0 - maxShift;
         for (UIntSet::iterator it = allImgs.begin(); it !=  allImgs.end(); ) {
             unsigned srcImg2 = *it;
             it++;
             SrcPanoImage simg2 = pano.getSrcImage(srcImg2);
-            if ( fabs(simg.getYaw() - simg2.getYaw()) < maxShift
+            if ( (fabs(simg.getYaw() - simg2.getYaw()) < maxShift
+                || fabs(simg.getYaw() - simg2.getYaw()) > minShift)
                 && fabs(simg.getPitch() - simg2.getPitch()) < maxShift  )
             {
                 stack.insert(srcImg2);
@@ -70,15 +78,21 @@ vector<UIntSet> getHDRStacks(const PanoramaData & pano, UIntSet allImgs)
         result.push_back(stack);
         stack.clear();
     } while (allImgs.size() > 0);
-    
+
     return result;
 }
-    
+
 // should be moved somewhere else (will be after GSOC anyway)
 vector<UIntSet> getExposureLayers(const PanoramaData & pano, UIntSet allImgs)
 {
     vector<UIntSet> result;
-    if(pano.getNrOfImages() == 0) return result;
+
+    // if no images are available, return empty result vector
+    if ( allImgs.empty() )
+    {
+        return result;
+    }
+
     UIntSet stack;
 
     do {
@@ -107,6 +121,22 @@ vector<UIntSet> getExposureLayers(const PanoramaData & pano, UIntSet allImgs)
 }
 
 
+// should be moved somewhere else (will be after GSOC anyway)
+UIntSet getImagesinROI (const PanoramaData& pano, const UIntSet activeImages)
+{
+    UIntSet images;
+    PanoramaOptions opts = pano.getOptions();
+    for (UIntSet::const_iterator it = activeImages.begin(); it != activeImages.end(); ++it)
+    {
+        Rect2D roi = estimateOutputROI(pano, opts, *it);
+        if (! (roi.isEmpty())) {
+            images.insert(*it);
+        }
+    }
+    return images;
+}
+
+
 void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
                                             const UIntSet& rimages,
                                             const std::string& ptofile,
@@ -114,7 +144,8 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
                                             const PTPrograms& progs,
                                             const std::string& includePath,
                                             std::vector<std::string> & outputFiles,
-                                            std::ostream& o)
+                                            std::ostream& o,
+                                            const std::string& tmpDir)
 {
     PanoramaOptions opts = pano.getOptions();
 #ifdef __unix__
@@ -125,16 +156,15 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
     setlocale(LC_NUMERIC,"C");
 #endif
 
-	// output only images in current ROI
-	UIntSet images;
-	for (UIntSet::const_iterator it = rimages.begin(); it != rimages.end(); ++it)
-	{
-		Rect2D roi = estimateOutputROI(pano, opts, *it);
-		if (! (roi.isEmpty())) {
-			images.insert(*it);
-		}
-	}
-    
+#ifdef __unix__
+ std::string NULL_DEVICE("/dev/null");
+#else // WINDOWS
+ std::string NULL_DEVICE("NUL");
+#endif
+
+    // output only images in current ROI
+    UIntSet images = getImagesinROI(pano,rimages);
+
     // execute exiftool with perl if necessary
 #ifdef COULD_EXECUTE_EXIFTOOL_WITH_PERL
     bool executeWithPerl = false;
@@ -148,9 +178,20 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
     }
 #endif
 #endif
-	
+
     o << "# makefile for panorama stitching, created by hugin " << endl
       << endl;
+
+    // pass settings for different temporary directory
+    if (tmpDir != "") {
+        o << "# set temporary directory" << endl;
+#ifdef __unix__
+        o << "export TMPDIR=" << quoteStringShell(tmpDir) << endl;
+#else // WINDOWS
+        o << "export TEMP=" << quoteStringShell(tmpDir) << endl
+          << "export TMP=" << quoteStringShell(tmpDir) << endl;
+#endif
+    }
 
     o << endl
       << endl
@@ -172,54 +213,96 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
       << "EXIFTOOL=" << quoteStringShell(progs.exiftool) << endl
 #endif
       << endl
-      << "ifndef ENBLEND" << endl
-      << "  ENBLEND=false" << endl
-      << "endif" << endl 
-      << endl
-      << "ifndef ENFUSE" << endl
-      << "  ENFUSE=false" << endl
-      << "endif" << endl
+
+      << "# Project parameters" << endl
+      << "HUGIN_PROJECTION=" << opts.getProjection() << endl
+      << "HUGIN_HFOV=" << opts.getHFOV() << endl
+      << "HUGIN_WIDTH=" << opts.getWidth() << endl
+      << "HUGIN_HEIGHT=" << opts.getHeight() << endl
       << endl
 
       << "# options for the programs" << endl << endl;
 
-    o << "NONA_LDR_REMAPPED_COMP=";
-    if (opts.outputImageType == "tif" && opts.outputLayersCompression.size() != 0) {
-        o << "-z " << opts.outputLayersCompression;
-    } else if (opts.outputImageType == "jpg") {
-        o << "-z PACKBITS ";
-    }
-    o << endl;
-
-    o << "ENBLEND_OPTS=" << opts.enblendOptions;
-    if (opts.getHFOV() == 360.0) {
-        // blend over the border
-        o << " -w";
-    }
-
-    vigra::Rect2D roi = opts.getROI();
-    if (roi.top() != 0 || roi.left() != 0 ) {
-        o << " -f" << roi.width() << "x" << roi.height() << "+" << roi.left() << "+" << roi.top();
-    } else {
-        o << " -f" << roi.width() << "x" << roi.height();
+    // set remapper specific settings
+    switch(opts.remapper) {
+        case PanoramaOptions::NONA:
+            {
+                o << "NONA_LDR_REMAPPED_COMP=";
+                if (opts.outputImageType == "tif" && opts.outputLayersCompression.size() != 0) {
+                    o << "-z " << opts.outputLayersCompression;
+                } else if (opts.outputImageType == "jpg") {
+                    o << "-z PACKBITS ";
+                }
+                o << endl;
+            }
+            break;
+        case PanoramaOptions::PTMENDER:
+            break;
     }
 
-    o << endl;
+    // set blender specific settings
+    switch(opts.blendMode) {
+        case PanoramaOptions::ENBLEND_BLEND:
+            {
+                o << "ENBLEND_OPTS=" << opts.enblendOptions;
+                if (opts.getHFOV() == 360.0) {
+                    // blend over the border
+                    o << " -w";
+                }
+                vigra::Rect2D roi = opts.getROI();
+                if (roi.top() != 0 || roi.left() != 0 ) {
+                    o << " -f" << roi.width() << "x" << roi.height() << "+" << roi.left() << "+" << roi.top();
+                } else {
+                    o << " -f" << roi.width() << "x" << roi.height();
+                }
+                o << endl;
 
-    o << "ENBLEND_LDR_COMP=";
-    if (opts.outputImageType == "tif" && opts.outputImageTypeCompression.size() != 0) {
-        o << "--compression " << opts.outputImageTypeCompression;
-    } else if (opts.outputImageType == "jpg") {
-        o << "--compression " << opts.quality;
+                o << "ENBLEND_LDR_COMP=";
+                if (opts.outputImageType == "tif" && opts.outputImageTypeCompression.size() != 0) {
+                    o << "--compression " << opts.outputImageTypeCompression;
+                } else if (opts.outputImageType == "jpg") {
+                    o << "--compression " << opts.quality;
+                }
+                o << endl;
+
+                o << "ENBLEND_HDR_COMP=";
+                if (opts.outputImageType == "tif" && opts.outputImageTypeHDRCompression.size() != 0) {
+                    o << "--compression " << opts.outputImageTypeHDRCompression;
+                }
+                o << endl;
+            }
+            break;
+        case PanoramaOptions::PTBLENDER_BLEND:
+            {
+                o << "PTBLENDER_OPTS=";
+                    switch (opts.colorCorrection) {
+                        case PanoramaOptions::NONE:
+                            break;
+                        case PanoramaOptions::BRIGHTNESS_COLOR:
+                            o << " -k " << opts.colorReferenceImage;
+                            break;
+                        case PanoramaOptions::BRIGHTNESS:
+                            o << " -k " << opts.colorReferenceImage;
+                            break;
+                        case PanoramaOptions::COLOR:
+                            o << " -k " << opts.colorReferenceImage;
+                            break;
+                    }
+                o << endl;
+            }
+            break;
+        case PanoramaOptions::SMARTBLEND_BLEND:
+            {
+                o << "SMARTBLEND_OPTS=" << progs.smartblend_opts;
+                if (opts.getHFOV() == 360.0) {
+                    // blend over the border
+                    o << " -w";
+                }
+                o << endl;
+                // TODO: build smartblend command line from given images. (requires additional program)
+            }
+            break;
     }
-    o << endl;
-
-    o << "ENBLEND_HDR_COMP=";
-    if (opts.outputImageType == "tif" && opts.outputImageTypeHDRCompression.size() != 0) {
-        o << "--compression " << opts.outputImageTypeHDRCompression;
-    }
-    o << endl;
-
 
     o << "ENFUSE_OPTS=" << opts.enfuseOptions;
     // TODO: blend only over border if this is indeed a
@@ -504,7 +587,7 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
     }
     o << endl << endl;
 
-	
+
     vector<string> ldrStackedImages;
     o << endl
       << "# stacked images for enfuse or other automatic exposure blending tools" << endl
@@ -549,7 +632,7 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
         o << "$(LDR_STACK_" << i << "_SHELL) ";
     o << endl;
 
-	
+
     // TODO: include custom makefile here
     if (includePath.size() > 0) {
         o << "include " <<  escapeStringMake(includePath) <<  endl << endl;
@@ -563,6 +646,7 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
         if (opts.outputLDRBlended) {
             targets += "$(LDR_BLENDED) ";
             outputFiles.push_back(sLDR_BLENDED);
+            o << "DO_LDR_BLENDED = 1" << endl;
             // depends on remapped ldr images and stacked ldr images
             if (! opts.outputLDRLayers) {
                 outputFiles.insert(outputFiles.end(), remappedImages.begin(), remappedImages.end());
@@ -592,6 +676,7 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
         if (opts.outputLDRExposureBlended) {
             targets += " $(LDR_STACKED_BLENDED) ";
             outputFiles.push_back(sLDR_STACKED_BLENDED);
+            o << "DO_LDR_STACKED_BLENDED = 1" << endl;
             outputFiles.insert(outputFiles.end(),ldrStackedImages.begin(), ldrStackedImages.end());
             // always clean temp files used by exposure stacks
             cleanTargets += "$(LDR_STACKS_SHELL) ";
@@ -620,6 +705,7 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
         if (opts.outputHDRBlended) {
             targets += "$(HDR_BLENDED) ";
             outputFiles.push_back(sHDR_BLENDED);
+            o << "DO_HDR_BLENDED = 1" << endl;
             if (!opts.outputHDRStacks) {
                 outputFiles.insert(outputFiles.end(),stackedImages.begin(), stackedImages.end());
                 cleanTargets += "$(HDR_STACKS_SHELL) ";
@@ -639,6 +725,46 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
         << "clean: " << endl
         << "\t-$(RM) $(TEMP_FILES_SHELL)" << endl
         << endl;
+
+        // test rule
+        o << "test: " << endl;
+        // test remapper
+        switch(opts.remapper) {
+            case PanoramaOptions::NONA:
+                o << "\t@echo -n 'Checking nona...'" << endl
+                  << "\t@-$(NONA) --help > " << NULL_DEVICE << " 2>&1 && echo '[OK]'" << endl;
+                break;
+            case PanoramaOptions::PTMENDER:
+                break;
+        }
+        // test blender
+        switch(opts.blendMode) {
+            case PanoramaOptions::ENBLEND_BLEND:
+                o << "\t@echo -n 'Checking enblend...'" << endl
+                  << "\t@-$(ENBLEND) -h > " << NULL_DEVICE << " 2>&1 && echo '[OK]'" << endl;
+                break;
+            case PanoramaOptions::PTBLENDER_BLEND:
+                o << "\t@echo -n 'Checking PTblender...'" << endl
+                  << "\t@-$(PTBLENDER) -h > " << NULL_DEVICE << " 2>&1 && echo '[OK]'" << endl;
+                break;
+            case PanoramaOptions::SMARTBLEND_BLEND:
+                o << "\t@echo -n 'Checking smartblend...'" << endl
+                  << "\t@-$(SMARTBLEND) > " << NULL_DEVICE << " 2>&1 && echo '[OK]'" << endl;
+                break;
+        }
+        // test enfuse
+        o << "\t@echo -n 'Checking enfuse...'" << endl
+          << "\t@-$(ENFUSE) -h > " << NULL_DEVICE << " 2>&1 && echo '[OK]'" << endl;
+        // test hugin_hdrmerge
+        o << "\t@echo -n 'Checking hugin_hdrmerge...'" << endl
+          << "\t@-$(HDRMERGE) -h > " << NULL_DEVICE << " 2>&1 && echo '[OK]'" << endl;
+        // test exiftool
+        o << "\t@echo -n 'Checking exiftool...'" << endl
+          << "\t@-$(EXIFTOOL) -ver > " << NULL_DEVICE << " 2>&1 && echo '[OK]' || echo '[FAIL]'" << endl;
+        // test rm
+        o << "\t@echo -n 'Checking rm...'" << endl
+          << "\t@-$(RM) --version > " << NULL_DEVICE << " 2>&1 && echo '[OK]' || echo '[FAIL]'" << endl;
+        o << endl;
 
         // ==============================
         // output rules for all targets.
@@ -680,12 +806,12 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
                         {
                             string destImg = escapeStringMake(similarExposureRemappedImages[j]);
                             string srcImg = escapeStringMake(pano.getImage(*it).getFilename());
-							/*
+                            /*
                             o << destImg << ": " << srcImg << " $(PROJECT_FILE)" << endl
                               << "\t$(NONA) -r ldr -e $(LDR_EXPOSURE_LAYER_" << i << "_EXPOSURE) -m "
                               << ldrRemappedMode << " -o $(LDR_EXPOSURE_REMAPPED_PREFIX) -i " << *it
                               << " $(PROJECT_FILE)" << endl << endl;
-							*/
+                            */
                             o << destImg << ": " << srcImg << " $(PROJECT_FILE)" << endl
                               << "\t$(NONA) $(NONA_LDR_REMAPPED_COMP) -r ldr -e " << pano.getSrcImage(*it).getExposureValue()
                               << " -m " << ldrRemappedMode << " -o $(LDR_EXPOSURE_REMAPPED_PREFIX_SHELL) -i " << *it
@@ -771,30 +897,9 @@ void PanoramaMakefileExport::createMakefile(const PanoramaData& pano,
 
                 break;
             case PanoramaOptions::PTBLENDER_BLEND:
-                o << "PTBLENDER_OPTS=";
-                switch (opts.colorCorrection) {
-                    case PanoramaOptions::NONE:
-                        break;
-                    case PanoramaOptions::BRIGHTNESS_COLOR:
-                        o << " -k " << opts.colorReferenceImage;
-                        break;
-                    case PanoramaOptions::BRIGHTNESS:
-                        o << " -k " << opts.colorReferenceImage;
-                        break;
-                    case PanoramaOptions::COLOR:
-                        o << " -k " << opts.colorReferenceImage;
-                        break;
-                }
-                o << endl;
                 // TODO: output PTBlender + PTmasker + PTroller rules
                 break;
             case PanoramaOptions::SMARTBLEND_BLEND:
-                o << "SMARTBLEND_OPTS=" << progs.smartblend_opts;
-                if (opts.getHFOV() == 360.0) {
-                    // blend over the border
-                    o << " -w";
-                }
-                o << endl;
                 // TODO: build smartblend command line from given images. (requires additional program)
                 break;
             default:

@@ -494,7 +494,12 @@ VariableMapVector GetAlignInfoVariables(const AlignInfo& gl)
 
             vars.insert(make_pair(std::string("e"), Variable("e", gl.im[i].cP.vertical_params[0])));
             vars.insert(make_pair(std::string("d"), Variable("d", gl.im[i].cP.horizontal_params[0])));
-
+            
+            //Modified by Dev 
+            vars.insert(make_pair(std::string("g"), Variable("g", gl.im[i].cP.shear_x)));
+            vars.insert(make_pair(std::string("t"), Variable("t", gl.im[i].cP.shear_y)));
+            
+            
             res.push_back(vars);
         }
     }
@@ -581,6 +586,21 @@ void setDestImage(Image & image, vigra::Diff2D size,
     case PanoramaOptions::LAMBERT_AZIMUTHAL:
         image.format = _lambertazimuthal;
         break;
+    case PanoramaOptions::PANINI:
+        image.format = _panini;
+        break;
+    case PanoramaOptions::ARCHITECTURAL:
+        image.format = _architectural;
+        break;
+    case PanoramaOptions::ORTHOGRAPHIC:
+        image.format = _ortographic;
+        break;
+    case PanoramaOptions::EQUISOLID:
+        image.format = _equisolid;
+        break;
+	case PanoramaOptions::EQUI_PANINI:
+		image.format = _equi_panini;
+		break;
 #endif
     default:
         PrintError("unsupported projection");

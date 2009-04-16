@@ -1,5 +1,5 @@
 
-FILE(GLOB DATAFILES *.htm *.html *.ico *.jpg *.png *.xpm *.txt *.mk)
+FILE(GLOB DATAFILES *.htm *.html *.ico *.jpg *.png *.xpm tips.txt *.mk)
 INSTALL(FILES ${DATAFILES} DESTINATION ${HUGINDATADIR}/xrc/data)
 
 
@@ -11,3 +11,4 @@ IF (UNIX)
 ENDIF (UNIX)
 
 ADD_SUBDIRECTORY(help_en_EN)
+ADD_SUBDIRECTORY(help_it_IT)

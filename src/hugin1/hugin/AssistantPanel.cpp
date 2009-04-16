@@ -28,6 +28,8 @@
 #include "panoinc_WX.h"
 #include "panoinc.h"
 
+#include "base_wx/platform.h"
+
 #include "common/stl_utils.h"
 
 #include <map>
@@ -53,6 +55,11 @@
 #include "hugin/PanoDruid.h"
 #include "base_wx/MyProgressDialog.h"
 #include "hugin/config_defaults.h"
+
+// Celeste header
+#include "Celeste.h"
+#include "CelesteGlobals.h"
+#include "Utilities.h"
 
 using namespace PT;
 using namespace PTools;
@@ -131,11 +138,6 @@ bool AssistantPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
     SetSizer( topsizer );
     //topsizer->SetSizeHints( this );
 
-#ifdef DEBUG
-    SetBackgroundColour(wxTheColourDatabase->Find(wxT("RED")));
-    panel->SetBackgroundColour(wxTheColourDatabase->Find(wxT("BLUE")));
-#endif
-
     m_imagesText = XRCCTRL(*this, "ass_load_images_text", wxStaticText);
     DEBUG_ASSERT(m_imagesText);
 
@@ -173,11 +175,10 @@ bool AssistantPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
     m_druid->Update(m_pano);
             */
 
-    m_panel = XRCCTRL(*this, "ass_control_panel", wxScrolledWindow);
+    m_panel = XRCCTRL(*this, "ass_control_panel", wxPanel);
     DEBUG_ASSERT(m_panel);
 
     m_panel->FitInside();
-    m_panel->SetScrollRate(10, 10);
 
 //    SetAutoLayout(false);
 
@@ -373,7 +374,7 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
     // all images..
     UIntSet imgs;
     if (m_pano->getNrOfImages() < 2) {
-        wxMessageBox(_("At least two images are required.\nPlease add more images."),_("Error"));
+        wxMessageBox(_("At least two images are required.\nPlease add more images."),_("Error"), wxOK, this);
         return;
     }
 
@@ -385,23 +386,143 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
     bool createCtrlP = true;
     // TODO: handle existing control points properly instead of adding them twice.
     if (m_pano->getNrOfCtrlPoints() > 0) {
-        int a = wxMessageBox(wxString::Format(_("The panorama already has %d control points.\n\nSkip control points creation?"), m_pano->getNrOfCtrlPoints()),
-                     _("Skip control point creation?"), wxICON_QUESTION | wxYES_NO);
-        createCtrlP = a != wxYES;
+    int a = wxMessageBox(wxString::Format(_("The panorama already has %d control points.\n\nSkip control points creation?"), m_pano->getNrOfCtrlPoints()),
+    _("Skip control point creation?"), wxICON_QUESTION | wxYES_NO);
+    createCtrlP = a != wxYES;
     }
     */
 
     bool createCtrlP = m_pano->getNrOfCtrlPoints() == 0;
 
-    ProgressReporterDialog progress(5, _("Aligning images"), _("Finding corresponding points"));
+    ProgressReporterDialog progress(5, _("Aligning images"), _("Finding corresponding points"),this);
     wxString alignMsg;
     if (createCtrlP) {
         AutoCtrlPointCreator matcher;
-        CPVector cps = matcher.automatch(*m_pano, imgs, nFeatures);
+        CPVector cps = matcher.automatch(*m_pano, imgs, nFeatures,this);
         GlobalCmdHist::getInstance().addCommand(
-                new PT::AddCtrlPointsCmd(*m_pano, cps)
-                                               );
+            new PT::AddCtrlPointsCmd(*m_pano, cps)
+            );
     }
+
+    // Run Celeste
+    bool t = (wxConfigBase::Get()->Read(wxT("/Celeste/Auto"), HUGIN_CELESTE_AUTO) != 0); 
+    if (t && m_pano->getNrOfCtrlPoints())
+    {
+
+        DEBUG_TRACE("Running Celeste");
+        progress.increaseProgress(1, std::string(wxString(_("Running Celeste")).mb_str(wxConvLocal)));
+
+        // set numeric locale to C, for correct number output
+        char * old_locale = setlocale(LC_NUMERIC,NULL);
+        setlocale(LC_NUMERIC,"C");
+
+        // determine file name of SVM model file
+        // get XRC path from application
+        wxString wxstrModelFileName = huginApp::Get()->GetXRCPath() + wxT("data/") + wxT(HUGIN_CELESTE_MODEL);
+        // convert wxString to string
+        string strModelFileName(wxstrModelFileName.mb_str(wxConvUTF8));
+		
+        // SVM model file
+        if ( wxFile::Exists(wxstrModelFileName) )
+        {
+
+            for (unsigned int imgNr = 0; imgNr < m_pano->getNrOfImages() - 1; imgNr++){
+
+                double progress_amount =  (double)1/m_pano->getNrOfImages();
+                progress.increaseProgress(progress_amount, std::string(wxString(_("Running Celeste")).mb_str(wxConvLocal)));
+
+                const CPVector & controlPoints = m_pano->getCtrlPoints();
+                unsigned int removed = 0;
+
+                gNumLocs = 0;
+                for (PT::CPVector::const_iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
+                    PT::ControlPoint point = *it;
+                    if (imgNr == point.image1Nr){
+                        gNumLocs++;				
+                    }
+                    if (imgNr == point.image2Nr){
+                        gNumLocs++;				
+                    }	
+                }		
+
+                // Create the storage matrix
+                gLocations = CreateMatrix( (int)0, gNumLocs, 2);
+                unsigned int glocation_counter = 0;
+                unsigned int cp_counter = 0;	
+                vector<unsigned int> global_cp_nr;
+
+                for (PT::CPVector::const_iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
+                    PT::ControlPoint point = *it;
+                    if (imgNr == point.image1Nr){	
+                        gLocations[glocation_counter][0] = (int)point.x1;
+                        gLocations[glocation_counter][1] = (int)point.y1;
+                        global_cp_nr.push_back(cp_counter);	
+                        glocation_counter++;				
+                    }
+                    if (imgNr == point.image2Nr){
+                        gLocations[glocation_counter][0] = (int)point.x2;
+                        gLocations[glocation_counter][1] = (int)point.y2;
+                        global_cp_nr.push_back(cp_counter);	
+                        glocation_counter++;				
+                    }
+                    cp_counter++;	
+                }
+
+                // SVM threshold
+                double threshold = HUGIN_CELESTE_THRESHOLD;
+                wxConfigBase::Get()->Read(wxT("/Celeste/Threshold"), &threshold, HUGIN_CELESTE_THRESHOLD);
+
+                // Mask resolution - 1 sets it to fine
+                bool t = (wxConfigBase::Get()->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER) != 0);
+                if (t){
+                    //cerr <<"---Celeste--- Using small filter" << endl;
+                    gRadius = 10;
+                    spacing = (gRadius * 2) + 1;
+                }
+
+                // Image to analyse
+                string imagefile = m_pano->getImage(imgNr).getFilename();
+
+                // Print progress
+                MainFrame::Get()->SetStatusText(_("searching for cloud-like control points..."),0);
+
+                // Vector to store Gabor filter responses
+                vector<double> svm_responses_ap;
+                string mask_format = "PNG";
+                unsigned int mask = 0;
+
+                // Get responses
+                get_gabor_response(imagefile, mask, strModelFileName, threshold, mask_format, svm_responses_ap);
+
+                // Print SVM results
+                for (unsigned int c = 0; c < svm_responses_ap.size(); c++){
+
+                    unsigned int pNr = global_cp_nr[c] - removed;	
+
+                    if (svm_responses_ap[c] >= threshold){
+
+                        DEBUG_DEBUG("about to delete point " << pNr);
+                        GlobalCmdHist::getInstance().addCommand(
+                            new PT::RemoveCtrlPointCmd(*m_pano,pNr)
+                            );
+                        removed++;					
+                        cout << "CP: " << c << "\tSVM Score: " << svm_responses_ap[c] << "\tremoved." << endl;
+                    }
+                }
+                if (removed) cout << endl;
+
+            }
+        }else{	
+            wxMessageBox(_("Celeste model file not found, Hugin needs to be properly installed." ), _("Fatal Error"));
+        }	
+
+        MainFrame::Get()->SetStatusText(_(""),0);
+
+        // reset locale
+        setlocale(LC_NUMERIC,old_locale);
+
+    }
+    DEBUG_TRACE("Finished running Celeste");
 
     progress.increaseProgress(1.0, std::string(wxString(_("Determining placement of the images")).mb_str(wxConvLocal)));
 
@@ -417,9 +538,9 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
         unsigned i2 = *(comps[1].begin());
         MainFrame::Get()->ShowCtrlPointEditor( i1, i2);
         // display message box with 
-        
+
         wxMessageBox(wxString::Format(_("Warning %d unconnected image groups found:"), n) + Components2Str(comps) + wxT("\n")
-                     + _("Please create control points between unconnected images using the Control Points tab.\n\nAfter adding the points, press the \"Align\" button again"));
+            + _("Please create control points between unconnected images using the Control Points tab.\n\nAfter adding the points, press the \"Align\" button again"),_("Error"), wxOK , this);
         return;
     }
 
@@ -451,7 +572,7 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
         // temporarily disable PT progress dialog..
         deregisterPTWXDlgFcn();
         smartOptimize(optPano);
-        registerPTWXDlgFcn();
+        registerPTWXDlgFcn(MainFrame::Get());
     }
 
     progress.increaseProgress(1.0, std::string(wxString(_("Leveling the panorama")).mb_str(wxConvLocal)));
@@ -494,7 +615,7 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
     // TODO: photometric optimisation.
     // first, ensure that vignetting and response coefficients are linked
     const char * varnames[] = {"Va", "Vb", "Vc", "Vd", "Vx", "Vy",
-                            "Ra", "Rb", "Rc", "Rd", "Re",  0};
+        "Ra", "Rb", "Rc", "Rd", "Re",  0};
 
     for (size_t i = 0; i < optPano.getNrOfLenses(); i++) {
         const Lens & l = optPano.getLens(i);
@@ -550,17 +671,18 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
         ImageCache::EntryPtr e = ImageCache::getInstance().getSmallImage(optPano.getImage(i).getFilename());
         vigra::FRGBImage * img = new FRGBImage;
         if (!e) {
-            wxMessageBox(_("Error: could not load all images"), _("Error"));
+            wxMessageBox(_("Error: could not load all images"), 
+                _("Error"),wxOK,this);
             return;
         }
         if (e->origType == "UINT8") {
             reduceToNextLevel(*(e->image8), *img);
             transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
-                            vigra::functor::Arg1()/vigra::functor::Param(255.0));
+                vigra::functor::Arg1()/vigra::functor::Param(255.0));
         } else if (e->origType == "UINT16") {
             reduceToNextLevel(*(e->image16), *img);
             transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
-                            vigra::functor::Arg1()/vigra::functor::Param(65535.0));
+                vigra::functor::Arg1()/vigra::functor::Param(65535.0));
         } else {
             reduceToNextLevel(*(e->imageFloat), *img);
         }
@@ -578,7 +700,7 @@ void AssistantPanel::OnAlign( wxCommandEvent & e )
     }
     double error;
     smartOptimizePhotometric(optPano, poptmode,
-                                points, *(MainFrame::Get()), error);
+        points, *(MainFrame::Get()), error);
     cout << "Auto align, photometric error: " << error *255 << " grey values" << std::endl;
 
     // calculate the mean exposure.

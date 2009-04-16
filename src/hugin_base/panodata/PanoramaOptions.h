@@ -106,7 +106,14 @@ class PanoramaOptions
             LAMBERT = 8,
             LAMBERT_AZIMUTHAL = 9,
             ALBERS_EQUAL_AREA_CONIC = 10,
-            MILLER_CYLINDRICAL = 11
+            MILLER_CYLINDRICAL = 11,
+            PANINI = 12,
+            ARCHITECTURAL = 13,
+            ORTHOGRAPHIC = 14,
+            EQUISOLID = 15,
+            EQUI_PANINI = 16,
+			BIPLANE = 17,
+			TRIPLANE = 18
         };
 
         /** PTStitcher acceleration */
@@ -332,9 +339,8 @@ class PanoramaOptions
         DestPanoImage getDestImage() const;
 
     public:
-        // they are public, because they need to be set through
-        // get/setOptions in Panorama.
-
+        //TODO: Write accessor methods; make instance variables private unless absolutely neccesary for backward-compatibility.
+        
         std::string outfile;
         FileFormat outputFormat;
 

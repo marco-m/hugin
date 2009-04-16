@@ -2,7 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-				<meta name="keywords" content="Hugin Control Points table,Control points,Horizontal control points,Hugin,Hugin Control Points tab,Straight line control points,Vertical control points" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<meta name="generator" content="MediaWiki 1.14.0" />
+		<meta name="keywords" content="Hugin Control Points table,Control points,Horizontal control points,Hugin,Hugin Control Points tab,Straight line control points,Vertical control points" />
+		
+		
 		
 		
 		
@@ -10,27 +14,31 @@
 		<title>Hugin Control Points table - PanoTools.org Wiki</title>
 		
 		
+		
 		<!--[if lt IE 5.5000]><![endif]-->
 		<!--[if IE 5.5000]><![endif]-->
 		<!--[if IE 6]><![endif]-->
 		<!--[if IE 7]><![endif]-->
+		
+		
+		
+		
 		<!--[if lt IE 7]>
 		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+
 		
-		
-                
-		
-		
+
 		
 		<!-- Head Scripts -->
 		
-			</head>
-<body  class="mediawiki ns-0 ltr page-Hugin_Control_Points_table">
+				
+	</head>
+<body class="mediawiki ltr ns-0 ns-subject page-Hugin_Control_Points_table skin-monobook">
 	<div id="globalWrapper">
 		<div id="column-content">
 	<div id="content">
 		<a name="top" id="top"></a>
-				<h1 class="firstHeading">Hugin Control Points table</h1>
+				<h1 id="firstHeading" class="firstHeading">Hugin Control Points table</h1>
 		<div id="bodyContent">
 			
 			<div id="contentSub"></div>
@@ -39,9 +47,10 @@
 in the project, whereas the <a href="Hugin_Control_Points_tab.html" title="Hugin Control Points tab">hugin Control Points tab</a> shows only those points joining a pair of images.
 </p><p>The list of points can be sorted by clicking on one of the column titles, clicking twice will reverse the sort:
 </p>
-<ul><li> <b>#</b>, the index number of the control point pair, deleting points will renumber the list.
+<ul><li> <b>G CP#</b>, the global (project-wide) index number of the control point pair, deleting points will renumber the list.
 </li><li> <b>left Img.</b>, the index number of the first image in the pair (<i>left/right</i> has no significance except that this is the order they are shown in the <a href="Hugin_Control_Points_tab.html" title="Hugin Control Points tab">hugin Control Points tab</a>).
 </li><li> <b>right Img.</b>, the index number of the second image in the pair.
+</li><li> <b>P CP#</b>, the local index number (of two images shown in the <a href="Hugin_Control_Points_tab.html" title="Hugin Control Points tab">Hugin Control Points tab</a>) of the control point pair, deleting points will renumber the list.
 </li><li> <b>Alignment</b>, the type of control point, these can be normal control points, <a href="Horizontal_control_points.html" title="Horizontal control points">horizontal control points</a>, <a href="Vertical_control_points.html" title="Vertical control points">vertical control points</a> or <a href="Straight_line_control_points.html" title="Straight line control points">straight line control points</a>.
 </li><li> <b>Distance</b>, the distance in pixels between a perfect alignment and the actual alignment achieved by the optimiser.  Otherwise, after selecting <b>Fine-tune all Points</b> from the <b>Edit</b> menu, this column shows the correlation between the points (0.0 indicates no correlation and 1.00 indicates 100% correlation) - Typically values over 0.8 show that the image areas around each point of the pair are very similar (an 80% correlation).
 </li></ul>
@@ -56,6 +65,8 @@ can select a range of rows with the <b>Shift</b> key.
 </li><li> Enter <i>-5</i> to select all points with an optimiser error <i>less than</i> five pixels.
 </li><li> Enter <i>-0.8</i> to select all points with a fine-tune correlation <i>less than</i> 80%.
 </li></ul>
+
+
 
 
 <div class="printfooter">

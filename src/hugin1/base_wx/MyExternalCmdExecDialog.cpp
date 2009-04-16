@@ -21,6 +21,7 @@
 *
 */
 
+
 // This class is written based on 'exec' sample of wxWidgets library.
 
 #include <config.h>
@@ -37,11 +38,34 @@
 
 #ifdef __WINDOWS__
     #include "wx/dde.h"
+	#include <windows.h>
+	#include <tlhelp32.h>	//needed to pause process on windows
+#else
+	#include <sys/types.h>	
+	#include <signal.h>	//needed to pause on unix - kill function
+	#include <unistd.h> //needed to separate the process group of make
 #endif // __WINDOWS__
+
+// Slightly reworked fix for BUG_2075064 
+#ifdef __WXMAC__
+	#include <iostream>
+	#include <stdio.h>
+	#include "wx/utils.h"
+#endif
 
 #include "MyExternalCmdExecDialog.h"
 #include "hugin/config_defaults.h"
 
+// Slightly reworked fix for BUG_2075064 
+using namespace std;
+
+
+// This wx internal bug is in versions of wxmac>2.8.8 on Leopard on ppc.
+/*#if defined __WXMAC__ && defined __ppc__
+	#define __HUGIN_WORKAROUND_BUG_2075064
+	DEBUG_DEBUG("Setting the __HUGIN_WORKAROUND_BUG_2075064");
+#endif
+*/
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
@@ -113,7 +137,6 @@ MyExecPanel::MyExecPanel(wxWindow * parent)
 //    topsizer->SetSizeHints( this );
 }
 
-
 void MyExecPanel::KillProcess()
 {
     if (m_pidLast) {
@@ -140,12 +163,108 @@ void MyExecPanel::KillProcess()
     }
 }
 
+/**function to pause running process, argument pause defaults to true - to resume, set it to false*/
+void MyExecPanel::PauseProcess(bool pause)
+{
+#ifdef __WXMSW__
+	HANDLE hProcessSnapshot = NULL;
+	HANDLE hThreadSnapshot = NULL; 
+	PROCESSENTRY32 pEntry = {0};
+	THREADENTRY32 tEntry = {0};
+
+	//we take a snapshot of all system processes
+	hProcessSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+	if (hProcessSnapshot == INVALID_HANDLE_VALUE)
+		wxLogError(_("Error pausing process %ld, code 1"),m_pidLast);
+	else
+	{
+		pEntry.dwSize = sizeof(PROCESSENTRY32);
+		tEntry.dwSize = sizeof(THREADENTRY32);
+		
+		//we traverse all processes in the system
+		if(Process32First(hProcessSnapshot, &pEntry))
+		{
+			do
+			{
+				//we pause threads of the main (make) process and its children (nona,enblend...)
+				if((pEntry.th32ProcessID == m_pidLast) || (pEntry.th32ParentProcessID == m_pidLast))
+				{
+					//we take a snapshot of all system threads
+					hThreadSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0); 
+					if (hThreadSnapshot == INVALID_HANDLE_VALUE)
+						wxLogError(_("Error pausing process %ld, code 2"),m_pidLast);
+
+					//we traverse all threads
+					if(Thread32First(hThreadSnapshot, &tEntry))
+					{
+						do
+						{
+							//we find all threads of the process
+							if(tEntry.th32OwnerProcessID == pEntry.th32ProcessID)
+							{
+								HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, tEntry.th32ThreadID);
+								if(pause)
+									SuspendThread(hThread);
+								else
+									ResumeThread(hThread);
+								CloseHandle(hThread);
+							}
+						}while(Thread32Next(hThreadSnapshot, &tEntry));
+					}
+					CloseHandle(hThreadSnapshot);
+				}
+			}while(Process32Next(hProcessSnapshot, &pEntry));
+		}
+	}
+	CloseHandle(hProcessSnapshot);
+#else
+	//send the process group a pause/cont signal
+	if(pause)
+		killpg(m_pidLast,SIGSTOP);
+	else
+		killpg(m_pidLast,SIGCONT);
+#endif //__WXMSW__
+}
+
+void MyExecPanel::ContinueProcess()
+{
+	PauseProcess(false);
+}
+
+long MyExecPanel::GetPid()
+{
+	return m_pidLast;
+}
 
 int MyExecPanel::ExecWithRedirect(wxString cmd)
 {
     if ( !cmd )
         return -1;
 
+// Slightly reworked fix for BUG_2075064 
+#if defined __WXMAC__ && defined __ppc__
+	int osVersionMajor;
+	int osVersionMinor;
+	
+	int os = wxGetOsVersion(&osVersionMajor, &osVersionMinor);
+	
+	 cerr << "osVersionCheck: os is " << os << "\n"  << endl;
+	 cerr << "osVersionCheck: osVersionMajor = " << osVersionMajor << endl;
+	 cerr << "osVersionCheck: osVersionMinor = " << osVersionMinor << endl;
+	if ((osVersionMajor == 0x10) && (osVersionMinor >= 0x50))
+	{
+		//let the child process exit without becoming zombie
+    		//may do some harm to internal handling by wxWidgets, but hey it's not working anyway
+    		signal(SIGCHLD,SIG_IGN);
+		cerr <<  "osVersionCheck: Leopard loop 1" << endl;
+	}
+	else
+	{
+		cerr <<  "osVersionCheck: Tiger loop 1" << endl;
+	}	
+#endif
+    
     MyPipedProcess *process = new MyPipedProcess(this, cmd);
     m_pidLast = wxExecute(cmd, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, process);
     if ( m_pidLast == 0 )
@@ -157,6 +276,11 @@ int MyExecPanel::ExecWithRedirect(wxString cmd)
     else
     {
         AddAsyncProcess(process);
+#ifndef __WINDOWS__
+		//on linux we put the new process into a separate group, 
+		//so it can be paused with all it's children at the same time
+		setpgid(m_pidLast,m_pidLast);	
+#endif
     }
     m_cmdLast = cmd;
     return 0;   
@@ -323,6 +447,45 @@ void MyExecPanel::OnTimer(wxTimerEvent& WXUNUSED(event))
     }
 //    m_textctrl->Thaw();
 #endif
+
+// Slightly reworked fix for BUG_2075064
+#if defined __WXMAC__ && defined __ppc__
+	int osVersionMajor;
+	int osVersionMinor;
+	
+	int os = wxGetOsVersion(&osVersionMajor, &osVersionMinor);
+	
+	cerr << "osVersionCheck: os is " << os << "\n"  << endl;
+	cerr << "osVersionCheck: osVersionMajor = " << osVersionMajor << endl;
+	cerr << "osVersionCheck: osVersionMinor = " << osVersionMinor << endl;
+
+    	if ((osVersionMajor == 0x10) && (osVersionMinor >= 0x50))
+    {	
+		cerr <<  "osVersionCheck: Leopard loop 2" << endl;	
+		if(m_pidLast)
+		{
+			if(kill((pid_t)m_pidLast,0)!=0) //if not pid exists
+			{
+				DEBUG_DEBUG("Found terminated process: " << (pid_t)m_pidLast)
+            
+				// probably should clean up the wxProcess object which was newed when the process was launched.
+				// for now, nevermind the tiny memory leak... it's a hack to workaround the bug anyway
+            
+				//notify dialog that it's finished.
+				if (this->GetParent()) {
+					wxProcessEvent event( wxID_ANY, m_pidLast, 0); // assume 0 exit code
+					event.SetEventObject( this );
+					DEBUG_TRACE("Sending wxProcess event");   
+					this->GetParent()->ProcessEvent( event );
+				}
+			}
+		}
+	}
+	else
+	{
+		cerr <<  "osVersionCheck: Tiger loop 2" << endl;
+	}
+#endif
 }
 
 void MyExecPanel::OnProcessTerminated(MyPipedProcess *process, int pid, int status)
@@ -462,14 +625,14 @@ int MyExecDialog::ExecWithRedirect(wxString cmd)
 int MyExecuteCommandOnDialog(wxString command, wxString args, wxWindow* parent,
                              wxString title)
 {
-
-
     command = utils::wxQuoteFilename(command);
     wxString cmdline = command + wxT(" ") + args;
-    MyExecDialog dlg(NULL, title,
+    MyExecDialog dlg(parent, title,
                      wxDefaultPosition, wxSize(640, 400));
+#ifdef __WXMAC__
+    dlg.CentreOnParent();
+#endif
     return dlg.ExecWithRedirect(cmdline);
-
 }
 
 //----------

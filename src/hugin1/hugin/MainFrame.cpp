@@ -51,6 +51,7 @@
 #include "hugin/OptimizePanel.h"
 #include "hugin/OptimizePhotometricPanel.h"
 #include "hugin/PreviewFrame.h"
+#include "hugin/GLPreviewFrame.h"
 #include "hugin/huginApp.h"
 #include "hugin/CPEditorPanel.h"
 #include "hugin/CPListFrame.h"
@@ -139,6 +140,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(XRCID("action_save_project"),  MainFrame::OnSaveProject)
     EVT_MENU(XRCID("action_save_as_project"),  MainFrame::OnSaveProjectAs)
     EVT_MENU(XRCID("action_save_as_ptstitcher"),  MainFrame::OnSavePTStitcherAs)
+	EVT_MENU(XRCID("action_send_to_batch"),  MainFrame::OnSendToBatch)
+	EVT_MENU(XRCID("action_open_batch_processor"),  MainFrame::OnOpenPTBatcher)
     EVT_MENU(XRCID("action_apply_template"),  MainFrame::OnApplyTemplate)
     EVT_MENU(XRCID("action_exit_hugin"),  MainFrame::OnUserQuit)
     EVT_MENU(XRCID("action_show_about"),  MainFrame::OnAbout)
@@ -151,7 +154,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(XRCID("ID_EDITUNDO"), MainFrame::OnUndo)
     EVT_MENU(XRCID("ID_EDITREDO"), MainFrame::OnRedo)
     EVT_MENU(XRCID("ID_SHOW_PREVIEW_FRAME"), MainFrame::OnTogglePreviewFrame)
+    EVT_MENU(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), MainFrame::OnToggleGLPreviewFrame)
     EVT_BUTTON(XRCID("ID_SHOW_PREVIEW_FRAME"),MainFrame::OnTogglePreviewFrame)
+    EVT_BUTTON(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), MainFrame::OnToggleGLPreviewFrame)
 
     EVT_MENU(XRCID("action_optimize"),  MainFrame::OnOptimize)
     EVT_BUTTON(XRCID("action_optimize"),  MainFrame::OnOptimize)
@@ -310,6 +315,7 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
     opt_photo_panel->Init(&pano);
 
     preview_frame = new PreviewFrame(this, pano);
+    gl_preview_frame = new GLPreviewFrame(this, pano);
 
     // set the minimize icon
 #ifdef __WXMSW__
@@ -336,10 +342,14 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
     pano.addObserver(this);
 
     // Set sizing characteristics
+    //set minumum size
+#if defined __WXMAC__ || defined __WXMSW__
     // a minimum nice looking size; smaller than this would clutter the layout.
-    //SetSizeHints(900, 675); //set minumum size
+    SetSizeHints(900, 675);
+#else
     // For ASUS eeePc
     SetSizeHints(780, 455); //set minumum size
+#endif
 
 #if 0
     bool maximized = config->Read(wxT("/MainFrame/maximized"), 0l) != 0;
@@ -540,6 +550,7 @@ void MainFrame::OnSaveProject(wxCommandEvent & e)
             wxString resultFnwx = scriptName.GetFullPath();
             resultFn = resultFnwx.mb_str(HUGIN_CONV_FILENAME);
             resultFn = utils::stripPath(utils::stripExtension(resultFn));
+            std::string tmpDir((wxConfigBase::Get()->Read(wxT("tempDir"),wxT(""))).mb_str(HUGIN_CONV_FILENAME));
 
             std::vector<std::string> outputFiles;
             HuginBase::PanoramaMakefileExport::createMakefile(pano,
@@ -549,7 +560,8 @@ void MainFrame::OnSaveProject(wxCommandEvent & e)
                                                               progs,
                                                               "",
                                                               outputFiles,
-                                                              makefile);
+                                                              makefile,
+                                                              tmpDir);
         }
     }
     MaskMgr::getInstance()->saveMask(path + "mask");
@@ -767,8 +779,16 @@ void MainFrame::OnAddImages( wxCommandEvent& event )
       dlg.SetFilterIndex(0);
     else if (img_ext == wxT("jpg"))
       dlg.SetFilterIndex(1);
-    else if (img_ext == wxT("all files"))
+    else if (img_ext == wxT("tiff"))
       dlg.SetFilterIndex(2);
+    else if (img_ext == wxT("png"))
+      dlg.SetFilterIndex(3);
+    else if (img_ext == wxT("hdr"))
+      dlg.SetFilterIndex(4);
+    else if (img_ext == wxT("exr"))
+      dlg.SetFilterIndex(5);
+    else if (img_ext == wxT("all files"))
+      dlg.SetFilterIndex(6);
     DEBUG_INFO ( "Image extention: " << img_ext.mb_str(wxConvLocal) )
 
     // call the file dialog
@@ -801,7 +821,11 @@ void MainFrame::OnAddImages( wxCommandEvent& event )
         switch ( dlg.GetFilterIndex() ) {
         case 0: config->Write(wxT("lastImageType"), wxT("all images")); break;
         case 1: config->Write(wxT("lastImageType"), wxT("jpg")); break;
-        case 2: config->Write(wxT("lastImageType"), wxT("all files")); break;
+        case 2: config->Write(wxT("lastImageType"), wxT("tiff")); break;
+        case 3: config->Write(wxT("lastImageType"), wxT("png")); break;
+        case 4: config->Write(wxT("lastImageType"), wxT("hdr")); break;
+        case 5: config->Write(wxT("lastImageType"), wxT("exr")); break;
+        case 6: config->Write(wxT("lastImageType"), wxT("all files")); break;
         }
 
     } else {
@@ -1131,6 +1155,15 @@ void MainFrame::OnTogglePreviewFrame(wxCommandEvent & e)
 	preview_frame->OnUpdate(dummy);
 }
 
+void MainFrame::OnToggleGLPreviewFrame(wxCommandEvent & e)
+{
+    if (gl_preview_frame->IsIconized()) {
+        gl_preview_frame->Iconize(false);
+    }
+    gl_preview_frame->Show();
+    gl_preview_frame->Raise();
+}
+
 void MainFrame::OnShowCPFrame(wxCommandEvent & e)
 {
     DEBUG_TRACE("");
@@ -1187,6 +1220,21 @@ void MainFrame::OnApplyTemplate(wxCommandEvent & e)
     }
 }
 
+
+void MainFrame::OnSendToBatch(wxCommandEvent & e)
+{
+	pano_panel->SendToBatch();
+}
+
+void MainFrame::OnOpenPTBatcher(wxCommandEvent & e)
+{
+#ifdef __WINDOWS__
+	wxString huginPath = getExePath(wxGetApp().argv[0])+wxFileName::GetPathSeparator();
+#else
+	wxString huginPath = _T("");	//we call the batch processor directly without path on linux
+#endif	
+	wxExecute(huginPath+_T("PTBatcherGUI"));
+}
 
 void MainFrame::OnFineTuneAll(wxCommandEvent & e)
 {
@@ -1398,6 +1446,7 @@ void MainFrame::enableTools(bool option)
 	wxToolBar* theToolBar = GetToolBar();
 	theToolBar->EnableTool(XRCID("action_optimize"), option);
 	theToolBar->EnableTool(XRCID("ID_SHOW_PREVIEW_FRAME"), option);
+	theToolBar->EnableTool(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), option);
 	//theToolBar->EnableTool(XRCID("action_save_project"), option);
 	//theToolBar->EnableTool(XRCID("action_save_as_project"), option);
     }
@@ -1406,6 +1455,7 @@ void MainFrame::enableTools(bool option)
 	theMenuBar->Enable(XRCID("action_optimize"), option);
 	theMenuBar->Enable(XRCID("action_finetune_all_cp"), option);
 	theMenuBar->Enable(XRCID("ID_SHOW_PREVIEW_FRAME"), option);
+	theMenuBar->Enable(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), option);
 	//theMenuBar->Enable(XRCID("action_save_project"), option);
 	//theMenuBar->Enable(XRCID("action_save_as_project"), option);
 	//theMenuBar->Enable(XRCID("action_save_as_ptstitcher"), option);
@@ -1519,6 +1569,7 @@ bool getLensDataFromUser(wxWindow * parent, SrcPanoImage & srcImg,
 {
     // display lens dialog
     HFOVDialog dlg(parent, srcImg, focalLength, cropFactor);
+    dlg.CenterOnParent();
     int ret = dlg.ShowModal();
     if (ret == wxID_OK) {
         // assume a cancel dialog.

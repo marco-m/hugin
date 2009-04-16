@@ -29,6 +29,8 @@
 #include "panoinc_WX.h"
 #include "panoinc.h"
 
+#include "base_wx/platform.h"
+#include <vector>
 #include <map>
 
 //#include <vigra_ext/PointMatching.h>
@@ -44,6 +46,12 @@
 #include "hugin/huginApp.h"
 #include "hugin/AutoCtrlPointCreator.h"
 #include "hugin/config_defaults.h"
+#include "base_wx/MyProgressDialog.h"
+
+// Celeste header
+#include "Celeste.h"
+#include "CelesteGlobals.h"
+#include "Utilities.h"
 
 using namespace PT;
 using namespace utils;
@@ -73,6 +81,7 @@ BEGIN_EVENT_TABLE(ImagesPanel, wxPanel)
     EVT_BUTTON     ( XRCID("action_remove_images"),  ImagesPanel::OnRemoveImages)
     EVT_BUTTON     ( XRCID("images_move_image_down"),  ImagesPanel::OnMoveImageDown)
     EVT_BUTTON     ( XRCID("images_move_image_up"),  ImagesPanel::OnMoveImageUp)
+    EVT_BUTTON	   ( XRCID("images_celeste_button"), ImagesPanel::OnCelesteButton)
     EVT_TEXT_ENTER ( XRCID("images_text_yaw"), ImagesPanel::OnYawTextChanged )
     EVT_TEXT_ENTER ( XRCID("images_text_pitch"), ImagesPanel::OnPitchTextChanged )
     EVT_TEXT_ENTER ( XRCID("images_text_roll"), ImagesPanel::OnRollTextChanged )
@@ -100,11 +109,6 @@ bool ImagesPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, co
     topsizer->Add(panel, 1, wxEXPAND, 0);
     SetSizer(topsizer);
 
-#ifdef DEBUG
-    SetBackgroundColour(wxTheColourDatabase->Find(wxT("RED")));
-    panel->SetBackgroundColour(wxTheColourDatabase->Find(wxT("BLUE")));
-#endif
-    
     DEBUG_TRACE("");
 
     m_showImgNr = INT_MAX;
@@ -123,15 +127,8 @@ bool ImagesPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, co
     m_moveDownButton = XRCCTRL(*this, "images_move_image_down", wxButton);
     DEBUG_ASSERT(m_moveDownButton);
 
-    m_img_ctrls = XRCCTRL(*this, "image_control_panel", wxScrolledWindow);
+    m_img_ctrls = XRCCTRL(*this, "image_control_panel", wxPanel);
     DEBUG_ASSERT(m_img_ctrls);
-//    m_img_splitter = XRCCTRL(*this, "image_panel_splitter", wxSplitterWindow);
-//    DEBUG_ASSERT(m_img_splitter);
-
-    m_img_ctrls->FitInside();
-    m_img_ctrls->SetScrollRate(10, 10);
-//    m_img_splitter->SetSashGravity(1);
-//    m_img_splitter->SetMinimumPaneSize(200);
 
     // Image Preview
     m_smallImgCtrl = XRCCTRL(*this, "images_selected_image", wxStaticBitmap);
@@ -142,7 +139,7 @@ bool ImagesPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, co
     XRCCTRL(*this, "images_text_roll", wxTextCtrl)->PushEventHandler(new TextKillFocusHandler(this));
     XRCCTRL(*this, "images_text_pitch", wxTextCtrl)->PushEventHandler(new TextKillFocusHandler(this));
 
-    m_empty.LoadFile(MainFrame::Get()->GetXRCPath() +
+    m_empty.LoadFile(huginApp::Get()->GetXRCPath() +
                      wxT("data/") + wxT("druid.images.128.png"),
                      wxBITMAP_TYPE_PNG);
     wxStaticBitmap * bmp = XRCCTRL(*this, "images_selected_image", wxStaticBitmap);
@@ -276,9 +273,9 @@ void ImagesPanel::SIFTMatching(wxCommandEvent & e)
                             , wxSpinCtrl)->GetValue();
 
     AutoCtrlPointCreator matcher;
-    CPVector cps = matcher.automatch(*pano, selImg, nFeatures);
+    CPVector cps = matcher.automatch(*pano, selImg, nFeatures,this);
     wxString msg;
-    wxMessageBox(wxString::Format(_("Added %d control points"), cps.size()), _("Autopano result"));
+    wxMessageBox(wxString::Format(_("Added %d control points"), cps.size()), _("Autopano result"),wxOK|wxICON_INFORMATION,this);
     GlobalCmdHist::getInstance().addCommand(
             new PT::AddCtrlPointsCmd(*pano, cps)
                                            );
@@ -434,6 +431,7 @@ void ImagesPanel::DisableImageCtrls()
     m_moveUpButton->Disable();
     XRCCTRL(*this, "images_reset_pos", wxButton)->Disable();
     XRCCTRL(*this, "action_remove_images", wxButton)->Disable();
+    XRCCTRL(*this, "images_celeste_button", wxButton)->Disable();
 }
 
 void ImagesPanel::EnableImageCtrls()
@@ -446,6 +444,7 @@ void ImagesPanel::EnableImageCtrls()
         m_moveUpButton->Enable();
         XRCCTRL(*this, "images_reset_pos", wxButton)->Enable();
         XRCCTRL(*this, "action_remove_images", wxButton)->Enable();
+	XRCCTRL(*this, "images_celeste_button", wxButton)->Enable();
     }
 }
 
@@ -728,4 +727,136 @@ bool ImagesPanelXmlHandler::CanHandle(wxXmlNode *node)
 
 IMPLEMENT_DYNAMIC_CLASS(ImagesPanelXmlHandler, wxXmlResourceHandler)
 
+void ImagesPanel::OnCelesteButton(wxCommandEvent & e)
+{
+    const UIntSet & selImg = images_list->GetSelected();
+    unsigned int total_removed = 0;
+
+    if ( selImg.size() == 0)
+    {
+        DEBUG_WARN("Cannot run celeste without at least one point");
+    }
+    else
+    {	
+        ProgressReporterDialog progress(selImg.size()+1, _("Running Celeste"), _("Running Celeste"),this);
+
+        DEBUG_TRACE("Running Celeste");
+        // set numeric locale to C, for correct number output
+        char * old_locale = setlocale(LC_NUMERIC,NULL);
+        setlocale(LC_NUMERIC,"C");
+
+        // determine file name of SVM model file
+        // get XRC path from application
+        wxString wxstrModelFileName = huginApp::Get()->GetXRCPath() + wxT("data/") + wxT(HUGIN_CELESTE_MODEL);
+        // convert wxString to string
+        string strModelFileName(wxstrModelFileName.mb_str(wxConvUTF8));
+		
+        // SVM model file
+        if (! wxFile::Exists(wxstrModelFileName) ) {
+            wxMessageBox(_("Celeste model file not found, Hugin needs to be properly installed." ), _("Fatal Error"));
+            return ;
+        }
+
+        for (UIntSet::const_iterator itr = selImg.begin(); itr != selImg.end(); ++itr) {
+
+            progress.increaseProgress(1.0, std::string(wxString(_("Running Celeste")).mb_str(wxConvLocal)));
+
+            const CPVector & controlPoints = pano->getCtrlPoints();
+            unsigned int removed = 0;
+            const unsigned int imgNr = *itr;
+
+            gNumLocs = 0;
+            for (PT::CPVector::const_iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
+                PT::ControlPoint point = *it;
+                if (imgNr == point.image1Nr){
+                    gNumLocs++;				
+                }
+                if (imgNr == point.image2Nr){
+                    gNumLocs++;				
+                }
+            }		
+
+            // Create the storage matrix
+            gLocations = CreateMatrix( (int)0, gNumLocs, 2);
+            unsigned int glocation_counter = 0;
+            unsigned int cp_counter = 0;	
+            vector<unsigned int> global_cp_nr;
+
+            for (PT::CPVector::const_iterator it = controlPoints.begin(); it != controlPoints.end(); ++it) {
+                PT::ControlPoint point = *it;
+
+                if (imgNr == point.image1Nr){
+                    //cout << "---imgNr = " << imgNr << " point.image1Nr = " << point.image1Nr << endl;	
+                    gLocations[glocation_counter][0] = (int)point.x1;
+                    gLocations[glocation_counter][1] = (int)point.y1;
+                    global_cp_nr.push_back(cp_counter);	
+                    glocation_counter++;				
+                }
+                if (imgNr == point.image2Nr){
+                    //cout << "---imgNr = " << imgNr << " point.image1Nr = " << point.image1Nr << endl;	
+                    gLocations[glocation_counter][0] = (int)point.x2;
+                    gLocations[glocation_counter][1] = (int)point.y2;
+                    global_cp_nr.push_back(cp_counter);	
+                    glocation_counter++;				
+                }
+                cp_counter++;	
+            }
+
+            // SVM threshold
+            double threshold = HUGIN_CELESTE_THRESHOLD;
+            wxConfigBase::Get()->Read(wxT("/Celeste/Threshold"), &threshold, HUGIN_CELESTE_THRESHOLD);
+
+            // Mask resolution - 1 sets it to fine
+            bool t = (wxConfigBase::Get()->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER) != 0);
+            if (t){
+                //cerr <<"---Celeste--- Using small filter" << endl;
+                gRadius = 10;
+                spacing = (gRadius * 2) + 1;
+            }
+
+            // Image to analyse
+            string imagefile = pano->getImage(*itr).getFilename();
+
+            // Print progress
+            MainFrame::Get()->SetStatusText(_("searching for cloud-like control points..."),0);
+
+            // Vector to store Gabor filter responses
+            vector<double> svm_responses_im;
+            string mask_format = "PNG";
+            unsigned int mask = 0;
+
+            // Get responses
+            get_gabor_response(imagefile, mask, strModelFileName, threshold, mask_format, svm_responses_im);
+
+            MainFrame::Get()->SetStatusText(_("classifying control points..."),0);
+
+            // Print SVM results
+            for (unsigned int c = 0; c < svm_responses_im.size(); c++){
+
+                unsigned int pNr = global_cp_nr[c] - removed;	
+
+                if (svm_responses_im[c] >= threshold){
+
+                    DEBUG_DEBUG("about to delete point " << pNr);
+                    GlobalCmdHist::getInstance().addCommand(
+                        new PT::RemoveCtrlPointCmd(*pano,pNr)
+                        );
+                    removed++;	
+                    total_removed++;					
+                    cout << "CP: " << c << "\tSVM Score: " << svm_responses_im[c] << "\tremoved." << endl;
+                }
+            }
+            if (removed)
+            {
+                cout << endl;
+            }
+        }
+        MainFrame::Get()->SetStatusText(_(""),0);
+
+        // reset locale
+        setlocale(LC_NUMERIC,old_locale);	
+    }
+
+    wxMessageBox(wxString::Format(_("Removed %d control points"), total_removed), _("Celeste result"),wxOK|wxICON_INFORMATION,this);
+}
 

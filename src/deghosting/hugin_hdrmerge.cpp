@@ -148,6 +148,8 @@ static void usage(const char * name)
 		 << "                averaging when all pixel weights are within 10% of eachother" << endl
 		 << "            h - favor a high signal to noise ratio" << std::endl
 		 << "            i - ignore alpha channel" << endl
+		 << "            n - do not use luminance images for estimating initial weights" << endl
+		 << "                (bases weights on input images itself)" << endl
 /*		 << "            m - multi-scale calculation of weights" << std::endl
 		 << "            s - favor choosing from the same image" << std::endl
 		 << "            u - use joint bilateral upscaling" << std::endl
@@ -181,9 +183,9 @@ int main(int argc, char *argv[])
     bool onlyCompleteOverlap = false;
 	int num_iters = 1;
 	unsigned char save = 0;
-	char adv = 0;
+	unsigned int adv = 0;
 	char ui = 0;
-	
+
     string basename;
     while ((c = getopt (argc, argv, optstring)) != -1) {
         switch (c) {
@@ -234,7 +236,7 @@ int main(int argc, char *argv[])
 					usage(argv[0]);
 					return 1;
 				}
-			} 
+			}
 			break;
 		case 'a':
 			for(char *c = optarg; *c; c++) {
@@ -287,6 +289,11 @@ int main(int argc, char *argv[])
 					if(g_verbose > 0)
 						cout << "Applying: ignore alpha channel" << endl;
 					break;
+				case 'n':
+					adv += ADV_NOLUM;
+					if(g_verbose > 0)
+						cout << "Using input images to estimate initial weights instead of luminance" << endl;
+					break;
 /*				case 'm':
 					adv += ADV_MULTI;
 					if(g_verbose > 0)
@@ -319,16 +326,16 @@ int main(int argc, char *argv[])
             break;
         case 'h':
             usage(argv[0]);
-            return 1;
+            return 0;
         default:
             cerr << "Invalid parameter: " << optarg << std::endl;
             usage(argv[0]);
             return 1;
         }
 	}//end while
-	
+
 	cout << endl;
-	
+
 	if(g_verbose > 2)
 		save = SAVE_ALL;
 
@@ -399,7 +406,7 @@ int main(int argc, char *argv[])
         cerr << "caught exception: " << e.what() << std::endl;
         abort();
     }
-	
+
     return 0;
 }
 
@@ -416,7 +423,7 @@ bool saveImages(std::vector<std::string> prep, std::string app,
 				<<endl;
 		return false;
 	}
-	
+
 	for(unsigned i = 0; i < prep.size(); i++) {
 		string tmp(prep.at(i));
 		tmp.erase(tmp.rfind('.', tmp.length()-1));
@@ -425,7 +432,7 @@ bool saveImages(std::vector<std::string> prep, std::string app,
 		ImageExportInfo exinfo(tmp.c_str());
 		exportImage(srcImageRange(*images.at(i)), exinfo);
 	}
-	
+
 	return true;
 }
 
@@ -437,7 +444,7 @@ bool loadImages(std::vector<std::string> prep, std::string app,
 				<<endl;
 		return false;
 	}
-	
+
 	for(unsigned i = 0; i < prep.size(); i++) {
 		string tmp(prep.at(i));
 		tmp.erase(tmp.rfind('.', tmp.length()-1));
@@ -446,9 +453,9 @@ bool loadImages(std::vector<std::string> prep, std::string app,
 		ImageImportInfo info(tmp.c_str());
 		FImagePtr img(new FImage(info.size()));
 		importImage(info, destImage(*img));
-		
+
 		images->push_back(img);
 	}
-	
+
 	return true;
 }

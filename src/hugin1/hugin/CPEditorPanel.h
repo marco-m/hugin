@@ -35,8 +35,14 @@
 #include <utility>
 #include <string>
 
+// Celeste files
+#include "Celeste.h"
+#include "CelesteGlobals.h"
+#include "Utilities.h"
+
 #include <PT/Panorama.h>
 
+#include "CPImagesComboBox.h"
 
 // Always use wxChoice, the tabs behave badly with many images on GTK as well.
 #define HUGIN_CP_IMG_CHOICE
@@ -198,6 +204,7 @@ private:
     void OnColumnWidthChange( wxListEvent & e );
 
     void OnFineTuneButton(wxCommandEvent & e);
+    void OnCelesteButton(wxCommandEvent & e);
     
     void OnSize(wxSizeEvent & e);
     
@@ -259,8 +266,8 @@ private:
 
     // GUI controls
 #ifdef HUGIN_CP_IMG_CHOICE
-    wxChoice *m_leftChoice;
-    wxChoice *m_rightChoice;
+    CPImagesComboBox *m_leftChoice;
+    CPImagesComboBox *m_rightChoice;
 #endif
 #ifdef HUGIN_CP_IMG_TAB
     wxNotebook *m_leftTabs, *m_rightTabs;
@@ -276,7 +283,7 @@ private:
     wxCheckBox *m_autoAddCB;
     wxCheckBox *m_fineTuneCB;
     wxCheckBox *m_estimateCB;
-	wxScrolledWindow *m_cp_ctrls;
+	wxPanel *m_cp_ctrls;
 #ifdef HUGIN_CP_USE_SPLITTER
     wxSplitterWindow *m_cp_splitter;
 #endif

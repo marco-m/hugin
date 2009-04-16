@@ -30,6 +30,11 @@ do
  if [ $lang = "en" ]
  then
   continue
+ else
+   if [ $lang != "fr" ] && [ $lang != "it" ]
+   then
+       ln -s "$resdir/en.lproj/help" "$localisedresdir/help"
+   fi
  fi
  
  echo "$lang/hugin.mo from $lang.po"

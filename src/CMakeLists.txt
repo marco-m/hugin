@@ -15,6 +15,7 @@ ENDIF (MSVC)
 set(image_libs huginvigraimpex ${OPENEXR_LIBRARIES} ${JPEG_LIBRARIES} ${TIFF_LIBRARIES}
     ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${EXIV2_LIBRARIES})
 
+add_subdirectory(celeste)
 add_subdirectory(foreign)
 add_subdirectory(hugin_base)
 add_subdirectory(tools)
@@ -32,6 +33,14 @@ IF(wxWidgets_FOUND)
   INCLUDE(${wxWidgets_USE_FILE})
   add_subdirectory(hugin1)
   add_subdirectory(maskeditor)
+
+  include_directories( ${CMAKE_SOURCE_DIR}/src/hugin1 )
+  # do we need to define _UNICODE on windows?
+  IF(WIN32)
+    IF ("${wxWidgets_CONFIGURATION}" STREQUAL "mswu")
+      ADD_DEFINITIONS("-D_UNICODE")
+    ENDIF("${wxWidgets_CONFIGURATION}" STREQUAL "mswu")
+  ENDIF(WIN32)
 ENDIF(wxWidgets_FOUND)
 
 add_subdirectory(translations)

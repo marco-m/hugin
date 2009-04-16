@@ -272,27 +272,27 @@ CPListFrame::CPListFrame(MainFrame * parent, Panorama & pano)
     this->SetBackgroundColour(XRCCTRL(*this, "cp_list_select", wxButton)->GetBackgroundColour());
 #endif
 #ifdef __WXMSW__
-    wxIcon myIcon(MainFrame::Get()->GetXRCPath() + wxT("data/icon.ico"),wxBITMAP_TYPE_ICO);
+    wxIcon myIcon(huginApp::Get()->GetXRCPath() + wxT("data/icon.ico"),wxBITMAP_TYPE_ICO);
 #else
-    wxIcon myIcon(MainFrame::Get()->GetXRCPath() + wxT("data/icon.png"),wxBITMAP_TYPE_PNG);
+    wxIcon myIcon(huginApp::Get()->GetXRCPath() + wxT("data/icon.png"),wxBITMAP_TYPE_PNG);
 #endif
     SetIcon(myIcon);
 
     if (m_verbose) {
         // setup list display
         m_list->InsertColumn( 0, _("#"), wxLIST_FORMAT_RIGHT, 25);
-        m_list->InsertColumn( 1, _("left Img."), wxLIST_FORMAT_RIGHT, 65);
+        m_list->InsertColumn( 1, _("Left Img."), wxLIST_FORMAT_RIGHT, 65);
         m_list->InsertColumn( 2, _("x"), wxLIST_FORMAT_RIGHT, 40);
         m_list->InsertColumn( 3, _("y"), wxLIST_FORMAT_RIGHT, 40);
-        m_list->InsertColumn( 4, _("right Img."), wxLIST_FORMAT_RIGHT, 65);
+        m_list->InsertColumn( 4, _("Right Img."), wxLIST_FORMAT_RIGHT, 65);
         m_list->InsertColumn( 5, _("x"), wxLIST_FORMAT_RIGHT, 40);
         m_list->InsertColumn( 6, _("y"), wxLIST_FORMAT_RIGHT, 40);
         m_list->InsertColumn( 7, _("Alignment"), wxLIST_FORMAT_LEFT, 80);
         m_list->InsertColumn( 8, _("Distance"), wxLIST_FORMAT_RIGHT, 80);
     } else {
         m_list->InsertColumn( 0, _("G CP#"), wxLIST_FORMAT_RIGHT, 25);
-        m_list->InsertColumn( 1, _("left Img."), wxLIST_FORMAT_RIGHT, 65);
-        m_list->InsertColumn( 2, _("right Img."), wxLIST_FORMAT_RIGHT, 65);
+        m_list->InsertColumn( 1, _("Left Img."), wxLIST_FORMAT_RIGHT, 65);
+        m_list->InsertColumn( 2, _("Right Img."), wxLIST_FORMAT_RIGHT, 65);
         m_list->InsertColumn( 3, _("P CP#"), wxLIST_FORMAT_RIGHT, 25);
         m_list->InsertColumn( 4, _("Alignment"), wxLIST_FORMAT_LEFT, 80);
         m_list->InsertColumn( 5, _("Distance"), wxLIST_FORMAT_RIGHT, 80);
@@ -616,20 +616,17 @@ void CPListFrame::OnSelectButton(wxCommandEvent & e)
     // hmm, maybe some theory would be nice.. this is just a
     // guess.
     double threshold = mean_error + std_dev;
-
-
-    wxString t=wxGetTextFromUser(_("Enter minimum control point error.\nAll points with a higher error will be selected"), _("Select Control Points"),
-                                 doubleTowxString(threshold,2));
-    if (t == wxT("")) {
-        // do not select anything
-        return;
-    }
-
-    while (!t.ToDouble(&threshold)) {
-        wxMessageBox(_("Error: please enter a valid number."), _("Could not read number"), wxICON_ERROR);
+    wxString t;
+    do
+    {
         t=wxGetTextFromUser(_("Enter minimum control point error.\nAll points with a higher error will be selected"), _("Select Control Points"),
-                            utils::doubleTowxString(threshold,2));
-    }
+                                 doubleTowxString(threshold,2));
+
+        if (t == wxEmptyString) {
+            // do not select anything
+            return;
+        }
+    } while (!str2double(t,threshold));
 
     bool invert = threshold < 0;
     if (invert) {

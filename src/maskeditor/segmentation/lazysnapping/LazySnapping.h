@@ -33,7 +33,7 @@
 
 const double SIGMA = 2.0f;
 const double LAMBDA = 50.0f;
-const int    NCLUSTERS = 64;
+const int    NCLUSTERS = 16;
 const int    CLUSTERCOORDDIM = 5; // 3:RGB, 5:RGB + (r,c)
 
 class LazySnappingMemento;
@@ -44,6 +44,7 @@ class LazySnapping : public ISegmentation
 
     typedef float captype;
 
+	static const int MAX_NEIGHBOR = 8;
     wxBitmap *m_mask;
     unsigned char *m_mask_data;    // raw pixels
     //wxBitmap *m_tmp_bmp;         //used for drawing lines and getting all pixel from it
@@ -51,16 +52,16 @@ class LazySnapping : public ISegmentation
     unsigned char *m_data;         // input image
     //std::vector<wxPoint> m_outline;
     int m_width, m_height, m_depth;
-    Graph::node_id *m_nodes;
+    Graph::node_id *m_nodes; // <TODO> optimization: implement add_node(nNodes)</TODO>
     Graph          *m_graph;
     int             m_cnodes;       //number of nodes. It can be no. of pixels or nodes after preprocessing
     double          m_lambda, m_sigma;
     captype         m_K;
 
     typedef std::map<PixelCoord, ISegmentation::Label, cmp_pixel_coord> tSeed;
-    typedef std::map<PixelColor, int> tObjColorMap;
+    //typedef std::map<PixelColor, int> tObjColorMap;
     tSeed   m_seeds;
-    tObjColorMap m_fgnd, m_bkgnd;
+    //tObjColorMap m_fgnd, m_bkgnd;
     std::vector<PixelCoord> m_fgnd_seeds, m_bkgnd_seeds;
 
     typedef KMcoord ClusterCoordType;
@@ -142,6 +143,7 @@ class LazySnapping : public ISegmentation
     void    buildGraph();
     void    updateGraph(std::vector<PixelCoord> coords, Label label);
     int     getNeighbor(int p, int n);
+	void    getNeighbors(int p, int *neighbors, int *nNeighbors);
     double  getDistSqrPixel(const PixelCoord &p, const PixelCoord &q) const;
     double  getDistSqrPixel(int p, int q) const;
     double  getDistPixel(int p, int q) const;

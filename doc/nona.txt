@@ -112,7 +112,7 @@
 #                           i6 - flatfield correction by division.
 #                                 The flatfield image should be specified with the p option
 #
-# Va,Vb,Vc,Vd  vignetting correction coefficients. (defaults: 0,0,0,0)
+# Va,Vb,Vc,Vd  vignetting correction coefficients. (defaults: 1,0,0,0)
 #               ( 0, 2, 4, 6 order polynomial coefficients):
 #                corr = ( i + j*r^2 + k*r^4 + l*r^6), where r is the distance from the image center
 #              The corrected pixel value is calculated with: i_new = i_old + corr
@@ -129,6 +129,7 @@
 #               In the case of correction by division, the flatfield will be divided by
 #               its mean value.
 #
+# Ra,Rb,Rc,Rd,Re EMoR photometric model parameters. (defaults: 0,0,0,0,0) 
 #
 # S100,600,100,800   Selection(l,r,t,b), Only pixels inside the rectangle will be used for conversion.
 #                       Original image size is used for all image parameters
@@ -165,3 +166,20 @@ o f2 r0   p0    y180   v183    a0 b-0.1 c0  S100,600,100,800 n"photo1.jpg"
 #                   
 m i2
 
+
+# 'v'-line options
+# ----------------
+# Indicate i-line parameters to optimise
+# nona ignores all 'v' lines, these lines are used by autooptimiser
+# (a,b,c,d,e,v,r,p,y geometric parameters) and vig_optimize
+# (Eev,Er,Eb,Va,Vb,Vc,Vd,Vx,Vy,Ra,Rb,Rc,Rd,Re photometric parameters)
+#
+# The format is described in libpano13 Optimize.txt
+
+
+# 'c'-lines
+# ----------------
+# Control point lines
+# nona ignores all 'c' lines, these lines are used by autooptimiser
+#
+# The format is described in libpano13 Optimize.txt

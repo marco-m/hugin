@@ -115,6 +115,10 @@ class LensPanel: public wxPanel, public PT::PanoramaObserver
      */
     void OnNewLens(wxCommandEvent & e);
 
+    /** reset lens parameters
+     */
+    void OnReset(wxCommandEvent & e);
+
     /** catches changes to the list selection */
     void ListSelectionChanged(wxListEvent& e);
 
@@ -135,7 +139,7 @@ class LensPanel: public wxPanel, public PT::PanoramaObserver
     int m_distDigitsEdit;
     int m_pixelDigits;
 
-    wxScrolledWindow *m_lens_ctrls;
+    wxPanel *m_lens_ctrls;
 
     bool m_restoreLayoutOnResize;
 

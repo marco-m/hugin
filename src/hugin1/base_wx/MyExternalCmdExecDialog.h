@@ -44,6 +44,7 @@ class MyProcessListener
 {
 public:
     virtual void OnProcessTerminated(MyPipedProcess *process, int pid, int status) = 0;
+    virtual ~MyProcessListener() {}
 };
 
 
@@ -55,6 +56,9 @@ public:
     MyExecPanel(wxWindow * parent);
 
     void KillProcess();
+	void PauseProcess(bool pause = true);
+	void ContinueProcess();
+	long GetPid();
 
     void OnExecWithRedirect(wxCommandEvent& event);
 

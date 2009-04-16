@@ -171,23 +171,23 @@ void LazySnapping::reset()
     SAFE_DELETE_ARRAY(m_data);
 }
 
-void LazySnapping::getRC(int p, int *r, int *c) const
+inline void LazySnapping::getRC(int p, int *r, int *c) const
 {
     *r = p/m_width;
     *c = p%m_width;
 }
 
-int LazySnapping::getIndex(int r, int c) const
+inline int LazySnapping::getIndex(int r, int c) const
 {
     return r * m_width + c;
 }
 
-void LazySnapping::preprocess()
+inline void LazySnapping::preprocess()
 {
     m_cnodes = m_width * m_height;
 }
 
-PixelColor LazySnapping::getPixelValue(int p) const 
+inline PixelColor LazySnapping::getPixelValue(int p) const 
 {
     PixelColor color;
     color.r = *(m_data + p * m_depth);
@@ -196,12 +196,12 @@ PixelColor LazySnapping::getPixelValue(int p) const
     return color;
 }
 
-PixelColor LazySnapping::getPixelValue(int r, int c) const 
+inline PixelColor LazySnapping::getPixelValue(int r, int c) const 
 {
     return getPixelValue( (r * m_width + c) );
 }
 
-PixelColor LazySnapping::getPixelValue(PixelCoord pt) const 
+inline PixelColor LazySnapping::getPixelValue(PixelCoord pt) const 
 {
     return getPixelValue(pt.y, pt.x);
 }
@@ -226,7 +226,7 @@ inline double LazySnapping::getDistPixel(int p, int q) const
     return sqrt(getDistSqrPixel(p, q));
 }
 
-double LazySnapping::getDistSqrPixelIntensity(int p, int q) const
+inline double LazySnapping::getDistSqrPixelIntensity(int p, int q) const
 {
     PixelColor clr1, clr2;
     
@@ -236,7 +236,7 @@ double LazySnapping::getDistSqrPixelIntensity(int p, int q) const
     return SQR(clr1.r - clr2.r)+SQR(clr1.g - clr2.g)+ SQR(clr1.b - clr2.b) ;
 }
 
-int LazySnapping::getNeighbor(int p, int n)
+inline int LazySnapping::getNeighbor(int p, int n)
 {
    static const int N8[4][2] = {0,  1,
                  1,  1,
@@ -256,7 +256,46 @@ int LazySnapping::getNeighbor(int p, int n)
    return -1;
 }
 
-LazySnapping::captype LazySnapping::computePrior(int p, int q)
+inline void LazySnapping::getNeighbors(int p, int *neighbors, int *n)
+{
+    // a more efficient version of retrieving neighbors
+    // return only unique set of neighbors all at once
+    *n = 0;
+    if(p == m_cnodes - 1) { //last node does not have any neighbors
+        return;
+    }
+        
+    int r = p/m_width;
+    int c = p%m_width;
+    
+    if(MAX_NEIGHBOR == 4) {
+        *n = 2;
+        neighbors[0] = p + 1;
+        neighbors[1] = p + m_width;
+        // if corner pixel
+        if(r == m_height - 1 || c == m_width - 1) {
+            *n = 1;
+            if(c == m_width - 1) {
+                neighbors[0] = neighbors[1];
+            }
+        }
+        
+    } else if(MAX_NEIGHBOR == 8){
+        *n = 3;
+        neighbors[0] = p + 1;
+        neighbors[1] = neighbors[0] + m_width;
+        neighbors[2] = p + m_width;
+        if(r == m_height - 1 || c == m_width - 1) {
+            *n = 1;
+            if(c == m_width - 1)
+                neighbors[0] = neighbors[2];
+        }
+    }
+    
+}
+
+
+inline LazySnapping::captype LazySnapping::computePrior(int p, int q)
 {
     //return exp(-getDistSqrPixelIntensity(p, q)/(2*m_sigma*m_sigma)) * (1.0/getDistPixel(p,q));
     double d = getDistSqrPixelIntensity(p, q);
@@ -304,6 +343,7 @@ void LazySnapping::buildGraph()
     int i, j, n;
     for(i = 0; i < m_cnodes; i++)
         m_nodes[i] = m_graph->add_node();
+	//m_graph->add_node();
 
     captype cap, rev_cap;
     m_K = -1;
@@ -375,7 +415,7 @@ void LazySnapping::markPixels(vector<PixelCoord> coords, Label label)
             m_seeds[*it] = label;
             newcoords.push_back(*it);
             //update stats
-            PixelColor p = getPixelValue(*it);
+            /*PixelColor p = getPixelValue(*it);
             if(label == BKGND) {
                 if(m_bkgnd.find(p) != m_bkgnd.end())
                     m_bkgnd[p] = m_bkgnd[p] + 1;
@@ -386,7 +426,7 @@ void LazySnapping::markPixels(vector<PixelCoord> coords, Label label)
                     m_fgnd[p] = m_fgnd[p] + 1;
                 else 
                     m_fgnd[p] = 0;
-            }
+            }*/
             //mark clusters
             //markCluster(*it, label); /*pc = findCluster(*it);*/
         }
@@ -482,7 +522,9 @@ void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
             m_graph->set_tweights(m_nodes[i], 0, INF);
         }
     }
-    
+    /*
+		<TODO> use a binary array for marking seeds (ie. 1bits per pixel so for 16Mpixels 2MB) </TODO>
+	*/
     for(i = 0; i < m_cnodes; i++)
     {
         getRC(i, &r, &c);
@@ -703,15 +745,15 @@ vector<vector<wxPoint> > LazySnapping::getMaskContours() const
     
     //wxBitmap bmp((char*)m_mask_data, m_width, m_height, 1);
     //bmp.SaveFile(wxT("J:\\hugin-devel\\test\\testimages\\lowres\\mask1.bmp"), wxBITMAP_TYPE_BMP);
-    FILE *fout = fopen("J:\\hugin-devel\\test\\testimages\\lowres\\mask1.pgm", "w");
+    /*FILE *fout = fopen("J:\\hugin-devel\\test\\testimages\\lowres\\mask1.pgm", "w");
     fprintf(fout,"P2\n%d %d\n255\n", m_width, m_height);
     for(int i = 0; i < m_height; i++) {
         for(int j = 0; j < m_width; j++) {
             fprintf(fout, "%d ", mask[i * m_width + j]);
         }
         fprintf(fout,"\n");
-    }
-    //delete [] mask;
+    }*/
+    delete [] mask;
     //delete [] mask_tmp;
 
     return contours;

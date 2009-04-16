@@ -14,6 +14,7 @@ SET(XRCFILES
     help.xrc
     keyboard_help.xrc
     pref_dialog.xrc
+    reset_dialog.xrc
     vig_corr_dlg.xrc
     optimize_photo_panel.xrc
     cp_editor_panel.xrc
@@ -22,7 +23,10 @@ SET(XRCFILES
     assistant_panel.xrc
     main_frame.xrc
     optimize_panel.xrc
-    pano_panel.xrc)
+    pano_panel.xrc
+    batch_frame.xrc
+    batch_menu.xrc
+    batch_toolbar.xrc)
 
 
 INSTALL(FILES ${XRCFILES} DESTINATION ${HUGINDATADIR}/xrc)

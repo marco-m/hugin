@@ -39,7 +39,7 @@ IF(WIN32)
 
   FIND_PATH(ENBLEND_EXE_DIR enblend.exe 
             ${SOURCE_BASE_DIR}/enblend-3.1
-            ${SOURCE_BASE_DIR}/enblend-3.2
+            ${SOURCE_BASE_DIR}/enblend-enfuse-3.2
             DOC "Location of enblend executables"
             NO_DEFAULT_PATH
             )
@@ -82,6 +82,7 @@ IF(WIN32)
   # grab and install autopano-sift-C
   FIND_PATH(AP_SIFT_DIR bin/autopano.exe
 	    ${SOURCE_BASE_DIR}/autopano-sift-C
+        ${SOURCE_BASE_DIR}/autopano-sift-C/INSTALL/FILES
 	    DOC "Base directory of autopano-sift-C installation"
 	    NO_DEFAULT_PATH)
   FILE(GLOB AP_SIFT_EXE ${AP_SIFT_DIR}/bin/*)

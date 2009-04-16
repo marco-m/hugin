@@ -54,7 +54,7 @@ using namespace AppBase;
 static void usage(const char * name)
 {
     cerr << name << ": optimize image positions" << endl
-         << "autooptimizer version " << PACKAGE_VERSION << endl
+         << "autooptimiser version " << PACKAGE_VERSION << endl
          << endl
          << "Usage:  " << name << " [options] input.pto" << endl
          << "   To read a project from stdio, specify - as input file." << endl
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
             break;
         case 'h':
             usage(argv[0]);
-            return 1;
+            return 0;
         case 'p':
             doPairwise = true;
             break;
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     const char * scriptFile = argv[optind];
 
     Panorama pano;
-    if (scriptFile == "-") {
+    if (scriptFile[0] == '-') {
         DocumentData::ReadWriteError err = pano.readData(std::cin);
         if (err != DocumentData::SUCCESSFUL) {
             cerr << "error while reading script file from stdin." << endl;

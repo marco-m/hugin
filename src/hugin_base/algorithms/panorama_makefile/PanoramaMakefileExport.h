@@ -32,8 +32,12 @@
 
 
 namespace HuginBase {
-    
+
 ///
+std::vector<UIntSet> getHDRStacks(const PanoramaData & pano, UIntSet allImgs);
+std::vector<UIntSet> getExposureLayers(const PanoramaData & pano, UIntSet allImgs);
+UIntSet getImagesinROI (const PanoramaData& pano, const UIntSet activeImages);
+
 class PanoramaMakefileExport : public PanoramaAlgorithm
 {
     public:
@@ -72,6 +76,7 @@ class PanoramaMakefileExport : public PanoramaAlgorithm
                     enfuse = "enfuse";
                     smartblend = "smartblend.exe";
                     hdrmerge = "hugin_hdrmerge";
+                    exiftool = "exiftool";
             }
         };
         
@@ -100,7 +105,8 @@ class PanoramaMakefileExport : public PanoramaAlgorithm
                                    const PTPrograms & progs,
                                    const std::string & includePath,
                                    std::vector<std::string> & outputFiles,
-                                   std::ostream & o);
+                                   std::ostream & o,
+                                   const std::string& tmpDir);
 
 
     public:
@@ -113,7 +119,7 @@ class PanoramaMakefileExport : public PanoramaAlgorithm
         {
             createMakefile(o_panorama,
                            o_images, o_ptofile, o_outputPrefix, o_progs, o_includePath,
-                           o_outputFiles, o_output);
+                           o_outputFiles, o_output, o_tmpDir);
 
             return true; // let's hope so.
         }
@@ -128,6 +134,7 @@ class PanoramaMakefileExport : public PanoramaAlgorithm
             PTPrograms o_progs;
             std::vector<std::string> o_outputFiles;
             String o_includePath;
+            String o_tmpDir;
 };
         
 

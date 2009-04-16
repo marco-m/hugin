@@ -26,13 +26,18 @@ include_directories( ${CMAKE_SOURCE_DIR}/src/maskeditor/segmentation)
 # sources
 set(hugin_SOURCES
 huginApp.cpp ImagesList.cpp AutoCtrlPointCreator.cpp
-MainFrame.cpp CPImageCtrl.cpp CPEditorPanel.cpp LensPanel.cpp 
+MainFrame.cpp CPImageCtrl.cpp CPImagesComboBox.cpp CPEditorPanel.cpp LensPanel.cpp 
 ImagesPanel.cpp CommandHistory.cpp PanoPanel.cpp NonaOptionsDialog.cpp
-PreviewFrame.cpp PreviewPanel.cpp MaskEdEditWnd.cpp CropPanel.cpp OptimizePhotometricPanel.cpp
-OptimizePanel.cpp CPListFrame.cpp
-TextKillFocusHandler.cpp PanoDruid.cpp PreferencesDialog.cpp
-LocalizedFileTipProvider.cpp 
-wxPanoCommand.cpp AssistantPanel.cpp HFOVDialog.cpp)
+PreviewFrame.cpp PreviewPanel.cpp GLPreviewFrame.cpp GLViewer.cpp GLRenderer.cpp
+CropPanel.cpp OptimizePhotometricPanel.cpp OptimizePanel.cpp CPListFrame.cpp
+TextKillFocusHandler.cpp PanoDruid.cpp PreferencesDialog.cpp ResetDialog.cpp
+LocalizedFileTipProvider.cpp  wxPanoCommand.cpp AssistantPanel.cpp
+HFOVDialog.cpp TextureManager.cpp MeshRemapper.cpp VertexCoordRemapper.cpp
+TexCoordRemapper.cpp ChoosyRemapper.cpp MeshManager.cpp ViewState.cpp
+OutputProjectionInfo.cpp PreviewToolHelper.cpp PreviewTool.cpp 
+PreviewCropTool.cpp PreviewDragTool.cpp PreviewIdentifyTool.cpp
+PreviewDifferenceTool.cpp PreviewPanoMaskTool.cpp
+MaskEdEditWnd.cpp)
 
 IF(APPLE)
   if (MAC_SELF_CONTAINED_BUNDLE)
@@ -100,7 +105,7 @@ ELSE (APPLE)
   ADD_EXECUTABLE( ${PROGNAME} ${hugin_SOURCES} )
 ENDIF(APPLE)
 
-target_link_libraries( ${PROGNAME} maskeditor_core maskeditor_segmentation ${common_libs} ${image_libs} huginbasewx ${wxWidgets_LIBRARIES})
+target_link_libraries( ${PROGNAME}  maskeditor_core maskeditor_segmentation ${common_libs} ${image_libs} huginbasewx celeste ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
 
 IF (APPLE)
   IF (NOT MAC_SELF_CONTAINED_BUNDLE)
@@ -118,6 +123,7 @@ ELSE(APPLE)
     INSTALL(FILES hugin.desktop DESTINATION ${DATADIR}/applications)
     INSTALL(FILES gnome-mime-application-x-ptoptimizer-script.png DESTINATION ${DATADIR}/icons/gnome/48x48/mimetypes)
     INSTALL(FILES hugin.xml DESTINATION ${DATADIR}/mime/packages)
+    INSTALL(FILES Makefile.equirect.mk DESTINATION ${HUGINDATADIR})
   ENDIF(UNIX)
 ENDIF(APPLE)
 

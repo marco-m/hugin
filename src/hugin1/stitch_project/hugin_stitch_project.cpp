@@ -215,7 +215,7 @@ public:
     
 #ifdef __WXMAC__
     /** the wx calls this method when the app gets "Open file" AppleEvent */
-    void stitchApp::MacOpenFile(const wxString &fileName);
+    void MacOpenFile(const wxString &fileName);
 #endif
 
 private:
@@ -265,18 +265,6 @@ bool stitchApp::OnInit()
 
 #if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
     {
-        wxString exec_path = MacGetPathToBundledExecutableFile(CFSTR("nona"));	 
-        if(exec_path != wxT(""))
-        {
-            progs.nona = exec_path.mb_str(HUGIN_CONV_FILENAME);
-        }
-
-        exec_path = MacGetPathToBundledExecutableFile(CFSTR("hugin_hdrmerge"));	 
-        if(exec_path != wxT(""))	 
-        {
-            progs.hdrmerge = exec_path.mb_str(HUGIN_CONV_FILENAME);
-        }
-
         wxString thePath = MacGetPathToBundledResourceFile(CFSTR("locale"));
         if(thePath != wxT(""))
             m_locale.AddCatalogLookupPathPrefix(thePath);
@@ -384,7 +372,7 @@ bool stitchApp::OnInit()
             wxConfig::Get()->Write(wxT("/actualPath"), dlg.GetDirectory());  // remember for later
             outname = dlg.GetPath();
         } else { // bail
-            wxLogError( _("No project files specified"));
+//            wxLogError( _("No project files specified"));
             return false;
         }
     }

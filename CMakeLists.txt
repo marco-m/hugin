@@ -2,6 +2,10 @@
 # require at least cmake 2.4
 cmake_minimum_required(VERSION 2.4)
 
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules )
 
 include(HuginMacros)
@@ -12,23 +16,24 @@ project(hugin)
 
 # version
 set(V_MAJOR 0)
-set(V_MINOR 7)
+set(V_MINOR 8)
 set(V_PATCH 0)
 
 #
 # Check for SVN and get current revision
 #
 IF (EXISTS ${PROJECT_SOURCE_DIR}/.svn)
-  # TODO: automatically set the revision on windows
-  IF(WIN32)
-    SET(HUGIN_WC_REVISION "" CACHE STRING
-      "set SVN revision." 
-      )
-    IF(NOT HUGIN_WC_REVISION) 
-      MESSAGE(FATAL_ERROR "Need to set SVN revision (HUGIN_WC_REVISION) manually")
-    ENDIF(NOT HUGIN_WC_REVISION)
-
-  ELSE (WIN32)
+  IF(WIN32 AND NOT CMAKE_CROSSCOMPILING)
+    EXECUTE_PROCESS(COMMAND "subwcrev" "${PROJECT_SOURCE_DIR}" OUTPUT_VARIABLE SVN_REV)
+    STRING(REGEX REPLACE ".* committed at revision ([0-9]+).*" "\\1" SVN_REV "${SVN_REV}")
+    IF(SVN_REV)
+      SET(HUGIN_WC_REVISION "${SVN_REV}" CACHE STRING "" FORCE)
+      # WINDOWS: messages are obstructive pop-ups, use them only for debug
+      # MESSAGE("-- Current SVN revision is ${HUGIN_WC_REVISION}")
+    ELSE(SVN_REV)
+      SET(HUGIN_WC_REVISION "" CACHE STRING "set SVN revision.")
+    ENDIF(SVN_REV)
+  ELSE(WIN32 AND NOT CMAKE_CROSSCOMPILING)
     FIND_PACKAGE(Subversion REQUIRED)
     IF(Subversion_FOUND)
       Subversion_WC_INFO(${PROJECT_SOURCE_DIR} HUGIN)
@@ -36,18 +41,20 @@ IF (EXISTS ${PROJECT_SOURCE_DIR}/.svn)
     ELSE(Subversion_FOUND)
       MESSAGE(SEND_ERROR "Could not determine SVN revision")
     ENDIF(Subversion_FOUND)
-  ENDIF(WIN32)
+  ENDIF(WIN32 AND NOT CMAKE_CROSSCOMPILING)
   SET(HUGIN_PACKAGE_VERSION ${V_MAJOR}.${V_MINOR}.${V_PATCH}.${HUGIN_WC_REVISION})
   SET(HUGIN_DEVELOPMENT_VERSION 1)
+  FILE(WRITE ${PROJECT_SOURCE_DIR}/rev.txt "${HUGIN_WC_REVISION}")
 ELSE (EXISTS ${PROJECT_SOURCE_DIR}/.svn)
   SET(HUGIN_PACKAGE_VERSION ${V_MAJOR}.${V_MINOR}.${V_PATCH})
   # TODO: at each release, set current SVN revision here!
   SET(HUGIN_WC_REVISION 0)
+  FILE(READ "${PROJECT_SOURCE_DIR}/rev.txt" HUGIN_WC_REVISION)
+  MESSAGE("-- Current SVN revision is ${HUGIN_WC_REVISION}")
 ENDIF (EXISTS ${PROJECT_SOURCE_DIR}/.svn)
 
 # version for internal libraries.
 set(HUGIN_LIB_VERSION 0.0)
-
 
 # set include path for internal libraries before using finding and initializing
 # external dependencies. This makes sure that "our" include paths are specified
@@ -57,7 +64,7 @@ include_directories( ${CMAKE_BINARY_DIR}/src )
 include_directories( ${CMAKE_SOURCE_DIR}/src/hugin_base )
 include_directories( ${CMAKE_SOURCE_DIR}/src/foreign )
 include_directories( ${CMAKE_SOURCE_DIR}/src/foreign/vigra )
-
+include_directories( ${CMAKE_SOURCE_DIR}/src/celeste )
 
 #
 # find dependencies
@@ -84,7 +91,12 @@ IF (WIN32)
 
   # search boost there
   SET(BOOST_DIR_SEARCH_USER ${SOURCE_BASE_DIR})
-  SET(wxWidgets_ROOT_DIR ${SOURCE_BASE_DIR}/wxMSW-2.8.7)
+  # wxWidgets
+  SET(wxWidgets_ROOT_DIR ${SOURCE_BASE_DIR}/wxWidgets-2.8.9)
+  # GLEW moved to FildGLEW.cmake module
+  # SET(GLEW_INCLUDE_DIR ${SOURCE_BASE_DIR}/glew/include)
+  # for dynamic build, it's glew32.lib and the dll must be copied into hugin's bin folder
+  # SET(GLEW_LIBRARIES ${SOURCE_BASE_DIR}/glew/lib/glew32s.lib)
 ENDIF(WIN32)
 
 ##
@@ -93,7 +105,7 @@ ENDIF(WIN32)
 #  This must come before FINDs for tiff, jpeg, png, zlib to enable
 #  finding the wxWidgets distributions of those packages (Win32 only).
 
-SET(wxWidgets_USE_LIBS base core xrc html xml adv)
+SET(wxWidgets_USE_LIBS base core xrc html xml adv gl)
 FIND_PACKAGE(wxWidgets REQUIRED)
 IF(NOT wxWidgets_FOUND)
   MESSAGE("wxWidgets was not found, GUI programs (hugin, nona_gui) disabled")
@@ -112,7 +124,6 @@ FIND_PACKAGE(PNG REQUIRED)
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
 
-
 FIND_PACKAGE(OpenEXR REQUIRED)
 include_directories(${OPENEXR_INCLUDE_DIR})
 
@@ -120,6 +131,18 @@ FIND_PACKAGE(Exiv2)
 IF(EXIV2_FOUND)
   INCLUDE_DIRECTORIES(${EXIV2_INCLUDE_DIR})
 ENDIF(EXIV2_FOUND)
+
+## OpenGL and GLEW
+
+FIND_PACKAGE(OpenGL)
+FIND_PACKAGE(GLEW)
+IF(NOT OPENGL_FOUND)
+  MESSAGE("OpenGL was not found, hugin disabled")
+ENDIF(NOT OPENGL_FOUND)
+IF(GLEW_FOUND)
+  INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
+ENDIF(GLEW_FOUND)
 
 ##
 ## Panotools
@@ -142,7 +165,6 @@ INCLUDE_DIRECTORIES(${PANO_INCLUDE_DIR})
 ##
 ## Boost
 ##
-
 
 SET(Boost_LIB_SUFFIX_DEBUG gd)
 FIND_PACKAGE(Boost REQUIRED thread)
@@ -173,7 +195,6 @@ ENDIF(MSGFMT_FOUND)
 #INCLUDE_DIRECTORIES( ${VIPSCC_INCLUDE_DIRS} )
 #LINK_DIRECTORIES( ${VIPSCC_LIBRARY_DIRS} )
 
-
 #
 # Check build type and set options accordingly
 # 
@@ -194,7 +215,6 @@ IF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     ADD_DEFINITIONS(-Wall)
   ENDIF(UNIX)
 ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-
 
 #
 # define destination dirs (relative to prefix)
@@ -253,6 +273,10 @@ ELSE (UNIX)
     ADD_DEFINITIONS(/D_SCL_SECURE_NO_WARNINGS)
     # Stop MSVC9 from bitching about POSIX names without underscores
     ADD_DEFINITIONS(/D_CRT_NONSTDC_NO_DEPRECATE)
+    # Show information about auto-linking library files during build, .e.g.
+    # "Linking to lib file: libboost_thread-vc90-mt-s-1_37.lib"
+    # This can be used to determine on which boost libraries Hugin depend on
+    #ADD_DEFINITIONS(/DBOOST_LIB_DIAGNOSTIC)
     # compile everything for the static C runtime
 	FOREACH(TYPE C CXX)
 		# makefiles use blank configuration
@@ -288,11 +312,16 @@ IF (APPLE)
    #This namespace workaround is not needed for CMake >= 2.5.x
    ## Add needed Compiler and Linker flags for OSX
       IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-      	 SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flat_namespace -undefined suppress" )
-	 SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flat_namespace -undefined suppress" )
-	 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flat_namespace -undefined suppress" )
-	 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -flat_namespace -undefined suppress" )
-	 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -flat_namespace -undefined suppress" )
+      	 SET (CMAKE_C_FLAGS:STRING "\"$CMAKE_C_FLAGS\" -flat_namespace -undefined suppress" )
+	 SET (CMAKE_CXX_FLAGS:STRING "\"$CMAKE_CXX_FLAGS\" -flat_namespace -undefined suppress" )
+	 SET (CMAKE_LDFLAGS:STRING "\"$CMAKE_LD_FLAGS\"" )
+	 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  -flat_namespace -undefined suppress" )
+	 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}  -flat_namespace -undefined suppress" )
+	 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}  -flat_namespace -undefined suppress" )
+	 IF (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+		SET (CMAKE_C_FLAGS_RELEASE:STRING " $CMAKE_C_FLAGS_RELEASE ")
+		SET (CMAKE_CXX_FLAGS_RELEASE:STRING " $CMAKE_CXX_FLAGS_RELEASE ")
+	 ENDIF (${CMAKE_BUILD_TYPE} STREQUAL "Release")
       ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 ENDIF (APPLE)
 
@@ -311,12 +340,15 @@ SET(CPACK_PACKAGE_VERSION_MINOR "${V_MINOR}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${V_PATCH}")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${V_MAJOR}.${V_MINOR}")
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "hugin-${V_MAJOR}.${V_MINOR}.${V_PATCH}")
-SET(CPACK_SOURCE_GENERATOR "TGZ")
+SET(CPACK_SOURCE_GENERATOR "TGZ;TBZ2")
+SET(CPACK_PACKAGE_CONTACT "hugin-ptx@googlegroups.com")
+SET(CPACK_SET_DESTDIR "ON")
 SET(CPACK_SOURCE_IGNORE_FILES
 "/_CPack_Packages/"
 "/CMakeCache.txt$"
 "\\\\.dir/"
 "\\\\.tar\\\\.gz$"
+"\\\\.tar\\\\.bz2$"
 "\\\\.tar\\\\.Z$"
 "\\\\.svn/"
 "\\\\.cvsignore$"
@@ -324,12 +356,19 @@ SET(CPACK_SOURCE_IGNORE_FILES
 "~$"
 "\\\\.#"
 "/#"
+"/celeste/celeste_standalone$"
+"/celeste/Config.h$"
+"/celeste/training/celeste_train$"
 "/tools/autooptimiser$"
 "/tools/fulla$"
 "/tools/nona$"
 "/tools/vig_optimize$"
 "/tools/align_image_stack$"
 "/tools/tca_correct$"
+"/tools/pto2mk$"
+"/ptbatcher/PTBatcher$"
+"/ptbatcher/PTBatcherGUI$"
+"/hugin_base/test/open_file$"
 "/matchpoint/matchpoint$"
 "/hugin/hugin$"
 "/nona_gui/nona_gui$"
@@ -338,9 +377,18 @@ SET(CPACK_SOURCE_IGNORE_FILES
 "/maskeditor/maskeditor$"
 "/build/"
 "/CVS/"
+"/cmake_install.cmake$"
+"/CMakeOutput.log$"
+"/CPackConfig.cmake$"
+"/CPackSourceConfig.cmake$"
+"/Makefile$"
+"/Makefile2$"
+"/CMakeFiles/"
 "/\\\\.libs/"
 "/\\\\.deps/"
 "\\\\.o$"
+"\\\\.gmo$"
+"\\\\.mo$"
 "\\\\.a$"
 "\\\\.lo$"
 "\\\\.so$"

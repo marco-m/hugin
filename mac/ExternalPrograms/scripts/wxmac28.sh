@@ -24,7 +24,8 @@
 
 WXVERSION="2.8"
 WXVER_COMP="$WXVERSION.0"
-WXVER_FULL="$WXVER_COMP.5.0"  # for 2.8.8
+#WXVER_FULL="$WXVER_COMP.5.0"  # for 2.8.8
+WXVER_FULL="$WXVER_COMP.6.0"  # for 2.8.10
 
 let NUMARCH="0"
 for i in $ARCHS
@@ -78,26 +79,26 @@ do
   OSVERSION=$ppcOSVERSION
  fi
 
+ ARCHARGs=$(echo $ARCHARGs | sed 's/-ftree-vectorize//')
 
  env CFLAGS="-arch $ARCH $ARCHARGs $OTHERARGs -O2 -dead_strip" \
   CXXFLAGS="-arch $ARCH $ARCHARGs $OTHERARGs -O2 -dead_strip" \
-  CPPFLAGS="-I$REPOSITORYDIR/include" \
+  CPPFLAGS="-arch $ARCH $ARCHARGs $OTHERARGs -O2 -dead_strip -I$REPOSITORYDIR/include" \
   LDFLAGS="-arch $ARCH -L$REPOSITORYDIR/lib -dead_strip -prebind" \
   ../configure --prefix="$REPOSITORYDIR" --exec-prefix=$REPOSITORYDIR/arch/$ARCH --disable-dependency-tracking \
   --host="$TARGET" --with-macosx-sdk=$MACSDKDIR --with-macosx-version-min=$OSVERSION \
   --enable-monolithic --enable-unicode --with-opengl --enable-compat26 --disable-graphics_ctx \
   --enable-shared --disable-debug;
 
- 
- # disabled for all targets for now.
-# # disable core graphics implementation for 10.3
-# if [[ $TARGET == *darwin7 ]]
-# then
-#  echo '#ifndef wxMAC_USE_CORE_GRAPHICS'    >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h
-#  echo ' #define wxMAC_USE_CORE_GRAPHICS 0' >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h
-#  echo '#endif'                             >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h
-#  echo ''                                   >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h
-# fi
+# For all SDK; CP panel problem still exists.
+## disable core graphics implementation for 10.3
+#if [[ $TARGET == *darwin7 ]]
+#then
+ echo '#ifndef wxMAC_USE_CORE_GRAPHICS'    >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h
+ echo ' #define wxMAC_USE_CORE_GRAPHICS 0' >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h
+ echo '#endif'                             >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h
+ echo ''                                   >> lib/wx/include/mac-unicode-release-$WXVERSION/wx/setup.h 
+#fi
 
  make clean;
 
@@ -208,5 +209,10 @@ do
 done
 
 
+#wx-config
 
-
+for ARCH in $ARCHS
+do
+ sed -e 's/^exec_prefix.*$/exec_prefix=\$\{prefix\}/' -e 's/^is_cross \&\& target.*$//' -e 's/-arch '$ARCH'//' $REPOSITORYDIR/arch/$ARCH/bin/wx-config > $REPOSITORYDIR/bin/wx-config
+ break;
+done

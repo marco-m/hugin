@@ -27,6 +27,11 @@
 #include "hugin/MainFrame.h"
 #include "hugin/ImagesList.h"
 
+// Celeste files
+#include "Celeste.h"
+#include "CelesteGlobals.h"
+#include "Utilities.h"
+
 using namespace PT;
 
 // forward declarations, to save the #include statements
@@ -122,6 +127,8 @@ private:
      */
     void ListSelectionChanged(wxListEvent & e);
 
+    void OnCelesteButton(wxCommandEvent & e);
+
     /** pano -> gui
      */
     void ShowImgParameters(unsigned int imgNr);
@@ -152,8 +159,7 @@ private:
     wxButton * m_matchingButton;
     wxButton * m_removeCPButton;
 
-    wxScrolledWindow *m_img_ctrls;
-    //wxSplitterWindow *m_img_splitter;
+    wxPanel *m_img_ctrls;
 
     int m_degDigits;
 

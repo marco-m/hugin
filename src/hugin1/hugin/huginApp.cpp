@@ -46,6 +46,7 @@
 #include "hugin/LensPanel.h"
 #include "hugin/ImagesList.h"
 #include "hugin/PreviewPanel.h"
+#include "hugin/GLPreviewFrame.h"
 #include "base_wx/PTWXDlg.h"
 #include "hugin/CommandHistory.h"
 #include "hugin/wxPanoCommand.h"
@@ -215,6 +216,7 @@ bool huginApp::OnInit()
     wxXmlResource::Get()->AddHandler(new CenterCanvasXmlHandler());
     wxXmlResource::Get()->AddHandler(new CPEditorPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new CPImageCtrlXmlHandler());
+    wxXmlResource::Get()->AddHandler(new CPImagesComboBoxXmlHandler());
     wxXmlResource::Get()->AddHandler(new OptimizePanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new OptimizePhotometricPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new PanoPanelXmlHandler());
@@ -234,6 +236,7 @@ bool huginApp::OnInit()
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("help.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("keyboard_help.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("pref_dialog.xrc"));
+    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("reset_dialog.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("vig_corr_dlg.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("optimize_photo_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("cp_editor_panel.xrc"));
@@ -261,12 +264,14 @@ bool huginApp::OnInit()
 
     // setup main frame size, after it has been created.
     RestoreFramePosition(frame, wxT("MainFrame"));
-    
+#ifdef __WXMSW__
+    frame->SendSizeEvent();
+#endif
+
     // show the frame.
     frame->Show(TRUE);
 
     wxString cwd = wxFileName::GetCwd();
-    config->Write( wxT("startDir"), cwd );
 
     m_workDir = config->Read(wxT("tempDir"),wxT(""));
     // FIXME, make secure against some symlink attacks
@@ -356,14 +361,19 @@ bool huginApp::OnInit()
     m_macOpenFileOnStart = false;
 #endif
 
-    //load tip startup preferences (tips will be started after splash terminates)
-	int nValue = config->Read(wxT("/MainFrame/ShowStartTip"), 1l);
-		
-	//show tips if needed now
-	if(nValue > 0)
+	//check for no tip switch, needed by PTBatcher
+	wxString secondParam = argc > 2 ? wxString(argv[2]) : wxString();
+	if(secondParam.Cmp(_T("-notips"))!=0)
 	{
-		wxCommandEvent dummy;
-		frame->OnTipOfDay(dummy);
+		//load tip startup preferences (tips will be started after splash terminates)
+		int nValue = config->Read(wxT("/MainFrame/ShowStartTip"), 1l);
+
+		//show tips if needed now
+		if(nValue > 0)
+		{
+			wxCommandEvent dummy;
+			frame->OnTipOfDay(dummy);
+		}
 	}
 
     // suppress tiff warnings
@@ -441,7 +451,7 @@ void RestoreFramePosition(wxTopLevelWindow * frame, const wxString & basename)
     bool maximized = config->Read(wxT("/") + basename + wxT("/maximized"), 0l) != 0;
     if (maximized) {
         frame->Maximize();
-    } else {
+	} else {
         //size
         int w = config->Read(wxT("/") + basename + wxT("/width"),-1l);
         int h = config->Read(wxT("/") + basename + wxT("/height"),-1l);

@@ -38,11 +38,12 @@
 #include "hugin/CPEditorPanel.h"
 //#include "hugin/CPFineTuneFrame.h"
 #include "hugin/wxPanoCommand.h"
-
+#include "base_wx/MyProgressDialog.h"
 
 // more standard includes if needed
 #include <algorithm>
 #include <float.h>
+#include <vector>
 
 // standard hugin include
 #include "panoinc.h"
@@ -51,6 +52,11 @@
 #include "vigra/cornerdetection.hxx"
 #include "vigra/localminmax.hxx"
 #include "vigra_ext/Correlation.h"
+
+// Celeste header
+#include "Celeste.h"
+#include "CelesteGlobals.h"
+#include "Utilities.h"
 
 using namespace std;
 using namespace PT;
@@ -88,8 +94,8 @@ void ToGray(wxImageIterator sy, wxImageIterator send, vigra::BImage::Iterator dy
 BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
     EVT_CPEVENT(CPEditorPanel::OnCPEvent)
 #ifdef HUGIN_CP_IMG_CHOICE
-    EVT_CHOICE(XRCID("cp_editor_left_choice"), CPEditorPanel::OnLeftChoiceChange )
-    EVT_CHOICE(XRCID("cp_editor_right_choice"), CPEditorPanel::OnRightChoiceChange )
+    EVT_COMBOBOX(XRCID("cp_editor_left_choice"), CPEditorPanel::OnLeftChoiceChange )
+    EVT_COMBOBOX(XRCID("cp_editor_right_choice"), CPEditorPanel::OnRightChoiceChange )
 #endif
 #ifdef HUGIN_CP_IMG_TAB
     EVT_NOTEBOOK_PAGE_CHANGED ( XRCID("cp_editor_left_tab"),CPEditorPanel::OnLeftImgChange )
@@ -112,6 +118,7 @@ BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
     EVT_BUTTON(XRCID("cp_editor_previous_img"), CPEditorPanel::OnPrevImg)
     EVT_BUTTON(XRCID("cp_editor_next_img"), CPEditorPanel::OnNextImg)
     EVT_BUTTON(XRCID("cp_editor_finetune_button"), CPEditorPanel::OnFineTuneButton)
+    EVT_BUTTON(XRCID("cp_editor_celeste_button"), CPEditorPanel::OnCelesteButton)
 //    EVT_SIZE(CPEditorPanel::OnSize)
 END_EVENT_TABLE()
 
@@ -161,7 +168,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_leftTabs->SetSizeHints(1,tabH,1000,tabH,-1,-1);
 #endif
 #ifdef HUGIN_CP_IMG_CHOICE
-    m_leftChoice = XRCCTRL(*this, "cp_editor_left_choice", wxChoice);                       
+    m_leftChoice = XRCCTRL(*this, "cp_editor_left_choice", CPImagesComboBox); 
 #endif
 
 #if 0
@@ -180,7 +187,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_rightTabs->SetSizeHints(1,tabH,1000,tabH,-1,-1);
 #endif
 #ifdef HUGIN_CP_IMG_CHOICE
-    m_rightChoice = XRCCTRL(*this, "cp_editor_right_choice", wxChoice);                     
+    m_rightChoice = XRCCTRL(*this, "cp_editor_right_choice", CPImagesComboBox);
 #endif
 
 #if 0
@@ -269,16 +276,8 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
 #endif
 
     // setup scroll window for the controls under the images
-    m_cp_ctrls = XRCCTRL(*this, "cp_controls_panel", wxScrolledWindow);
+    m_cp_ctrls = XRCCTRL(*this, "cp_controls_panel", wxPanel);
     DEBUG_ASSERT(m_cp_ctrls);
-    //m_cp_ctrls->SetSizeHints(20, 20);
-    m_cp_ctrls->FitInside();
-    m_cp_ctrls->SetScrollRate(10, 10);
-    //wxSize minSize = m_cp_ctrls->GetVirtualSize();
-    // TODO: force a minimum height for the
-    //DEBUG_DEBUG("minSize for Ctrlpoints :" << minSize.x << " " << minSize.y);
-    //minSize.x = -1;
-    //m_cp_ctrls->SetMinSize(minSize);
 
     wxConfigBase *config = wxConfigBase::Get();
 
@@ -294,6 +293,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_fineTuneCB->Disable();
     m_estimateCB->Disable();
     XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
+    XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_zoom_box", wxComboBox)->Disable();
     XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
@@ -360,6 +360,8 @@ void CPEditorPanel::setLeftImage(unsigned int imgNr)
         if (m_leftChoice->GetSelection() != (int) imgNr) {
             m_leftChoice->SetSelection(imgNr);
         }
+        m_rightChoice->SetRefImage(m_pano,m_leftImageNr);
+        m_rightChoice->Refresh();
 #endif
 #ifdef HUGIN_CP_IMG_TAB
         if (m_leftTabs->GetSelection() != (int) imgNr) {
@@ -400,17 +402,19 @@ void CPEditorPanel::setRightImage(unsigned int imgNr)
         m_rightRot = GetRot(yaw, pitch, roll);
         m_rightImg->setImage(m_pano->getImage(imgNr).getFilename(), m_rightRot);
         // select tab
+        m_rightImageNr = imgNr;
 #ifdef HUGIN_CP_IMG_CHOICE
         if (m_rightChoice->GetSelection() != (int) imgNr) {
             m_rightChoice->SetSelection(imgNr);
         }
+        m_leftChoice->SetRefImage(m_pano,m_rightImageNr);
+        m_leftChoice->Refresh();
 #endif
 #ifdef HUGIN_CP_IMG_TAB
         if (m_rightTabs->GetSelection() != (int) imgNr) {
             m_rightTabs->SetSelection(imgNr);
         }
 #endif
-        m_rightImageNr = imgNr;
         m_rightFile = m_pano->getImage(imgNr).getFilename();
         // update the rest of the display (new control points etc)
         changeState(NO_POINT);
@@ -628,6 +632,10 @@ void CPEditorPanel::CreateNewPoint()
     SelectGlobalPoint(lPoint);
     changeState(NO_POINT);
     MainFrame::Get()->SetStatusText(_("new control point added"));
+#ifdef HUGIN_CP_IMG_CHOICE
+    m_leftChoice->CalcCPDistance(m_pano);
+    m_rightChoice->CalcCPDistance(m_pano);
+#endif
 }
 
 
@@ -1264,6 +1272,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_fineTuneCB->Disable();
       m_estimateCB->Disable();
 	  XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
+	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
 	  XRCCTRL(*this, "cp_editor_zoom_box", wxComboBox)->Disable();
 	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
 	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
@@ -1278,6 +1287,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_fineTuneCB->Enable();
       m_estimateCB->Enable();
 	  XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
+	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
 	  XRCCTRL(*this, "cp_editor_zoom_box", wxComboBox)->Enable();
 	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
 	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
@@ -1291,8 +1301,8 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
 #ifdef HUGIN_CP_IMG_CHOICE
       for (unsigned int i=0; i < ((nrTabs < nrImages)? nrTabs: nrImages); i++) {
           wxFileName fileName(wxString (pano.getImage(i).getFilename().c_str(), HUGIN_CONV_FILENAME));
-          m_leftChoice->SetString(i, wxString::Format(wxT("%2d"), i) + wxT(". - ") + fileName.GetFullName());
-          m_rightChoice->SetString(i, wxString::Format(wxT("%2d"), i) + wxT(". - ") + fileName.GetFullName());
+          m_leftChoice->SetString(i, wxString::Format(wxT("%d"), i) + wxT(". - ") + fileName.GetFullName());
+          m_rightChoice->SetString(i, wxString::Format(wxT("%d"), i) + wxT(". - ") + fileName.GetFullName());
       }
 /*
       ls = m_leftChoice->GetSelection();
@@ -1313,8 +1323,8 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
           for (unsigned int i=nrTabs; i < nrImages; i++) {
 #ifdef HUGIN_CP_IMG_CHOICE
               wxFileName fileName(wxString (pano.getImage(i).getFilename().c_str(), HUGIN_CONV_FILENAME));
-              m_leftChoice->Append(wxString::Format(wxT("%2d"), i) + wxT(". - ") + fileName.GetFullName());
-              m_rightChoice->Append(wxString::Format(wxT("%2d"), i) + wxT(". - ") + fileName.GetFullName());
+              m_leftChoice->Append(wxString::Format(wxT("%d"), i) + wxT(". - ") + fileName.GetFullName());
+              m_rightChoice->Append(wxString::Format(wxT("%d"), i) + wxT(". - ") + fileName.GetFullName());
 #endif
 #ifdef HUGIN_CP_IMG_TAB
               wxWindow* t1= new wxWindow(m_leftTabs,-1,wxPoint(0,0),wxSize(0,0));
@@ -1465,6 +1475,10 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
     wxLogError(wxString::Format(wxT("panoramaImagesChanged. After update\nleft: %d, right: %d, count: %d %d"), ls, rs, nrTabsNew));
 #endif
     */
+#ifdef HUGIN_CP_IMG_CHOICE
+    m_leftChoice->CalcCPDistance(m_pano);
+    m_rightChoice->CalcCPDistance(m_pano);
+#endif
 }
 
 void CPEditorPanel::UpdateDisplay(bool newPair)
@@ -1954,6 +1968,10 @@ void CPEditorPanel::OnDeleteButton(wxCommandEvent & e)
         GlobalCmdHist::getInstance().addCommand(
             new PT::RemoveCtrlPointCmd(*m_pano,pNr )
             );
+#ifdef HUGIN_CP_IMG_CHOICE
+        m_leftChoice->CalcCPDistance(m_pano);
+        m_rightChoice->CalcCPDistance(m_pano);
+#endif
     }
 }
 
@@ -2113,6 +2131,111 @@ void CPEditorPanel::OnFineTuneButton(wxCommandEvent & e)
     }
 }
 
+void CPEditorPanel::OnCelesteButton(wxCommandEvent & e)
+{
+
+    if (currentPoints.size() == 0) {
+        wxMessageBox(_("Cannot run celeste without at least one control point connecting the two images"),_("Error"));
+        cout << "Cannot run celeste without at least one control point connecting the two images" << endl;
+    }else{
+
+        ProgressReporterDialog progress(3, _("Running Celeste"), _("Running Celeste"),this);
+
+        // set numeric locale to C, for correct number output
+        char * old_locale = setlocale(LC_NUMERIC,NULL);
+        setlocale(LC_NUMERIC,"C");	
+
+        MainFrame::Get()->SetStatusText(_("searching for cloud-like control points..."),0);
+
+        // Create the storage matrix
+        gNumLocs = currentPoints.size();
+        gLocations = CreateMatrix( (int)0, gNumLocs, 2);
+
+        // Load control points into gLocations
+        unsigned int glocation_counter = 0;	
+        for (vector<CPoint>::const_iterator it = currentPoints.begin(); it != currentPoints.end(); ++it) {
+            gLocations[glocation_counter][0] = (int)it->second.x1;
+            gLocations[glocation_counter][1] = (int)it->second.y1;		
+            glocation_counter++;
+        }
+
+        // Get Celeste parameters
+        wxConfigBase *cfg = wxConfigBase::Get();
+
+        // SVM threshold
+        double threshold = HUGIN_CELESTE_THRESHOLD;
+        cfg->Read(wxT("/Celeste/Threshold"), &threshold, HUGIN_CELESTE_THRESHOLD);
+
+        // Mask resolution - 1 sets it to fine
+        bool t = (cfg->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER) != 0);
+        if (t)
+        {
+            //cerr <<"---Celeste--- Using small filter" << endl;
+            gRadius = 10;
+            spacing = (gRadius * 2) + 1;
+        }
+
+        // determine file name of SVM model file
+        // get XRC path from application
+        wxString wxstrModelFileName = huginApp::Get()->GetXRCPath() + wxT("data/") + wxT(HUGIN_CELESTE_MODEL);
+        // convert wxString to string
+        string strModelFileName(wxstrModelFileName.mb_str(wxConvUTF8));
+				
+        // SVM model file
+        if (! wxFile::Exists(wxstrModelFileName) ) {
+            wxMessageBox(_("Celeste model file not found, Hugin needs to be properly installed." ), _("Fatal Error"));
+            return ;
+        }
+
+        // Image to analyse
+        string imagefile = m_pano->getImage(m_leftImageNr).getFilename();
+
+        DEBUG_TRACE("Running Celeste");
+
+        progress.increaseProgress(1.0, std::wstring(wxString(_("Running Celeste")).wc_str(wxConvLocal)));
+
+        // Vector to store Gabor filter responses
+        vector<double> svm_responses_cp;
+        string mask_format = "PNG";
+        unsigned int mask = 0;
+
+        // Get responses
+        get_gabor_response(imagefile, mask, strModelFileName, threshold, mask_format, svm_responses_cp);
+
+        progress.increaseProgress(1.0, std::wstring(wxString(_("Running Celeste")).wc_str(wxConvLocal)));
+
+        // Print SVM results
+        unsigned int removed = 0;
+        for (unsigned int c = 0; c < svm_responses_cp.size(); c++){
+
+            if (svm_responses_cp[c] >= threshold){
+
+                unsigned int pNr = localPNr2GlobalPNr((c - removed));
+                DEBUG_DEBUG("about to delete point " << pNr);
+                GlobalCmdHist::getInstance().addCommand(
+                    new PT::RemoveCtrlPointCmd(*m_pano,pNr)
+                    );
+                removed++;
+                cout << "CP: " << c << "\tSVM Score: " << svm_responses_cp[c] << "\tremoved." << endl;
+            }
+            if (removed)
+            {
+                cout << endl;
+            }
+        }
+
+        progress.increaseProgress(1.0, std::wstring(wxString(_("Running Celeste")).wc_str(wxConvLocal)));
+
+        wxMessageBox(wxString::Format(_("Removed %d control points"), removed), _("Celeste result"),wxOK|wxICON_INFORMATION,this);
+
+        DEBUG_TRACE("Finished running Celeste");
+
+        MainFrame::Get()->SetStatusText(_(""),0);
+
+        // reset locale
+        setlocale(LC_NUMERIC,old_locale);
+    }
+}
 
 FDiff2D CPEditorPanel::LocalFineTunePoint(unsigned int srcNr,
                                           const Diff2D & srcPnt,

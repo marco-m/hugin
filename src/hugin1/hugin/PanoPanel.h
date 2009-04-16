@@ -80,6 +80,7 @@ public:
 
     // actions
     void DoStitch();
+	void SendToBatch();
 
 
  private:
@@ -94,7 +95,8 @@ public:
 
 
     // apply changes from the model
-    void UpdateDisplay(const PT::PanoramaOptions & opt);
+    bool StackCheck (PT::Panorama & pano);
+    void UpdateDisplay(const PT::PanoramaOptions & opt, const bool hasStacks);
     void SetStitcher(PanoramaOptions::Remapper stitcher);
 
     // apply changes to the model. (gui values -> Panorama)
@@ -138,7 +140,7 @@ public:
 //    void DoPreview(wxCommandEvent & e);
     void DoCalcFOV(wxCommandEvent & e);
     void OnDoStitch(wxCommandEvent & e);
-
+	void OnSendToBatch(wxCommandEvent & e);
 
     /** set the highest sensible width
      */
@@ -158,6 +160,7 @@ public:
     double m_oldVFOV;
 
     bool m_keepViewOnResize;
+    bool m_hasStacks;
 
     // controls of this frame
     wxChoice    * m_ProjectionChoice;
@@ -175,6 +178,7 @@ public:
     wxChoice    * m_HDRMergeChoice;
     wxChoice    * m_BlenderChoice;
     wxButton    * m_StitchButton;
+	wxButton	* m_BatchButton;
     wxButton    * m_CalcHFOVButton;
     wxButton    * m_CalcOptWidthButton;
 

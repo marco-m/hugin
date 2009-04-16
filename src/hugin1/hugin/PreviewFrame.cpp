@@ -113,10 +113,16 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
 #else
     EVT_CHECKBOX(-1, PreviewFrame::OnChangeDisplayedImgs)
 #endif
+
+#ifndef __WXMAC__
+    // wxMac does not process these
     EVT_SCROLL_CHANGED(PreviewFrame::OnChangeFOV)
-//    EVT_SCROLL_THUMBRELEASE(PreviewFrame::OnChangeFOV)
-//    EVT_SCROLL_ENDSCROLL(PreviewFrame::OnChangeFOV)
-//    EVT_SCROLL_THUMBTRACK(PreviewFrame::OnChangeFOV)
+#else
+    EVT_SCROLL_THUMBRELEASE(PreviewFrame::OnChangeFOV)
+    EVT_SCROLL_ENDSCROLL(PreviewFrame::OnChangeFOV)
+    EVT_SCROLL_THUMBTRACK(PreviewFrame::OnChangeFOV)
+#endif
+
     
 END_EVENT_TABLE()
 
@@ -199,7 +205,7 @@ void PreviewFrame::initPreviewMode()
 						
 	m_ToggleButtonSizer->Add(m_ButtonPanel, 1, wxEXPAND | wxADJUST_MINSIZE, 0);
 
-    m_topsizer->Add(m_ToggleButtonSizer, 0, wxEXPAND | wxADJUST_MINSIZE | wxBOTTOM, 5);
+    m_topsizer->Add(m_ToggleButtonSizer, 0, wxEXPAND | wxADJUST_MINSIZE | wxALL, 5);
 
     m_flexSizer = new wxFlexGridSizer(2,0,5,5);
     m_flexSizer->AddGrowableCol(0);
@@ -414,9 +420,9 @@ void PreviewFrame::initPreviewMode()
 
     // set the minimize icon
 #ifdef __WXMSW__
-    wxIcon myIcon(MainFrame::Get()->GetXRCPath() + wxT("data/icon.ico"),wxBITMAP_TYPE_ICO);
+    wxIcon myIcon(huginApp::Get()->GetXRCPath() + wxT("data/icon.ico"),wxBITMAP_TYPE_ICO);
 #else
-    wxIcon myIcon(MainFrame::Get()->GetXRCPath() + wxT("data/icon.png"),wxBITMAP_TYPE_PNG);
+    wxIcon myIcon(huginApp::Get()->GetXRCPath() + wxT("data/icon.png"),wxBITMAP_TYPE_PNG);
 #endif
     SetIcon(myIcon);
 
@@ -648,8 +654,6 @@ void PreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &changed)
                                                   ID_TOGGLE_BUT + *it,
                                                   wxString::Format(wxT("%d"),*it));
 #endif
-				wxFileName tFilename(wxString (pano.getImage(imgNr).getFilename().c_str(), HUGIN_CONV_FILENAME));
-				but->SetToolTip(tFilename.GetFullName());
                 wxSize sz = but->GetSize();
 //                but->SetSize(res.GetWidth(),sz.GetHeight());
                 // HACK.. set fixed width. that should work
@@ -671,6 +675,8 @@ void PreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &changed)
     UIntSet displayedImages = m_pano.getActiveImages();
     for (unsigned i=0; i < nrImages; i++) {
         m_ToggleButtons[i]->SetValue(set_contains(displayedImages, i));
+        wxFileName tFilename(wxString (pano.getImage(i).getFilename().c_str(), HUGIN_CONV_FILENAME));
+        m_ToggleButtons[i]->SetToolTip(tFilename.GetFullName());
     }
 
     if (dirty) {
@@ -833,6 +839,7 @@ void PreviewFrame::OnNumTransform(wxCommandEvent & e)
 
     wxDialog dlg;
     wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_numtrans"));
+    dlg.CentreOnParent();
     if (dlg.ShowModal() == wxID_OK ) {
         wxString text = XRCCTRL(dlg, "numtrans_yaw", wxTextCtrl)->GetValue();
         double y;
@@ -929,6 +936,8 @@ void PreviewFrame::OnChangeFOV(wxScrollEvent & e)
             }
         }
         opt.setProjectionParameters(para);
+		opt.setHFOV(m_HFOVSlider->GetValue());
+		opt.setVFOV(m_VFOVSlider->GetValue());
 #endif
     }
 

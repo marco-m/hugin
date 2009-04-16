@@ -19,11 +19,11 @@
 #  OTHERARGs="";
 
 
-BOOST_VER="1_35"
-
+BOOST_VER="1_38"
 
 # install headers
 
+mkdir -p "$REPOSITORYDIR/include"
 rm -rf "$REPOSITORYDIR/include/boost";
 cp -R "./boost" "$REPOSITORYDIR/include/";
 
@@ -53,6 +53,7 @@ mkdir -p "$REPOSITORYDIR/lib";
 for ARCH in $ARCHS
 do
 
+ rm -rf "stage-$ARCH";
  mkdir -p "stage-$ARCH";
 
  if [ $ARCH = "i386" -o $ARCH = "i686" ]
@@ -85,41 +86,56 @@ do
   boostADDRESSMODEL="64"
  fi
 
+ SDKVRSION=$(echo $MACSDKDIR | sed 's/^[^1]*\([[:digit:]]*\.[[:digit:]]*\).*/\1/')
 
- echo "WARNING: assumes the SDK version matches the macosx-version-min" 
+ if [ $CXX = "" ]
+ then 
+  boostTOOLSET="--toolset=darwin"
+  CXX="g++"
+ else
+  echo "using darwin : : $CXX ;" > ./TEMP-userconf.jam
+  boostTOOLSET="--user-config=./TEMP-userconf.jam"
+ fi
  
  # hack that sends extra arguments to g++
- $BJAM -a --stagedir="stage-$ARCH" --prefix=$REPOSITORYDIR --toolset="darwin" -n stage \
-  --with-thread variant=release link=static \
-  architecture="$boostARCHITECTURE" address-model="$boostADDRESSMODEL" macosx-version="$OSVERSION" \
-  | grep "^    " | sed 's/"//g' | sed s/g++/g++\ "$OPTIMIZE"/ | sed 's/-O3/-O2/g' \
+ $BJAM -a --stagedir="stage-$ARCH" --prefix=$REPOSITORYDIR $boostTOOLSET -n stage \
+  --with-thread \
+  variant=release link=static \
+  architecture="$boostARCHITECTURE" address-model="$boostADDRESSMODEL" \
+  macosx-version="$SDKVRSION" macosx-version-min="$OSVERSION" \
+  | grep "^    " | sed 's/"//g' | sed s/$CXX/$CXX\ "$OPTIMIZE"/ | sed 's/-O3/-O2/g' \
   | while read COMMAND
     do
      echo "running command: $COMMAND"
      $COMMAND
-    done
+    done;
  
  # hack that sends extra arguments to g++
- $BJAM -a --stagedir="stage-$ARCH" --prefix=$REPOSITORYDIR --toolset="darwin" -n stage \
-  --with-thread variant=release \
-  architecture="$boostARCHITECTURE" address-model="$boostADDRESSMODEL" macosx-version="$OSVERSION" \
-  | grep "^    " | sed 's/"//g' | sed s/g++/g++\ "$OPTIMIZE"/ | sed 's/-O3/-O2/g' \
+ $BJAM -a --stagedir="stage-$ARCH" --prefix=$REPOSITORYDIR $boostTOOLSET -n stage \
+  --with-thread \
+  variant=release \
+  architecture="$boostARCHITECTURE" address-model="$boostADDRESSMODEL" \
+  macosx-version="$SDKVRSION" macosx-version-min="$OSVERSION" \
+  | grep "^    " | sed 's/"//g' | sed s/$CXX/$CXX\ "$OPTIMIZE"/ | sed 's/-O3/-O2/g' \
   | while read COMMAND
     do
      echo "running command: $COMMAND"
      $COMMAND
-    done
+    done;
+
+ mv ./stage-$ARCH/lib/libboost_thread-*.dylib ./stage-$ARCH/lib/libboost_thread-$BOOST_VER.dylib
+ mv ./stage-$ARCH/lib/libboost_thread-*.a ./stage-$ARCH/lib/libboost_thread-$BOOST_VER.a
 done
 
 
 # merge libboost_thread
 
-for liba in "lib/libboost_thread-mt-$BOOST_VER.a" "lib/libboost_thread-mt-$BOOST_VER.dylib"
+for liba in "lib/libboost_thread-$BOOST_VER.a" "lib/libboost_thread-$BOOST_VER.dylib"
 do
 
  if [ $NUMARCH -eq 1 ]
  then
-  mv "stage-$ARCH/$libname" "$REPOSITORYDIR/$libname";
+  mv "stage-$ARCH/$liba" "$REPOSITORYDIR/$liba";
   if [[ $liba == *.a ]]
   then 
    ranlib "$REPOSITORYDIR/$liba";
@@ -143,14 +159,12 @@ do
 done
 
 
-if [ -f "$REPOSITORYDIR/lib/libboost_thread-mt-$BOOST_VER.a" ]
+if [ -f "$REPOSITORYDIR/lib/libboost_thread-$BOOST_VER.a" ]
 then
- ln -sfn libboost_thread-mt-$BOOST_VER.a $REPOSITORYDIR/lib/libboost_thread-mt.a;
- ln -sfn libboost_thread-mt.a $REPOSITORYDIR/lib/libboost_thread.a;
+ ln -sfn libboost_thread-$BOOST_VER.a $REPOSITORYDIR/lib/libboost_thread.a;
 fi
-if [ -f "$REPOSITORYDIR/lib/libboost_thread-mt-$BOOST_VER.dylib" ]
+if [ -f "$REPOSITORYDIR/lib/libboost_thread-$BOOST_VER.dylib" ]
 then
- install_name_tool -id "$REPOSITORYDIR/lib/libboost_thread-mt-$BOOST_VER.dylib" "$REPOSITORYDIR/lib/libboost_thread-mt-$BOOST_VER.dylib";
- ln -sfn libboost_thread-mt-$BOOST_VER.dylib $REPOSITORYDIR/lib/libboost_thread-mt.dylib;
- ln -sfn libboost_thread-mt.dylib $REPOSITORYDIR/lib/libboost_thread.dylib;
+ install_name_tool -id "$REPOSITORYDIR/lib/libboost_thread-$BOOST_VER.dylib" "$REPOSITORYDIR/lib/libboost_thread-$BOOST_VER.dylib";
+ ln -sfn libboost_thread-$BOOST_VER.dylib $REPOSITORYDIR/lib/libboost_thread.dylib;
 fi
