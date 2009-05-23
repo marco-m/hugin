@@ -31,6 +31,11 @@
 #include <wx/wx.h>
 #include "hugin_utils/utils.h"
 
+#if defined(WIN32) && defined(__WXDEBUG__)
+#include <crtdbg.h>
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 using namespace std;
 using namespace vigra;
 using namespace hugin_utils;
@@ -40,17 +45,16 @@ MaskMgr* MaskMgr::m_instance = 0;
 
 MaskMgr::MaskMgr() : m_segmentation_index(-1) 
 {
+	// TODO: read the possible options from a configuration file
+	// ..
     string opts[] = {"PolyEd_Basic", "LazySnapping" };
     m_segmentation_options.assign(opts, opts+2);
 }
 
 MaskMgr::~MaskMgr() 
 {
-    /*if(m_segmentation)
-        m_segmentation->reset();
-    delete m_segmentation;*/
-    //m_segmentation.clear();
     init();
+	m_segmentation_options.clear();
 }
 
 //TODO: check for loading duplicate images 

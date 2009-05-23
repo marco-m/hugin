@@ -28,7 +28,7 @@
 #include <wx/stdpaths.h>
 #include "PTBatcherGUI.h"
 
-/** file drag and drop handler method */
+/* file drag and drop handler method */
 bool BatchDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 {
 	BatchFrame * MyBatchFrame = wxGetApp().GetFrame();
@@ -58,6 +58,11 @@ bool BatchDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& fil
 	return true;
 };
 
+enum
+{
+	wxEVT_COMMAND_RELOAD_BATCH,
+	wxEVT_COMMAND_UPDATE_LISTBOX
+};
 BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
 	EVT_TOOL(XRCID("tool_clear"),BatchFrame::OnButtonClear)
 	EVT_TOOL(XRCID("tool_open"),BatchFrame::OnButtonOpenBatch)
@@ -92,6 +97,8 @@ BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
 	EVT_CHECKBOX(XRCID("cb_verbose"), BatchFrame::OnCheckVerbose)
 	EVT_END_PROCESS(-1, BatchFrame::OnProcessTerminate)
 	EVT_CLOSE(BatchFrame::OnClose)
+	EVT_MENU(wxEVT_COMMAND_RELOAD_BATCH, BatchFrame::OnReloadBatch)
+	EVT_MENU(wxEVT_COMMAND_UPDATE_LISTBOX, BatchFrame::OnUpdateListBox)
 END_EVENT_TABLE()
 
 BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
@@ -128,6 +135,8 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
 	m_batch = new Batch(this,wxTheApp->argv[0],true);
 	m_batch->gui = true;
 	m_batch->LoadTemp();
+	if(m_batch->GetLastFile().length()==0)
+		m_batch->SaveTemp();
 	projListBox = XRCCTRL(*this,"project_listbox",ProjectListBox);
 	
 	//projListMutex = new wxMutex();
@@ -147,9 +156,9 @@ void *BatchFrame::Entry()
 	
 	//we define the working dir to search in and the file name syntax of the spool files
 	//wxMessageBox( _T("new file received1"),_T("new file received1"),wxOK | wxICON_INFORMATION );
-	wxDir* workingDir = new wxDir(wxStandardPaths::Get().GetUserConfigDir());
-	wxString fileSent = _T(".ptbs*");
-	wxString pending;
+	//wxDir* workingDir = new wxDir(wxStandardPaths::Get().GetUserConfigDir());
+	//wxString fileSent = _T(".ptbs*");
+	//wxString pending;
 	/*wxString fileTemp = _T(".ptbt*");
 	wxString temp = _T("");
 	//we check for existing temporary files
@@ -182,19 +191,17 @@ void *BatchFrame::Entry()
 	//we load the data from the temp file
 	wxGetApp().AppendBatchFile(workingDir->GetName()+wxFileName::GetPathSeparator()+temp);*/
 
-	bool change = false;
-	bool loaded = false;
-	int projectCount = m_batch->GetProjectCount();
+	//int projectCount = m_batch->GetProjectCount();
 	//we constantly poll the working dir for new files and wait a bit on each loop
 	while(!m_closeThread)
 	{
+		//don't access GUI directly in this function (function is running as separate thread)
 		//check, if ptbt file was changed
 		wxFileName aFile(m_batch->GetLastFile());
 		if(!aFile.FileExists())
 		{
-			m_batch->ClearBatch();
-			m_batch->LoadTemp();
-			loaded = true;
+			wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH);
+			wxPostEvent(this,evt);
 		}
 		else
 		{
@@ -202,25 +209,17 @@ void *BatchFrame::Entry()
 			aFile.GetTimes(NULL,NULL,&create);
 			if(create.IsLaterThan(m_batch->GetLastFileDate()))
 			{
-				m_batch->ClearBatch();
-				m_batch->LoadTemp();
-				loaded = true;
+				wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH);
+				wxPostEvent(this,evt);
 			};
 		};
-		if(m_batch->GetProjectCount()!=projectCount || loaded)
-		{
-			projListBox->DeleteAllItems();
-			projListBox->Fill(m_batch);
-			projectCount = m_batch->GetProjectCount();
-			SetStatusText(wxT(""));
-			if(!loaded)
-				change = true;
-			loaded = false;
-		}
+		//update project list box
+		wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_UPDATE_LISTBOX);
+		wxPostEvent(this,evt);
 		//wxMessageBox( _T("test"),_T("Error!"),wxOK | wxICON_INFORMATION );
-		pending = workingDir->FindFirst(workingDir->GetName(),fileSent,wxDIR_FILES);
+		//pending = workingDir->FindFirst(workingDir->GetName(),fileSent,wxDIR_FILES | wxDIR_HIDDEN);
 		//wxMessageBox( _T("test1"),_T("Error!"),wxOK | wxICON_INFORMATION );
-		if(!pending.IsEmpty())
+		/*if(!pending.IsEmpty())
 		{
 			wxString projectPending = _T("");
 			//wxMessageBox( _T("new file received"),spoolFile,wxOK | wxICON_INFORMATION );
@@ -238,64 +237,9 @@ void *BatchFrame::Entry()
 			if(!wxRemoveFile(pending))
 				wxMessageBox( _("Error: Could not remove temporary file"),_("Error!"),wxOK | wxICON_INFORMATION );
 
-		}
+		}*/
 		//wxMessageBox( _T("test2"),_T("Error!"),wxOK | wxICON_INFORMATION );
-		wxFileName* tempFile;
-		//wxMessageBox( _T("test3"),_T("Error!"),wxOK | wxICON_INFORMATION );
-		//check all projects in list for changes
-		//wxString message = wxString();
-		//message = message << wxGetApp().m_projList.GetCount();
-		//wxMessageBox( message,_T("Error!"),wxOK | wxICON_INFORMATION );
-		for(int i = 0; i< m_batch->GetProjectCount(); i++)
-		{
-			if(m_batch->GetProject(i)->id >= 0)
-			{
-				tempFile = new wxFileName(m_batch->GetProject(i)->path);
-				if(tempFile->FileExists())
-				{
-					//wxMessageBox(tempFile->GetFullPath(),_T("Error!"),wxOK | wxICON_INFORMATION );
-					//wxDateTime* access = new wxDateTime();
-					wxDateTime* modify = new wxDateTime();
-					//wxDateTime* create = new wxDateTime();
-					tempFile->GetTimes(NULL,modify,NULL);
-					if(m_batch->GetProject(i)->skip)
-					{
-						change = true;
-						m_batch->GetProject(i)->skip = false;
-						m_batch->SetStatus(i,Project::WAITING);
-						projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
-					}
-					else if(!modify->IsEqualTo(m_batch->GetProject(i)->modDate))
-					{
-						change = true;
-						m_batch->GetProject(i)->modDate = *modify;
-						m_batch->GetProject(i)->ResetOptions();
-						m_batch->SetStatus(i,Project::WAITING);
-						projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
-					}
-				}
-				else
-				{
-					if(m_batch->GetStatus(i) != Project::MISSING)
-					{
-						change = true;
-						m_batch->GetProject(i)->skip = true;
-						m_batch->SetStatus(i,Project::MISSING);
-						projListBox->SetMissing(projListBox->GetIndex(m_batch->GetProject(i)->id));
-					}
-				}
-			}
-			if(projListBox->UpdateStatus(i,m_batch->GetProject(i)))
-				change = true;
-		}
-		//if(tempFile!=NULL)
-		//	free(tempFile);
-		if(change)
-		{
-			change = false;
-			m_batch->SaveTemp();
-		}
-		
+
 		GetThread()->Sleep(1000);
 		//wxFile file;
 		//file.Create(workingDir->GetName()+wxFileName::GetPathSeparator()+_T("krneki.txt"));
@@ -304,6 +248,62 @@ void *BatchFrame::Entry()
 	//wxMessageBox(_T("Ending thread..."));
 	return 0;
 }
+
+void BatchFrame::OnUpdateListBox(wxCommandEvent &event)
+{
+	wxFileName tempFile;
+	bool change = false;
+	for(int i = 0; i< m_batch->GetProjectCount(); i++)
+	{
+		if(m_batch->GetProject(i)->id >= 0)
+		{
+			tempFile.Assign(m_batch->GetProject(i)->path);
+			if(tempFile.FileExists())
+			{
+				wxDateTime modify;
+				modify=tempFile.GetModificationTime();
+				if(m_batch->GetProject(i)->skip)
+				{
+					change = true;
+					m_batch->GetProject(i)->skip = false;
+					m_batch->SetStatus(i,Project::WAITING);
+					projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
+				}
+				else if(!modify.IsEqualTo(m_batch->GetProject(i)->modDate))
+				{
+					change = true;
+					m_batch->GetProject(i)->modDate = modify;
+					m_batch->GetProject(i)->ResetOptions();
+					m_batch->SetStatus(i,Project::WAITING);
+					projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
+				}
+			}
+			else
+			{
+				if(m_batch->GetStatus(i) != Project::MISSING)
+				{
+					change = true;
+					m_batch->GetProject(i)->skip = true;
+					m_batch->SetStatus(i,Project::MISSING);
+					projListBox->SetMissing(projListBox->GetIndex(m_batch->GetProject(i)->id));
+				}
+			}
+		}
+		if(projListBox->UpdateStatus(i,m_batch->GetProject(i)))
+			change = true;
+	}
+	if(change)
+		m_batch->SaveTemp();
+};
+
+void BatchFrame::OnReloadBatch(wxCommandEvent &event)
+{
+	m_batch->ClearBatch();
+	m_batch->LoadTemp();
+	projListBox->DeleteAllItems();
+	projListBox->Fill(m_batch);
+	SetStatusText(wxT(""));
+};
 
 void BatchFrame::OnUserExit(wxCommandEvent &event)
 {
@@ -406,9 +406,10 @@ void BatchFrame::OnButtonChangePrefix(wxCommandEvent &event)
 	int selIndex = projListBox->GetSelectedIndex();
 	if(selIndex != -1)
 	{
+		wxFileName prefix(projListBox->GetSelectedProjectPrefix());
 		wxFileDialog dlg(0,_("Specify output prefix for project ")+projListBox->GetSelectedProject(),
-                     projListBox->GetSelectedProject(),
-                     wxT(""), wxT(""),
+                     prefix.GetPath(),
+                     prefix.GetFullName(), wxT(""),
                      wxSAVE, wxDefaultPosition);
 		if (dlg.ShowModal() == wxID_OK)
 		{
@@ -603,6 +604,7 @@ void BatchFrame::OnButtonRemoveComplete(wxCommandEvent &event)
 		if(m_batch->GetStatus(i)==Project::FINISHED || 
 		(removeErrors && m_batch->GetStatus(i)==Project::FAILED))
 		{
+			projListBox->Deselect(i);
 			projListBox->DeleteItem(i);
 			m_batch->RemoveProjectAtIndex(i);
 		}
@@ -630,6 +632,7 @@ void BatchFrame::OnButtonRemoveFromList(wxCommandEvent &event)
 		{
 			m_batch->RemoveProjectAtIndex(selIndex);
 			SetStatusText(_("Removed project ")+projListBox->GetSelectedProject());
+			projListBox->Deselect(selIndex);
 			projListBox->DeleteItem(selIndex);
 			m_batch->SaveTemp();
 		}
@@ -761,21 +764,48 @@ void BatchFrame::OnButtonSkip(wxCommandEvent &event)
 		}*/
 }
 
-
-
-
+void BatchFrame::SetCheckboxes()
+{
+	wxConfigBase *config=wxConfigBase::Get();
+	int i;
+	i=config->Read(wxT("/BatchFrame/DeleteCheck"), 0l);
+	if(i==0)
+		XRCCTRL(*this,"cb_delete",wxCheckBox)->SetValue(false);
+	else
+		XRCCTRL(*this,"cb_delete",wxCheckBox)->SetValue(true);
+	i=config->Read(wxT("/BatchFrame/ParallelCheck"), 0l);
+	if(i==0)
+		XRCCTRL(*this,"cb_parallel",wxCheckBox)->SetValue(false);
+	else
+		XRCCTRL(*this,"cb_parallel",wxCheckBox)->SetValue(true);
+	i=config->Read(wxT("/BatchFrame/ShutdownCheck"), 0l);
+	if(i==0)
+		XRCCTRL(*this,"cb_shutdown",wxCheckBox)->SetValue(false);
+	else
+		XRCCTRL(*this,"cb_shutdown",wxCheckBox)->SetValue(true);
+	i=config->Read(wxT("/BatchFrame/OverwriteCheck"), 0l);
+	if(i==0)
+		XRCCTRL(*this,"cb_overwrite",wxCheckBox)->SetValue(false);
+	else
+		XRCCTRL(*this,"cb_overwrite",wxCheckBox)->SetValue(true);
+	i=config->Read(wxT("/BatchFrame/VerboseCheck"), 0l);
+	if(i==0)
+		XRCCTRL(*this,"cb_verbose",wxCheckBox)->SetValue(false);
+	else
+		XRCCTRL(*this,"cb_verbose",wxCheckBox)->SetValue(true);
+};
 
 void BatchFrame::OnCheckDelete(wxCommandEvent &event)
 {
 	if(event.IsChecked())
 	{
 		m_batch->deleteFiles = true;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/DeleteCheck"), 1);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/DeleteCheck"), 1l);
 	}
 	else
 	{
 		m_batch->deleteFiles = false;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/DeleteCheck"), 0);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/DeleteCheck"), 0l);
 	}
 }
 
@@ -785,12 +815,12 @@ void BatchFrame::OnCheckOverwrite(wxCommandEvent &event)
 	if(event.IsChecked())
 	{
 		m_batch->overwrite = true;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/OverwriteCheck"), 1);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/OverwriteCheck"), 1l);
 	}
 	else
 	{
 		m_batch->overwrite = false;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/OverwriteCheck"), 0);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/OverwriteCheck"), 0l);
 	}
 }
 void BatchFrame::OnCheckParallel(wxCommandEvent &event)
@@ -798,12 +828,12 @@ void BatchFrame::OnCheckParallel(wxCommandEvent &event)
 	if(event.IsChecked())
 	{
 		m_batch->parallel = true;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/ParallelCheck"), 1);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/ParallelCheck"), 1l);
 	}
 	else
 	{
 		m_batch->parallel = false;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/ParallelCheck"), 0);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/ParallelCheck"), 0l);
 	}
 }
 
@@ -812,12 +842,12 @@ void BatchFrame::OnCheckShutdown(wxCommandEvent &event)
 	if(event.IsChecked())
 	{
 		m_batch->shutdown = true;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/ShutdownCheck"), 1);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/ShutdownCheck"), 1l);
 	}
 	else
 	{
 		m_batch->shutdown = false;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/ShutdownCheck"), 0);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/ShutdownCheck"), 0l);
 	}
 }
 
@@ -826,12 +856,12 @@ void BatchFrame::OnCheckVerbose(wxCommandEvent &event)
 	if(event.IsChecked())
 	{
 		m_batch->verbose = true;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/VerboseCheck"), 1);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/VerboseCheck"), 1l);
 	}
 	else
 	{
 		m_batch->verbose = false;
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/VerboseCheck"), 0);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/VerboseCheck"), 0l);
 	}
 }
 
@@ -840,13 +870,14 @@ void BatchFrame::OnClose(wxCloseEvent &event)
 	//wxMessageBox(_T("Closing..."));
 	//save windows position
 	if(this->IsMaximized())
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/Max"), 1);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/Max"), 1l);
 	else
 	{
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/Max"), 0);
+		wxConfigBase::Get()->Write(wxT("/BatchFrame/Max"), 0l);
 		wxConfigBase::Get()->Write(wxT("/BatchFrame/Width"), this->GetSize().GetWidth());
 		wxConfigBase::Get()->Write(wxT("/BatchFrame/Height"), this->GetSize().GetHeight());
 	}
+	wxConfigBase::Get()->Flush();
 	m_closeThread = true;
 	this->GetThread()->Wait();
 	//wxMessageBox(_T("Closing frame..."));
@@ -856,23 +887,23 @@ void BatchFrame::OnClose(wxCloseEvent &event)
 
 void BatchFrame::PropagateDefaults()
 {
-	if(XRCCTRL(*this,"cb_parallel",wxCheckBox)->IsChecked())
+	if(GetCheckParallel())
 		m_batch->parallel = true;
 	else
 		m_batch->parallel = false;
-	if(XRCCTRL(*this,"cb_delete",wxCheckBox)->IsChecked())
+	if(GetCheckDelete())
 		m_batch->deleteFiles = true;
 	else
 		m_batch->deleteFiles = false;
-	if(XRCCTRL(*this,"cb_shutdown",wxCheckBox)->IsChecked())
+	if(GetCheckShutdown())
 		m_batch->shutdown = true;
 	else
 		m_batch->shutdown = false;
-	if(XRCCTRL(*this,"cb_overwrite",wxCheckBox)->IsChecked())
+	if(GetCheckOverwrite())
 		m_batch->overwrite = true;
 	else
 		m_batch->overwrite = false;
-	if(XRCCTRL(*this,"cb_verbose",wxCheckBox)->IsChecked())
+	if(GetCheckVerbose())
 		m_batch->verbose = true;
 	else
 		m_batch->verbose = false;
@@ -983,9 +1014,9 @@ void BatchFrame::OnProcessTerminate(wxProcessEvent & event)
 void BatchFrame::RestoreSize()
 {
 	//get saved size
-	int width = wxConfigBase::Get()->Read(wxT("/BatchFrame/Width"), -1);
-	int height = wxConfigBase::Get()->Read(wxT("/BatchFrame/Height"), -1);
-	int max = wxConfigBase::Get()->Read(wxT("/BatchFrame/Max"), -1);;
+	int width = wxConfigBase::Get()->Read(wxT("/BatchFrame/Width"), -1l);
+	int height = wxConfigBase::Get()->Read(wxT("/BatchFrame/Height"), -1l);
+	int max = wxConfigBase::Get()->Read(wxT("/BatchFrame/Max"), -1l);;
 	if((width != -1) && (height != -1))
 		this->SetSize(width,height);
 	else

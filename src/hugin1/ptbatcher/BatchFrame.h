@@ -33,10 +33,16 @@
 #include "DirTraverser.h"
 //#include <wx/app.h>
 
-/** simple class that forward the drop to the mainframe */
+/** Simple class that forward the drop to the mainframe */
 class BatchDropTarget : public wxFileDropTarget
 {
 public:
+	/** File/directory drag and drop handler method 
+	 *
+	 * When a project file is droped, it is added with default prefix.
+	 * When a directory is dropped, the directory and all sub-directory are scanned and
+	 * all found project files are added to the queue.
+	 */
 	bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 };
 
@@ -79,6 +85,8 @@ public:
 	void OnClose(wxCloseEvent &event);
 	//Resets all checkboxes based on m_batch object properties
 	void PropagateDefaults();
+	//Sets all checkboxes corresponding the setting in config
+	void SetCheckboxes();
 	//Starts batch execution
 	void RunBatch();
 	//Sets locale and XRC prefix pointers from main app
@@ -86,6 +94,16 @@ public:
 	//Swaps the project entry at index in the list with the next (at index+1).
 	void SwapProject(int index);
 	//PanoramaOptions readOptions(wxString projectFile);
+	/** return if parallel checkbox is checked */
+	bool GetCheckParallel() { return XRCCTRL(*this,"cb_parallel",wxCheckBox)->IsChecked();};
+	/** return if delete checkbox is checked */
+	bool GetCheckDelete() { return XRCCTRL(*this,"cb_delete",wxCheckBox)->IsChecked();};
+	/** return if shutdown checkbox is checked */
+	bool GetCheckShutdown() { return XRCCTRL(*this,"cb_shutdown",wxCheckBox)->IsChecked();};
+	/** return if overwrite checkbox is checked */
+	bool GetCheckOverwrite() { return XRCCTRL(*this,"cb_overwrite",wxCheckBox)->IsChecked();};
+	/** return if verbose checkbox is checked */
+	bool GetCheckVerbose() { return XRCCTRL(*this,"cb_verbose",wxCheckBox)->IsChecked();};
 	void RestoreSize();
 	void AddToList(wxString aFile);
 	void AddDirToList(wxString aDir);
@@ -106,7 +124,12 @@ private:
 	wxHtmlHelpController * m_help;
 
 	void OnProcessTerminate(wxProcessEvent & event);
-	
+	/** called by thread when queue was changed outside of PTBatcherGUI
+	*/
+	void OnReloadBatch(wxCommandEvent &event);
+	/** called by thread to update listbox */
+	void OnUpdateListBox(wxCommandEvent &event);
+
 	DECLARE_EVENT_TABLE()
 	//PTPrograms progs;
 };

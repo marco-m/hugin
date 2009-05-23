@@ -91,12 +91,14 @@
 //		
 //----------------------------------------------------------------------
 
-typedef	double	KMcoord;		// coordinate data type
-typedef	double	KMdist;			// distance data type
+//typedef	double	KMcoord;		// coordinate data type
+typedef	int	KMcoord;		// coordinate data type
+//typedef	double	KMdist;			// distance data type
+typedef	float	KMdist;			// distance data type
 typedef int	KMidx;			// point index
 
 					// largest possible distance
-const KMdist	KM_DIST_INF	=  DBL_MAX;
+const KMdist	KM_DIST_INF	=  FLT_MAX; //DBL_MAX;
 
 #ifdef DSIGNIF				// number of sig. digits in KMcoord
     const int	 KMcoordPrec	= DBL_DIG;

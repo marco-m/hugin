@@ -104,6 +104,9 @@ void PolyEd_Basic::reset()
 {
     m_width = 0;
     m_height = 0;
+	/*if(m_mask)
+		delete m_mask;
+	m_mask = 0;*/
 }
 
 void PolyEd_Basic::markPixels(vector<PixelCoord> coords, Label label)

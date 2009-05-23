@@ -92,7 +92,7 @@ IF (WIN32)
   # search boost there
   SET(BOOST_DIR_SEARCH_USER ${SOURCE_BASE_DIR})
   # wxWidgets
-  SET(wxWidgets_ROOT_DIR ${SOURCE_BASE_DIR}/wxWidgets-2.8.9)
+  SET(wxWidgets_ROOT_DIR ${SOURCE_BASE_DIR}/wxWidgets-2.8.10)
   # GLEW moved to FildGLEW.cmake module
   # SET(GLEW_INCLUDE_DIR ${SOURCE_BASE_DIR}/glew/include)
   # for dynamic build, it's glew32.lib and the dll must be copied into hugin's bin folder
@@ -105,8 +105,23 @@ ENDIF(WIN32)
 #  This must come before FINDs for tiff, jpeg, png, zlib to enable
 #  finding the wxWidgets distributions of those packages (Win32 only).
 
-SET(wxWidgets_USE_LIBS base core xrc html xml adv gl)
+SET(wxWidgets_USE_LIBS base core xrc html xml adv gl net)
 FIND_PACKAGE(wxWidgets REQUIRED)
+
+# hugin requires wxwidgets 2.7.0 or above
+IF (UNIX)
+  EXEC_PROGRAM(sh ARGS "${wxWidgets_CONFIG_EXECUTABLE} --version" OUTPUT_VARIABLE wxWidgets_VERSION)
+  STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+)\\..*" "\\1"  wxWidgets_VERSION ${wxWidgets_VERSION})
+  IF(wxWidgets_VERSION STREQUAL "2.5")
+    SET(wxWidgets_FOUND FALSE)
+    MESSAGE("wxWidgets 2.5.x not supported")
+  ENDIF(wxWidgets_VERSION STREQUAL "2.5")
+  IF(wxWidgets_VERSION STREQUAL "2.6")
+    SET(wxWidgets_FOUND FALSE)
+    MESSAGE("wxWidgets 2.6.x not supported")
+  ENDIF(wxWidgets_VERSION STREQUAL "2.6")
+ENDIF (UNIX)
+
 IF(NOT wxWidgets_FOUND)
   MESSAGE("wxWidgets was not found, GUI programs (hugin, nona_gui) disabled")
 ENDIF(NOT wxWidgets_FOUND) 
@@ -127,10 +142,8 @@ INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
 FIND_PACKAGE(OpenEXR REQUIRED)
 include_directories(${OPENEXR_INCLUDE_DIR})
 
-FIND_PACKAGE(Exiv2)
-IF(EXIV2_FOUND)
-  INCLUDE_DIRECTORIES(${EXIV2_INCLUDE_DIR})
-ENDIF(EXIV2_FOUND)
+FIND_PACKAGE(Exiv2 REQUIRED)
+INCLUDE_DIRECTORIES(${EXIV2_INCLUDE_DIR})
 
 ## OpenGL and GLEW
 
@@ -179,6 +192,17 @@ FIND_PACKAGE(MSGFMT REQUIRED)
 IF(MSGFMT_FOUND)
   MESSAGE(STATUS "Program msgfmt found (${MSGFMT_EXECUTABLE})")
 ENDIF(MSGFMT_FOUND)
+
+##
+## LAPACK
+##
+
+FIND_PACKAGE(LAPACK)
+IF(LAPACK_FOUND)
+  MESSAGE(STATUS "LAPACK found (${LAPACK_LIBRARIES})")
+ELSE(LAPACK_FOUND)
+  MESSAGE(STATUS "LAPACK not found, using LU-based solver")
+ENDIF(LAPACK_FOUND)
 
 # vips is not used right now
 #IF (WIN32)
@@ -356,6 +380,7 @@ SET(CPACK_SOURCE_IGNORE_FILES
 "~$"
 "\\\\.#"
 "/#"
+"/src/api-doc/"
 "/celeste/celeste_standalone$"
 "/celeste/Config.h$"
 "/celeste/training/celeste_train$"

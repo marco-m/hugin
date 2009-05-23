@@ -42,7 +42,8 @@ class LazySnapping : public ISegmentation
 {
     LazySnappingMemento *m_memento;
 
-    typedef float captype;
+    //typedef float captype;
+	typedef int captype;
 
 	static const int MAX_NEIGHBOR = 8;
     wxBitmap *m_mask;
@@ -56,7 +57,13 @@ class LazySnapping : public ISegmentation
     Graph          *m_graph;
     int             m_cnodes;       //number of nodes. It can be no. of pixels or nodes after preprocessing
     double          m_lambda, m_sigma;
-    captype         m_K;
+    //captype         m_K;
+
+	static const int m_BoundaryPenalty[5]; //10000, 6065, 1353, 111, 3, 0 
+	static const int PENALTY_SCALE = 100;
+	static const int INTENSITY_THRESHOLD = 5;
+	static const int INFINITE_PENALTY = 1000;
+	static const int INTENSITY_GRADIENT_PENALTY = 10;
 
     typedef std::map<PixelCoord, ISegmentation::Label, cmp_pixel_coord> tSeed;
     //typedef std::map<PixelColor, int> tObjColorMap;
@@ -109,17 +116,25 @@ class LazySnapping : public ISegmentation
         T& operator[](int index)
         {
             if(index >= CDIM)
-                throw std::exception();
+				throw std::invalid_argument("index out of bound");
             return coord[index];
         }
-        double getDistSqr(const ClusterCoord<T,CDIM>& b)
+        int getDistSqr(const ClusterCoord<T,CDIM>& b)
         {
-            double d = 0;
+            int d = 0;
             for(int i = 0; i < CDIM; i++)
                 d += (coord[i] - b.coord[i]) * (coord[i] - b.coord[i]);
             return d;
         }
+		int getGridDist(const ClusterCoord<T,CDIM>& b)
+        {
+            int d = 0;
+            for(int i = 0; i < CDIM; i++)
+                d += abs(coord[i] - b.coord[i]);
+            return d;
+        }
     };
+
     //typedef std::map<ClusterCoord<ClusterCoordType>, ISegmentation::Label> tCluster;
     //typedef std::vector<std::pair<ClusterCoord<ClusterCoordType>, ISegmentation::Label> > tCluster;
     typedef std::vector<ClusterCoord<ClusterCoordType> > tCluster;
@@ -142,7 +157,7 @@ class LazySnapping : public ISegmentation
 
     void    buildGraph();
     void    updateGraph(std::vector<PixelCoord> coords, Label label);
-    int     getNeighbor(int p, int n);
+    //int     getNeighbor(int p, int n);
 	void    getNeighbors(int p, int *neighbors, int *nNeighbors);
     double  getDistSqrPixel(const PixelCoord &p, const PixelCoord &q) const;
     double  getDistSqrPixel(int p, int q) const;

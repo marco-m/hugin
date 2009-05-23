@@ -29,6 +29,11 @@
 #include "hugin_utils/utils.h"
 #include "MaskFileMgr.h"
 
+#if defined(WIN32) && defined(__WXDEBUG__)
+#include <crtdbg.h>
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 using namespace std;
 using namespace hugin_utils;
 MaskFileMgr* MaskFileMgr::m_instance = 0;

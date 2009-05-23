@@ -35,6 +35,11 @@
 #include "MaskEdEditWnd.h"
 #include "MaskMgr.h"
 
+#if defined(WIN32) && defined(__WXDEBUG__)
+#include <crtdbg.h>
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 using namespace PT;
 using namespace std;
 using namespace vigra;

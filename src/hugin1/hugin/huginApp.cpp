@@ -56,7 +56,10 @@
 
 
 #include <tiffio.h>
-
+#if defined(WIN32) && defined(__WXDEBUG__)
+#include <crtdbg.h>
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
 using namespace utils;
 
 // utility functions
@@ -81,7 +84,34 @@ wxString getDefaultProjectName(const Panorama & pano)
     }
 }
 
+int CustomAllocHook( int nAllocType, void *userData, size_t size, 
+                              int nBlockType, long requestNumber, 
+                                   const unsigned char *filename, 
+                                                  int lineNumber)
+{
+    if( nBlockType == _CRT_BLOCK)
+        return TRUE ; // better to not handle
 
+        switch(nAllocType)
+        {
+            case _HOOK_ALLOC :
+            // add the code for handling the allocation requests
+
+            break ;
+
+            case _HOOK_REALLOC:
+            // add the code for handling the reallocation requests
+
+            break ;
+
+            case _HOOK_FREE :
+            // add the code for handling the free requests
+
+            break ;
+        }
+
+    return TRUE ;
+}
 
 // make wxwindows use this class as the main application
 IMPLEMENT_APP(huginApp)
@@ -90,6 +120,8 @@ huginApp::huginApp()
 {
     DEBUG_TRACE("ctor");
     m_this=this;
+	//_CrtSetAllocHook(CustomAllocHook);
+	//_CrtSetBreakAlloc(244355);
 }
 
 huginApp::~huginApp()

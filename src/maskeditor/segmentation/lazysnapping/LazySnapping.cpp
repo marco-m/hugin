@@ -29,6 +29,11 @@
 #include "watershed.cxx"
 #include "LazySnappingMemento.h"
 
+#if defined(WIN32) && defined(__WXDEBUG__)
+#include <crtdbg.h>
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 #define INF     1000000
 using namespace std;
 using namespace vigra;
@@ -59,16 +64,17 @@ struct PixelCoordToWxPoint
 /**
  * LazySnapping Implementation
  */
+const int LazySnapping::m_BoundaryPenalty[5] = {10000, 6065, 1353, 111, 3};
 LazySnapping::LazySnapping() 
 : m_mask(0), m_mask_data(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
+m_nclusters(NCLUSTERS), /*m_K(-1),*/ m_width(0), m_height(0), m_depth(0), m_cnodes(0),
 m_memento(0)
 {
     m_name = "LazySnapping";
 }
 LazySnapping::LazySnapping(const string &filename) 
 : m_mask(0), m_mask_data(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
+m_nclusters(NCLUSTERS), /*m_K(-1),*/ m_width(0), m_height(0), m_depth(0), m_cnodes(0),
 m_memento(0)
 {
     m_name = "LazySnapping";
@@ -77,7 +83,7 @@ m_memento(0)
 
 LazySnapping::LazySnapping(const string &imgId, const vigra::BRGBImage *img, vigra::BImage *mask)
 : m_mask(0), m_mask_data(0), m_data(0), m_nodes(0), m_graph(0), m_lambda(LAMBDA), m_sigma(SIGMA),
-m_nclusters(NCLUSTERS), m_K(-1), m_width(0), m_height(0), m_depth(0), m_cnodes(0),
+m_nclusters(NCLUSTERS), /*m_K(-1),*/ m_width(0), m_height(0), m_depth(0), m_cnodes(0),
 m_memento(0)
 {
     m_name = "LazySnapping";
@@ -160,7 +166,7 @@ void LazySnapping::init(vigra::BImage *mask)
 
 void LazySnapping::reset()
 {
-    m_K = -1;
+//    m_K = -1;
     m_width = 0;
     m_height = 0;
     m_depth = 0;
@@ -236,30 +242,29 @@ inline double LazySnapping::getDistSqrPixelIntensity(int p, int q) const
     return SQR(clr1.r - clr2.r)+SQR(clr1.g - clr2.g)+ SQR(clr1.b - clr2.b) ;
 }
 
-inline int LazySnapping::getNeighbor(int p, int n)
-{
-   static const int N8[4][2] = {0,  1,
-                 1,  1,
-                 1,  0,
-                 1, -1,
-               /*0, -1,
-                -1, -1,
-                -1,  0,
-                -1,  1,*/};
-   int r, c;
-   r = p/m_width + N8[n][0];
-   c = p%m_width + N8[n][1];
-   if(r >= 0 && r < m_height && c >= 0 && c < m_width)
-   {
-        return r * m_width + c;
-   }
-   return -1;
-}
+//inline int LazySnapping::getNeighbor(int p, int n)
+//{
+//   static const int N8[4][2] = {0,  1,
+//                 1,  1,
+//                 1,  0,
+//                 1, -1,
+//               /*0, -1,
+//                -1, -1,
+//                -1,  0,
+//                -1,  1,*/};
+//   int r, c;
+//   r = p/m_width + N8[n][0];
+//   c = p%m_width + N8[n][1];
+//   if(r >= 0 && r < m_height && c >= 0 && c < m_width)
+//   {
+//        return r * m_width + c;
+//   }
+//   return -1;
+//}
 
 inline void LazySnapping::getNeighbors(int p, int *neighbors, int *n)
 {
-    // a more efficient version of retrieving neighbors
-    // return only unique set of neighbors all at once
+    // get neighbors all at once
     *n = 0;
     if(p == m_cnodes - 1) { //last node does not have any neighbors
         return;
@@ -291,19 +296,23 @@ inline void LazySnapping::getNeighbors(int p, int *neighbors, int *n)
                 neighbors[0] = neighbors[2];
         }
     }
-    
 }
-
 
 inline LazySnapping::captype LazySnapping::computePrior(int p, int q)
 {
     //return exp(-getDistSqrPixelIntensity(p, q)/(2*m_sigma*m_sigma)) * (1.0/getDistPixel(p,q));
-    double d = getDistSqrPixelIntensity(p, q);
-    return 1.0/(d + 1.0);
+    //double d = getDistSqrPixelIntensity(p, q);
+	//return PENALTY_SCALE * 1.0/(d + 1.0);
+
+	PixelColor cp = getPixelValue(p);
+	PixelColor cq = getPixelValue(q);
+	
+	if(abs(cp.r - cq.r) + abs(cp.g - cq.g) + abs(cp.b - cq.b) < 3*INTENSITY_THRESHOLD) return 2 * INTENSITY_GRADIENT_PENALTY; else return INTENSITY_GRADIENT_PENALTY;
+    
 }
 
 void LazySnapping::computeLikelihood(int p, captype &f, captype &b)
-{
+{  
     double df = -1;  //min distance from foreground clusters
     double db = -1;  //min distance from background clusters
     double d;
@@ -317,20 +326,20 @@ void LazySnapping::computeLikelihood(int p, captype &f, captype &b)
     {
         //d = getDistSqrPixel(it->first, pp);
         //d = EuclideanDistSqr<ClusterCoord<ClusterCoordType>, double>(&(it->first), &cc, CLUSTERCOORDDIM);
-        d = cc.getDistSqr(*it);
+		d = cc.getGridDist(*it); //cc.getDistSqr(*it);
         if(df < 0 || d < df)
            df = d;
     }
     for(tCluster::iterator it = m_bkgnd_clusters.begin(); it != m_bkgnd_clusters.end(); it++)
     {
-        d = cc.getDistSqr(*it);
+        d = cc.getGridDist(*it); 
         if(db < 0 || d < db)
            db = d;
     }
     //df = sqrt(df);
     //db = sqrt(db);
-    f = df/(df + db);
-    b = db/(df + db);
+    f = PENALTY_SCALE * df/(df + db);
+    b = PENALTY_SCALE * db/(df + db);
 }
 
 void LazySnapping::buildGraph()
@@ -345,17 +354,23 @@ void LazySnapping::buildGraph()
         m_nodes[i] = m_graph->add_node();
 	//m_graph->add_node();
 
-    captype cap, rev_cap;
-    m_K = -1;
-    for(i = 0; i < m_cnodes; i++)
-        for(n = 0; n < 4; n++)
-           if((j = getNeighbor(i, n)) > -1)
-            {
-                cap = rev_cap = m_lambda * computePrior(i, j);
-                if(m_K < 0 || cap > m_K)
-                    m_K = cap;
-                m_graph->add_edge(m_nodes[i], m_nodes[j], cap, rev_cap);
-            }
+    captype cap;
+    //m_K = -1;
+	int neighbors[10];
+	int nneighbors;
+	for(i = 0; i < m_cnodes; i++) {
+		getNeighbors(i, neighbors,&nneighbors);
+        for(n = 0; n < nneighbors; n++) {
+			j = neighbors[n];
+            cap = m_lambda * computePrior(i, j);
+            /*if(m_K < 0 || cap > m_K)
+                m_K = cap;
+            m_graph->add_edge(m_nodes[i], m_nodes[j], cap, rev_cap);*/
+			m_graph->add_edge(m_nodes[i], m_nodes[j], 2 * cap, 0); // -pi(E)
+			m_graph->add_tweights(m_nodes[i], cap, 0);          // edge(v1, E(1,0) - E(0,0)) = edge(v1, E(1,0))
+			m_graph->add_tweights(m_nodes[j], 0, cap);          // edge(v2, E(1,1) - E(1,0)) = edge(v2, -E(1,0))
+        }
+	}
 }
 
 void LazySnapping::getPixelsOnLine(const vector<PixelCoord> coords, vector<PixelCoord> &line)
@@ -517,9 +532,10 @@ void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
     {
         i = (*it).y * m_width + (*it).x;
         if(label == FGND) {
-            m_graph->set_tweights(m_nodes[i], INF, 0);
+            //m_graph->set_tweights(m_nodes[i], INF, 0);
+			m_graph->set_tweights(m_nodes[i], 0, INFINITE_PENALTY);
         } else {
-            m_graph->set_tweights(m_nodes[i], 0, INF);
+            m_graph->set_tweights(m_nodes[i], INFINITE_PENALTY, 0);
         }
     }
     /*
@@ -531,7 +547,13 @@ void LazySnapping::updateGraph(vector<PixelCoord> coords, Label label)
         PixelCoord p(c, r);
         if(m_seeds.find(p) == m_seeds.end()) { //if current pixel is not marked as seed
             computeLikelihood(i, f, b);
-            m_graph->add_tweights(m_nodes[i], b, f);
+			////FIXME: new tweight is < residual flow
+		   //m_graph->add_tweights(m_nodes[i], b, f);
+			if(f > b) {
+				m_graph->add_tweights(m_nodes[i], f - b, 0);
+			} else {
+				m_graph->add_tweights(m_nodes[i], 0, b - f);
+			}
         }
     }
 }
@@ -543,9 +565,9 @@ void LazySnapping::segment()
     for(int i = 0; i < m_cnodes; i++)
     {
         if(m_graph->what_segment(m_nodes[i]) == Graph::SOURCE) {
-            setMask(i, FGND);
-        } else {
             setMask(i, BKGND);
+        } else {
+            setMask(i, FGND);
         }
     }
 }

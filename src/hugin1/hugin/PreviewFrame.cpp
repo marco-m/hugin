@@ -59,6 +59,11 @@ extern "C" {
 #endif
 }
 
+#if defined(WIN32) && defined(__WXDEBUG__)
+#include <crtdbg.h>
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 using namespace utils;
 using namespace std;
 
@@ -184,8 +189,7 @@ PreviewFrame::~PreviewFrame()
     m_pano.removeObserver(this);
 
     delete m_MaskEdEditWnd;
-
-    DEBUG_TRACE("dtor end");
+	DEBUG_TRACE("dtor end");
 }
 
 void PreviewFrame::initPreviewMode()

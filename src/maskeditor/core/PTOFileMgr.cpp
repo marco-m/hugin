@@ -25,6 +25,11 @@
 #include <sstream>
 #include "PTOFileMgr.h"
 
+#if defined(WIN32) && defined(__WXDEBUG__)
+#include <crtdbg.h>
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 using namespace std;
 
 PTOFileMgr *PTOFileMgr::m_instance = 0;
