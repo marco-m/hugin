@@ -47,9 +47,6 @@
 #if defined WIN32
     #define snprintf _snprintf
 #endif
-// define for use atan based kernel function
-// leave undefined for gaussian normal distribution function
-//#define ATAN_KH
 
 #ifdef DEGHOSTING_CACHE_IMAGES
     #include <cstring>
@@ -212,13 +209,8 @@ namespace deghosting
     
     template <class PixelType>
     float Khan<PixelType>::Kh(ProcessImagePixelType x) {
-        #ifdef ATAN_KH
-            // good choice for sigma for this function is around 600
-            return std::atan(-(x*x)+sigma)/PI + 0.5;
-        #else
             // good choice for sigma for this function is around 30
             return (std::exp(-(x*x)/(2*sigma*sigma)) * denom);
-        #endif
     }
     
     /*void Khan::linearizeRGB(std::string inputFile,FRGBImage *pInputImg) {
