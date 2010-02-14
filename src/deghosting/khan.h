@@ -60,27 +60,21 @@ namespace deghosting
     template <class PixelType>
     class ImageTypes {
         public:
-            typedef vigra::FImage ImageType;
-            typedef boost::shared_ptr<ImageType> ImagePtr;
             #ifdef DEGHOSTING_CACHE_IMAGES
                 typedef CachedFileImage<float> ProcessImageType;
             #else
                 typedef BasicImage<float> ProcessImageType;
             #endif
-            typedef boost::shared_ptr<ProcessImageType> ProcessImageTypePtr;
     };
 
     template <class PixelType>
     class ImageTypes<RGBValue<PixelType> > {
         public:
-            typedef vigra::FRGBImage ImageType;
-            typedef boost::shared_ptr<ImageType> ImagePtr;
             #ifdef DEGHOSTING_CACHE_IMAGES
                 typedef CachedFileImage<AlgTinyVector<float, 3> > ProcessImageType;
             #else
                 typedef BasicImage<AlgTinyVector<float, 3> > ProcessImageType;
             #endif
-            typedef boost::shared_ptr<ProcessImageType> ProcessImageTypePtr;
     };
 
     template <class PixelType>
@@ -92,20 +86,27 @@ namespace deghosting
             std::vector<FImagePtr> createWeightMasks();
             ~Khan() {}
         protected:
-            typedef typename ImageTypes<PixelType>::ImageType ImageType;
+            // input image (eg. FRGBImage etc)
+            typedef typename BasicImage<PixelType> ImageType;
+            // ProcessImageType is used for storing intermediate images
+            // for processing (ie input images after all necessary transformations done)
+            // they are defined as floats to speed up the multiplication with weight which is float
             typedef typename ImageTypes<PixelType>::ProcessImageType ProcessImageType;
             typedef typename ImageTypes<PixelType>::ProcessImageType::traverser ProcessImageTraverser;
             typedef typename ImageTypes<PixelType>::ProcessImageType::PixelType ProcessImagePixelType;
+            // inteligent pointer to process image
+            typedef boost::shared_ptr<ProcessImageType> ProcessImageTypePtr;
             typedef typename ImageTypes<PixelType>::ProcessImageTypePtr ProcessImageTypePtr;
+            // used to determine whether input images are scalar
             typedef typename NumericTraits<PixelType>::isScalar srcIsScalar;
             
             // Kh() things
             // (2*pi)^(1/2)
-            double PIPOW;
+            ProcessImagePixelType PIPOW;
             // 1/Kh denominator
-            double denom;
+            ProcessImagePixelType denom;
             // sigma in gauusian density function
-            double sigma;
+            ProcessImagePixelType sigma;
             
             // other necessary stuff
             std::vector<ProcessImageTypePtr> processImages;
@@ -114,7 +115,7 @@ namespace deghosting
             /** set sigma
              * sets sigma for gaussian weigting function
              */
-            void setSigma(double sigma);
+            void setSigma(float sigma);
             
             /** transform image using EMoR response
              * @param inputFile filename of image to be transformed
@@ -148,7 +149,7 @@ namespace deghosting
     
     template <class PixelType>
     Khan<PixelType>::Khan(std::vector<std::string>& newInputFiles, const uint16_t newFlags, const uint16_t newDebugFlags,
-                int newIterations, double newSigma, int newVerbosity) {
+                int newIterations, float newSigma, int newVerbosity) {
         try {
             Deghosting::loadImages(newInputFiles);
             Deghosting::setFlags(newFlags);
@@ -176,7 +177,7 @@ namespace deghosting
     
     template <class PixelType>
     Khan<PixelType>::Khan(std::vector<ImageImportInfo>& newInputFiles, const uint16_t newFlags, const uint16_t newDebugFlags,
-                int newIterations, double newSigma, int newVerbosity) {
+                int newIterations, float newSigma, int newVerbosity) {
         try {
             Deghosting::loadImages(newInputFiles);
             Deghosting::setFlags(newFlags);
@@ -203,7 +204,7 @@ namespace deghosting
     }
     
     template <class PixelType>
-    void Khan<PixelType>::setSigma(double newSigma) {
+    void Khan<PixelType>::setSigma(float newSigma) {
         sigma = newSigma;
     }
     
@@ -244,7 +245,7 @@ namespace deghosting
     // RGB
     template <class PixelType>
     void Khan<PixelType>::convertImage(ImageType * in, ProcessImageTypePtr & out, VigraFalseType) {
-        RGB2LabFunctor<float> RGB2Lab;
+        RGB2LabFunctor<ProcessImagePixelType> RGB2Lab;
         transformImage(srcImageRange(*in), destImage(*out), RGB2Lab);
     }
     
@@ -287,9 +288,8 @@ namespace deghosting
         weight = FImagePtr(new FImage(imgInfo.size()));
         output = ProcessImageTypePtr(new ProcessImageType(imgInfo.size()));
         
-        // import image
-        // NOTE: Maybe alpha can be of some use but I don't
-        // know about any now
+        // import image. srcIsScalar() determines whether we want to use grayscale images for computations
+        // NOTE: Maybe alpha can be of some use but I don't know about any now
         if (imgInfo.isColor()) {
             importRGBImage(imgInfo, pInputImg, srcIsScalar());
         } else {
@@ -317,6 +317,8 @@ namespace deghosting
                 transformImage(srcImageRange(*pInputImg),destImage(*pInputImg),LogarithmFunctor<PixelType>(1.0));
             }
         }
+        
+        // USE HISTOGRAM HERE
         
         // generate initial weights
         transformImage(srcImageRange(*pInputImg),destImage(*weight),HatFunctor<PixelType>());
@@ -427,8 +429,8 @@ namespace deghosting
                 // vector storing pixel data
                 ProcessImagePixelType X;
                 // sums for eq. 6
-                double wpqssum = 0;
-                double wpqsKhsum = 0;
+                NumericTraits<ProcessImagePixelType>::RealPromote wpqssum = 0;
+                NumericTraits<ProcessImagePixelType>::RealPromote wpqsKhsum = 0;
                 // image size
                 const int width = processImages[i]->width();
                 const int height = processImages[i]->height();
