@@ -81,32 +81,33 @@ namespace deghosting
     class Khan : public Deghosting, private ImageTypes<PixelType>
     {
         public:
-            Khan(std::vector<std::string>& inputFiles, const uint16_t flags, const uint16_t debugFlags, int iterations, double sigma, int verbosity);
-            Khan(std::vector<ImageImportInfo>& inputFiles, const uint16_t flags, const uint16_t debugFlags, int iterations, double sigma, int verbosity);
+            Khan(std::vector<std::string>& inputFiles, const uint16_t flags, const uint16_t debugFlags, int iterations, float sigma, int verbosity);
+            Khan(std::vector<ImageImportInfo>& inputFiles, const uint16_t flags, const uint16_t debugFlags, int iterations, float sigma, int verbosity);
             std::vector<FImagePtr> createWeightMasks();
             ~Khan() {}
         protected:
             // input image (eg. FRGBImage etc)
-            typedef typename BasicImage<PixelType> ImageType;
+            typedef BasicImage<PixelType> ImageType;
             // ProcessImageType is used for storing intermediate images
             // for processing (ie input images after all necessary transformations done)
             // they are defined as floats to speed up the multiplication with weight which is float
             typedef typename ImageTypes<PixelType>::ProcessImageType ProcessImageType;
-            typedef typename ImageTypes<PixelType>::ProcessImageType::traverser ProcessImageTraverser;
-            typedef typename ImageTypes<PixelType>::ProcessImageType::PixelType ProcessImagePixelType;
+            typedef typename ProcessImageType::traverser ProcessImageTraverser;
+            typedef typename ProcessImageType::PixelType ProcessImagePixelType;
+            typedef typename NumericTraits<ProcessImagePixelType>::ValueType ProcessImageValueType;
+            typedef typename NumericTraits<ProcessImageValueType>::RealPromote ProcessImageValueTypeRealPromote;
             // inteligent pointer to process image
             typedef boost::shared_ptr<ProcessImageType> ProcessImageTypePtr;
-            typedef typename ImageTypes<PixelType>::ProcessImageTypePtr ProcessImageTypePtr;
             // used to determine whether input images are scalar
             typedef typename NumericTraits<PixelType>::isScalar srcIsScalar;
             
             // Kh() things
             // (2*pi)^(1/2)
-            ProcessImagePixelType PIPOW;
+            ProcessImageValueType PIPOW;
             // 1/Kh denominator
-            ProcessImagePixelType denom;
+            ProcessImageValueType denom;
             // sigma in gauusian density function
-            ProcessImagePixelType sigma;
+            ProcessImageValueType sigma;
             
             // other necessary stuff
             std::vector<ProcessImageTypePtr> processImages;
@@ -245,7 +246,7 @@ namespace deghosting
     // RGB
     template <class PixelType>
     void Khan<PixelType>::convertImage(ImageType * in, ProcessImageTypePtr & out, VigraFalseType) {
-        RGB2LabFunctor<ProcessImagePixelType> RGB2Lab;
+        RGB2LabFunctor<ProcessImageValueType> RGB2Lab;
         transformImage(srcImageRange(*in), destImage(*out), RGB2Lab);
     }
     
@@ -429,8 +430,8 @@ namespace deghosting
                 // vector storing pixel data
                 ProcessImagePixelType X;
                 // sums for eq. 6
-                NumericTraits<ProcessImagePixelType>::RealPromote wpqssum = 0;
-                NumericTraits<ProcessImagePixelType>::RealPromote wpqsKhsum = 0;
+                ProcessImageValueTypeRealPromote wpqssum = 0;
+                ProcessImageValueTypeRealPromote wpqsKhsum = 0;
                 // image size
                 const int width = processImages[i]->width();
                 const int height = processImages[i]->height();
