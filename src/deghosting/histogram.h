@@ -20,6 +20,8 @@
 
 #include <vigra/stdimage.hxx>
 #include <vigra/copyimage.hxx>
+#include <vigra/colorconversions.hxx>
+#include <vigra/transformimage.hxx>
 
 using namespace vigra;
 
@@ -32,7 +34,7 @@ void equalizeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                         DestIterator dul, DestAccessor ad)
 {
     long pixelCount = 0;
-    int maxIntensity = 0;
+    UInt8 maxIntensity = 0;
     int histogram[256];
     // initialize histogram to all zero
     for (int i = 0; i < 256; i++)
@@ -72,6 +74,62 @@ void equalizeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
             *dx = LUT[*sx];
         }
     }
+}
+
+/**
+ * Equalize image histogram. Uses 256 levels. Color version.
+ */
+template <class SrcIterator, class SrcRGBValue,
+          class DestIterator, class DestRGBValue>
+void equalizeHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> as,
+                        DestIterator dul, RGBAccessor<DestRGBValue> ad)
+{
+    long pixelCount = 0;
+    UInt8 maxIntensity = 0;
+    int histogram[256];
+    // initialize histogram to all zero
+    for (int i = 0; i < 256; i++)
+        histogram[i] = 0;
+    
+    // Convert to Lab
+    typedef BasicImage<TinyVector<UInt8, 3> > Uint8LabImage;
+    Uint8LabImage LabImage(slr.x-sul.x, slr.y - sul.y);
+    RGB2LabFunctor<UInt8> RGB2Lab;
+    transformImage(sul, slr, as, LabImage.upperLeft(), LabImage.accessor(), RGB2Lab);
+    
+    // compute histogram
+    Uint8LabImage::const_traverser by = LabImage.upperLeft();
+    Uint8LabImage::const_traverser bend = LabImage.lowerRight();
+    for(; by.y != bend.y; ++by.y) {
+        Uint8LabImage::const_traverser bx = by;
+        for(; bx.x != bend.x; ++bx.x) {
+            histogram[(*bx)[0]]++;
+            pixelCount++;
+            maxIntensity = ((*bx)[0] > maxIntensity) ? (*bx)[0] : maxIntensity;
+        }
+    }
+    
+    // build LUT
+    int LUT[256];
+    int sum = 0;
+    for (int i = 0; i <256; i++) {
+        sum += histogram[i];
+        LUT[i] = sum * maxIntensity/pixelCount;
+    }
+    
+    // transform (equalize) Lab image using LUT
+    Uint8LabImage::traverser sy = LabImage.upperLeft();
+    Uint8LabImage::const_traverser send = LabImage.lowerRight();
+    for(; sy.y != send.y; ++sy.y) {
+        Uint8LabImage::traverser sx = sy;
+        for(; sx.x != send.x; ++sx.x) {
+            (*sx)[0] = LUT[(*sx)[0]];
+        }
+    }
+    
+    // convert Lab image back to RGB
+    Lab2RGBFunctor<UInt8> Lab2RGB;
+    transformImage(LabImage.upperLeft(), LabImage.lowerRight(), LabImage.accessor(), dul, ad, Lab2RGB);
 }
 
 template <class SrcIterator, class SrcAccessor,
