@@ -24,65 +24,36 @@
 using namespace vigra;
 
 /**
- * Histogram with 256 levels.
+ * Equalize image histogram. Uses 256 levels. Grayscale version.
  */
-template <class IMAGETYPE>
-class Histogram
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void equalizeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                        DestIterator dul, DestAccessor ad)
 {
-    public:
-        Histogram(IMAGETYPE &image);
-        ~Histogram();
-        
-        void match(Histogram<IMAGETYPE> &reference);
-        /**
-         * Equalize image.
-         */
-        void equalize();
-    private:
-        // image storing RGB data as integers in [0,255]
-        BImage byteImage;
-        int histogram[256];
-        int cumulativeHistogram[256];
-        // variables for cumulative histogram
-        long pixelCount;
-        int maxIntensity;
-        
-        /**
-         * Create instensity image from vector image (ie from RGB image)
-         */
-        void createIntensityImage(IMAGETYPE &srcImage, BImage &intensityImage, VigraFalseType);
-        /**
-         * Create instensity image from scalar image (ie from grayscale image)
-         */
-        void createIntensityImage(IMAGETYPE &srcImage, BImage &intensityImage, VigraTrueType);
-};
-
-template <class IMAGETYPE>
-Histogram<IMAGETYPE>::Histogram(IMAGETYPE &srcImage) {
-    pixelCount = 0;
-    maxIntensity = 0;
+    long pixelCount = 0;
+    int maxIntensity = 0;
+    int histogram[256];
     // initialize histogram to all zero
     for (int i = 0; i < 256; i++)
         histogram[i] = 0;
     
-    typedef typename NumericTraits<PixelType>::isScalar srcIsScalar;
-    createIntensityImage(srcImage, byteImage, srcIsScalar());
+    // this may be superfluous
+    BImage byteImage(slr.x-sul.x, slr.y - sul.y);
+    copyImage(sul, slr, as, byteImage.upperLeft(), byteImage.accessor());
     
     // compute histogram
-    BImage::const_traverser sy = byteImage.upperLeft();
-    BImage::const_traverser send = byteImage.lowerRight();
-    for(; sy.y != send.y; ++sy.y) {
-        BImage::const_traverser sx = sy;
-        for(; sx.x != send.x; ++sx.x) {
-            histogram[*sx]++;
+    BImage::const_traverser by = byteImage.upperLeft();
+    BImage::const_traverser bend = byteImage.lowerRight();
+    for(; by.y != bend.y; ++by.y) {
+        BImage::const_traverser bx = by;
+        for(; bx.x != bend.x; ++bx.x) {
+            histogram[*bx]++;
             pixelCount++;
-            maxIntensity = (*sx > maxIntensity) ? *sx : maxIntensity;
+            maxIntensity = (*bx > maxIntensity) ? *bx : maxIntensity;
         }
     }
-}
-
-template <class IMAGETYPE>
-BImage Histogram<IMAGETYPE>::equalize() {
+    
     // build LUT
     int LUT[256];
     int sum = 0;
@@ -91,30 +62,23 @@ BImage Histogram<IMAGETYPE>::equalize() {
         LUT[i] = sum * maxIntensity/pixelCount;
     }
     
-    IMAGETYPE equalizedImage(Size2D(byteImage.width(), byteImage.height()));
-    
-    // transform image
-    BImage::const_traverser sy = byteImage.upperLeft();
-    BImage::const_traverser send = byteImage.lowerRight();
-    IMAGETYPE::traverser dy = equalizedImage.upperLeft();
-    for(; sy.y != send.y; ++sy.y, ++dy.y) {
+    // transform (equalize) image using LUT
+    SrcIterator sy = sul;
+    DestIterator dy = dul;
+    for(; sy.y != slr.y; ++sy.y, ++dy.y) {
         BImage::const_traverser sx = sy;
-        IMAGETYPE::traverser dx = dy;
-        for(; sx.x != send.x; ++sx.x, ++dx.x) {
-            // TODO color image needs to operate on Lab
-            *dx = LUT[]
+        DestIterator dx = dy;
+        for(; sx.x != slr.x; ++sx.x, ++dx.x) {
+            *dx = LUT[*sx];
         }
     }
 }
 
-
-template <class IMAGETYPE>
-void Histogram<IMAGETYPE>::createIntensityImage(IMAGETYPE &srcImage, BImage &intensityImage, VigraFalseType) {
-    RGBToGrayAccessor<IMAGETYPE::PixelType> color2gray;
-    copyImage(srcImageRange(srcImage, color2gray), destImage(intensityImage));
-}
-
-template <class IMAGETYPE>
-void Histogram<IMAGETYPE>::createIntensityImage(IMAGETYPE &srcImage, BImage &intensityImage, VigraTrueType) {
-    copyImage(srcImageRange(srcImage), destImage(intensityImage));
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void equalizeHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest)
+{
+    equalizeHistogram(src.first, src.second, src.third,
+                      dest.first, dest.second);
 }
