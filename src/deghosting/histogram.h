@@ -23,7 +23,149 @@
 #include <vigra/colorconversions.hxx>
 #include <vigra/transformimage.hxx>
 
+#define HISTOGRAM_HISTOGRAM_SIZE 256
+
 using namespace vigra;
+
+// IMPORTANT NOTE: ValueHistogram may be used
+
+template <class SrcIterator, class SrcAccessor>
+TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as)
+{
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram(0);
+    
+    // this may be superfluous
+    BImage byteImage(slr.x-sul.x, slr.y - sul.y);
+    copyImage(sul, slr, as, byteImage.upperLeft(), byteImage.accessor());
+    
+    // compute histogram
+    BImage::const_traverser by = byteImage.upperLeft();
+    BImage::const_traverser bend = byteImage.lowerRight();
+    for(; by.y != bend.y; ++by.y) {
+        BImage::const_traverser bx = by;
+        for(; bx.x != bend.x; ++bx.x) {
+            histogram[*bx]++;
+        }
+    }
+    
+    return histogram;
+}
+
+template <class SrcIterator, class SrcRGBValue>
+TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> as)
+{
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram(0);
+    
+    // Convert to Lab
+    typedef BasicImage<TinyVector<UInt8, 3> > Uint8LabImage;
+    Uint8LabImage LabImage(slr.x-sul.x, slr.y - sul.y);
+    RGB2LabFunctor<UInt8> RGB2Lab;
+    transformImage(sul, slr, as, LabImage.upperLeft(), LabImage.accessor(), RGB2Lab);
+    
+    // compute histogram
+    Uint8LabImage::const_traverser by = LabImage.upperLeft();
+    Uint8LabImage::const_traverser bend = LabImage.lowerRight();
+    for(; by.y != bend.y; ++by.y) {
+        Uint8LabImage::const_traverser bx = by;
+        for(; bx.x != bend.x; ++bx.x) {
+            histogram[(*bx)[0]]++;
+        }
+    }
+    
+    return histogram;
+}
+
+template <class SrcIterator, class SrcAccessor>
+TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src)
+{
+    return computeHistogram(src.first, src.second, src.third);
+}
+
+template <class SrcIterator, class SrcAccessor>
+TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeCumulativeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as)
+{
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram = computeHistogram(src.first, src.second, src.third);
+    
+    long sum = 0;
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
+        sum += histogram[i];
+        histogram[i] = sum;
+    }
+    
+    return histogram;
+}
+
+template <class SrcIterator, class SrcAccessor>
+TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeCumulativeHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src)
+{
+    return computeCumulativeHistogram(src.first, src.second, src.third);
+}
+
+template <class ValueType, class Size>
+class matchingFunctionfunctor
+{
+    public:
+        matchingFunctionfunctor(TinyVector<ValueType, Size> function) : mf(function)
+        {}
+        
+        ValueType operator()(ValueType const& v)
+        {
+            return mf[v];
+        }
+        
+    protected:
+        TinyVector<ValueType, Size> mf;
+};
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Histogram>
+void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                        DestIterator dul, DestAccessor ad, Histogram refHistogram)
+{
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram(0);
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> matchingFunction(0);
+    
+    // this may be superfluous
+    BImage byteImage(slr.x-sul.x, slr.y - sul.y);
+    copyImage(sul, slr, as, byteImage.upperLeft(), byteImage.accessor());
+    
+    // compute histogram of current file
+    BImage::const_traverser by = byteImage.upperLeft();
+    BImage::const_traverser bend = byteImage.lowerRight();
+    for(; by.y != bend.y; ++by.y) {
+        BImage::const_traverser bx = by;
+        for(; bx.x != bend.x; ++bx.x) {
+            histogram[*bx]++;
+        }
+    }
+    
+    // recalculate current histogram to cumulative
+    long sum = 0;
+    long refSum = 0;
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
+        sum += histogram[i];
+        histogram[i] = sum;
+        // this is necessary only if the given histogram is not cumulative
+        /*refSum += refHistogram[i];
+        refHistogram[i] = refSum;*/
+    }
+    
+    // for each gray level G2 from reference histogram
+    // find G1 from current picture histogram to create matching function
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
+        // find position in reference histogram
+        for (int j = 0; j < HISTOGRAM_HISTOGRAM_SIZE; j++) {
+            if (histogram[i] == refHistogram[j]) {
+                break;
+            }
+        }
+        matchingFunction[i] = j;
+    }
+    
+    // match histogram using functor
+    matchingFunctionfunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
+    transformImage(sul, slr, as, dul, ad, mf);
+}
 
 /**
  * Equalize image histogram. Uses 256 levels. Grayscale version.
@@ -35,9 +177,9 @@ void equalizeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 {
     long pixelCount = 0;
     UInt8 maxIntensity = 0;
-    int histogram[256];
+    int histogram[HISTOGRAM_HISTOGRAM_SIZE];
     // initialize histogram to all zero
-    for (int i = 0; i < 256; i++)
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++)
         histogram[i] = 0;
     
     // this may be superfluous
@@ -57,9 +199,9 @@ void equalizeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     }
     
     // build LUT
-    int LUT[256];
-    int sum = 0;
-    for (int i = 0; i <256; i++) {
+    int LUT[HISTOGRAM_HISTOGRAM_SIZE];
+    long sum = 0;
+    for (int i = 0; i <HISTOGRAM_HISTOGRAM_SIZE; i++) {
         sum += histogram[i];
         LUT[i] = sum * maxIntensity/pixelCount;
     }
@@ -86,9 +228,9 @@ void equalizeHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue
 {
     long pixelCount = 0;
     UInt8 maxIntensity = 0;
-    int histogram[256];
+    int histogram[HISTOGRAM_HISTOGRAM_SIZE];
     // initialize histogram to all zero
-    for (int i = 0; i < 256; i++)
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++)
         histogram[i] = 0;
     
     // Convert to Lab
@@ -110,9 +252,9 @@ void equalizeHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue
     }
     
     // build LUT
-    int LUT[256];
-    int sum = 0;
-    for (int i = 0; i <256; i++) {
+    int LUT[HISTOGRAM_HISTOGRAM_SIZE];
+    long sum = 0;
+    for (int i = 0; i <HISTOGRAM_HISTOGRAM_SIZE; i++) {
         sum += histogram[i];
         LUT[i] = sum * maxIntensity/pixelCount;
     }
