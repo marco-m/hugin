@@ -84,7 +84,7 @@ TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeHistogram(triple<SrcIterator, S
 template <class SrcIterator, class SrcAccessor>
 TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeCumulativeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as)
 {
-    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram = computeHistogram(src.first, src.second, src.third);
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram = computeHistogram(sul, slr, as);
     
     long sum = 0;
     for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
@@ -101,14 +101,14 @@ TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeCumulativeHistogram(triple<SrcI
     return computeCumulativeHistogram(src.first, src.second, src.third);
 }
 
-template <class ValueType, class Size>
+template <class ValueType, int Size>
 class matchingFunctionfunctor
 {
     public:
         matchingFunctionfunctor(TinyVector<ValueType, Size> function) : mf(function)
         {}
         
-        ValueType operator()(ValueType const& v)
+        ValueType operator()(ValueType const& v) const
         {
             return mf[v];
         }
@@ -156,15 +156,25 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
         // find position in reference histogram
         for (int j = 0; j < HISTOGRAM_HISTOGRAM_SIZE; j++) {
             if (histogram[i] == refHistogram[j]) {
+                matchingFunction[i] = j;
                 break;
             }
         }
-        matchingFunction[i] = j;
     }
     
     // match histogram using functor
     matchingFunctionfunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
     transformImage(sul, slr, as, dul, ad, mf);
+}
+
+
+template <class SrcIterator, class SrcAccessor, class DestIterator,
+            class DestAccessor, class Histogram>
+void matchHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                    pair<DestIterator, DestAccessor> dest, Histogram refHistogram)
+{
+    matchHistogram(src.first, src.second, src.third,
+                      dest.first, dest.second, refHistogram);
 }
 
 /**
