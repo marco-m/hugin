@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#include <iostream>
+
 #include <vigra/stdimage.hxx>
 #include <vigra/copyimage.hxx>
 #include <vigra/colorconversions.hxx>
@@ -85,6 +87,36 @@ TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeHistogram(triple<SrcIterator, S
 }
 
 template <class SrcIterator, class SrcAccessor>
+TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> computeRGBHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as)
+{
+    TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> histogram;
+    
+    // this may be superfluous
+    BRGBImage byteImage(slr.x-sul.x, slr.y - sul.y);
+    copyImage(sul, slr, as, byteImage.upperLeft(), byteImage.accessor());
+    
+    // compute histogram
+    BRGBImage::const_traverser by = byteImage.upperLeft();
+    BRGBImage::const_traverser bend = byteImage.lowerRight();
+    for(; by.y != bend.y; ++by.y) {
+        BRGBImage::const_traverser bx = by;
+        for(; bx.x != bend.x; ++bx.x) {
+            histogram[0][(*bx)[0]]++;
+            histogram[1][(*bx)[1]]++;
+            histogram[2][(*bx)[2]]++;
+        }
+    }
+    
+    return histogram;
+}
+
+template <class SrcIterator, class SrcAccessor>
+TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> computeRGBHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src)
+{
+    return computeRGBHistogram(src.first, src.second, src.third);
+}
+
+template <class SrcIterator, class SrcAccessor>
 TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeCumulativeHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as)
 {
     TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram = computeHistogram(sul, slr, as);
@@ -102,6 +134,33 @@ template <class SrcIterator, class SrcAccessor>
 TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeCumulativeHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src)
 {
     return computeCumulativeHistogram(src.first, src.second, src.third);
+}
+
+template <class SrcIterator, class SrcAccessor>
+TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> computeCumulativeRGBHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as)
+{
+    TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> histogram = computeRGBHistogram(sul, slr, as);
+    
+    // compute cumulative histogram
+    long sumR = 0;
+    long sumG = 0;
+    long sumB = 0;
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
+        sumR += histogram[0][i];
+        histogram[0][i] = sumR;
+        sumG += histogram[1][i];
+        histogram[1][i] = sumG;
+        sumB += histogram[2][i];
+        histogram[2][i] = sumB;
+    }
+    
+    return histogram;
+}
+
+template <class SrcIterator, class SrcAccessor>
+TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> computeCumulativeRGBHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src)
+{
+    return computeCumulativeRGBHistogram(src.first, src.second, src.third);
 }
 
 template <class ValueType, int Size>
@@ -139,6 +198,27 @@ class matchingFunctionFunctorLab
         TinyVector<ValueType, Size> mf;
 };
 
+// functor used for RGB images
+template <class PixelType, class ValueType, int Size>
+class matchingFunctionFunctorRGB
+{
+    public:
+        matchingFunctionFunctorRGB(TinyVector<TinyVector<ValueType, Size>, 3> function) : mf(function)
+        {}
+        
+        RGBValue<PixelType> operator()(RGBValue<PixelType> const& v) const
+        {
+            RGBValue<PixelType> retVal = v;
+            retVal[0] = mf[0][v[0]];
+            retVal[1] = mf[1][v[1]];
+            retVal[2] = mf[2][v[2]];
+            return retVal;
+        }
+        
+    protected:
+        TinyVector<TinyVector<ValueType, Size>, 3> mf;
+};
+
 /**
  * Grayscale.
  */
@@ -167,6 +247,46 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     // match histogram using functor
     matchingFunctionFunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
     transformImage(sul, slr, as, dul, ad, mf);
+}
+
+/**
+ * RGB Color.
+ */
+template <class SrcIterator, class SrcRGBValue,
+          class DestIterator, class DestRGBValue, class Histogram>
+void matchRGBHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> as,
+                        DestIterator dul, RGBAccessor<DestRGBValue> ad, Histogram refHistogram)
+{
+    TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> histogram;
+    TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> matchingFunction;
+    
+    histogram = computeCumulativeRGBHistogram(sul, slr, as);
+    
+    // for each level G2 from reference histogram
+    // find G1 from current picture histogram to create matching function
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
+        // find position in reference histogram
+        for (int j = 0; j < HISTOGRAM_HISTOGRAM_SIZE; j++) {
+            for (int k = 0; k < 3; k++) {
+                if (histogram[k][i] == refHistogram[k][j]) {
+                    matchingFunction[k][i] = j;
+                }
+            }
+        }
+    }
+    
+    // match histogram using functor
+    matchingFunctionFunctorRGB<UInt8, int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
+    transformImage(sul, slr, as, dul, ad, mf);
+}
+
+template <class SrcIterator, class SrcAccessor, class DestIterator,
+            class DestAccessor, class Histogram>
+void matchRGBHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                    pair<DestIterator, DestAccessor> dest, Histogram refHistogram)
+{
+    matchRGBHistogram(src.first, src.second, src.third,
+                      dest.first, dest.second, refHistogram);
 }
 
 /**
