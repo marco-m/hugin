@@ -105,15 +105,34 @@ TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeCumulativeHistogram(triple<SrcI
 }
 
 template <class ValueType, int Size>
-class matchingFunctionfunctor
+class matchingFunctionFunctor
 {
     public:
-        matchingFunctionfunctor(TinyVector<ValueType, Size> function) : mf(function)
+        matchingFunctionFunctor(TinyVector<ValueType, Size> function) : mf(function)
         {}
         
         ValueType operator()(ValueType const& v) const
         {
             return mf[v];
+        }
+        
+    protected:
+        TinyVector<ValueType, Size> mf;
+};
+
+// functor used for Lab images
+template <class PixelType, class ValueType, int Size>
+class matchingFunctionFunctorLab
+{
+    public:
+        matchingFunctionFunctorLab(TinyVector<ValueType, Size> function) : mf(function)
+        {}
+        
+        TinyVector<PixelType, 3> operator()(TinyVector<PixelType, 3> const& v) const
+        {
+            TinyVector<PixelType, 3> retVal = v;
+            retVal[0] = mf[v[0]];
+            return retVal;
         }
         
     protected:
@@ -146,7 +165,7 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     }
     
     // match histogram using functor
-    matchingFunctionfunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
+    matchingFunctionFunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
     transformImage(sul, slr, as, dul, ad, mf);
 }
 
@@ -182,7 +201,7 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> a
     transformImage(sul, slr, as, LabImage.upperLeft(), LabImage.accessor(), RGB2Lab);
     
     // match histogram of Lab image using functor
-    matchingFunctionfunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
+    matchingFunctionFunctorLab<UInt8, int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
     transformImage(srcImageRange(LabImage), destImage(LabImage), mf);
     
     // convert back to RGB
