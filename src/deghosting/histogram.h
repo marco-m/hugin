@@ -150,6 +150,46 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     transformImage(sul, slr, as, dul, ad, mf);
 }
 
+/**
+ * Color.
+ */
+template <class SrcIterator, class SrcRGBValue,
+          class DestIterator, class DestRGBValue, class Histogram>
+void matchHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> as,
+                        DestIterator dul, RGBAccessor<DestRGBValue> ad, Histogram refHistogram)
+{
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram(0);
+    TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> matchingFunction(0);
+    
+    histogram = computeCumulativeHistogram(sul, slr, as);
+    
+    // for each gray level G2 from reference histogram
+    // find G1 from current picture histogram to create matching function
+    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
+        // find position in reference histogram
+        for (int j = 0; j < HISTOGRAM_HISTOGRAM_SIZE; j++) {
+            if (histogram[i] == refHistogram[j]) {
+                matchingFunction[i] = j;
+                break;
+            }
+        }
+    }
+    
+    // Convert to Lab
+    typedef BasicImage<TinyVector<UInt8, 3> > Uint8LabImage;
+    Uint8LabImage LabImage(slr.x-sul.x, slr.y - sul.y);
+    RGB2LabFunctor<UInt8> RGB2Lab;
+    transformImage(sul, slr, as, LabImage.upperLeft(), LabImage.accessor(), RGB2Lab);
+    
+    // match histogram of Lab image using functor
+    matchingFunctionfunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
+    transformImage(srcImageRange(LabImage), destImage(LabImage), mf);
+    
+    // convert back to RGB
+    Lab2RGBFunctor<UInt8> Lab2RGB;
+    transformImage(LabImage.upperLeft(), LabImage.lowerRight(), LabImage.accessor(), dul, ad, Lab2RGB);
+}
+
 template <class SrcIterator, class SrcAccessor, class DestIterator,
             class DestAccessor, class Histogram>
 void matchHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src,
