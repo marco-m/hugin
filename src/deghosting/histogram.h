@@ -51,6 +51,9 @@ TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeHistogram(SrcIterator sul, SrcI
     return histogram;
 }
 
+/**
+ * Luminance channel is used for computing histogram from color image.
+ */
 template <class SrcIterator, class SrcRGBValue>
 TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> computeHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> as)
 {
@@ -117,6 +120,9 @@ class matchingFunctionfunctor
         TinyVector<ValueType, Size> mf;
 };
 
+/**
+ * Grayscale.
+ */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class Histogram>
 void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
@@ -125,30 +131,7 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> histogram(0);
     TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE> matchingFunction(0);
     
-    // this may be superfluous
-    BImage byteImage(slr.x-sul.x, slr.y - sul.y);
-    copyImage(sul, slr, as, byteImage.upperLeft(), byteImage.accessor());
-    
-    // compute histogram of current file
-    BImage::const_traverser by = byteImage.upperLeft();
-    BImage::const_traverser bend = byteImage.lowerRight();
-    for(; by.y != bend.y; ++by.y) {
-        BImage::const_traverser bx = by;
-        for(; bx.x != bend.x; ++bx.x) {
-            histogram[*bx]++;
-        }
-    }
-    
-    // recalculate current histogram to cumulative
-    long sum = 0;
-    long refSum = 0;
-    for (int i = 0; i < HISTOGRAM_HISTOGRAM_SIZE; i++) {
-        sum += histogram[i];
-        histogram[i] = sum;
-        // this is necessary only if the given histogram is not cumulative
-        /*refSum += refHistogram[i];
-        refHistogram[i] = refSum;*/
-    }
+    histogram = computeCumulativeHistogram(sul, slr, as);
     
     // for each gray level G2 from reference histogram
     // find G1 from current picture histogram to create matching function
@@ -166,7 +149,6 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     matchingFunctionfunctor<int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
     transformImage(sul, slr, as, dul, ad, mf);
 }
-
 
 template <class SrcIterator, class SrcAccessor, class DestIterator,
             class DestAccessor, class Histogram>
