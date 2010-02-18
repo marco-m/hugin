@@ -254,8 +254,9 @@ void matchHistogram(SrcIterator sul, SrcIterator slr, SrcAccessor as,
  */
 template <class SrcIterator, class SrcRGBValue,
           class DestIterator, class DestRGBValue, class Histogram>
-void matchRGBHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> as,
-                        DestIterator dul, RGBAccessor<DestRGBValue> ad, Histogram refHistogram)
+void matchHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue> as,
+                       DestIterator dul, RGBAccessor<DestRGBValue> ad,
+                       TinyVector<Histogram, 3> refHistogram)
 {
     TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> histogram;
     TinyVector<TinyVector<int, HISTOGRAM_HISTOGRAM_SIZE>, 3> matchingFunction;
@@ -278,15 +279,6 @@ void matchRGBHistogram(SrcIterator sul, SrcIterator slr, RGBAccessor<SrcRGBValue
     // match histogram using functor
     matchingFunctionFunctorRGB<UInt8, int, HISTOGRAM_HISTOGRAM_SIZE> mf(matchingFunction);
     transformImage(sul, slr, as, dul, ad, mf);
-}
-
-template <class SrcIterator, class SrcAccessor, class DestIterator,
-            class DestAccessor, class Histogram>
-void matchRGBHistogram(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                    pair<DestIterator, DestAccessor> dest, Histogram refHistogram)
-{
-    matchRGBHistogram(src.first, src.second, src.third,
-                      dest.first, dest.second, refHistogram);
 }
 
 /**
