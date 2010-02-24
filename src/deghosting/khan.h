@@ -25,6 +25,7 @@
 // for AlgTinyVector, NormalizeFunctor and LogarithmFunctor
 #include "support.h"
 #include "algtinyvector.h"
+#include "multiresolution_scaling.h"
 
 // needed for RGB2Lab
 #include <vigra/imageinfo.hxx>
@@ -380,41 +381,25 @@ namespace deghosting
                     // it would be better to use resampleImage, but it seems to be present only in VIGRA 1.6
                     // so let's use some of the resizeImageINTERPOLATION() functions
                     
-                    // compute width
-                    int resized_width = origWidth / ( iterations/(it+1) );
-                    //compute height
-                    int resized_height = origHeight / ( iterations/(it+1) );
-                    // destination images
-                    FImage resizedWeight;
-                    ProcessImageType resizedLab;
-                    // it's not worthy to scale to less than 100px per side
-                    if (resized_width > 100 && resized_height > 100) {
-                        // create destination image of desired size
-                        resizedWeight = FImage(Size2D(resized_width,resized_height));
-                        resizedLab = ProcessImageType(Size2D(resized_width,resized_height));
-                    } else if (origWidth >= 100 && origHeight >= 100) {
-                        // resize it to the smallest value (ie 100px for the shorter side)
-                        if (origWidth >= origHeight) {
-                            resizedWeight = FImage(Size2D(100*origWidth/origHeight, 100));
-                            resizedLab = ProcessImageType(Size2D(100*origWidth/origHeight, 100));
-                        } else {
-                            resizedWeight = FImage(Size2D(100, 100*origHeight/origWidth));
-                            resizedLab = ProcessImageType(Size2D(100, 100*origHeight/origWidth));
-                        }
+                    // scale
+                    Size2D newScale;
+                    if (multires_scale(origWidth, origHeight, iterations, it, newScale)) {
+                        // destination images
+                        FImagePtr resizedWeight(new FImage(newScale));
+                        ProcessImageTypePtr resizedLab(new ProcessImageType(newScale));
+                        
+                        // No interpolation – only for testing
+                        resizeImageNoInterpolation(srcImageRange(*weights[i]), destImageRange(*resizedWeight));
+                        resizeImageNoInterpolation(srcImageRange(*backupLab[i]), destImageRange(*resizedLab));
+                        
+                        prevWeights.push_back(resizedWeight);
+                        processImages[i] = resizedLab;
+                        weights[i] = FImagePtr(new FImage(*resizedWeight));
                     } else {
                         // don't scale at all
                         // just copy weights as if no scaling seting was applied
                         goto DONTSCALE;
                     }
-                    
-                    // No interpolation – only for testing
-                    resizeImageNoInterpolation(srcImageRange(*weights[i]), destImageRange(resizedWeight));
-                    resizeImageNoInterpolation(srcImageRange(*backupLab[i]), destImageRange(resizedLab));
-                    
-                    FImagePtr tmp(new FImage(resizedWeight));
-                    prevWeights.push_back(tmp);
-                    processImages[i] = ProcessImageTypePtr(new ProcessImageType(resizedLab));
-                    weights[i] = FImagePtr(new FImage(resizedWeight));
                 } else {
                     DONTSCALE:
                     FImagePtr tmp(new FImage(*weights[i]));
