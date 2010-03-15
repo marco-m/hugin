@@ -1,7 +1,7 @@
 
 /**
  * Scaling for multiresolution processing.
- * Copyright (C) 2009  Lukáš Jirkovský <l.jirkovsky@gmail.com>
+ * Copyright (C) 2010  Lukáš Jirkovský <l.jirkovsky@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ bool multires_scale(int origWidth, int origHeight, int num_iterations, int itera
         }
     } else {
         // don't scale at all
-        // just copy weights as if no scaling seting was applied
+        // copy weights as if no option for scaling was applied
         return 0;
     }
 }

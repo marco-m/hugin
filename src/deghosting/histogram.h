@@ -1,7 +1,7 @@
 
 /**
  * Histogram implementation and various operations with histograms
- * Copyright (C) 2009  Lukáš Jirkovský <l.jirkovsky@gmail.com>
+ * Copyright (C) 2010  Lukáš Jirkovský <l.jirkovsky@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

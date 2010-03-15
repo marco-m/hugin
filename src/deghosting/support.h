@@ -54,7 +54,7 @@ class GaussianDensityFunctor {
         ValueType denom;
 };
 
-/** Logarithm functor
+/** Logarithm functor.
  */
 template <class PixelType>
 class LogarithmFunctor {
@@ -68,8 +68,7 @@ class LogarithmFunctor {
         PixelType offset;
 };
 
-/** Logarithm functor
- * specialization for RGBValue
+/** Logarithm functor - RGBValue specialization
  */
 template <class ComponentType>
 class LogarithmFunctor<RGBValue<ComponentType> > {
@@ -81,15 +80,14 @@ class LogarithmFunctor<RGBValue<ComponentType> > {
             retVal[0] = log(v[0] + offset);
             retVal[1] = log(v[1] + offset);
             retVal[2] = log(v[2] + offset);
-            //cout << retVal[0] << "," << retVal[1] << "," << retVal[2] << endl;
             return retVal;
         }
     protected:
         ComponentType offset;
 };
 
-/** Functor to apply mexican hat function
- * returns very small values for input near to 0 or 255
+/** Functor to apply mexican hat function.
+ * Returns very small values for input near to 0 or 255.
  */
 template <class PixelType>
 class HatFunctor {
@@ -106,9 +104,8 @@ class HatFunctor {
         }
 };
 
-/** Functor to apply mexican hat function
+/** Functor to apply mexican hat function - RGBValue specialization.
  * returns very small values for input near to 0 or 255
- * specialization for RGBValue
  */
 template <class ComponentType>
 class HatFunctor<RGBValue<ComponentType> > {
@@ -125,7 +122,7 @@ class HatFunctor<RGBValue<ComponentType> > {
         }
 };
 
-/** Functor to normalize values
+/** Functor to normalize values.
  */
 template <class PixelType>
 class NormalizeFunctor {
@@ -140,8 +137,7 @@ class NormalizeFunctor {
         PixelType factor;
 };
 
-/** Functor to normalize values
- * specialization for RGBValue
+/** Functor to normalize values - RGBValue specialization.
  */
 template <class ComponentType>
 class NormalizeFunctor<RGBValue<ComponentType> > {

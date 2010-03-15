@@ -102,8 +102,8 @@ namespace deghosting
             std::vector<ProcessImageTypePtr> processImages;
             std::vector<FImagePtr> weights;
             
-            /** set sigma
-             * sets sigma for gaussian weigting function
+            /** Set sigma.
+             * Sets sigma for Gaussian weighting function.
              */
             void setSigma(float sigma);
             
@@ -113,21 +113,21 @@ namespace deghosting
              */
             //void linearizeRGB(std::string, FRGBImage* pInputImg);
             
-            /** convert image for internal use
+            /** Convert image for internal use.
              * if input image is RGB then convert it to L*a*b
              * if input image is grayscale then only copy image
              */
             void convertImage(ImageType * in, ProcessImageTypePtr & out, VigraFalseType);
             void convertImage(ImageType * in, ProcessImageTypePtr & out, VigraTrueType);
             
-            /** import RGB image
+            /** Import RGB image.
              */
             void importRGBImage(ImageImportInfo & info, ImageType * img, VigraFalseType);
             void importRGBImage(ImageImportInfo & info, ImageType * img, VigraTrueType);
             
-            /** function to preprocess input image
-             * This function loads image, linearize it using EMoR (FIXME),
-             * tranform it using logarithm or gamma if input images are HDR
+            /** Function for input image preprocessing.
+             * This function loads image, linearize it using EMoR (FIXME) and
+             * transforms it using logarithm or gamma if input images are HDR.
              */
             void preprocessImage(unsigned int i, FImagePtr &weight, ProcessImageTypePtr &output);
     };
@@ -292,8 +292,6 @@ namespace deghosting
                 transformImage(srcImageRange(*pInputImg),destImage(*pInputImg),LogarithmFunctor<PixelType>(1.0));
             }
         }
-        
-        // USE HISTOGRAM HERE
         
         // generate initial weights
         transformImage(srcImageRange(*pInputImg),destImage(*weight),HatFunctor<PixelType>());
