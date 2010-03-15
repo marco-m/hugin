@@ -21,6 +21,8 @@
 #ifndef SUPPORT_H_
 #define SUPPORT_H_
 
+#define PI 3.14159265358979323846
+
 #include "deghosting.h"
 
 #include <vigra/functorexpression.hxx>
@@ -32,6 +34,25 @@ namespace deghosting {
 
 using namespace vigra;
 using namespace vigra::functor;
+
+/** Gaussian density functor.
+ * I contrast to Vigra's gaussian this one allows using vectors.
+ */
+template <class ValueType, class PixelType>
+class GaussianDensityFunctor {
+    public:
+        GaussianDensityFunctor(ValueType s=30) {
+            sigma = s;
+            denom = 1/(sigma*std::sqrt(2*PI));
+        }
+        
+        ValueType operator()(PixelType const& x) const {
+            return (std::exp(-(x*x)/(2*sigma*sigma)) * denom);
+        }
+    protected:
+        ValueType sigma;
+        ValueType denom;
+};
 
 /** Logarithm functor
  */
@@ -104,7 +125,7 @@ class HatFunctor<RGBValue<ComponentType> > {
         }
 };
 
-/** Fuctor to normalize values
+/** Functor to normalize values
  */
 template <class PixelType>
 class NormalizeFunctor {
@@ -119,7 +140,7 @@ class NormalizeFunctor {
         PixelType factor;
 };
 
-/** Fuctor to normalize values
+/** Functor to normalize values
  * specialization for RGBValue
  */
 template <class ComponentType>

@@ -95,15 +95,18 @@ namespace deghosting {
          * @param flags one of the constants describing advanced mode
          */
         virtual void setFlags(const uint16_t flags);
+        virtual const uint16_t getFlags() const;
         
         /** set flags for debugging purposes
          * @param debugFlags one of the constants describing action which should be done
          */
         virtual void setDebugFlags(const uint16_t debugFlags);
+        virtual const uint16_t getDebugFlags() const;
         
         /** set number of iterations
          */
         virtual void setIterationNum(const int iterations);
+        virtual const int getIterationNum() const;
         
         /** set camera response function
          * set camera response function in EMoR format
@@ -115,6 +118,7 @@ namespace deghosting {
          * @param verbosity the higher the number is, the more verbose algorithm will be
          */
         virtual void setVerbosity(int verbosity);
+        virtual const int getVerbosity() const;
         virtual ~Deghosting() {}
         
     protected:

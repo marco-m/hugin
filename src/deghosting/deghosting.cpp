@@ -53,13 +53,25 @@ namespace deghosting {
     void Deghosting::setFlags(const uint16_t newFlags) {
         flags = newFlags;
     }
+    
+    const uint16_t Deghosting::getFlags() const {
+        return flags;
+    }
 
     void Deghosting::setDebugFlags(const uint16_t newFlags) {
         debugFlags = newFlags;
     }
+    
+    const uint16_t Deghosting::getDebugFlags() const {
+        return debugFlags;
+    }
 
     void Deghosting::setIterationNum(const int newIterations) {
         iterations = newIterations;
+    }
+    
+    const int Deghosting::getIterationNum() const {
+        return iterations;
     }
 
     void Deghosting::setCameraResponse(EMoR newResponse) {
@@ -68,6 +80,10 @@ namespace deghosting {
 
     void Deghosting::setVerbosity(int newVerbosity) {
         verbosity = newVerbosity;
+    }
+    
+    const int Deghosting::getVerbosity() const {
+        return verbosity;
     }
 
 }
