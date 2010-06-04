@@ -23,11 +23,14 @@
 
 namespace vigra {
 
-/** Fixed size vector with scalar multiplication and element-wise substraction and addition
+/** Fixed size vector with scalar multiplication and element-wise subtraction and addition
  */
 template <class T, int SIZE>
 class AlgTinyVector
 {
+    private:
+        T content[SIZE];
+    
     public:
         AlgTinyVector(const AlgTinyVector<T,SIZE> & t) {
             for (unsigned int i = 0; i < SIZE; ++i) {
@@ -35,7 +38,7 @@ class AlgTinyVector
             }
         }
         
-        AlgTinyVector(T t) {
+        AlgTinyVector(const T &t) {
             for (unsigned int i = 0; i < SIZE; ++i) {
                 content[i] = t;
             }
@@ -45,11 +48,11 @@ class AlgTinyVector
             AlgTinyVector(0);
         }
         
-        const T operator[](int i) const {
+        const T operator[](const int i) const {
             return content[i];
         }
         
-        T& operator[](int i) {
+        T& operator[](const int i) {
             return content[i];
         }
         
@@ -61,7 +64,7 @@ class AlgTinyVector
             return retVal;
         }
         
-        const AlgTinyVector operator*(const int t) const {
+        const AlgTinyVector operator*(const T t) const {
             AlgTinyVector<T,SIZE> retVal;
             for (unsigned int i = 0; i < SIZE; ++i) {
                 retVal[i] = t * content[i];
@@ -69,7 +72,7 @@ class AlgTinyVector
             return retVal;
         }
         
-        const AlgTinyVector operator/(const int t) const {
+        const AlgTinyVector operator/(const T t) const {
             AlgTinyVector<T,SIZE> retVal;
             for (unsigned int i = 0; i < SIZE; ++i) {
                 retVal[i] = content[i] / t;
@@ -91,7 +94,7 @@ class AlgTinyVector
                 retVal[i] = t[i] + content[i];
             }
             return retVal;
-        }        
+        }
         
         AlgTinyVector & operator=(const AlgTinyVector<T,SIZE> & t) {
             if (this == &t)
@@ -108,9 +111,66 @@ class AlgTinyVector
             }
             return *this;
         }
-        
+};
+
+template <class T>
+class AlgTinyVector<T, 1>
+{
     private:
-        T content[SIZE];
+        T content;
+    
+    public:
+        AlgTinyVector(const AlgTinyVector<T,1> & t) {
+            content = t.content;
+        }
+        
+        AlgTinyVector(const T &t) {
+            content = t;
+        }
+        
+        AlgTinyVector() {
+            AlgTinyVector(0);
+        }
+        
+        const T operator[](const int i) const {
+            return content[i];
+        }
+        
+        T& operator[](const int i) {
+            return content[i];
+        }
+        
+        const T operator*(const AlgTinyVector<T,1> & t) const {
+            return content * t.content;
+        }
+        
+        const AlgTinyVector operator*(const T t) const {
+            return AlgTinyVector<T,1>(content * t);
+        }
+        
+        const AlgTinyVector operator/(const T t) const {
+            return AlgTinyVector<T,1>(content / t);
+        }
+        
+        const AlgTinyVector operator-(const AlgTinyVector<T,1> & t) const {
+            return AlgTinyVector<T,1>(content - t.content);
+        }
+        
+        const AlgTinyVector operator+(const AlgTinyVector<T,1> & t) const {
+            return AlgTinyVector<T,1>(content + t.content);
+        }
+        
+        AlgTinyVector & operator=(const AlgTinyVector<T,1> & t) {
+            if (this == &t)
+                return *this;
+            content = t.content;
+            return *this;
+        }
+        
+        AlgTinyVector & operator=(const TinyVector<T,1> & t) {
+            content = t[0];
+            return *this;
+        }
 };
 
 template <class T, int SIZE>
