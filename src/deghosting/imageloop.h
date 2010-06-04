@@ -55,9 +55,11 @@ namespace deghosting {
         const uint16_t flags = deghostingInfo->getFlags();
         const int iterations = deghostingInfo->getIterationNum();
         const int verbosity = deghostingInfo->getVerbosity();
+        const int imageNum = processImages.size();
         
         // if we doing scaling, we have to backup L*a*b images of original size
         std::vector<ProcessImageTypePtr> backupLab;
+        backupLab.reserve(imageNum);
         if (flags & ADV_MULTIRES) {
             for (unsigned int i = 0; i < processImages.size(); i++) {
                 // backup original size L*a*b
@@ -77,7 +79,8 @@ namespace deghosting {
                 cout << "copying weights from previous iteration" << endl;
             
             std::vector<FImagePtr> prevWeights;
-            for (unsigned int i = 0; i < weights.size(); i++) {
+            prevWeights.reserve(imageNum);
+            for (unsigned int i = 0; i < imageNum; i++) {
                 // scale weights to the required size
                 if (flags & ADV_MULTIRES) {
                     // it would be better to use resampleImage, but it seems to be present only in VIGRA 1.6
@@ -94,7 +97,7 @@ namespace deghosting {
                         resizeImageNoInterpolation(srcImageRange(*weights[i]), destImageRange(*resizedWeight));
                         resizeImageNoInterpolation(srcImageRange(*backupLab[i]), destImageRange(*resizedLab));
                         
-                        prevWeights.push_back(resizedWeight);
+                        prevWeights[i] = resizedWeight;
                         processImages[i] = resizedLab;
                         weights[i] = FImagePtr(new FImage(*resizedWeight));
                     } else {
@@ -105,12 +108,12 @@ namespace deghosting {
                 } else {
                     DONTSCALE:
                     FImagePtr tmp(new FImage(*weights[i]));
-                    prevWeights.push_back(tmp);
+                    prevWeights[i] = tmp;
                 }
             }
             
             // loop through all images
-            for (unsigned int i = 0; i < processImages.size(); i++) {
+            for (unsigned int i = 0; i < imageNum; i++) {
                 if (verbosity > 1)
                     cout << "processing image " << i+1 << endl;
                 
