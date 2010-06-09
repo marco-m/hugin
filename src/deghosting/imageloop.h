@@ -26,6 +26,8 @@
 
 #include <vigra/resizeimage.hxx>
 
+#include <omp.h>
+
 // number of pixels to look at in all directions
 // ie. 1 for neighbourhood of size 3x3, 2 for 5x5 etc.
 #define NEIGHB_DIST 1
@@ -80,6 +82,7 @@ namespace deghosting {
             
             std::vector<FImagePtr> prevWeights;
             prevWeights.reserve(imageNum);
+            #pragma omp parallel for
             for (unsigned int i = 0; i < imageNum; i++) {
                 // scale weights to the required size
                 if (flags & ADV_MULTIRES) {
@@ -113,6 +116,7 @@ namespace deghosting {
             }
             
             // loop through all images
+            #pragma omp parallel for
             for (unsigned int i = 0; i < imageNum; i++) {
                 if (verbosity > 1)
                     cout << "processing image " << i+1 << endl;
