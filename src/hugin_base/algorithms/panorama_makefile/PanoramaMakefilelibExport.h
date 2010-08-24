@@ -41,7 +41,11 @@ along with hugin.  If not, see <http://www.gnu.org/licenses/>.
 namespace HuginBase
 {
 
-class PanoramaMakefilelibExport : public PanoramaAlgorithm
+IMPEX std::vector<UIntSet> getHDRStacks(const PanoramaData & pano, UIntSet allImgs);
+IMPEX std::vector<UIntSet> getExposureLayers(const PanoramaData & pano, UIntSet allImgs);
+IMPEX UIntSet getImagesinROI (const PanoramaData& pano, const UIntSet activeImages);
+
+class IMPEX PanoramaMakefilelibExport : public PanoramaAlgorithm
 {
 public:
     struct PTPrograms
@@ -80,7 +84,7 @@ public:
     };
 private:
 	PanoramaData & pano;
-	const UIntSet & images;
+	UIntSet images;
 	const std::string & ptofile;
 	const std::string & outputPrefix;
 	const PTPrograms & progs;
@@ -136,11 +140,12 @@ public:
             std::ostream & makefile_,
             const std::string& tmpDir_)
 	: PanoramaAlgorithm(pano),
-	  pano(pano_), images(images_), ptofile(ptofile_), outputPrefix(outputPrefix_),
+	  pano(pano_), ptofile(ptofile_), outputPrefix(outputPrefix_),
 	  progs(progs_), includePath(includePath_), outputFiles(outputFiles_),
 	  makefile(makefile_), tmpDir(tmpDir_)
 	{
-		valuestream.imbue(makefile::Makefile::locale);
+        images=getImagesinROI(pano_,images_);
+        valuestream.imbue(makefile::Makefile::locale);
 
 	}
 
