@@ -41,7 +41,7 @@ class GLOverview;
 class ViewState;
 class wxSpinEvent;
 class wxChoice;
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(2,9,1)
 //forward declaration for wxInfoBar works only for wxGTK
 //for other systems wxInfoBar is defined as preprocessor macro and not as class
 //class wxInfoBar;
@@ -241,6 +241,7 @@ protected:
 
     void OnBlendChoice(wxCommandEvent & e);
     void OnDragChoice(wxCommandEvent & e);
+    void DragChoiceLayout( int index );
     void OnProjectionChoice(wxCommandEvent & e);
     void OnOverviewModeChoice(wxCommandEvent & e);
     /** event handler for changed roi */
@@ -301,7 +302,7 @@ private:
     wxBitmapButton * m_defaultExposureBut;
     wxSpinButton * m_exposureSpinBut;
     wxCheckBox * m_previewGrid;
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(2, 9, 1)
     /// Bar for context sensitive projection information.
     wxInfoBar * m_infoBar;
 #else
