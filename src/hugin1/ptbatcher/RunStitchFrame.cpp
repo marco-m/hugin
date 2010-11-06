@@ -52,11 +52,6 @@ RunStitchFrame::RunStitchFrame(wxWindow * parent, const wxString& title, const w
 //    topsizer->SetSizeHints( this );   // set size hints to honour minimum size
 }
 
-
-
-
-
-
 int RunStitchFrame::GetProcessId()
 {
 	if(m_projectId<0)	//if a fake stitchframe is used (for a command), it doesn't have a stitch panel
@@ -110,18 +105,16 @@ void RunStitchFrame::OnProcessTerminate(wxProcessEvent & event)
 		event.m_exitcode = 1;
 		event.SetId(m_projectId);
 		DEBUG_TRACE("Sending wxProcess event");   
-		this->GetParent()->ProcessEvent( event );
+		this->GetParent()->GetEventHandler()->ProcessEvent( event );
         // TODO: Cleanup files?
         Close();
     } else {
         m_isStitching = false;
         if (event.GetExitCode() != 0) {
-            wxMessageBox(_("Error during stitching\nPlease report the complete text to the bug tracker on http://sf.net/projects/hugin."),
-                     _("Error during stitching"), wxICON_ERROR | wxOK );
 			event.SetEventObject( this );
 			event.SetId(m_projectId);
 			//this->GetParent()->ProcessEvent( event );
-			this->GetParent()->ProcessEvent( event );
+			this->GetParent()->GetEventHandler()->ProcessEvent( event );
 			Close();
         } else {
 			//if (GetParent()) {		//send process notification to parent window
@@ -129,7 +122,7 @@ void RunStitchFrame::OnProcessTerminate(wxProcessEvent & event)
 				event.SetId(m_projectId);
 				DEBUG_TRACE("Sending wxProcess event");   
 				//m_evtParent->ProcessEvent( event );
-				this->GetParent()->ProcessEvent( event );
+				this->GetParent()->GetEventHandler()->ProcessEvent( event );
 				//this->GetParent()->ProcessEvent( event );
 			//}
 			/*if(!m_projList.IsEmpty())		//returns true if batch list is not empty yet after removing the first
@@ -144,11 +137,30 @@ void RunStitchFrame::OnProcessTerminate(wxProcessEvent & event)
 }
 
 bool RunStitchFrame::StitchProject(wxString scriptFile, wxString outname,
-                                   HuginBase::PanoramaMakefileExport::PTPrograms progs)
+                                   HuginBase::PanoramaMakefilelibExport::PTPrograms progs)
 {
     if (! m_stitchPanel->StitchProject(scriptFile, outname, progs)) {
         return false;
     }
     m_isStitching = true;
+    m_isDetecting = false;
     return true;
 }
+
+bool RunStitchFrame::DetectProject(wxString scriptFile,
+                                   HuginBase::AssistantMakefilelibExport::AssistantPrograms progs)
+{
+    if (! m_stitchPanel->DetectProject(scriptFile, progs))
+    {
+        return false;
+    }
+    m_isStitching = true;
+    m_isDetecting = true;
+    return true;
+}
+
+bool RunStitchFrame::SaveLog(const wxString &filename)
+{
+    return m_stitchPanel->SaveLog(filename);
+};
+

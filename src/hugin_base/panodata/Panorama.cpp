@@ -178,6 +178,28 @@ std::vector<unsigned int> Panorama::getCtrlPointsForImage(unsigned int imgNr) co
     return result;
 }
 
+CPointVector Panorama::getCtrlPointsVectorForImage(unsigned int imgNr) const
+{
+    CPointVector result;
+    for(unsigned int i=0;i<state.ctrlPoints.size();i++)
+    {
+        ControlPoint point=state.ctrlPoints[i];
+        if(point.image1Nr==imgNr)
+        {
+            result.push_back(std::make_pair(i,point));
+        }
+        else
+        {
+            if(point.image2Nr==imgNr)
+            {
+                point.mirror();
+                result.push_back(std::make_pair(i,point));
+            };
+        };
+    };
+    return result;
+};
+
 VariableMapVector Panorama::getVariables() const
 {
     VariableMapVector map;
@@ -459,6 +481,33 @@ void Panorama::removeCtrlPoint(unsigned int pNr)
     imageChanged(i1);
     imageChanged(i2);
     state.needsOptimization = true;
+}
+
+void Panorama::removeDuplicateCtrlPoints()
+{
+    std::set<std::string> listOfCPs;
+    std::set<unsigned int> duplicateCPs;
+    for(unsigned int i=0; i<state.ctrlPoints.size();i++)
+    {
+        std::string s=state.ctrlPoints[i].getCPString();
+        std::pair<std::set<std::string>::iterator,bool> it=listOfCPs.insert(s);
+        if(it.second==false)
+        {
+            duplicateCPs.insert(i);
+        };
+    }
+    //now remove duplicate control points, mark affected images as changed
+    if(duplicateCPs.size()>0)
+    {
+        for(std::set<unsigned int>::reverse_iterator it=duplicateCPs.rbegin();it!=duplicateCPs.rend();it++)
+        {
+            ControlPoint cp=state.ctrlPoints[*it];
+            imageChanged(cp.image1Nr);
+            imageChanged(cp.image2Nr);
+            removeCtrlPoint(*it);
+        };
+    };
+    updateLineCtrlPoints();
 }
 
 
@@ -1037,14 +1086,78 @@ void Panorama::updateMasksForImage(unsigned int imgNr, MaskPolygonVector newMask
     m_forceImagesUpdate = true;
 };
 
-void Panorama::updateMasks()
+void Panorama::transferMask(MaskPolygon mask,unsigned int imgNr, const UIntSet targetImgs)
+{
+    if(targetImgs.size()==0)
+    {
+        return;
+    };
+    MaskPolygon transformedMask=mask;
+    int origWindingNumber=transformedMask.getTotalWindingNumber();
+    // clip positive mask to image boundaries
+    if(transformedMask.clipPolygon(vigra::Rect2D(0,0,state.images[imgNr]->getWidth(),state.images[imgNr]->getHeight())))
+    {
+        //increase resolution of positive mask to get better transformation
+        //of vertices, especially for fisheye images
+        transformedMask.subSample(20);
+        //transform polygon to panorama space
+        HuginBase::PTools::Transform trans;
+        trans.createInvTransform(getImage(imgNr),getOptions());
+        transformedMask.transformPolygon(trans);
+        for(UIntSet::const_iterator it=targetImgs.begin();it!=targetImgs.end();it++)
+        {
+            if(imgNr==(*it))
+            {
+                continue;
+            };
+            MaskPolygon targetMask;
+            if(state.images[imgNr]->YawisLinkedWith(*(state.images[*it])))
+            {
+                //if yaw is linked, we simply copy the mask
+                targetMask=mask;
+            }
+            else
+            {
+                targetMask=transformedMask;
+                PTools::Transform targetTrans;
+                targetTrans.createTransform(getImage(*it),getOptions());
+                targetMask.transformPolygon(targetTrans);
+                //check if transformation has produced invalid polygon
+                if(targetMask.getMaskPolygon().size()<3)
+                {
+                    continue;
+                };
+                //check if mask was inverted - outside became inside and vice versa
+                //if so, invert mask
+                int newWindingNumber=targetMask.getTotalWindingNumber();
+                targetMask.setInverted(origWindingNumber * newWindingNumber < 0);
+            };
+            //now clip polygon to image rectangle, add mask only when polygon is inside image
+            if(targetMask.clipPolygon(vigra::Rect2D(-maskOffset,-maskOffset,
+                                      state.images[*it]->getWidth()+maskOffset,state.images[*it]->getHeight()+maskOffset)))
+            {
+                targetMask.setMaskType(MaskPolygon::Mask_negative);
+                targetMask.setImgNr(*it);
+                state.images[*it]->addActiveMask(targetMask);
+            };
+        };
+    };        
+};
+
+void Panorama::updateMasks(bool convertPosMaskToNeg)
 {
     // update masks
+    UIntSet imgWithPosMasks;
     for(unsigned int i=0;i<state.images.size();i++)
     {
         state.images[i]->clearActiveMasks();
+        if(state.images[i]->hasPositiveMasks())
+        {
+            imgWithPosMasks.insert(i);
+        };
     };
     CalculateImageOverlap overlap(this);
+    overlap.limitToImages(imgWithPosMasks);
     overlap.calculate(10);
     for(unsigned int i=0;i<state.images.size();i++)
     {
@@ -1053,52 +1166,107 @@ void Panorama::updateMasks()
             MaskPolygonVector masks=state.images[i]->getMasks();
             for(unsigned int j=0;j<masks.size();j++)
             {
-                switch(masks[j].getMaskType())
+                if(convertPosMaskToNeg)
                 {
-                    case MaskPolygon::Mask_negative:
-                        //negative mask, simply copy mask to active mask
-                        masks[j].setImgNr(i);
-                        state.images[i]->addActiveMask(masks[j]);
-                        break;
-                    case MaskPolygon::Mask_positive:
-                        //propagate positive mask only if image is active
-                        if(state.images[i]->getActive())
-                        {
-                            MaskPolygon transformedMask=masks[j];
-                            // clip positive mask to image boundaries
-                            if(transformedMask.clipPolygon(vigra::Rect2D(0,0,state.images[i]->getWidth(),state.images[i]->getHeight())))
+                    //this is used for masking in the cp finder, we are consider
+                    //all masks as negative masks, because at this moment
+                    //the final position of the images is not known
+                    switch(masks[j].getMaskType())
+                    {
+                        case MaskPolygon::Mask_negative:
+                        case MaskPolygon::Mask_positive:
+                            masks[j].setImgNr(i);
+                            masks[j].setMaskType(MaskPolygon::Mask_negative);
+                            state.images[i]->addActiveMask(masks[j]);
+                            break;
+                        case MaskPolygon::Mask_Stack_negative:
+                        case MaskPolygon::Mask_Stack_positive:
                             {
-                                //transform polygon in panorama space
-                                HuginBase::PTools::Transform trans;
-                                trans.createInvTransform(getImage(i),getOptions());
-                                transformedMask.transformPolygon(trans);
-                                for(unsigned k=0;k<state.images.size();k++)
+                                //copy mask to all images of the same stack
+                                UIntSet imgStack;
+                                for(unsigned int k=0;k<getNrOfImages();k++)
                                 {
-                                    if(i==k)
-                                        continue;
-                                    //check if images are overlapping
-                                    if(overlap.getOverlap(i,k)>0)
+                                    if(i!=k)
                                     {
-                                        //transform polygon in image space of other image only if images are overlapping
-                                        MaskPolygon targetMask=transformedMask;
-                                        PTools::Transform targetTrans;
-                                        targetTrans.createTransform(getImage(k),getOptions());
-                                        targetMask.transformPolygon(targetTrans);
-                                        //now clip polygon to image rectangle, add mask only when polygon is inside image
-                                        if(targetMask.clipPolygon(vigra::Rect2D(-maskOffset,-maskOffset,
-                                            state.images[k]->getWidth()+maskOffset,state.images[k]->getHeight()+maskOffset)))
+                                        if(state.images[i]->StackisLinkedWith(*(state.images[k])))
                                         {
-                                            targetMask.setMaskType(MaskPolygon::Mask_negative);
-                                            targetMask.setImgNr(k);
-                                            state.images[k]->addActiveMask(targetMask);
+                                            imgStack.insert(k);
                                         };
                                     };
                                 };
+                                masks[j].setImgNr(i);
+                                masks[j].setMaskType(MaskPolygon::Mask_negative);
+                                state.images[i]->addActiveMask(masks[j]);
+                                transferMask(masks[j],i,imgStack);
                             };
-                        };
-                        break;
+                            break;
+                    };
+                }
+                else
+                {
+                    switch(masks[j].getMaskType())
+                    {
+                        case MaskPolygon::Mask_negative:
+                            //negative mask, simply copy mask to active mask
+                            masks[j].setImgNr(i);
+                            state.images[i]->addActiveMask(masks[j]);
+                            break;
+                        case MaskPolygon::Mask_positive:
+                            //propagate positive mask only if image is active
+                            if(state.images[i]->getActive())
+                            {
+                                UIntSet overlapImgs=overlap.getOverlapForImage(i);
+                                transferMask(masks[j],i,overlapImgs);
+                            };
+                            break;
+                        case MaskPolygon::Mask_Stack_negative:
+                            {
+                                //search all images of the stack
+                                UIntSet imgStack;
+                                for(unsigned int k=0;k<getNrOfImages();k++)
+                                {
+                                    if(i!=k)
+                                    {
+                                        if(state.images[i]->StackisLinkedWith(*(state.images[k])))
+                                        {
+                                            imgStack.insert(k);
+                                        };
+                                    };
+                                };
+                                //copy mask also to the image which contains the mask
+                                masks[j].setImgNr(i);
+                                masks[j].setMaskType(MaskPolygon::Mask_negative);
+                                state.images[i]->addActiveMask(masks[j]);
+                                transferMask(masks[j],i,imgStack);
+                            };
+                            break;
+                        case MaskPolygon::Mask_Stack_positive:
+                            {
+                                //remove all images from the stack from the set
+                                UIntSet imgStack;
+                                fill_set(imgStack,0,getNrOfImages()-1);
+                                imgStack.erase(i);
+                                for(unsigned int k=0;k<getNrOfImages();k++)
+                                {
+                                    if(i!=k)
+                                    {
+                                        if(state.images[i]->StackisLinkedWith(*(state.images[k])))
+                                        {
+                                            imgStack.erase(k);
+                                        };
+                                    };
+                                };
+                                //only leave overlapping images in set
+                                UIntSet imgOverlap=overlap.getOverlapForImage(i);
+                                UIntSet imgs;
+                                std::set_intersection(imgStack.begin(),imgStack.end(),imgOverlap.begin(),imgOverlap.end(),inserter(imgs,imgs.begin()));
+                                //now transfer mask
+                                transferMask(masks[j],i,imgs);
+                            };
+                            break;
+                    };
                 };
-            }
+            };
         };
     };
 };
@@ -1359,6 +1527,21 @@ Panorama Panorama::getSubset(const UIntSet & imgs) const
         }
     }
 
+    //update optimizeReferenceImage and colorReferenceImage number
+    unsigned int newRefImg=0;
+    std::map<unsigned int, unsigned int>::iterator it=imageNrMap.find(state.options.optimizeReferenceImage);
+    if(it!=imageNrMap.end())
+    {
+        newRefImg=it->second;
+    };
+    it=imageNrMap.find(state.options.colorReferenceImage);
+    subset.state.options.optimizeReferenceImage=newRefImg;
+    newRefImg=0;
+    if(it!=imageNrMap.end())
+    {
+        newRefImg=it->second;
+    }
+    subset.state.options.colorReferenceImage=newRefImg;
     return subset;
 }
 
@@ -1436,6 +1619,7 @@ void Panorama::mergePanorama(const Panorama &newPano)
                 new_image_nr[cps[i].image2Nr],cps[i].x2, cps[i].y2, cps[i].mode);
             addCtrlPoint(cp);
         };
+        removeDuplicateCtrlPoints();
     };
 };
 
@@ -1944,6 +2128,8 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                     double cropFactor=1;
                     const char * s = line.c_str() + pos;
                     sscanf(s,"cropFactor=%lf", & cropFactor);
+                    if(cropFactor<0.01 || cropFactor > 100)
+                        cropFactor=1;
                     info.cropFactor = cropFactor;
                 }
                 pos = line.find("disabled");
@@ -2218,7 +2404,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
         string file = iImgInfo[i].filename;
         // add prefix if only a relative path.
 #ifdef WIN32
-        bool absPath = ( (file[1]==':' && file[2]=='\\') || (file[0] == '\\' && file[1] == '\\'));
+        bool absPath = ( (file[1]==':' && file[2]=='\\') || (file[1]==':' && file[2]=='/') || (file[0] == '\\' && file[1] == '\\'));
 #else
         bool absPath = file[0] == '/';
 #endif

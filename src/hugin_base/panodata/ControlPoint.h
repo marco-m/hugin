@@ -79,6 +79,13 @@ public:
     ///
     const std::string & getModeName(OptimizeMode mode) const;
 
+    /** returns string which contains all features of a control point
+      * used for detecting duplicate control points
+      * in the string the image numbers are sorted ascending to cover
+      * also mirrored control points
+      */
+    const std::string getCPString() const;
+
     /// swap (image1Nr,x1,y1) with (image2Nr,x2,y2)
     void mirror();
 
@@ -107,7 +114,9 @@ public:
 
 ///
 typedef std::vector<ControlPoint> CPVector;
-
+// pair of global control point number and corrosponding control point
+typedef std::pair<unsigned int, ControlPoint> CPoint;
+typedef std::vector<CPoint> CPointVector;
 
 
 } // namespace

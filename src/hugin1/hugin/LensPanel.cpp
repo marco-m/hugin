@@ -767,7 +767,7 @@ void LensPanel::OnSaveLensParameters(wxCommandEvent & e)
                          _("Save lens parameters file"),
                          wxConfigBase::Get()->Read(wxT("/lensPath"),wxT("")), wxT(""),
                          _("Lens Project Files (*.ini)|*.ini|All files (*)|*"),
-                         wxSAVE, wxDefaultPosition);
+                         wxFD_SAVE, wxDefaultPosition);
         dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/lensPath"),wxT("")));
         if (dlg.ShowModal() == wxID_OK) {
             fname = dlg.GetPath();
@@ -868,19 +868,18 @@ void LensPanel::OnLoadLensParameters(wxCommandEvent & e)
             /** @todo I think the sensor size should be copied over,
              * but SrcPanoImage doesn't have such a variable yet.
              */
-            GlobalCmdHist::getInstance().addCommand(
-                    new PT::UpdateImageVariablesCmd(*pano, imgNr, vars)
-                                                );
+            std::vector<PanoCommand*> cmds;
+            cmds.push_back(new PT::UpdateImageVariablesCmd(*pano, imgNr, vars));
             // set image options.
-            GlobalCmdHist::getInstance().addCommand(
-                    new PT::SetImageOptionsCmd(*pano, imgopts, m_selectedImages) );
+            cmds.push_back(new PT::SetImageOptionsCmd(*pano, imgopts, m_selectedImages));
             // Set the lens projection type.
-            GlobalCmdHist::getInstance().addCommand(
-                    new PT::ChangeImageProjectionCmd(
+            cmds.push_back(new PT::ChangeImageProjectionCmd(
                             *pano,
                             m_selectedImages,
                             (HuginBase::SrcPanoImage::Projection) lens.getProjection()
-                        )
+                        ));
+            GlobalCmdHist::getInstance().addCommand(
+                    new PT::CombinedPanoCommand(*pano, cmds)
                     );
         }
     } else {
@@ -896,7 +895,7 @@ bool LoadLensParametersChoose(wxWindow * parent, Lens & lens, VariableMap & vars
                         _("Load lens parameters"),
                         wxConfigBase::Get()->Read(wxT("/lensPath"),wxT("")), wxT(""),
                         _("Lens Project Files (*.ini)|*.ini|All files (*.*)|*.*"),
-                        wxOPEN, wxDefaultPosition);
+                        wxFD_OPEN, wxDefaultPosition);
     dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/lensPath"),wxT("")));
     if (dlg.ShowModal() == wxID_OK) {
         fname = dlg.GetPath();
@@ -1145,11 +1144,13 @@ void LensPanel::OnReset(wxCommandEvent & e)
         };
         vars.push_back(ImgVars);    
     };
+    std::vector<PanoCommand *> reset_commands;
     if (needs_unlink)
     {
         std::set<HuginBase::ImageVariableGroup::ImageVariableEnum> variables;
         variables.insert(HuginBase::ImageVariableGroup::IVE_ExposureValue);
-        GlobalCmdHist::getInstance().addCommand( 
+        
+        reset_commands.push_back(
                 new ChangePartImagesLinkingCmd(
                             *pano,
                             selImg,
@@ -1158,7 +1159,7 @@ void LensPanel::OnReset(wxCommandEvent & e)
                             HuginBase::StandardImageVariableGroups::getLensVariables())
                 );
     }
-    GlobalCmdHist::getInstance().addCommand(
+    reset_commands.push_back(
                             new PT::UpdateImagesVariablesCmd(*pano, selImg,vars)
                                            );
     if(reset_dlg.GetResetExposure())
@@ -1166,8 +1167,10 @@ void LensPanel::OnReset(wxCommandEvent & e)
         //reset panorama output exposure value
         PanoramaOptions opt = pano->getOptions();
         opt.outputExposureValue = calcMeanExposure(*pano);
-        GlobalCmdHist::getInstance().addCommand(new PT::SetPanoOptionsCmd(*pano,opt));
+        reset_commands.push_back(new PT::SetPanoOptionsCmd(*pano,opt));
     };
+    GlobalCmdHist::getInstance().addCommand(
+            new PT::CombinedPanoCommand(*pano, reset_commands));
   }
 };
 

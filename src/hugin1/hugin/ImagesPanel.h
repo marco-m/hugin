@@ -32,6 +32,8 @@
 #include "CelesteGlobals.h"
 #include "Utilities.h"
 
+#include "base_wx/ImageCache.h"
+
 using namespace PT;
 
 // forward declarations, to save the #include statements
@@ -83,7 +85,7 @@ public:
     void panoramaImagesChanged(PT::Panorama &pano, const PT::UIntSet & imgNr);
     /** Reloads the cp detector settings from config, necessary after edit preferences */
     void ReloadCPDetectorSettings();
-    /** returns the default cp detector setings */
+    /** returns the default cp detector settings */
     CPDetectorSetting& GetDefaultSetting() { return cpdetector_config.settings.Item(cpdetector_config.GetDefaultGenerator());};
 private:
     // a window event
@@ -154,6 +156,9 @@ private:
 
     /** bitmap with default image */
     wxBitmap m_empty;
+    
+    /** Request for thumbnail image */
+    HuginBase::ImageCache::RequestPtr thumbnail_request;
 
     /** pointer to the list control */
     ImagesListImage* images_list;

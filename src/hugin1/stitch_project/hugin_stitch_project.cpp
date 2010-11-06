@@ -66,7 +66,7 @@ public:
     RunStitchFrame(wxWindow * parent, const wxString& title, const wxPoint& pos, const wxSize& size);
 
     bool StitchProject(wxString scriptFile, wxString outname,
-                       HuginBase::PanoramaMakefileExport::PTPrograms progs);
+                       HuginBase::PanoramaMakefilelibExport::PTPrograms progs);
 
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
@@ -167,9 +167,24 @@ void RunStitchFrame::OnProcessTerminate(wxProcessEvent & event)
         Close();
     } else {
         m_isStitching = false;
-        if (event.GetExitCode() != 0) {
-            wxMessageBox(_("Error during stitching\nPlease report the complete text to the bug tracker on http://sf.net/projects/hugin."),
-                     _("Error during stitching"), wxICON_ERROR | wxOK );
+        if (event.GetExitCode() != 0)
+        {
+            if(wxMessageBox(_("Error during stitching\nPlease report the complete text to the bug tracker on http://sf.net/projects/hugin.\n\nDo you want to save the log file?"),
+                _("Error during stitching"), wxICON_ERROR | wxYES_NO )==wxYES)
+            {
+                wxString defaultdir = wxConfigBase::Get()->Read(wxT("/actualPath"),wxT(""));
+                wxFileDialog dlg(this,
+                         _("Specify log file"),
+                         defaultdir, wxT(""),
+                         _("Log files (*.log)|*.log|All files (*)|*"),
+                         wxFD_SAVE | wxFD_OVERWRITE_PROMPT, wxDefaultPosition);
+                dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")));
+                if (dlg.ShowModal() == wxID_OK)
+                {
+                    wxConfig::Get()->Write(wxT("/actualPath"), dlg.GetDirectory());  // remember for later
+                    m_stitchPanel->SaveLog(dlg.GetPath());
+                };
+            }
         } else {
             Close();
         }
@@ -177,7 +192,7 @@ void RunStitchFrame::OnProcessTerminate(wxProcessEvent & event)
 }
 
 bool RunStitchFrame::StitchProject(wxString scriptFile, wxString outname,
-                                   HuginBase::PanoramaMakefileExport::PTPrograms progs)
+                                   HuginBase::PanoramaMakefilelibExport::PTPrograms progs)
 {
     if (! m_stitchPanel->StitchProject(scriptFile, outname, progs)) {
         return false;
@@ -286,15 +301,29 @@ bool stitchApp::OnInit()
     // parse arguments
     static const wxCmdLineEntryDesc cmdLineDesc[] =
     {
+        //On wxWidgets 2.9, wide characters don't work here.
+        //On previous versions, the wxT macro is required for unicode builds.
+#if wxCHECK_VERSION(2,9,0)
+      { wxCMD_LINE_SWITCH, "h", "help", "show this help message",
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+      { wxCMD_LINE_OPTION, "o", "output",  "output prefix" },
+      { wxCMD_LINE_OPTION, "t", "threads",  "number of threads",
+             wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
+      { wxCMD_LINE_SWITCH, "d", "delete",  "delete pto file after stitching" },
+      { wxCMD_LINE_PARAM,  NULL, NULL, "<project> <images>",
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL + wxCMD_LINE_PARAM_MULTIPLE },
+      { wxCMD_LINE_NONE }
+#else 
       { wxCMD_LINE_SWITCH, wxT("h"), wxT("help"), wxT("show this help message"),
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
       { wxCMD_LINE_OPTION, wxT("o"), wxT("output"),  wxT("output prefix") },
       { wxCMD_LINE_OPTION, wxT("t"), wxT("threads"),  wxT("number of threads"),
              wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
       { wxCMD_LINE_SWITCH, wxT("d"), wxT("delete"),  wxT("delete pto file after stitching") },
-      { wxCMD_LINE_PARAM,  NULL, NULL, _T("<project> <images>"),
+      { wxCMD_LINE_PARAM,  NULL, NULL, wxT("<project> <images>"),
         wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL + wxCMD_LINE_PARAM_MULTIPLE },
       { wxCMD_LINE_NONE }
+#endif 
     };
 
     wxCmdLineParser parser(cmdLineDesc, argc, argv);
@@ -338,7 +367,7 @@ bool stitchApp::OnInit()
                          _("Specify project source project file"),
                          defaultdir, wxT(""),
                          _("Project files (*.pto,*.ptp,*.pts,*.oto)|*.pto;*.ptp;*.pts;*.oto;|All files (*)|*"),
-                         wxOPEN, wxDefaultPosition);
+                         wxFD_OPEN, wxDefaultPosition);
 
         dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")));
         if (dlg.ShowModal() == wxID_OK) {
@@ -368,7 +397,7 @@ bool stitchApp::OnInit()
         wxFileDialog dlg(0,_("Specify output prefix"),
                          wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")),
                          wxT(""), wxT(""),
-                         wxSAVE, wxDefaultPosition);
+                         wxFD_SAVE, wxDefaultPosition);
         dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")));
         if (dlg.ShowModal() == wxID_OK) {
             while(containsInvalidCharacters(dlg.GetPath()))

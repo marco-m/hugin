@@ -59,8 +59,6 @@
 
 // Celeste header
 #include "Celeste.h"
-#include "CelesteGlobals.h"
-#include "Utilities.h"
 
 using namespace std;
 using namespace PT;
@@ -107,7 +105,7 @@ BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
 #endif
     EVT_LIST_ITEM_SELECTED(XRCID("cp_editor_cp_list"), CPEditorPanel::OnCPListSelect)
     EVT_LIST_COL_END_DRAG(XRCID("cp_editor_cp_list"), CPEditorPanel::OnColumnWidthChange)
-    EVT_COMBOBOX(XRCID("cp_editor_zoom_box"), CPEditorPanel::OnZoom)
+    EVT_CHOICE(XRCID("cp_editor_choice_zoom"), CPEditorPanel::OnZoom)
     EVT_TEXT_ENTER(XRCID("cp_editor_x1"), CPEditorPanel::OnTextPointChange )
     EVT_TEXT_ENTER(XRCID("cp_editor_y1"), CPEditorPanel::OnTextPointChange )
     EVT_TEXT_ENTER(XRCID("cp_editor_x2"), CPEditorPanel::OnTextPointChange )
@@ -298,7 +296,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_estimateCB->Disable();
     XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
-    XRCCTRL(*this, "cp_editor_zoom_box", wxComboBox)->Disable();
+    XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
     XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
 #ifdef HUGIN_CP_IMG_CHOICE
@@ -308,7 +306,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
 
     // apply zoom specified in xrc file
     wxCommandEvent dummy;
-    dummy.SetInt(XRCCTRL(*this,"cp_editor_zoom_box",wxComboBox)->GetSelection());
+    dummy.SetInt(XRCCTRL(*this,"cp_editor_choice_zoom",wxChoice)->GetSelection());
     OnZoom(dummy);
 
     SetSizer( topsizer );
@@ -716,7 +714,7 @@ void CPEditorPanel::SelectGlobalPoint(unsigned int globalNr)
 
 bool CPEditorPanel::globalPNr2LocalPNr(unsigned int & localNr, unsigned int globalNr) const
 {
-    vector<CPoint>::const_iterator it = currentPoints.begin();
+    HuginBase::CPointVector::const_iterator it = currentPoints.begin();
 
     while(it != currentPoints.end() && (*it).first != globalNr) {
         it++;
@@ -1064,11 +1062,29 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
     if (res.maxi < corrThresh ||res.curv.x < curvThresh || res.curv.y < curvThresh  )
     {
         // Bad correlation result.
+#if wxCHECK_VERSION(2, 9, 0)
+        wxMessageDialog dlg(this,
+            _("No similar point found."),
+#ifdef _WINDOWS
+            _("Hugin"),
+#else
+            wxT(""),
+#endif
+            wxICON_ERROR | wxOK);
+        dlg.SetExtendedMessage(wxString::Format(_("Check the similarity visually.\nCorrelation coefficient (%.3f) is lower than the threshold set in the preferences."),
+                             res.maxi));
+        dlg.ShowModal();
+#else
         wxMessageBox(
             wxString::Format(_("No similar point found. Check the similarity visually.\nCorrelation coefficient (%.3f) is lower than the threshold set in the preferences."),
                              res.maxi),
-            _("No similar point found"),
-            wxICON_HAND, this);
+#ifdef _WINDOWS
+            _("Hugin"),
+#else
+            wxT(""),
+#endif
+            wxICON_ERROR | wxOK, this);
+#endif
         return false;
     }
 
@@ -1277,7 +1293,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_estimateCB->Disable();
 	  XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
 	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
-	  XRCCTRL(*this, "cp_editor_zoom_box", wxComboBox)->Disable();
+	  XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
 	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
 	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
 #ifdef HUGIN_CP_IMG_CHOICE
@@ -1292,7 +1308,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_estimateCB->Enable();
 	  XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
 	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
-	  XRCCTRL(*this, "cp_editor_zoom_box", wxComboBox)->Enable();
+	  XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
 	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
 	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
 #ifdef HUGIN_CP_IMG_CHOICE
@@ -1833,17 +1849,17 @@ void CPEditorPanel::OnKey(wxKeyEvent & e)
         wxCommandEvent dummy;
         dummy.SetInt(1);
         OnZoom(dummy);
-        XRCCTRL(*this,"cp_editor_zoom_box",wxComboBox)->SetSelection(1);
+        XRCCTRL(*this,"cp_editor_choice_zoom",wxChoice)->SetSelection(1);
     } else if (e.m_keyCode == '1') {
         wxCommandEvent dummy;
         dummy.SetInt(0);
         OnZoom(dummy);
-        XRCCTRL(*this,"cp_editor_zoom_box",wxComboBox)->SetSelection(0);
+        XRCCTRL(*this,"cp_editor_choice_zoom",wxChoice)->SetSelection(0);
     } else if (e.m_keyCode == '2') {
         wxCommandEvent dummy;
         dummy.SetInt(2);
         OnZoom(dummy);
-        XRCCTRL(*this,"cp_editor_zoom_box",wxComboBox)->SetSelection(2);
+        XRCCTRL(*this,"cp_editor_choice_zoom",wxChoice)->SetSelection(2);
 
 #if 0
     } else if (e.m_keyCode == 'p') {
@@ -2043,7 +2059,7 @@ void CPEditorPanel::changeState(CPCreationState newState)
         if (cpCreationState != NO_POINT) {
             // reset zoom to previous setting
             wxCommandEvent tmpEvt;
-            tmpEvt.SetInt(XRCCTRL(*this,"cp_editor_zoom_box",wxComboBox)->GetSelection());
+            tmpEvt.SetInt(XRCCTRL(*this,"cp_editor_choice_zoom",wxChoice)->GetSelection());
             OnZoom(tmpEvt);
             m_leftImg->clearNewPoint();
             m_rightImg->clearNewPoint();
@@ -2153,102 +2169,64 @@ void CPEditorPanel::OnFineTuneButton(wxCommandEvent & e)
 
 void CPEditorPanel::OnCelesteButton(wxCommandEvent & e)
 {
-
-    if (currentPoints.size() == 0) {
+    if (currentPoints.size() == 0)
+    {
         wxMessageBox(_("Cannot run celeste without at least one control point connecting the two images"),_("Error"));
         cout << "Cannot run celeste without at least one control point connecting the two images" << endl;
-    }else{
-
-        ProgressReporterDialog progress(3, _("Running Celeste"), _("Running Celeste"),this);
-
+    }
+    else
+    {
+        ProgressReporterDialog progress(4, _("Running Celeste"), _("Running Celeste"),this);
         MainFrame::Get()->SetStatusText(_("searching for cloud-like control points..."),0);
+        progress.increaseProgress(1.0, std::wstring(wxString(_("Loading model file")).wc_str(wxConvLocal)));
 
-        // Create the storage matrix
-        gNumLocs = currentPoints.size();
-        gLocations = CreateMatrix( (int)0, gNumLocs, 2);
-
-        // Load control points into gLocations
-        unsigned int glocation_counter = 0;	
-        for (vector<CPoint>::const_iterator it = currentPoints.begin(); it != currentPoints.end(); ++it) {
-            gLocations[glocation_counter][0] = (int)it->second.x1;
-            gLocations[glocation_counter][1] = (int)it->second.y1;		
-            glocation_counter++;
-        }
+        struct celeste::svm_model* model=MainFrame::Get()->GetSVMModel();
+        if(model==NULL)
+        {
+            MainFrame::Get()->SetStatusText(wxT(""),0);
+            return;
+        };
 
         // Get Celeste parameters
         wxConfigBase *cfg = wxConfigBase::Get();
-
         // SVM threshold
         double threshold = HUGIN_CELESTE_THRESHOLD;
         cfg->Read(wxT("/Celeste/Threshold"), &threshold, HUGIN_CELESTE_THRESHOLD);
 
         // Mask resolution - 1 sets it to fine
-        bool t = (cfg->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER) != 0);
-        if (t)
-        {
-            //cerr <<"---Celeste--- Using small filter" << endl;
-            gRadius = 10;
-            spacing = (gRadius * 2) + 1;
-        }
-
-        // determine file name of SVM model file
-        // get XRC path from application
-        wxString wxstrModelFileName = huginApp::Get()->GetDataPath() + wxT(HUGIN_CELESTE_MODEL);
-        // convert wxString to string
-        string strModelFileName(wxstrModelFileName.mb_str(wxConvUTF8));
-				
-        // SVM model file
-        if (! wxFile::Exists(wxstrModelFileName) ) {
-            wxMessageBox(_("Celeste model expected in ") + wxstrModelFileName +_(" not found, Hugin needs to be properly installed." ), _("Fatal Error"));
-            return ;
-        }
-
-        // Image to analyse
-        string imagefile = m_pano->getImage(m_leftImageNr).getFilename();
-
+        bool t = (cfg->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER) == 0);
+        int radius=(t)?10:20;
         DEBUG_TRACE("Running Celeste");
 
         progress.increaseProgress(1.0, std::wstring(wxString(_("Running Celeste")).wc_str(wxConvLocal)));
-
-        // Vector to store Gabor filter responses
-        vector<double> svm_responses_cp;
-        string mask_format = "PNG";
-        unsigned int mask = 0;
-
-        // Get responses
-        get_gabor_response(imagefile, mask, strModelFileName, threshold, mask_format, svm_responses_cp);
-
-        progress.increaseProgress(1.0, std::wstring(wxString(_("Running Celeste")).wc_str(wxConvLocal)));
-
-        // Print SVM results
-        unsigned int removed = 0;
-        UIntSet cpToRemove;
-        for (unsigned int c = 0; c < svm_responses_cp.size(); c++){
-
-            if (svm_responses_cp[c] >= threshold){
-
-                unsigned int pNr = localPNr2GlobalPNr(c);
-                cpToRemove.insert(pNr);
-                DEBUG_DEBUG("about to delete point " << pNr);
-                removed++;
-                cout << "CP: " << c << "\tSVM Score: " << svm_responses_cp[c] << "\tremoved." << endl;
-            }
-            if (removed)
-            {
-                cout << endl;
-            }
+        // Image to analyse
+        ImageCache::EntryPtr img=ImageCache::getInstance().getImage(m_pano->getImage(m_leftImageNr).getFilename());
+        vigra::UInt16RGBImage in;
+        if(img->image16->width()>0)
+        {
+            in.resize(img->image16->size());
+            vigra::copyImage(srcImageRange(*(img->image16)),destImage(in));
         }
-        if(cpToRemove.size()>0)
-            GlobalCmdHist::getInstance().addCommand(
-                new PT::RemoveCtrlPointsCmd(*m_pano,cpToRemove)
-                );
-
+        else
+        {
+            ImageCache::ImageCacheRGB8Ptr im8=img->get8BitImage();
+            in.resize(im8->size());
+            vigra::transformImage(srcImageRange(*im8),destImage(in),vigra::functor::Arg1()*vigra::functor::Param(65535/255));
+        };
+        UIntSet cloudCP=celeste::getCelesteControlPoints(model,in,currentPoints,radius,threshold,800);
+        in.resize(0,0);
         progress.increaseProgress(1.0, std::wstring(wxString(_("Running Celeste")).wc_str(wxConvLocal)));
 
-        wxMessageBox(wxString::Format(_("Removed %d control points"), removed), _("Celeste result"),wxOK|wxICON_INFORMATION,this);
+        if(cloudCP.size()>0)
+        {
+            GlobalCmdHist::getInstance().addCommand(
+                new PT::RemoveCtrlPointsCmd(*m_pano,cloudCP)
+                );
+        };
 
+        progress.increaseProgress(1.0, std::wstring(wxString(_("Running Celeste")).wc_str(wxConvLocal)));
+        wxMessageBox(wxString::Format(_("Removed %d control points"), cloudCP.size()), _("Celeste result"),wxOK|wxICON_INFORMATION,this);
         DEBUG_TRACE("Finished running Celeste");
-
         MainFrame::Get()->SetStatusText(wxT(""),0);
     }
 }
@@ -2364,7 +2342,7 @@ FDiff2D CPEditorPanel::EstimatePoint(const FDiff2D & p, bool left)
         return FDiff2D(0,0);
     }
 
-    for (vector<CPoint>::const_iterator it = currentPoints.begin(); it != currentPoints.end(); ++it) {
+    for (HuginBase::CPointVector::const_iterator it = currentPoints.begin(); it != currentPoints.end(); ++it) {
         t.x += it->second.x2 - it->second.x1;
         t.y += it->second.y2 - it->second.y1;
     }

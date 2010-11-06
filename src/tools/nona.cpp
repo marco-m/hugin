@@ -113,6 +113,10 @@ static void usage(const char * name)
     << std::endl;
 }
 
+/** Try to initalise GLUT and GLEW, and create an OpenGL context for GPU stitching.
+ * OpenGL extensions required by the GPU stitcher (-g option) are checked here.
+ * @return true if everything went OK, false if we can't use GPGPU mode.
+ */
 static bool initGPU(int *argcp,char **argv) {
     glutInit(argcp,argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA | GLUT_ALPHA);
@@ -122,9 +126,9 @@ static bool initGPU(int *argcp,char **argv) {
     if (err != GLEW_OK) {
         cerr << "nona: an error occured while setting up the GPU:" << endl;
         cerr << glewGetErrorString(err) << endl;
-        cerr << "nona: sorry, the --gpu flag is not going to work on this machine." << endl;
+        cerr << "nona: Switching to CPU calculation." << endl;
         glutDestroyWindow(GlutWindowHandle);
-        exit(1);
+        return false;
     }
 
     cout << "nona: using graphics card: " << glGetString(GL_VENDOR) << " " << glGetString(GL_RENDERER) << endl;
@@ -135,8 +139,9 @@ static bool initGPU(int *argcp,char **argv) {
     GLboolean has_arb_shading_language = glewGetExtension("GL_ARB_shading_language_100");
     GLboolean has_arb_texture_rectangle = glewGetExtension("GL_ARB_texture_rectangle");
     GLboolean has_arb_texture_border_clamp = glewGetExtension("GL_ARB_texture_border_clamp");
+    GLboolean has_arb_texture_float = glewGetExtension("GL_ARB_texture_float");
 
-    if (!(has_arb_fragment_shader && has_arb_vertex_shader && has_arb_shader_objects && has_arb_shading_language && has_arb_texture_rectangle && has_arb_texture_border_clamp)) {
+    if (!(has_arb_fragment_shader && has_arb_vertex_shader && has_arb_shader_objects && has_arb_shading_language && has_arb_texture_rectangle && has_arb_texture_border_clamp && has_arb_texture_float)) {
         const char * msg[] = {"false", "true"};
         cerr << "nona: extension GL_ARB_fragment_shader = " << msg[has_arb_fragment_shader] << endl;
         cerr << "nona: extension GL_ARB_vertex_shader = " << msg[has_arb_vertex_shader] << endl;
@@ -144,10 +149,11 @@ static bool initGPU(int *argcp,char **argv) {
         cerr << "nona: extension GL_ARB_shading_language_100 = " << msg[has_arb_shading_language] << endl;
         cerr << "nona: extension GL_ARB_texture_rectangle = " << msg[has_arb_texture_rectangle] << endl;
         cerr << "nona: extension GL_ARB_texture_border_clamp = " << msg[has_arb_texture_border_clamp] << endl;
-        cerr << "nona: this graphics card lacks the necessary extensions for -g." << endl;
-        cerr << "nona: sorry, the -g flag is not going to work on this machine." << endl;
+        cerr << "nona: extension GL_ARB_texture_float = " << msg[has_arb_texture_float] << endl;
+        cerr << "nona: This graphics system lacks the necessary extensions for -g." << endl;
+        cerr << "nona: Switching to CPU calculation." << endl;
         glutDestroyWindow(GlutWindowHandle);
-        exit(1);
+        return false;
     }
 
     return true;
@@ -317,6 +323,28 @@ int main(int argc, char *argv[])
         opts.outputExposureValue = exposure;
     }
 
+    if(outputImages.size()==0) 
+    {
+        outputImages = pano.getActiveImages();
+    }
+    else
+    {
+        UIntSet activeImages=pano.getActiveImages();
+        for(UIntSet::const_iterator it=outputImages.begin(); it!=outputImages.end();it++)
+        {
+            if(!set_contains(activeImages,*it))
+            {
+                std::cerr << "The project file does not contains an image with number " << *it << std::endl;
+                return 1;
+            };
+        };
+    };
+    if(outputImages.size()==0)
+    {
+        std::cout << "Project does not contain active images." << std::endl
+            << "Nothing to do for nona." << std::endl;
+        return 0;
+    };
     if(useGPU)
     {
         switch(opts.getProjection())
@@ -331,25 +359,31 @@ int main(int argc, char *argv[])
             case HuginBase::PanoramaOptions::EQUI_PANINI:
             case HuginBase::PanoramaOptions::GENERAL_PANINI:
                 useGPU=false;
-                std::cout << "The nona-GPU does not support this projection. Switch to CPU calculation."<<std::endl;
+                std::cout << "Nona-GPU does not support this projection. Switch to CPU calculation."<<std::endl;
                 break;
         };
+        for(UIntSet::const_iterator it=outputImages.begin(); it!=outputImages.end();it++)
+        {
+            const SrcPanoImage & img = pano.getImage(*it);
+            if(img.getX()!=0 || img.getY()!=0 || img.getZ()!=0)
+            {
+                useGPU=false;
+                std::cout << "Nona-GPU does not support the translation parameters. Switch to CPU calculation." << std::endl;
+                break;
+            };
+        };
     };
-    opts.remapUsingGPU = useGPU;
-
-    DEBUG_DEBUG("output basename: " << basename);
     
-    pano.setOptions(opts);
+    DEBUG_DEBUG("output basename: " << basename);
     
     try {
         if (useGPU) {
-            initGPU(&argc, argv);
+            useGPU = initGPU(&argc, argv);
         }
+        opts.remapUsingGPU = useGPU;
+        pano.setOptions(opts);
 
         // stitch panorama
-        if (outputImages.size() == 0 ) {
-            outputImages = pano.getActiveImages();
-        }
         NonaFileOutputStitcher(pano, pdisp, opts, outputImages, basename).run();
         // add a final newline, after the last progress message
         if (verbose > 0) {

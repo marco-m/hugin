@@ -587,7 +587,6 @@ bool SrcPanoImage::readEXIF(double & focalLength, double & cropFactor, double & 
     // store some important EXIF tags for later usage.
     setExifFocalLength(focalLength);
     setExifFocalLength35(eFocalLength35);
-    setExifCropFactor(cropFactor);
     setExifOrientation(roll);
     setExifAperture(photoFNumber);
     setExifISO(isoSpeed);
@@ -605,6 +604,10 @@ bool SrcPanoImage::readEXIF(double & focalLength, double & cropFactor, double & 
         setRoll(roll);
         if (applyExposureValue)
             setExposureValue(eV);
+        if(cropFactor>0)
+        {
+            setExifCropFactor(cropFactor);
+        };
         if (focalLength > 0 && cropFactor > 0) {
             setHFOV(calcHFOV(getProjection(), focalLength, cropFactor, getSize()));
             DEBUG_DEBUG("HFOV:         " << getHFOV());
@@ -746,7 +749,7 @@ bool SrcPanoImage::getExiv2Value(Exiv2::ExifData& exifData, std::string keyName,
 {
     Exiv2::ExifKey key(keyName);
     Exiv2::ExifData::iterator itr = exifData.findKey(key);
-    if (itr != exifData.end()) {
+    if (itr != exifData.end() && itr->count()) {
         value = itr->toLong();
         DEBUG_DEBUG("" << keyName << ": " << value);
         return true;
@@ -760,7 +763,7 @@ bool SrcPanoImage::getExiv2Value(Exiv2::ExifData& exifData, std::string keyName,
 {
     Exiv2::ExifKey key(keyName);
     Exiv2::ExifData::iterator itr = exifData.findKey(key);
-    if (itr != exifData.end()) {
+    if (itr != exifData.end() && itr->count()) {
         value = itr->toFloat();
         DEBUG_DEBUG("" << keyName << ": " << value);
         return true;
@@ -774,7 +777,7 @@ bool SrcPanoImage::getExiv2Value(Exiv2::ExifData& exifData, std::string keyName,
 {
     Exiv2::ExifKey key(keyName);
     Exiv2::ExifData::iterator itr = exifData.findKey(key);
-    if (itr != exifData.end()) {
+    if (itr != exifData.end() && itr->count()) {
         value = itr->toString();
         DEBUG_DEBUG("" << keyName << ": " << value);
         return true;
@@ -807,6 +810,22 @@ void SrcPanoImage::clearActiveMasks()
 bool SrcPanoImage::hasMasks() const
 {
     return m_Masks.getData().size()>0;
+};
+
+bool SrcPanoImage::hasPositiveMasks() const
+{
+    MaskPolygonVector masks=m_Masks.getData();
+    if(masks.size()>0)
+    {
+        for(unsigned int i=0;i<masks.size();i++)
+        {
+            if(masks[i].getMaskType()==MaskPolygon::Mask_positive || masks[i].getMaskType()==MaskPolygon::Mask_Stack_positive)
+            {
+                return true;
+            };
+        };
+    };
+    return false;
 };
 
 bool SrcPanoImage::hasActiveMasks() const

@@ -58,6 +58,54 @@ namespace PT {
         protected:
             Panorama& o_pano;
     };
+    
+    //=========================================================================
+    //=========================================================================
+    
+    /** PanoCommand to combine other PanoCommands.
+        Use to get one Undo step from what would normally be several
+        PanoCommands.
+     */
+    class CombinedPanoCommand : public PanoCommand
+    {
+        public:
+            /** Constructor.
+             *  @param commands List of pointers to commands. The applied from
+                                beginning to end. CombinedPanoCommand deletes
+                                the commands when it is itself deleted.
+             */
+            CombinedPanoCommand(Panorama & pano, std::vector<PanoCommand*> & commands)
+                : PanoCommand(pano), commands(commands)
+                {};
+            ~CombinedPanoCommand()
+                {
+                    for (std::vector<PanoCommand*>::iterator it = commands.begin();
+                         it != commands.end();
+                         it++)
+                    {
+                        delete *it;
+                    }
+                }
+            virtual bool processPanorama(Panorama & pano)
+                {
+                    bool result = true;
+                    for (std::vector<PanoCommand*>::iterator it = commands.begin();
+                         it != commands.end();
+                         it++)
+                    {
+                        result &= (**it).processPanorama(pano);
+                    }
+                    /// @todo Should I revert if processing fails?
+                    return result;
+                };
+            
+            virtual std::string getName() const
+                {
+                    return "multiple commmands";
+                };
+        private:
+            std::vector<PanoCommand*> commands;
+    };
 
     
     //=========================================================================
@@ -503,7 +551,7 @@ namespace PT {
     //=========================================================================
 
 
-    /** center panorama horizontically */
+    /** straighten panorama horizontically */
     class StraightenPanoCmd : public PanoCommand
     {
     public:
@@ -521,7 +569,7 @@ namespace PT {
         
         virtual std::string getName() const
             {
-                return "center panorama";
+                return "straighten panorama";
             }
 
     private:
@@ -703,7 +751,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 UIntSet::iterator it;
-                LensVector::const_iterator v_it = vect.begin();
 				for (unsigned int i = 0; i < pano.getNrOfImages(); i++) {
                     if (set_contains(m_active, i)) {
 						pano.activateImage(i, true);
@@ -718,12 +765,11 @@ namespace PT {
         
         virtual std::string getName() const
             {
-                return "change lens";
+                return "change active images";
             }
 
     private:
         UIntSet m_active;
-        LensVector vect;
     };
 
 
@@ -820,8 +866,7 @@ namespace PT {
     //=========================================================================
     //=========================================================================
 
-    /** set image options for a set of images.
-     *  just sets the @p options given for all images in @p imgs
+    /** update source image
      */
     class UpdateSrcImageCmd : public PanoCommand
     {
@@ -840,7 +885,7 @@ namespace PT {
             
         virtual std::string getName() const
             {
-                return "set image options";
+                return "update source image";
             }
     
     private:
@@ -851,8 +896,7 @@ namespace PT {
     //=========================================================================
     //=========================================================================
 
-    /** set image options for a set of images.
-     *  just sets the @p options given for all images in @p imgs
+    /** update source images
      */
     class UpdateSrcImagesCmd : public PanoCommand
     {
@@ -877,7 +921,7 @@ namespace PT {
             
         virtual std::string getName() const
             {
-                return "set multiple image options";
+                return "update source images";
             }
     
     private:
@@ -946,7 +990,7 @@ namespace PT {
         
         virtual std::string getName() const
             {
-                return "unnamed command";
+                return "set panorama options";
             }
 
     private:
@@ -1034,7 +1078,7 @@ namespace PT {
             
         virtual std::string getName() const
             {
-                return "set image options";
+                return "set flatfield correction parameters for all images of a lens";
             }
     
     private:
@@ -1069,7 +1113,7 @@ namespace PT {
         
         virtual std::string getName() const
             {
-                return "set image options";
+                return "rotate panorama";
             }
 
     private:

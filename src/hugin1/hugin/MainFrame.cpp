@@ -58,6 +58,7 @@
 #include "hugin/CPListFrame.h"
 #include "hugin/LocalizedFileTipProvider.h"
 #include "hugin/HFOVDialog.h"
+#include "algorithms/control_points/CleanCP.h"
 
 #include "base_wx/MyProgressDialog.h"
 #include "base_wx/ImageCache.h"
@@ -171,6 +172,19 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(XRCID("ID_CP_TABLE"), MainFrame::OnShowCPFrame)
     EVT_BUTTON(XRCID("ID_CP_TABLE"),MainFrame::OnShowCPFrame)
+    
+    EVT_MENU(XRCID("ID_SHOW_PANEL_ASSISTANT"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_IMAGES"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_LENS"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_CROP"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_MASK"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_CP_EDITOR"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_OPTIMIZER"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_OPTIMIZER_PHOTOMETRIC"), MainFrame::OnShowPanel)
+    EVT_MENU(XRCID("ID_SHOW_PANEL_PANORAMA"), MainFrame::OnShowPanel)
+    
+
+
 
     EVT_MENU(XRCID("action_add_images"),  MainFrame::OnAddImages)
     EVT_BUTTON(XRCID("action_add_images"),  MainFrame::OnAddImages)
@@ -193,6 +207,7 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
     preview_frame = 0;
     m_progressMax = 1;
     m_progress = 0;
+    svmModel=NULL;
 
     wxBitmap bitmap;
     wxSplashScreen* splash = 0;
@@ -444,8 +459,24 @@ MainFrame::~MainFrame()
     //store most recently used files
     m_mruFiles.Save(*config);
     config->Flush();
+    if(svmModel!=NULL)
+    {
+        celeste::destroySVMmodel(svmModel);
+    };
 
     DEBUG_TRACE("dtor end");
+}
+
+void MainFrame::panoramaChanged(PT::Panorama &pano)
+{
+    wxToolBar* theToolBar = GetToolBar();
+    wxMenuBar* theMenuBar = GetMenuBar();
+    bool can_undo = GlobalCmdHist::getInstance().canUndo();
+    theMenuBar->Enable    (XRCID("ID_EDITUNDO"), can_undo);
+    theToolBar->EnableTool(XRCID("ID_EDITUNDO"), can_undo);
+    bool can_redo = GlobalCmdHist::getInstance().canRedo();
+    theMenuBar->Enable    (XRCID("ID_EDITREDO"), can_redo);
+    theToolBar->EnableTool(XRCID("ID_EDITREDO"), can_redo);
 }
 
 void MainFrame::RestoreLayout()
@@ -476,27 +507,39 @@ void MainFrame::OnUserQuit(wxCommandEvent & e)
     Close();
 }
 
-bool MainFrame::CloseProject(bool cnacelable)
+bool MainFrame::CloseProject(bool cancelable)
 {
     if (pano.isDirty()) {
-        int answer = wxMessageBox(_("The panorama has been changed\nSave changes?"), _("Save Panorama?"),
-                                  cnacelable? (wxYES_NO | wxCANCEL | wxICON_EXCLAMATION):(wxYES_NO | wxICON_EXCLAMATION),
-                                  this);
+        wxMessageDialog message(this,
+                                _("Save changes to the panorama before closing?"), 
+#ifdef _WINDOWS
+                                _("Hugin"),
+#else
+                                wxT(""),
+#endif
+                                wxICON_EXCLAMATION | wxYES_NO | (cancelable? (wxCANCEL):0));
+#if wxCHECK_VERSION(2, 9, 0)
+    message.SetExtendedMessage("If you close without saving, changes since your last save will be discarded");
+    #if defined __WXMAC__ || defined __WXMSW__
+        // Apple human interface guidelines and Windows user experience interaction guidelines
+        message.SetYesNoLabels(wxID_SAVE, _("Don't Save"));
+    #else
+        // Gnome human interface guidelines:
+        message.SetYesNoLabels(wxID_SAVE, _("Close without saving"));
+    #endif
+#endif
+        int answer = message.ShowModal();
         switch (answer){
-            case wxYES:
+            case wxID_YES:
             {
                 wxCommandEvent dummy;
                 OnSaveProject(dummy);
                 return true;
             }
-            case wxCANCEL:
-            {
+            case wxID_CANCEL:
                 return false;
-            }
             default: //no save
-            {
                 return true;
-            }
         }
     }
     else return true;
@@ -569,7 +612,7 @@ void MainFrame::OnSaveProject(wxCommandEvent & e)
             std::string tmpDir((wxConfigBase::Get()->Read(wxT("tempDir"),wxT(""))).mb_str(HUGIN_CONV_FILENAME));
 
             std::vector<std::string> outputFiles;
-            HuginBase::PanoramaMakefileExport::createMakefile(pano,
+            HuginBase::PanoramaMakefilelibExport::createMakefile(pano,
                                                               pano.getActiveImages(),
                                                               ptoFn,
                                                               resultFn,
@@ -607,7 +650,7 @@ void MainFrame::OnSaveProjectAs(wxCommandEvent & e)
                      _("Save project file"),
                      wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")), scriptName,
                      _("Project files (*.pto)|*.pto|All files (*)|*"),
-                     wxSAVE, wxDefaultPosition);
+                     wxFD_SAVE, wxDefaultPosition);
     dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")));
     if (dlg.ShowModal() == wxID_OK) {
         wxConfig::Get()->Write(wxT("/actualPath"), dlg.GetDirectory());  // remember for later
@@ -641,7 +684,7 @@ void MainFrame::OnSavePTStitcherAs(wxCommandEvent & e)
                      _("Save PTmender script file"),
                      wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")), fn,
                      _("PTmender files (*.txt)|*.txt"),
-                     wxSAVE, wxDefaultPosition);
+                     wxFD_SAVE, wxDefaultPosition);
     dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")));
     if (dlg.ShowModal() == wxID_OK) {
         wxString fname = dlg.GetPath();
@@ -742,7 +785,7 @@ void MainFrame::OnLoadProject(wxCommandEvent & e)
                          _("Open project file"),
                          defaultdir, wxT(""),
                          _("Project files (*.pto,*.ptp,*.pts,*.oto)|*.pto;*.ptp;*.pts;*.oto;|All files (*)|*"),
-                         wxOPEN, wxDefaultPosition);
+                         wxFD_OPEN, wxDefaultPosition);
         dlg.SetDirectory(defaultdir);
         if (dlg.ShowModal() == wxID_OK) {
             // remove old images from cache
@@ -800,7 +843,7 @@ void MainFrame::OnAddImages( wxCommandEvent& event )
     wxFileDialog dlg(this,_("Add images"),
                      path, wxT(""),
                      HUGIN_WX_FILE_IMG_FILTER,
-                     wxOPEN|wxMULTIPLE , wxDefaultPosition);
+                     wxFD_OPEN | wxFD_MULTIPLE, wxDefaultPosition);
     dlg.SetDirectory(path);
 
     // remember the image extension
@@ -1071,6 +1114,37 @@ void MainFrame::OnShowDonate(wxCommandEvent & e)
     wxLaunchDefaultBrowser(wxT("http://sourceforge.net/project/project_donations.php?group_id=77506"));
 }
 
+
+void MainFrame::OnShowPanel(wxCommandEvent & e)
+{
+    if(e.GetId()==XRCID("ID_SHOW_PANEL_IMAGES"))
+        m_notebook->SetSelection(1);
+    else
+        if(e.GetId()==XRCID("ID_SHOW_PANEL_LENS"))
+            m_notebook->SetSelection(2);
+        else
+            if(e.GetId()==XRCID("ID_SHOW_PANEL_CROP"))
+                m_notebook->SetSelection(3);
+            else
+                if(e.GetId()==XRCID("ID_SHOW_PANEL_MASK"))
+                    m_notebook->SetSelection(4);
+                else
+                    if(e.GetId()==XRCID("ID_SHOW_PANEL_CP_EDITOR"))
+                        m_notebook->SetSelection(5);
+                    else
+                        if(e.GetId()==XRCID("ID_SHOW_PANEL_OPTIMIZER"))
+                            m_notebook->SetSelection(6);
+                        else
+                            if(e.GetId()==XRCID("ID_SHOW_PANEL_OPTIMIZER_PHOTOMETRIC"))
+                                m_notebook->SetSelection(7);
+                            else
+                                if(e.GetId()==XRCID("ID_SHOW_PANEL_PANORAMA"))
+                                    m_notebook->SetSelection(8);
+                                else
+                                    m_notebook->SetSelection(0);
+}
+
+
 void MainFrame::OnAbout(wxCommandEvent & e)
 {
     AboutDialog dlg(this);
@@ -1288,7 +1362,7 @@ void MainFrame::OnMergeProject(wxCommandEvent & e)
                      _("Open project file"),
                      defaultdir, wxT(""),
                      _("Project files (*.pto,*.ptp,*.pts,*.oto)|*.pto;*.ptp;*.pts;*.oto;|All files (*)|*"),
-                     wxOPEN, wxDefaultPosition);
+                     wxFD_OPEN, wxDefaultPosition);
     dlg.SetDirectory(defaultdir);
     if (dlg.ShowModal() == wxID_OK) 
     {
@@ -1335,7 +1409,7 @@ void MainFrame::OnApplyTemplate(wxCommandEvent & e)
                      _("Choose template project"),
                      config->Read(wxT("/templatePath"),wxT("")), wxT(""),
                      _("Project files (*.pto,*.ptp,*.pts,*.oto)|*.pto;*.ptp;*.pts;*.oto;|All files (*)|*"),
-                     wxOPEN, wxDefaultPosition);
+                     wxFD_OPEN, wxDefaultPosition);
     dlg.SetDirectory(wxConfigBase::Get()->Read(wxT("/templatePath"),wxT("")));
     if (dlg.ShowModal() == wxID_OK) {
         wxString filename = dlg.GetPath();
@@ -1502,58 +1576,17 @@ void MainFrame::OnFineTuneAll(wxCommandEvent & e)
 
 void MainFrame::OnRemoveCPinMasks(wxCommandEvent & e)
 {
-    HuginBase::UIntSet cps;
-    HuginBase::CPVector cpList=pano.getCtrlPoints();
-    if(cpList.size()>0)
+    if(pano.getCtrlPoints().size()<2)
+        return;
+    UIntSet cps=getCPinMasks(pano);
+    if(cps.size()>0)
     {
-        for(unsigned int i=0;i<cpList.size();i++)
-        {
-            HuginBase::ControlPoint cp=cpList[i];
-            // ignore line control points
-            if(cp.mode!=HuginBase::ControlPoint::X_Y)
-                continue;
-            bool insideMask=false;
-            // check first image
-            // remark: we could also use pano.getImage(cp.image1Nr).isInside(vigra::Point2D(cp.x1,cp.y1))
-            //   this would also check the crop rectangles/circles
-            //   but it would require that the pano is correctly align, otherwise the positive masks
-            //   would not correctly checked
-            HuginBase::MaskPolygonVector masks=pano.getImage(cp.image1Nr).getMasks();
-            if(masks.size()>0)
-            {
-                unsigned int j=0;
-                while((!insideMask) && (j<masks.size()))
-                {
-                    insideMask=masks[j].isInside(hugin_utils::FDiff2D(cp.x1,cp.y1));
-                    j++;
-                };
-            };
-            // and now the second
-            if(!insideMask)
-            {
-                masks=pano.getImage(cp.image2Nr).getMasks();
-                if(masks.size()>0)
-                {
-                    unsigned int j=0;
-                    while((!insideMask) && (j<masks.size()))
-                    {
-                        insideMask=masks[j].isInside(hugin_utils::FDiff2D(cp.x2,cp.y2));
-                        j++;
-                    };
-                };
-            };
-            if(insideMask)
-                cps.insert(i);
-        };
-        if(cps.size()>0)
-        {
-            GlobalCmdHist::getInstance().addCommand(
-                        new PT::RemoveCtrlPointsCmd(pano,cps)
-                        );
-        };
+        GlobalCmdHist::getInstance().addCommand(
+                    new PT::RemoveCtrlPointsCmd(pano,cps)
+                    );
+        wxMessageBox(wxString::Format(_("Removed %d control points"), cps.size()), 
+                   _("Removing control points in masks"),wxOK|wxICON_INFORMATION,this);
     };
-    wxMessageBox(wxString::Format(_("Removed %d control points"), cps.size()), 
-                 _("Removing control points in masks"),wxOK|wxICON_INFORMATION,this);
 }
 
 void MainFrame::OnUndo(wxCommandEvent & e)
@@ -1583,6 +1616,11 @@ void MainFrame::ShowCtrlPointEditor(unsigned int img1, unsigned int img2)
     cpe->setRightImage(img2);
 }
 
+void MainFrame::ShowStitcherTab()
+{
+    ///@todo Stop using magic numbers for the tabs.
+    m_notebook->SetSelection(8);
+}
 
 /** update the display */
 void MainFrame::updateProgressDisplay()
@@ -1797,6 +1835,35 @@ void MainFrame::OnFullScreen(wxCommandEvent & e)
     GetToolBar()->Show(true);
 #endif
 };
+
+struct celeste::svm_model* MainFrame::GetSVMModel()
+{
+    if(svmModel==NULL)
+    {
+        // determine file name of SVM model file
+        // get XRC path from application
+        wxString wxstrModelFileName = huginApp::Get()->GetDataPath() + wxT(HUGIN_CELESTE_MODEL);
+        // convert wxString to string
+        string strModelFileName(wxstrModelFileName.mb_str(HUGIN_CONV_FILENAME));
+				
+        // SVM model file
+        if (! wxFile::Exists(wxstrModelFileName) ) {
+            wxMessageBox(wxString::Format(_("Celeste model expected in %s not found, Hugin needs to be properly installed."),wxstrModelFileName.c_str()), _("Fatal Error"));
+            return NULL;
+        }
+        if(!celeste::loadSVMmodel(svmModel,strModelFileName))
+        {
+            wxMessageBox(wxString::Format(_("Could not load Celeste model file %s"),wxstrModelFileName.c_str()),_("Error"));
+            svmModel=NULL;
+        };
+    }
+    return svmModel;
+};
+
+GLPreviewFrame * MainFrame::getGLPreview()
+{
+    return gl_preview_frame;
+}
 
 MainFrame * MainFrame::m_this = 0;
 

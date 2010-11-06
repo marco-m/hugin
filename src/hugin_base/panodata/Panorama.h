@@ -307,6 +307,10 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         /** return all control points for a given image. */
         std::vector<unsigned int> getCtrlPointsForImage(unsigned int imgNr) const;
         
+        /** return a vector of std::pairs with global ctrl point nr and ControlPoint 
+         *  In the class ControlPoint the image with imgNr is always image1 */
+        CPointVector getCtrlPointsVectorForImage(unsigned int imgNr) const;
+
         /** set all control points (Ippei: Is this supposed to be 'add' method?) */
         void setCtrlPoints(const CPVector & points);
         
@@ -316,6 +320,10 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         /** remove a control point.
             */
         void removeCtrlPoint(unsigned int pNr);
+
+        /** removes duplicates control points
+            */
+        void removeDuplicateCtrlPoints();
         
         /** change a control Point.
             */
@@ -532,7 +540,10 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
          * this is necessary after variables of *one* image has changed, 
          * because positive masks have to be updated 
          */
-        void updateMasks();
+        void updateMasks(bool convertPosMaskToNeg=false);
+        /** transfers given mask from image imgNr to all targetImgs
+         */
+        void transferMask(MaskPolygon mask,unsigned int imgNr, const UIntSet targetImgs);
         
         
         // -- Memento interface --

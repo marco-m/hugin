@@ -41,7 +41,6 @@ IF(WIN32)
   INSTALL(FILES ${PANO13_SRC_DIR}/AUTHORS
           ${PANO13_SRC_DIR}/gpl.txt
           ${PANO13_SRC_DIR}/README
-          ${PANO13_SRC_DIR}/TODO
           ${PANO13_SRC_DIR}/doc/Optimize.txt
           ${PANO13_SRC_DIR}/doc/PTblender.readme
           ${PANO13_SRC_DIR}/doc/PTmender.readme
@@ -129,12 +128,12 @@ IF(WIN32)
     )
     FIND_FILE(JPEG_DLL
       NAMES jpeg.dll 
-      PATHS ${SOURCE_BASE_DIR}/jpeg-8a/Release ${SOURCE_BASE_DIR}/jpeg-8/Release
+      PATHS ${SOURCE_BASE_DIR}/jpeg-8b/Release ${SOURCE_BASE_DIR}/jpeg-8a/Release ${SOURCE_BASE_DIR}/jpeg-8/Release
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     FIND_FILE(PNG_DLL
       NAMES libpng14.dll 
-      PATHS ${SOURCE_BASE_DIR}/lpng141/lib ${SOURCE_BASE_DIR}/lpng140/lib
+      PATHS ${SOURCE_BASE_DIR}/lpng142/lib ${SOURCE_BASE_DIR}/lpng141/lib ${SOURCE_BASE_DIR}/lpng140/lib
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     FIND_FILE(ZLIB_DLL
@@ -150,14 +149,17 @@ IF(WIN32)
     )
     FILE(GLOB OPENEXR_DLL ${OPENEXR_BIN_DIR}/*.dll)
     FILE(GLOB BOOST_THREAD_DLL ${Boost_LIBRARY_DIRS}/boost_thread*.dll)
+    FILE(GLOB BOOST_DATE_TIME_DLL ${Boost_LIBRARY_DIRS}/boost_date_time*.dll)
+    FILE(GLOB BOOST_SYSTEM_DLL ${Boost_LIBRARY_DIRS}/boost_system*.dll)
+    FILE(GLOB BOOST_REGEX_DLL ${Boost_LIBRARY_DIRS}/boost_regex*.dll)
     FIND_FILE(EXIV2_DLL 
       NAMES exiv2.dll 
-      PATHS ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/bin/ReleaseDLL ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/bin/ReleaseDLL
+      PATHS ${SOURCE_BASE_DIR}/exiv2-0.20/msvc/bin/ReleaseDLL ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/bin/ReleaseDLL ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/bin/ReleaseDLL
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     FIND_FILE(LIBEXPAT_DLL 
       NAMES libexpat.dll 
-      PATHS ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/bin/ReleaseDLL ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/bin/ReleaseDLL
+      PATHS ${SOURCE_BASE_DIR}/exiv2-0.20/msvc/bin/ReleaseDLL ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/bin/ReleaseDLL ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/bin/ReleaseDLL
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     FIND_FILE(GLEW_DLL
@@ -180,7 +182,8 @@ IF(WIN32)
     FIND_FILE(WXWIDGETS_DLL7 NAMES wxbase28u_xml_vc_custom.dll PATHS ${wxWidgets_LIB_DIR} NO_SYSTEM_ENVIRONMENT_PATH)
 
     INSTALL(FILES ${TIFF_DLL} ${JPEG_DLL} ${PNG_DLL} ${ZLIB_DLL} ${OPENEXR_DLL} 
-        ${BOOST_THREAD_DLL} ${EXIV2_DLL} ${LIBEXPAT_DLL} ${GLEW_DLL} ${GLUT_DLL}
+        ${BOOST_THREAD_DLL} ${BOOST_DATE_TIME_DLL} ${BOOST_SYSTEM_DLL} ${BOOST_REGEX_DLL}
+        ${EXIV2_DLL} ${LIBEXPAT_DLL} ${GLEW_DLL} ${GLUT_DLL}
         ${WXWIDGETS_DLL1} ${WXWIDGETS_DLL2} ${WXWIDGETS_DLL2} ${WXWIDGETS_DLL3}
         ${WXWIDGETS_DLL3} ${WXWIDGETS_DLL4} ${WXWIDGETS_DLL5} ${WXWIDGETS_DLL6}
         ${WXWIDGETS_DLL7}

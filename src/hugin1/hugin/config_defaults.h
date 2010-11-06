@@ -73,6 +73,9 @@
 
 #define HUGIN_LENS_ASSUME_SIMILAR             1l
 
+// smart undo
+#define HUGIN_SMART_UNDO                      0l
+
 // Exiftool
 #define HUGIN_EXIFTOOL_COPY_ARGS                   "-ImageDescription -Make -Model -Artist -WhitePoint -Copyright -GPS:all -DateTimeOriginal -CreateDate -UserComment -ColorSpace -OwnerName -SerialNumber"
 
@@ -133,7 +136,7 @@
 
 #endif
 
-#elif defined unix
+#else // for unix like systems
 
 #define HUGIN_PT_SCRIPTFILE                   "PT_script.txt"
 

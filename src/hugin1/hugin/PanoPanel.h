@@ -152,6 +152,18 @@ public:
 
     /** enable/disable control influenced by quick mode */
     void EnableControls(bool enable);
+    
+    /** Check the canvas size isn't overly huge, or the user knows what they are doing.
+     * The canvas size can become too big if, for example, the field of view is
+     * more than 180 degrees, then you select rectilinear proection, then press
+     * "Calculate optimal size", or stitch a wide stereographic image using the
+     * assistant tab.
+     * If the canvas size is unreasonable, this function will display a warning.
+     * The user has the option to continue.
+     * @return true if the canvas size is reasonable, or the user presses
+     * "continue anyway" on the warning, false if the stitch should be aborted 
+     */
+    bool CheckGoodSize();
 
     // the model
     Panorama * pano;
@@ -188,13 +200,12 @@ public:
     wxButton    * m_CalcOptROIButton;
 
     wxChoice    * m_FileFormatChoice;
-    wxPanel     * m_FileFormatPanelJPEG;
+    wxStaticText* m_FileFormatOptionsLabel;
     wxTextCtrl  * m_FileFormatJPEGQualityText;
-    wxPanel     * m_FileFormatPanelTIFF;
     wxChoice    * m_FileFormatTIFFCompChoice;
 
     wxChoice    * m_HDRFileFormatChoice;
-    wxPanel     * m_HDRFileFormatPanelTIFF;
+    wxStaticText* m_HDRFileFormatLabelTIFFCompression;
     wxChoice    * m_FileFormatHDRTIFFCompChoice;
 
     wxScrolledWindow *m_pano_ctrls;

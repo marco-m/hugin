@@ -408,7 +408,7 @@ void wxLoadPTProjectCmd::execute()
                 // open file dialog
                 wxFileDialog dlg(MainFrame::Get(), _("Add images"),
                                  basedir, fname.GetFullName(),
-                                 HUGIN_WX_FILE_IMG_FILTER, wxOPEN, wxDefaultPosition);
+                                 HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN, wxDefaultPosition);
                 dlg.SetDirectory(basedir);
                 if (dlg.ShowModal() == wxID_OK) {
                     pano.setImageFilename(i, (const char *)dlg.GetPath().mb_str(HUGIN_CONV_FILENAME));
@@ -477,8 +477,8 @@ void wxLoadPTProjectCmd::execute()
             it != oldCPs.end(); ++it)
     {
         PT::ControlPoint point = *it;
-        SrcPanoImage img1 = pano.getSrcImage(point.image1Nr);
-        SrcPanoImage img2 = pano.getSrcImage(point.image2Nr);
+        const SrcPanoImage & img1 = pano.getImage(point.image1Nr);
+        const SrcPanoImage & img2 = pano.getImage(point.image2Nr);
         if (0 > point.x1 || point.x1 > img1.getSize().x || 
             0 > point.y1 || point.y1 > img1.getSize().y ||
             0 > point.x2 || point.x2 > img2.getSize().x || 
@@ -500,6 +500,10 @@ void wxLoadPTProjectCmd::execute()
 
     // Update control point error values
     HuginBase::PTools::calcCtrlPointErrors(pano);
+    if(markAsOptimized)
+    {
+        pano.markAsOptimized();
+    };
     pano.changeFinished();
 }
 
@@ -519,7 +523,7 @@ void wxApplyTemplateCmd::execute()
         wxString path = config->Read(wxT("actualPath"), wxT(""));
         wxFileDialog dlg(MainFrame::Get(), _("Add images"),
                 path, wxT(""),
-                HUGIN_WX_FILE_IMG_FILTER, wxOPEN|wxMULTIPLE , wxDefaultPosition);
+                HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN|wxFD_MULTIPLE , wxDefaultPosition);
         dlg.SetDirectory(path);
 
         // remember the image extension
@@ -601,7 +605,7 @@ void wxApplyTemplateCmd::execute()
         for (unsigned int i = 0; i < nNewImg; i++) {
 
             // check if image size is correct
-            SrcPanoImage oldSrcImg = pano.getSrcImage(i);
+            const SrcPanoImage & oldSrcImg = pano.getImage(i);
             SrcPanoImage newSrcImg = newPano.getSrcImage(i);
 
             // just keep the file name

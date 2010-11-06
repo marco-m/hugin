@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file PanoramaDataLegacySupport.h
+/** @file CalculateOptimalROI.h
  *
  *  @author <cnidarian>
  *
@@ -21,25 +21,20 @@
  *
  */
 
-
 #ifndef _BASICALGORITHMS_CALCULATEOPTIMALROI_H
 #define _BASICALGORITHMS_CALCULATEOPTIMALROI_H
 
-
 #include <hugin_shared.h>
 #include <panotools/PanoToolsInterface.h>
-
 #include <algorithm/PanoramaAlgorithm.h>
-
 #include <panodata/PanoramaData.h>
 
+#include <boost/dynamic_bitset.hpp>
 
 namespace HuginBase {
 
-
 class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
 {
-
     public:
         ///
         CalculateOptimalROI(PanoramaData& panorama)
@@ -53,7 +48,6 @@ class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
         ///
         virtual ~CalculateOptimalROI()
         {}
-        
         
     public:
         ///
@@ -71,13 +65,6 @@ class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
     public:
         ///
         bool calcOptimalROI(PanoramaData& panorama);
-        
-        /** Find the largest area of ROI such that there is no excess
-         */
-        vigra::Rect2D calcOutsideBox(int imgnum, const SrcPanoImage & src,
-                                           const PanoramaOptions & dest);
-        void drawOutputRegion(int imgnum, unsigned char *tmp, const SrcPanoImage & src,
-                                           const PanoramaOptions & dest);
         
         /// return the ROI structure?, for now area
         virtual vigra::Rect2D getResultOptimalROI()
@@ -97,16 +84,17 @@ class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
         }
 
 
-    protected:
+    private:
         vigra::Rect2D o_optimalROI;
         vigra::Size2D o_optimalSize;
         
-        int totImages;
-        PTools::Transform *transfList;
-        //in case input images are different sizes
-        vigra::Size2D *imgSizeList;
+        UIntSet activeImages;
+        std::map<unsigned int,PTools::Transform*> transfMap;
+        //map for storing already tested pixels
+        boost::dynamic_bitset<> testedPixels;
+        boost::dynamic_bitset<> pixels;
         
-        int imgPixel(unsigned char *img,int i, int j);
+        bool imgPixel(int i, int j);
         
         //local stuff, convert over later
         struct nonrec
@@ -116,12 +104,10 @@ class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
         };
 
         void makecheck(int left,int top,int right,int bottom);
-        int autocrop(unsigned char *img);
-        void nonreccheck(unsigned char *img,int left,int top,int right,int bottom,int acc,int dodouble);
+        int autocrop();
+        void nonreccheck(int left,int top,int right,int bottom,int acc,int dodouble);
         
-
         int count;
-        int total;
         struct nonrec *begin;
         struct nonrec *head;
         struct nonrec *tail;
@@ -129,10 +115,8 @@ class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
         struct nonrec min;
         struct nonrec max;
 
-        int maxvalue;
-        
+        long maxvalue;
 };
-
 
 } //namespace
 #endif

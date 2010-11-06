@@ -16,7 +16,7 @@ project(hugin)
 
 # version
 set(V_MAJOR 2010)
-set(V_MINOR 1)
+set(V_MINOR 3)
 set(V_PATCH 0)
 
 #
@@ -53,6 +53,19 @@ ELSE()
   MESSAGE("-- Assuming this is a tarball (release) build for ${HUGIN_PACKAGE_VERSION}")
   SET(HUGIN_DEVELOPMENT_VERSION 0)
 ENDIF()
+
+#
+# Check for mercurial and update changelog
+#
+IF (EXISTS ${PROJECT_SOURCE_DIR}/.hg)
+  IF (UPDATE_CHANGELOG)
+   FIND_PROGRAM(_hg hg)
+   EXECUTE_PROCESS(COMMAND ${_hg} log --follow --style=changelog
+   WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+   OUTPUT_FILE ${PROJECT_SOURCE_DIR}/ChangeLog)
+   MESSAGE("-- New ChangeLog generated")
+  ENDIF (UPDATE_CHANGELOG)
+ENDIF (EXISTS ${PROJECT_SOURCE_DIR}/.hg)
 
 # version to display
 IF (HUGIN_DEVELOPMENT_VERSION EQUAL 1)
@@ -195,7 +208,7 @@ ENDIF(GLEW_FOUND)
 ## Panotools
 ##
 
-FIND_PACKAGE(PANO13)
+FIND_PACKAGE(PANO13 2.9.17 REQUIRED)
 
 IF(PANO13_FOUND)
   SET(PANO_LIBRARIES ${PANO13_LIBRARIES})
@@ -231,9 +244,13 @@ IF(WIN32)
     set(BOOST_ROOT ${SOURCE_BASE_DIR}/boost${Boost_root_suffix}) 
    endif(NOT BOOST_ROOT AND NOT $ENV{BOOST_ROOT} STREQUAL "") 
 ENDIF(WIN32)
-FIND_PACKAGE(Boost COMPONENTS thread)
+FIND_PACKAGE(Boost 1.34 COMPONENTS thread date_time regex filesystem iostreams system signals)
 IF (NOT Boost_FOUND)
-  MESSAGE(FATAL_ERROR "boost not found. Bad BOOST_ROOT? On windows, try editing Boost_root_suffix")
+  IF(WIN32)
+    MESSAGE(FATAL_ERROR "Boost not found. Bad BOOST_ROOT? On windows, try editing Boost_root_suffix")
+  ELSE()
+    MESSAGE(FATAL_ERROR "Boost not found. Maybe wrong version. Hugin requires at least version 1.34")
+  ENDIF()
 ENDIF (NOT Boost_FOUND)
 
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
@@ -302,7 +319,7 @@ SET(BINDIR  bin)
 
 IF (NOT MANDIR AND NOT $ENV{MANDIR} STREQUAL "")
     SET (MANDIR "$ENV{MANDIR}")
-ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD" OR CMAKE_SYSTEM_NAME STREQUAL "NetBSD")
     SET (MANDIR "man")
 ELSE(NOT MANDIR AND NOT $ENV{MANDIR} STREQUAL "")
     SET (MANDIR "share/man")
@@ -323,12 +340,22 @@ IF (APPLE)
       SET(INSTALL_OSX_BUNDLE_DIR /Applications/MacPorts CACHE DOCSTRING "Install directory Hugin and HuginStitchProject application bundles")
     ELSE(CMAKE_INSTALL_PREFIX STREQUAL "/opt/local")
       # fink or other custom system.
-      SET(INSTALL_OSX_BUNDLE_DIR ${CMAKE_INSTALL_PREFIX}/Application CACHE DOCSTRING "Install directory Hugin and HuginStitchProject application bundles")
+      SET(INSTALL_OSX_BUNDLE_DIR ${CMAKE_INSTALL_PREFIX}/Applications CACHE DOCSTRING "Install directory Hugin and HuginStitchProject application bundles")
     ENDIF(CMAKE_INSTALL_PREFIX STREQUAL "/opt/local")
     MESSAGE("*** Will install application bundles in ${INSTALL_OSX_BUNDLE_DIR}, set INSTALL_OSX_BUNDLE_DIR to change the location")
   ENDIF (NOT MAC_SELF_CONTAINED_BUNDLE)
 ENDIF (APPLE)
 
+IF (${HUGIN_SHARED} AND UNIX AND NOT APPLE)
+  SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBDIR}/hugin")
+  SET(HUGIN_LIBS_PRIVATE_DIR "1" CACHE INTERNAL "Store internal
+    libraries in private subdirectory" )
+ELSE (${HUGIN_SHARED} AND UNIX AND NOT APPLE)
+  # On OS X files are moved around after make install, do not try to use
+  # rpath or CMAKE_INSTALL_NAME_DIR
+  SET(HUGIN_LIBS_PRIVATE_DIR "0" CACHE INTERNAL "Store internal
+    libraries in private subdirectory" )
+ENDIF (${HUGIN_SHARED} AND UNIX AND NOT APPLE)
 
 IF (UNIX)
   IF (${HUGIN_SHARED})
@@ -410,6 +437,7 @@ IF (APPLE)
 	 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  -flat_namespace -undefined suppress" )
 	 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}  -flat_namespace -undefined suppress" )
 	 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}  -flat_namespace -undefined suppress" )
+         SET (CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib" )
 	 IF (${CMAKE_BUILD_TYPE} STREQUAL "Release")
 		SET (CMAKE_C_FLAGS_RELEASE:STRING " $CMAKE_C_FLAGS_RELEASE ")
 		SET (CMAKE_CXX_FLAGS_RELEASE:STRING " $CMAKE_CXX_FLAGS_RELEASE ")
@@ -495,7 +523,10 @@ SET(CPACK_SOURCE_IGNORE_FILES
 "Makefile\\\\.in$"
 "/\\\\.hg/"
  )
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libpano13 (>=2.9.15)")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libpano13(>=2.9.17)")
+# one day we'll get these to work right
+#SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libpano13(>=2.9.17), libpost2c2, libglew(>=1.5), freeglut3, libboost-filesystem(>=1.38.0), liblcms1, libopenexr6, libtiff4")
+SET(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/Debian/postinst")
 INCLUDE(CPack)
 
 ##

@@ -45,37 +45,50 @@ using namespace hugin_utils;
 
 bool MaskPolygon::isInside(const FDiff2D p) const
 {
-    // implemented Galacticomm's inpoly()
-    // described in an article by Bob Stein in the March '97 issue of Linux Journal.
-    // http://www.visibone.com/inpoly/inpoly.c.txt
-    FDiff2D pNew;
-    FDiff2D pOld;
-    FDiff2D p1;
-    FDiff2D p2;
+    int wind=getWindingNumber(p);
+    if(m_invert)
+        return wind==0;
+    else
+        return wind!=0;
+};
 
-    bool inside=false;
+int MaskPolygon::getWindingNumber(const FDiff2D p) const
+{
     if(m_polygon.size()<3)
-        return false;
-    pOld=m_polygon[m_polygon.size()-1];
+        return 0;
+    int wind=0;
+    FDiff2D a=m_polygon[m_polygon.size()-1];
     for(unsigned int i=0;i<m_polygon.size();i++)
     {
-        pNew=m_polygon[i];
-        if(pNew.x>pOld.x)
+        FDiff2D b=m_polygon[i];
+        if(a.y<=p.y)
         {
-            p1=pOld;
-            p2=pNew;
+            if(b.y>p.y)
+                if((b.x-a.x)*(p.y-a.y)<(p.x-a.x)*(b.y-a.y))
+                    wind++;
         }
         else
         {
-            p1=pNew;
-            p2=pOld;
+            if(b.y<=p.y)
+                if((b.x-a.x)*(p.y-a.y)>(p.x-a.x)*(b.y-a.y))
+                    wind--;
         };
-        if((pNew.x<p.x)==(p.x<=pOld.x)
-            && (p.y-p1.y)*(p2.x-p1.x) < (p2.y-p1.y)*(p.x-p1.x))
-            inside=!inside;
-        pOld=pNew;
+        a=b;
     };
-    return inside;
+    return wind;
+};
+
+int MaskPolygon::getTotalWindingNumber() const
+{
+    if(m_polygon.size()<2)
+        return 0;
+    MaskPolygon diffPoly;
+    unsigned int count=m_polygon.size();
+    for(unsigned int i=0;i<count;i++)
+    {
+        diffPoly.addPoint(m_polygon[(i+1)%count]-m_polygon[i]);
+    };
+    return diffPoly.getWindingNumber(FDiff2D(0,0));
 };
 
 void MaskPolygon::addPoint(const FDiff2D p) 
@@ -127,10 +140,41 @@ void MaskPolygon::scale(const double factorx,const double factory)
 void MaskPolygon::transformPolygon(const PTools::Transform &trans)
 {
     double xnew,ynew;
+    VectorPolygon newPoly;
     for(unsigned int i=0;i<m_polygon.size();i++)
     {
-        trans.transformImgCoord(xnew,ynew,m_polygon[i].x,m_polygon[i].y);
-        m_polygon[i]=FDiff2D(xnew,ynew);
+        if(trans.transformImgCoord(xnew,ynew,m_polygon[i].x,m_polygon[i].y))
+        {
+            newPoly.push_back(FDiff2D(xnew,ynew));
+        };
+    };
+    m_polygon=newPoly;
+};
+
+void MaskPolygon::subSample(const double max_distance)
+{
+    if(m_polygon.size()<3)
+        return;
+    VectorPolygon oldPoly=m_polygon;
+    unsigned int count=oldPoly.size();
+    m_polygon.clear();
+    for(unsigned int i=0;i<count;i++)
+    {
+        addPoint(oldPoly[i]);
+        FDiff2D p1=oldPoly[i];
+        FDiff2D p2=oldPoly[(i+1)%count];
+        double distance=norm(p2-p1);
+        if(distance>max_distance)
+        {
+            //add intermediate points
+            double currentDistance=max_distance;
+            while(currentDistance<distance)
+            {
+                FDiff2D p_new=p1+(p2-p1)*currentDistance/distance;
+                addPoint(p_new);
+                currentDistance+=max_distance;
+            };
+        };
     };
 };
 
@@ -199,6 +243,7 @@ MaskPolygon &MaskPolygon::operator=(const MaskPolygon otherPoly)
     setMaskType(otherPoly.getMaskType());
     setMaskPolygon(otherPoly.getMaskPolygon());
     setImgNr(otherPoly.getImgNr());
+    setInverted(otherPoly.isInverted());
     return *this;
 };
 
@@ -227,15 +272,7 @@ bool MaskPolygon::parsePolygonString(const std::string polygonStr)
 void MaskPolygon::printPolygonLine(std::ostream &o, const unsigned int newImgNr) const
 {
     o<<"k i"<<newImgNr<<" ";
-    switch(m_maskType)
-    {
-    case Mask_negative:
-        o<<"t0 ";
-        break;
-    case Mask_positive:
-        o<<"t1 ";
-        break;
-    };
+    o<<"t"<<(int)m_maskType<<" ";
     o<<"p\"";
     for(unsigned int i=0; i<m_polygon.size(); i++)
     {

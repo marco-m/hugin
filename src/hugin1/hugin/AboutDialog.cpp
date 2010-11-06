@@ -81,19 +81,27 @@ AboutDialog::AboutDialog(wxWindow *parent)
 	// License
 	textCtrl = XRCCTRL(*this, "license_txt", wxTextCtrl);
     strFile = huginApp::Get()->GetXRCPath() + wxT("data/COPYING");
+#ifndef _WINDOWS
 	textCtrl->SetFont(font);
+#endif
 	textCtrl->LoadFile(strFile);
 
 	// About
 	textCtrl = XRCCTRL(*this, "about_txt", wxTextCtrl);
+#ifndef _WINDOWS
+    textCtrl->SetFont(font);
+#endif
     strFile = huginApp::Get()->GetXRCPath() + wxT("data/about.txt");
 	textCtrl->LoadFile(strFile);
 
 	// Upstream
 	textCtrl = XRCCTRL(*this, "upstream_txt", wxTextCtrl);
     strFile = huginApp::Get()->GetXRCPath() + wxT("data/upstream.txt");
+#ifndef _WINDOWS
 	textCtrl->SetFont(font);
+#endif
 	textCtrl->LoadFile(strFile);
+    GetSystemInformation(&font);
 
     // load the appropriate icon (.ico for Windows, .png for other systems)
 #ifdef __WXMSW__
@@ -118,4 +126,61 @@ AboutDialog::~AboutDialog()
 void AboutDialog::OnAboutMe(wxCommandEvent & e)
 {
     return;
+}
+
+void AboutDialog::GetSystemInformation(wxFont *font)
+{
+    wxTextCtrl* infoText=XRCCTRL(*this,"system_txt",wxTextCtrl);
+#ifndef _WINDOWS
+    infoText->SetFont(*font);
+#endif
+    wxString text;
+    text=wxString::Format(_("Operating System: %s"),wxGetOsDescription().c_str());
+    wxString is64;
+    if(wxIsPlatform64Bit())
+        is64=_("64 bit");
+    else
+        is64=_("32 bit");
+    text=text+wxT("\n")+wxString::Format(_("Architecture: %s"),is64.c_str());
+    // wxGetFreeMemory returns a wxMemorySize, which is undocumented.
+    // However, we know -1 is returned on failure, so it must be signed.
+    text=text+wxT("\n")+wxString::Format(_("Free memory: %ld kiB"),(long int) wxGetFreeMemory().GetValue()/1024);
+#ifdef _WINDOWS
+    UINT cp=GetACP();
+    text=text+wxT("\n")+wxString::Format(_("Active Codepage: %u"),cp); 
+    switch(cp)
+    {
+    case 1250:
+        text=text+wxT(" (Central European Windows)");
+        break;
+    case 1251:
+        text=text+wxT(" (Cyrillic Windows)");
+        break;
+    case 1252:
+        text=text+wxT(" (Western European Windows)");
+        break;
+    case 1253:
+        text=text+wxT(" (Greek Windows)");
+        break;
+    case 1254:
+        text=text+wxT(" (Turkish Windows)");
+        break;
+    case 1255:
+        text=text+wxT(" (Hebrew Windows)");
+        break;
+    case 1256:
+        text=text+wxT(" (Arabic Windows)");
+        break;
+    case 1257:
+        text=text+wxT(" (Baltic Windows)");
+        break;
+    case 1258:
+        text=text+wxT(" (Vietnamese Windows)");
+        break;
+    };
+#endif
+    text=text+wxT("\n\nHugin\n")+wxString::Format(_("Version: %s"),wxString(DISPLAY_VERSION,wxConvLocal).c_str());
+    text=text+wxT("\n")+wxString::Format(_("Path to ressources: %s"),huginApp::Get()->GetXRCPath().c_str());
+    text=text+wxT("\n")+wxString::Format(_("Path to data: %s"),huginApp::Get()->GetDataPath().c_str());
+    infoText->SetValue(text);
 }

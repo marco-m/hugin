@@ -51,6 +51,10 @@ public:
     void calculate(unsigned int steps);
     /** returns the overlap for 2 images with number i and j */
     double getOverlap(unsigned int i, unsigned int j);
+    /** limits the calculation of the overlap to given image numbers */
+    void limitToImages(UIntSet img);
+    /** returns a set of images which overlap with given image number */
+    UIntSet getOverlapForImage(unsigned int i);
 
 private:
     std::vector<std::vector<double> > m_overlap;
@@ -58,6 +62,7 @@ private:
     std::vector<PTools::Transform*> m_invTransform;
     unsigned int m_nrImg;
     const PanoramaData* m_pano;
+    UIntSet testImages;
 };
 
 } //namespace

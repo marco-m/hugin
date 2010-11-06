@@ -27,6 +27,8 @@
 #include "BatchFrame.h"
 #include <wx/stdpaths.h>
 #include "PTBatcherGUI.h"
+#include "FindPanoDialog.h"
+#include "FailedProjectsDialog.h"
 
 /* file drag and drop handler method */
 bool BatchDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
@@ -77,6 +79,7 @@ BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
 	EVT_MENU(XRCID("menu_add"),BatchFrame::OnButtonAddToList)
 	EVT_MENU(XRCID("menu_remove"),BatchFrame::OnButtonRemoveFromList)
 	EVT_MENU(XRCID("menu_adddir"),BatchFrame::OnButtonAddDir)
+    EVT_MENU(XRCID("menu_searchpano"), BatchFrame::OnButtonSearchPano)
 	EVT_MENU(XRCID("menu_open"),BatchFrame::OnButtonOpenBatch)
 	EVT_MENU(XRCID("menu_save"),BatchFrame::OnButtonSaveBatch)
 	EVT_MENU(XRCID("menu_clear"),BatchFrame::OnButtonClear)
@@ -99,6 +102,7 @@ BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
 	EVT_CLOSE(BatchFrame::OnClose)
 	EVT_MENU(wxEVT_COMMAND_RELOAD_BATCH, BatchFrame::OnReloadBatch)
 	EVT_MENU(wxEVT_COMMAND_UPDATE_LISTBOX, BatchFrame::OnUpdateListBox)
+    EVT_COMMAND(wxID_ANY, EVT_BATCH_FAILED, BatchFrame::OnBatchFailed)
 END_EVENT_TABLE()
 
 BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
@@ -140,7 +144,14 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
 	projListBox = XRCCTRL(*this,"project_listbox",ProjectListBox);
 	
 	//projListMutex = new wxMutex();
+	//wxThreadHelper::Create is deprecated in wxWidgets 2.9+, but its
+	// replacement, CreateThread, does not exist in 2.8. Pick one
+	// depending on the version to a avoid compiler warning(2.9) or error(2.8).
+#if wxCHECK_VERSION(2, 9, 0)
+    this->wxThreadHelper::CreateThread();
+#else
 	this->wxThreadHelper::Create();
+#endif
 	//wxMessageBox( _T("B"),_T("B"),wxOK | wxICON_INFORMATION );
 	this->GetThread()->Run();
 	//TO-DO: include a batch or project progress gauge?
@@ -255,29 +266,32 @@ void BatchFrame::OnUpdateListBox(wxCommandEvent &event)
 	bool change = false;
 	for(int i = 0; i< m_batch->GetProjectCount(); i++)
 	{
-		if(m_batch->GetProject(i)->id >= 0)
+        if(m_batch->GetProject(i)->id >= 0)
 		{
 			tempFile.Assign(m_batch->GetProject(i)->path);
 			if(tempFile.FileExists())
 			{
-				wxDateTime modify;
-				modify=tempFile.GetModificationTime();
+                wxDateTime modify;
+	    		modify=tempFile.GetModificationTime();
 				if(m_batch->GetProject(i)->skip)
-				{
-					change = true;
-					m_batch->GetProject(i)->skip = false;
+		    	{
+			    	change = true;
+				    m_batch->GetProject(i)->skip = false;
 					m_batch->SetStatus(i,Project::WAITING);
-					projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
-				}
+	    			projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
+		    	}
 				else if(!modify.IsEqualTo(m_batch->GetProject(i)->modDate))
-				{
-					change = true;
-					m_batch->GetProject(i)->modDate = modify;
-					m_batch->GetProject(i)->ResetOptions();
-					m_batch->SetStatus(i,Project::WAITING);
-					projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
-				}
-			}
+			    {
+				    change = true;
+    				m_batch->GetProject(i)->modDate = modify;
+	    			m_batch->GetProject(i)->ResetOptions();
+		    		if(m_batch->GetProject(i)->target==Project::STITCHING)
+                    {
+                        m_batch->SetStatus(i,Project::WAITING);
+                    };
+		    		projListBox->ReloadProject(projListBox->GetIndex(m_batch->GetProject(i)->id),m_batch->GetProject(i));
+			    }
+            }
 			else
 			{
 				if(m_batch->GetStatus(i) != Project::MISSING)
@@ -345,6 +359,13 @@ void BatchFrame::OnButtonAddDir(wxCommandEvent &event)
 			//wxLogError( _("No project files specified"));
 	} 
 }
+
+void BatchFrame::OnButtonSearchPano(wxCommandEvent &e)
+{
+    FindPanoDialog findpano_dlg(this,m_xrcPrefix);
+    findpano_dlg.ShowModal();
+};
+
 void BatchFrame::OnButtonAddToList(wxCommandEvent &event)
 {
 	wxString defaultdir = wxConfigBase::Get()->Read(wxT("/BatchFrame/actualPath"),wxT(""));
@@ -386,12 +407,13 @@ void BatchFrame::AddDirToList(wxString aDir)
 	SetStatusText(_("Added projects from dir ")+aDir);
 };
 
-void BatchFrame::AddToList(wxString aFile)
+void BatchFrame::AddToList(wxString aFile,Project::Target target)
 {
 	wxFileName name(aFile);
-	m_batch->AddProjectToBatch(aFile,name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + name.GetName());
+	m_batch->AddProjectToBatch(aFile,name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + name.GetName(),target);
 	SetStatusText(_("Added project ")+aFile);
 	projListBox->AppendProject(m_batch->GetProject(m_batch->GetProjectCount()-1));
+    m_batch->SaveTemp();
 }
 
 
@@ -406,25 +428,33 @@ void BatchFrame::OnButtonChangePrefix(wxCommandEvent &event)
 	int selIndex = projListBox->GetSelectedIndex();
 	if(selIndex != -1)
 	{
-		wxFileName prefix(projListBox->GetSelectedProjectPrefix());
-		wxFileDialog dlg(0,_("Specify output prefix for project ")+projListBox->GetSelectedProject(),
-                     prefix.GetPath(),
-                     prefix.GetFullName(), wxT(""),
-                     wxSAVE, wxDefaultPosition);
-		if (dlg.ShowModal() == wxID_OK)
-		{
-            while(containsInvalidCharacters(dlg.GetPath()))
-            {
-                wxMessageBox(wxString::Format(_("The given filename contains one of the following invalid characters: %s\nHugin can not work with this filename. Please enter a valid filename."),getInvalidCharacters().c_str()),
-                    _("Error"),wxOK | wxICON_EXCLAMATION,this);
-                if(dlg.ShowModal()!=wxID_OK)
-                    return;
-            };
-			wxString outname(dlg.GetPath());
-			ChangePrefix(selIndex,outname);
-			//SetStatusText(_T("Changed prefix for "+projListBox->GetSelectedProject()));
-			m_batch->SaveTemp();
-		}
+        if(projListBox->GetSelectedProjectTarget()==Project::STITCHING)
+        {
+		    wxFileName prefix(projListBox->GetSelectedProjectPrefix());
+    		wxFileDialog dlg(0,_("Specify output prefix for project ")+projListBox->GetSelectedProject(),
+                         prefix.GetPath(),
+                         prefix.GetFullName(), wxT(""),
+                         wxFD_SAVE, wxDefaultPosition);
+    		if (dlg.ShowModal() == wxID_OK)
+	    	{
+                while(containsInvalidCharacters(dlg.GetPath()))
+                {
+                    wxMessageBox(wxString::Format(_("The given filename contains one of the following invalid characters: %s\nHugin can not work with this filename. Please enter a valid filename."),getInvalidCharacters().c_str()),
+                        _("Error"),wxOK | wxICON_EXCLAMATION,this);
+                    if(dlg.ShowModal()!=wxID_OK)
+                        return;
+                };
+			    wxString outname(dlg.GetPath());
+    			ChangePrefix(selIndex,outname);
+	    		//SetStatusText(_T("Changed prefix for "+projListBox->GetSelectedProject()));
+		    	m_batch->SaveTemp();
+		    }
+        }
+        else
+        {
+            SetStatusText(_("The prefix of an assistant target can not be changed."));
+            wxBell();
+        };
 	}
 	else
 	{
@@ -519,7 +549,7 @@ void BatchFrame::OnButtonOpenBatch(wxCommandEvent &event)
                      _("Specify batch file to open"),
                      defaultdir, wxT(""),
                      _("Batch files (*.ptb)|*.ptb;|All files (*)|*"),
-                     wxOPEN, wxDefaultPosition);
+                     wxFD_OPEN, wxDefaultPosition);
 	if (dlg.ShowModal() == wxID_OK) 
 	{
 		wxConfig::Get()->Write(wxT("/BatchFrame/batchPath"), dlg.GetDirectory());  // remember for later
@@ -553,7 +583,12 @@ void BatchFrame::OnButtonOpenWithHugin(wxCommandEvent &event)
 	else
 	{
 		//ask user if he/she wants to load an empty project
-		wxMessageDialog message(this,_("No project selected. Open Hugin without project?"), _("Question"),
+		wxMessageDialog message(this,_("No project selected. Open Hugin without project?"), 
+#ifdef _WINDOWS
+                  _("PTBatcherGUI"),
+#else
+                  wxT(""),
+#endif
                   wxYES | wxNO | wxICON_INFORMATION );
 		if(message.ShowModal() == wxID_YES) {
 #ifdef __WXMAC__
@@ -601,8 +636,13 @@ void BatchFrame::OnButtonRemoveComplete(wxCommandEvent &event)
 	bool removeErrors=false;
 	if(!m_batch->NoErrors())
 	{
-		wxMessageDialog message(this,_("There are failed projects in the list.\nRemove them also?"), _("Question"),
-										wxYES | wxNO | wxICON_INFORMATION );
+		wxMessageDialog message(this,_("There are failed projects in the list.\nRemove them also?"), 
+#ifdef _WINDOWS
+                _("PTBatcherGUI"),
+#else
+                wxT(""),
+#endif
+                wxYES | wxNO | wxICON_INFORMATION );
 		if(message.ShowModal()==wxID_YES)
 			removeErrors=true;
 	}
@@ -629,7 +669,13 @@ void BatchFrame::OnButtonRemoveFromList(wxCommandEvent &event)
 	{
 		if(m_batch->GetStatus(selIndex)==Project::RUNNING || m_batch->GetStatus(selIndex)==Project::PAUSED)
 		{
-			wxMessageDialog message(this, _("Cannot remove project in progress.\nDo you want to cancel it?"), _("In progress"), wxYES | wxCANCEL | wxICON_INFORMATION);
+			wxMessageDialog message(this, _("Cannot remove project in progress.\nDo you want to cancel it?"), 
+#ifdef _WINDOWS
+                _("PTBatcherGUI"),
+#else
+                wxT(""),
+#endif
+                wxYES | wxCANCEL | wxICON_INFORMATION);
 			if(message.ShowModal()==wxID_YES)
 			{
 				OnButtonSkip(event);
@@ -657,7 +703,13 @@ void BatchFrame::OnButtonReset(wxCommandEvent &event)
 	{
 		if(m_batch->GetStatus(selIndex)==Project::RUNNING || m_batch->GetStatus(selIndex)==Project::PAUSED)
 		{
-			wxMessageDialog message(this, _("Cannot reset project in progress.\nDo you want to cancel it?"), _("In progress"), wxYES | wxCANCEL | wxICON_INFORMATION);
+			wxMessageDialog message(this, _("Cannot reset project in progress.\nDo you want to cancel it?"), 
+#ifdef _WINDOWS
+                _("PTBatcherGUI"),
+#else
+                wxT(""),
+#endif
+                wxYES | wxCANCEL | wxICON_INFORMATION);
 			if(message.ShowModal()==wxID_YES)
 			{
 				OnButtonSkip(event);
@@ -678,7 +730,13 @@ void BatchFrame::OnButtonResetAll(wxCommandEvent &event)
 {
 	if(m_batch->GetRunningCount()!=0)
 	{
-		wxMessageDialog message(this, _("Cannot reset projects in progress.\nDo you want to cancel the batch?"), _("In progress"), wxYES | wxCANCEL | wxICON_INFORMATION);
+		wxMessageDialog message(this, _("Cannot reset projects in progress.\nDo you want to cancel the batch?"), 
+#ifdef _WINDOWS
+                _("PTBatcherGUI"),
+#else
+                wxT(""),
+#endif
+                wxYES | wxCANCEL | wxICON_INFORMATION);
 		if(message.ShowModal()==wxID_YES)
 			OnButtonCancel(event);
 	}
@@ -707,7 +765,7 @@ void BatchFrame::OnButtonSaveBatch(wxCommandEvent &event)
                      _("Specify batch file to save"),
                      defaultdir, wxT(""),
                      _("Batch file (*.ptb)|*.ptb;|All files (*)|*"),
-                     wxSAVE, wxDefaultPosition);
+                     wxFD_SAVE, wxDefaultPosition);
 	if (dlg.ShowModal() == wxID_OK) 
 	{
 		wxConfig::Get()->Write(wxT("/BatchFrame/batchPath"), dlg.GetDirectory());  // remember for later
@@ -1033,3 +1091,10 @@ void BatchFrame::RestoreSize()
 	if(max)
 		this->Maximize();
 }
+
+void BatchFrame::OnBatchFailed(wxCommandEvent &event)
+{
+    FailedProjectsDialog failedProjects_dlg(this,m_batch,m_xrcPrefix);
+    failedProjects_dlg.ShowModal();
+
+};

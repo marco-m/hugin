@@ -36,6 +36,9 @@
 #include "hugin/OptimizePanel.h"
 #include "hugin/PreferencesDialog.h"
 
+// Celeste header
+#include "Celeste.h"
+
 using namespace PT;
 
 // forward declarations, to save the #include statements
@@ -89,22 +92,10 @@ public:
      */
     virtual ~MainFrame();
 
-    /** this is called whenever the panorama has changed.
-     *
-     *  This function must now update all the gui representations
-     *  of the panorama to display the new state.
-     *
-     *  Functions that change the panororama must not update
-     *  the GUI directly. The GUI should always be updated
-     *  to reflect the current panorama state in this function.
-     *
-     *  This avoids unnessecary close coupling between the
-     *  controller and the view (even if they sometimes
-     *  are in the same object). See model view controller
-     *  pattern.
-     *
+    /** Enable or disable undo and redo.
+     *  They should be enabled only when there is a command to act upon.
      */
-// virtual void panoramaChanged(PT::Panorama &pano);
+    virtual void panoramaChanged(PT::Panorama &pano);
     void panoramaImagesChanged(PT::Panorama &pano, const PT::UIntSet & imgNr);
 
     // called when a control point in CPListFrame is selected
@@ -142,9 +133,12 @@ public:
     void OnToggleGLPreviewFrame(wxCommandEvent & e);
     void OnAddImages(wxCommandEvent & e);
     void OnSaveProject(wxCommandEvent & e);
+    /** call help browser with given file */
+    void DisplayHelp(wxString section);
 
 
     void ShowCtrlPointEditor(unsigned int img1, unsigned int img2);
+    void ShowStitcherTab();
 
     void resetProgress(double max);
     bool increaseProgress(double delta);
@@ -156,6 +150,10 @@ public:
     CPDetectorSetting& GetDefaultSetting();
 
     wxString getProjectName();
+
+    struct celeste::svm_model* GetSVMModel();
+    
+    GLPreviewFrame * getGLPreview();
 
 protected:
     // called when a progress message should be displayed
@@ -199,8 +197,8 @@ private:
     void OnSize(wxSizeEvent &e);
     void enableTools(bool option);
 
-    void DisplayHelp(wxString section);
     void OnShowDonate(wxCommandEvent &e);
+    void OnShowPanel(wxCommandEvent &e);
 
     // update progress display
     bool displayProgress();
@@ -217,6 +215,7 @@ private:
     OptimizePanel * opt_panel;
     OptimizePhotometricPanel * opt_photo_panel;
     PanoPanel * pano_panel;
+    struct celeste::svm_model* svmModel;
 
     // flying windows
     PreviewFrame * preview_frame;

@@ -226,21 +226,19 @@ bool PanoPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, cons
 
     m_FileFormatChoice = XRCCTRL(*this, "pano_choice_file_format", wxChoice);
     DEBUG_ASSERT(m_FileFormatChoice);
-    m_FileFormatPanelJPEG = XRCCTRL(*this, "pano_output_normal_opts_jpeg", wxPanel);
-    DEBUG_ASSERT(m_FileFormatPanelJPEG);
+    m_FileFormatOptionsLabel = XRCCTRL(*this, "pano_output_ldr_format_options_label", wxStaticText);
+    
     m_FileFormatJPEGQualityText = XRCCTRL(*this, "pano_output_normal_opts_jpeg_quality", wxTextCtrl);
     DEBUG_ASSERT(m_FileFormatJPEGQualityText);
     m_FileFormatJPEGQualityText->PushEventHandler(new TextKillFocusHandler(this));
 
-    m_FileFormatPanelTIFF = XRCCTRL(*this, "pano_output_normal_opts_tiff", wxPanel);
-    DEBUG_ASSERT(m_FileFormatPanelTIFF);
     m_FileFormatTIFFCompChoice = XRCCTRL(*this, "pano_output_normal_opts_tiff_compression", wxChoice);
     DEBUG_ASSERT(m_FileFormatTIFFCompChoice);
 
     m_HDRFileFormatChoice = XRCCTRL(*this, "pano_choice_hdr_file_format", wxChoice);
     DEBUG_ASSERT(m_HDRFileFormatChoice);
-    m_HDRFileFormatPanelTIFF = XRCCTRL(*this, "pano_output_hdr_opts_tiff", wxPanel);
-    DEBUG_ASSERT(m_HDRFileFormatPanelTIFF);
+    m_HDRFileFormatLabelTIFFCompression = XRCCTRL(*this, "pano_output_hdr_opts_tiff_compression_label", wxStaticText);
+    DEBUG_ASSERT(m_HDRFileFormatLabelTIFFCompression);
     m_FileFormatHDRTIFFCompChoice = XRCCTRL(*this, "pano_output_hdr_opts_tiff_compression", wxChoice);
     DEBUG_ASSERT(m_FileFormatHDRTIFFCompChoice);
 
@@ -279,6 +277,7 @@ PanoPanel::~PanoPanel(void)
     m_HFOVText->PopEventHandler(true);
     m_VFOVText->PopEventHandler(true);
     m_WidthTxt->PopEventHandler(true);
+    m_HeightTxt->PopEventHandler(true);
     m_ROILeftTxt->PopEventHandler(true);
     m_ROIRightTxt->PopEventHandler(true);
     m_ROITopTxt->PopEventHandler(true);
@@ -292,9 +291,6 @@ PanoPanel::~PanoPanel(void)
 void PanoPanel::panoramaChanged (PT::Panorama &pano)
 {
     DEBUG_TRACE("");
-	bool hasImages = pano.getActiveImages().size() > 0;
-    m_StitchButton->Enable(hasImages);
-	m_BatchButton->Enable(hasImages);
 
 #ifdef STACK_CHECK //Disabled for 0.7.0 release
     const bool hasStacks = StackCheck(pano);
@@ -381,7 +377,7 @@ void PanoPanel::UpdateDisplay(const PanoramaOptions & opt, const bool hasStacks)
     m_VFOVText->Enable(m_keepViewOnResize);
     m_CalcOptWidthButton->Enable(m_keepViewOnResize && hasImages);
     m_CalcHFOVButton->Enable(m_keepViewOnResize && hasImages);
-    m_CalcOptROIButton->Enable(m_keepViewOnResize && hasImages);
+    m_CalcOptROIButton->Enable(hasImages);
 
     m_WidthTxt->SetValue(wxString::Format(wxT("%d"), opt.getWidth()));
     m_HeightTxt->SetValue(wxString::Format(wxT("%d"), opt.getHeight()));
@@ -390,9 +386,6 @@ void PanoPanel::UpdateDisplay(const PanoramaOptions & opt, const bool hasStacks)
     m_ROIRightTxt->SetValue(wxString::Format(wxT("%d"), opt.getROI().right() ));
     m_ROITopTxt->SetValue(wxString::Format(wxT("%d"), opt.getROI().top() ));
     m_ROIBottomTxt->SetValue(wxString::Format(wxT("%d"), opt.getROI().bottom() ));
-
-    //do not stitch unless there are active images
-    m_StitchButton->Enable(hasImages);
 
     // output types
     XRCCTRL(*this, "pano_cb_ldr_output_blended",
@@ -424,13 +417,10 @@ void PanoPanel::UpdateDisplay(const PanoramaOptions & opt, const bool hasStacks)
                               opt.outputHDRStacks || 
                               opt.outputHDRLayers);
     
-    if (m_StitchButton->IsEnabled()) {
-        if(!anyOutputSelected)
-            m_StitchButton->Disable();
-    } else {
-        if(anyOutputSelected)
-            m_StitchButton->Enable();
-    }
+    //do not let the user stitch unless there are active images and an output selected.
+    bool any_output_possible = hasImages && anyOutputSelected;
+    m_StitchButton->Enable(any_output_possible);
+    m_BatchButton->Enable(any_output_possible);
 
 #ifdef STACK_CHECK //Disabled for 0.7.0 release
     if (hasStacks) {
@@ -464,65 +454,91 @@ void PanoPanel::UpdateDisplay(const PanoramaOptions & opt, const bool hasStacks)
                           opt.outputLDRExposureLayers || 
                           opt.outputHDRBlended;
 
-    m_BlenderChoice->Show(blenderEnabled);
-    XRCCTRL(*this, "pano_button_blender_opts", wxButton)->Show(blenderEnabled);
-    XRCCTRL(*this, "pano_text_blender", wxStaticText)->Show(blenderEnabled);
+    m_BlenderChoice->Enable(blenderEnabled);
+    XRCCTRL(*this, "pano_button_blender_opts", wxButton)->Enable(blenderEnabled);
+    XRCCTRL(*this, "pano_text_blender", wxStaticText)->Enable(blenderEnabled);
 
     bool fusionEnabled = (opt.outputLDRExposureBlended || opt.outputLDRExposureLayersFused);
-    m_FusionChoice->Show(fusionEnabled);
-    XRCCTRL(*this, "pano_button_fusion_opts", wxButton)->Show(fusionEnabled);
-    XRCCTRL(*this, "pano_text_fusion", wxStaticText)->Show(fusionEnabled);
+    m_FusionChoice->Enable(fusionEnabled);
+    XRCCTRL(*this, "pano_button_fusion_opts", wxButton)->Enable(fusionEnabled);
+    XRCCTRL(*this, "pano_text_fusion", wxStaticText)->Enable(fusionEnabled);
 
     bool hdrMergeEnabled = opt.outputHDRBlended || opt.outputHDRStacks;
-    m_HDRMergeChoice->Show(hdrMergeEnabled);
-    XRCCTRL(*this, "pano_button_hdrmerge_opts", wxButton)->Show(hdrMergeEnabled);
-    XRCCTRL(*this, "pano_text_hdrmerge", wxStaticText)->Show(hdrMergeEnabled);
+    m_HDRMergeChoice->Enable(hdrMergeEnabled);
+    XRCCTRL(*this, "pano_button_hdrmerge_opts", wxButton)->Enable(hdrMergeEnabled);
+    XRCCTRL(*this, "pano_text_hdrmerge", wxStaticText)->Enable(hdrMergeEnabled);
 
     // output file mode
+    bool ldr_pano_enabled = opt.outputLDRBlended ||
+                            opt.outputLDRExposureBlended ||
+                            opt.outputLDRExposureLayersFused;
+    
+    XRCCTRL(*this, "pano_output_ldr_format_label", wxStaticText)->Enable(ldr_pano_enabled);
+    m_FileFormatOptionsLabel->Enable(ldr_pano_enabled);
+    m_FileFormatChoice->Enable(ldr_pano_enabled);
+    m_FileFormatJPEGQualityText->Enable(ldr_pano_enabled);
+    m_FileFormatTIFFCompChoice->Enable(ldr_pano_enabled);
+    
     long i=0;
     if (opt.outputImageType == "tif") {
         i = 0;
-        m_FileFormatPanelJPEG->Hide();
-        m_FileFormatPanelTIFF->Show();
+        m_FileFormatOptionsLabel->Show();
+        m_FileFormatOptionsLabel->SetLabel(_("Compression:"));
+        m_FileFormatJPEGQualityText->Hide();
+        m_FileFormatTIFFCompChoice->Show();
         if (opt.outputImageTypeCompression  == "PACKBITS") {
             m_FileFormatTIFFCompChoice->SetSelection(1);
         } else if (opt.outputImageTypeCompression == "LZW") {
             m_FileFormatTIFFCompChoice->SetSelection(2);
-	} else if (opt.outputImageTypeCompression  == "DEFLATE") {
+        } else if (opt.outputImageTypeCompression  == "DEFLATE") {
             m_FileFormatTIFFCompChoice->SetSelection(3);
         } else {
             m_FileFormatTIFFCompChoice->SetSelection(0);
         }
     } else if (opt.outputImageType == "jpg") {
         i = 1;
-        m_FileFormatPanelJPEG->Show();
-        m_FileFormatPanelTIFF->Hide();
+        m_FileFormatOptionsLabel->Show();
+        m_FileFormatOptionsLabel->SetLabel(_("Quality:"));
+        m_FileFormatJPEGQualityText->Show();
+        m_FileFormatTIFFCompChoice->Hide();
         m_FileFormatJPEGQualityText->SetValue(wxString::Format(wxT("%d"), opt.quality));
     } else if (opt.outputImageType == "png") {
-        m_FileFormatPanelJPEG->Hide();
-        m_FileFormatPanelTIFF->Hide();
+        m_FileFormatOptionsLabel->Hide();
+        m_FileFormatJPEGQualityText->Hide();
+        m_FileFormatTIFFCompChoice->Hide();
         i = 2;
     } else if (opt.outputImageType == "exr") {
-        m_FileFormatPanelJPEG->Hide();
-        m_FileFormatPanelTIFF->Hide();
+        /// @todo Is this right? I don't see a 4th item in the combo box, and exr is a confusing LDR format.
+        m_FileFormatOptionsLabel->Hide();
+        m_FileFormatJPEGQualityText->Hide();
+        m_FileFormatTIFFCompChoice->Hide();
         i = 3;
     } else
         wxLogError(wxT("INTERNAL error: unknown output image type"));
 
     m_FileFormatChoice->SetSelection(i);
 
+    bool hdr_pano_enabled = opt.outputHDRBlended;
+    
+    XRCCTRL(*this, "pano_output_hdr_format_label", wxStaticText)->Enable(hdr_pano_enabled);
+    m_HDRFileFormatChoice->Enable(hdr_pano_enabled);
+    m_HDRFileFormatLabelTIFFCompression->Enable(hdr_pano_enabled);
+    m_FileFormatHDRTIFFCompChoice->Enable(hdr_pano_enabled);
+    
     i=0;
     if (opt.outputImageTypeHDR == "exr") {
         i = 0;
-        m_HDRFileFormatPanelTIFF->Hide();
+        m_HDRFileFormatLabelTIFFCompression->Hide();
+        m_FileFormatHDRTIFFCompChoice->Hide();
     } else if (opt.outputImageTypeHDR == "tif") {
         i = 1;
-        m_HDRFileFormatPanelTIFF->Show();
+        m_HDRFileFormatLabelTIFFCompression->Show();
+        m_FileFormatHDRTIFFCompChoice->Show();
         if (opt.outputImageTypeHDRCompression  == "PACKBITS") {
             m_FileFormatHDRTIFFCompChoice->SetSelection(1);
         } else if (opt.outputImageTypeHDRCompression == "LZW") {
             m_FileFormatHDRTIFFCompChoice->SetSelection(2);
-	} else if (opt.outputImageTypeHDRCompression  == "DEFLATE") {
+        } else if (opt.outputImageTypeHDRCompression  == "DEFLATE") {
             m_FileFormatHDRTIFFCompChoice->SetSelection(3);
         } else {
             m_FileFormatHDRTIFFCompChoice->SetSelection(0);
@@ -962,6 +978,11 @@ void PanoPanel::DoStitch()
     if (pano->getNrOfImages() == 0) {
         return;
     }
+    
+    if (!CheckGoodSize()) {
+        // oversized pano and the user no longer wants to stitch.
+        return;
+    }
 
     // save project
     // copy pto file to temporary file
@@ -1088,6 +1109,9 @@ void PanoPanel::OnDoStitch ( wxCommandEvent & e )
 
 void PanoPanel::OnSendToBatch ( wxCommandEvent & e )
 {
+    if (!CheckGoodSize()) {
+        return;
+    }
 	wxCommandEvent dummy;
 	MainFrame::Get()->OnSaveProject(dummy);
 	wxString projectFile = MainFrame::Get()->getProjectName();
@@ -1128,30 +1152,19 @@ void PanoPanel::FileFormatChanged(wxCommandEvent & e)
     PanoramaOptions opt = pano->getOptions();
     switch (fmt) {
         case 1:
-            m_FileFormatPanelJPEG->Show();
-            m_FileFormatPanelTIFF->Hide();
             opt.outputImageType ="jpg";
             break;
         case 2:
-            m_FileFormatPanelJPEG->Hide();
-            m_FileFormatPanelTIFF->Hide();
             opt.outputImageType ="png";
             break;
         case 3:
-            m_FileFormatPanelJPEG->Hide();
-            m_FileFormatPanelTIFF->Hide();
             opt.outputImageType ="exr";
             break;
         default:
         case 0:
-            m_FileFormatPanelJPEG->Hide();
-            m_FileFormatPanelTIFF->Show();
             opt.outputImageType ="tif";
             break;
     }
-
-    m_pano_ctrls->FitInside();
-    Layout();
 
     GlobalCmdHist::getInstance().addCommand(
             new PT::SetPanoOptionsCmd( *pano, opt )
@@ -1167,18 +1180,13 @@ void PanoPanel::HDRFileFormatChanged(wxCommandEvent & e)
     PanoramaOptions opt = pano->getOptions();
     switch (fmt) {
         case 1:
-            m_HDRFileFormatPanelTIFF->Show();
             opt.outputImageTypeHDR ="tif";
             break;
         default:
         case 0:
-            m_HDRFileFormatPanelTIFF->Hide();
             opt.outputImageTypeHDR ="exr";
             break;
     }
-
-    m_pano_ctrls->FitInside();
-    Layout();
 
     GlobalCmdHist::getInstance().addCommand(
             new PT::SetPanoOptionsCmd( *pano, opt )
@@ -1277,6 +1285,71 @@ void PanoPanel::OnOutputFilesChanged(wxCommandEvent & e)
     GlobalCmdHist::getInstance().addCommand(
             new PT::SetPanoOptionsCmd( *pano, opts )
         );
+}
+
+bool PanoPanel::CheckGoodSize()
+{
+    vigra::Rect2D cropped_region = pano->getOptions().getROI();
+    unsigned long long int area = ((unsigned long int) cropped_region.width()) * ((unsigned long int) cropped_region.height());
+    // Argh, more than half a gigapixel!
+    if (area > 500000000)
+    {
+        // Tell the user the stitch will be really big, and give them a
+        // chance to reduce the size.
+#if wxCHECK_VERSION(2,9,0)
+        wxMessageDialog dialog(this,
+                _("Are you sure you want to stitch such a large panorama?"),
+#ifdef _WINDOWS
+                _("Hugin"),
+#else
+                wxT(""),
+#endif
+                wxICON_EXCLAMATION | wxYES_NO);
+        dialog.SetExtendedMessage(
+                wxString::Format(_("The panorama you are trying to stitch is %.1f gigapixels.\nIf this is too big, reduce the panorama Canvas Size and the cropped region and stitch from the Stitcher tab. Stitching a panorama this size could take a long time and a large amount of memory."),
+                        area / 1000000000.0));
+        dialog.SetYesNoLabels(_("Stitch anyway"), _("Let me fix that"));
+#else // replacement for old wxWidgets versions.
+        // wxMessageDialog derives from wxDialog, but I don't understand
+        // why because on most platforms wxMessageDialog uses the native
+        // message box, and trying to make descriptive buttons through
+        // wxDialog::CreateStdButtonSizer causes a crash on wxGTK.
+        // Descriptive buttons are recommended by the Windows, Gnome, KDE,
+        // and Apple user interface guidelines.
+        // Due to this wxWidgets WTF, the buttons will are labeled Yes and
+        // No on wxWidgets 2.8 and earlier. This makes it a little
+        // confusing, and it is more likely someone will just click yes
+        // without reading the message and then wonder why their computer
+        // has ground to a halt.
+        /** @todo (Possibly) make a dialog manually with properly labelled
+         * buttons.
+         */
+        wxMessageDialog dialog(this,
+                wxString::Format(_("Are you sure you want to stitch such a large panorama?\n\nThe panorama you are trying to stitch is %.1f gigapixels.\nIf this is too big, reduce the panorama Canvas Size and the cropped region and stitch from the Stitcher tab. Stitching a panorama this size could take a long time and a large amount of memory."),
+                        area / 1000000000.0),
+#ifdef _WINDOWS
+                _("Hugin"),
+#else
+                wxT(""),
+#endif
+                wxICON_EXCLAMATION | wxYES_NO);
+#endif
+        bool result;
+        switch (dialog.ShowModal())
+        {
+            case wxID_OK:
+            case wxID_YES:
+                // Continue stitch.
+                return true;
+                break;
+            default:
+                // bring the user towards the approptiate controls.
+                MainFrame::Get()->ShowStitcherTab();
+                return false;
+        }
+    }
+    // I see nothing wrong with this...
+    return true;
 }
 
 

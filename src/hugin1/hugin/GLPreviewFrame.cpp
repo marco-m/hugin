@@ -80,8 +80,9 @@ extern "C" {
 #include "OverviewOutlinesTool.h"
 
 #include <wx/progdlg.h>
-
-
+#if wxCHECK_VERSION(2, 9, 0)
+#include <wx/infobar.h>
+#endif
 
 using namespace utils;
 
@@ -95,7 +96,9 @@ enum {
     ID_TOGGLE_BUT_LEAVE = wxID_HIGHEST+1600,
     ID_FULL_SCREEN = wxID_HIGHEST+1710,
     ID_SHOW_ALL = wxID_HIGHEST+1711,
-    ID_SHOW_NONE = wxID_HIGHEST+1712
+    ID_SHOW_NONE = wxID_HIGHEST+1712,
+    ID_UNDO = wxID_HIGHEST+1713,
+    ID_REDO = wxID_HIGHEST+1714
 };
 
 /** enum, which contains all different toolbar modes */
@@ -160,6 +163,8 @@ BEGIN_EVENT_TABLE(GLPreviewFrame, wxFrame)
     EVT_COMMAND_RANGE(PROJ_PARAM_VAL_ID,PROJ_PARAM_VAL_ID+PANO_PROJECTION_MAX_PARMS,wxEVT_COMMAND_TEXT_ENTER,GLPreviewFrame::OnProjParameterChanged)
     EVT_BUTTON(PROJ_PARAM_RESET_ID, GLPreviewFrame::OnProjParameterReset)
     EVT_TOOL(ID_FULL_SCREEN, GLPreviewFrame::OnFullScreen)
+    EVT_TOOL(ID_UNDO, GLPreviewFrame::OnUndo)
+    EVT_TOOL(ID_REDO, GLPreviewFrame::OnRedo)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(ImageToogleButtonEventHandler, wxEvtHandler)
@@ -179,7 +184,7 @@ void AddLabelToBitmapButton(wxBitmapButton* button, wxString new_label,bool Text
     int new_height=0;
     int text_height=0;
     int text_width=0;
-    button->GetTextExtent(new_label, &text_width,&text_height);
+    button->GetTextExtent(new_label.append(wxT(" ")), &text_width,&text_height);
     if(TextBelow)
     {
         new_height=23+text_height;
@@ -267,6 +272,10 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, PT::Panorama &pano)
     : wxFrame(frame,-1, _("Fast Panorama preview"), wxDefaultPosition, wxDefaultSize,
               PF_STYLE),
       m_pano(pano)
+#if !wxCHECK_VERSION(2, 9, 0)
+    ,
+      m_projectionStatusPushed(false)
+#endif
 {
 
 
@@ -358,7 +367,10 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, PT::Panorama &pano)
 
     m_topsizer->Add(tool_panel, 0, wxEXPAND | wxALL, 2);
     m_topsizer->Add(toggle_panel, 0, wxEXPAND | wxADJUST_MINSIZE | wxBOTTOM, 5);
-
+#if wxCHECK_VERSION(2, 9, 0)
+    m_infoBar = new wxInfoBar(this);
+    m_topsizer->Add(m_infoBar, 0, wxEXPAND);
+#endif
 
     //create panel that will hold gl canvases
     wxPanel * vis_panel = new wxPanel(this);
@@ -614,9 +626,11 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, PT::Panorama &pano)
     if (config->Read(wxT("/GLPreviewFrame/isShown"), 0l) != 0) {
         Show();
     }
-    wxAcceleratorEntry entries[1];
+    wxAcceleratorEntry entries[3];
     entries[0].Set(wxACCEL_NORMAL,WXK_F11,ID_FULL_SCREEN);
-    wxAcceleratorTable accel(1, entries);
+    entries[1].Set(wxACCEL_CTRL,(int)'Z',ID_UNDO);
+    entries[2].Set(wxACCEL_CTRL,(int)'R',ID_REDO);
+    wxAcceleratorTable accel(3, entries);
     SetAcceleratorTable(accel);
 #ifdef __WXGTK__
     // set explicit focus to button panel, otherwise the hotkey F11 is not right processed
@@ -682,6 +696,12 @@ GLPreviewFrame::~GLPreviewFrame()
     m_ROIRightTxt->PopEventHandler(true);
     m_ROITopTxt->PopEventHandler(true);
     m_ROIBottomTxt->PopEventHandler(true);
+    for (int i=0; i < m_ToggleButtons.size(); i++)
+    {
+        m_ToggleButtons[i]->PopEventHandler();
+        m_ToggleButtons[i]->PopEventHandler();
+        m_ToggleButtons[i]->PopEventHandler();
+    }
     m_pano.removeObserver(this);
 
      // deinitialize the frame manager
@@ -840,7 +860,7 @@ void GLPreviewFrame::panoramaChanged(Panorama &pano)
         assert((int) params.size() == nParam);
         for (int i=0; i < nParam; i++) {
             wxString val = wxString(doubleToString(params[i],1).c_str(), wxConvLocal);
-            m_projParamTextCtrl[i]->SetValue(wxString(val.c_str(), wxConvLocal));
+            m_projParamTextCtrl[i]->SetValue(wxString(val.wc_str(), wxConvLocal));
             m_projParamSlider[i]->SetValue(utils::roundi(params[i]));
         }
     }
@@ -868,9 +888,8 @@ void GLPreviewFrame::panoramaChanged(Panorama &pano)
     m_ROIRightTxt->SetValue(wxString::Format(wxT("%d"), opts.getROI().right() ));
     m_ROITopTxt->SetValue(wxString::Format(wxT("%d"), opts.getROI().top() ));
     m_ROIBottomTxt->SetValue(wxString::Format(wxT("%d"), opts.getROI().bottom() ));
-
-
-
+    
+    ShowProjectionWarnings();
 }
 
 void GLPreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &changed)
@@ -888,6 +907,7 @@ void GLPreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &change
     for (int i=nrButtons-1; i>=(int)nrImages; i--)
     {
         m_ButtonSizer->Detach(m_ToggleButtonPanel[i]);
+        m_ToggleButtons[i]->PopEventHandler();
         delete m_ToggleButtons[i];
         delete m_ToggleButtonPanel[i];
         m_ToggleButtons.pop_back();
@@ -1005,6 +1025,10 @@ void GLPreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &change
     };
 }
 
+void GLPreviewFrame::redrawPreview()
+{
+    Refresh();
+}
 
 void GLPreviewFrame::OnShowEvent(wxShowEvent& e)
 {
@@ -1846,6 +1870,18 @@ void GLPreviewFrame::OnFullScreen(wxCommandEvent & e)
     ShowFullScreen(!IsFullScreen(), wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
 };
 
+void GLPreviewFrame::OnUndo(wxCommandEvent &e)
+{
+    wxCommandEvent dummy(wxEVT_COMMAND_MENU_SELECTED, XRCID("ID_EDITUNDO"));
+    m_parent->GetEventHandler()->AddPendingEvent(dummy);
+};
+
+void GLPreviewFrame::OnRedo(wxCommandEvent &e)
+{
+    wxCommandEvent dummy(wxEVT_COMMAND_MENU_SELECTED, XRCID("ID_EDITREDO"));
+    m_parent->GetEventHandler()->AddPendingEvent(dummy);
+};
+
 void GLPreviewFrame::SetMode(int newMode)
 {
     if(m_mode==newMode)
@@ -2052,4 +2088,85 @@ void GLPreviewFrame::OnLayoutScaleChange(wxScrollEvent &e)
         m_GLPreview->Refresh();
         m_GLOverview->Refresh();
     };
+};
+
+void GLPreviewFrame::ShowProjectionWarnings()
+{
+    PanoramaOptions opts = m_pano.getOptions();
+    double hfov = opts.getHFOV();
+    double vfov = opts.getVFOV();
+    double maxfov = hfov > vfov ? hfov : vfov;
+    wxString message;
+    // If this is set to true, offer rectilinear as an alternative if it fits.
+    bool rectilinear_option = false;
+    switch (opts.getProjection()) {
+        case HuginBase::PanoramaOptions::RECTILINEAR:
+            if (maxfov > 120.0) {
+                            // wide rectilinear image
+                message = _("With a wide field of view, panoramas with rectilinear projection get very stretched towards the edges.\n");
+                if (vfov < 110) {
+                    message += _("Since the field of view is only very wide in the horizontal direction, try a cylindrical projection instead.");
+                } else {
+                    message += _("For a very wide panorama, try equirectangular projection instead.");
+                }
+                message += _(" You could also try Panini projection.");
+            }
+            break;
+        case HuginBase::PanoramaOptions::CYLINDRICAL:
+            if (vfov > 120.0) {
+                message = _("With a wide vertical field of view, panoramas with cylindrical projection get very stretched at the top and bottom.\nAn equirectangular projection would fit the same content in less vertical space.");
+            } else rectilinear_option = true;
+            break;
+        case HuginBase::PanoramaOptions::EQUIRECTANGULAR:
+            if (vfov < 110.0 && hfov > 120.0)
+            {
+                message = _("Since the vertical field of view is not too wide, you could try setting the panorama projection to cylindrical.\nCylindrical projection preserves vertical lines, unlike equirectangular.");
+            } else rectilinear_option = true;
+            break;
+        case HuginBase::PanoramaOptions::FULL_FRAME_FISHEYE:
+            if (maxfov < 280.0) {
+                rectilinear_option = true;
+                message = _("Stereographic projection is conformal, unlike this Fisheye panorama projection.\nA conformal projection preserves angles around a point, which often makes it easier on the eye.");
+            }
+            break;
+        case HuginBase::PanoramaOptions::STEREOGRAPHIC:
+            if (maxfov > 300.0) {
+                message = _("Panoramas with stereographic projection and a very wide field of view stretch the image around the edges a lot.\nThe Fisheye panorama projection compresses it, so you can fit in a wide field of view and still have a reasonable coverage of the middle.");
+            } else rectilinear_option = true;
+            break;
+        default:
+            rectilinear_option = true;
+    }
+    if (rectilinear_option && maxfov < 110.0) {
+        message = _("Setting the panorama to rectilinear projection would keep the straight lines straight.");
+    }
+    if (message.IsEmpty()) {
+        // no message needed.
+#if wxCHECK_VERSION(2, 9, 0)
+        m_infoBar->Dismiss();
+#else
+        if (m_projectionStatusPushed) {
+            m_projectionStatusPushed = false;
+            GetStatusBar()->PopStatusText();
+        }
+#endif
+    } else {
+#if wxCHECK_VERSION(2, 9, 0)
+        /** @todo If the projection information bar was closed manually, don't show any more messages there.
+         * It should probably be stored as a configuration setting so it persits
+         * until "Load defaults" is selected on the preferences window.
+         */
+        m_infoBar->ShowMessage(message, wxICON_INFORMATION);
+#else
+        if (m_projectionStatusPushed) {
+            GetStatusBar()->PopStatusText();
+        }
+        /** @todo The message doesn't really fit in the status bar, so we should have some other GUI arrangement or remove this feature.
+         * On my system, the status bar remains too short to contain the two
+         * lines of text in the message.
+         */
+        GetStatusBar()->PushStatusText(message);
+        m_projectionStatusPushed = true;
+#endif
+    }
 };

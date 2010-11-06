@@ -22,7 +22,8 @@ algorithms/nona/ComputeImageROI.cpp
 algorithms/optimizer/ImageGraph.cpp
 algorithms/optimizer/PhotometricOptimizer.cpp
 algorithms/optimizer/PTOptimizer.cpp
-algorithms/panorama_makefile/PanoramaMakefileExport.cpp
+algorithms/panorama_makefile/PanoramaMakefilelibExport.cpp
+algorithms/assistant_makefile/AssistantMakefilelibExport.cpp
 algorithms/point_sampler/PointSampler.cpp
 algorithms/control_points/CleanCP.cpp
 appbase/ExternalProgram.cpp
@@ -83,7 +84,8 @@ algorithms/nona/ComputeImageROI.h
 algorithms/optimizer/ImageGraph.h
 algorithms/optimizer/PhotometricOptimizer.h
 algorithms/optimizer/PTOptimizer.h
-algorithms/panorama_makefile/PanoramaMakefileExport.h
+algorithms/panorama_makefile/PanoramaMakefilelibExport.h
+algorithms/assistant_makefile/AssistantMakefilelibExport.h
 algorithms/point_sampler/PointSampler.h
 algorithms/control_points/CleanCP.h
 appbase/ExternalProgram.h
@@ -133,16 +135,18 @@ IF (${HUGIN_SHARED_LIBS})
   set_target_properties(huginbase PROPERTIES VERSION ${HUGIN_LIB_VERSION})
   IF(WIN32)
     install(TARGETS huginbase RUNTIME DESTINATION ${BINDIR})
+  ELSEIF(${HUGIN_LIBS_PRIVATE_DIR})
+    install(TARGETS huginbase LIBRARY DESTINATION ${LIBDIR}/hugin NAMELINK_SKIP)
   ELSE(WIN32)
-    install(TARGETS huginbase DESTINATION ${LIBDIR})
+    install(TARGETS huginbase LIBRARY DESTINATION ${LIBDIR} NAMELINK_SKIP)
   ENDIF(WIN32)
 ELSE (${HUGIN_SHARED_LIBS})
   add_library(huginbase STATIC ${HUGIN_BASE_SRC} ${HUGIN_BASE_HEADER})
 ENDIF (${HUGIN_SHARED_LIBS})
 
-add_subdirectory(test)
-
-TARGET_LINK_LIBRARIES(huginbase huginlevmar huginvigraimpex
+TARGET_LINK_LIBRARIES(huginbase huginlevmar huginvigraimpex makefilelib
         ${Boost_LIBRARIES} ${EXIV2_LIBRARIES} ${PANO_LIBRARIES}
         ${TIFF_LIBRARIES} ${LAPACK_LIBRARIES} ${GLEW_LIBRARIES}
         ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+        
+add_subdirectory(makefilelib)

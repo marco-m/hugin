@@ -192,12 +192,13 @@ class IMPEX PanoramaOptions
         {
             m_projectionFormat = EQUIRECTANGULAR;
             panoProjectionFeaturesQuery(m_projectionFormat, &m_projFeatures);
+            resetProjectionParameters();
             m_hfov = 360;
             m_size = vigra::Size2D(3000, 1500);
             m_roi = vigra::Rect2D(m_size);
             outfile = "panorama";
             tiff_saveROI = true;
-            tiffCompression = "NONE";
+            tiffCompression = "LZW";
             quality = 100;
             colorCorrection = NONE;
             colorReferenceImage = 0;
@@ -227,11 +228,11 @@ class IMPEX PanoramaOptions
             outputHDRLayers = false;
             outputHDRStacks = false;
 
-            outputLayersCompression = "PACKBITS";
+            outputLayersCompression = "LZW";
             outputImageType = "tif";
-            outputImageTypeCompression = "NONE";
+            outputImageTypeCompression = "LZW";
             outputImageTypeHDR= "exr";
-            outputImageTypeHDRCompression = "";
+            outputImageTypeHDRCompression = "LZW";
 
             enblendOptions = "";
             enfuseOptions  = "";

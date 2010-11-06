@@ -34,6 +34,7 @@
 #include "hugin/huginApp.h"
 #include "hugin/config_defaults.h"
 #include "hugin/PreferencesDialog.h"
+#include "hugin/CPDetectorDialog.h"
 
 // validators are working different somehow...
 //#define MY_STR_VAL(id, filter) { XRCCTRL(*this, "prefs_" #id, wxTextCtrl)->SetValidator(wxTextValidator(filter, &id)); }
@@ -75,6 +76,9 @@ BEGIN_EVENT_TABLE(PreferencesDialog, wxDialog)
     EVT_BUTTON(XRCID("pref_cpdetector_movedown"), PreferencesDialog::OnCPDetectorMoveDown)
     EVT_BUTTON(XRCID("pref_cpdetector_default"), PreferencesDialog::OnCPDetectorDefault)
     EVT_LISTBOX_DCLICK(XRCID("pref_cpdetector_list"), PreferencesDialog::OnCPDetectorListDblClick)
+    EVT_BUTTON(XRCID("pref_cpdetector_load"), PreferencesDialog::OnCPDetectorLoad)
+    EVT_BUTTON(XRCID("pref_cpdetector_save"), PreferencesDialog::OnCPDetectorSave)
+    EVT_BUTTON(XRCID("pref_cpdetector_help"), PreferencesDialog::OnCPDetectorHelp)
 //    EVT_CLOSE(RunOptimizerFrame::OnClose)
 END_EVENT_TABLE()
 
@@ -278,7 +282,7 @@ void PreferencesDialog::OnPTStitcherExe(wxCommandEvent & e)
 #else
 		     wxT(""),
 #endif
-                    wxOPEN, wxDefaultPosition);
+                    wxFD_OPEN, wxDefaultPosition);
     if (dlg.ShowModal() == wxID_OK) {
 	XRCCTRL(*this, "prefs_pt_PTStitcherEXE", wxTextCtrl)->SetValue(
 		dlg.GetPath());
@@ -296,7 +300,7 @@ void PreferencesDialog::OnEditorExe(wxCommandEvent & e)
 #else
              wxT("(*)|*"),
 #endif
-                    wxOPEN, wxDefaultPosition);
+                    wxFD_OPEN, wxDefaultPosition);
     if (dlg.ShowModal() == wxID_OK) {
         XRCCTRL(*this, "prefs_ass_editor", wxTextCtrl)->SetValue(
                 dlg.GetPath());
@@ -313,7 +317,7 @@ void PreferencesDialog::OnEnblendExe(wxCommandEvent & e)
 #else
 		     wxT("*"),
 #endif
-                    wxOPEN, wxDefaultPosition);
+                    wxFD_OPEN, wxDefaultPosition);
     if (dlg.ShowModal() == wxID_OK) {
 	XRCCTRL(*this, "prefs_enblend_EnblendExe", wxTextCtrl)->SetValue(
 		dlg.GetPath());
@@ -329,7 +333,7 @@ void PreferencesDialog::OnEnfuseExe(wxCommandEvent & e)
 #else
 		     wxT("*"),
 #endif
-                    wxOPEN, wxDefaultPosition);
+                    wxFD_OPEN, wxDefaultPosition);
     if (dlg.ShowModal() == wxID_OK) {
 	XRCCTRL(*this, "prefs_enblend_EnfuseExe", wxTextCtrl)->SetValue(
 		dlg.GetPath());
@@ -427,6 +431,9 @@ void PreferencesDialog::UpdateDisplayData(int panel)
             DEBUG_WARN("Unknown language configured");
         }
 
+        // smart undo
+        t = cfg->Read(wxT("smartUndo"), HUGIN_SMART_UNDO) == 1;
+        MY_BOOL_VAL("prefs_smart_undo", t);
 
         // cursor setting
 //    mem = cfg->Read(wxT("/CPImageCtrl/CursorType"), HUGIN_CP_CURSOR);
@@ -602,7 +609,9 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent & e)
             if (cpucount < 1) cpucount = 1;
             cfg->Write(wxT("/Nona/NumberOfThreads"), cpucount);
             // locale
-            cfg->Write(wxT("language"), HUGIN_LANGUAGE);
+            cfg->Write(wxT("language"), int(HUGIN_LANGUAGE));
+            // smart undo
+            cfg->Write(wxT("smartUndo"), HUGIN_SMART_UNDO);
             // druid
             cfg->Write(wxT("/PreviewFrame/showDruid"), HUGIN_PREVIEW_SHOW_DRUID);
         }
@@ -637,7 +646,15 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent & e)
         if (noteb->GetSelection() == 3) {
             /////
             /// AUTOPANO
-            cpdetector_config_edit.ResetToDefault();
+            wxString default_cpg_file=huginApp::Get()->GetDataPath()+wxT("default.setting");
+            if(wxFileName::FileExists(default_cpg_file))
+            {
+                cpdetector_config_edit.ReadFromFile(default_cpg_file);
+            }
+            else
+            {
+                cpdetector_config_edit.ResetToDefault();
+            };
             cpdetector_config_edit.Write(cfg);
         }
         if (noteb->GetSelection() == 4) {
@@ -732,7 +749,10 @@ void PreferencesDialog::UpdateConfigData()
     long templ =  * static_cast<long *>(tmplp);
     cfg->Write(wxT("language"), templ);
     DEBUG_INFO("Language Selection ID: " << templ);
-    
+
+    // smart undo
+    cfg->Write(wxT("smartUndo"), MY_G_BOOL_VAL("prefs_smart_undo"));
+
     // cursor
     //    cfg->Write(wxT("/CPImageCtrl/CursorType"), MY_G_SPIN_VAL("prefs_cp_CursorType"));
     // tempdir
@@ -862,4 +882,37 @@ void PreferencesDialog::OnCPDetectorDefault(wxCommandEvent & e)
 void PreferencesDialog::OnCPDetectorListDblClick(wxCommandEvent &e)
 {
     OnCPDetectorEdit(e);
+};
+
+void PreferencesDialog::OnCPDetectorLoad(wxCommandEvent &e)
+{
+    wxFileDialog dlg(this,_("Load control point detector settings"),
+        wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")), wxEmptyString,
+        _("Control point detector settings (*.setting)|*.setting"),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        wxConfig::Get()->Write(wxT("/actualPath"), dlg.GetDirectory());  // remember for later
+        wxString fn = dlg.GetPath();
+        cpdetector_config_edit.ReadFromFile(fn);
+        cpdetector_config_edit.Write();
+        UpdateDisplayData(4);
+    };
+};
+
+void PreferencesDialog::OnCPDetectorSave(wxCommandEvent &e)
+{
+    wxFileDialog dlg(this,_("Save control point detector settings"),
+        wxConfigBase::Get()->Read(wxT("/actualPath"),wxT("")), wxEmptyString,
+        _("Control point detector settings (*.setting)|*.setting"),wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        wxConfig::Get()->Write(wxT("/actualPath"), dlg.GetDirectory());  // remember for later
+        wxString fn = dlg.GetPath();
+        cpdetector_config_edit.WriteToFile(fn);
+    };
+};
+
+void PreferencesDialog::OnCPDetectorHelp(wxCommandEvent &e)
+{
+    MainFrame::Get()->DisplayHelp(wxT("/Control_Point_Detector_Parameters.html"));
 };

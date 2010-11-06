@@ -49,6 +49,8 @@ CalculateImageOverlap::CalculateImageOverlap(const HuginBase::PanoramaData *pano
             m_invTransform[i]=new PTools::Transform;
             m_invTransform[i]->createInvTransform(*pano,i,opts);
         };
+        // per default we are testing all images
+        fill_set(testImages,0,m_nrImg-1);
     };
 };
 
@@ -63,9 +65,13 @@ CalculateImageOverlap::~CalculateImageOverlap()
 
 void CalculateImageOverlap::calculate(unsigned int steps)
 {
-    for(unsigned int i=0; i<m_nrImg;i++)
+    if(testImages.size()==0)
     {
-        const SrcPanoImage& img=m_pano->getSrcImage(i);
+        return;
+    };
+    for(UIntSet::const_iterator it=testImages.begin(); it!=testImages.end();it++)
+    {
+        const SrcPanoImage& img=m_pano->getImage(*it);
         vigra::Rect2D c=img.getCropRect();
         unsigned int frequency=std::min<unsigned int>(steps,std::min<unsigned int>(c.width(),c.height()));
         if(frequency<2)
@@ -88,36 +94,40 @@ void CalculateImageOverlap::calculate(unsigned int steps)
                     pointCounter++;
                     //transform to panorama coordinates
                     double xi,yi;
-                    m_invTransform[i]->transformImgCoord(xi,yi,xc,yc);
-                    //now, check if point is inside an other image
-                    for(unsigned int j=0;j<m_nrImg;j++)
+                    if(m_invTransform[*it]->transformImgCoord(xi,yi,xc,yc))
                     {
-                        if(i==j)
-                            continue;
-                        double xj,yj;
-                        //transform to image coordinates
-                        m_transform[j]->transformImgCoord(xj,yj,xi,yi);
-                        p.x=xj;
-                        p.y=yj;
-                        if(m_pano->getSrcImage(j).isInside(p,true))
+                        //now, check if point is inside an other image
+                        for(unsigned int j=0;j<m_nrImg;j++)
                         {
-                            overlapCounter[j]++;
+                            if((*it)==j)
+                                continue;
+                            double xj,yj;
+                            //transform to image coordinates
+                            if(m_transform[j]->transformImgCoord(xj,yj,xi,yi))
+                            {
+                                p.x=xj;
+                                p.y=yj;
+                                if(m_pano->getImage(j).isInside(p,true))
+                                {
+                                    overlapCounter[j]++;
+                                };
+                            };
                         };
                     };
                 };
             };
         };
         //now calculate overlap and save
-        m_overlap[i][i]=1.0;
+        m_overlap[*it][*it]=1.0;
         if(pointCounter>0)
         {
             for(unsigned int k=0;k<m_nrImg;k++)
             {
-                if(i==k)
+                if((*it)==k)
                 {
                     continue;
                 };
-                m_overlap[i][k]=(double)overlapCounter[k]/(double)pointCounter;
+                m_overlap[*it][k]=(double)overlapCounter[k]/(double)pointCounter;
             };
         };
     };
@@ -125,7 +135,35 @@ void CalculateImageOverlap::calculate(unsigned int steps)
 
 double CalculateImageOverlap::getOverlap(unsigned int i, unsigned int j)
 {
-    return std::max<double>(m_overlap[i][j],m_overlap[j][i]);
+    if(i==j)
+    {
+        return 1.0;
+    }
+    else
+    {
+        return std::max<double>(m_overlap[i][j],m_overlap[j][i]);
+    };
+};
+
+UIntSet CalculateImageOverlap::getOverlapForImage(unsigned int i)
+{
+    UIntSet overlapImgs;
+    for(unsigned int j=0;j<m_nrImg;j++)
+    {
+        if(i!=j)
+        {
+            if(getOverlap(i,j)>0)
+            {
+                overlapImgs.insert(j);
+            };
+        };
+    };
+    return overlapImgs;
+};
+
+void CalculateImageOverlap::limitToImages(UIntSet img)
+{
+    testImages=img;
 };
 
 } // namespace

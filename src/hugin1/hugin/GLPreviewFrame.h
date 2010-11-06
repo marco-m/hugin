@@ -41,6 +41,12 @@ class GLOverview;
 class ViewState;
 class wxSpinEvent;
 class wxChoice;
+#if wxCHECK_VERSION(2,9,0)
+//forward declaration for wxInfoBar works only for wxGTK
+//for other systems wxInfoBar is defined as preprocessor macro and not as class
+//class wxInfoBar;
+#include <wx/infobar.h>
+#endif
 
 class MeshManager;
 
@@ -193,6 +199,14 @@ public:
     void ContinueResize();
     bool CanResize() {return GLresize;}
 
+    /** Display an updated version of the preview images.
+     *  Redraws happen automatically when the panorama changes, and when the 
+     *  preview's internal real time sliders are used. This is only needed
+     *  occasionally, such as when a image finishes loading and its place holder
+     *  can be replaced with the real image.
+     */
+    void redrawPreview();
+
 protected:
 
     bool GLresize;
@@ -241,6 +255,10 @@ protected:
     void updatePano();
     /** event handler for full screen */
     void OnFullScreen(wxCommandEvent &e);
+    /** event handler for undo */
+    void OnUndo(wxCommandEvent &e);
+    /** event handler for redo */
+    void OnRedo(wxCommandEvent &e);
     /** event handler for selection of new mode */
     void OnSelectMode(wxNotebookEvent &e);
     /** event handler for blocking changing mode when panorama contains no images*/
@@ -283,6 +301,13 @@ private:
     wxBitmapButton * m_defaultExposureBut;
     wxSpinButton * m_exposureSpinBut;
     wxCheckBox * m_previewGrid;
+#if wxCHECK_VERSION(2, 9, 0)
+    /// Bar for context sensitive projection information.
+    wxInfoBar * m_infoBar;
+#else
+    // True if the status bar text has been replaced with projection information
+    bool m_projectionStatusPushed;
+#endif
 
     wxString m_choices[3];
     int m_oldProjFormat;
@@ -353,6 +378,12 @@ private:
     void TurnOffTools(std::set<Tool*> tools);
     
     void CleanButtonColours();
+    /** Tell the user anything suspicious about the projection choice.
+     * If nothing is suspicious, any previous message is removed.
+     * In wxWidgets 2.9, this appears as an wxInfoBar. Older versions do not
+     * have this. so the status bar is used instead.
+     */
+    void ShowProjectionWarnings();
 };
 
 

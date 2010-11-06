@@ -22,9 +22,20 @@
 # 20091206.0 sg Script tested and used to build 2009.4.0-RC3
 # 20100121.0 sg Script updated for 1_41
 # 20100121.1 sg Script reverted to 1_40
+# 20100624.0 hvdw More robust error checking on compilation
+# 20100831.0 hvdw Upgraded to 1_44
+# 20100920.0 hvdw Add removed libboost_system again and add iostreams and regex
+# 20100920.1 hvdw Add date_time as well
 # -------------------------------
 
-BOOST_VER="1_40"
+fail()
+{
+        echo "** Failed at $1 **"
+        exit 1
+}
+
+
+BOOST_VER="1_44"
 
 # install headers
 
@@ -53,7 +64,7 @@ done
 mkdir -p "$REPOSITORYDIR/lib";
 
 
-# compile boost_thread & filesystem
+# compile boost_thread, filesystem, system, regex, iostreams and date_time
 
 for ARCH in $ARCHS
 do
@@ -125,7 +136,7 @@ then
  
  # hack that sends extra arguments to g++
  $BJAM -a --stagedir="stage-$ARCH" --prefix=$REPOSITORYDIR $boostTOOLSET -n stage \
-  --with-thread --with-filesystem \
+  --with-thread --with-filesystem --with-system --with-regex --with-iostreams --with-date_time \
   variant=release \
   architecture="$boostARCHITECTURE" address-model="$boostADDRESSMODEL" \
   macosx-version="$SDKVRSION" macosx-version-min="$OSVERSION" \
@@ -142,13 +153,19 @@ then
  mv ./stage-$ARCH/lib/libboost_filesystem.a ./stage-$ARCH/lib/libboost_filesystem-$BOOST_VER.a
  mv ./stage-$ARCH/lib/libboost_system.dylib ./stage-$ARCH/lib/libboost_system-$BOOST_VER.dylib
  mv ./stage-$ARCH/lib/libboost_system.a ./stage-$ARCH/lib/libboost_system-$BOOST_VER.a
+ mv ./stage-$ARCH/lib/libboost_regex.dylib ./stage-$ARCH/lib/libboost_regex-$BOOST_VER.dylib
+ mv ./stage-$ARCH/lib/libboost_regex.a ./stage-$ARCH/lib/libboost_regex-$BOOST_VER.a
+ mv ./stage-$ARCH/lib/libboost_iostreams.dylib ./stage-$ARCH/lib/libboost_iostreams-$BOOST_VER.dylib
+ mv ./stage-$ARCH/lib/libboost_iostreams.a ./stage-$ARCH/lib/libboost_iostreams-$BOOST_VER.a
+ mv ./stage-$ARCH/lib/libboost_date_time.dylib ./stage-$ARCH/lib/libboost_date_time-$BOOST_VER.dylib
+ mv ./stage-$ARCH/lib/libboost_date_time.a ./stage-$ARCH/lib/libboost_date_time-$BOOST_VER.a
 done
 
 #read pipo
 
-# merge libboost_thread libboost_filesystem libboost_system
+# merge libboost_thread libboost_filesystem libboost_system libboost_regex libboost_iostreams
 
-for liba in "lib/libboost_thread-$BOOST_VER.a" "lib/libboost_filesystem-$BOOST_VER.a" "lib/libboost_thread-$BOOST_VER.dylib"  "lib/libboost_filesystem-$BOOST_VER.dylib"
+for liba in "lib/libboost_thread-$BOOST_VER.a" "lib/libboost_filesystem-$BOOST_VER.a" "lib/libboost_system-$BOOST_VER.a" "lib/libboost_regex-$BOOST_VER.a" "lib/libboost_iostreams-$BOOST_VER.a" "lib/libboost_date_time-$BOOST_VER.a" "lib/libboost_thread-$BOOST_VER.dylib"  "lib/libboost_filesystem-$BOOST_VER.dylib" "lib/libboost_system-$BOOST_VER.dylib" "lib/libboost_regex-$BOOST_VER.dylib"  "lib/libboost_iostreams-$BOOST_VER.dylib" "lib/libboost_date_time-$BOOST_VER.dylib"
 do
 
  if [ $NUMARCH -eq 1 ] ; then
@@ -197,4 +214,34 @@ fi
 if [ -f "$REPOSITORYDIR/lib/libboost_filesystem-$BOOST_VER.dylib" ]; then
  install_name_tool -id "$REPOSITORYDIR/lib/libboost_filesystem-$BOOST_VER.dylib" "$REPOSITORYDIR/lib/libboost_filesystem-$BOOST_VER.dylib";
  ln -sfn libboost_filesystem-$BOOST_VER.dylib $REPOSITORYDIR/lib/libboost_filesystem.dylib;
+ install_name_tool -change "libboost_system.dylib" "@executable_path/../Libraries/libboost_system.dylib" "$REPOSITORYDIR/lib/libboost_filesystem-$BOOST_VER.dylib";
 fi
+if [ -f "$REPOSITORYDIR/lib/libboost_system-$BOOST_VER.a" ] ; then
+  ln -sfn libboost_system-$BOOST_VER.a $REPOSITORYDIR/lib/libboost_system.a;
+fi
+if [ -f "$REPOSITORYDIR/lib/libboost_system-$BOOST_VER.dylib" ]; then
+ install_name_tool -id "$REPOSITORYDIR/lib/libboost_system-$BOOST_VER.dylib" "$REPOSITORYDIR/lib/libboost_system-$BOOST_VER.dylib";
+ ln -sfn libboost_system-$BOOST_VER.dylib $REPOSITORYDIR/lib/libboost_system.dylib;
+fi
+if [ -f "$REPOSITORYDIR/lib/libboost_regex-$BOOST_VER.a" ] ; then
+  ln -sfn libboost_regex-$BOOST_VER.a $REPOSITORYDIR/lib/libboost_regex.a;
+fi
+if [ -f "$REPOSITORYDIR/lib/libboost_regex-$BOOST_VER.dylib" ]; then
+ install_name_tool -id "$REPOSITORYDIR/lib/libboost_regex-$BOOST_VER.dylib" "$REPOSITORYDIR/lib/libboost_regex-$BOOST_VER.dylib";
+ ln -sfn libboost_regex-$BOOST_VER.dylib $REPOSITORYDIR/lib/libboost_regex.dylib;
+fi
+if [ -f "$REPOSITORYDIR/lib/libboost_iostreams-$BOOST_VER.a" ] ; then
+  ln -sfn libboost_iostreams-$BOOST_VER.a $REPOSITORYDIR/lib/libboost_iostreams.a;
+fi
+if [ -f "$REPOSITORYDIR/lib/libboost_iostreams-$BOOST_VER.dylib" ]; then
+ install_name_tool -id "$REPOSITORYDIR/lib/libboost_iostreams-$BOOST_VER.dylib" "$REPOSITORYDIR/lib/libboost_iostreams-$BOOST_VER.dylib";
+ ln -sfn libboost_iostreams-$BOOST_VER.dylib $REPOSITORYDIR/lib/libboost_iostreams.dylib;
+fi
+if [ -f "$REPOSITORYDIR/lib/libboost_date_time-$BOOST_VER.a" ] ; then
+  ln -sfn libboost_date_time-$BOOST_VER.a $REPOSITORYDIR/lib/libboost_date_time.a;
+fi
+if [ -f "$REPOSITORYDIR/lib/libboost_date_time-$BOOST_VER.dylib" ]; then
+ install_name_tool -id "$REPOSITORYDIR/lib/libboost_date_time-$BOOST_VER.dylib" "$REPOSITORYDIR/lib/libboost_date_time-$BOOST_VER.dylib";
+ ln -sfn libboost_date_time-$BOOST_VER.dylib $REPOSITORYDIR/lib/libboost_date_time.dylib;
+fi
+
