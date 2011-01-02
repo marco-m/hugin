@@ -39,11 +39,11 @@
 
 
 
+
 namespace HuginBase {
-    
+
 using namespace std;
 using namespace vigra::functor;
-
 
 template <class T1>
 class GetRange
@@ -271,7 +271,7 @@ void ImageCache::softFlush()
             }
         }
 //        m_progress->progressMessage(
-//            wxString::Format(_("Purged %d MB from image cache. Current cache usage: %d MB"),
+//            wxString::Format(_X("Purged %d MB from image cache. Current cache usage: %d MB"),
 //                             purgedMem>>20, (usedMem - purgedMem)>>20
 //                ).c_str(),0);
         DEBUG_DEBUG("purged: " << (purgedMem>>20) << " MB, memory used for images: " << ((usedMem - purgedMem)>>20) << " MB");
@@ -507,7 +507,12 @@ ImageCache::EntryPtr ImageCache::getImage(const std::string & filename)
         return it->second;
     } else {
         if (m_progress) {
-            m_progress->pushTask(AppBase::ProgressTask("Loading image: "+hugin_utils::stripPath(filename), "", 0));
+
+    // tell gettext where the translations are and which one to use
+    bindtextdomain( "hugin", INSTALL_LOCALE_DIR );
+    textdomain( "hugin" );
+
+            m_progress->pushTask(AppBase::ProgressTask(_X("Loading image:")+std::string(" ")+hugin_utils::stripPath(filename), "", 0));
         }
         
         EntryPtr e = loadImageSafely(filename);
@@ -680,7 +685,11 @@ ImageCache::EntryPtr ImageCache::getSmallImage(const std::string & filename)
     } else {
         if (m_progress)
         {
-            m_progress->pushTask(AppBase::ProgressTask("Scaling image: "+hugin_utils::stripPath(filename), "", 0));
+            // tell gettext where the translations are and which one to use
+            bindtextdomain( "hugin", INSTALL_LOCALE_DIR );
+            textdomain( "hugin" );
+
+            m_progress->pushTask(AppBase::ProgressTask(_X("Scaling image:")+std::string(" ")+hugin_utils::stripPath(filename), "", 0));
         }
         DEBUG_DEBUG("creating small image " << name );
         EntryPtr entry = getImage(filename);

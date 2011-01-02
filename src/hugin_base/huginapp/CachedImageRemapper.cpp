@@ -84,7 +84,7 @@ SmallRemappedImageCache::getRemapped(const PanoramaData& pano,
 
     ImageCache::EntryPtr e = ImageCache::getInstance().getSmallImage(img.getFilename().c_str());
     if ( (e->image8->width() == 0) && (e->image16->width() == 0) && (e->imageFloat->width() == 0) ) {
-        throw std::runtime_error("could not retrieve small source image for preview generation");
+        throw std::runtime_error(_X("could not retrieve small source image for preview generation"));
     }
     Size2D srcImgSize;
     if (e->image8->width() > 0)
@@ -106,7 +106,7 @@ SmallRemappedImageCache::getRemapped(const PanoramaData& pano,
     if (img.getVigCorrMode() & SrcPanoImage::VIGCORR_FLATFIELD) {
         ImageCache::EntryPtr e = ImageCache::getInstance().getSmallImage(img.getFlatfieldFilename().c_str());
         if (!e) {
-            throw std::runtime_error("could not retrieve flatfield image for preview generation");
+            throw std::runtime_error(_X("could not retrieve flatfield image for preview generation"));
         }
         if (e->image8->width()) {
             srcFlat.resize(e->image8->size());
@@ -125,7 +125,7 @@ SmallRemappedImageCache::getRemapped(const PanoramaData& pano,
                       destImage(srcFlat));
         }
     }
-    progress.pushTask(AppBase::ProgressTask("remapping", "", 0));
+    progress.pushTask(AppBase::ProgressTask(_X("remapping"), "", 0));
 
     // compute the bounding output rectangle here!
     vigra::Rect2D outROI = estimateOutputROI(pano, opts, imgNr);

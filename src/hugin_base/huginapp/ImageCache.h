@@ -33,6 +33,7 @@
 #include <hugin_utils/utils.h>
 #include <appbase/ProgressDisplayOld.h>
 
+
 #define HUGIN_IMGCACHE_MAPPING_INTEGER        0l
 #define HUGIN_IMGCACHE_MAPPING_FLOAT          1l
 

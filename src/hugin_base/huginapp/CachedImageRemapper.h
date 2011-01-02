@@ -32,6 +32,7 @@
 #include <huginapp/ImageCache.h>
 
 //#include <common/utils.h>
+#include <hugin_utils/utils.h>
 
 
 
