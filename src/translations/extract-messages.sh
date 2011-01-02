@@ -2,7 +2,7 @@
 BASEDIR="../" # root of translatable sources
 PROJECT="hugin" # project name
 #BUGADDR="pablo.dangelo@web.de" # MSGID-Bugs
-BUGADDR="http://sourceforge.net/tracker/?group_id=77506&atid=550441" # MSGID-Bugs
+BUGADDR="https://bugs.launchpad.net/hugin" # MSGID-Bugs
 COPYRIGHT="Pablo dAngelo"
 WDIR=`pwd` # working dir
 
@@ -31,7 +31,7 @@ echo "xrc.cpp" >> ${WDIR}/infiles.list
 cat $WDIR/POTFILES.in >> ${WDIR}/infiles.list
 
 cd ${WDIR}
-xgettext --from-code=UTF-8 -C -k_ --copyright-holder="$COPYRIGHT" \
+xgettext --from-code=UTF-8 -C -k_ -k_X --copyright-holder="$COPYRIGHT" \
          --msgid-bugs-address="${BUGADDR}" \
          --files-from=infiles.list -D ${BASEDIR} -D ${WDIR} -o ${PROJECT}.pot || { echo "error while calling xgettext. aborting."; exit 1; }
 echo "Done extracting messages"

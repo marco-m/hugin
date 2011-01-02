@@ -5,10 +5,10 @@ IF (MSVC)
     # boost_thread is linked automatically
     # additionally link to our getopt
     set(common_libs huginbase hugingetopt
-        ${PANO_LIBRARIES} ${LAPACK_LIBRARIES} huginlevmar)
+        ${PANO_LIBRARIES} ${GETTEXT_LIBRARIES} ${LAPACK_LIBRARIES} huginlevmar)
   ELSE(LAPACK_FOUND)
     set(common_libs huginbase hugingetopt
-        ${PANO_LIBRARIES} huginlevmar)
+        ${PANO_LIBRARIES} ${GETTEXT_LIBRARIES} huginlevmar)
   ENDIF(LAPACK_FOUND)
   include_directories( ${CMAKE_SOURCE_DIR}/src/foreign/getopt/include )
 ELSE (MSVC)

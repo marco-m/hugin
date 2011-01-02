@@ -42,7 +42,7 @@
 #cmakedefine HAVE_LOG2 0
 
 /* locate of the xrc files, as defined during configuration */
-#define INSTALL_LOCALE_DIR "${INSTALL_LOCALE_DIR}"
+#define INSTALL_LOCALE_DIR "${INSTALL_LOCALE_DIR}/"
 
 /* Location for data, as defined during configuration*/
 #define INSTALL_DATA_DIR "${INSTALL_DATA_DIR}/"

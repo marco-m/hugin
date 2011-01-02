@@ -271,6 +271,28 @@ IF(WIN32)
 ENDIF(WIN32)
 
 ##
+## Gettext for the internationalization of CLI tools
+##
+if (WIN32)
+  set (GETTEXT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../gettext/include/")
+  set (GETTEXT_LIBRARIES "${CMAKE_SOURCE_DIR}/../gettext/lib/intl.lib")
+else (WIN32)
+  find_package (GettextLibs)
+  if (GETTEXTLIBS_FOUND)
+      if (NOT "${GETTEXT_LIBRARIES}" STREQUAL ""
+              AND NOT "${GETTEXT_LIBRARIES}" STREQUAL "/usr/lib/libc.so"
+              AND NOT "${GETTEXT_LIBRARIES}" STREQUAL "/usr/lib64/libc.so")
+          set (GAMMU_LIBS "${GAMMU_LIBS} -l${GETTEXT_LIBRARIES}")
+      endif (NOT "${GETTEXT_LIBRARIES}" STREQUAL ""
+              AND NOT "${GETTEXT_LIBRARIES}" STREQUAL "/usr/lib/libc.so"
+              AND NOT "${GETTEXT_LIBRARIES}" STREQUAL "/usr/lib64/libc.so")
+  else (GETTEXTLIBS_FOUND)
+    MESSAGE(SEND_ERROR "gettextlibs missing")
+  endif (GETTEXTLIBS_FOUND)
+endif (WIN32)
+INCLUDE_DIRECTORIES(${GETTEXT_INCLUDE_DIR})
+
+##
 ## LAPACK (optional, enable by -DENABLE_LAPACK=ON)
 ##
 OPTION (ENABLE_LAPACK "Use LAPACK based solver in levmar" OFF)
@@ -335,6 +357,7 @@ ELSE(NOT MANDIR AND NOT $ENV{MANDIR} STREQUAL "")
 ENDIF(NOT MANDIR AND NOT $ENV{MANDIR} STREQUAL "")
 
 SET(LOCALEDIR share/locale) 
+SET(INSTALL_LOCALE_DIR ${CMAKE_INSTALL_PREFIX}/${LOCALEDIR})
 SET(ICONDIR share/icons) 
 SET(LINKDIR share/applications)
 SET(LIBDIR  lib${LIB_SUFFIX})
