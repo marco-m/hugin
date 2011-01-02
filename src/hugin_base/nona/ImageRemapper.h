@@ -31,6 +31,7 @@
 #include <panodata/PanoramaData.h>
 #include <nona/RemappedPanoImage.h>
 
+#include <hugin_utils/utils.h>
 
 namespace HuginBase {
 namespace Nona {
@@ -209,7 +210,7 @@ RemappedPanoImage<ImageType, AlphaType>*
     SrcPanoImage src = pano.getSrcImage(imgNr);
     
     // import the image
-    progress.setMessage(std::string("loading ") + hugin_utils::stripPath(img.getFilename()));
+    progress.setMessage(std::string(_X("loading")) + std::string(" ") + hugin_utils::stripPath(img.getFilename()));
     
     if (alpha) {
         vigra::importImageAlpha(info, vigra::destImage(srcImg),
@@ -232,10 +233,10 @@ RemappedPanoImage<ImageType, AlphaType>*
     if (img.getVigCorrMode() & SrcPanoImage::VIGCORR_FLATFIELD) {
         // load flatfield image.
         vigra::ImageImportInfo ffInfo(img.getFlatfieldFilename().c_str());
-        progress.setMessage(std::string("flatfield vignetting correction ") + hugin_utils::stripPath(img.getFilename()));
+        progress.setMessage(std::string(_X("flatfield vignetting correction")) + std::string(" ") + hugin_utils::stripPath(img.getFilename()));
         vigra_precondition(( ffInfo.numBands() == 1),
-                           "flatfield vignetting correction: "
-                           "Only single channel flatfield images are supported\n");
+                           std::string(_X("flatfield vignetting correction:")) + std::string(" ") +
+                           std::string(_X("Only single channel flatfield images are supported")) + std::string("\n"));
         ffImg.resize(ffInfo.width(), ffInfo.height());
         vigra::importImage(ffInfo, vigra::destImage(ffImg));
     }

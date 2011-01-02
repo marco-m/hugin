@@ -38,6 +38,7 @@
 #include <panodata/PanoramaOptions.h>
 #include <panotools/PanoToolsInterface.h>
 
+#include <hugin_utils/utils.h>
 
 namespace HuginBase {
 namespace Nona {
@@ -447,7 +448,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
 
     DEBUG_DEBUG("srcImgSize: " << srcImgSize << " m_srcImgSize: " << m_srcImg.getSize());
     vigra_precondition(srcImgSize == expectedSize, 
-                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): image sizes not consistent");
+                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): " + std::string(_X("image sizes not consistent")));
 
     typedef typename ImgAccessor::value_type input_value_type;
     typedef typename vigra_ext::ValueTypeTraits<input_value_type>::value_type input_component_type;
@@ -623,7 +624,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
     }
 
     vigra_precondition(srcImgSize == expectedSize, 
-                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): image sizes not consistent");
+                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): " + std::string(_X("image sizes not consistent")));
 
     typedef typename ImgAccessor::value_type input_value_type;
     typedef typename vigra_ext::ValueTypeTraits<input_value_type>::value_type input_component_type;
@@ -781,7 +782,7 @@ void remapImage(SrcImgType & srcImg,
     }
 #endif
 
-    progress.setMessage(std::string("remapping ") + hugin_utils::stripPath(src.getFilename()));
+    progress.setMessage(std::string(_X("remapping")) + std::string(" ") + hugin_utils::stripPath(src.getFilename()));
     // set pano image
     DEBUG_DEBUG("setting src image with size: " << src.getSize());
     remapped.setPanoImage(src, dest, outputROI);

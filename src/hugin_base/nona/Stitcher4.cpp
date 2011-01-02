@@ -51,7 +51,7 @@ void HuginBase::Nona::stitchPanoRGB_32_float(const PanoramaData & pano,
     } else if (strcmp(pixelType, "DOUBLE") == 0 ) {
         stitchPanoIntern<DRGBImage,BImage>(pano, opts, progress, basename, usedImgs);
     } else {
-        UTILS_THROW(std::runtime_error, "Unsupported pixel type: " << pixelType );
+        UTILS_THROW(std::runtime_error, _X("Unsupported pixel type:") + std::string(" ") << pixelType );
         return;
     }
 }

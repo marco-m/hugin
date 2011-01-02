@@ -42,7 +42,7 @@ void HuginBase::Nona::stitchPanoGray_8_16(const PanoramaData & pano,
     } else if (strcmp(pixelType, "UINT16") == 0 ) {
         stitchPanoIntern<UInt16Image,BImage>(pano, opts, progress, basename, usedImgs);
     } else {
-        UTILS_THROW(std::runtime_error, "Unsupported pixel type: " << pixelType );
+        UTILS_THROW(std::runtime_error, _X("Unsupported pixel type:") + std::string(" ") << pixelType );
         return;
     }
 }

@@ -52,6 +52,7 @@
 #include <algorithms/nona/ComputeImageROI.h>
 #include <nona/RemappedPanoImage.h>
 #include <nona/ImageRemapper.h>
+#include <hugin_utils/utils.h>
 
 // calculate distance image for multi file output
 #define STITCHER_CALC_DIST_IMG 0
@@ -224,7 +225,7 @@ public:
         prepareOutputFile(opts);
 
         unsigned int nImg = images.size();
-        Base::m_progress.pushTask(AppBase::ProgressTask("Remapping", "", 1.0/(nImg)));
+        Base::m_progress.pushTask(AppBase::ProgressTask(_X("Remapping"), "", 1.0/(nImg)));
         // remap each image and save
         int i=0;
         for (UIntSet::const_iterator it = images.begin();
@@ -290,7 +291,7 @@ public:
             }
 
             // calculate real alpha for saving with the image
-            Base::m_progress.setMessage("Calculating mask");
+            Base::m_progress.setMessage(_X("Calculating mask"));
             remapped.calcAlpha();
         }
 
@@ -332,7 +333,7 @@ public:
         filename << m_basename << std::setfill('0') << std::setw(4) << imgNr << "." + ext;
 
 
-        Base::m_progress.setMessage(std::string("saving ") +
+        Base::m_progress.setMessage(std::string(_X("saving") + std::string(" ")) +
                 hugin_utils::stripPath(filename.str()));
 
         vigra::ImageExportInfo exinfo(filename.str().c_str());
@@ -359,7 +360,7 @@ public:
             vigra::UInt16Image xImg;
             vigra::UInt16Image yImg;
 
-            Base::m_progress.setMessage("creating coordinate images");
+            Base::m_progress.setMessage(_X("creating coordinate images"));
 
             remapped.calcSrcCoordImgs(xImg, yImg);
             vigra::UInt16Image dist;
@@ -530,7 +531,7 @@ public:
 
         unsigned int nImg = images.size();
 
-        Base::m_progress.pushTask(AppBase::ProgressTask("Stitching", "", 1.0/(nImg)));	
+        Base::m_progress.pushTask(AppBase::ProgressTask(_X("Stitching"), "", 1.0/(nImg)));	
         // empty ROI
         vigra::Rect2D panoROI;
 
@@ -544,7 +545,7 @@ public:
             RemappedPanoImage<ImageType, AlphaType> *
             remapped = remapper.getRemapped(Base::m_pano, opts, *it,
                                             Base::m_rois[i], Base::m_progress);
-            Base::m_progress.setMessage("blending");
+            Base::m_progress.setMessage(_X("blending"));
             // add image to pano and panoalpha, adjusts panoROI as well.
             try {
                 vigra_ext::blend(*remapped, pano, alpha, panoROI,
@@ -587,7 +588,7 @@ public:
         std::string outputfile = basename + "." + ext;
         
 	// save the remapped image
-        Base::m_progress.setMessage("saving result: " + hugin_utils::stripPath(outputfile));
+        Base::m_progress.setMessage(_X("saving result:") + std::string(" ") + hugin_utils::stripPath(outputfile));
         DEBUG_DEBUG("Saving panorama: " << outputfile);
         vigra::ImageExportInfo exinfo(outputfile.c_str());
         exinfo.setXResolution(150);
@@ -778,7 +779,7 @@ public:
         typedef std::vector<RemappedPanoImage<ImageType, AlphaType> *> RemappedVector;
         unsigned int nImg = imgSet.size();
 
-        Base::m_progress.pushTask(AppBase::ProgressTask("Stitching", "", 1.0/(nImg)));	
+        Base::m_progress.pushTask(AppBase::ProgressTask(_X("Stitching"), "", 1.0/(nImg)));	
         // empty ROI
         //	vigra::Rect2D panoROI;
         // remap all images..
@@ -856,7 +857,7 @@ public:
 
         unsigned int nImg = imgSet.size();
 
-        Base::m_progress.pushTask(AppBase::ProgressTask("Stitching", "", 1.0/(nImg)));
+        Base::m_progress.pushTask(AppBase::ProgressTask(_X("Stitching"), "", 1.0/(nImg)));
         // empty ROI
         vigra::Rect2D panoROI;
 
@@ -873,7 +874,7 @@ public:
                 // try to extract icc profile.
                 iccProfile = remapped->m_ICCProfile;
             }
-	    Base::m_progress.setMessage("blending");
+	    Base::m_progress.setMessage(_X("blending"));
 	    // add image to pano and panoalpha, adjusts panoROI as well.
             try {
                 blend(*remapped, pano, alpha, panoROI);
@@ -915,7 +916,7 @@ public:
         }
         std::string outputfile = basename + "." + ext;
 	
-        Base::m_progress.setMessage("saving result: " + hugin_utils::stripPath(outputfile));
+        Base::m_progress.setMessage(_X("saving result:") + std::string(" ") + hugin_utils::stripPath(outputfile));
 	DEBUG_DEBUG("Saving panorama: " << outputfile);
 	vigra::ImageExportInfo exinfo(outputfile.c_str());
 	exinfo.setXResolution(150);
