@@ -263,5 +263,43 @@ std::string doubleToString(double d, int digits)
         b = 0.0;
     }
 
-
+    void TranslateText(){
+        // locate the translations
+    #if _WINDOWS
+        char buffer[MAX_PATH];//always use MAX_PATH for filepaths
+        GetModuleFileName(NULL,buffer,sizeof(buffer));
+        std::string working_path=(buffer);
+        std::string locale_path="";
+        //remove filename
+        std::string::size_type pos=working_path.rfind("\\");
+        if(pos!=std::string::npos)
+        {
+            working_path.erase(pos);
+            //remove last dir: should be bin
+            pos=working_path.rfind("\\");
+            if(pos!=std::string::npos)
+            {
+                working_path.erase(pos);
+                //append path delimiter and path
+                working_path.append("\\share\\hugin\\data\\");
+                locale_path=working_path;
+            }
+        }
+    #elif defined MAC_SELF_CONTAINED_BUNDLE
+        char path[PATH_MAX + 1];
+        uint32_t size = sizeof(path);
+        std::string locale_path("");
+        if (_NSGetExecutablePath(path, &size) == 0)
+        {
+          locale_path=dirname(path);
+          locale_path.append("/../Resources/xrc/");
+        }
+    #else
+          std::string locale_path = (INSTALL_DATA_DIR);
+    #endif
+        // and tell gettext where the translations are and which one to use
+        bindtextdomain( "hugin", locale_path.c_str() );
+        textdomain( "hugin" );
+    }
+    
 } //namespace

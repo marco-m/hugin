@@ -42,7 +42,6 @@
 #define _X(String) gettext(String)
 
 
-
 #if 0
 // ??????????????????????????????????????????
 #ifdef __WXMSW__
@@ -153,7 +152,7 @@
 
 namespace hugin_utils
 {
-    
+
     /** current time as a string */
     IMPEX std::string CurrentTime();
 
@@ -293,6 +292,8 @@ namespace hugin_utils
     
     IMPEX void ControlPointErrorColour(const double cperr, 
         double &r,double &g, double &b);
+
+    void TranslateText();
 
 } // namespace
 

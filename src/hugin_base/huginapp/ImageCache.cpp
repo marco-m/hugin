@@ -507,11 +507,7 @@ ImageCache::EntryPtr ImageCache::getImage(const std::string & filename)
         return it->second;
     } else {
         if (m_progress) {
-
-    // tell gettext where the translations are and which one to use
-    bindtextdomain( "hugin", INSTALL_LOCALE_DIR );
-    textdomain( "hugin" );
-
+            hugin_utils::TranslateText();
             m_progress->pushTask(AppBase::ProgressTask(_X("Loading image:")+std::string(" ")+hugin_utils::stripPath(filename), "", 0));
         }
         
