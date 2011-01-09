@@ -43,6 +43,7 @@
 
 #include <hugin_basic.h>
 #include <hugin_utils/platform.h>
+#include <hugin_utils/utils.h>
 #include <algorithms/nona/NonaFileStitcher.h>
 #include <vigra_ext/MultiThreadOperations.h>
 
@@ -67,49 +68,49 @@ GLuint GlutWindowHandle;
 
 static void usage(const char * name)
 {
-    cerr << name << ": stitch a panorama image" << std::endl
+    cerr << name << _X(": stitch a panorama image") << std::endl
     << std::endl
-    << "nona version " << DISPLAY_VERSION << std::endl
+    << _X("nona version") << " " << DISPLAY_VERSION << std::endl
     << std::endl
-    << " It uses the transform function from PanoTools, the stitching itself" << std::endl
-    << " is quite simple, no seam feathering is done." << std::endl
-    << " only the non-antialiasing interpolators of panotools are supported" << std::endl
+    << " " << _X("It uses the transform function from PanoTools, the stitching itself") << std::endl
+    << " " << _X("is quite simple, no seam feathering is done.") << std::endl
+    << " " << _X("only the non-antialiasing interpolators of panotools are supported") << std::endl
     << std::endl
-    << " The following output formats (n option of panotools p script line)" << std::endl
-    << " are supported:"<< std::endl
+    << " " << _X("The following output formats (n option of panotools p script line)") << std::endl
+    << " " << _X("are supported:") << std::endl
     << std::endl
-    << "  JPG, TIFF, PNG  : Single image formats without feathered blending:"<< std::endl
-    << "  TIFF_m          : multiple tiff files"<< std::endl
-    << "  TIFF_multilayer : Multilayer tiff files, readable by The Gimp 2.0" << std::endl
+    << "  JPG, TIFF, PNG  : " << _X("Single image formats without feathered blending:") << std::endl
+    << "  TIFF_m          : " << _X("multiple tiff files") << std::endl
+    << "  TIFF_multilayer : " << _X("Multilayer tiff files, readable by The Gimp 2.0") << std::endl
     << std::endl
-    << "Usage: " << name  << " [options] -o output project_file (image files)" << std::endl
-    << "  Options: " << std::endl
-    << "      -c         create coordinate images (only TIFF_m output)" << std::endl
-    << "      -v         quiet, do not output progress indicators" << std::endl
-    << "      -t num     number of threads to be used (default: nr of available cores)" << std::endl
-    << "      -g         perform image remapping on the GPU" << std::endl
+    << _X("Usage: ") << name  << " " << _X("[options] -o output project_file (image files)") << std::endl
+    << "  " << _X("Options:") << std::endl
+    << "      -c         " << _X("create coordinate images (only TIFF_m output)") << std::endl
+    << "      -v         " << _X("quiet, do not output progress indicators") << std::endl
+    << "      -t num     " << _X("number of threads to be used (default: nr of available cores)") << std::endl
+    << "      -g         " << _X("perform image remapping on the GPU") << std::endl
     << std::endl
-    << "  The following options can be used to override settings in the project file:" << std::endl
-    << "      -i num     remap only image with number num" << std::endl
-    << "                   (can be specified multiple times)" << std::endl
-    << "      -m str     set output file format (TIFF, TIFF_m, TIFF_multilayer, EXR, EXR_m)" << std::endl
-    << "      -r ldr/hdr set output mode." << std::endl
-    << "                   ldr  keep original bit depth and response" << std::endl
-    << "                   hdr  merge to hdr" << std::endl
-    << "      -e exposure set exposure for ldr mode" << std::endl
-    << "      -p TYPE    pixel type of the output. Can be one of:" << std::endl
-    << "                  UINT8   8 bit unsigned integer" << std::endl
-    << "                  UINT16  16 bit unsigned integer" << std::endl
-    << "                  INT16   16 bit signed integer" << std::endl
-    << "                  UINT32  32 bit unsigned integer" << std::endl
-    << "                  INT32   32 bit signed integer" << std::endl
-    << "                  FLOAT   32 bit floating point" << std::endl
-    << "      -z         set compression type." << std::endl
-    << "                  Possible options for tiff output:" << std::endl
-    << "                   NONE      no compression" << std::endl
-    << "                   PACKBITS  packbits compression" << std::endl
-    << "                   LZW       lzw compression" << std::endl
-    << "                   DEFLATE   deflate compression" << std::endl
+    << "  " << _X("The following options can be used to override settings in the project file:") << std::endl
+    << "      -i num     " << _X("remap only image with number num") << std::endl
+    << "                   " << _X("(can be specified multiple times)") << std::endl
+    << "      -m str     " << _X("set output file format") <<" (TIFF, TIFF_m, TIFF_multilayer, EXR, EXR_m)" << std::endl
+    << "      -r ldr/hdr " << _X("set output mode.") << std::endl
+    << "                   ldr  " << _X("keep original bit depth and response") << std::endl
+    << "                   hdr  " << _X("merge to hdr") << std::endl
+    << "      -e " << _X("exposure set exposure for ldr mode") << std::endl
+    << "      -p " << _X("TYPE    pixel type of the output. Can be one of:") << std::endl
+    << "                  UINT8   8 " << _X("UINT8   8 bit unsigned integer") << std::endl
+    << "                  UINT16  16 " << _X("bit unsigned integer") << std::endl
+    << "                  INT16   16 " << _X("bit signed integer") << std::endl
+    << "                  UINT32  32 " << _X("bit unsigned integer") << std::endl
+    << "                  INT32   32 " << _X("bit signed integer") << std::endl
+    << "                  FLOAT   32 " << _X("bit floating point") << std::endl
+    << "      -z         " << _X("set compression type.") << std::endl
+    << "                  " << _X("Possible options for tiff output:") << std::endl
+    << "                   NONE      " << _X("no compression") << std::endl
+    << "                   PACKBITS  " << _X("packbits compression") << std::endl
+    << "                   LZW       " << _X("lzw compression") << std::endl
+    << "                   DEFLATE   " << _X("deflate compression") << std::endl
     << std::endl;
 }
 
@@ -117,21 +118,22 @@ static void usage(const char * name)
  * OpenGL extensions required by the GPU stitcher (-g option) are checked here.
  * @return true if everything went OK, false if we can't use GPGPU mode.
  */
-static bool initGPU(int *argcp,char **argv) {
+static bool initGPU(int *argcp, char **argv) {
+    const char * name = argv[0];
     glutInit(argcp,argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA | GLUT_ALPHA);
     GlutWindowHandle = glutCreateWindow("nona");
 
     int err = glewInit();
     if (err != GLEW_OK) {
-        cerr << "nona: an error occured while setting up the GPU:" << endl;
+        cerr << name << ": " << _X("an error occured while setting up the GPU:") << endl;
         cerr << glewGetErrorString(err) << endl;
-        cerr << "nona: Switching to CPU calculation." << endl;
+        cerr << name << ": " << _X("Switching to CPU calculation.") << endl;
         glutDestroyWindow(GlutWindowHandle);
         return false;
     }
 
-    cout << "nona: using graphics card: " << glGetString(GL_VENDOR) << " " << glGetString(GL_RENDERER) << endl;
+    cout << name << ": " << _X("using graphics card") << ": " << glGetString(GL_VENDOR) << " " << glGetString(GL_RENDERER) << endl;
 
     GLboolean has_arb_fragment_shader = glewGetExtension("GL_ARB_fragment_shader");
     GLboolean has_arb_vertex_shader = glewGetExtension("GL_ARB_vertex_shader");
@@ -143,15 +145,15 @@ static bool initGPU(int *argcp,char **argv) {
 
     if (!(has_arb_fragment_shader && has_arb_vertex_shader && has_arb_shader_objects && has_arb_shading_language && has_arb_texture_rectangle && has_arb_texture_border_clamp && has_arb_texture_float)) {
         const char * msg[] = {"false", "true"};
-        cerr << "nona: extension GL_ARB_fragment_shader = " << msg[has_arb_fragment_shader] << endl;
-        cerr << "nona: extension GL_ARB_vertex_shader = " << msg[has_arb_vertex_shader] << endl;
-        cerr << "nona: extension GL_ARB_shader_objects = " << msg[has_arb_shader_objects] << endl;
-        cerr << "nona: extension GL_ARB_shading_language_100 = " << msg[has_arb_shading_language] << endl;
-        cerr << "nona: extension GL_ARB_texture_rectangle = " << msg[has_arb_texture_rectangle] << endl;
-        cerr << "nona: extension GL_ARB_texture_border_clamp = " << msg[has_arb_texture_border_clamp] << endl;
-        cerr << "nona: extension GL_ARB_texture_float = " << msg[has_arb_texture_float] << endl;
-        cerr << "nona: This graphics system lacks the necessary extensions for -g." << endl;
-        cerr << "nona: Switching to CPU calculation." << endl;
+        cerr << name << ": " << _X("extension") << " GL_ARB_fragment_shader = " << msg[has_arb_fragment_shader] << endl;
+        cerr << name << ": " << _X("extension") << " GL_ARB_vertex_shader = " << msg[has_arb_vertex_shader] << endl;
+        cerr << name << ": " << _X("extension") << " GL_ARB_shader_objects = " << msg[has_arb_shader_objects] << endl;
+        cerr << name << ": " << _X("extension") << " GL_ARB_shading_language_100 = " << msg[has_arb_shading_language] << endl;
+        cerr << name << ": " << _X("extension") << " GL_ARB_texture_rectangle = " << msg[has_arb_texture_rectangle] << endl;
+        cerr << name << ": " << _X("extension") << " GL_ARB_texture_border_clamp = " << msg[has_arb_texture_border_clamp] << endl;
+        cerr << name << ": " << _X("extension") << " GL_ARB_texture_float = " << msg[has_arb_texture_float] << endl;
+        cerr << name << ": " << _X("This graphics system lacks the necessary extensions for") <<" -g." << endl;
+        cerr << name << ": " << _X("Switching to CPU calculation.") << endl;
         glutDestroyWindow(GlutWindowHandle);
         return false;
     }
@@ -166,7 +168,10 @@ static bool wrapupGPU() {
 
 int main(int argc, char *argv[])
 {
-    
+
+    InitTranslation();
+    const char * name = argv[0];
+
     // parse arguments
     const char * optstring = "z:cho:i:t:m:p:r:e:vg";
     int c;
@@ -240,7 +245,7 @@ int main(int argc, char *argv[])
                 useGPU = 1;
                 break;
             default:
-		usage(argv[0]);
+                usage(argv[0]);
                 abort ();
         }
     }
@@ -268,19 +273,19 @@ int main(int argc, char *argv[])
     Panorama pano;
     ifstream prjfile(scriptFile);
     if (prjfile.bad()) {
-        cerr << "could not open script : " << scriptFile << std::endl;
+        cerr << _X("could not open script") << " : " << scriptFile << std::endl;
         exit(1);
     }
     pano.setFilePrefix(hugin_utils::getPathPrefix(scriptFile));
     AppBase::DocumentData::ReadWriteError err = pano.readData(prjfile);
     if (err != AppBase::DocumentData::SUCCESSFUL) {
-        cerr << "error while parsing panos tool script: " << scriptFile << std::endl;
+        cerr << _X("error while parsing panos tool script:") << " " << scriptFile << std::endl;
         exit(1);
     }
 
     if ( nCmdLineImgs > 0) {
         if (nCmdLineImgs != pano.getNrOfImages()) {
-            cerr << "Incorrect number of images specified on command line\nProject required " << pano.getNrOfImages() << " but " << nCmdLineImgs << " where given" << std::endl;
+            cerr << _X("Incorrect number of images specified on command line\nProject required") <<" " << pano.getNrOfImages() << " " << _X("but") << " " << nCmdLineImgs << " " << _X("where given") << std::endl;
             exit(1);
         }
         for (unsigned i=0; i < pano.getNrOfImages(); i++) {
@@ -307,7 +312,7 @@ int main(int argc, char *argv[])
     } else if (outputFormat == "EXR") {
         opts.outputFormat = PanoramaOptions::EXR;
     } else if (outputFormat != "") {
-        cerr << "Error: unknown output format: " << outputFormat << endl;
+        cerr << _X("Error: unknown output format:") << " " << outputFormat << endl;
         return 1;
     }
 
@@ -334,15 +339,15 @@ int main(int argc, char *argv[])
         {
             if(!set_contains(activeImages,*it))
             {
-                std::cerr << "The project file does not contains an image with number " << *it << std::endl;
+                std::cerr << _X("The project file does not contains an image with number") << " " << *it << std::endl;
                 return 1;
             };
         };
     };
     if(outputImages.size()==0)
     {
-        std::cout << "Project does not contain active images." << std::endl
-            << "Nothing to do for nona." << std::endl;
+        std::cout << _X("Project does not contain active images.") << std::endl
+            << _X("Nothing to do for") << " " << name << "." << std::endl;
         return 0;
     };
     if(useGPU)
@@ -359,7 +364,7 @@ int main(int argc, char *argv[])
             case HuginBase::PanoramaOptions::EQUI_PANINI:
             case HuginBase::PanoramaOptions::GENERAL_PANINI:
                 useGPU=false;
-                std::cout << "Nona-GPU does not support this projection. Switch to CPU calculation."<<std::endl;
+                std::cout << name << "-" << _X("GPU does not support this projection. Switch to CPU calculation.") << std::endl;
                 break;
         };
         for(UIntSet::const_iterator it=outputImages.begin(); it!=outputImages.end();it++)
@@ -368,7 +373,7 @@ int main(int argc, char *argv[])
             if(img.getX()!=0 || img.getY()!=0 || img.getZ()!=0)
             {
                 useGPU=false;
-                std::cout << "Nona-GPU does not support the translation parameters. Switch to CPU calculation." << std::endl;
+                std::cout << name << "-" << _X("GPU does not support the translation parameters. Switch to CPU calculation.") << std::endl;
                 break;
             };
         };
@@ -395,7 +400,7 @@ int main(int argc, char *argv[])
         }
 
     } catch (std::exception & e) {
-        cerr << "caught exception: " << e.what() << std::endl;
+        cerr << _X("caught exception") << ": " << e.what() << std::endl;
         return 1;
     }
     

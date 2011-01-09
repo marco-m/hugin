@@ -263,7 +263,7 @@ std::string doubleToString(double d, int digits)
         b = 0.0;
     }
 
-    void TranslateText(){
+    void InitTranslation(){
         // locate the translations
     #if _WINDOWS
         char buffer[MAX_PATH];//always use MAX_PATH for filepaths
@@ -281,7 +281,7 @@ std::string doubleToString(double d, int digits)
             {
                 working_path.erase(pos);
                 //append path delimiter and path
-                working_path.append("\\share\\hugin\\data\\");
+                working_path.append("\\share\\locale\\");
                 locale_path=working_path;
             }
         }
@@ -292,10 +292,11 @@ std::string doubleToString(double d, int digits)
         if (_NSGetExecutablePath(path, &size) == 0)
         {
           locale_path=dirname(path);
-          locale_path.append("/../Resources/xrc/");
+          // TODO: this path is likely wrong.  OSX devs, please fix.
+          locale_path.append("/../Resources/");
         }
     #else
-          std::string locale_path = (INSTALL_DATA_DIR);
+          std::string locale_path = (INSTALL_LOCALE_DIR);
     #endif
         // and tell gettext where the translations are and which one to use
         bindtextdomain( "hugin", locale_path.c_str() );

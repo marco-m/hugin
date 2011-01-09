@@ -36,6 +36,8 @@
 #include <hugin_utils/platform.h>
 
 // gettext for internalization of strings
+// TODO: some includes for Windows and MacOS are missing
+//       see https://bugs.launchpad.net/hugin/+bug/679715
 #include <hugin_config.h>
 #include <libintl.h>
 #include <locale.h>
@@ -289,11 +291,22 @@ namespace hugin_utils
         
         return ret;
     }
-    
+
+    /** generate a color indicative of the error associated
+     *  with a control point.
+     *
+     *  @p cperr the error of associated with the control points
+     *
+     *  sets \p r \p g  \p b to a color from green (little or
+     *  no error) via yellow to red (big error)
+     *
+     */
     IMPEX void ControlPointErrorColour(const double cperr, 
         double &r,double &g, double &b);
 
-    void TranslateText();
+    /** initialize the translation.
+     */
+    void InitTranslation();
 
 } // namespace
 
