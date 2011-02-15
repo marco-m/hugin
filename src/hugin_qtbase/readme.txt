@@ -13,3 +13,6 @@ hugin_qtbase/qtappbase/
 
 hugin_qtbase/
  These are GUI framework more specific to Hugin. We take modular approach to the controller classes in order to avoid having one controller with everything in it. The GUI layout is designed to be flexible as well.
+
+
+2011/02: Moved Qt based old gui into own branch. It is unmaintained since 2007. Current development uses wxWidgets.
