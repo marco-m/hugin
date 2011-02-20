@@ -360,8 +360,8 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, PT::Panorama &pano)
     wxBitmapButton * select_none = new wxBitmapButton(panel,ID_SHOW_NONE,bitmap);
     
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-    sizer->Add(select_all,5,wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM);
-    sizer->Add(select_none,5,wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM);
+    sizer->Add(select_all,0,wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM,5);
+    sizer->Add(select_none,0,wxALIGN_CENTER_VERTICAL | wxRIGHT | wxTOP | wxBOTTOM,5);
     panel->SetSizer(sizer);
     m_ToggleButtonSizer->Add(panel, 0, wxALIGN_CENTER_VERTICAL);
     m_ToggleButtonSizer->Add(m_ButtonPanel, 1, wxEXPAND | wxADJUST_MINSIZE | wxALIGN_CENTER_VERTICAL, 0);
@@ -743,9 +743,8 @@ GLPreviewFrame::~GLPreviewFrame()
     m_ROIBottomTxt->PopEventHandler(true);
     for (int i=0; i < m_ToggleButtons.size(); i++)
     {
-        m_ToggleButtons[i]->PopEventHandler();
-        m_ToggleButtons[i]->PopEventHandler();
-        m_ToggleButtons[i]->PopEventHandler();
+        m_ToggleButtons[i]->PopEventHandler(true);
+        m_GroupToggleButtons[i]->PopEventHandler(true);
     }
     m_pano.removeObserver(this);
 
@@ -968,9 +967,10 @@ void GLPreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &change
     for (int i=nrButtons-1; i>=(int)nrImages; i--)
     {
         m_ButtonSizer->Detach(m_ToggleButtonPanel[i]);
-        // Image toggle buttons have three event handlers on the stack which
+        // Image toggle buttons have a event handler on the stack which
         // must be removed before the buttons get destroyed.
         m_ToggleButtons[i]->PopEventHandler();
+        m_GroupToggleButtons[i]->PopEventHandler();
         delete m_ToggleButtons[i];
         delete m_GroupToggleButtons[i];
         delete m_ToggleButtonPanel[i];
@@ -1016,7 +1016,7 @@ void GLPreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &change
                 wxToggleButton * but = new wxToggleButton(pan,
                                                           ID_TOGGLE_BUT + *it,
                                                           wxString::Format(wxT("%d"),*it),
-                                                          wxDefaultPosition, wxDefaultSize,
+                                                          wxDefaultPosition, wxSize(20,-1),
                                                           wxBU_EXACTFIT);
 #else
                 wxCheckBox * but = new wxCheckBox(pan,
@@ -1026,8 +1026,16 @@ void GLPreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &change
                 
                 wxCheckBox *butcheck = new wxCheckBox(pan, wxID_ANY, wxT(""));
 
+#ifdef __WXMSW__
+                //we need a border around the button to see the colored panel
+                //because changing backgroundcolor of wxToggleButton does not work in wxMSW
+                siz->AddSpacer(5);
+                siz->Add(butcheck, 0, wxALIGN_CENTRE_HORIZONTAL | wxFIXED_MINSIZE, 0);
+                siz->Add(but,0,wxLEFT | wxRIGHT | wxBOTTOM , 5);
+#else
                 siz->Add(but,0,wxALL | wxADJUST_MINSIZE,0);
                 siz->Add(butcheck, 0, wxALL | wxFIXED_MINSIZE, 0);
+#endif
                 // for the identification tool to work, we need to find when the
                 // mouse enters and exits the button. We use a custom event
                 // handler, which will also toggle the images:
@@ -1050,14 +1058,8 @@ void GLPreviewFrame::panoramaImagesChanged(Panorama &pano, const UIntSet &change
                 group_event_handler->AddIdentifyTool(&plane_overview_identify_tool);
                 toggle_group_button_event_handlers.push_back(group_event_handler);
                 butcheck->PushEventHandler(group_event_handler);
-                butcheck->Show(m_customDragChoice->GetValue());
+                butcheck->Show(m_customDragChoice->GetValue() && m_mode==mode_drag);
 
-                wxSize sz = but->GetSize();
-//                but->SetSize(res.GetWidth(),sz.GetHeight());
-                // HACK.. set fixed width. that should work
-                // better than all that stupid dialogunit stuff, that
-                // breaks on wxWin 2.5
-                but->SetSize(20, sz.GetHeight());
                 but->SetValue(true);
                 m_ButtonSizer->Add(pan,
                                    0,
@@ -2064,11 +2066,21 @@ void GLPreviewFrame::ClearDragGroupImages(bool update_check_box) {
     }
 }
 
-void GLPreviewFrame::OnCustomDragChoice(wxCommandEvent &e) {
+void GLPreviewFrame::EnableGroupCheckboxes(bool isShown)
+{
     std::vector<wxCheckBox*>::iterator it;
-    for(it = m_GroupToggleButtons.begin() ; it != m_GroupToggleButtons.end() ; it++) {
-        (*it)->Show(e.IsChecked());
+    for(it = m_GroupToggleButtons.begin() ; it != m_GroupToggleButtons.end() ; it++)
+    {
+        (*it)->Show(isShown);
     }
+#ifdef __WXMSW__
+    m_ButtonPanel->Layout();
+    m_ButtonPanel->Refresh();
+#endif
+};
+
+void GLPreviewFrame::OnCustomDragChoice(wxCommandEvent &e) {
+    EnableGroupCheckboxes(e.IsChecked());
     e.Skip();
 }
 
@@ -2237,6 +2249,8 @@ void GLPreviewFrame::SetMode(int newMode)
             TurnOffTools(preview_helper->ActivateTool(crop_tool));
             break;
     };
+    //enable group checkboxes only for drag mode tab
+    EnableGroupCheckboxes(m_mode==mode_drag && m_customDragChoice->GetValue());
     m_GLPreview->Refresh();
 };
 

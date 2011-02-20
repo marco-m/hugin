@@ -249,6 +249,7 @@
                     <object class="sizeritem">
                       <object class="wxCheckBox" name="preview_photometric_tool">
                         <label>Photometrics</label>
+                        <checked>1</checked>
                         <tooltip>Use full photometric correction (slow)</tooltip>
                       </object>
                       <flag>wxALL</flag>
@@ -419,7 +420,7 @@
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
-                        <label>×</label>
+                        <label>ï¿½</label>
                       </object>
                       <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
                       <border>4</border>
@@ -505,9 +506,17 @@
                         <label>Custom drag images</label>
                         <tooltip>Drag custom groups of images instead of images grouped by control points</tooltip>
                       </object>
+                      <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                      <border>5</border>
                     </object>
                   </object>
                   <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticLine">
+                    <size>2,-1</size>
+                  </object>
+                  <flag>wxEXPAND|wxALIGN_CENTRE_VERTICAL</flag>
                 </object>
                 <object class="sizeritem">
                   <object class="wxBoxSizer">
