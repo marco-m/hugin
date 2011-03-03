@@ -61,7 +61,7 @@ var->getDef().add();
 void AssistantMakefilelibExport::echoInfo(Rule& inforule, const std::string& info)
 {
 #ifdef _WINDOWS
-    inforule.addCommand("echo " + info, false);
+    inforule.addCommand("echo " + hugin_utils::QuoteStringInternal<std::string>(info,"^","^&|<>"), false);
 #else
     inforule.addCommand("echo '" + info + "'", false);
 #endif
@@ -77,7 +77,7 @@ bool AssistantMakefilelibExport::createItems()
 
 #ifdef _WINDOWS
     mgr.own_add(new Comment("Force using cmd.exe"));
-    mf::Variable* winshell = mgr.own(new mf::Variable("SHELL", getenv("ComSpec")));
+    mf::Variable* winshell = mgr.own(new mf::Variable("SHELL", getenv("ComSpec"), Makefile::NONE));
     winshell->getDef().add();
 #endif
 

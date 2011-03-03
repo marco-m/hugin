@@ -31,8 +31,7 @@
 
 #include <hugin_shared.h>
 #include <appbase/DocumentData.h>
-#include <algorithm/ControlPointCreatorAlgorithm.h>
-#include <algorithm/PanoramaAlgorithm.h>
+// #include <algorithm/ControlPointCreatorAlgorithm.h>
 #include <algorithms/assistant_makefile/AssistantMakefilelibExport.h>
 #include <algorithms/basic/CalculateCPStatistics.h>
 #include <algorithms/basic/CalculateMeanExposure.h>
@@ -48,16 +47,17 @@
 #include <algorithms/nona/ComputeImageROI.h>
 #include <algorithms/nona/FitPanorama.h>
 #include <algorithms/nona/NonaFileStitcher.h>
-#include <algorithms/nona/NonaImageStitcher.h>
+// #include <algorithms/nona/NonaImageStitcher.h>
 // #include <algorithms/optimizer/ImageGraph.h>
 #include <algorithms/optimizer/PhotometricOptimizer.h>
 #include <algorithms/optimizer/PTOptimizer.h>
 #include <algorithms/panorama_makefile/PanoramaMakefilelibExport.h>
 #include <algorithms/point_sampler/PointSampler.h>
-#include <algorithm/StitcherAlgorithm.h>
+#include <algorithms/PanoramaAlgorithm.h>
+#include <algorithms/StitcherAlgorithm.h>
 #include <panodata/ImageVariableGroup.h>
 #include <panodata/ImageVariableTranslate.h>
-#include <panodata/PanoImage.h>
+// #include <panodata/PanoImage.h>
 #include <panodata/PanoramaData.h>
 #include <panodata/Panorama.h>
 #include <panodata/SrcPanoImage.h>
@@ -238,9 +238,9 @@ using namespace HuginBase;
 %include <panodata/PanoramaVariable.h>
 %include <panodata/PanoramaOptions.h>
 
-%include <panodata/PanoImage.h>
+// %include <panodata/PanoImage.h>
 %include <hsi_SrcPanoImage.h>
-%include <panodata/DestPanoImage.h>
+// %include <panodata/DestPanoImage.h>
 %include <panodata/ControlPoint.h>
 %include <panodata/Lens.h>
 %include <panodata/Mask.h>
@@ -251,9 +251,9 @@ using namespace HuginBase;
 %include <panotools/PanoToolsOptimizerWrapper.h>
 %include <panotools/PanoToolsUtils.h>
 
-%include <algorithm/ControlPointCreatorAlgorithm.h>
-%include <algorithm/PanoramaAlgorithm.h>
-%include <algorithm/StitcherAlgorithm.h>
+// %include <algorithm/ControlPointCreatorAlgorithm.h>
+%include <algorithms/PanoramaAlgorithm.h>
+%include <algorithms/StitcherAlgorithm.h>
 %include <algorithms/assistant_makefile/AssistantMakefilelibExport.h>
 %include <algorithms/basic/CalculateCPStatistics.h>
 %include <algorithms/basic/CalculateMeanExposure.h>
@@ -269,7 +269,7 @@ using namespace HuginBase;
 %include <algorithms/nona/ComputeImageROI.h>
 %include <algorithms/nona/FitPanorama.h>
 %include <algorithms/nona/NonaFileStitcher.h>
-%include <algorithms/nona/NonaImageStitcher.h>
+// %include <algorithms/nona/NonaImageStitcher.h>
 // %include <algorithms/optimizer/ImageGraph.h>
 %include <algorithms/optimizer/PTOptimizer.h>
 %include <algorithms/optimizer/PhotometricOptimizer.h>

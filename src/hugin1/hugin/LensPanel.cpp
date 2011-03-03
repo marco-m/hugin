@@ -34,10 +34,10 @@
 
 #include <algorithm>
 
-#include "common/wxPlatform.h"
+#include "base_wx/wxPlatform.h"
 #include "hugin/LensPanel.h"
 #include "hugin/CommandHistory.h"
-#include "base_wx/ImageCache.h"
+#include "base_wx/wxImageCache.h"
 #include "hugin/CPEditorPanel.h"
 #include "hugin/ImagesList.h"
 //#include "hugin/ImageCenter.h"
@@ -51,7 +51,7 @@
 #include "hugin/HFOVDialog.h"
 
 using namespace PT;
-using namespace utils;
+using namespace hugin_utils;
 using namespace std;
 
 #define m_XRCID(str_id) \
@@ -392,19 +392,19 @@ void LensPanel::ResponseTypeChanged ( wxCommandEvent & e )
     DEBUG_TRACE ("");
     HuginBase::ImageVariableGroup & lenses = variable_groups->getLenses();
     if (m_selectedLenses.size() > 0) {
-        std::vector<ImageOptions> opts;
+        std::vector<SrcPanoImage> SrcImgs;
         UIntSet imgs;
         for (size_t i = 0 ; i < pano->getNrOfImages(); i++) {
             if (set_contains(m_selectedLenses, lenses.getPartNumber(i)))
             {
                 imgs.insert(i);
-                ImageOptions opt = pano->getImage(i).getOptions();
-                opt.responseType = e.GetSelection();
-                opts.push_back(opt);
+                HuginBase::SrcPanoImage img=pano->getSrcImage(i);
+                img.setResponseType((SrcPanoImage::ResponseType)e.GetSelection());
+                SrcImgs.push_back(img);
             }
         }
         GlobalCmdHist::getInstance().addCommand(
-                new PT::UpdateImageOptionsCmd( *pano, opts, imgs )
+            new PT::UpdateSrcImagesCmd( *pano, imgs, SrcImgs )
                                                );
     }
 }

@@ -39,7 +39,7 @@
 #include "base_wx/MyProgressDialog.h"
 #include "base_wx/MyExternalCmdExecDialog.h"
 #include "base_wx/platform.h"
-#include "common/wxPlatform.h"
+#include "base_wx/wxPlatform.h"
 
 #include "RunStitchPanel.h"
 
@@ -48,7 +48,7 @@
 using namespace vigra;
 using namespace PT;
 using namespace std;
-using namespace utils;
+using namespace hugin_utils;
 
 
 // ==========================================
@@ -138,7 +138,7 @@ bool RunStitchPanel::StitchProject(wxString scriptFile, wxString outname,
 
     wxString pathToPTO;
     wxFileName::SplitPath(scriptFile, &pathToPTO, NULL, NULL);
-    pathToPTO.Append(wxT("/"));
+    pathToPTO.Append(wxFileName::GetPathSeparator());
 
     ifstream prjfile((const char *)scriptFile.mb_str(HUGIN_CONV_FILENAME));
     if (prjfile.bad()) {
@@ -179,7 +179,7 @@ bool RunStitchPanel::StitchProject(wxString scriptFile, wxString outname,
     pano.setOptions(opts);
     // make sure we got an absolute path
     if (! wxIsAbsolutePath(outname)) {
-        outname = wxGetCwd() + wxT("/") + outname;
+        outname = wxGetCwd() + wxFileName::GetPathSeparator() + outname;
     }
 
     DEBUG_DEBUG("output file specified is " << (const char *)outname.mb_str(wxConvLocal));
@@ -191,6 +191,11 @@ bool RunStitchPanel::StitchProject(wxString scriptFile, wxString outname,
     basename = outputPrefix.GetFullName();
     // stitch only active images
     UIntSet activeImgs = pano.getActiveImages();
+    //get temp dir from preferences
+    wxString tempDir= wxConfigBase::Get()->Read(wxT("tempDir"),wxT(""));
+    if(!tempDir.IsEmpty())
+        if(tempDir.Last()!=wxFileName::GetPathSeparator())
+            tempDir.Append(wxFileName::GetPathSeparator());
 
     try {
         PanoramaOptions  opts = pano.getOptions();
@@ -200,7 +205,7 @@ bool RunStitchPanel::StitchProject(wxString scriptFile, wxString outname,
 		opts.setROI(vigra::Rect2D(vigra::Size2D(300,150)));
 		pano.setOptions(opts);*/
         // copy pto file to temporary file
-        m_currentPTOfn = wxFileName::CreateTempFileName(wxT("huginpto_"));
+        m_currentPTOfn = wxFileName::CreateTempFileName(tempDir+wxT("huginpto_"));
         if(m_currentPTOfn.size() == 0) {
             wxLogError(_("Could not create temporary file"));
         }
@@ -217,7 +222,7 @@ bool RunStitchPanel::StitchProject(wxString scriptFile, wxString outname,
 
         wxFile makeFile;
         //TODO: change to implementatin with config->Read(wxT("tempDir"),wxT(""))
-        m_currentMakefn = wxFileName::CreateTempFileName(wxT("huginmk_"), &makeFile);
+        m_currentMakefn = wxFileName::CreateTempFileName(tempDir+wxT("huginmk_"), &makeFile);
         if(m_currentMakefn.size() == 0) {
             wxLogError(_("Could not create temporary file"));
             return false;

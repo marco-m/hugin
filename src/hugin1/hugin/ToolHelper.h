@@ -92,7 +92,7 @@ public:
     // Then return a list of tools that had to be dactivated to comply.
     std::set<Tool*> ActivateTool(Tool *tool);
     // deactivate a tool: remove all it's notifications.
-    void DeactivateTool(Tool *tool);
+    virtual void DeactivateTool(Tool *tool);
     
     // Events
     // the x and y coordinates are in pixels from the top left of the panorama.
@@ -133,6 +133,8 @@ public:
 
     bool IsMouseOverPano() {return mouse_over_pano;}
     
+    GLPreviewFrame * GetPreviewFrame() {return frame;}
+    
 protected:
     std::set<Tool *> tools_deactivated;
     PT::Panorama *pano;
@@ -152,18 +154,18 @@ protected:
     std::set<Tool *> images_under_mouse_notified_tools;
     std::set<Tool *> mouse_wheel_notified_tools;
     // these are vectors: the index is the image that a single tool uses.
-    std::vector<Tool *> image_draw_begin_tools;
-    std::vector<Tool *> image_draw_end_tools;
+    std::vector<std::set<Tool *> > image_draw_begin_tools;
+    std::vector<std::set<Tool *> >  image_draw_end_tools;
     // stop notifying the given tool of an event.
     void RemoveTool(Tool *tool, Tool **single);
     void RemoveTool(Tool *tool, std::set<Tool *> *set);
-    void RemoveTool(Tool *tool, std::vector<Tool *> *vector);
-    void RemoveTool(Tool *tool, std::vector<Tool *> *vector,
+    void RemoveTool(Tool *tool, std::vector<std::set<Tool *> > *vector);
+    void RemoveTool(Tool *tool, std::vector<std::set<Tool *> > *vector,
                     unsigned int index);
     // set the tool up for notification, deactivating any tools in the way.
     void AddTool(Tool *tool, Tool **single);
     void AddTool(Tool *tool, std::set<Tool *> *set);
-    void AddTool(Tool *tool, std::vector<Tool *> *vector,
+    void AddTool(Tool *tool, std::vector<std::set<Tool *> > *vector,
                  unsigned int index);
                  
     // is the set of images under the mouse up to date?
@@ -221,6 +223,8 @@ public:
     void AfterDrawImagesBack();
     void AfterDrawImagesFront();
     
+    void DeactivateTool(Tool *tool);
+
 protected:
     std::set<Tool *> draw_under_notified_tools_back;
     std::set<Tool *> draw_under_notified_tools_front;
@@ -240,7 +244,7 @@ public:
 
     void MouseMoved(int x, int y, wxMouseEvent & e);
     void UpdateImagesUnderMouse();
-
+    
     double getPlaneX() {return plane_x;}
     double getPlaneY() {return plane_y;}
 

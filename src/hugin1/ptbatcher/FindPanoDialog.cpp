@@ -25,9 +25,10 @@
  */
 
 #include "FindPanoDialog.h"
-#include "common/wxPlatform.h"
+#include "base_wx/wxPlatform.h"
 #include "panoinc.h"
 #include "PTBatcherGUI.h"
+#include "hugin_utils/alphanum.hpp"
 
 BEGIN_EVENT_TABLE(FindPanoDialog,wxDialog)
 EVT_BUTTON(XRCID("find_pano_close"), FindPanoDialog::OnButtonClose)
@@ -36,6 +37,11 @@ EVT_BUTTON(XRCID("find_pano_start_stop"), FindPanoDialog::OnButtonStart)
 EVT_BUTTON(XRCID("find_pano_add_queue"), FindPanoDialog::OnButtonSend)
 EVT_CLOSE(FindPanoDialog::OnClose)
 END_EVENT_TABLE()
+
+bool SortFilename::operator()(const SrcPanoImage* img1, const SrcPanoImage* img2)
+{
+    return doj::alphanum_comp<std::string>(img1->getFilename(),img2->getFilename())<0;
+};
 
 FindPanoDialog::FindPanoDialog(BatchFrame *batchframe, wxString xrcPrefix)
 {
@@ -289,6 +295,11 @@ void FindPanoDialog::SearchInDir(wxString dirstring, bool includeSubdir)
         {
             std::string filenamestr(file.GetFullPath().mb_str(HUGIN_CONV_FILENAME));
             SrcPanoImage *img=new SrcPanoImage(filenamestr);
+            // this must be called before the first call to newPanos
+            // otherwise the first/second image is not processed in the right way
+            // But when running in debug mode it works; seems to be a kind of
+            // race conditions
+            wxGetApp().Yield(true);
             if(img->hasEXIFread())
             {
                 bool found=false;

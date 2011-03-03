@@ -1,6 +1,6 @@
 // -*- c-basic-offset: 4 -*-
 
-/** @file PanoramaMemento.cpp
+/** @file PanoramaOptions.cpp
  *
  *  @brief implementation of PanoramaMemento Class
  *
@@ -431,15 +431,6 @@ double PanoramaOptions::getVFOV() const
 
     return VFOV;
 }
-
-
-DestPanoImage PanoramaOptions::getDestImage() const
-{
-    vigra::Size2D size(getWidth(), getHeight());
-    return DestPanoImage((DestPanoImage::Projection) getProjection(),
-                          getHFOV(), size );
-}
-
 
 const std::string PanoramaOptions::fileformatNames[] =
 {

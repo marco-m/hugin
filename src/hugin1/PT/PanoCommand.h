@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file PanoCommand.h
+/** @file hugin1/PT/PanoCommand.h
  *
  *  @author Pablo d'Angelo <pablo.dangelo@web.de>
  *
@@ -296,9 +296,9 @@ namespace PT {
     class UpdateCPsCmd : public PanoCommand
     {
     public:
-        UpdateCPsCmd(Panorama & p, const CPVector & cps)
+        UpdateCPsCmd(Panorama & p, const CPVector & cps, bool doUpdateCPError=true)
             : PanoCommand(p),
-              cps(cps)
+              cps(cps), updateCPError(doUpdateCPError)
             { };
 
         virtual bool processPanorama(Panorama& pano)
@@ -308,7 +308,10 @@ namespace PT {
                 for (it = cps.begin(); it != cps.end(); ++it, i++) {
                     pano.changeControlPoint(i, *it);
                 }
-                HuginBase::PTools::calcCtrlPointErrors(pano);
+                if(updateCPError)
+                {
+                    HuginBase::PTools::calcCtrlPointErrors(pano);
+                };
                 pano.changeFinished();
 
                 return true;
@@ -321,6 +324,7 @@ namespace PT {
 
     private:
         CPVector cps;
+        bool updateCPError;
     };
 
     //=========================================================================
@@ -1538,6 +1542,36 @@ namespace PT {
     private:
         unsigned int m_img;
         HuginBase::MaskPolygonVector m_mask;
+    };
+
+    //=========================================================================
+    //=========================================================================
+
+    /** update global white balance */
+    class UpdateWhiteBalance : public PanoCommand
+    {
+    public:
+        UpdateWhiteBalance(Panorama & p, double redFactor, double blueFactor)
+            : PanoCommand(p),
+              m_red(redFactor), m_blue(blueFactor)
+        { };
+
+        virtual bool processPanorama(Panorama& pano)
+            {
+                pano.updateWhiteBalance(m_red,m_blue);
+                pano.changeFinished();
+
+                return true;
+            }
+        
+        virtual std::string getName() const
+            {
+                return "update global white balance";
+            }
+
+    private:
+        double m_red;
+        double m_blue;
     };
 
 

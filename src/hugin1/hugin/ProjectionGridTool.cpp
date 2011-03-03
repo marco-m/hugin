@@ -139,14 +139,14 @@ void PanosphereOverviewProjectionGridTool::AfterDrawImagesBackEvent()
 
     DEBUG_DEBUG("resources created");
 
-    glDisable(GL_TEXTURE_2D);
-    glColor4f(0.3,0.3,0.3,0.6);
-    glEnable(GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    GLUquadric* gridb = gluNewQuadric();
-    gluSphere(gridb, 101,40,20);
+//    glDisable(GL_TEXTURE_2D);
+//    glColor4f(0.3,0.3,0.3,0.6);
+//    glEnable(GL_BLEND);
+//    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    GLUquadric* gridb = gluNewQuadric();
+//    gluSphere(gridb, 101,40,20);
 
-    glEnable(GL_TEXTURE_2D);
+//    glEnable(GL_TEXTURE_2D);
 
     glColor4f(1,1,1,0.3);
     glEnable( GL_TEXTURE_2D );
@@ -290,10 +290,12 @@ bool ProjectionGridTool::createTexture()
         glBindTexture(GL_TEXTURE_2D, texture_num);
 
 
+    GLint texSize; 
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &texSize);
     int width_p = 12;
     int height_p = 11;
-    int width = 1 << width_p;
-    int height = 1 << height_p;
+    int width = std::min(1 << width_p,texSize);
+    int height = std::min(1 << height_p, texSize >> 1);
 
     int hor_lines = 20;
     int ver_lines = 40;
@@ -426,10 +428,10 @@ bool ProjectionGridTool::createTexture()
 
     bool has_error = false;
     GLint error;
-       error = gluBuild2DMipmaps/*Levels*/(GL_TEXTURE_2D, GL_RGBA, width, height,
+       error = gluBuild2DMipmaps/*Levels*/(GL_TEXTURE_2D, GL_RGBA8, width, height,
                                GL_RGBA, GL_UNSIGNED_BYTE, /*min, min, max,*/
                                (unsigned char *) image);
-    
+    delete [] image;
     static bool checked_anisotropic = false;
     static bool has_anisotropic;
     static float anisotropy;
@@ -465,7 +467,7 @@ bool ProjectionGridTool::createTexture()
     error = glGetError();
     if (error != GL_NO_ERROR)
     {
-        DEBUG_ERROR("GL Error when bulding mipmap levels: "
+        DEBUG_ERROR("GL Error when building mipmap levels: "
                   << gluErrorString(error) << ".");
         has_error = true;
     }

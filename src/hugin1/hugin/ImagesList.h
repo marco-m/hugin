@@ -1,5 +1,5 @@
 // -*- c-basic-offset: 4 -*-
-/** @file List.h
+/** @file ImagesList.h
  *
  *  @author Kai-Uwe Behrmann <web@tiscali.de>
  *
@@ -32,6 +32,20 @@
 //#include "hugin/MainFrame.h"
 
 using namespace PT;
+
+//declare 2 event types to communicate with parent about adding/deleting images
+#if wxCHECK_VERSION(2,9,0)
+    wxDECLARE_EVENT(EVT_IMAGE_ADD,wxCommandEvent);
+    wxDECLARE_EVENT(EVT_IMAGE_DEL,wxCommandEvent);
+#else
+#if _WINDOWS && defined Hugin_shared
+    DECLARE_LOCAL_EVENT_TYPE(EVT_IMAGE_ADD,-1)
+    DECLARE_LOCAL_EVENT_TYPE(EVT_IMAGE_DEL,-1)
+#else
+    DECLARE_EVENT_TYPE(EVT_IMAGE_ADD,-1)
+    DECLARE_EVENT_TYPE(EVT_IMAGE_DEL,-1)
+#endif
+#endif
 
 /** multi use list.
  *
@@ -103,6 +117,9 @@ public:
      */
     void SelectSingleImage(unsigned int imgNr);
 
+    /** Select all images */
+    void SelectAll();
+
     /** get the currently selected images */
     const UIntSet & GetSelected() const;
 
@@ -119,6 +136,8 @@ protected:
     void OnItemDeselected ( wxListEvent & e );
     // save the column width when changed
     void OnColumnWidthChange( wxListEvent & e );
+    /** event handler to capture special key code */
+    void OnChar( wxKeyEvent & e);
 
     /** create icons for an image */
     //void createIcon(wxBitmap & bitmap, unsigned int imgNr, unsigned int size);
@@ -134,11 +153,12 @@ protected:
 
     // propagate list selections/deselections to client.
     bool m_notifyParents;
+    bool m_singleSelect;
 
     //for saving column width
     wxString m_configClassName;
     DECLARE_EVENT_TABLE()
-    DECLARE_DYNAMIC_CLASS(ImagesListImage)
+    DECLARE_DYNAMIC_CLASS(ImagesList)
 };
 
 /** specialized to display image data (width, position)

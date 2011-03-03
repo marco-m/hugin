@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 4 ; tab-width: 4 -*-
 /*
 * Copyright (C) 2007-2008 Anael Orlinski
 *
@@ -41,14 +42,15 @@
 #include "Tracer.h"
 
 #include <algorithms/nona/ComputeImageROI.h>
+#include <algorithms/optimizer/PTOptimizer.h>
 #include <nona/RemappedPanoImage.h>
 #include <nona/ImageRemapper.h>
 
 #include <time.h>
 
-#define TRACE_IMG(X) TRACE_INFO("i" << ioImgInfo._number << " : " << X << endl)
-#define TRACE_PAIR(X) TRACE_INFO("i" << ioMatchData._i1->_number << " <> " \
-								 "i" << ioMatchData._i2->_number << " : " << X << endl)
+#define TRACE_IMG(X) {if (iPanoDetector.getVerbose() > 1) { TRACE_INFO("i" << ioImgInfo._number << " : " << X << endl);} }
+#define TRACE_PAIR(X) {if (iPanoDetector.getVerbose() > 1){ TRACE_INFO("i" << ioMatchData._i1->_number << " <> " \
+																		"i" << ioMatchData._i2->_number << " : " << X << endl)}}
 
 using namespace std;
 using namespace lfeat;
@@ -56,6 +58,9 @@ using namespace HuginBase;
 using namespace AppBase;
 using namespace HuginBase::Nona;
 using namespace hugin_utils;
+
+
+static ZThread::FastMutex aPanoToolsMutex;
 
 // define a Keypoint insertor
 class KeyPointVectInsertor : public lfeat::KeyPointInsertor
@@ -127,6 +132,28 @@ vigra::RGBValue<float> gray2RGB(float const& v)
 {
     return vigra::RGBValue<float>(v,v,v);
 }  
+
+template <class SrcImageIterator, class SrcAccessor>
+void applyMaskAndCrop(vigra::triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img, const HuginBase::SrcPanoImage& SrcImg)
+{
+    vigra::Diff2D imgSize = img.second - img.first;
+
+    // create dest y iterator
+    SrcImageIterator yd(img.first);
+    // loop over the image and transform
+    for(int y=0; y < imgSize.y; ++y, ++yd.y)
+    {
+        // create x iterators
+        SrcImageIterator xd(yd);
+        for(int x=0; x < imgSize.x; ++x, ++xd.x)
+        {
+            if(!SrcImg.isInside(vigra::Point2D(x,y)))
+            {
+                *xd=0;
+            };
+        }
+    }
+}
 
 // save some intermediate images to disc if defined
 //#define DEBUG_LOADING_REMAPPING
@@ -204,7 +231,7 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
             vigra::FImage ffImg;
             MultiProgressDisplay* progress=new DummyMultiProgressDisplay();
             remapped->setPanoImage(iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number),
-                    ioImgInfo._projOpts,vigra::Rect2D(0,0,ioImgInfo._detectWidth, ioImgInfo._detectHeight));
+				   ioImgInfo._projOpts, ioImgInfo._projOpts.getROI());
             if(mask.width()>0)
             {
                 remapped->remapImage(vigra::srcImageRange(RGBimg),vigra::srcImage(mask),vigra_ext::INTERP_CUBIC,*progress);
@@ -222,14 +249,15 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
         }
         else
         {
-            if(iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number).hasActiveMasks())
+            const SrcPanoImage &SrcImg=iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number); 
+            if(SrcImg.hasActiveMasks() || (SrcImg.getCropMode()!=SrcPanoImage::NO_CROP && !SrcImg.getCropRect().isEmpty()))
             {
                 if(mask.width()!=aImageInfo.width() || mask.height()!=aImageInfo.height())
                 {
                     mask.resize(aImageInfo.size().width(),aImageInfo.size().height(),255);
                 };
-                //copy mask from pto file into alpha layer
-                vigra_ext::applyMask(vigra::destImageRange(mask), iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number).getActiveMasks());
+                //copy mask and crop from pto file into alpha layer
+                applyMaskAndCrop(vigra::destImageRange(mask), SrcImg);
             };
         };
 
@@ -411,18 +439,18 @@ bool PanoDetector::FilterKeyPointsInImage(ImgData& ioImgInfo, const PanoDetector
 	double aXF = (double)iPanoDetector.getSieve1Width() / (double)ioImgInfo._detectWidth;
 	double aYF = (double)iPanoDetector.getSieve1Height() / (double)ioImgInfo._detectHeight;
 	
+	bool distmap_valid=(ioImgInfo._distancemap.width()>0 && ioImgInfo._distancemap.height()>0);
 	BOOST_FOREACH(KeyPointPtr& aK, ioImgInfo._kp)
 	{
-        bool valid=(ioImgInfo._distancemap.width()==0 || ioImgInfo._distancemap.height()==0);
-        if(!valid)
+        if(distmap_valid)
         {
-            if(aK->_x > 0 && aK->_x < ioImgInfo._distancemap.width() && aK->_y > 0 && aK->_y < ioImgInfo._distancemap.height())
-            {
-                valid=(ioImgInfo._distancemap((int)(aK->_x),(int)(aK->_y))>aK->_scale*10);
-            };
-        };
-        if(valid)
-        {
+            if(aK->_x > 0 && aK->_x < ioImgInfo._distancemap.width() && aK->_y > 0 && aK->_y < ioImgInfo._distancemap.height()
+			   && ioImgInfo._distancemap((int)(aK->_x),(int)(aK->_y)) >aK->_scale*8) 
+			{
+				//cout << " dist from border:" << ioImgInfo._distancemap((int)(aK->_x),(int)(aK->_y)) << " required dist: " << aK->_scale*12 << std::endl;
+				aSieve.insert(aK, (int)(aK->_x * aXF), (int)(aK->_y * aYF));
+			}
+		} else {
 			aSieve.insert(aK, (int)(aK->_x * aXF), (int)(aK->_y * aYF));
         };
 	}
@@ -469,6 +497,43 @@ bool PanoDetector::MakeKeyPointDescriptorsInImage(ImgData& ioImgInfo, const Pano
 		// store the descriptor length
 		ioImgInfo._descLength = aKPD.getDescriptorLength();
 	return true;
+}
+
+bool PanoDetector::RemapBackKeypoints(ImgData& ioImgInfo, const PanoDetector& iPanoDetector)
+{
+	
+	double scale=iPanoDetector._downscale ? 2.0:1.0;
+
+	if (!ioImgInfo._needsremap && scale != 1.0) {
+		BOOST_FOREACH(KeyPointPtr& aK, ioImgInfo._kp)
+		{
+			aK->_x *= scale;
+			aK->_y *= scale;
+			aK->_scale *= scale;
+		}
+	} else {
+		TRACE_IMG("Remapping back keypoints...");
+		HuginBase::PTools::Transform trafo1;
+		trafo1.createTransform(iPanoDetector._panoramaInfoCopy.getSrcImage(ioImgInfo._number),
+							   ioImgInfo._projOpts);
+
+		int dx1 = ioImgInfo._projOpts.getROI().left();
+		int dy1 = ioImgInfo._projOpts.getROI().top();
+
+		BOOST_FOREACH(KeyPointPtr& aK, ioImgInfo._kp)
+		{
+			double xout, yout;
+			if(trafo1.transformImgCoord(xout, yout, aK->_x + dx1, aK->_y+ dy1))
+			{
+				// downscaling is take care of by the remapping transform
+				// no need for multiplying the scale factor...
+				aK->_x=xout;
+				aK->_y=yout;
+				aK->_scale *= scale;
+			}
+		}
+    }
+    return true;
 }
 
 bool PanoDetector::BuildKDTreesInImage(ImgData& ioImgInfo, const PanoDetector& iPanoDetector)
@@ -577,8 +642,122 @@ bool PanoDetector::FindMatchesInPair(MatchData& ioMatchData, const PanoDetector&
 	return true;
 }
 
-
 bool PanoDetector::RansacMatchesInPair(MatchData& ioMatchData, const PanoDetector& iPanoDetector)
+{
+	// Use panotools model for wide angle lenses
+ 	RANSACOptimizer::Mode rmode = iPanoDetector._ransacMode;
+	if (rmode == RANSACOptimizer::HOMOGRAPHY ||
+		(rmode == RANSACOptimizer::AUTO && iPanoDetector._panoramaInfo->getImage(ioMatchData._i1->_number).getHFOV() < 65 &&
+		 iPanoDetector._panoramaInfo->getImage(ioMatchData._i2->_number).getHFOV() < 65))
+	{
+		return RansacMatchesInPairHomography(ioMatchData, iPanoDetector);
+	} else {
+		return RansacMatchesInPairCam(ioMatchData, iPanoDetector);
+	}
+}
+
+// new code with fisheye aware ransac
+bool PanoDetector::RansacMatchesInPairCam(MatchData& ioMatchData, const PanoDetector& iPanoDetector)
+{
+	TRACE_PAIR("RANSAC Filtering with Panorama model...");
+
+	if (ioMatchData._matches.size() < (unsigned int)iPanoDetector.getMinimumMatches())
+	{
+		TRACE_PAIR("Too few matches ... removing all of them.");
+		ioMatchData._matches.clear();
+		return true;
+	}
+
+	if (ioMatchData._matches.size() < 6)
+	{
+		TRACE_PAIR("Not enough matches for RANSAC filtering.");
+		return true;
+	}
+
+	// setup a panorama project with the two images.
+	// is this threadsafe (is this read only access?)
+	UIntSet imgs;
+	int pano_i1 = ioMatchData._i1->_number;
+	int pano_i2 = ioMatchData._i2->_number;
+	imgs.insert(pano_i1);
+	imgs.insert(pano_i2);
+	int pano_local_i1 = 0;
+	int pano_local_i2 = 1;
+	if (pano_i1 > pano_i2) {
+		pano_local_i1 = 1;
+		pano_local_i2 = 0;
+	}
+	
+	// perform ransac matching.
+	// ARGH the panotools optimizer uses global variables is not reentrant
+	std::vector<int> inliers;
+	{
+		ZThread::Guard<ZThread::FastMutex> g(aPanoToolsMutex);
+
+		PanoramaData *panoSubset = iPanoDetector._panoramaInfo->getNewSubset(imgs);
+
+		// create control point vector
+		CPVector controlPoints(ioMatchData._matches.size());
+		int i=0;
+		BOOST_FOREACH(PointMatchPtr& aM, ioMatchData._matches)
+		{
+			controlPoints[i] = ControlPoint(pano_local_i1, aM->_img1_x, aM->_img1_y,
+											pano_local_i2, aM->_img2_x, aM->_img2_y);
+			i++;
+		}
+		panoSubset->setCtrlPoints(controlPoints);
+	
+
+		PT_setProgressFcn(ptProgress);
+		PT_setInfoDlgFcn(ptinfoDlg);
+
+		RANSACOptimizer::Mode rmode = iPanoDetector._ransacMode;
+		if (rmode == RANSACOptimizer::AUTO)
+			rmode = RANSACOptimizer::RPY;
+		inliers = HuginBase::RANSACOptimizer::findInliers(*panoSubset, pano_local_i1, pano_local_i2, 
+														  iPanoDetector.getRansacDistanceThreshold(), rmode);
+		PT_setProgressFcn(NULL);
+		PT_setInfoDlgFcn(NULL);
+		delete panoSubset;
+
+		TRACE_PAIR("Removed " << controlPoints.size() - inliers.size() << " matches. " << inliers.size() << " remaining.");
+		if (inliers.size() < 0.5 * controlPoints.size()) {
+			// more than 50% of matches were removed, ignore complete pair...
+			TRACE_PAIR("RANSAC found more than 50% outliers, removing all matches");
+			ioMatchData._matches.clear();
+			return true;
+		}
+	}
+
+
+	if (inliers.size() < (unsigned int)iPanoDetector.getMinimumMatches())
+	{
+		TRACE_PAIR("Too few matches ... removing all of them.");
+		ioMatchData._matches.clear();
+		return true;
+	}
+	
+	// keep only inlier matches
+	PointMatchVector_t aInlierMatches;
+	aInlierMatches.reserve(inliers.size());
+
+	BOOST_FOREACH(int idx, inliers)
+	{
+		aInlierMatches.push_back(ioMatchData._matches[idx]);
+	}
+	ioMatchData._matches = aInlierMatches;
+
+	/*
+	if (iPanoDetector.getTest())
+		TestCode::drawRansacMatches(ioMatchData._i1->_name, ioMatchData._i2->_name, ioMatchData._matches, 
+									aRemovedMatches, aRansacFilter, iPanoDetector.getDownscale());
+	*/
+
+	return true;
+}
+
+// homography based ransac matching
+bool PanoDetector::RansacMatchesInPairHomography(MatchData& ioMatchData, const PanoDetector& iPanoDetector)
 {
 	TRACE_PAIR("RANSAC Filtering...");
 
@@ -606,8 +785,16 @@ bool PanoDetector::RansacMatchesInPair(MatchData& ioMatchData, const PanoDetecto
         thresholdDistance*=5;
 	aRansacFilter.setDistanceThreshold(thresholdDistance);
 	aRansacFilter.filter(ioMatchData._matches, aRemovedMatches);
-	
+
+		
 	TRACE_PAIR("Removed " << aRemovedMatches.size() << " matches. " << ioMatchData._matches.size() << " remaining.");
+
+	if (aRemovedMatches.size() > ioMatchData._matches.size()) {
+		// more than 50% of matches were removed, ignore complete pair...
+		TRACE_PAIR("More than 50% outliers, removing all matches");
+		ioMatchData._matches.clear();
+		return true;
+	}
 
 	if (iPanoDetector.getTest())
 		TestCode::drawRansacMatches(ioMatchData._i1->_name, ioMatchData._i2->_name, ioMatchData._matches, 
@@ -616,6 +803,7 @@ bool PanoDetector::RansacMatchesInPair(MatchData& ioMatchData, const PanoDetecto
 	return true;
 
 }
+
 
 bool PanoDetector::FilterMatchesInPair(MatchData& ioMatchData, const PanoDetector& iPanoDetector)
 {
@@ -670,58 +858,6 @@ bool PanoDetector::FilterMatchesInPair(MatchData& ioMatchData, const PanoDetecto
 	return true;
 }
 
-bool PanoDetector::RemapBackMatches(MatchData& ioMatchData, const PanoDetector& iPanoDetector)
-{
-    TRACE_PAIR("Remapping back matches...");
-
-    HuginBase::PTools::Transform trafo1, trafo2;
-    trafo1.createTransform(iPanoDetector._panoramaInfoCopy.getSrcImage(ioMatchData._i1->_number),
-                           ioMatchData._i1->_projOpts);
-    trafo2.createTransform(iPanoDetector._panoramaInfoCopy.getSrcImage(ioMatchData._i2->_number),
-                           ioMatchData._i2->_projOpts);
-
-    double xout,yout;
-    double scale=iPanoDetector._downscale ? 2.0:1.0;
-    BOOST_FOREACH(PointMatchPtr& aM, ioMatchData._matches)
-    {
-        if(ioMatchData._i1->_needsremap)
-        {
-            if(trafo1.transformImgCoord(xout, yout, aM->_img1_x, aM->_img1_y))
-            {
-                aM->_img1_x=xout;
-                aM->_img1_y=yout;
-            }
-        }
-        else
-        {
-            if(!ioMatchData._i1->_hasakeyfile)
-            {
-                // we don't do scale, if we loaded keyfiles from disc, because
-                // in keyfiles the keypoints are always for image with full resolution
-                aM->_img1_x*=scale;
-                aM->_img1_y*=scale;
-            };
-        }
-        if(ioMatchData._i2->_needsremap)
-        {
-            if(trafo2.transformImgCoord(xout, yout, aM->_img2_x, aM->_img2_y))
-            {
-                 aM->_img2_x=xout;
-                 aM->_img2_y=yout;
-            }
-        }
-        else
-        {
-            if(!ioMatchData._i2->_hasakeyfile)
-            {
-                aM->_img2_x*=scale;
-                aM->_img2_y*=scale;
-            };
-        }
-    }
-    return true;
-}
-
 void PanoDetector::writeOutput()
 {
 	// Write output pto file
@@ -760,16 +896,8 @@ void PanoDetector::writeKeyfile(ImgData& imgInfo)
 
 	BOOST_FOREACH ( KeyPointPtr& aK, imgInfo._kp )
 	{
-		if (getDownscale())
-		{
-		writer.writeKeypoint ( aK->_x * 2.0, aK->_y * 2.0, aK->_scale * 2.0, aK->_ori,
+		writer.writeKeypoint ( aK->_x, aK->_y, aK->_scale, aK->_ori, aK->_score,
 		                       imgInfo._descLength, aK->_vec );
-		}
-		else
-		{
-		writer.writeKeypoint ( aK->_x, aK->_y, aK->_scale, aK->_ori,
-		                       imgInfo._descLength, aK->_vec );
-		}
 	}
 	writer.writeFooter();
 }

@@ -32,7 +32,7 @@
 #include <utility>
 #include <functional>
 
-#include "common/wxPlatform.h"
+#include "base_wx/wxPlatform.h"
 #include "hugin/CPListFrame.h"
 #include "hugin/MainFrame.h"
 #include "hugin/CommandHistory.h"
@@ -40,7 +40,7 @@
 
 using namespace PT;
 using namespace std;
-using namespace utils;
+using namespace hugin_utils;
 
 class DelKeyHandler: public wxEvtHandler
 {
@@ -52,10 +52,16 @@ public:
 
     void OnKey(wxKeyEvent & e)
         {
-            if (e.m_keyCode == WXK_DELETE) {
-                m_list.DeleteSelected();
-            } else {
-                e.Skip();
+            switch(e.m_keyCode)
+            {
+                case WXK_DELETE:
+                    m_list.DeleteSelected();
+                    break;
+                case 1: //Ctrl+A
+                    m_list.SelectAll();
+                    break;
+                default:
+                    e.Skip();
             }
         }
 
@@ -741,6 +747,14 @@ void CPListFrame::DeleteSelected()
     }
 }
 
+void CPListFrame::SelectAll()
+{
+    unsigned int nrItems = m_list->GetItemCount();
+    for (unsigned int i=0; i < nrItems ; i++)
+    {
+        m_list->SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    }
+};
 
 void CPListFrame::OnFineTuneButton(wxCommandEvent & e)
 {

@@ -29,7 +29,7 @@
 #include "wx/listbook.h"
 #include "panoinc.h"
 
-#include "common/wxPlatform.h"
+#include "base_wx/wxPlatform.h"
 
 #include "hugin/huginApp.h"
 #include "hugin/config_defaults.h"
@@ -79,7 +79,8 @@ BEGIN_EVENT_TABLE(PreferencesDialog, wxDialog)
     EVT_BUTTON(XRCID("pref_cpdetector_load"), PreferencesDialog::OnCPDetectorLoad)
     EVT_BUTTON(XRCID("pref_cpdetector_save"), PreferencesDialog::OnCPDetectorSave)
     EVT_BUTTON(XRCID("pref_cpdetector_help"), PreferencesDialog::OnCPDetectorHelp)
-//    EVT_CLOSE(RunOptimizerFrame::OnClose)
+    EVT_CHOICE(XRCID("pref_ldr_output_file_format"), PreferencesDialog::OnFileFormatChanged)
+//  EVT_CLOSE(RunOptimizerFrame::OnClose)
 END_EVENT_TABLE()
 
 
@@ -191,7 +192,7 @@ PreferencesDialog::PreferencesDialog(wxWindow *parent)
 
 #ifdef __WXMSW__
     // wxFrame does have a strange background color on Windows, copy color from a child widget
-    this->SetBackgroundColour(XRCCTRL(*this, "prefs_ft_RotationStartAngle", wxSpinCtrl)->GetBackgroundColour());
+    this->SetBackgroundColour(XRCCTRL(*this, "prefs_tab", wxNotebook)->GetBackgroundColour());
 #endif
 
 #if wxCHECK_VERSION(2,9,1)
@@ -498,11 +499,11 @@ void PreferencesDialog::UpdateDisplayData(int panel)
 
         d=HUGIN_FT_CORR_THRESHOLD;
         cfg->Read(wxT("/Finetune/CorrThreshold"), &d, HUGIN_FT_CORR_THRESHOLD);
-        tstr = utils::doubleTowxString(d);
+        tstr = hugin_utils::doubleTowxString(d);
         MY_STR_VAL("prefs_ft_CorrThreshold", tstr);
 
         cfg->Read(wxT("/Finetune/CurvThreshold"), &d, HUGIN_FT_CURV_THRESHOLD);
-        tstr = utils::doubleTowxString(d);
+        tstr = hugin_utils::doubleTowxString(d);
         MY_STR_VAL("prefs_ft_CurvThreshold", tstr);
 
         t = cfg->Read(wxT("/Finetune/RotationSearch"), HUGIN_FT_ROTATION_SEARCH) == 1;
@@ -511,11 +512,11 @@ void PreferencesDialog::UpdateDisplayData(int panel)
 
         d = HUGIN_FT_ROTATION_START_ANGLE;
         cfg->Read(wxT("/Finetune/RotationStartAngle"),&d,HUGIN_FT_ROTATION_START_ANGLE);
-        MY_SPIN_VAL("prefs_ft_RotationStartAngle", utils::roundi(d))
+        MY_SPIN_VAL("prefs_ft_RotationStartAngle", hugin_utils::roundi(d))
 
         d = HUGIN_FT_ROTATION_STOP_ANGLE;
         cfg->Read(wxT("/Finetune/RotationStopAngle"), &d, HUGIN_FT_ROTATION_STOP_ANGLE);
-        MY_SPIN_VAL("prefs_ft_RotationStopAngle", utils::roundi(d));
+        MY_SPIN_VAL("prefs_ft_RotationStopAngle", hugin_utils::roundi(d));
 
         MY_SPIN_VAL("prefs_ft_RotationSteps", cfg->Read(wxT("/Finetune/RotationSteps"),
                                                 HUGIN_FT_ROTATION_STEPS));
@@ -532,6 +533,15 @@ void PreferencesDialog::UpdateDisplayData(int panel)
     }
 
     if (panel==0 || panel == 5){
+        /////
+        /// DEFAULT OUTPUT FORMAT
+        MY_CHOICE_VAL("pref_ldr_output_file_format", cfg->Read(wxT("/output/ldr_format"), HUGIN_LDR_OUTPUT_FORMAT));
+        /** HDR currently deactivated since HDR TIFF broken and only choice is EXR */
+        // MY_CHOICE_VAL("pref_hdr_output_file_format", cfg->Read(wxT("/output/hdr_format"), HUGIN_HDR_OUTPUT_FORMAT));
+        MY_CHOICE_VAL("pref_tiff_compression", cfg->Read(wxT("/output/tiff_compression"), HUGIN_TIFF_COMPRESSION));
+        MY_SPIN_VAL("pref_jpeg_quality", cfg->Read(wxT("/output/jpeg_quality"), HUGIN_JPEG_QUALITY));
+        UpdateFileFormatControls();
+
         /////
         /// NONA
         MY_CHOICE_VAL("prefs_nona_interpolator", cfg->Read(wxT("/Nona/Interpolator"), HUGIN_NONA_INTERPOLATOR));
@@ -569,7 +579,7 @@ void PreferencesDialog::UpdateDisplayData(int panel)
 
         d=HUGIN_CELESTE_THRESHOLD;
         cfg->Read(wxT("/Celeste/Threshold"), &d, HUGIN_CELESTE_THRESHOLD);
-        tstr = utils::doubleTowxString(d);
+        tstr = hugin_utils::doubleTowxString(d);
         MY_STR_VAL("prefs_celeste_threshold", tstr);
 
 	MY_CHOICE_VAL("prefs_celeste_filter", cfg->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER));
@@ -667,6 +677,14 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent & e)
             cpdetector_config_edit.Write(cfg);
         }
         if (noteb->GetSelection() == 4) {
+
+            /// OUTPUT
+            cfg->Write(wxT("/output/ldr_format"), HUGIN_LDR_OUTPUT_FORMAT);
+            /** HDR currently deactivated since HDR TIFF broken and only choice is EXR */
+            // cfg->Write(wxT("/output/hdr_format"), HUGIN_HDR_OUTPUT_FORMAT);
+            cfg->Write(wxT("/output/tiff_compression"), HUGIN_TIFF_COMPRESSION);
+            cfg->Write(wxT("/output/jpeg_quality"), HUGIN_JPEG_QUALITY);
+
             /// ENBLEND
             cfg->Write(wxT("/Enblend/Exe"), wxT(HUGIN_ENBLEND_EXE));
             cfg->Write(wxT("/Enblend/Custom"), HUGIN_ENBLEND_EXE_CUSTOM);
@@ -727,12 +745,12 @@ void PreferencesDialog::UpdateConfigData()
     cfg->Write(wxT("/Finetune/LocalSearchWidth"), MY_G_SPIN_VAL("prefs_ft_LocalSearchWidth"));
     wxString t = MY_G_STR_VAL("prefs_ft_CorrThreshold");
     double td= HUGIN_FT_CORR_THRESHOLD;
-    utils::stringToDouble(std::string(t.mb_str(wxConvLocal)), td);
+    hugin_utils::stringToDouble(std::string(t.mb_str(wxConvLocal)), td);
     cfg->Write(wxT("/Finetune/CorrThreshold"), td);
     
     t = MY_G_STR_VAL("prefs_ft_CurvThreshold");
     td = HUGIN_FT_CURV_THRESHOLD;
-    utils::stringToDouble(std::string(t.mb_str(wxConvLocal)), td);
+    hugin_utils::stringToDouble(std::string(t.mb_str(wxConvLocal)), td);
     cfg->Write(wxT("/Finetune/CurvThreshold"), td);
     
     cfg->Write(wxT("/Finetune/RotationSearch"), MY_G_BOOL_VAL("prefs_ft_RotationSearch"));
@@ -776,6 +794,14 @@ void PreferencesDialog::UpdateConfigData()
     cpdetector_config_edit.Write(cfg);
 
     /////
+    /// OUTPUT
+    cfg->Write(wxT("/output/ldr_format"), MY_G_CHOICE_VAL("pref_ldr_output_file_format"));
+    /** HDR currently deactivated since HDR TIFF broken and only choice is EXR */
+    // cfg->Write(wxT("/output/hdr_format"), MY_G_CHOICE_VAL("pref_hdr_output_file_format"));
+    cfg->Write(wxT("/output/tiff_compression"), MY_G_CHOICE_VAL("pref_tiff_compression"));
+    cfg->Write(wxT("/output/jpeg_quality"), MY_G_SPIN_VAL("pref_jpeg_quality"));
+
+    /////
     /// STITCHING
     cfg->Write(wxT("/Nona/Interpolator"), MY_G_CHOICE_VAL("prefs_nona_interpolator"));
     cfg->Write(wxT("/Nona/CroppedImages"), MY_G_BOOL_VAL("prefs_nona_createCroppedImages"));
@@ -794,7 +820,7 @@ void PreferencesDialog::UpdateConfigData()
     // Celeste
     t = MY_G_STR_VAL("prefs_celeste_threshold");
     td = HUGIN_CELESTE_THRESHOLD;
-    utils::stringToDouble(std::string(t.mb_str(wxConvLocal)), td);
+    hugin_utils::stringToDouble(std::string(t.mb_str(wxConvLocal)), td);
     cfg->Write(wxT("/Celeste/Threshold"), td);
     cfg->Write(wxT("/Celeste/Filter"), MY_G_CHOICE_VAL("prefs_celeste_filter"));
 
@@ -934,4 +960,19 @@ void PreferencesDialog::OnCPDetectorSave(wxCommandEvent &e)
 void PreferencesDialog::OnCPDetectorHelp(wxCommandEvent &e)
 {
     MainFrame::Get()->DisplayHelp(wxT("/Control_Point_Detector_Parameters.html"));
+};
+
+void PreferencesDialog::OnFileFormatChanged(wxCommandEvent &e)
+{
+    UpdateFileFormatControls();
+};
+
+void PreferencesDialog::UpdateFileFormatControls()
+{
+    int i=MY_G_CHOICE_VAL("pref_ldr_output_file_format");
+    XRCCTRL(*this,"pref_tiff_compression_label",wxStaticText)->Show(i==0);
+    XRCCTRL(*this,"pref_tiff_compression",wxChoice)->Show(i==0);
+    XRCCTRL(*this,"pref_jpeg_quality_label",wxStaticText)->Show(i==1);
+    XRCCTRL(*this,"pref_jpeg_quality",wxSpinCtrl)->Show(i==1);
+    XRCCTRL(*this,"pref_tiff_compression",wxChoice)->GetParent()->Layout();
 };

@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 4 ; tab-width: 4 -*-
 /*
 * Copyright (C) 2007-2008 Anael Orlinski
 *
@@ -91,27 +92,33 @@ void parseOptions(int argc, char** argv, PanoDetector& ioPanoDetector)
 		MyOutput my;
 		cmd.setOutput(&my);
 
+		SwitchArg aArgQuiet("q","quiet", "Do not output progress\n", false);
+		SwitchArg aArgVerbose("v","verbose", "Increase verbosity of output\n", false);
 		SwitchArg aArgFullScale("","fullscale", "Uses full scale image to detect keypoints    (default:false)\n", false);
 		ValueArg<int> aArgSieve1Width("","sieve1width", "Sieve 1 : Number of buckets on width    (default : 10)", false, 10, "int");
 		ValueArg<int> aArgSieve1Height("","sieve1height",  "Sieve 1 : Number of buckets on height    (default : 10)", false, 10, "int");
-		ValueArg<int> aArgSieve1Size("","sieve1size",	"Sieve 1 : Max points per bucket    (default : 50)\n", false, 50, "int");
+		ValueArg<int> aArgSieve1Size("","sieve1size",	"Sieve 1 : Max points per bucket    (default : 100)\n", false, 100, "int");
 		SwitchArg aArgLinearMatch("","linearmatch", "Enable linear images matching (default : all pairs)", false);
 		ValueArg<int> aArgLinearMatchLen("","linearmatchlen", "Number of images to match in linear matching (default:1)\n", false, 1 ,"int");
         SwitchArg aArgMultiRow("","multirow", "Enable heuristic multi row matching (default: off)",false);
 		
 		ValueArg<int> aArgKDTreeSearchSteps("","kdtreesteps",   "KDTree : search steps    (default : 200)", false, 200, "int");
 		ValueArg<double> aArgKDTreeSecondDist("","kdtreeseconddist", "KDTree : distance of 2nd match    (default : 0.25)\n", false, 0.25, "double");
-		ValueArg<int> aArgMinMatches("","minmatches", "Minimum matches    (default : 4)", false, 4, "int");
+		ValueArg<int> aArgMinMatches("","minmatches", "Minimum matches    (default : 6)", false, 6, "int");
+		ValueArg<std::string> aArgRansacMode("","ransacmode", "Ransac : mode (auto, hom, rpy, rpyv, rpyvb (default : auto)", false, "auto", "string");
 		ValueArg<int> aArgRansacIter("","ransaciter", "Ransac : iterations    (default : 1000)", false, 1000, "int");
 		ValueArg<int> aArgRansacDist("","ransacdist", "Ransac : homography estimation distance threshold (pixels)"
-														"\t    (default : 25)", false, 25, "int");
+														"\t    (default : 50)", false, 50, "int");
 		ValueArg<int> aArgSieve2Width("","sieve2width", "Sieve 2 : Number of buckets on width    (default : 5)", false, 5, "int");
 		ValueArg<int> aArgSieve2Height("","sieve2height", "Sieve 2 : Number of buckets on height    (default : 5)", false, 5, "int");
-		ValueArg<int> aArgSieve2Size("","sieve2size", "Sieve 2 : Max points per bucket    (default : 2)\n", false, 2 ,"int");
-		
+		ValueArg<int> aArgSieve2Size("","sieve2size", "Sieve 2 : Max points per bucket    (default : 1)\n", false, 1 ,"int");
+
+		cmd.add(aArgQuiet);
+		cmd.add(aArgVerbose);
 		cmd.add(aArgSieve2Size);
 		cmd.add(aArgSieve2Height);
 		cmd.add(aArgSieve2Width);
+		cmd.add(aArgRansacMode);
 		cmd.add(aArgRansacDist);
 		cmd.add(aArgRansacIter);
 		cmd.add(aArgMinMatches);
@@ -174,12 +181,29 @@ void parseOptions(int argc, char** argv, PanoDetector& ioPanoDetector)
 
 		ioPanoDetector.setGradientDescriptor(true);
 
+		if (aArgVerbose.isSet())		    ioPanoDetector.setVerbose(2);
+		if (aArgQuiet.isSet())		        ioPanoDetector.setVerbose(0);
 		if (aArgSieve1Width.isSet())		ioPanoDetector.setSieve1Width(aArgSieve1Width.getValue());
 		if (aArgSieve1Height.isSet())		ioPanoDetector.setSieve1Height(aArgSieve1Height.getValue());
 		if (aArgSieve1Size.isSet())			ioPanoDetector.setSieve1Size(aArgSieve1Size.getValue());
 		if (aArgKDTreeSearchSteps.isSet())	ioPanoDetector.setKDTreeSearchSteps(aArgKDTreeSearchSteps.getValue());
 		if (aArgKDTreeSecondDist.isSet())	ioPanoDetector.setKDTreeSecondDistance(aArgKDTreeSecondDist.getValue());
 		if (aArgMinMatches.isSet())			ioPanoDetector.setMinimumMatches(aArgMinMatches.getValue());
+		if (aArgRansacMode.isSet()) {
+			if (aArgRansacMode.getValue() ==  "auto") {
+				ioPanoDetector.setRansacMode(RANSACOptimizer::AUTO);
+			} else if (aArgRansacMode.getValue()==  "hom") {
+				ioPanoDetector.setRansacMode(RANSACOptimizer::HOMOGRAPHY);
+			} else if (aArgRansacMode.getValue()==  "rpy") {
+				ioPanoDetector.setRansacMode(RANSACOptimizer::RPY);
+			} else if (aArgRansacMode.getValue()==  "rpyv") {
+				ioPanoDetector.setRansacMode(RANSACOptimizer::RPYV);
+			} else if (aArgRansacMode.getValue()==  "rpyvb") {
+				ioPanoDetector.setRansacMode(RANSACOptimizer::RPYVB);
+			} else {
+				cout << "ERROR: invalid --ransacmode." << endl;
+			}
+		}
 		if (aArgRansacIter.isSet())			ioPanoDetector.setRansacIterations(aArgRansacIter.getValue());
 		if (aArgRansacDist.isSet())			ioPanoDetector.setRansacDistanceThreshold(aArgRansacDist.getValue());
 		if (aArgSieve2Width.isSet())		ioPanoDetector.setSieve2Width(aArgSieve2Width.getValue());
@@ -217,19 +241,21 @@ void parseOptions(int argc, char** argv, PanoDetector& ioPanoDetector)
 
 int main(int argc, char **argv) 
 {
-    std::cout << "Hugins cpfind " << DISPLAY_VERSION << endl;
-    std::cout << "based on Pan-o-matic by Anael Orlinski" << endl << endl;    
+	std::cout << "Hugins cpfind " << DISPLAY_VERSION << endl;
+	std::cout << "based on Pan-o-matic by Anael Orlinski" << endl;
 
 	// create a panodetector object
 	PanoDetector aPanoDetector;
 	parseOptions(argc, argv, aPanoDetector);
-	
+
 	if (!aPanoDetector.checkData())
 		return 0;
-	aPanoDetector.printDetails();
+
+	if (aPanoDetector.getVerbose() > 1)
+		aPanoDetector.printDetails();
 	
 	TIMETRACE("Detection",aPanoDetector.run());
-	
+
 	return 0;
 	
 }

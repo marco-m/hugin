@@ -59,7 +59,7 @@
 #include "Utilities.h"
 
 using namespace PT;
-using namespace utils;
+using namespace hugin_utils;
 using namespace vigra;
 using namespace vigra_ext;
 using namespace std;
@@ -103,6 +103,8 @@ BEGIN_EVENT_TABLE(ImagesPanel, wxPanel)
     EVT_TEXT_ENTER ( XRCID("images_text_Y"), ImagesPanel::OnVarTextChanged )
     EVT_TEXT_ENTER ( XRCID("images_text_Z"), ImagesPanel::OnVarTextChanged )
     EVT_CHECKBOX   ( XRCID("images_check_link"), ImagesPanel::OnImageLinkChanged )
+    EVT_COMMAND    (wxID_ANY, EVT_IMAGE_ADD, ImagesPanel::OnAddImages )
+    EVT_COMMAND    (wxID_ANY, EVT_IMAGE_DEL, ImagesPanel::OnRemoveImages )
 END_EVENT_TABLE()
 
 ImagesPanel::ImagesPanel()
@@ -652,6 +654,12 @@ void ImagesPanel::ShowExifInfo(unsigned int imgNr)
         
     XRCCTRL(*this, "images_shutter_speed",wxStaticText)->SetLabel(s);
 
+    if(img.getExifISO()>0)
+        s=wxString::Format(wxT("%0.0f"),img.getExifISO());
+    else
+        s=wxEmptyString;
+    XRCCTRL(*this, "images_iso",wxStaticText)->SetLabel(s);
+
     XRCCTRL(*this, "images_shutter_speed",wxStaticText)->GetParent()->Layout();
     Refresh();
 }
@@ -831,6 +839,11 @@ void ImagesPanel::OnResetImagePositions(wxCommandEvent & e)
     }
 
 }
+
+void ImagesPanel::OnAddImages(wxCommandEvent &e)
+{
+    MainFrame::Get()->OnAddImages(e);
+};
 
 void ImagesPanel::OnRemoveImages(wxCommandEvent & e)
 {

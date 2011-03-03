@@ -57,6 +57,7 @@ class PlaneOverviewToolHelper;
 class Tool;
 class PreviewTool;
 class PreviewCropTool;
+class DragTool;
 class OverviewDragTool;
 class PanosphereOverviewCameraTool;
 class PlaneOverviewCameraTool;
@@ -66,9 +67,11 @@ class PreviewDifferenceTool;
 class PreviewPanoMaskTool;
 class PreviewControlPointTool;
 class PreviewLayoutLinesTool;
+class PreviewColorPickerTool;
 
 class PanosphereOverviewProjectionGridTool;
 class PreviewProjectionGridTool;
+class PanosphereSphereTool;
 
 class PanosphereOverviewOutlinesTool;
 class PlaneOverviewOutlinesTool;
@@ -78,7 +81,6 @@ class GLPreviewFrame;
 class GLwxAuiManager;
 class GLwxAuiFloatingFrame;
 
-#include "common/utils.h"
 #include <wx/string.h>
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
@@ -91,18 +93,37 @@ class ImageToogleButtonEventHandler : public wxEvtHandler
 {
 public:
     ImageToogleButtonEventHandler(unsigned int image_number,
-                                  PreviewIdentifyTool **identify_tool,
                                   wxToolBarToolBase* identify_toolbutton_in,
                                   PT::Panorama * m_pano);
     void OnChange(wxCommandEvent &e);
+    void AddIdentifyTool(PreviewIdentifyTool** identify_tool_in);
 protected:
     void OnEnter(wxMouseEvent & e);
     void OnLeave(wxMouseEvent & e);
 private:
     DECLARE_EVENT_TABLE()
     unsigned int image_number;
-    PreviewIdentifyTool **identify_tool;
+    std::vector<PreviewIdentifyTool**> identify_tools;
     wxToolBarToolBase *identify_toolbutton;
+    PT::Panorama * m_pano;
+};
+
+class ImageGroupButtonEventHandler : public wxEvtHandler
+{
+public:
+    ImageGroupButtonEventHandler(unsigned int image_number, GLPreviewFrame* frame_in, PT::Panorama* m_pano);
+    void OnChange(wxCommandEvent &e);
+    void AddDragTool(DragTool** drag_tool_in);
+    void AddIdentifyTool(PreviewIdentifyTool** identify_tool_in);
+protected:
+    void OnEnter(wxMouseEvent & e);
+    void OnLeave(wxMouseEvent & e);
+private:
+    DECLARE_EVENT_TABLE()
+    unsigned int image_number;
+    std::vector<DragTool**> drag_tools;
+    std::vector<PreviewIdentifyTool**> identify_tools;
+    GLPreviewFrame* frame;
     PT::Panorama * m_pano;
 };
 
@@ -161,7 +182,7 @@ private:
  *  it is not created with XRC, because it is highly dynamic, buttons
  *  have to be added etc.
  */
-class GLPreviewFrame : public wxFrame, public PT::PanoramaObserver, public utils::MultiProgressDisplay
+class GLPreviewFrame : public wxFrame, public PT::PanoramaObserver, public AppBase::MultiProgressDisplay
 {
 public:
 
@@ -190,6 +211,8 @@ public:
     void FillBlendChoice();
     /** loads the layout of the OpenGL windows and restores it */
     void LoadOpenGLLayout();
+    /** init previews */
+    void InitPreviews();
 
     GLwxAuiManager* getAuiManager() {return m_mgr;}
     GLPreview* getPreview() {return m_GLPreview;}
@@ -208,13 +231,26 @@ public:
     void redrawPreview();
     /** set status if projection hints should be shown or not*/
     void SetShowProjectionHints(bool new_value);
+    void OnShowEvent(wxShowEvent& e);
+    
+    bool individualDragging();
+    void ToggleImageInDragGroup(unsigned int image_nr, bool update_check_box = true);
+    void RemoveImageFromDragGroup(unsigned int image_nr, bool update_check_box = true);
+    void AddImageToDragGroup(unsigned int image_nr, bool update_check_box = true);
+    void SetDragGroupImages(PT::UIntSet imageDragGroup_in, bool update_check_box = true);
+    PT::UIntSet GetDragGroupImages();
+    void ClearDragGroupImages(bool update_check_box = true);
+    /** updates the global white balance 
+     * @param redFactor multiplies all WhiteBalanceRed of individuel images with this factor
+     * @param blueFactor multiplies all WhiteBalanceBlue of individuel images with this factor
+     */
+    void UpdateGlobalWhiteBalance(double redFactor, double blueFactor);
 
 protected:
 
     bool GLresize;
 
     void OnClose(wxCloseEvent& e);
-    void OnShowEvent(wxShowEvent& e);
 
     void OnOverviewToggle(wxCommandEvent& e);
 
@@ -243,11 +279,17 @@ protected:
 
     void OnBlendChoice(wxCommandEvent & e);
     void OnDragChoice(wxCommandEvent & e);
+
+    void KeyDown(wxKeyEvent & e);
+    void KeyUp(wxKeyEvent & e);
+
     void DragChoiceLayout( int index );
     void OnProjectionChoice(wxCommandEvent & e);
     void OnOverviewModeChoice(wxCommandEvent & e);
     /** event handler for changed roi */
     void OnROIChanged(wxCommandEvent & e);
+    /** event handler to reset crop area */
+    void OnResetCrop(wxCommandEvent & e);
     void OnHFOVChanged(wxCommandEvent & e);
     void OnVFOVChanged(wxCommandEvent & e);
     /** event handler when user hides the infobar */
@@ -270,8 +312,13 @@ protected:
     void OnToolModeChanging(wxNotebookEvent &e);
     /** event handler for change scale of layout mode */
     void OnLayoutScaleChange(wxScrollEvent &e);
+    /** event handler when starting color picker */
+    void OnColorPicker(wxCommandEvent &e);
 private:
-
+    /** changes the visibility of the group check boxes
+     * @param isShown true if the group checkboxes should be visible
+     */
+    void EnableGroupCheckboxes(bool isShown);
     /** The dock manager */
     GLwxAuiManager * m_mgr;
 
@@ -334,8 +381,10 @@ private:
 #else
     std::vector<wxCheckBox *> m_ToggleButtons;
 #endif
+    std::vector<wxCheckBox *> m_GroupToggleButtons;
     std::vector<wxPanel *> m_ToggleButtonPanel;
     std::vector<ImageToogleButtonEventHandler *> toogle_button_event_handlers;
+    std::vector<ImageGroupButtonEventHandler *> toggle_group_button_event_handlers;
 
     wxToggleButton * m_OverviewToggle;
     
@@ -345,7 +394,9 @@ private:
     PreviewToolHelper *preview_helper;
     
     PreviewCropTool *crop_tool;
+    PT::UIntSet imageDragGroup;
     PreviewDragTool *drag_tool;
+    PreviewColorPickerTool *color_picker_tool;
 
     PreviewIdentifyTool *identify_tool;
     PreviewIdentifyTool *panosphere_overview_identify_tool;
@@ -368,6 +419,7 @@ private:
 
     PanosphereOverviewProjectionGridTool * overview_projection_grid;
     PreviewProjectionGridTool * preview_projection_grid;
+    PanosphereSphereTool * panosphere_sphere_tool;
 
     PanosphereOverviewToolHelper *panosphere_overview_helper;
 
@@ -382,7 +434,11 @@ private:
     PlaneOverviewOutlinesTool *plane_overview_outlines_tool;
 
     void TurnOffTools(std::set<Tool*> tools);
-    
+
+#ifdef __WXGTK__
+    bool loadedLayout;
+#endif
+
     void CleanButtonColours();
     /** Tell the user anything suspicious about the projection choice.
      * If nothing is suspicious, any previous message is removed.

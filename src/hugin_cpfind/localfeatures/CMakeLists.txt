@@ -22,6 +22,9 @@ ELSE (${HUGIN_SHARED_LIBS})
     add_library(localfeatures STATIC ${LF_SRC} ${LF_HEADER})
 ENDIF (${HUGIN_SHARED_LIBS})
 
+OPTION (BUILD_KEYPOINTS "Build keypoints program" OFF)
+
+IF(BUILD_KEYPOINTS)
 add_executable(keypoints keypoints.cpp)
 
 IF(WIN32)
@@ -31,12 +34,4 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 install(TARGETS keypoints DESTINATION ${BINDIR})
-
- 
-# the python interface for it
-# temporarily disabled, it is not working anyway.
-#IF (BOOST_PYTHON_FOUND)
-#  add_library(pylf SHARED python_wrapper.cpp)
-#  SET_TARGET_PROPERTIES(pylf PROPERTIES PREFIX "")
-#  TARGET_LINK_LIBRARIES(pylf ${BOOST_PYTHON_LIBS} localfeatures)
-#ENDIF (BOOST_PYTHON_FOUND)
+ENDIF()

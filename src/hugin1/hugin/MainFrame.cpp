@@ -34,6 +34,7 @@
 
 #include "base_wx/platform.h"
 
+#include "vigra/imageinfo.hxx"
 #include "vigra_ext/Correlation.h"
 
 #include "PT/utils.h"
@@ -61,7 +62,7 @@
 #include "algorithms/control_points/CleanCP.h"
 
 #include "base_wx/MyProgressDialog.h"
-#include "base_wx/ImageCache.h"
+#include "base_wx/wxImageCache.h"
 #include "base_wx/PTWXDlg.h"
 
 #include "base_wx/huginConfig.h"
@@ -69,7 +70,6 @@
 #include "hugin/AboutDialog.h"
 
 using namespace PT;
-using namespace utils;
 using namespace std;
 using namespace hugin_utils;
 
@@ -123,8 +123,14 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
             file.GetExt().CmpNoCase(wxT("hdr")) == 0 ||
             file.GetExt().CmpNoCase(wxT("viff")) == 0 )
         {
-            foundForbiddenChars=foundForbiddenChars || containsInvalidCharacters(filenames[i]);
-            filesv.push_back((const char *)filenames[i].mb_str(HUGIN_CONV_FILENAME));
+            if(containsInvalidCharacters(filenames[i]))
+            {
+                foundForbiddenChars=true;
+            }
+            else
+            {
+                filesv.push_back((const char *)filenames[i].mb_str(HUGIN_CONV_FILENAME));
+            };
         }
     }
     // we got some images to add.
@@ -445,6 +451,10 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
     m_mruFiles.UseMenu(GetMenuBar()->GetMenu(0)->FindItem(XRCID("menu_mru"))->GetSubMenu());
     m_mruFiles.AddFilesToMenu();
     DEBUG_TRACE("");
+#ifdef __WXGTK__
+    // set explicit focus to assistant panel for better processing key presses
+    assistant_panel->SetFocus();
+#endif
 }
 
 MainFrame::~MainFrame()
@@ -615,7 +625,7 @@ void MainFrame::OnSaveProject(wxCommandEvent & e)
             std::string resultFn;
             wxString resultFnwx = scriptName.GetFullPath();
             resultFn = resultFnwx.mb_str(HUGIN_CONV_FILENAME);
-            resultFn = utils::stripPath(utils::stripExtension(resultFn));
+            resultFn = stripPath(stripExtension(resultFn));
             std::string tmpDir((wxConfigBase::Get()->Read(wxT("tempDir"),wxT(""))).mb_str(HUGIN_CONV_FILENAME));
 
             std::vector<std::string> outputFiles;
@@ -727,6 +737,7 @@ void MainFrame::LoadProjectFile(const wxString & filename)
         GlobalCmdHist::getInstance().addCommand(
            new wxLoadPTProjectCmd(pano,(const char *)filename.mb_str(HUGIN_CONV_FILENAME), (const char *)path.mb_str(HUGIN_CONV_FILENAME))
            );
+        GlobalCmdHist::getInstance().clear();
         registerPTWXDlgFcn(MainFrame::Get());
         DEBUG_DEBUG("project contains " << pano.getNrOfImages() << " after load");
         opt_panel->setModeCustom();
@@ -813,25 +824,12 @@ void MainFrame::OnNewProject(wxCommandEvent & e)
     if(!CloseProject(true)) return; //if closing current project is canceled
 
     m_filename = wxT("");
-    GlobalCmdHist::getInstance().addCommand( new NewPanoCmd(pano));
+    GlobalCmdHist::getInstance().addCommand( new wxNewProjectCmd(pano));
+    GlobalCmdHist::getInstance().clear();
     // remove old images from cache
     ImageCache::getInstance().flush();
     this->SetTitle(_("Hugin - Panorama Stitcher"));
     pano.clearDirty();
-
-    // Setup pano with options from preferences
-    PanoramaOptions opts = pano.getOptions();
-    wxConfigBase* config = wxConfigBase::Get();
-    opts.outputFormat = PanoramaOptions::TIFF_m;
-    opts.blendMode = PanoramaOptions::ENBLEND_BLEND;
-    opts.enblendOptions = config->Read(wxT("Enblend/Args"),wxT(HUGIN_ENBLEND_ARGS)).mb_str(wxConvLocal);
-    opts.enfuseOptions = config->Read(wxT("Enfuse/Args"),wxT(HUGIN_ENFUSE_ARGS)).mb_str(wxConvLocal);
-	opts.interpolator = (vigra_ext::Interpolator)config->Read(wxT("Nona/Interpolator"),HUGIN_NONA_INTERPOLATOR);
-	opts.remapUsingGPU = config->Read(wxT("Nona/useGPU"),HUGIN_NONA_USEGPU)!=0;
-	opts.tiff_saveROI = config->Read(wxT("Nona/CroppedImages"),HUGIN_NONA_CROPPEDIMAGES)!=0;
-    opts.hdrMergeMode = PanoramaOptions::HDRMERGE_AVERAGE;
-    opts.hdrmergeOptions = HUGIN_HDRMERGE_ARGS;
-    pano.setOptions(opts);
 
     wxCommandEvent dummy;
     preview_frame->OnUpdate(dummy);
@@ -1035,7 +1033,10 @@ void MainFrame::OnAddTimeImages( wxCommandEvent& event )
         while (!file.IsEmpty())
         {
             // Associated with a NULL dummy timestamp for now.
-			filenames[file] = 0;
+            if(vigra::isImage(file.mb_str(HUGIN_CONV_FILENAME)))
+            {
+			    filenames[file] = 0;
+            };
 			file = ::wxFindNextFile();
         }
     }
@@ -1325,10 +1326,23 @@ void MainFrame::OnTogglePreviewFrame(wxCommandEvent & e)
 
 void MainFrame::OnToggleGLPreviewFrame(wxCommandEvent & e)
 {
+#ifdef __WXMSW__
+    gl_preview_frame->InitPreviews();
+#endif
     if (gl_preview_frame->IsIconized()) {
         gl_preview_frame->Iconize(false);
     }
     gl_preview_frame->Show();
+#ifdef __WXMSW__
+    // on wxMSW Show() does not send OnShowEvent needed to update the 
+    // visibility state of the fast preview windows
+    // so explicit calling this event handler
+    wxShowEvent se;
+    se.SetShow(true);
+    gl_preview_frame->OnShowEvent(se);
+#else
+    gl_preview_frame->LoadOpenGLLayout();
+#endif
     gl_preview_frame->Raise();
 }
 
@@ -1583,7 +1597,7 @@ void MainFrame::OnFineTuneAll(wxCommandEvent & e)
     wxMessageBox(result, _("Fine-tune result"), wxOK);
     // set newly optimized points
     GlobalCmdHist::getInstance().addCommand(
-        new UpdateCPsCmd(pano,cps)
+        new UpdateCPsCmd(pano,cps,false)
         );
 }
 
@@ -1661,7 +1675,7 @@ void MainFrame::updateProgressDisplay()
 {
     wxString msg;
     // build the message:
-    for (std::vector<ProgressTask>::reverse_iterator it = tasks.rbegin();
+    for (std::vector<AppBase::ProgressTask>::reverse_iterator it = tasks.rbegin();
                  it != tasks.rend(); ++it)
     {
         wxString cMsg;

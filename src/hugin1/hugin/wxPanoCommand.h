@@ -28,7 +28,6 @@
 
 #include "PT/PanoToolsUtils.h"
 #include "PT/PanoCommand.h"
-#include "common/stl_utils.h"
 #include "vigra/impex.hxx"
 #include "hugin/LensPanel.h"
 #include "hugin/config_defaults.h"
@@ -90,6 +89,22 @@ private:
     const std::string filename;
     const std::string prefix;
     const bool markAsOptimized;
+};
+
+/** start a new project, reset options to values in preferences
+ *
+ */
+class wxNewProjectCmd : public PanoCommand
+{
+public:
+    wxNewProjectCmd(Panorama & p) : PanoCommand(p){};
+
+    virtual void execute();
+
+    virtual std::string getName() const
+    {
+        return "new project";
+    }
 };
 
 

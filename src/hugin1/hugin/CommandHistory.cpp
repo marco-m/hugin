@@ -54,6 +54,7 @@ void CommandHistory::clear()
         delete *it;
     }
     commands.clear();
+    nextCmd=0;
 }
 
 
@@ -62,11 +63,6 @@ void CommandHistory::clear()
 void CommandHistory::addCommand(Command *command, bool execute)
 {
     assert(command);
-
-    if (execute) {
-        // execute command
-        command->execute();
-    }
 
     if (nextCmd > commands.size()) {
         DEBUG_FATAL("Invalid state in Command History: nextCmd:" << nextCmd
@@ -82,6 +78,12 @@ void CommandHistory::addCommand(Command *command, bool execute)
     }
     commands.push_back(command);
     nextCmd++;
+
+    if (execute) {
+        // execute command
+        command->execute();
+    }
+
 }
 
 

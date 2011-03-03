@@ -26,7 +26,7 @@
 
 #include <hugin_shared.h>
 #include <panotools/PanoToolsInterface.h>
-#include <algorithm/PanoramaAlgorithm.h>
+#include <algorithms/PanoramaAlgorithm.h>
 #include <panodata/PanoramaData.h>
 
 #include <boost/dynamic_bitset.hpp>
@@ -37,8 +37,8 @@ class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
 {
     public:
         ///
-        CalculateOptimalROI(PanoramaData& panorama)
-         : PanoramaAlgorithm(panorama)
+        CalculateOptimalROI(PanoramaData& panorama, bool intersect = false)
+         : PanoramaAlgorithm(panorama), intersection(intersect)
         {
             //set to zero for error condition
             o_optimalROI = vigra::Rect2D(0,0,0,0);
@@ -87,6 +87,8 @@ class IMPEX CalculateOptimalROI : public PanoramaAlgorithm
     private:
         vigra::Rect2D o_optimalROI;
         vigra::Size2D o_optimalSize;
+        
+        bool intersection;
         
         UIntSet activeImages;
         std::map<unsigned int,PTools::Transform*> transfMap;

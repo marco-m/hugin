@@ -1,6 +1,6 @@
 // -*- c-basic-offset: 4 -*-
 
-/** @file List.cpp
+/** @file ImagesList.cpp
  *
  *  @brief implementation of List Class
  *
@@ -28,9 +28,9 @@
 #include "panoinc_WX.h"
 #include "panoinc.h"
 
-#include "common/wxPlatform.h"
+#include "base_wx/wxPlatform.h"
 #include "hugin/ImagesList.h"
-#include "base_wx/ImageCache.h"
+#include "base_wx/wxImageCache.h"
 #include "base_wx/platform.h"
 
 #ifdef __WXMAC__
@@ -38,7 +38,20 @@
 #endif
 
 using namespace PT;
-using namespace utils;
+using namespace hugin_utils;
+
+#if wxCHECK_VERSION(2,9,0)
+    wxDEFINE_EVENT(EVT_IMAGE_ADD,wxCommandEvent);
+    wxDEFINE_EVENT(EVT_IMAGE_DEL,wxCommandEvent);
+#else
+#if _WINDOWS && defined Hugin_shared
+    DEFINE_LOCAL_EVENT_TYPE(EVT_IMAGE_ADD)
+    DEFINE_LOCAL_EVENT_TYPE(EVT_IMAGE_DEL)
+#else
+    DEFINE_EVENT_TYPE(EVT_IMAGE_ADD)
+    DEFINE_EVENT_TYPE(EVT_IMAGE_DEL)
+#endif
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -46,6 +59,7 @@ BEGIN_EVENT_TABLE(ImagesList, wxListCtrl)
     EVT_LIST_ITEM_SELECTED(-1, ImagesList::OnItemSelected)
     EVT_LIST_ITEM_DESELECTED(-1, ImagesList::OnItemDeselected)
     EVT_LIST_COL_END_DRAG(-1, ImagesList::OnColumnWidthChange)
+    EVT_CHAR(ImagesList::OnChar)
 END_EVENT_TABLE()
 
 // Define a constructor for the Images Panel
@@ -82,6 +96,7 @@ bool ImagesList::Create(wxWindow* parent, wxWindowID id,
     m_degDigits = wxConfigBase::Get()->Read(wxT("/General/DegreeFractionalDigits"),1);
     m_pixelDigits = wxConfigBase::Get()->Read(wxT("/General/PixelFractionalDigits"),1);
     m_distDigits = wxConfigBase::Get()->Read(wxT("/General/DistortionFractionalDigits"),3);
+    m_singleSelect=(style & wxLC_SINGLE_SEL);
     return true;
 }
 
@@ -259,6 +274,15 @@ void ImagesList::SelectSingleImage(unsigned int imgNr)
     SetItemState(imgNr, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
+void ImagesList::SelectAll()
+{
+    unsigned int nrItems = GetItemCount();
+    for (unsigned int i=0; i < nrItems ; i++)
+    {
+        SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    }
+}
+
 void ImagesList::OnItemSelected ( wxListEvent & e )
 {
     DEBUG_TRACE(e.GetIndex());
@@ -271,6 +295,35 @@ void ImagesList::OnItemSelected ( wxListEvent & e )
         e.Skip();
     }
 }
+
+void ImagesList::OnChar(wxKeyEvent &e)
+{
+    switch(e.GetKeyCode())
+    {
+        case WXK_INSERT:
+            {
+                wxCommandEvent ev(EVT_IMAGE_ADD,wxID_ANY);
+                GetParent()->GetEventHandler()->AddPendingEvent(ev);
+                break;
+            };
+        case WXK_DELETE:
+            {
+                wxCommandEvent ev(EVT_IMAGE_DEL,wxID_ANY);
+                GetParent()->GetEventHandler()->AddPendingEvent(ev);
+                break;
+            };
+        case 1: //Ctrl+A
+            {
+                if(!m_singleSelect && e.ControlDown())
+                {
+                    SelectAll();
+                }
+                break;
+            }
+    };
+    e.Skip();
+};
+
 
 void ImagesList::OnItemDeselected ( wxListEvent & e )
 {
@@ -625,8 +678,8 @@ void ImagesListCrop::UpdateItem(unsigned int imgNr)
     wxFileName fn(wxString (img.getFilename().c_str(), HUGIN_CONV_FILENAME));
 
     wxString cropstr(wxT("-"));
-    if ( img.getOptions().docrop ) {
-        vigra::Rect2D c = img.getOptions().cropRect;
+    if ( img.getCropMode() != SrcPanoImage::NO_CROP ) {
+        vigra::Rect2D c = img.getCropRect();
         cropstr.Printf(wxT("%d,%d,%d,%d"), c.left(), c.right(), c.top(), c.bottom());
     }
     SetItem(imgNr, 1, cropstr);

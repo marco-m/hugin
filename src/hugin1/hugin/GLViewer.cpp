@@ -189,7 +189,6 @@ void GLPreview::setUp()
     // we can fill it just now, because we need a OpenGL context, which was created now,
     // to check if all necessary extentions are available
     frame->FillBlendChoice();
-    frame->LoadOpenGLLayout();
 }
 
 void GLOverview::setUp()
@@ -383,6 +382,11 @@ void GLViewer::MouseButtons(wxMouseEvent& e)
             m_tool_helper->MouseButtonEvent(e);
         }
     }
+#ifdef __WXMSW__
+    //use normal mouse button processing of GLCanvas 
+    //otherwise the mouse wheel is not working
+    e.Skip();
+#endif
 }
 
 void GLViewer::MouseWheel(wxMouseEvent& e)

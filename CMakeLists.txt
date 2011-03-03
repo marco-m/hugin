@@ -1,6 +1,6 @@
 
-# require at least cmake 2.6
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR )
+# require at least cmake 2.8
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR )
 
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -15,8 +15,8 @@ include(CheckIncludeFiles)
 project(hugin)
 
 # version
-set(V_MAJOR 2010)
-set(V_MINOR 5)
+set(V_MAJOR 2011)
+set(V_MINOR 1)
 set(V_PATCH 0)
 
 #
@@ -60,7 +60,7 @@ ENDIF()
 IF (EXISTS ${PROJECT_SOURCE_DIR}/.hg)
   IF (UPDATE_CHANGELOG)
    FIND_PROGRAM(_hg hg)
-   EXECUTE_PROCESS(COMMAND ${_hg} log --follow --style=changelog
+   EXECUTE_PROCESS(COMMAND ${_hg} log --follow -b default --style=changelog
    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
    OUTPUT_FILE ${PROJECT_SOURCE_DIR}/ChangeLog)
    MESSAGE("-- New ChangeLog generated")

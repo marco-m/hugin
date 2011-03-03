@@ -1,15 +1,8 @@
 
 # a list of all files belonging to hugin base library
 
-# unused sources
-# algorithms/external/PTStitcherStitcher.cpp
-#algorithms/external/PTmenderStitcher.cpp
-
-
-
 SET(HUGIN_BASE_SRC
 algorithms/nona/NonaFileStitcher.cpp
-algorithms/nona/NonaImageStitcher.cpp
 algorithms/basic/CalculateCPStatistics.cpp
 algorithms/basic/CalculateMeanExposure.cpp
 algorithms/basic/CalculateOptimalScale.cpp
@@ -29,8 +22,6 @@ algorithms/panorama_makefile/PanoramaMakefilelibExport.cpp
 algorithms/assistant_makefile/AssistantMakefilelibExport.cpp
 algorithms/point_sampler/PointSampler.cpp
 algorithms/control_points/CleanCP.cpp
-appbase/ExternalProgram.cpp
-appbase/ExternalProgramSetup.cpp
 appbase/ProgressDisplay.cpp
 appbase/ProgressDisplayOld.cpp
 appbase/ProgressReporterOld.cpp
@@ -51,7 +42,6 @@ nona/Stitcher.cpp
 panodata/ControlPoint.cpp
 panodata/Lens.cpp
 panodata/Mask.cpp
-panodata/PanoImage.cpp
 panodata/Panorama.cpp
 panodata/PanoramaOptions.cpp
 panodata/PanoramaVariable.cpp
@@ -69,10 +59,9 @@ vigra_ext/ImageTransformsGPU.cpp
 )
 
 SET(HUGIN_BASE_HEADER
-algorithm/PanoramaAlgorithm.h
-algorithm/StitcherAlgorithm.h
+algorithms/PanoramaAlgorithm.h
+algorithms/StitcherAlgorithm.h
 algorithms/nona/NonaFileStitcher.h
-algorithms/nona/NonaImageStitcher.h
 algorithms/basic/CalculateCPStatistics.h
 algorithms/basic/CalculateMeanExposure.h
 algorithms/basic/CalculateOptimalScale.h
@@ -92,8 +81,8 @@ algorithms/panorama_makefile/PanoramaMakefilelibExport.h
 algorithms/assistant_makefile/AssistantMakefilelibExport.h
 algorithms/point_sampler/PointSampler.h
 algorithms/control_points/CleanCP.h
-appbase/ExternalProgram.h
-appbase/ExternalProgramSetup.h
+appbase/Command.h
+appbase/DocumentData.h
 appbase/ProgressDisplay.h
 appbase/ProgressDisplayOld.h
 appbase/ProgressReporterOld.h
@@ -119,7 +108,6 @@ panodata/PanoramaOptions.h
 panodata/PanoramaVariable.h
 panodata/PTScriptParsing.h
 panodata/SrcPanoImage.h
-panodata/DestPanoImage.h
 panodata/image_variables.h
 panodata/ImageVariable.h
 panodata/ImageVariableGroup.h

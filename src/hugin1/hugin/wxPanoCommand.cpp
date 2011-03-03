@@ -28,9 +28,9 @@
 
 #include "panoinc_WX.h"
 #include "panoinc.h"
-#include "common/wxPlatform.h"
+#include "base_wx/wxPlatform.h"
 
-#include <base_wx/ImageCache.h>
+#include <base_wx/wxImageCache.h>
 #include <base_wx/platform.h>
 #include <hugin/wxPanoCommand.h>
 
@@ -38,13 +38,15 @@
 #include <vigra/localminmax.hxx>
 #include <panodata/StandardImageVariableGroups.h>
 
+#include <hugin_utils/alphanum.hpp>
+
 #ifdef HUGIN_HSI
 #include "hugin_script_interface/hpi.h"
 #endif
 
 using namespace std;
 using namespace vigra;
-using namespace utils;
+using namespace hugin_utils;
 using namespace hsi;
 
 namespace PT {
@@ -153,7 +155,7 @@ void wxAddImagesCmd::execute()
     switch (sort) {
         case 1:
                 // sort by filename
-            std::sort(files.begin(), files.end());
+            std::sort(files.begin(), files.end(), doj::alphanum_less<std::string>());
             break;
         case 2:
                 // sort by date
@@ -386,7 +388,7 @@ void wxLoadPTProjectCmd::execute()
                         // Is file in the new path
                 if (basedir != wxT("")) {
                     DEBUG_DEBUG("Old filename: " << pano.getImage(i).getFilename());
-                    std::string fn = utils::stripPath(pano.getImage(i).getFilename());
+                    std::string fn = stripPath(pano.getImage(i).getFilename());
                     DEBUG_DEBUG("Old filename, without path): " << fn);
                     wxString newname(fn.c_str(), HUGIN_CONV_FILENAME);
                             // GetFullName does only work with local paths (not compatible across platforms)
@@ -507,6 +509,70 @@ void wxLoadPTProjectCmd::execute()
     {
         pano.markAsOptimized();
     };
+    pano.changeFinished();
+}
+
+void wxNewProjectCmd::execute()
+{
+    PanoCommand::execute();
+#ifdef _Hgn1_PANOCOMMAND_H
+    Panorama& pano = o_pano;
+#endif
+
+    pano.reset();
+
+    // Setup pano with options from preferences
+    PanoramaOptions opts = pano.getOptions();
+    wxConfigBase* config = wxConfigBase::Get();
+    opts.quality = config->Read(wxT("/output/jpeg_quality"),HUGIN_JPEG_QUALITY);
+    switch(config->Read(wxT("/output/tiff_compression"), HUGIN_TIFF_COMPRESSION))
+    {
+        case 0:
+        default:
+            opts.outputImageTypeCompression = "NONE";
+            opts.tiffCompression = "NONE";
+            break;
+        case 1:
+            opts.outputImageTypeCompression = "PACKBITS";
+            opts.tiffCompression = "PACKBITS";
+            break;
+        case 2:
+            opts.outputImageTypeCompression = "LZW";
+            opts.tiffCompression = "LZW";
+            break;
+        case 3:
+            opts.outputImageTypeCompression = "DEFLATE";
+            opts.tiffCompression = "DEFLATE";
+            break;
+    }
+    switch (config->Read(wxT("/output/ldr_format"), HUGIN_LDR_OUTPUT_FORMAT)) {
+    case 1:
+        opts.outputImageType ="jpg";
+        break;
+    case 2:
+        opts.outputImageType ="png";
+        break;
+    case 3:
+        opts.outputImageType ="exr";
+        break;
+    default:
+    case 0:
+        opts.outputImageType ="tif";
+        break;
+    }
+    // HDR disabled because there is no real choice at the moment:  HDR TIFF is broken and there is only EXR
+    // opts.outputImageTypeHDR = config->Read(wxT("/output/hdr_format"), HUGIN_HDR_OUTPUT_FORMAT);
+    opts.outputFormat = PanoramaOptions::TIFF_m;
+    opts.blendMode = PanoramaOptions::ENBLEND_BLEND;
+    opts.enblendOptions = config->Read(wxT("Enblend/Args"),wxT(HUGIN_ENBLEND_ARGS)).mb_str(wxConvLocal);
+    opts.enfuseOptions = config->Read(wxT("Enfuse/Args"),wxT(HUGIN_ENFUSE_ARGS)).mb_str(wxConvLocal);
+    opts.interpolator = (vigra_ext::Interpolator)config->Read(wxT("Nona/Interpolator"),HUGIN_NONA_INTERPOLATOR);
+    opts.remapUsingGPU = config->Read(wxT("Nona/useGPU"),HUGIN_NONA_USEGPU)!=0;
+    opts.tiff_saveROI = config->Read(wxT("Nona/CroppedImages"),HUGIN_NONA_CROPPEDIMAGES)!=0;
+    opts.hdrMergeMode = PanoramaOptions::HDRMERGE_AVERAGE;
+    opts.hdrmergeOptions = HUGIN_HDRMERGE_ARGS;
+    pano.setOptions(opts);
+
     pano.changeFinished();
 }
 

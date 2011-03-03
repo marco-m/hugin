@@ -625,18 +625,15 @@ void Panorama::printPanoramaScript(std::ostream & o,
         imageNrMap[imgNr] = ic;
         const SrcPanoImage & img = *state.images[imgNr];
         VariableMap vars;
-        /// @todo don't use getOptions.
-        ImageOptions iopts = img.getOptions();
-        
 
         // print special comment line with hugin GUI data
         o << "#-hugin ";
-        if (img.getCropMode() != SrcPanoImage::NO_CROP) {
-            if (iopts.autoCenterCrop)
+        if (img.getCropMode() != BaseSrcPanoImage::NO_CROP) {
+            if (img.getAutoCenterCrop())
                 o << " autoCenterCrop=1";
         }
         o << " cropFactor=" << img.getExifCropFactor() ;
-        if (! iopts.active) {
+        if (! img.getActive()) {
             o << " disabled";
         }
         o << std::endl;
@@ -714,7 +711,7 @@ void Panorama::printPanoramaScript(std::ostream & o,
 #include "image_variables.h"
 #undef image_variable
 
-        if (iopts.docrop) {
+        if (img.getCropMode()!=SrcPanoImage::NO_CROP) {
             // print crop parameters
             vigra::Rect2D c = img.getCropRect();
             o << " S" << c.left() << "," << c.right() << "," << c.top() << "," << c.bottom();
@@ -1059,6 +1056,21 @@ void Panorama::changeFinished(bool keepDirty)
     copy(changedImages.begin(), changedImages.end(),
          std::ostream_iterator<unsigned int>(t, " "));
     DEBUG_TRACE("changed image(s) " << t.str() << " begin");
+    //force update of crops
+    if(changedImages.size()>0)
+    {
+        for(UIntSet::iterator it=changedImages.begin();it!=changedImages.end();it++)
+        {
+            //if the projection was changed, we need to update the crop mode
+            updateCropMode(*it);
+            //now center the crop if user requested it
+            if(state.images[*it]->getAutoCenterCrop())
+            {
+                centerCrop(*it);
+            };
+        };
+    };
+    //update masks
     updateMasks();
     std::set<PanoramaObserver *>::iterator it;
     for(it = observers.begin(); it != observers.end(); ++it) {
@@ -1291,6 +1303,84 @@ void Panorama::updateMasks(bool convertPosMaskToNeg)
                             };
                             break;
                     };
+                };
+            };
+        };
+    };
+};
+
+void Panorama::updateCropMode(unsigned int imgNr)
+{
+    vigra::Rect2D r=state.images[imgNr]->getCropRect();
+    if(r.isEmpty() || r==vigra::Rect2D(state.images[imgNr]->getSize()))
+    {
+        state.images[imgNr]->setCropMode(SrcPanoImage::NO_CROP);
+    }
+    else
+    {
+        if (state.images[imgNr]->getProjection() == SrcPanoImage::CIRCULAR_FISHEYE || 
+            state.images[imgNr]->getProjection() == SrcPanoImage::FISHEYE_THOBY)
+        {
+            state.images[imgNr]->setCropMode(SrcPanoImage::CROP_CIRCLE);
+        }
+        else
+        {
+            state.images[imgNr]->setCropMode(SrcPanoImage::CROP_RECTANGLE);
+        };
+    };
+};
+
+vigra::Rect2D Panorama::centerCropImage(unsigned int imgNr)
+{
+    vigra::Rect2D cropRect;
+    if(state.images[imgNr]->getCropMode()==SrcPanoImage::NO_CROP)
+    {
+        return cropRect;
+    };
+    int dx = roundi(state.images[imgNr]->getRadialDistortionCenterShift().x);
+    int dy = roundi(state.images[imgNr]->getRadialDistortionCenterShift().y);
+    vigra::Point2D center = vigra::Point2D(state.images[imgNr]->getSize().width()/2 + dx, state.images[imgNr]->getSize().height()/2 + dy);
+
+    vigra::Diff2D d(state.images[imgNr]->getCropRect().width() / 2, state.images[imgNr]->getCropRect().height() / 2);
+    cropRect.setUpperLeft( center - d);
+    cropRect.setLowerRight( center + d);
+    return cropRect;
+};
+
+                     
+void Panorama::centerCrop(unsigned int imgNr)
+{
+    vigra::Rect2D cropRect;
+    if(  state.images[imgNr]->getCropMode()!=SrcPanoImage::NO_CROP &&
+         state.images[imgNr]->getAutoCenterCrop() && 
+       !(state.images[imgNr]->getCropRect().isEmpty())
+       )
+    {
+        cropRect=centerCropImage(imgNr);
+        if(!cropRect.isEmpty())
+        {
+            state.images[imgNr]->setCropRect(cropRect);
+            imageChanged(imgNr);
+        };
+    };
+    for (std::size_t i = 0; i < getNrOfImages(); i++)
+    {
+        if(i==imgNr)
+        {
+            continue;
+        };
+        if (state.images[imgNr]->RadialDistortionCenterShiftisLinkedWith(*state.images[i]))
+        {
+            if(  state.images[i]->getCropMode()!=SrcPanoImage::NO_CROP &&
+                 state.images[i]->getAutoCenterCrop() && 
+               !(state.images[i]->getCropRect().isEmpty())
+               )
+            {
+                cropRect=centerCropImage(i);
+                if(!cropRect.isEmpty())
+                {
+                    state.images[i]->setCropRect(cropRect);
+                    imageChanged(i);
                 };
             };
         };
@@ -1699,9 +1789,35 @@ Panorama::ReadWriteError Panorama::writeData(std::ostream& dataOutput, std::stri
     return SUCCESSFUL;
 }
 
-
-
-
+void Panorama::updateWhiteBalance(double redFactor, double blueFactor)
+{
+    UIntSet modified_images;
+    for(unsigned int i=0;i<getNrOfImages();i++)
+    {
+        if(!set_contains(modified_images,i))
+        {
+            state.images[i]->setWhiteBalanceRed(redFactor * state.images[i]->getWhiteBalanceRed());
+            state.images[i]->setWhiteBalanceBlue(blueFactor * state.images[i]->getWhiteBalanceBlue());
+            modified_images.insert(i);
+            imageChanged(i);
+            //check linked images and remember for later
+            if(state.images[i]->WhiteBalanceRedisLinked())
+            {
+                if(i+1<getNrOfImages())
+                {
+                    for(unsigned int j=i+1;j<getNrOfImages();j++)
+                    {
+                        if(state.images[i]->WhiteBalanceRedisLinkedWith(*(state.images[j])))
+                        {
+                            modified_images.insert(j);
+                            imageChanged(j);
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
 
 PanoramaMemento::PanoramaMemento(const PanoramaMemento & data)
 {

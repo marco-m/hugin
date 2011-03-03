@@ -28,7 +28,7 @@
 #ifndef _PTOPTIMIZER_H
 #define _PTOPTIMIZER_H
 
-#include <algorithm/PanoramaAlgorithm.h>
+#include <algorithms/PanoramaAlgorithm.h>
 
 #include <hugin_shared.h>
 #include <set>
@@ -60,6 +60,41 @@ namespace HuginBase {
             
             /// calls PTools::optimize()
             virtual bool runAlgorithm();
+    };
+    
+    /// Pairwise ransac optimisation 
+    class IMPEX RANSACOptimizer : public PanoramaAlgorithm
+    {
+        public:
+	    enum Mode {AUTO, HOMOGRAPHY, RPY, RPYV, RPYVB};
+
+            ///
+            RANSACOptimizer(PanoramaData& panorama, int i1, int i2, double maxError, Mode mode=RPY)
+		: PanoramaAlgorithm(panorama), o_i1(i1), o_i2(i2),
+	          o_maxError(maxError), o_mode(mode)
+            {};
+        
+            ///
+            virtual ~RANSACOptimizer()
+            {}
+            
+            
+        public:
+            ///
+            virtual bool modifiesPanoramaData() const
+                { return true; }
+
+	    static std::vector<int> findInliers(PanoramaData & pano, int i1, int i2, double maxError,
+						Mode mode=RPY);
+            
+            /// calls PTools::optimize()
+            virtual bool runAlgorithm();
+
+        private:
+	    int o_i1, o_i2;
+	    double o_maxError;
+	    std::vector<int> o_inliers;
+	    Mode o_mode;
     };
     
     

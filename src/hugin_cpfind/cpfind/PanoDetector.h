@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 4 ; tab-width: 4 -*-
 /*
 * Copyright (C) 2007-2008 Anael Orlinski
 *
@@ -41,6 +42,7 @@
 #include <vigra_ext/ROIImage.h>
 
 #include <panodata/Panorama.h>
+#include <algorithms/optimizer/PTOptimizer.h>
 #include <celeste/Celeste.h>
 
 using namespace HuginBase;
@@ -78,6 +80,9 @@ public:
 	inline void setGradientDescriptor(bool grad=true) { _gradDescriptor = grad; }
 	inline bool getGradientDescriptor() const { return _gradDescriptor; }
 	
+	inline void setVerbose(int level) { _verbose = level; }
+	inline int  getVerbose() const { return _verbose; }
+
 	inline void setSieve1Width(int iWidth) { _sieve1Width = iWidth; }
 	inline void setSieve1Height(int iHeight) { _sieve1Height = iHeight; }
 	inline void setSieve1Size(int iSize) { _sieve1Size = iSize; }
@@ -93,9 +98,11 @@ public:
 	inline void setMinimumMatches(int iMatches) { _minimumMatches = iMatches; }
 	inline void setRansacIterations(int iIters) { _ransacIters = iIters; }
 	inline void setRansacDistanceThreshold(int iDT) { _ransacDistanceThres = iDT; }
+	inline void setRansacMode(RANSACOptimizer::Mode mode) { _ransacMode = mode; }
 	inline int  getMinimumMatches() const { return _minimumMatches; }
 	inline int  getRansacIterations() const { return _ransacIters; }
 	inline int  getRansacDistanceThreshold() const { return _ransacDistanceThres; }
+	inline RANSACOptimizer::Mode setRansacMode() { return _ransacMode; }
 
 	inline void setSieve2Width(int iWidth) { _sieve2Width = iWidth; }
 	inline void setSieve2Height(int iHeight) { _sieve2Height = iHeight; }
@@ -144,6 +151,8 @@ private:
 
 	bool						_gradDescriptor;
 
+	int                     _verbose;
+
 	int						_sieve1Width;
 	int						_sieve1Height;
 	int						_sieve1Size;
@@ -152,6 +161,7 @@ private:
 	double					_kdTreeSecondDistance;
 
 	int						_minimumMatches;
+	RANSACOptimizer::Mode	_ransacMode;
 	int						_ransacIters;
 	int						_ransacDistanceThres;
 
@@ -194,6 +204,8 @@ private:
 
 	void					writeOutput();
 	void					writeKeyfile(ImgData& imgInfo);
+
+	ZThread::FastMutex      aPanoMutex;
 
 	// internals
 public:
@@ -244,13 +256,15 @@ public:
 	static bool				FindKeyPointsInImage(ImgData& ioImgInfo, const PanoDetector& iPanoDetector);
 	static bool				FilterKeyPointsInImage(ImgData& ioImgInfo, const PanoDetector& iPanoDetector);
 	static bool				MakeKeyPointDescriptorsInImage(ImgData& ioImgInfo, const PanoDetector& iPanoDetector);
+	static bool             RemapBackKeypoints(ImgData& ioImgInfo, const PanoDetector& iPanoDetector);
 	static bool				BuildKDTreesInImage(ImgData& ioImgInfo, const PanoDetector& iPanoDetector);
 	static bool				FreeMemoryInImage(ImgData& ioImgInfo, const PanoDetector& iPanoDetector);
 
 	static bool				FindMatchesInPair(MatchData& ioMatchData, const PanoDetector& iPanoDetector);
 	static bool				RansacMatchesInPair(MatchData& ioMatchData, const PanoDetector& iPanoDetector);
+	static bool				RansacMatchesInPairCam(MatchData& ioMatchData, const PanoDetector& iPanoDetector);
+	static bool				RansacMatchesInPairHomography(MatchData& ioMatchData, const PanoDetector& iPanoDetector);
 	static bool				FilterMatchesInPair(MatchData& ioMatchData, const PanoDetector& iPanoDetector);
-	static bool				RemapBackMatches(MatchData& ioMatchData, const PanoDetector& iPanoDetector);
 
 private:
     bool LoadSVMModel();
@@ -261,5 +275,15 @@ private:
 
 /** returns the filename for the keyfile for a given image */
 std::string getKeyfilenameFor(std::string keyfilesPath, std::string filename);
+
+// dummy panotools progress functions
+static int ptProgress( int command, char* argument )
+{
+	return 1;
+}
+static int ptinfoDlg( int command, char* argument )
+{
+	return 1;
+}
 
 #endif // __detectpano_panodetector_h

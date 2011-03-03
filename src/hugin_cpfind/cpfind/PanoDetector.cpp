@@ -1,3 +1,24 @@
+// -*- c-basic-offset: 4 ; tab-width: 4 -*-
+/*
+* Copyright (C) 2007-2008 Anael Orlinski
+*
+* This file is part of Panomatic.
+*
+* Panomatic is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* 
+* Panomatic is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with Panomatic; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 #include "PanoDetector.h"
 #include <iostream>
 #include <fstream>
@@ -48,6 +69,11 @@ using namespace AppBase;
 using namespace HuginBase::Nona;
 using namespace hugin_utils;
 
+
+#define TRACE_IMG(X) {if (_panoDetector.getVerbose() == 1) {TRACE_INFO("i" << _imgData._number << " : " << X << endl);}}
+#define TRACE_PAIR(X) {if (_panoDetector.getVerbose() == 1){ TRACE_INFO("i" << _matchData._i1->_number << " <> " \
+																		 "i" << _matchData._i2->_number << " : " << X << endl);}}
+
 std::string includeTrailingPathSep(std::string path)
 {
     std::string pathWithSep(path);
@@ -79,11 +105,11 @@ std::string getKeyfilenameFor(std::string keyfilesPath, std::string filename)
 };
 
 PanoDetector::PanoDetector() :	
-	_writeAllKeyPoints(false),
-	_sieve1Width(10), _sieve1Height(10), _sieve1Size(50), 
-	_kdTreeSearchSteps(200), _kdTreeSecondDistance(0.25), _ransacIters(1000), _ransacDistanceThres(25),
-	_sieve2Width(5), _sieve2Height(5),_sieve2Size(2), _test(false), _cores(utils::getCPUCount()),
-	_minimumMatches(4), _linearMatch(false), _linearMatchLen(1), _downscale(true), _cache(false), _cleanup(false),
+	_writeAllKeyPoints(false), _verbose(1),
+	_sieve1Width(10), _sieve1Height(10), _sieve1Size(100), 
+	_kdTreeSearchSteps(200), _kdTreeSecondDistance(0.25), _ransacIters(1000), _ransacDistanceThres(50),
+	_sieve2Width(5), _sieve2Height(5),_sieve2Size(1), _test(false), _cores(utils::getCPUCount()),
+	_minimumMatches(6), _linearMatch(false), _linearMatchLen(1), _downscale(true), _cache(false), _cleanup(false),
     _keypath(""), _outputFile("default.pto"), _celeste(false), _celesteThreshold(0.5), _celesteRadius(20), _multirow(false)
 {
 	_panoramaInfo = new Panorama();
@@ -169,6 +195,24 @@ void PanoDetector::printDetails()
     };
 	cout << "  Distance threshold : " << _ransacDistanceThres << endl;
 	cout << "RANSAC Options" << endl;
+	cout << "  Mode : ";
+	switch (_ransacMode) {
+	case RANSACOptimizer::AUTO:
+		cout << "auto" << endl;
+		break;
+	case RANSACOptimizer::HOMOGRAPHY:
+		cout << "homography" << endl;
+		break;
+	case RANSACOptimizer::RPY:
+		cout << "roll, pitch, yaw" << endl;
+		break;
+	case RANSACOptimizer::RPYV:
+		cout << "roll, pitch, yaw, fov" << endl;
+		break;
+	case RANSACOptimizer::RPYVB:
+		cout << "roll, pitch, yaw, fov, distortion" << endl;
+		break;
+	}
 	cout << "  Iterations : " << _ransacIters << endl;
 	cout << "  Distance threshold : " << _ransacDistanceThres << endl;
 	cout << "Sieve 2 Options" << endl;
@@ -215,10 +259,12 @@ public:
 
 	  void run() 
 	  {	
+		  TRACE_IMG("Analyzing image...");
 		  if (!PanoDetector::AnalyzeImage(_imgData, _panoDetector)) return;
 		  PanoDetector::FindKeyPointsInImage(_imgData, _panoDetector);
 		  PanoDetector::FilterKeyPointsInImage(_imgData, _panoDetector);
 		  PanoDetector::MakeKeyPointDescriptorsInImage(_imgData, _panoDetector);
+		  PanoDetector::RemapBackKeypoints(_imgData, _panoDetector);
 		  PanoDetector::BuildKDTreesInImage(_imgData, _panoDetector);
 		  PanoDetector::FreeMemoryInImage(_imgData, _panoDetector);
 	  }
@@ -236,10 +282,12 @@ public:
 
 	  void run() 
 	  {	
+		  TRACE_IMG("Analyzing image...");
 		  if (!PanoDetector::AnalyzeImage(_imgData, _panoDetector)) return;
 		  PanoDetector::FindKeyPointsInImage(_imgData, _panoDetector);
 		  PanoDetector::FilterKeyPointsInImage(_imgData, _panoDetector);
 		  PanoDetector::MakeKeyPointDescriptorsInImage(_imgData, _panoDetector);
+		  PanoDetector::RemapBackKeypoints(_imgData, _panoDetector);
 		  PanoDetector::FreeMemoryInImage(_imgData, _panoDetector);
 	  }
 private:
@@ -256,6 +304,7 @@ class LoadKeypointsDataRunnable : public Runnable
 
 	void run() 
 	{	
+		TRACE_IMG("Loading keypoints...");
 		PanoDetector::LoadKeypoints(_imgData, _panoDetector);
 		PanoDetector::BuildKDTreesInImage(_imgData, _panoDetector);
 	}
@@ -274,10 +323,11 @@ public:
 
 	  void run() 
 	  {	
+		  //TRACE_PAIR("Matching...");
 		  PanoDetector::FindMatchesInPair(_matchData, _panoDetector);
 		  PanoDetector::RansacMatchesInPair(_matchData, _panoDetector);
-		  PanoDetector::FilterMatchesInPair(_matchData, _panoDetector);
-		  PanoDetector::RemapBackMatches(_matchData, _panoDetector);
+		  PanoDetector::FilterMatchesInPair(_matchData, _panoDetector);		  
+		  TRACE_PAIR("Found " << _matchData._matches.size() << " matches");
 	  }
 private:
 	const PanoDetector&			_panoDetector;
@@ -379,14 +429,17 @@ void PanoDetector::run()
     };
 
     //print some more information about the images
-    printFilenames();
+	if (_verbose > 0) {
+		printFilenames();
+	}
 
     // 2. run analysis of images or keypoints
     try 
     {
         if (_keyPointsIdx.size() != 0)
         {
-            TRACE_INFO(endl<< "--- Analyze Images ---" << endl);
+			if (_verbose > 0)
+				TRACE_INFO(endl<< "--- Analyze Images ---" << endl);
             for (unsigned int i = 0; i < _keyPointsIdx.size(); ++i)
             {
                 aExecutor.execute(new WriteKeyPointsRunnable(_filesData[_keyPointsIdx[i]], *this));
@@ -487,7 +540,7 @@ bool PanoDetector::match(PoolExecutor& aExecutor)
     // 3. prepare matches
     prepareMatches();
     // 4. find matches
-    TRACE_INFO(endl<< "--- Find matches ---" << endl);
+	TRACE_INFO(endl<< "--- Find matches ---" << endl);
     try 
     {
         BOOST_FOREACH(MatchData& aMD, _matchesData)
@@ -544,12 +597,6 @@ bool PanoDetector::loadProject()
 	// Add images found in the project file to _filesData
 	unsigned int nImg = _panoramaInfo->getNrOfImages();
     unsigned int imgWithKeyfile=0;
-    PanoramaOptions fovOpts;
-    fovOpts.setProjection(PanoramaOptions::EQUIRECTANGULAR);
-    fovOpts.setHFOV(360);
-    fovOpts.setVFOV(180);
-    fovOpts.setWidth(360);
-    fovOpts.setHeight(180);
 	for (unsigned int imgNr = 0; imgNr < nImg; ++imgNr)
 	{
 		// insert the image in the map
@@ -572,6 +619,8 @@ bool PanoDetector::loadProject()
 		img.setY(0);
 		img.setZ(0);
 		img.setActive(true);
+		img.setResponseType(SrcPanoImage::RESPONSE_LINEAR);
+		img.setExposureValue(0);
 		_panoramaInfoCopy.setImage(imgNr,img);
 
 		// Number pointing to image info in _panoramaInfo
@@ -599,21 +648,30 @@ bool PanoDetector::loadProject()
         // set image remapping options
         if(aImgData._needsremap)
         {
-            aImgData._projOpts = _panoramaInfoCopy.getOptions();
-            //determine size of image in angles, needed for portrait images
-            vigra::Rect2D roi=estimateOutputROI(_panoramaInfoCopy,fovOpts,imgNr);
-            if(img.getWidth()>img.getHeight())
-            {
-                
-                aImgData._projOpts.setHFOV(2*(std::max(180-roi.left(),roi.right()-180)));
-            }
-            else
-            {
-                aImgData._projOpts.setHFOV(2*(std::max(90-roi.top(),roi.bottom()-90)));
-            };
-            aImgData._projOpts.setWidth(_filesData[imgNr]._detectWidth);
-            aImgData._projOpts.setHeight(_filesData[imgNr]._detectHeight);
-            aImgData._projOpts.setProjection(PanoramaOptions::STEREOGRAPHIC);
+			aImgData._projOpts.setProjection(PanoramaOptions::STEREOGRAPHIC);
+			aImgData._projOpts.setHFOV(250);
+			aImgData._projOpts.setVFOV(250);
+			aImgData._projOpts.setWidth(250);
+			aImgData._projOpts.setHeight(250);
+
+			// determine size of output image.
+			// The old code did not work with images with images with a FOV
+			// approaching 180 degrees
+            vigra::Rect2D roi=estimateOutputROI(_panoramaInfoCopy,aImgData._projOpts,imgNr);
+			double scalefactor = max((double)_filesData[imgNr]._detectWidth / roi.width(),
+									 (double)_filesData[imgNr]._detectHeight / roi.height() );
+			
+			// resize output canvas
+			vigra::Size2D canvasSize((int)aImgData._projOpts.getWidth() * scalefactor,
+									 (int)aImgData._projOpts.getHeight() * scalefactor);
+			aImgData._projOpts.setWidth(canvasSize.width(), false);
+			aImgData._projOpts.setHeight(canvasSize.height());
+
+			// set roi to cover the remapped input image
+			roi = roi * scalefactor;
+            _filesData[imgNr]._detectWidth = roi.width();
+			_filesData[imgNr]._detectHeight = roi.height();
+			aImgData._projOpts.setROI(roi);
         }
 
         // Specify if the image has an associated keypoint file
@@ -885,7 +943,17 @@ bool PanoDetector::matchMultiRow(PoolExecutor& aExecutor)
             optvars.push_back(imgopt);
         }
         optPano.setOptimizeVector(optvars);
+        if (getVerbose() < 2) 
+        {
+            PT_setProgressFcn(ptProgress);
+            PT_setInfoDlgFcn(ptinfoDlg);
+        };
         HuginBase::PTools::optimize(optPano);
+        if (getVerbose() < 2) 
+        {
+    		PT_setProgressFcn(NULL);
+	    	PT_setInfoDlgFcn(NULL);
+        };
 
         HuginBase::CalculateImageOverlap overlap(&optPano);
         overlap.calculate(10);

@@ -27,7 +27,6 @@
 #include "panoinc.h"
 #include "panoinc_WX.h"
 
-#include "common/utils.h"
 #include "icpfind/CPDetectorConfig.h"
 
 /** hugin preferences dialog
@@ -85,12 +84,15 @@ protected:
     void OnCPDetectorSave(wxCommandEvent & e);
     /** event handler for showing help for cp detector settings */
     void OnCPDetectorHelp(wxCommandEvent & e);
+    /** event handler if default file format was changed */
+    void OnFileFormatChanged(wxCommandEvent & e);
     void EnableRotationCtrls(bool enable);
     bool GetPanoVersion();
 
 private:
-	wxString m_PTVersion;
-	wxString m_PTDetails;
+    void UpdateFileFormatControls();
+    wxString m_PTVersion;
+    wxString m_PTDetails;
     wxListBox* m_CPDetectorList;
     CPDetectorConfig cpdetector_config_edit;
 
