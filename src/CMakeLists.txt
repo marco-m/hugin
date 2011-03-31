@@ -23,8 +23,8 @@ ELSE (MSVC)
   ENDIF(LAPACK_FOUND)
 ENDIF (MSVC)
 
-set(image_libs huginvigraimpex ${OPENEXR_LIBRARIES} ${JPEG_LIBRARIES} ${TIFF_LIBRARIES}
-    ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${EXIV2_LIBRARIES})
+set(image_libs ${VIGRA_LIBRARIES} ${OPENEXR_LIBRARIES} ${JPEG_LIBRARIES} ${TIFF_LIBRARIES}
+    ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${EXIV2_LIBRARIES} -lpthread)
 
 add_subdirectory(celeste)
 add_subdirectory(foreign)

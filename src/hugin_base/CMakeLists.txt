@@ -136,9 +136,9 @@ ELSE (${HUGIN_SHARED_LIBS})
   add_library(huginbase STATIC ${HUGIN_BASE_SRC} ${HUGIN_BASE_HEADER})
 ENDIF (${HUGIN_SHARED_LIBS})
 
-TARGET_LINK_LIBRARIES(huginbase huginlevmar huginvigraimpex makefilelib
+TARGET_LINK_LIBRARIES(huginbase huginlevmar makefilelib
         ${Boost_LIBRARIES} ${EXIV2_LIBRARIES} ${PANO_LIBRARIES}
         ${TIFF_LIBRARIES} ${LAPACK_LIBRARIES} ${GLEW_LIBRARIES}
-        ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+        ${VIGRA_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
         
 add_subdirectory(makefilelib)

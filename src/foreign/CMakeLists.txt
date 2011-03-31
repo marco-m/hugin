@@ -1,6 +1,5 @@
 
 add_subdirectory(ANN)
-add_subdirectory(vigra)
 add_subdirectory(levmar)
 add_subdirectory(lensdb)
 add_subdirectory(flann)

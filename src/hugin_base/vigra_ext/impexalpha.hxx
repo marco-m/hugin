@@ -185,7 +185,6 @@ struct MaskConv<double>
 
 };
 
-
 template <class Iter1, class Acc1, class Iter2, class Acc2>
 class MultiImageMaskAccessor2
 {
@@ -196,6 +195,7 @@ public:
     typedef vigra::TinyVector<typename Acc1::value_type, 2> value_type;
     typedef typename Acc1::value_type component_type;
     typedef typename Acc2::value_type alpha_type;
+    typedef VectorElementAccessor<MultiImageMaskAccessor2<Iter1, Acc1, Iter2, Acc2> > ElementAccessor;
 
         /** Construct from two image iterators and associated accessors.
         */
@@ -298,6 +298,8 @@ public:
 
     typedef vigra::TinyVector<typename VT1::value_type, static_size> value_type;
     typedef typename value_type::value_type component_type;
+
+    typedef VectorElementAccessor<MultiImageVectorMaskAccessor4<Iter1, Acc1, Iter2, Acc2> > ElementAccessor;
 
     typedef typename Acc2::value_type alpha_type;
 

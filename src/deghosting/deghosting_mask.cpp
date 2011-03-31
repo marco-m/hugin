@@ -137,17 +137,13 @@ static void usage()
          << "     -w, --save=SET            advanced save settings" << endl
          << "                               i   save initial weigths" << endl
          << "                               w   save generated weigths" << endl
-         << "     -b BLOCKSIZE              image cache BLOCKSIZE in kilobytes; default: " <<
-            (CachedFileImageDirector::v().getBlockSize() / 1024LL) << "KB" << endl
-         << "     -m CACHESIZE              set image CACHESIZE in megabytes; default: " << 
-            (CachedFileImageDirector::v().getAllocation() / 1048576LL) << "MB" << endl
          << "     -h, --help                display this help" << endl
          << "     -v, --verbose             verbose, repeat for more verbose output" << endl;
 }
 
 int main(int argc, char *argv[]) {
     try{
-    const char * optstring = "o:i:s:r:t:c:a:w:b:m:hv";
+    const char * optstring = "o:i:s:r:t:c:a:w:hv";
     opterr = 0;
     int c;
     
@@ -299,24 +295,6 @@ int main(int argc, char *argv[]) {
             case 'w':
                 parseOptions_save(optarg);
                 break;
-            case 'b': {
-                const int kilobytes = atoi(optarg);
-                if (kilobytes < 1) {
-                    cerr << "cache block size must be 1 or more." << endl;
-                    return 1;
-                }
-                CachedFileImageDirector::v().setBlockSize(static_cast<long long>(kilobytes) << 10);
-                break;
-            }
-            case 'm': {
-                const int megabytes = atoi(optarg);
-                if (megabytes < 1) {
-                    cerr << "memory limit must be 1 or more." << endl;
-                    return 1;
-                }
-                CachedFileImageDirector::v().setAllocation(static_cast<long long>(megabytes) << 20);
-                break;
-            }
             case 'h':
                 usage();
                 return 0;
