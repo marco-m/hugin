@@ -35,8 +35,6 @@ class wxTextCtrl;
 class wxChoice;
 class wxComboBox;
 
-class StitcherPanel;
-
 /** Define the pano edit panel
  *
  *  - it is for the settings of the final panorama.
@@ -78,9 +76,10 @@ public:
 //    void previewSingleChanged(wxCommandEvent & e);
 
 
-    // actions
+    /** stitching using hugin_stitch_project */
     void DoStitch();
-	void SendToBatch();
+    /** stitching with PTBatcherGUI */
+    void DoSendToBatch();
 
 
  private:
@@ -140,7 +139,6 @@ public:
 //    void DoPreview(wxCommandEvent & e);
     void DoCalcFOV(wxCommandEvent & e);
     void OnDoStitch(wxCommandEvent & e);
-	void OnSendToBatch(wxCommandEvent & e);
 
     /** set the highest sensible width
      */
@@ -194,7 +192,6 @@ public:
     wxChoice    * m_HDRMergeChoice;
     wxChoice    * m_BlenderChoice;
     wxButton    * m_StitchButton;
-	wxButton	* m_BatchButton;
     wxButton    * m_CalcHFOVButton;
     wxButton    * m_CalcOptWidthButton;
     wxButton    * m_CalcOptROIButton;

@@ -110,7 +110,7 @@ PanoDetector::PanoDetector() :
 	_kdTreeSearchSteps(200), _kdTreeSecondDistance(0.25), _ransacIters(1000), _ransacDistanceThres(50),
 	_sieve2Width(5), _sieve2Height(5),_sieve2Size(1), _test(false), _cores(utils::getCPUCount()),
 	_minimumMatches(6), _linearMatch(false), _linearMatchLen(1), _downscale(true), _cache(false), _cleanup(false),
-    _keypath(""), _outputFile("default.pto"), _celeste(false), _celesteThreshold(0.5), _celesteRadius(20), _multirow(false)
+    _keypath(""), _outputFile("default.pto"), _outputGiven(false), _celeste(false), _celesteThreshold(0.5), _celesteRadius(20), _multirow(false)
 {
 	_panoramaInfo = new Panorama();
 }
@@ -244,7 +244,15 @@ void PanoDetector::printFilenames()
             name=_filesData[i]._keyfilename;
             if(name.compare(0,_prefix.length(),_prefix)==0)
                 name=name.substr(_prefix.length(),name.length()-_prefix.length());
-            cout << "  Keyfile  : " << name << (_filesData[i]._hasakeyfile?" (will be used)":"") << endl;
+            cout << "  Keyfile  : " << name;
+            if(writeKeyfileForImage)
+            {
+                cout << " (will be generated)" << endl;
+            }
+            else
+            {
+                cout << (_filesData[i]._hasakeyfile?" (will be loaded)":" (will be generated)") << endl;
+            };
         };
         cout << "  Remapped : " << (_filesData[i]._needsremap?"yes":"no") << endl;
     };
@@ -434,6 +442,12 @@ void PanoDetector::run()
 	}
 
     // 2. run analysis of images or keypoints
+#if _WINDOWS
+    //multi threading of image loading results sometime in a race condition
+    //try to prevent this by initialisation of codecManager before
+    //running multi threading part
+    std::string s=vigra::impexListExtensions();
+#endif
     try 
     {
         if (_keyPointsIdx.size() != 0)
@@ -524,6 +538,13 @@ void PanoDetector::run()
         for (unsigned int i = 0; i < _keyPointsIdx.size(); ++i)
         {
             writeKeyfile(_filesData[_keyPointsIdx[i]]);
+        };
+        if(_outputGiven)
+        {
+            cout << endl << "Warning: You have given the --output switch." << endl
+                         << "This switch is not compatible with the --writekeyfile or --kall switch." << endl
+                         << "If you want to generate the keyfiles and" << endl
+                         << "do the matching in the same run use the --cache switch instead." << endl << endl;
         };
     }
     else
@@ -734,7 +755,7 @@ void PanoDetector::CleanupKeyfiles()
 
 void PanoDetector::prepareMatches()
 {
-	int aLen = _filesData.size();
+	unsigned int aLen = _filesData.size();
 	if (_linearMatch)
 		aLen = _linearMatchLen;
 
@@ -743,7 +764,7 @@ void PanoDetector::prepareMatches()
 
 	for (unsigned int i1 = 0; i1 < _filesData.size(); ++i1)
 	{
-		int aEnd = i1 + 1 + aLen;
+		unsigned int aEnd = i1 + 1 + aLen;
 		if (_filesData.size() < aEnd)
 			aEnd = _filesData.size();
 
@@ -865,7 +886,7 @@ bool PanoDetector::matchMultiRow(PoolExecutor& aExecutor)
     CPGraph graph;
     createCPGraph(*_panoramaInfo, graph);
     CPComponents comps;
-    int n = findCPComponents(graph, comps);
+    unsigned int n = findCPComponents(graph, comps);
     if(n>1)
     {
         vector<unsigned int> ImagesGroups;

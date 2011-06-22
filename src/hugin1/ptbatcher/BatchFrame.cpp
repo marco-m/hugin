@@ -103,6 +103,8 @@ BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
 	EVT_MENU(wxEVT_COMMAND_RELOAD_BATCH, BatchFrame::OnReloadBatch)
 	EVT_MENU(wxEVT_COMMAND_UPDATE_LISTBOX, BatchFrame::OnUpdateListBox)
     EVT_COMMAND(wxID_ANY, EVT_BATCH_FAILED, BatchFrame::OnBatchFailed)
+    EVT_COMMAND(wxID_ANY, EVT_INFORMATION, BatchFrame::OnBatchInformation)
+    EVT_ICONIZE(BatchFrame::OnMinimize)
 END_EVENT_TABLE()
 
 BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
@@ -138,6 +140,27 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
 #endif
     SetIcon(myIcon);
 
+#if wxCHECK_VERSION(2,9,0)
+    if(wxTaskBarIcon::IsAvailable())
+    {
+        m_tray=new BatchTaskBarIcon();
+        m_tray->SetIcon(myIcon,_("Hugins Batch processor"));
+    }
+    else
+    {
+        m_tray=NULL;
+    };
+#else
+    m_tray=new BatchTaskBarIcon();
+    if(m_tray->IsOk())
+    {
+        m_tray->SetIcon(myIcon,_("Hugins Batch processor"));
+    }
+    else
+    {
+        m_tray=NULL;
+    };
+#endif
 	m_batch = new Batch(this,wxTheApp->argv[0],true);
 	m_batch->gui = true;
 	m_batch->LoadTemp();
@@ -261,6 +284,16 @@ void *BatchFrame::Entry()
 	//wxMessageBox(_T("Ending thread..."));
 	return 0;
 }
+
+bool BatchFrame::IsRunning()
+{
+    return m_batch->IsRunning();
+};
+
+bool BatchFrame::IsPaused()
+{
+    return m_batch->IsPaused();
+};
 
 void BatchFrame::OnUpdateListBox(wxCommandEvent &event)
 {
@@ -413,8 +446,18 @@ void BatchFrame::AddToList(wxString aFile,Project::Target target)
 {
 	wxFileName name(aFile);
 	m_batch->AddProjectToBatch(aFile,name.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + name.GetName(),target);
-	SetStatusText(_("Added project ")+aFile);
-	projListBox->AppendProject(m_batch->GetProject(m_batch->GetProjectCount()-1));
+    wxString s;
+    switch(target)
+    {
+    case Project::STITCHING:
+        s=wxString::Format(_("Add project %s to stitching queue."),aFile.c_str());
+        break;
+    case Project::DETECTING:
+        s=wxString::Format(_("Add project %s to assistant queue."),aFile.c_str());
+        break;
+    };
+    SetStatusInformation(s,true);
+    projListBox->AppendProject(m_batch->GetProject(m_batch->GetProjectCount()-1));
     m_batch->SaveTemp();
 }
 
@@ -424,6 +467,7 @@ void BatchFrame::OnButtonCancel(wxCommandEvent &event)
 	GetToolBar()->ToggleTool(XRCID("tool_pause"),false);
 	m_cancelled = true;
 	m_batch->CancelBatch();
+    SetStatusInformation(_("Batch stopped"),true);
 }
 void BatchFrame::OnButtonChangePrefix(wxCommandEvent &event)
 {
@@ -491,6 +535,7 @@ void BatchFrame::OnButtonClear(wxCommandEvent &event)
 	}
 	m_batch->SaveTemp();
 }
+
 void BatchFrame::OnButtonHelp(wxCommandEvent &event)
 {
 	DEBUG_TRACE("");
@@ -617,7 +662,7 @@ void BatchFrame::OnButtonPause(wxCommandEvent &event)
 			{
 				m_batch->PauseBatch();
 				GetToolBar()->ToggleTool(XRCID("tool_pause"),true);
-				SetStatusText(_("Batch paused"));
+                SetStatusInformation(_("Batch paused"),true);
 			}
 			//m_paused=true;
 		//}
@@ -627,7 +672,7 @@ void BatchFrame::OnButtonPause(wxCommandEvent &event)
 			{
 				m_batch->PauseBatch();
 				GetToolBar()->ToggleTool(XRCID("tool_pause"),false);
-				SetStatusText(_("Continuing batch..."));
+                SetStatusInformation(_("Continuing batch..."),true);
 			}
 			//m_paused=false;
 		//}
@@ -689,10 +734,10 @@ void BatchFrame::OnButtonRemoveFromList(wxCommandEvent &event)
 		}
 		else
 		{
-			m_batch->RemoveProjectAtIndex(selIndex);
 			SetStatusText(_("Removed project ")+projListBox->GetSelectedProject());
 			projListBox->Deselect(selIndex);
 			projListBox->DeleteItem(selIndex);
+			m_batch->RemoveProjectAtIndex(selIndex);
 			m_batch->SaveTemp();
 		}
 	}
@@ -939,23 +984,36 @@ void BatchFrame::OnCheckVerbose(wxCommandEvent &event)
 
 void BatchFrame::OnClose(wxCloseEvent &event)
 {
-	//wxMessageBox(_T("Closing..."));
-	//save windows position
-	if(this->IsMaximized())
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/Max"), 1l);
-	else
-	{
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/Max"), 0l);
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/Width"), this->GetSize().GetWidth());
-		wxConfigBase::Get()->Write(wxT("/BatchFrame/Height"), this->GetSize().GetHeight());
-	}
-	wxConfigBase::Get()->Flush();
+    //save windows position
+    wxConfigBase* config=wxConfigBase::Get();
+    if(IsMaximized())
+    {
+        config->Write(wxT("/BatchFrame/Max"), 1l);
+        config->Write(wxT("/BatchFrame/Minimized"), 0l);
+    }
+    else
+    {
+        config->Write(wxT("/BatchFrame/Max"), 0l);
+        if(m_tray!=NULL && !IsShown())
+        {
+            config->Write(wxT("/BatchFrame/Minimized"), 1l);
+        }
+        else
+        {
+            config->Write(wxT("/BatchFrame/Minimized"), 0l);
+            config->Write(wxT("/BatchFrame/Width"), GetSize().GetWidth());
+            config->Write(wxT("/BatchFrame/Height"), GetSize().GetHeight());
+        };
+    }
+    config->Flush();
 	m_closeThread = true;
 	this->GetThread()->Wait();
 	//wxMessageBox(_T("Closing frame..."));
 #ifndef __WXMSW__
     delete m_help;
 #endif
+    if(m_tray!=NULL)
+        delete m_tray;
 	this->Destroy();
 }
 
@@ -982,9 +1040,12 @@ void BatchFrame::PropagateDefaults()
 	else
 		m_batch->verbose = false;
 }
+
 void BatchFrame::RunBatch()
 {
-	m_batch->RunBatch();
+    if(!IsRunning())
+        SetStatusInformation(_("Starting batch"),true);
+    m_batch->RunBatch();
 }
 
 void BatchFrame::SetLocaleAndXRC(wxLocale* locale, wxString xrc)
@@ -1087,22 +1148,82 @@ void BatchFrame::OnProcessTerminate(wxProcessEvent & event)
 
 void BatchFrame::RestoreSize()
 {
-	//get saved size
-	int width = wxConfigBase::Get()->Read(wxT("/BatchFrame/Width"), -1l);
-	int height = wxConfigBase::Get()->Read(wxT("/BatchFrame/Height"), -1l);
-	int max = wxConfigBase::Get()->Read(wxT("/BatchFrame/Max"), -1l);;
-	if((width != -1) && (height != -1))
-		this->SetSize(width,height);
-	else
-		this->SetSize(600,400);
+    //get saved size
+    wxConfigBase* config=wxConfigBase::Get();
+    int width = config->Read(wxT("/BatchFrame/Width"), -1l);
+    int height = config->Read(wxT("/BatchFrame/Height"), -1l);
+    int max = config->Read(wxT("/BatchFrame/Max"), -1l);
+    int min = config->Read(wxT("/BatchFrame/Minimized"), -1l);
+    if((width != -1) && (height != -1))
+        SetSize(width,height);
+    else
+        SetSize(600,400);
 
-	if(max)
-		this->Maximize();
+    if(max==1)
+    {
+        Maximize();
+    };
+    m_startedMinimized=(m_tray!=NULL) && (min==1);
 }
 
 void BatchFrame::OnBatchFailed(wxCommandEvent &event)
 {
     FailedProjectsDialog failedProjects_dlg(this,m_batch,m_xrcPrefix);
     failedProjects_dlg.ShowModal();
-
 };
+
+void BatchFrame::OnBatchInformation(wxCommandEvent& e)
+{
+    SetStatusInformation(e.GetString(),true);
+};
+
+void BatchFrame::SetStatusInformation(wxString status,bool showBalloon)
+{
+    SetStatusText(status);
+    if(m_tray!=NULL && showBalloon)
+    {
+#if defined __WXMSW__ && wxUSE_TASKBARICON_BALLOONS && wxCHECK_VERSION(2,9,0)
+        m_tray->ShowBalloon(_("PTBatcherGUI"),status,5000,wxICON_INFORMATION);
+#else
+#ifndef __WXMAC__
+        // the balloon does not work correctly on MacOS; it gets the focus
+        // and can not be closed
+        if(!IsShown())
+        {
+            TaskBarBalloon* balloon=new TaskBarBalloon(_("PTBatcherGUI"),status);
+            balloon->showBalloon(5000);
+        };
+#endif
+#endif
+    };
+};
+
+void BatchFrame::OnMinimize(wxIconizeEvent& e)
+{
+    //hide/show window in taskbar when minimizing
+    if(m_tray!=NULL)
+    {
+        Show(!e.IsIconized());
+        //switch off verbose output if PTBatcherGUI is in tray/taskbar
+        if(e.IsIconized())
+        {
+            m_batch->verbose=false;
+        }
+        else
+        {
+            m_batch->verbose=XRCCTRL(*this,"cb_verbose",wxCheckBox)->IsChecked();
+        };
+        m_batch->ShowOutput(m_batch->verbose);
+    }
+    else //don't hide window if no tray icon
+    {
+        e.Skip();
+    };
+};
+
+void BatchFrame::UpdateBatchVerboseStatus()
+{
+    m_batch->verbose=XRCCTRL(*this,"cb_verbose",wxCheckBox)->IsChecked();
+    m_batch->ShowOutput(m_batch->verbose);
+};
+

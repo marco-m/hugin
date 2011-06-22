@@ -26,9 +26,8 @@
 
 #include <config.h>
 #include <hugin_version.h>
-#include <exiv2/exif.hpp>
-#include <exiv2/image.hpp>
 
+#include <wx/dir.h>
 #include "panoinc_WX.h"
 #include "panoinc.h"
 
@@ -66,8 +65,12 @@
 #include "base_wx/PTWXDlg.h"
 
 #include "base_wx/huginConfig.h"
-
 #include "hugin/AboutDialog.h"
+#include "hugin/PanoOperation.h"
+
+#if HUGIN_HSI
+#include "PluginItems.h"
+#endif
 
 using namespace PT;
 using namespace std;
@@ -104,7 +107,7 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
             return true;
         }
     }
-    
+
     // try to add as images
     std::vector<std::string> filesv;
     bool foundForbiddenChars=false;
@@ -157,8 +160,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(XRCID("action_save_project"),  MainFrame::OnSaveProject)
     EVT_MENU(XRCID("action_save_as_project"),  MainFrame::OnSaveProjectAs)
     EVT_MENU(XRCID("action_save_as_ptstitcher"),  MainFrame::OnSavePTStitcherAs)
-	EVT_MENU(XRCID("action_send_to_batch"),  MainFrame::OnSendToBatch)
-	EVT_MENU(XRCID("action_open_batch_processor"),  MainFrame::OnOpenPTBatcher)
+    EVT_MENU(XRCID("action_open_batch_processor"),  MainFrame::OnOpenPTBatcher)
     EVT_MENU(XRCID("action_import_project"), MainFrame::OnMergeProject)
     EVT_MENU(XRCID("action_apply_template"),  MainFrame::OnApplyTemplate)
     EVT_MENU(XRCID("action_exit_hugin"),  MainFrame::OnUserQuit)
@@ -170,6 +172,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(XRCID("action_show_faq"),  MainFrame::OnFAQ)
     EVT_MENU(XRCID("action_show_donate"),  MainFrame::OnShowDonate)
     EVT_MENU(XRCID("action_show_prefs"), MainFrame::OnShowPrefs)
+#ifdef HUGIN_HSI
+    EVT_MENU(XRCID("action_python_script"), MainFrame::OnPythonScript)
+#endif
     EVT_MENU(XRCID("ID_EDITUNDO"), MainFrame::OnUndo)
     EVT_MENU(XRCID("ID_EDITREDO"), MainFrame::OnRedo)
     EVT_MENU(XRCID("ID_SHOW_FULL_SCREEN"), MainFrame::OnFullScreen)
@@ -186,7 +191,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(XRCID("ID_CP_TABLE"), MainFrame::OnShowCPFrame)
     EVT_BUTTON(XRCID("ID_CP_TABLE"),MainFrame::OnShowCPFrame)
-    
+
     EVT_MENU(XRCID("ID_SHOW_PANEL_ASSISTANT"), MainFrame::OnShowPanel)
     EVT_MENU(XRCID("ID_SHOW_PANEL_IMAGES"), MainFrame::OnShowPanel)
     EVT_MENU(XRCID("ID_SHOW_PANEL_LENS"), MainFrame::OnShowPanel)
@@ -196,16 +201,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(XRCID("ID_SHOW_PANEL_OPTIMIZER"), MainFrame::OnShowPanel)
     EVT_MENU(XRCID("ID_SHOW_PANEL_OPTIMIZER_PHOTOMETRIC"), MainFrame::OnShowPanel)
     EVT_MENU(XRCID("ID_SHOW_PANEL_PANORAMA"), MainFrame::OnShowPanel)
-    
-
-
-
     EVT_MENU(XRCID("action_add_images"),  MainFrame::OnAddImages)
     EVT_BUTTON(XRCID("action_add_images"),  MainFrame::OnAddImages)
     EVT_MENU(XRCID("action_add_time_images"),  MainFrame::OnAddTimeImages)
     EVT_BUTTON(XRCID("action_add_time_images"),  MainFrame::OnAddTimeImages)
     //EVT_NOTEBOOK_PAGE_CHANGED(XRCID( "controls_notebook"), MainFrame::UpdatePanels)
-	EVT_CLOSE(  MainFrame::OnExit)
+    EVT_CLOSE(  MainFrame::OnExit)
     EVT_SIZE(MainFrame::OnSize)
 END_EVENT_TABLE()
 
@@ -248,7 +249,7 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
             // place text on bitmap.
             dc.DrawText(version, bitmap.GetWidth() - tw - 3, bitmap.GetHeight() - th - 3);
         }
-       
+
         splash = new wxSplashScreen(bitmap,
                                     wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_NO_TIMEOUT,
                                     0, NULL, -1, wxDefaultPosition,
@@ -279,12 +280,86 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
 #endif
     SetMenuBar(wxXmlResource::Get()->LoadMenuBar(this, wxT("main_menubar")));
 
+#ifdef HUGIN_HSI
+
+    // if the folder for the storage of custom plugins does not exist, create it
+    wxString p;
+    if(!wxConfigBase::Get()->Read(wxT("/pythonScriptPath"), &p))
+    {
+        // is it really necessary to try to create the dir at each startup?
+        if(wxConfigBase::Get()->Read(wxT("PluginPythonDir"), &p))
+        {
+            if(!p.IsEmpty())
+            {
+                wxFileName::Mkdir(p,0700,wxPATH_MKDIR_FULL);
+            };
+        };
+    }
+
+    wxMenuBar* menubar=GetMenuBar();
+    // the plugin menu will be generated dynamically
+    wxMenu *pluginMenu=new wxMenu();
+    // search for all .py files in plugins directory
+    wxDir dir(GetDataPath()+wxT("plugins"));
+    wxString filename;
+    bool cont=dir.GetFirst(&filename,wxT("*.py"),wxDIR_FILES|wxDIR_HIDDEN);
+    PluginItems items;
+    while(cont)
+    {
+        wxFileName file(dir.GetName(),filename);
+        file.MakeAbsolute();
+        PluginItem item(file);
+        if(item.IsAPIValid())
+        {
+            items.push_back(item);
+        };
+        cont=dir.GetNext(&filename);
+    };
+    items.sort(comparePluginItem);
+
+    int pluginID=wxID_HIGHEST+2000;
+    for(PluginItems::const_iterator it=items.begin();it!=items.end();it++)
+    {
+        PluginItem item=*it;
+        // skip incompatible plugins
+        if(item.GetPluginType()!=PluginItem::DefaultPlugin)
+        {
+            // the following can only be activated if bug 799905 if fixed
+            // currently only the HuginBase::Panorama object is passed to Python
+            // all other variables are ignored
+            // continue;
+        };
+        int categoryID=pluginMenu->FindItem(item.GetCategory());
+        wxMenu* categoryMenu;
+        if(categoryID==wxNOT_FOUND)
+        {
+            categoryMenu=new wxMenu();
+            pluginMenu->AppendSubMenu(categoryMenu,item.GetCategory());
+        }
+        else
+        {
+            categoryMenu=pluginMenu->FindItem(categoryID)->GetSubMenu();
+        };
+        categoryMenu->Append(pluginID,item.GetName(),item.GetDescription());
+        m_plugins[pluginID]=item.GetFilename();
+        Connect(pluginID, wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(MainFrame::OnPlugin));
+        pluginID++;
+    };
+    // show the new menu
+    if(pluginMenu->GetMenuItemCount()>0)
+    {
+        menubar->Insert(menubar->GetMenuCount()-2,pluginMenu,_("&Actions"));
+    };
+#else
+    GetMenuBar()->Enable(XRCID("action_python_script"), false);
+#endif
+
     // create tool bar
     SetToolBar(wxXmlResource::Get()->LoadToolBar(this, wxT("main_toolbar")));
 
     // Disable tools by default
     enableTools(false);
-	
+
     // put an "unknown" object in an xrc file and
     // take as wxObject (second argument) the return value of wxXmlResource::Get
     // finish the images_panel
@@ -298,6 +373,12 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
     images_panel = XRCCTRL(*this, "images_panel_unknown", ImagesPanel);
     assert(images_panel);
     images_panel->Init(&pano);
+#ifdef HUGIN_HSI
+    // the following can only be activated if bug 799905 if fixed
+    // currently only the HuginBase::Panorama object is passed to Python
+    // all other variables are ignored
+    //images_panel->AddPythonOperations(items);
+#endif
 
     DEBUG_TRACE("");
 
@@ -406,14 +487,27 @@ MainFrame::MainFrame(wxWindow* parent, Panorama & pano)
 
     // set progress display for image cache.
     ImageCache::getInstance().setProgressDisplay(this);
+#if defined __WXMSW__
+    unsigned long long mem = HUGIN_IMGCACHE_UPPERBOUND;
+    unsigned long mem_low = wxConfigBase::Get()->Read(wxT("/ImageCache/UpperBound"), HUGIN_IMGCACHE_UPPERBOUND);
+    unsigned long mem_high = wxConfigBase::Get()->Read(wxT("/ImageCache/UpperBoundHigh"), (long) 0);
+    if (mem_high > 0) {
+      mem = ((unsigned long long) mem_high << 32) + mem_low;
+    }
+    else {
+      mem = mem_low;
+    }
+    ImageCache::getInstance().SetUpperLimit(mem);
+#else
     ImageCache::getInstance().SetUpperLimit(wxConfigBase::Get()->Read(wxT("/ImageCache/UpperBound"), HUGIN_IMGCACHE_UPPERBOUND));
+#endif
 
     if(splash) {
         splash->Close();
         delete splash;
     }
     wxYield();
-	
+
     // disable automatic Layout() calls, to it by hand
     SetAutoLayout(false);
 
@@ -491,13 +585,13 @@ void MainFrame::panoramaChanged(PT::Panorama &pano)
 
 void MainFrame::RestoreLayout()
 {
-    DEBUG_TRACE("");	
+    DEBUG_TRACE("");
     // restore layout of child widgets, now that all widgets have been created,
     // are of similar size
 //    cpe->RestoreLayout();
 //    lens_panel->RestoreLayout();
 //    images_panel->RestoreLayout();
-    DEBUG_TRACE("");	
+    DEBUG_TRACE("");
 }
 
 //void MainFrame::panoramaChanged(PT::Panorama &panorama)
@@ -521,7 +615,7 @@ bool MainFrame::CloseProject(bool cancelable)
 {
     if (pano.isDirty()) {
         wxMessageDialog message(this,
-                                _("Save changes to the panorama before closing?"), 
+                                _("Save changes to the panorama before closing?"),
 #ifdef _WINDOWS
                                 _("Hugin"),
 #else
@@ -544,7 +638,7 @@ bool MainFrame::CloseProject(bool cancelable)
             {
                 wxCommandEvent dummy;
                 OnSaveProject(dummy);
-                return true;
+                return !pano.isDirty();
             }
             case wxID_CANCEL:
                 return false;
@@ -831,89 +925,15 @@ void MainFrame::OnNewProject(wxCommandEvent & e)
 void MainFrame::OnAddImages( wxCommandEvent& event )
 {
     DEBUG_TRACE("");
-    wxString e_stat;
-
-    // To get users path we do following:
-    // get the global config object
-    wxConfigBase* config = wxConfigBase::Get();
-
-    wxString path = config->Read(wxT("/actualPath"), wxT(""));
-    wxFileDialog dlg(this,_("Add images"),
-                     path, wxT(""),
-                     HUGIN_WX_FILE_IMG_FILTER,
-                     wxFD_OPEN | wxFD_MULTIPLE, wxDefaultPosition);
-    dlg.SetDirectory(path);
-
-    // remember the image extension
-    wxString img_ext;
-    if (config->HasEntry(wxT("lastImageType"))){
-      img_ext = config->Read(wxT("lastImageType")).c_str();
+    AddImageOperation addImage;
+    UIntSet images;
+    PanoCommand* cmd=addImage.GetCommand(this,pano,images);
+    if(cmd!=NULL)
+    {
+        GlobalCmdHist::getInstance().addCommand(cmd);
     }
-    if (img_ext == wxT("all images"))
-      dlg.SetFilterIndex(0);
-    else if (img_ext == wxT("jpg"))
-      dlg.SetFilterIndex(1);
-    else if (img_ext == wxT("tiff"))
-      dlg.SetFilterIndex(2);
-    else if (img_ext == wxT("png"))
-      dlg.SetFilterIndex(3);
-    else if (img_ext == wxT("hdr"))
-      dlg.SetFilterIndex(4);
-    else if (img_ext == wxT("exr"))
-      dlg.SetFilterIndex(5);
-    else if (img_ext == wxT("all files"))
-      dlg.SetFilterIndex(6);
-    DEBUG_INFO ( "Image extention: " << img_ext.mb_str(wxConvLocal) )
-
-    // call the file dialog
-    if (dlg.ShowModal() == wxID_OK) {
-        // get the selections
-        wxArrayString Pathnames;
-        wxArrayString Filenames;
-        dlg.GetPaths(Pathnames);
-        dlg.GetFilenames(Filenames);
-
-        // e safe the current path to config
-        config->Write(wxT("/actualPath"), dlg.GetDirectory());  // remember for later
-
-        bool foundForbiddenChars=false;
-        for(unsigned int i=0;i<Pathnames.GetCount(); i++)
-           foundForbiddenChars=foundForbiddenChars || containsInvalidCharacters(Pathnames[i]);
-        if(foundForbiddenChars)
-        {
-            wxMessageBox(wxString::Format(_("The filename(s) contains one of the following invalid characters: %s\nHugin can not work with these filenames. Please rename your file(s) and try again."),getInvalidCharacters().c_str()),
-                _("Error"),wxOK | wxICON_EXCLAMATION,this);
-        }
-        else
-        {
-            std::vector<std::string> filesv;
-            for (unsigned int i=0; i< Pathnames.GetCount(); i++) {
-                filesv.push_back((const char *)Pathnames[i].mb_str(HUGIN_CONV_FILENAME));
-            }
-
-            // we got some images to add.
-            if (filesv.size() > 0) {
-                // use a Command to ensure proper undo and updating of GUI
-                // parts
-                wxBusyCursor();
-                GlobalCmdHist::getInstance().addCommand(
-                    new wxAddImagesCmd(pano,filesv)
-                    );
-            };
-        };
-        DEBUG_INFO ( wxString::Format(wxT("img_ext: %d"), dlg.GetFilterIndex()).mb_str(wxConvLocal) )
-        // save the image extension
-        switch ( dlg.GetFilterIndex() ) {
-        case 0: config->Write(wxT("lastImageType"), wxT("all images")); break;
-        case 1: config->Write(wxT("lastImageType"), wxT("jpg")); break;
-        case 2: config->Write(wxT("lastImageType"), wxT("tiff")); break;
-        case 3: config->Write(wxT("lastImageType"), wxT("png")); break;
-        case 4: config->Write(wxT("lastImageType"), wxT("hdr")); break;
-        case 5: config->Write(wxT("lastImageType"), wxT("exr")); break;
-        case 6: config->Write(wxT("lastImageType"), wxT("all files")); break;
-        }
-
-    } else {
+    else
+    {
         // nothing to open
         SetStatusText( _("Add Image: cancel"));
     }
@@ -921,194 +941,16 @@ void MainFrame::OnAddImages( wxCommandEvent& event )
     DEBUG_TRACE("");
 }
 
-time_t ReadExifTime(const char* filename)
-{
-    Exiv2::Image::AutoPtr image;
-    try {
-        image = Exiv2::ImageFactory::open(filename);
-    }catch(...) {
-        return 0;
-    }
-    if (image.get() == 0) {
-        return 0;
-    }
-
-    image->readMetadata();
-    Exiv2::ExifData &exifData = image->exifData();
-    if (exifData.empty()) {
-        return 0;
-    }
-
-    Exiv2::Exifdatum& tag = exifData["Exif.Image.DateTime"];
-    const std::string date_time = tag.toString();
-
-    // Remember the file and a shutter timestamp.
-    struct tm when;
-    memset(&when, 0, sizeof(when));
-    when.tm_wday = -1;
-
-    // parse into the tm_structure
-    const int a = sscanf(date_time.c_str(), "%d:%d:%d %d:%d:%d",
-            &when.tm_year, &when.tm_mon, &when.tm_mday,
-            &when.tm_hour, &when.tm_min, &when.tm_sec);
-
-    if (a == 6){
-        when.tm_isdst = -1;
-        when.tm_mon -= 1;      // Adjust for unix zero-based months
-        when.tm_year -= 1900;  // Adjust for year starting at 1900
-    } else {
-        // Not in EXIF format
-        return 0;
-    }
-
-    time_t stamp;
-    stamp = mktime(&when);
-    if (stamp == (time_t)(-1))
-        return 0;
-
-    return stamp;
-}
-
-WX_DECLARE_STRING_HASH_MAP(time_t, StringToPointerHash);
-WX_DECLARE_STRING_HASH_MAP(int, StringToFlagHash);
-
-struct sortbytime
-{
-    sortbytime(map<string, time_t> & h)
-        : m_time(h)
-    { }
-
-    bool operator()(const std::string & s1, const std::string & s2)
-    {
-        time_t t1 = m_time[s1];
-        time_t t2 = m_time[s2];
-        return t1 < t2;
-    }
-
-    map<string, time_t> & m_time;
-};
-
-
 void MainFrame::OnAddTimeImages( wxCommandEvent& event )
 {
-    DEBUG_TRACE("");
-
-    int maxtimediff = wxConfigBase::Get()->Read(wxT("CaptureTimeSpan"), HUGIN_CAPTURE_TIMESPAN);
-
-    // If no images already loaded, offer user a chance to pick one.
-    int images = pano.getNrOfImages();
-    if (!images) {
-        OnAddImages(event);
-        images = pano.getNrOfImages();
-        if (!images)
-            return;
-    }
-
-    DEBUG_TRACE("seeking similarly timed images");
-
-    // Collect potential image-mates.
-    StringToPointerHash filenames;
-    StringToFlagHash preloaded;
-    while (images)
+    AddImagesSeriesOperation imageSeriesOp;
+    UIntSet images;
+    PT::PanoCommand* cmd=imageSeriesOp.GetCommand(this,pano,images);
+    if(cmd!=NULL)
     {
-        --images;
-
-        // Get the filename.
-        const SrcPanoImage& image = pano.getImage(images);
-        std::string filename = image.getFilename();
-        wxString file(filename.c_str(), HUGIN_CONV_FILENAME);
-        preloaded[file] = 1;
-
-        // Glob for all files of same type in same directory.
-        wxString name(filename.c_str(), HUGIN_CONV_FILENAME);
-        wxString path = ::wxPathOnly(name) + wxT("/*");
-        file = ::wxFindFirstFile(path);
-        while (!file.IsEmpty())
-        {
-            // Associated with a NULL dummy timestamp for now.
-            if(vigra::isImage(file.mb_str(HUGIN_CONV_FILENAME)))
-            {
-			    filenames[file] = 0;
-            };
-			file = ::wxFindNextFile();
-        }
-    }
-
-    DEBUG_INFO("found " << filenames.size() <<
-                " candidate files to search.");
-
-    // For each globbed or loaded file,
-    StringToPointerHash::iterator found;
-    std::map<std::string, time_t> timeMap;
-    for (found = filenames.begin(); found != filenames.end(); found++)
-    {
-        wxString file = found->first;
-        // Check the time if it's got a camera EXIF timestamp.
-		  time_t stamp = ReadExifTime(file.mb_str(HUGIN_CONV_FILENAME));
-      	  if (stamp) {
-            filenames[file] = stamp;
-            timeMap[(const char *)file.mb_str(HUGIN_CONV_FILENAME)] = stamp;
-      	  }
-    }
-
-    //TODO: sorting the filenames keys by timestamp would be useful
-
-    std::vector<std::string> filesv;
-    int changed;
-    do
-    {
-        changed = FALSE;
-
-        // For each timestamped file,
-        for (found = filenames.begin(); found != filenames.end(); found++)
-        {
-            wxString recruit = found->first;
-			if (preloaded[recruit] == 1)
-			  continue;
-            time_t pledge = filenames[recruit];
-            if (!pledge)
-                continue;
-
-            // For each other image already loaded,
-            images = pano.getNrOfImages();
-            while (images)
-            {
-                --images;
-                const SrcPanoImage& image = pano.getImage(images);
-                std::string filename = image.getFilename();
-                wxString file(filename.c_str(), HUGIN_CONV_FILENAME);
-                if (file == recruit)
-                    continue;
-
-                // If it is within threshold time,
-                time_t stamp = filenames[file];
-                if (abs((int)(pledge - stamp)) < maxtimediff)
-                {
-                    // Load this file, and remember it.
-                    DEBUG_TRACE("Recruited " << recruit.mb_str(wxConvLocal));
-                    std::string file = (const char *)recruit.mb_str(HUGIN_CONV_FILENAME);
-                    filesv.push_back(file);
-                    // Don't recruit it again.
-                    filenames[recruit] = 0;
-                    // Count this as a change.
-                    changed++;
-                    break;
-                }
-            }
-        }
-    } while (changed);
-
-    // sort files by date
-    sortbytime spred(timeMap);
-    sort(filesv.begin(), filesv.end(), spred);
-
-    // Load all of the named files.
-    wxBusyCursor();
-    GlobalCmdHist::getInstance().addCommand(
-        new wxAddImagesCmd(pano,filesv)
-        );
+        GlobalCmdHist::getInstance().addCommand(cmd);
+    };
 }
-
 
 void MainFrame::OnShowDonate(wxCommandEvent & e)
 {
@@ -1159,14 +1001,14 @@ void MainFrame::OnAbout(wxCommandEvent & e)
     wxDialog dlg;
 	wxString strFile;
 	wxString langCode;
-	
+
     wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("about_dlg"));
 
 #if __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
     //rely on the system's locale choice
     strFile = MacGetPathToBundledResourceFile(CFSTR("about.htm"));
     if(strFile!=wxT("")) XRCCTRL(dlg,"about_html",wxHtmlWindow)->LoadPage(strFile);
-#else    
+#else
     //if the language is not default, load custom About file (if exists)
     langCode = huginApp::Get()->GetLocale().GetName().Left(2).Lower();
     DEBUG_INFO("Lang Code: " << langCode.mb_str(wxConvLocal));
@@ -1269,7 +1111,7 @@ void MainFrame::OnTipOfDay(wxCommandEvent& WXUNUSED(e))
     //TODO: tips not localisable
     DEBUG_INFO("Tip index: " << nValue);
     strFile = GetXRCPath() + wxT("data/tips.txt");  //load default file
-	
+
     DEBUG_INFO("Reading tips from " << strFile.mb_str(wxConvLocal));
     wxTipProvider *tipProvider = new LocalizedFileTipProvider(strFile, nValue);
     bShowAtStartup = wxShowTip(this, tipProvider,(nValue ? true:false));
@@ -1290,7 +1132,20 @@ void MainFrame::OnShowPrefs(wxCommandEvent & e)
     pref_dlg->ShowModal();
     //update image cache size
     wxConfigBase* cfg=wxConfigBase::Get();
+#if defined __WXMSW__
+    unsigned long long mem = HUGIN_IMGCACHE_UPPERBOUND;
+    unsigned long mem_low = cfg->Read(wxT("/ImageCache/UpperBound"), HUGIN_IMGCACHE_UPPERBOUND);
+    unsigned long mem_high = cfg->Read(wxT("/ImageCache/UpperBoundHigh"), (long) 0);
+    if (mem_high > 0) {
+      mem = ((unsigned long long) mem_high << 32) + mem_low;
+    }
+    else {
+      mem = mem_low;
+    }
+    ImageCache::getInstance().SetUpperLimit(mem);
+#else
     ImageCache::getInstance().SetUpperLimit(cfg->Read(wxT("/ImageCache/UpperBound"), HUGIN_IMGCACHE_UPPERBOUND));
+#endif
     images_panel->ReloadCPDetectorSettings();
     gl_preview_frame->SetShowProjectionHints(cfg->Read(wxT("/GLPreviewFrame/ShowProjectionHints"),HUGIN_SHOW_PROJECTION_HINTS)!=0);
 
@@ -1310,7 +1165,7 @@ void MainFrame::OnTogglePreviewFrame(wxCommandEvent & e)
     }
     preview_frame->Show();
     preview_frame->Raise();
-	
+
 	// we need to force an update since autoupdate fires
 	// before the preview frame is shown
     wxCommandEvent dummy;
@@ -1327,7 +1182,7 @@ void MainFrame::OnToggleGLPreviewFrame(wxCommandEvent & e)
     }
     gl_preview_frame->Show();
 #if defined __WXMSW__
-    // on wxMSW Show() does not send OnShowEvent needed to update the 
+    // on wxMSW Show() does not send OnShowEvent needed to update the
     // visibility state of the fast preview windows
     // so explicit calling this event handler
     wxShowEvent se;
@@ -1369,7 +1224,8 @@ void MainFrame::OnOptimize(wxCommandEvent & e)
 void MainFrame::OnDoStitch(wxCommandEvent & e)
 {
     DEBUG_TRACE("");
-    pano_panel->DoStitch();
+    wxCommandEvent cmdEvt(wxEVT_COMMAND_BUTTON_CLICKED,XRCID("pano_button_stitch"));
+    pano_panel->GetEventHandler()->AddPendingEvent(cmdEvt);
 }
 
 void MainFrame::OnMergeProject(wxCommandEvent & e)
@@ -1384,7 +1240,7 @@ void MainFrame::OnMergeProject(wxCommandEvent & e)
                      _("Project files (*.pto,*.ptp,*.pts,*.oto)|*.pto;*.ptp;*.pts;*.oto;|All files (*)|*"),
                      wxFD_OPEN, wxDefaultPosition);
     dlg.SetDirectory(defaultdir);
-    if (dlg.ShowModal() == wxID_OK) 
+    if (dlg.ShowModal() == wxID_OK)
     {
         wxString filename = dlg.GetPath();
         wxFileName fname(filename);
@@ -1395,7 +1251,7 @@ void MainFrame::OnMergeProject(wxCommandEvent & e)
             PanoramaMemento newPano;
             std::ifstream in((const char *)fname.GetFullPath().mb_str(HUGIN_CONV_FILENAME));
             int ptoversion=0;
-            if (newPano.loadPTScript(in, ptoversion, (const char *)path.mb_str(HUGIN_CONV_FILENAME))) 
+            if (newPano.loadPTScript(in, ptoversion, (const char *)path.mb_str(HUGIN_CONV_FILENAME)))
             {
                 Panorama new_pano;
                 new_pano.setMemento(newPano);
@@ -1406,7 +1262,7 @@ void MainFrame::OnMergeProject(wxCommandEvent & e)
                 pano.clearDirty();
                 m_mruFiles.AddFileToHistory(fname.GetFullPath());
                 // force update of preview window
-                if ( !(preview_frame->IsIconized() ||(! preview_frame->IsShown()) ) ) 
+                if ( !(preview_frame->IsIconized() ||(! preview_frame->IsShown()) ) )
                 {
                     wxCommandEvent dummy;
                     preview_frame->OnUpdate(dummy);
@@ -1443,19 +1299,13 @@ void MainFrame::OnApplyTemplate(wxCommandEvent & e)
     }
 }
 
-
-void MainFrame::OnSendToBatch(wxCommandEvent & e)
-{
-	pano_panel->SendToBatch();
-}
-
 void MainFrame::OnOpenPTBatcher(wxCommandEvent & e)
 {
 #ifdef __WINDOWS__
 	wxString huginPath = getExePath(wxGetApp().argv[0])+wxFileName::GetPathSeparator();
 #else
 	wxString huginPath = _T("");	//we call the batch processor directly without path on linux
-#endif	
+#endif
 	wxExecute(huginPath+_T("PTBatcherGUI"));
 }
 
@@ -1604,10 +1454,55 @@ void MainFrame::OnRemoveCPinMasks(wxCommandEvent & e)
         GlobalCmdHist::getInstance().addCommand(
                     new PT::RemoveCtrlPointsCmd(pano,cps)
                     );
-        wxMessageBox(wxString::Format(_("Removed %d control points"), cps.size()), 
+        wxMessageBox(wxString::Format(_("Removed %d control points"), cps.size()),
                    _("Removing control points in masks"),wxOK|wxICON_INFORMATION,this);
     };
 }
+
+#ifdef HUGIN_HSI
+void MainFrame::OnPythonScript(wxCommandEvent & e)
+{
+    wxString fname;
+    wxFileDialog dlg(this,
+		     _("Select python script"),
+		     wxConfigBase::Get()->Read(wxT("/lensPath"),wxT("")), wxT(""),
+		     _("Python script (*.py)|*.py|All files (*.*)|*.*"),
+		     wxFD_OPEN, wxDefaultPosition);
+
+    wxString p;
+    if(!wxConfigBase::Get()->Read(wxT("/pythonScriptPath"), &p))
+    {
+        wxConfigBase::Get()->Read(wxT("PluginPythonDir"), &p);
+    }
+    dlg.SetDirectory(p);
+
+    if (dlg.ShowModal() == wxID_OK) {
+        wxString filename = dlg.GetPath();
+        wxConfig::Get()->Write(wxT("/pythonScriptPath"), dlg.GetDirectory());
+        std::string scriptfile((const char *)filename.mb_str(HUGIN_CONV_FILENAME));
+        GlobalCmdHist::getInstance().addCommand(
+            new PythonScriptPanoCmd(pano,scriptfile)
+            );
+    }
+}
+
+void MainFrame::OnPlugin(wxCommandEvent & e)
+{
+    wxFileName file=m_plugins[e.GetId()];
+    if(file.FileExists())
+    {
+        std::string scriptfile((const char *)file.GetFullPath().mb_str(HUGIN_CONV_FILENAME));
+        GlobalCmdHist::getInstance().addCommand(
+                                 new PythonScriptPanoCmd(pano,scriptfile)
+                                 );
+    }
+    else
+    {
+        wxMessageBox(wxString::Format(wxT("Python-Script %s not found.\nStopping processing."),file.GetFullPath().c_str()),_("Warning"),wxOK|wxICON_INFORMATION);
+    };
+}
+
+#endif
 
 void MainFrame::OnUndo(wxCommandEvent & e)
 {
@@ -1620,7 +1515,6 @@ void MainFrame::OnRedo(wxCommandEvent & e)
     DEBUG_TRACE("OnRedo");
     GlobalCmdHist::getInstance().redo();
 }
-
 
 void MainFrame::ShowCtrlPoint(unsigned int cpNr)
 {
@@ -1727,7 +1621,7 @@ void MainFrame::OnSize(wxSizeEvent &e)
 
 CPDetectorSetting& MainFrame::GetDefaultSetting()
 {
-    return images_panel->GetDefaultSetting(); 
+    return images_panel->GetDefaultSetting();
 };
 
 void MainFrame::RestoreLayoutOnNextResize()
@@ -1741,6 +1635,11 @@ void MainFrame::RestoreLayoutOnNextResize()
 const wxString & MainFrame::GetXRCPath()
 {
      return huginApp::Get()->GetXRCPath();
+};
+
+const wxString & MainFrame::GetDataPath()
+{
+    return wxGetApp().GetDataPath();
 };
 
 /// hack.. kind of a pseudo singleton...
@@ -1865,7 +1764,7 @@ struct celeste::svm_model* MainFrame::GetSVMModel()
         wxString wxstrModelFileName = huginApp::Get()->GetDataPath() + wxT(HUGIN_CELESTE_MODEL);
         // convert wxString to string
         string strModelFileName(wxstrModelFileName.mb_str(HUGIN_CONV_FILENAME));
-				
+
         // SVM model file
         if (! wxFile::Exists(wxstrModelFileName) ) {
             wxMessageBox(wxString::Format(_("Celeste model expected in %s not found, Hugin needs to be properly installed."),wxstrModelFileName.c_str()), _("Fatal Error"));
@@ -1886,4 +1785,3 @@ GLPreviewFrame * MainFrame::getGLPreview()
 }
 
 MainFrame * MainFrame::m_this = 0;
-

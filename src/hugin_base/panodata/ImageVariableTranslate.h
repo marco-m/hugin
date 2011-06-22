@@ -328,11 +328,15 @@ typedef PTOVariableConverterNoOp PTOVariableConverterForExifDistance;
 typedef PTOVariableConverterNoOp PTOVariableConverterForExifFocalLength35;
 typedef PTOVariableConverterNoOp PTOVariableConverterForExifExposureTime;
 typedef PTOVariableConverterNoOp PTOVariableConverterForExifDate;
+typedef PTOVariableConverterNoOp PTOVariableConverterForExifExposureMode;
 
+#if 0
+//panotools variables, currently not used
 typedef PTOVariableConverterNoOp PTOVariableConverterForFeatherWidth;
+typedef PTOVariableConverterNoOp PTOVariableConverterForMorph;
+#endif
 typedef PTOVariableConverterNoOp PTOVariableConverterForMasks;
 typedef PTOVariableConverterNoOp PTOVariableConverterForActiveMasks;
-typedef PTOVariableConverterNoOp PTOVariableConverterForMorph;
 typedef PTOVariableConverterNoOp PTOVariableConverterForActive;
 typedef PTOVariableConverterNoOp PTOVariableConverterForLensNr;
 }

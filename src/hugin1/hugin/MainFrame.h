@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <set>
+#include <map>
 
 #include "PT/Panorama.h"
 
@@ -76,7 +77,6 @@ private:
     bool m_imageOnly;
 };
 
-
 /** The main window frame.
  *
  *  It contains the menu & statusbar and a big notebook with
@@ -108,6 +108,8 @@ public:
 
     /// get the path to the xrc directory
     const wxString & GetXRCPath();
+    /** get the path to data directory */
+    const wxString & GetDataPath();
 
     /// hack.. kind of a pseudo singleton...
     static MainFrame * Get();
@@ -182,6 +184,10 @@ private:
     void OnKeyboardHelp(wxCommandEvent & e);
     void OnFAQ(wxCommandEvent & e);
     void OnShowPrefs(wxCommandEvent &e);
+#ifdef HUGIN_HSI
+    void OnPythonScript(wxCommandEvent & e);
+    void OnPlugin(wxCommandEvent& e);
+#endif
     void OnUndo(wxCommandEvent & e);
     void OnRedo(wxCommandEvent & e);
     void OnSaveProjectAs(wxCommandEvent & e);
@@ -256,6 +262,10 @@ private:
     wxCHMHelpController     m_msHtmlHelp;
 #endif
 
+#ifdef HUGIN_HSI
+    // list associating the wxID in the menu with a python script
+    std::map<int, wxFileName> m_plugins;
+#endif
 
     DECLARE_EVENT_TABLE()
 };

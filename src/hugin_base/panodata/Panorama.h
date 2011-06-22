@@ -24,10 +24,17 @@
 #ifndef _PANODATA_PANORAMA_H
 #define _PANODATA_PANORAMA_H
 
+// if this file is preprocessed for SWIG, we want to ignore
+// all the header inclusions that follow:
+
+#ifndef _HSI_IGNORE_SECTION
+
 #include <hugin_shared.h>
 #include <appbase/DocumentData.h>
 #include <panodata/PanoramaData.h>
 
+
+#endif // _HSI_IGNORE_SECTION
 
 namespace HuginBase {
     
@@ -202,7 +209,7 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         };
 
         /// set a panorama image, counting starts with 0
-        void setImage(std::size_t nr, SrcPanoImage img)
+        void setImage(std::size_t nr, const SrcPanoImage & img)
         {
             setSrcImage(nr, img);
         };
@@ -263,11 +270,6 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
             *
             */
         void setImageFilename(unsigned int img, const std::string & fname);
-        
-        /** change image properties.
-          *  @deprecated Use the corresponding get/set* methods instead, will be removed in the future
-            */
-        void setImageOptions(unsigned int i, const ImageOptions & opts);
         
         /** mark an image as active or inactive.
             *

@@ -26,20 +26,24 @@
 #ifndef _PANORAMA_H
 #define _PANORAMA_H
 
+// if this file is preprocessed for SWIG, we want to ignore
+// all the header inclusions that follow:
+
+#ifndef _HSI_IGNORE_SECTION
+
 #include <hugin_shared.h>
 #include <vector>
 #include <set>
 #include <iostream>
 
 #include <hugin_math/Matrix3.h>
-//#include <panodata/PanoImage.h>
 #include <panodata/PanoramaVariable.h>
 #include <panodata/SrcPanoImage.h>
 #include <panodata/ControlPoint.h>
 #include <panodata/Lens.h>
 #include <panodata/PanoramaOptions.h>
 
-
+#endif // _HSI_IGNORE_SECTION
 
 namespace HuginBase {
 
@@ -113,7 +117,7 @@ public:
     virtual const SrcPanoImage& getImage(std::size_t nr) const =0;
 
     /// set a panorama image, counting starts with 0
-    virtual void setImage(std::size_t nr, SrcPanoImage img) =0;
+    virtual void setImage(std::size_t nr, const SrcPanoImage & img) =0;
     
     /// the the number for a specific image
 //    virtual unsigned int getImageNr(const PanoImage * image) const =0;
@@ -160,12 +164,6 @@ public:
     *
     */
     virtual void setImageFilename(unsigned int img, const std::string & fname) =0;
-    
-    /** change image properties.
-    * TODO This changes the image variables, right?
-    *      Propagate changes to linked images.
-    */
-    virtual void setImageOptions(unsigned int i, const ImageOptions & opts) =0;
     
     /** mark an image as active or inactive.
     *

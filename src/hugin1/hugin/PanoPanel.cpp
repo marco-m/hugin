@@ -80,7 +80,6 @@ BEGIN_EVENT_TABLE(PanoPanel, wxPanel)
     EVT_BUTTON ( XRCID("pano_button_opt_width"), PanoPanel::DoCalcOptimalWidth)
     EVT_BUTTON ( XRCID("pano_button_opt_roi"), PanoPanel::DoCalcOptimalROI)
     EVT_BUTTON ( XRCID("pano_button_stitch"),PanoPanel::OnDoStitch )
-	EVT_BUTTON ( XRCID("pano_button_batch"),PanoPanel::OnSendToBatch )
 
     EVT_CHECKBOX ( XRCID("pano_cb_ldr_output_blended"), PanoPanel::OnOutputFilesChanged)
     EVT_CHECKBOX ( XRCID("pano_cb_ldr_output_layers"), PanoPanel::OnOutputFilesChanged)
@@ -222,8 +221,6 @@ bool PanoPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, cons
 
     m_StitchButton = XRCCTRL(*this, "pano_button_stitch", wxButton);
     DEBUG_ASSERT(m_StitchButton);
-	m_BatchButton = XRCCTRL(*this, "pano_button_batch", wxButton);
-    DEBUG_ASSERT(m_BatchButton);
 
     m_FileFormatChoice = XRCCTRL(*this, "pano_choice_file_format", wxChoice);
     DEBUG_ASSERT(m_FileFormatChoice);
@@ -421,7 +418,6 @@ void PanoPanel::UpdateDisplay(const PanoramaOptions & opt, const bool hasStacks)
     //do not let the user stitch unless there are active images and an output selected.
     bool any_output_possible = hasImages && anyOutputSelected;
     m_StitchButton->Enable(any_output_possible);
-    m_BatchButton->Enable(any_output_possible);
 
 #ifdef STACK_CHECK //Disabled for 0.7.0 release
     if (hasStacks) {
@@ -1061,7 +1057,10 @@ void PanoPanel::DoStitch()
             return;
     };
 
-    wxString command = hugin_stitch_project + wxT(" --delete -o ") + wxQuoteFilename(dlg.GetPath()) + wxT(" ") + wxQuoteFilename(currentPTOfn);
+    wxString switches(wxT(" --delete -o "));
+    if(wxConfigBase::Get()->Read(wxT("/Processor/overwrite"), HUGIN_PROCESSOR_OVERWRITE) == 1)
+        switches=wxT(" --overwrite")+switches;
+    wxString command = hugin_stitch_project + switches + wxQuoteFilename(dlg.GetPath()) + wxT(" ") + wxQuoteFilename(currentPTOfn);
     
     wxConfigBase::Get()->Flush();
 #ifdef __WXGTK__
@@ -1120,51 +1119,131 @@ void PanoPanel::DoStitch()
 #endif
 }
 
-void PanoPanel::SendToBatch()
+void PanoPanel::DoSendToBatch()
 {
-	wxCommandEvent dummy;
-	OnSendToBatch(dummy);
-}
+    if (pano->getNrOfImages() == 0)
+    {
+        return;
+    }
+    
+    if (!CheckGoodSize())
+    {
+        // oversized pano and the user no longer wants to stitch.
+        return;
+    }
+    wxString switches(wxT(" "));
+    if (wxConfigBase::Get()->Read(wxT("/Processor/start"), HUGIN_PROCESSOR_START) != 0)
+    {
+        switches += wxT("-b ");
+    }
+    if (wxConfigBase::Get()->Read(wxT("/Processor/parallel"), HUGIN_PROCESSOR_PARALLEL) != 0)
+    {
+        switches += wxT("-p ");
+    }
+    if (wxConfigBase::Get()->Read(wxT("/Processor/overwrite"), HUGIN_PROCESSOR_OVERWRITE) != 0)
+    {
+        switches += wxT("-o ");
+    }
+    if (wxConfigBase::Get()->Read(wxT("/Processor/verbose"), HUGIN_PROCESSOR_VERBOSE) != 0)
+    {
+        switches += wxT("-v ");
+    }
+    if(pano->isDirty())
+    {
+        wxCommandEvent dummy;
+        MainFrame::Get()->OnSaveProject(dummy);
+        //test if save was sucessful
+        if(pano->isDirty())
+        {
+            return;
+        };
+    };
+    wxString projectFile = MainFrame::Get()->getProjectName();
+    if(wxFileName::FileExists(projectFile))
+    {
+        wxFileName outputPrefix;
+        outputPrefix.Assign(projectFile);
+        if (outputPrefix.GetExt() == wxT("pto"))
+        {
+            outputPrefix.ClearExt();
+        };
+
+        // Show a file save dialog so user can confirm/change the prefix.
+        // (We don't have to worry about overwriting existing files, since PTBatcherGUI checks this, or the overwrite flag was set.)
+        wxFileDialog dlg(this,_("Specify output prefix"),
+                         outputPrefix.GetPath(), outputPrefix.GetName(), wxT(""),
+                         wxFD_SAVE, wxDefaultPosition);
+        if (dlg.ShowModal() != wxID_OK)
+        {
+            return;
+        };
+        while(containsInvalidCharacters(dlg.GetPath()))
+        {
+            wxMessageBox(wxString::Format(_("The given filename contains one of the following invalid characters: %s\nHugin can not work with this filename. Please enter a valid filename."),getInvalidCharacters().c_str()),
+                _("Error"),wxOK | wxICON_EXCLAMATION);
+            if(dlg.ShowModal()!=wxID_OK)
+                return;
+        };
+
+#if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
+		int osVersionMajor;
+		int osVersionMinor;
+		wxString args;
+		
+		int os = wxGetOsVersion(&osVersionMajor, &osVersionMinor);
+		
+		if ((osVersionMajor == 0x10) && (osVersionMinor >= 0x50))
+		{ //This is Leopard and Snow Leopard. Use the bundles Snow Leopard open command
+			//wxExecute(wxT("open -b net.sourceforge.hugin.PTBatcherGUI  --args ")+switches+wxQuoteFilename(projectFile)+wxT(" ")+wxQuoteFilename(dlg.GetPath()));
+
+			wxString cmd = MacGetPathToBundledExecutableFile(CFSTR("open"));  
+			if(cmd != wxT(""))
+			{
+				cmd = wxQuoteString(cmd); 
+				args = wxT("-b net.sourceforge.hugin.PTBatcherGUI --args ")+switches+wxQuoteFilename(projectFile)+wxT(" ")+wxQuoteFilename(dlg.GetPath());
+			}
+			else
+			{
+				wxMessageBox(wxString::Format(_("External program %s not found in the bundle, reverting to system path"), wxT("open")), _("Error"));
+				args = _T("-b net.sourceforge.hugin.PTBatcherGUI ")+wxQuoteFilename(projectFile);
+				cmd = wxT("open");  
+			}
+			cmd += wxT(" ") + args;	
+			wxExecute(cmd);
+		} 
+		else { //This is Tiger
+			wxExecute(_T("open -b net.sourceforge.hugin.PTBatcherGUI "+wxQuoteFilename(projectFile)));
+		}
+#else
+#ifdef __WINDOWS__
+        wxString huginPath = getExePath(wxGetApp().argv[0])+wxFileName::GetPathSeparator();
+#else
+        wxString huginPath = wxT(""); //we call the batch processor directly without path on linux
+#endif
+        wxExecute(huginPath+wxT("PTBatcherGUI")+switches+wxQuoteFilename(projectFile)+wxT(" ")+wxQuoteFilename(dlg.GetPath()));
+#endif
+    }
+};
 
 void PanoPanel::OnDoStitch ( wxCommandEvent & e )
 {
-    DoStitch();
-}
-
-void PanoPanel::OnSendToBatch ( wxCommandEvent & e )
-{
-    if (!CheckGoodSize()) {
-        return;
-    }
-	wxCommandEvent dummy;
-	MainFrame::Get()->OnSaveProject(dummy);
-	wxString projectFile = MainFrame::Get()->getProjectName();
-	if(wxFileName::FileExists(projectFile))
-	{
-#if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
-        wxExecute(_T("open -b net.sourceforge.hugin.PTBatcherGUI "+wxQuoteFilename(projectFile)));
-#else
-#ifdef __WINDOWS__
-		wxString huginPath = getExePath(wxGetApp().argv[0])+wxFileName::GetPathSeparator(); 
-#else
-		wxString huginPath = _T("");	//we call the batch processor directly without path on linux
-#endif	
-		wxExecute(huginPath+wxT("PTBatcherGUI ")+wxQuoteFilename(projectFile));
-#endif
-
-		/*int i=0;
-		wxString batchFileName = wxStandardPaths::Get().GetUserConfigDir()+wxFileName::GetPathSeparator();
-		batchFileName = batchFileName.Append(_T(".ptbs")) << i;
-		while(wxFileName::FileExists(batchFileName)){
-			i++;
-			batchFileName = wxStandardPaths::Get().GetUserConfigDir()+wxFileName::GetPathSeparator();
-			batchFileName = batchFileName.Append(_T(".ptbs")) << i;
-		}
-		wxFile batchFile;
-		batchFile.Create(batchFileName);
-		batchFile.Write(projectFile,wxConvLocal);
-		batchFile.Close(); */
-	}
+    long t;
+    wxConfigBase::Get()->Read(wxT("/Processor/gui"),&t,HUGIN_PROCESSOR_GUI);
+    switch (t)
+    {
+        // PTBatcher
+        case 0:
+            DoSendToBatch();
+            break;
+        // hugin_stitch_project
+        case 1:
+            DoStitch();
+            break;
+        // there is an error in the preferences
+        default :
+            // TODO: notify user and fix preferences misconfiguration
+            break;
+      }
 }
 
 void PanoPanel::FileFormatChanged(wxCommandEvent & e)

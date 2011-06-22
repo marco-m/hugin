@@ -30,6 +30,11 @@
 #ifndef _PANODATA_SRCPANOIMAGE_H
 #define _PANODATA_SRCPANOIMAGE_H
 
+// if this file is preprocessed for SWIG, we want to ignore
+// all the header inclusions that follow:
+
+#ifndef _HSI_IGNORE_SECTION
+
 #include <hugin_shared.h>
 #include <hugin_config.h>
 #include <iostream>
@@ -39,13 +44,14 @@
 #include <hugin_utils/utils.h>
 #include <hugin_math/hugin_math.h>
 #include "PanoramaVariable.h"
-#include "PanoImage.h"
 #include "ImageVariable.h"
 #include "Mask.h"
 
 #ifdef HUGIN_USE_EXIV2
 #include <exiv2/exif.hpp>
 #endif
+
+#endif // _HSI_IGNORE_SECTION
 
 namespace HuginBase {
 
@@ -121,7 +127,7 @@ public:
 
     // get[variable name]IV functions. Return a const reference to the ImageVariable.
 #define image_variable( name, type, default_value ) \
-    const ImageVariable<type> & get##name##IV() const { return m_##name; }
+    const ImageVariable<type > & get##name##IV() const { return m_##name; }
 #include "image_variables.h"
 #undef image_variable
 
@@ -174,12 +180,12 @@ public:
 protected:
     ///
     void setDefaults();
-    
+
     // the image variables m_[variable name]
 #define image_variable( name, type, default_value ) \
-    ImageVariable<type> m_##name;
+    ImageVariable<type > m_##name;
 #include "image_variables.h"
-#undef image_variable    
+#undef image_variable
 };
 
 
@@ -245,7 +251,10 @@ public:
      * unlike the lazy metaprogrammed equivalent in BaseSrcPanoImage.
      */
     void setCropMode(CropMode val);
-    
+
+    /** returns true, if projection requires cicular crop */
+    bool isCircularCrop();
+
     /** Set the image size in pixels
      * 
      * If we aren't cropping the image, set the size to the entire image 
@@ -296,21 +305,6 @@ public:
      * needed, every time it is called.
      */
     VariableMap getVariableMap() const;
-    
-    
-    /** get the optimisation and stitching options, like PanoImage.
-     * 
-     * @deprecated Do not use: eventually we want to make everything using these to ask for
-     * each wanted variable directly using the get* functions instead.
-     */
-    ImageOptions getOptions() const;
-    
-    /** set the optimisation and stitching options
-     * 
-     * @deprecated: Do not use: switch stuff over to the set* functions instead.
-     */
-    void setOptions(const ImageOptions & opt);
-    
     
     /** try to convert Exif date time string to struct tm 
      *  @return 0, if conversion was sucessfull */

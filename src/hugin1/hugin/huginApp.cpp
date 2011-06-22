@@ -52,6 +52,7 @@
 #include "hugin/CommandHistory.h"
 #include "hugin/wxPanoCommand.h"
 #include "hugin/HtmlWindow.h"
+#include "hugin/PanoOperationTree.h"
 
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
@@ -101,7 +102,11 @@ wxString getDefaultProjectName(const Panorama & pano)
     }
 }
 
+#if _WINDOWS && defined Hugin_shared
+DEFINE_LOCAL_EVENT_TYPE( EVT_IMAGE_READY )
+#else
 DEFINE_EVENT_TYPE( EVT_IMAGE_READY )
+#endif
 
 BEGIN_EVENT_TABLE(huginApp, wxApp)
     EVT_IMAGE_READY2(-1, huginApp::relayImageLoaded)
@@ -257,6 +262,7 @@ bool huginApp::OnInit()
     wxXmlResource::Get()->AddHandler(new PanoPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new PreviewPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new HtmlWindowXmlHandler());
+    wxXmlResource::Get()->AddHandler(new PanoOperationTreeCtrlXmlHandler());
 
     // load XRC files
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("crop_panel.xrc"));

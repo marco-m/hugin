@@ -31,6 +31,7 @@ hugin_math/eig_jacobi.cpp
 hugin_math/graph.cpp
 hugin_math/Matrix3.cpp
 hugin_math/Vector3.cpp
+hugin_utils/alphanum.cpp
 hugin_utils/utils.cpp
 hugin_utils/platform.cpp
 nona/SpaceTransform.cpp
@@ -92,6 +93,7 @@ hugin_math/eig_jacobi.h
 hugin_math/graph.h
 hugin_math/Matrix3.h
 hugin_math/Vector3.h
+hugin_utils/alphanum.h
 hugin_utils/utils.h
 hugin_utils/platform.h
 nona/ImageRemapper.h
@@ -102,7 +104,6 @@ panodata/ControlPoint.h
 panodata/Lens.h
 panodata/Mask.h
 panodata/PanoramaData.h
-panodata/PanoImage.h
 panodata/Panorama.h
 panodata/PanoramaOptions.h
 panodata/PanoramaVariable.h
@@ -142,3 +143,4 @@ TARGET_LINK_LIBRARIES(huginbase huginlevmar makefilelib
         ${VIGRA_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
         
 add_subdirectory(makefilelib)
+add_subdirectory(lines)

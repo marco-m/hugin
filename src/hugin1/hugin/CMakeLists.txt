@@ -34,7 +34,7 @@ OutputProjectionInfo.cpp ToolHelper.cpp Tool.cpp  OverviewCameraTool.cpp Project
 PreviewCropTool.cpp DragTool.cpp PreviewIdentifyTool.cpp PanosphereSphereTool.cpp
 PreviewDifferenceTool.cpp PreviewPanoMaskTool.cpp PreviewControlPointTool.cpp
 GreatCircles.cpp AboutDialog.cpp LayoutRemapper.cpp PreviewLayoutLinesTool.cpp PreviewColorPickerTool.cpp
-MaskEditorPanel.cpp MaskImageCtrl.cpp MaskLoadDialog.cpp HtmlWindow.cpp)
+MaskEditorPanel.cpp MaskImageCtrl.cpp MaskLoadDialog.cpp HtmlWindow.cpp PanoOperation.cpp PanoOperationTree.cpp)
 
 set(hugin_HEADERS
 huginApp.h ImagesList.h MainFrame.h CPImageCtrl.h CPImagesComboBox.h CPEditorPanel.h CPDetectorDialog.h LensPanel.h 
@@ -49,7 +49,12 @@ OutputProjectionInfo.h ToolHelper.h Tool.h OverviewCameraTool.h ProjectionGridTo
 PreviewCropTool.h DragTool.h PreviewIdentifyTool.h PanosphereSphereTool.h
 PreviewDifferenceTool.h PreviewPanoMaskTool.h PreviewControlPointTool.h
 GreatCircles.h AboutDialog.h LayoutRemapper.h PreviewLayoutLinesTool.h PreviewColorPickerTool.h
-MaskEditorPanel.h MaskImageCtrl.h MaskLoadDialog.h HtmlWindow.h)
+MaskEditorPanel.h MaskImageCtrl.h MaskLoadDialog.h HtmlWindow.h PanoOperation.h PanoOperationTree.h)
+
+IF(BUILD_HSI)
+LIST(APPEND hugin_SOURCES PluginItems.cpp)
+LIST(APPEND hugin_HEADERS PluginItems.h)
+ENDIF()
 
 IF(APPLE)
   if (MAC_SELF_CONTAINED_BUNDLE)
@@ -117,6 +122,10 @@ ELSE (APPLE)
 ENDIF(APPLE)
 
 target_link_libraries( ${PROGNAME} ${common_libs} ${image_libs} huginbasewx celeste icpfindlib ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} ${GLUT_LIBRARIES})
+
+IF(BUILD_HSI)
+TARGET_LINK_LIBRARIES(${PROGNAME} hugin_python_interface)
+ENDIF()
 
 IF (APPLE)
   IF (NOT MAC_SELF_CONTAINED_BUNDLE)

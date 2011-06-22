@@ -34,6 +34,7 @@
 #ifdef __WXMSW__
 #include "wx/msw/helpchm.h"
 #endif
+#include "BatchTrayIcon.h"
 //#include <wx/app.h>
 
 /** Simple class that forward the drop to the mainframe */
@@ -87,6 +88,8 @@ public:
 	
 	//Called on window close to take care of the child thread
 	void OnClose(wxCloseEvent &event);
+    /** handle when minimize or restore image */
+    void OnMinimize(wxIconizeEvent &e);
 	//Resets all checkboxes based on m_batch object properties
 	void PropagateDefaults();
 	//Sets all checkboxes corresponding the setting in config
@@ -112,6 +115,18 @@ public:
     void AddToList(wxString aFile, Project::Target target=Project::STITCHING);
 	void AddDirToList(wxString aDir);
 	void ChangePrefix(int index,wxString newPrefix);
+    /** returns true, if batch is running */
+    bool IsRunning();
+    /** returns true, if batch is paused */
+    bool IsPaused();
+    /** sets status message, also updates tooltip of taskbar icon 
+     *  @param status text for status bar
+     *  @param showBalloon true if the status text should also shown in balloon */
+    void SetStatusInformation(wxString status,bool showBalloon);
+    /** update visibility of verbose output window depending on status of verbose checkbox */
+    void UpdateBatchVerboseStatus();
+    /** returns true, if last session was finished minimized */
+    bool IsStartedMinimized() { return m_startedMinimized; };
 
 #ifdef __WXMSW__
     /** return help controller for open help */
@@ -135,6 +150,8 @@ private:
 #else
     wxHtmlHelpController * m_help;
 #endif
+    BatchTaskBarIcon* m_tray;
+    bool m_startedMinimized;
 
 	void OnProcessTerminate(wxProcessEvent & event);
 	/** called by thread when queue was changed outside of PTBatcherGUI
@@ -144,6 +161,8 @@ private:
 	void OnUpdateListBox(wxCommandEvent &event);
     /** called when batch was finished and there are failed projects */
     void OnBatchFailed(wxCommandEvent &event);
+    /** called when batch wants to show some progress message */
+    void OnBatchInformation(wxCommandEvent &e);
 
 	DECLARE_EVENT_TABLE()
 	//PTPrograms progs;

@@ -167,7 +167,11 @@
 #define HUGIN_ENBLEND_EXE_CUSTOM              true
 #define HUGIN_ENFUSE_EXE_CUSTOM               true
 
+
 #endif
+
+// personal python plugin folder (relative to user home folder)
+#define HUGIN_PLUGIN_PYTHON_DIR               "hugin_python_plugins"
 
 // enblend args
 #define HUGIN_ENBLEND_ARGS                    ""
@@ -190,10 +194,17 @@
 // hdrmerge defaults
 #define HUGIN_HDRMERGE_ARGS                  "-m avg -c"
 
-//default colours for mask editor
+// default colours for mask editor
 #define HUGIN_MASK_COLOUR_POLYGON_NEGATIVE          "#FF0000"
 #define HUGIN_MASK_COLOUR_POLYGON_POSITIVE          "#00FF00"
 #define HUGIN_MASK_COLOUR_POINT_SELECTED            "#0000FF"
 #define HUGIN_MASK_COLOUR_POINT_UNSELECTED          "#FFFFFF"
+
+// processor
+#define HUGIN_PROCESSOR_GUI             0l    // first in the list in the xrc file
+#define HUGIN_PROCESSOR_START           1l    // boolean
+#define HUGIN_PROCESSOR_PARALLEL        0l    // boolean
+#define HUGIN_PROCESSOR_OVERWRITE       0l    // boolean
+#define HUGIN_PROCESSOR_VERBOSE         1l    // boolean
 
 #endif // _CONFIG_DEFAULTS_H

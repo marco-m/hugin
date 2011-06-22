@@ -28,6 +28,7 @@
 
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
+#include "base_wx/LensTools.h"
 
 #include "PT/ImageGraph.h"
 #include "base_wx/wxPlatform.h"
@@ -39,7 +40,6 @@
 #include "hugin/MainFrame.h"
 #include "hugin/huginApp.h"
 #include "hugin/TextKillFocusHandler.h"
-#include "hugin/HFOVDialog.h"
 #include "hugin/config_defaults.h"
 #include "hugin/wxPanoCommand.h"
 
@@ -457,7 +457,33 @@ void AssistantPanel::OnAlignSendToBatch(wxCommandEvent &e)
 	if(wxFileName::FileExists(projectFile))
 	{
 #if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
-        wxExecute(_T("open -b net.sourceforge.hugin.PTBatcherGUI -a"+wxQuoteFilename(projectFile)));
+		int osVersionMajor;
+		int osVersionMinor;
+		wxString args;
+
+		int os = wxGetOsVersion(&osVersionMajor, &osVersionMinor);
+
+		if ((osVersionMajor == 0x10) && (osVersionMinor >= 0x50))
+			{ //This is Leopard and Snow Leopard. Use the bundles Snow Leopard open command
+				//wxExecute(_T("open -b net.sourceforge.hugin.PTBatcherGUI --args -a "+wxQuoteFilename(projectFile)));
+				wxString cmd = MacGetPathToBundledExecutableFile(CFSTR("open"));  
+				if(cmd != wxT(""))
+				{
+					cmd = wxQuoteString(cmd); 
+					args = _T("-b net.sourceforge.hugin.PTBatcherGUI --args -a "+wxQuoteFilename(projectFile));
+				}
+				else
+				{
+					wxMessageBox(wxString::Format(_("External program %s not found in the bundle, reverting to system path"), wxT("open")), _("Error"));
+					args = _T("-b net.sourceforge.hugin.PTBatcherGUI ")+wxQuoteFilename(projectFile);
+					cmd = wxT("open");  
+				}
+				cmd += wxT(" ") + args;
+				wxExecute(cmd);
+			} 
+		else { //This is Tiger
+			wxExecute(_T("open -b net.sourceforge.hugin.PTBatcherGUI "+wxQuoteFilename(projectFile)));
+		}
 #else
 #ifdef __WINDOWS__
 		wxString huginPath = getExePath(wxGetApp().argv[0])+wxFileName::GetPathSeparator(); 
@@ -497,43 +523,20 @@ void AssistantPanel::OnLoadLens(wxCommandEvent & e)
 {
     unsigned int imgNr = 0;
     unsigned int lensNr = m_variable_groups->getLenses().getPartNumber(imgNr);
-    Lens lens = m_variable_groups->getLensForImage(imgNr);
-    VariableMap vars = m_pano->getImageVariables(imgNr);
-    ImageOptions imgopts = m_pano->getImage(imgNr).getOptions();
-
-    if (LoadLensParametersChoose(this, lens, vars, imgopts)) {
-        /** @todo maybe this isn't the best way to load the lens data.
-         * Check with LoadLensParamtersChoose how this is done, and use only
-         * the image variables, rather than merging in the lens ones.
-         */
-        for (LensVarMap::iterator it = lens.variables.begin();
-             it != lens.variables.end(); it++)
+    // get all images with the current lens.
+    UIntSet imgs;
+    for (unsigned int i = 0; i < m_pano->getNrOfImages(); i++)
+    {
+        if (m_variable_groups->getLenses().getPartNumber(i) == lensNr)
         {
-            vars.insert(pair<std::string, HuginBase::Variable>(
-                        it->first,
-                        HuginBase::Variable(it->second.getName(),
-                                            it->second.getValue() )
-                    ));
-        }
-        /** @todo I think the sensor size should be copied over,
-         * but SrcPanoImage doesn't have such a variable yet.
-         */
-        std::vector<PanoCommand*> commands;
-        commands.push_back(new PT::UpdateImageVariablesCmd(*m_pano, imgNr, vars));
-        // get all images with the current lens.
-        UIntSet imgs;
-        for (unsigned int i = 0; i < m_pano->getNrOfImages(); i++) {
-            if (m_variable_groups->getLenses().getPartNumber(i) == lensNr) {
-                imgs.insert(i);
-            }
-        }
-
-        // set image options.
-        commands.push_back(new PT::SetImageOptionsCmd(*m_pano, imgopts, imgs) );
-        GlobalCmdHist::getInstance().addCommand(
-                new PT::CombinedPanoCommand(*m_pano, commands));
+            imgs.insert(i);
+        };
     }
-
+    PT::PanoCommand* cmd=NULL;
+    if(ApplyLensParameters(this,m_pano,imgs,cmd))
+    {
+        GlobalCmdHist::getInstance().addCommand(cmd);
+    };
 }
 
 void AssistantPanel::OnExifToggle (wxCommandEvent & e)
@@ -551,7 +554,6 @@ void AssistantPanel::OnExifToggle (wxCommandEvent & e)
                 srcImg.setHFOV(50);
             }
         }
-                //initLensFromFile(pano.getImage(imgNr).getFilename().c_str(), c, lens, vars, imgopts, true);
         GlobalCmdHist::getInstance().addCommand(
                 new PT::UpdateSrcImageCmd( *m_pano, imgNr, srcImg)
                                                );

@@ -8,6 +8,22 @@ endif(COMMAND cmake_policy)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules )
 
+set(ARCH_TRIPLET)
+if(UNIX)
+  FIND_PROGRAM(DPKG_ARCHITECTURE_EXECUTABLE dpkg-architecture)
+  if(DPKG_ARCHITECTURE_EXECUTABLE)
+    EXECUTE_PROCESS(COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
+      OUTPUT_VARIABLE ARCH_TRIPLET
+      ERROR_VARIABLE ERROR_ARCH_TRIPLET
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+  endif()
+endif()
+if(ARCH_TRIPLET)
+  set(SYSTEM_LIB_DIRS /usr/lib /usr/lib/${ARCH_TRIPLET} /usr/local/lib)
+else()
+  set(SYSTEM_LIB_DIRS /usr/lib /usr/local/lib)
+endif()
+
 include(HuginMacros)
 include(CheckIncludeFiles)
 
@@ -16,7 +32,7 @@ project(hugin)
 
 # version
 set(V_MAJOR 2011)
-set(V_MINOR 1)
+set(V_MINOR 3)
 set(V_PATCH 0)
 
 #
@@ -60,7 +76,7 @@ ENDIF()
 IF (EXISTS ${PROJECT_SOURCE_DIR}/.hg)
   IF (UPDATE_CHANGELOG)
    FIND_PROGRAM(_hg hg)
-   EXECUTE_PROCESS(COMMAND ${_hg} log --follow --style=changelog
+   EXECUTE_PROCESS(COMMAND ${_hg} log --follow --style ${PROJECT_SOURCE_DIR}/Changelog.style
    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
    OUTPUT_FILE ${PROJECT_SOURCE_DIR}/ChangeLog)
    MESSAGE("-- New ChangeLog generated")
@@ -277,6 +293,17 @@ IF(NOT TCLAP_FOUND)
   MESSAGE(FATAL_ERROR "Tclap library not found")
 ENDIF(NOT TCLAP_FOUND)
 
+OPTION(BUILD_HSI "Python Scripting Interface" OFF)
+IF(BUILD_HSI)
+  find_program(SWIG_EXECUTABLE NAMES swig2.0 swig)
+  FIND_PACKAGE(SWIG REQUIRED)
+  INCLUDE(${SWIG_USE_FILE})
+
+  FIND_PACKAGE(PythonLibs REQUIRED)
+  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+  ADD_DEFINITIONS(-DHUGIN_HSI)
+ENDIF()
+
 ##
 ## LAPACK (optional, enable by -DENABLE_LAPACK=ON)
 ##
@@ -486,7 +513,7 @@ ADD_SUBDIRECTORY(platforms)
 
 SET(CPACK_PACKAGE_VERSION_MAJOR "${V_MAJOR}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${V_MINOR}")
-SET(CPACK_PACKAGE_VERSION_PATCH "${V_PATCH}")
+SET(CPACK_PACKAGE_VERSION_PATCH "${V_PATCH}.${CPACK_PACKAGE_VERSION_PATCH}")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${V_MAJOR}.${V_MINOR}")
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "hugin-${V_MAJOR}.${V_MINOR}.${V_PATCH}")
 SET(CPACK_SOURCE_GENERATOR "TGZ;TBZ2")
@@ -551,9 +578,10 @@ SET(CPACK_SOURCE_IGNORE_FILES
 "Makefile\\\\.in$"
 "/\\\\.hg/"
  )
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libpano13(>=2.9.17)")
-# one day we'll get these to work right
-#SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libpano13(>=2.9.17), libpost2c2, libglew(>=1.5), freeglut3, libboost-filesystem(>=1.38.0), liblcms1, libopenexr6, libtiff4")
+
+# Use dpkg-shlibdeps to get the needed dependences
+SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+
 SET(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/Debian/postinst")
 INCLUDE(CPack)
 
