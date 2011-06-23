@@ -1980,6 +1980,8 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
 
     ptoVersion = 1;
 
+    bool plinefound = false;
+
     bool firstOptVecParse = true;
     unsigned int lineNr = 0;    
     while (i.good()) {
@@ -1999,6 +2001,9 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
         {
             DEBUG_DEBUG("p line: " << line);
             int i;
+            if( plinefound ) // more than one p line?
+                break;
+            plinefound = true;
             if (getIntParam(i,line,"f"))
                 options.setProjection( (PanoramaOptions::ProjectionFormat) i );
             unsigned int w;
@@ -2190,24 +2195,30 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
         {
             DEBUG_DEBUG("c line: " << line);
             int t;
+            // screen for bad (or no) parameter data
+            bool validated = true;
             // read control points
             ControlPoint point;
 	    // TODO - should verify that line syntax is correct
-            getIntParam(point.image1Nr, line, "n");
+            validated = validated & getIntParam(point.image1Nr, line, "n");
             point.image1Nr += ctrlPointsImgNrOffset;
-            getIntParam(point.image2Nr, line, "N");
+            validated = validated & getIntParam(point.image2Nr, line, "N");
             point.image2Nr += ctrlPointsImgNrOffset;
-            getDoubleParam(point.x1, line, "x");
-            getDoubleParam(point.x2, line, "X");
-            getDoubleParam(point.y1, line, "y");
-            getDoubleParam(point.y2, line, "Y");
+            validated = validated & getDoubleParam(point.x1, line, "x");
+            validated = validated & getDoubleParam(point.x2, line, "X");
+            validated = validated & getDoubleParam(point.y1, line, "y");
+            validated = validated & getDoubleParam(point.y2, line, "Y");
             if (!getIntParam(t, line, "t") ){
                 t = 0;
             }
 
-            point.mode = t;
-            ctrlPoints.push_back(point);
-            state = P_CP;
+            if( validated ) {
+                point.mode = t;
+                ctrlPoints.push_back(point);
+                state = P_CP;
+            } else {
+                DEBUG_WARN("c line broken - not all parameters found");
+            }
             break;
         }
 
@@ -2446,6 +2457,11 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
         }
 
         } // case
+    }
+
+    if( !plinefound ) {
+        DEBUG_WARN("Not enough information in input file");
+        return false;
     }
 
     // assemble images from the information read before..
