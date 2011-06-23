@@ -30,7 +30,7 @@ namespace vigra_ext
  * File class using RAII (Resource Acquisition Is Initialization) technique.
  * This ensures that the file is properly close even when an exception occurs.
  */
-class fileRAII
+class FileRAII
 {
 public:
     /** Open the specified file.
@@ -38,7 +38,7 @@ public:
      * \param path path to a file
      * \param mode mode as defined by the fopen function
      */
-    fileRAII(const char *path, const char *mode)
+    FileRAII(const char *path, const char *mode)
     {
         file = std::fopen(path, mode);
         if (file == 0) {
@@ -49,7 +49,7 @@ public:
         }
     }
 
-    ~fileRAII()
+    ~FileRAII()
     {
         if (file) {
             errno = 0;
@@ -85,8 +85,8 @@ private:
     FILE* file;
 
     // this class should never be copied or assigned
-    fileRAII(const fileRAII &);
-    fileRAII& operator=(const fileRAII &);
+    FileRAII(const FileRAII &);
+    FileRAII& operator=(const FileRAII &);
 };
 
 }
