@@ -2166,6 +2166,61 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                     optvec = OptimizeVector(nImg);
                     firstOptVecParse = false;
                 }
+				/// @todo Move this to its own function in PTScriptParsing.cpp
+				/// @todo Use information from image_variables.h and ImageVariableTranslate.h instead of "yprv..."?
+				char optkeys[] = "yprvabcdegtXYZ";
+				char nrs[] = "0123456789";
+
+				std::string optstring;
+				std::string nr;
+				for( int i = 1; i < line.length(); i++ )
+				{
+					char *curchar = &line[i];
+					char *ptr;
+					ptr = strpbrk( curchar, optkeys ); // look for optimization parameter in curchar
+					if( ptr != NULL ) // opt param
+					{
+						stringstream tmp(ptr,std::ios_base::in);
+						optstring.append( tmp.str() );
+					}
+					else // not an opt param
+					{
+						if( optstring.empty() ) // no opts found yet - skip char
+						{
+							continue;
+						}
+						else // opts found - check if image number
+						{
+							ptr = strpbrk( curchar, nrs ); // look for image number
+							if( ptr != NULL ) // is number
+							{
+								while( ptr != NULL ) // keep going to get entire number - could be multiple digits
+								{
+									stringstream tmp(ptr,std::ios_base::in);
+									nr.append( tmp.str() ); // build image number
+									i++;
+									curchar = &line[i];
+									ptr = strpbrk( curchar, nrs );
+								}
+								// entire number now in nr, give to optvars
+								int nrint = hugin_utils::lexical_cast<int>(nr);
+								if( nrint < optvec.size() ) // image number within range
+								{
+									optstring.append( nr );
+									optvec[nrint].insert( optstring );
+									DEBUG_DEBUG("parsing opt: >" << optstring << "< : var:" << optstring << " image:" << nrint);
+								}
+								optstring = std::string();
+								nr = std::string();
+							}
+							else // not number - throw away optkeys found
+							{
+								optstring = std::string();
+							}
+						}
+					}
+				}
+#if 0
                 std::stringstream optstream;
                 optstream << line.substr(1);
                 string var;
@@ -2188,6 +2243,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                     optvec[nr].insert(name);
                     DEBUG_DEBUG("parsing opt: >" << var << "< : var:" << name << " image:" << nr);
                 }
+#endif
             }
             break;
         }
