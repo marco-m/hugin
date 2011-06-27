@@ -187,6 +187,7 @@ private:
     void OnAutoAddCB(wxCommandEvent & e);
     void OnPrevImg(wxCommandEvent & e);
     void OnNextImg(wxCommandEvent & e);
+    void OnSwapImg(wxCommandEvent & e);
 
     void OnColumnWidthChange( wxListEvent & e );
 

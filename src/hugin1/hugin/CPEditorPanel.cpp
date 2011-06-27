@@ -116,6 +116,7 @@ BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
     EVT_BUTTON(XRCID("cp_editor_delete"), CPEditorPanel::OnDeleteButton)
     EVT_BUTTON(XRCID("cp_editor_add"), CPEditorPanel::OnAddButton)
     EVT_BUTTON(XRCID("cp_editor_previous_img"), CPEditorPanel::OnPrevImg)
+	EVT_BUTTON(XRCID("cp_editor_swap_img"), CPEditorPanel::OnSwapImg)
     EVT_BUTTON(XRCID("cp_editor_next_img"), CPEditorPanel::OnNextImg)
     EVT_BUTTON(XRCID("cp_editor_finetune_button"), CPEditorPanel::OnFineTuneButton)
     EVT_BUTTON(XRCID("cp_editor_celeste_button"), CPEditorPanel::OnCelesteButton)
@@ -203,10 +204,10 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     // setup list view
     m_cpList = XRCCTRL(*this, "cp_editor_cp_list", wxListCtrl);
     m_cpList->InsertColumn( 0, _("#"), wxLIST_FORMAT_RIGHT, 35);
-    m_cpList->InsertColumn( 1, _("left x"), wxLIST_FORMAT_RIGHT, 65);
-    m_cpList->InsertColumn( 2, _("left y"), wxLIST_FORMAT_RIGHT, 65);
-    m_cpList->InsertColumn( 3, _("right x"), wxLIST_FORMAT_RIGHT, 65);
-    m_cpList->InsertColumn( 4, _("right y"), wxLIST_FORMAT_RIGHT, 65);
+    m_cpList->InsertColumn( 1, _("Left x"), wxLIST_FORMAT_RIGHT, 65);
+    m_cpList->InsertColumn( 2, _("Left y"), wxLIST_FORMAT_RIGHT, 65);
+    m_cpList->InsertColumn( 3, _("Right x"), wxLIST_FORMAT_RIGHT, 65);
+    m_cpList->InsertColumn( 4, _("Right y"), wxLIST_FORMAT_RIGHT, 65);
     m_cpList->InsertColumn( 5, _("Alignment"), wxLIST_FORMAT_LEFT,110 );
     m_cpList->InsertColumn( 6, _("Distance"), wxLIST_FORMAT_RIGHT, 110);
 
@@ -282,6 +283,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
     XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
+	XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
 #ifdef HUGIN_CP_IMG_CHOICE
     m_leftChoice->Disable();
@@ -1304,6 +1306,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
 	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
 	  XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
 	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
+	  XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
 	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
 #ifdef HUGIN_CP_IMG_CHOICE
       m_leftChoice->Disable();
@@ -1319,6 +1322,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
 	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
 	  XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
 	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
+	  XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Enable();
 	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
 #ifdef HUGIN_CP_IMG_CHOICE
       m_leftChoice->Enable();
@@ -1928,6 +1932,10 @@ void CPEditorPanel::OnKey(wxKeyEvent & e)
         // move to next
         wxCommandEvent dummy;
         OnNextImg(dummy);
+    } else if (e.ControlDown() && e.GetKeyCode() == WXK_SPACE) {
+        // swap images
+        wxCommandEvent dummy;
+        OnSwapImg(dummy);
     } else if (e.GetKeyCode() == 'f') {
         bool left =  e.GetEventObject() == m_leftImg;
         if (cpCreationState == NO_POINT) {
@@ -2163,6 +2171,16 @@ void CPEditorPanel::OnNextImg(wxCommandEvent & e)
     } else if (right >= nImgs) {
         right -= nImgs;
     }
+    setLeftImage((unsigned int) left);
+    setRightImage((unsigned int) right);
+}
+
+void CPEditorPanel::OnSwapImg(wxCommandEvent & e)
+{
+    if (m_pano->getNrOfImages() < 2) return;
+	int tmp = m_leftImageNr;
+    int left = m_rightImageNr;
+    int right = tmp;
     setLeftImage((unsigned int) left);
     setRightImage((unsigned int) right);
 }
