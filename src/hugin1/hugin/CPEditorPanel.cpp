@@ -116,7 +116,7 @@ BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
     EVT_BUTTON(XRCID("cp_editor_delete"), CPEditorPanel::OnDeleteButton)
     EVT_BUTTON(XRCID("cp_editor_add"), CPEditorPanel::OnAddButton)
     EVT_BUTTON(XRCID("cp_editor_previous_img"), CPEditorPanel::OnPrevImg)
-	EVT_BUTTON(XRCID("cp_editor_swap_img"), CPEditorPanel::OnSwapImg)
+    EVT_BUTTON(XRCID("cp_editor_swap_img"), CPEditorPanel::OnSwapImg)
     EVT_BUTTON(XRCID("cp_editor_next_img"), CPEditorPanel::OnNextImg)
     EVT_BUTTON(XRCID("cp_editor_finetune_button"), CPEditorPanel::OnFineTuneButton)
     EVT_BUTTON(XRCID("cp_editor_celeste_button"), CPEditorPanel::OnCelesteButton)
@@ -283,7 +283,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
     XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
-	XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
+    XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
 #ifdef HUGIN_CP_IMG_CHOICE
     m_leftChoice->Disable();
@@ -471,7 +471,7 @@ void CPEditorPanel::OnCPEvent( CPEvent&  ev)
     {
         changeState(NO_POINT);
 #if 0
-	if (false) {
+    if (false) {
             text = "REGION_SELECTED";
             wxRect region = ev.getRect();
             int dx = region.GetWidth() / 2;
@@ -519,7 +519,7 @@ void CPEditorPanel::OnCPEvent( CPEvent&  ev)
             } else {
                 wxLogError(_("No corresponding point found"));
             }
-	    }
+        }
 #endif
         break;
     }
@@ -804,7 +804,7 @@ void CPEditorPanel::estimateAndAddOtherPoint(const FDiff2D & p,
                     wxString s1;
                     s1.Printf(_("Point finetuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f "),
                               corrPoint.maxAngle, corrPoint.maxi, corrPoint.curv.x, corrPoint.curv.y );
-                    
+
                     wxString s2 = s1 + wxT(" -- ") + wxString(_("change points, or press right mouse button to add the pair"));
                     MainFrame::Get()->SetStatusText(s2,0);
                 } else {
@@ -934,10 +934,10 @@ void CPEditorPanel::NewPointChange(FDiff2D p, bool left)
                     wxString s1;
                     s1.Printf(_("Point finetuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f "),
                               corrRes.maxAngle, corrRes.maxi, corrRes.curv.x, corrRes.curv.y );
-                    
+
                     corrMsg = s1 + wxT(" -- ") +  wxString(_("change points, or press right mouse button to add the pair"));
                     MainFrame::Get()->SetStatusText(corrMsg,0);
-                    
+
                 }
             } else {
                 // no finetune. but zoom into picture, when we where zoomed out
@@ -1282,7 +1282,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
     unsigned int nrTabs = m_leftTabs->GetPageCount();
 #endif
     DEBUG_TRACE("nrImages:" << nrImages << " nrTabs:" << nrTabs);
-	
+
 #ifdef HUGIN_CP_IMG_CHOICE
 #ifdef __WXMSW__
     int oldLeftSelection = m_leftChoice->GetSelection();
@@ -1294,36 +1294,36 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
     wxLogError(wxString::Format(wxT("panoramaImagesChanged begin\nleft: %d, right: %d, count: %d"), ls, rs, nrTabs));
     */
 #endif
-	if (nrImages == 0) {
-	  // disable controls
-  	  m_cpModeChoice->Disable();
+    if (nrImages == 0) {
+      // disable controls
+        m_cpModeChoice->Disable();
       m_addButton->Disable();
       m_delButton->Disable();
       m_autoAddCB->Disable();
       m_fineTuneCB->Disable();
       m_estimateCB->Disable();
-	  XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
-	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
-	  XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
-	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
-	  XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
-	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
+      XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
+      XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
+      XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
+      XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
+      XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
+      XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
 #ifdef HUGIN_CP_IMG_CHOICE
       m_leftChoice->Disable();
       m_rightChoice->Disable();
 #endif
-	} else {
-	  // enable controls
-  	  m_cpModeChoice->Enable();
+    } else {
+      // enable controls
+      m_cpModeChoice->Enable();
       m_autoAddCB->Enable();
       m_fineTuneCB->Enable();
       m_estimateCB->Enable();
-	  XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
-	  XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
-	  XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
-	  XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
-	  XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Enable();
-	  XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
+      XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
+      XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
+      XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
+      XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
+      XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Enable();
+      XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
 #ifdef HUGIN_CP_IMG_CHOICE
       m_leftChoice->Enable();
       m_rightChoice->Enable();
@@ -1387,7 +1387,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
 #endif
           }
       }
-	}
+    }
     if (nrTabs > nrImages) {
         // remove tab bar entries if needed
         // we have to disable listening to notebook selection events,
@@ -1525,18 +1525,18 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     int sI = m_rightTabs->GetSelection();
 #endif
 
-	// valid selection and already set left image
+    // valid selection and already set left image
     if (fI >= 0 && m_leftImageNr != UINT_MAX)
-	{
-		// set image number to selection
-		m_leftImageNr = (unsigned int) fI;
-	}
-	// valid selection and already set right image
-	if (sI >= 0 && m_rightImageNr != UINT_MAX)
-	{
-		// set image number to selection
-		m_rightImageNr = (unsigned int) sI;
-	}
+    {
+        // set image number to selection
+        m_leftImageNr = (unsigned int) fI;
+    }
+    // valid selection and already set right image
+    if (sI >= 0 && m_rightImageNr != UINT_MAX)
+    {
+        // set image number to selection
+        m_rightImageNr = (unsigned int) sI;
+    }
     // reset selection
     m_x1Text->Clear();
     m_y1Text->Clear();
@@ -1635,7 +1635,7 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     }
 
 // DGSW FIXME - Unreferenced
-//	    int debug_sel_items = m_cpList->GetSelectedItemCount();
+//        int debug_sel_items = m_cpList->GetSelectedItemCount();
 
     for ( int j=0; j < m_cpList->GetColumnCount() ; j++ )
     {
@@ -1920,8 +1920,8 @@ void CPEditorPanel::OnKey(wxKeyEvent & e)
                 }
             }
         } else {
-	    wxLogError(_("Cannot estimate image position without control points"));
-	}
+        wxLogError(_("Cannot estimate image position without control points"));
+    }
 #endif
 
     } else if (e.ControlDown() && e.GetKeyCode() == WXK_LEFT) {
@@ -2178,7 +2178,7 @@ void CPEditorPanel::OnNextImg(wxCommandEvent & e)
 void CPEditorPanel::OnSwapImg(wxCommandEvent & e)
 {
     if (m_pano->getNrOfImages() < 2) return;
-	int tmp = m_leftImageNr;
+    int tmp = m_leftImageNr;
     int left = m_rightImageNr;
     int right = tmp;
     setLeftImage((unsigned int) left);
@@ -2264,7 +2264,7 @@ FDiff2D CPEditorPanel::LocalFineTunePoint(unsigned int srcNr,
                                           const FDiff2D & movePnt)
 {
     long templWidth = wxConfigBase::Get()->Read(wxT("/Finetune/TemplateSize"),HUGIN_FT_TEMPLATE_SIZE);
-	long sWidth = templWidth + wxConfigBase::Get()->Read(wxT("/Finetune/LocalSearchWidth"),HUGIN_FT_LOCAL_SEARCH_WIDTH);
+    long sWidth = templWidth + wxConfigBase::Get()->Read(wxT("/Finetune/LocalSearchWidth"),HUGIN_FT_LOCAL_SEARCH_WIDTH);
     CorrelationResult result;
     PointFineTune(srcNr,
                   srcPnt,
@@ -2291,8 +2291,8 @@ void CPEditorPanel::FineTuneSelectedPoint(bool left)
     if (left) {
         srcNr = cp.image2Nr;
         moveNr = cp.image1Nr;
-	srcPnt = Diff2D(roundi(cp.x2), roundi(cp.y2));
-	movePnt = Diff2D(roundi(cp.x1), roundi(cp.y1));
+    srcPnt = Diff2D(roundi(cp.x2), roundi(cp.y2));
+    movePnt = Diff2D(roundi(cp.x1), roundi(cp.y1));
     }
 
     FDiff2D result = LocalFineTunePoint(srcNr, srcPnt, moveNr, movePnt);
@@ -2337,9 +2337,9 @@ void CPEditorPanel::FineTuneNewPoint(bool left)
     Diff2D movePnt(rightP.toDiff2D());
     if (left) {
         srcNr = m_rightImageNr;
-	srcPnt = rightP.toDiff2D();
+        srcPnt = rightP.toDiff2D();
         moveNr = m_leftImageNr;
-	movePnt = leftP.toDiff2D();
+        movePnt = leftP.toDiff2D();
     }
 
     FDiff2D result = LocalFineTunePoint(srcNr, srcPnt, moveNr, movePnt);
