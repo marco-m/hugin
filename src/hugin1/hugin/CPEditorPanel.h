@@ -177,6 +177,7 @@ private:
     void OnRightImgChange(wxNotebookEvent & e);
 #endif
     void OnCPListSelect(wxListEvent & e);
+    void OnCPListDeselect(wxListEvent & e);
     void OnAddButton(wxCommandEvent & e);
     void OnZoom(wxCommandEvent & e);
     void OnTextPointChange(wxCommandEvent &e);
@@ -270,7 +271,7 @@ private:
     wxCheckBox *m_autoAddCB;
     wxCheckBox *m_fineTuneCB;
     wxCheckBox *m_estimateCB;
-	wxPanel *m_cp_ctrls;
+    wxPanel *m_cp_ctrls;
 #ifdef HUGIN_CP_USE_SPLITTER
     wxSplitterWindow *m_cp_splitter;
 #endif
