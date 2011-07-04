@@ -116,6 +116,7 @@ BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
     EVT_CHECKBOX(XRCID("cp_editor_auto_add_cb"), CPEditorPanel::OnAutoAddCB)
     EVT_BUTTON(XRCID("cp_editor_delete"), CPEditorPanel::OnDeleteButton)
     EVT_BUTTON(XRCID("cp_editor_add"), CPEditorPanel::OnAddButton)
+    EVT_BUTTON(XRCID("cp_line_add"), CPEditorPanel::OnAddLine)
     EVT_BUTTON(XRCID("cp_editor_previous_img"), CPEditorPanel::OnPrevImg)
     EVT_BUTTON(XRCID("cp_editor_swap_img"), CPEditorPanel::OnSwapImg)
     EVT_BUTTON(XRCID("cp_editor_next_img"), CPEditorPanel::OnNextImg)
@@ -233,6 +234,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
 
     m_cpModeChoice = XRCCTRL(*this, "cp_editor_mode", wxChoice);
     m_addButton = XRCCTRL(*this, "cp_editor_add", wxButton);
+    m_addLineButton = XRCCTRL(*this, "cp_line_add", wxButton);
     m_delButton = XRCCTRL(*this, "cp_editor_delete", wxButton);
 
     m_autoAddCB = XRCCTRL(*this,"cp_editor_auto_add", wxCheckBox);
@@ -277,6 +279,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_cpModeChoice->Disable();
     m_addButton->Disable();
     m_delButton->Disable();
+    m_addLineButton->Disable();
     m_autoAddCB->Disable();
     m_fineTuneCB->Disable();
     m_estimateCB->Disable();
@@ -1300,6 +1303,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_cpModeChoice->Disable();
       m_addButton->Disable();
       m_delButton->Disable();
+      m_addLineButton->Disable();
       m_autoAddCB->Disable();
       m_fineTuneCB->Disable();
       m_estimateCB->Disable();
@@ -2008,6 +2012,18 @@ void CPEditorPanel::OnAddButton(wxCommandEvent & e)
     // check if the point can be created..
     if (cpCreationState == BOTH_POINTS_SELECTED) {
         CreateNewPoint();
+    }
+}
+
+void CPEditorPanel::OnAddLine(wxCommandEvent & e)
+{
+    // toggle add line mode
+    if (addingLine) {
+        m_addLineButton->SetLabel("Add line");
+        addingLine = false;
+    } else {
+        m_addLineButton->SetLabel("Cancel");
+        addingLine = true;
     }
 }
 

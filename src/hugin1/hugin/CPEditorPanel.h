@@ -179,6 +179,7 @@ private:
     void OnCPListSelect(wxListEvent & e);
     void OnCPListDeselect(wxListEvent & e);
     void OnAddButton(wxCommandEvent & e);
+    void OnAddLine(wxCommandEvent & e);
     void OnZoom(wxCommandEvent & e);
     void OnTextPointChange(wxCommandEvent &e);
     void OnKey(wxKeyEvent & e);
@@ -252,6 +253,8 @@ private:
 
     CPCreationState cpCreationState;
 
+    // Line controls
+    bool addingLine;
 
     // GUI controls
 #ifdef HUGIN_CP_IMG_CHOICE
