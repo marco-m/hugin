@@ -270,6 +270,7 @@ private:
     wxTextCtrl *m_x1Text, *m_y1Text, *m_x2Text, *m_y2Text, *m_errorText;
     wxChoice *m_cpModeChoice;
     wxButton *m_addButton;
+    wxButton *m_addLineButton;
     wxButton *m_delButton;
     wxCheckBox *m_autoAddCB;
     wxCheckBox *m_fineTuneCB;

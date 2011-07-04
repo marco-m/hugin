@@ -1307,6 +1307,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_autoAddCB->Disable();
       m_fineTuneCB->Disable();
       m_estimateCB->Disable();
+      m_addLineButton->Disable();
       XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
       XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
       XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
@@ -1323,6 +1324,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_autoAddCB->Enable();
       m_fineTuneCB->Enable();
       m_estimateCB->Enable();
+      m_addLineButton->Enable();
       XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
       XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
       XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
@@ -2017,12 +2019,16 @@ void CPEditorPanel::OnAddButton(wxCommandEvent & e)
 
 void CPEditorPanel::OnAddLine(wxCommandEvent & e)
 {
+    wxListEvent dummy;
+    OnCPListDeselect(dummy);
+    const char* addl = "Add line";
+    const char* cncl = "Cancel";
     // toggle add line mode
     if (addingLine) {
-        m_addLineButton->SetLabel("Add line");
+        m_addLineButton->SetLabel(wxString(addl,wxConvUTF8));
         addingLine = false;
     } else {
-        m_addLineButton->SetLabel("Cancel");
+        m_addLineButton->SetLabel(wxString(cncl,wxConvUTF8));
         addingLine = true;
     }
 }
