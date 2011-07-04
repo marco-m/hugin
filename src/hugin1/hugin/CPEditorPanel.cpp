@@ -153,6 +153,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_selectedPoint=UINT_MAX;
     m_leftRot=CPImageCtrl::ROT0;
     m_rightRot=CPImageCtrl::ROT0;
+    addingLine = false;
 
     DEBUG_TRACE("");
     wxXmlResource::Get()->LoadPanel(this, wxT("cp_editor_panel"));
@@ -2021,7 +2022,7 @@ void CPEditorPanel::OnAddLine(wxCommandEvent & e)
 {
     wxListEvent dummy;
     OnCPListDeselect(dummy);
-    const char* addl = "Add line";
+    const char* addl = "Add Line";
     const char* cncl = "Cancel";
     // toggle add line mode
     if (addingLine) {
