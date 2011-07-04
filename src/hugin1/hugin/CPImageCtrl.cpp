@@ -245,31 +245,7 @@ void CPImageCtrl::OnDraw(wxDC & dc)
 			dc.DrawRectangle(0, bitmap.GetHeight(),
                              vSize.GetWidth(), vSize.GetHeight() - bitmap.GetHeight());
         }
-//        dc.DrawBitmap(bitmap,0,0);
-        bitmapDC.SelectObject(bitmap);
-        
-        wxCoord xDest,yDest,xSrc,ySrc;
-        int xPixPer,yPixPer,width,height;
-        
-        GetViewStart(&xDest,&yDest); // returns logical scroll units
-        // scale coordinates for scroll window
-        DEBUG_DEBUG("OnDraw() - LSU are " << xDest << "," << yDest);
-        GetScrollPixelsPerUnit(&xPixPer,&yPixPer);
-        DEBUG_DEBUG("ScrollPixelsPerUnit is " << xPixPer << "," << yPixPer);
-        xDest = xDest * xPixPer;
-        yDest = yDest * yPixPer;
-        //GetClientSize() vSize
-        width  = vSize.GetWidth() + 20; // 20 should be changed to scroll bar width for new Gnome hidden scrolls 
-        height = vSize.GetHeight() + 20;
-        
-        DEBUG_DEBUG("Destination device coordinantes are " << xDest << "," << yDest << " with dimensions " << width << "x" << height);
-        
-        xSrc = xDest;
-        ySrc = yDest;
-        
-        //dc.Blit(xDest,yDest,width,height,&bitmapDC,xSrc,ySrc,wxCOPY,0);
-        dc.Blit(xDest,yDest,width,height,&bitmapDC,xSrc,ySrc,wxCOPY,0);
-        
+        dc.DrawBitmap(bitmap,0,0);
 	} else {
 		// clear the rectangle and exit
         dc.SetPen(wxPen(GetBackgroundColour(), 1, wxSOLID));

@@ -226,9 +226,8 @@ protected:
 
 
 private:
-    wxBitmap bitmap;
-    wxMemoryDC bitmapDC;
     
+    wxBitmap bitmap;
     std::string imageFilename;
     // size of displayed (probably scaled) image
     wxSize imageSize;
