@@ -29,6 +29,11 @@
 
 #include <base_wx/wxImageCache.h>
 
+#ifndef _LINEFILE
+#include "CPSharedStructs.h"
+#define _LINEFILE
+#endif
+
 class CPEditorPanel;
 
 /** Events to notify about new point / region / point change
@@ -132,12 +137,19 @@ public:
 
     /// control point inside this image
     void setCtrlPoints(const std::vector<hugin_utils::FDiff2D> & points);
+    
+    /// control lines inside this image
+    //extern struct StraightLine;
+    void setCtrlLines(const std::vector<StraightLine> & linesIn);
 
     /// clear new point
     void clearNewPoint();
 
     /// set new point to a specific point
     void setNewPoint(const hugin_utils::FDiff2D & p);
+
+    /// set new point to a specific point
+    void setNewLine(const StraightLine & l);
 
     /// select a point for usage
     void selectPoint(unsigned int);
@@ -196,6 +208,8 @@ public:
 
 protected:
     wxRect drawPoint(wxDC & p, const hugin_utils::FDiff2D & point, int i, bool selected = false) const;
+    void drawLine(wxDC & DC, const StraightLine in);
+
     // draw the magnified view of a selected control point
     wxBitmap generateMagBitmap(hugin_utils::FDiff2D point, wxPoint canvasPos) const;
     // display the image when loading finishes
@@ -235,6 +249,9 @@ private:
     wxSize m_realSize;
 
     std::vector<hugin_utils::FDiff2D> points;
+    //struct line { hugin_utils::FDiff2D start, end; };
+    std::vector<StraightLine> lines;
+    StraightLine newLine;
 
     // position of the point labels (in screen coordinates)
     std::vector<wxRect> m_labelPos;
@@ -408,8 +425,16 @@ private:
      *    - SELECT_DELETE_REGION user can draw rectangle inside which all cp should be removed
      *        - NO_SELECTION
 
+     *    - ADDING_LINE (a new line is being added), mouse up reports change,
+     *           movement can be tracked?
+     *        - A line should be drawn from the active line's start point to the mouse cursor
+     *          - Next click will add mouse click location as line's end point
+     *          - 
+     *        - 
+     *          - 
+     *
      */
-    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION};
+    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, ADDING_LINE, NEW_LINE};
     EditorState editState;
 
     // colors for the different points
@@ -429,6 +454,8 @@ private:
 
     bool m_tempZoom;
     double m_savedScale;
+    
+    bool addingLine;
 
     /// check if p is over a known point, if it is, pointNr contains
     /// the point

@@ -159,6 +159,7 @@ bool CPImageCtrl::Create(wxWindow * parent, wxWindowID id,
     m_savedScale = 1;
     m_editPanel = 0;
     m_imgRotation = ROT0;
+    addingLine = false;
 
     wxString filename;
 
@@ -266,6 +267,8 @@ void CPImageCtrl::OnDraw(wxDC & dc)
     }
 
     switch(editState) {
+    case NEW_LINE: // fix these
+        break;
     case SELECT_REGION:
         dc.SetLogicalFunction(wxINVERT);
         dc.SetPen(wxPen(wxT("WHITE"), 1, wxSOLID));
@@ -300,6 +303,9 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         break;
     case KNOWN_POINT_SELECTED:
         m_labelPos[selectedPointNr] = drawPoint(dc, points[selectedPointNr], selectedPointNr, true);
+        break;
+    case ADDING_LINE:
+        drawLine(dc, newLine);
         break;
     case NO_SELECTION:
     case NO_IMAGE:
@@ -536,6 +542,16 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 #endif
 
+void CPImageCtrl::drawLine(wxDC & dc, const StraightLine in)
+{
+    wxCoord x1,x2,y1,y2;
+    x1 = roundi(in.start.x);
+    y1 = roundi(in.start.y);
+    x2 = m_mousePos.x;
+    y2 = m_mousePos.y;
+    dc.DrawLine(x1,y1,x2,y2);
+}
+
 class ScalingTransform
 {
 public:
@@ -768,7 +784,13 @@ void CPImageCtrl::setCtrlPoints(const std::vector<FDiff2D> & cps)
     update();
 }
 
-
+void CPImageCtrl::setCtrlLines(const std::vector<StraightLine> & linesIn)
+{
+    lines = linesIn;
+    if(editState == ADDING_LINE)
+        editState = NO_SELECTION;
+    update();
+}
 
 void CPImageCtrl::clearNewPoint()
 {
@@ -903,6 +925,11 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
     // only if the shift key is not pressed.
     if (mouse.LeftIsDown() && ! mouse.ShiftDown()) {
         switch(editState) {
+        case ADDING_LINE: // fix these
+            //mousePos = mouse.GetLogicalPosition();
+        case NEW_LINE:
+            doUpdate = true;
+            break;
         case NO_SELECTION:
             DEBUG_DEBUG("mouse down movement without selection, in NO_SELECTION state!");
             break;
@@ -1020,12 +1047,18 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
     }
     unsigned int selPointNr = 0;
 //    EditorState oldstate = editState;
-    EditorState clickState = isOccupied(mouse.GetPosition(), mpos, selPointNr);
+    EditorState clickState = isOccupied(mouse.GetPosition(), mpos, selPointNr); // check if mouse is over a CP
+
     if (mouse.LeftDown() && editState != NO_IMAGE
         && mpos.x < m_realSize.x && mpos.y < m_realSize.y)
     {
+        if (editState == ADDING_LINE) { // clicking second point on line
+            
+        } else if (editState == NEW_LINE) { // clicking first point on line
+            editState = ADDING_LINE;
+            
         // we can always select a new point
-        if (clickState == KNOWN_POINT_SELECTED) {
+        } else if (clickState == KNOWN_POINT_SELECTED) {
             DEBUG_DEBUG("click on point: " << selPointNr);
             selectedPointNr = selPointNr;
             point = points[selectedPointNr];
@@ -1080,6 +1113,9 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
 //    EditorState oldState = editState;
     if (mouse.LeftUp()) {
         switch(editState) {
+        case ADDING_LINE: // fix these
+        case NEW_LINE:
+            break;
         case NO_SELECTION:
             DEBUG_DEBUG("mouse release without selection");
             break;
@@ -1484,6 +1520,11 @@ void CPImageCtrl::setNewPoint(const FDiff2D & p)
     // we do not send an event, since CPEditorPanel
     // caused the change.. so it doesn't need to filter
     // out its own change messages.
+}
+
+void CPImageCtrl::setNewLine(const StraightLine & l)
+{
+    
 }
 
 void CPImageCtrl::showSearchArea(bool show)

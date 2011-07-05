@@ -1581,6 +1581,20 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     }
     m_leftImg->setCtrlPoints(left);
     m_rightImg->setCtrlPoints(right);
+    
+    // get list of control lines
+    
+    for (int i = 0; i < allLines.size(); i++) {
+        if ((allLines[i].img1Nr == m_leftImageNr) && (allLines[i].img2Nr == m_rightImageNr)) {
+            m_leftImg->setCtrlLines( allLines[i].img1lines );
+            m_rightImg->setCtrlLines( allLines[i].img2lines );
+            i = allLines.size();
+        } else if ((allLines[i].img2Nr == m_leftImageNr) && (allLines[i].img1Nr == m_rightImageNr)) {
+            m_leftImg->setCtrlLines( allLines[i].img2lines );
+            m_rightImg->setCtrlLines( allLines[i].img1lines );
+            i = allLines.size();
+        }
+    }
 
     // put these control points into our listview.
     unsigned int selectedCP = UINT_MAX;
@@ -2020,15 +2034,43 @@ void CPEditorPanel::OnAddButton(wxCommandEvent & e)
 
 void CPEditorPanel::OnAddLine(wxCommandEvent & e)
 {
-    wxListEvent dummy;
-    OnCPListDeselect(dummy);
+    //wxListEvent dummy;
+    //OnCPListDeselect(dummy);
+    
+    
     const char* addl = "Add Line";
     const char* cncl = "Cancel";
     // toggle add line mode
     if (addingLine) {
+        m_cpModeChoice->Enable();
+        m_autoAddCB->Enable();
+        m_fineTuneCB->Enable();
+        m_estimateCB->Enable();
+        m_addLineButton->Enable();
+        XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
+        XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
+        //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
+        XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
+        XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Enable();
+        XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
         m_addLineButton->SetLabel(wxString(addl,wxConvUTF8));
         addingLine = false;
     } else {
+        m_autoAddCB->Disable();
+        m_fineTuneCB->Disable();
+        m_estimateCB->Disable();
+        m_cpModeChoice->Disable();
+        m_addButton->Disable();
+        m_delButton->Disable();
+        XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
+        XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
+        //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
+        XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
+        XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
+        XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
+        m_selectedPoint = UINT_MAX;
+        changeState(NO_POINT);
+        UpdateDisplay(true);
         m_addLineButton->SetLabel(wxString(cncl,wxConvUTF8));
         addingLine = true;
     }

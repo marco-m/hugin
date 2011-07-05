@@ -44,6 +44,11 @@
 
 #include "CPImagesComboBox.h"
 
+#ifndef _LINEFILE
+#include "CPSharedStructs.h"
+#define _LINEFILE
+#endif
+
 // Always use wxChoice, the tabs behave badly with many images on GTK as well.
 #define HUGIN_CP_IMG_CHOICE
 
@@ -255,6 +260,8 @@ private:
 
     // Line controls
     bool addingLine;
+    struct linesPair { int img1Nr, img2Nr; std::vector<StraightLine> img1lines, img2lines; };
+    std::vector<linesPair> allLines;
 
     // GUI controls
 #ifdef HUGIN_CP_IMG_CHOICE
