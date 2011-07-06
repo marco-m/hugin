@@ -154,6 +154,9 @@ private:
     void NewPointChange(hugin_utils::FDiff2D p, bool left);
 //    void CreateNewPointRight(wxPoint p);
 
+    // function called when a new line is added
+    void NewLineAdded(StraightLine l, bool left);
+
     /// this is used to finally create the point in the panorama model
     void CreateNewPoint();
 
@@ -185,6 +188,8 @@ private:
     void OnCPListDeselect(wxListEvent & e);
     void OnAddButton(wxCommandEvent & e);
     void OnAddLine(wxCommandEvent & e);
+    void DisableButtons(void);
+    void EnableButtons(void);
     void OnZoom(wxCommandEvent & e);
     void OnTextPointChange(wxCommandEvent &e);
     void OnKey(wxKeyEvent & e);
@@ -260,7 +265,8 @@ private:
 
     // Line controls
     bool addingLine;
-    struct linesPair { int img1Nr, img2Nr; std::vector<StraightLine> img1lines, img2lines; };
+    struct linesPair { unsigned int img1Nr, img2Nr; std::vector<StraightLine> img1Lines, img2Lines; };
+    linesPair tempPair;
     std::vector<linesPair> allLines;
 
     // GUI controls

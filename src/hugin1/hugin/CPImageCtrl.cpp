@@ -74,7 +74,15 @@ CPEvent::CPEvent(wxWindow* win, FDiff2D & p)
     point = p;
 }
 
-CPEvent::CPEvent(wxWindow *win, unsigned int cpNr)
+CPEvent::CPEvent(wxWindow* win, StraightLine & l)
+{
+    SetEventType( EVT_CPEVENT ); // ?
+    SetEventObject( win );
+    mode = NEW_LINE;
+    line = l;
+}
+
+CPEvent::CPEvent(wxWindow* win, unsigned int cpNr)
 {
     SetEventType( EVT_CPEVENT );
     SetEventObject( win );
@@ -255,20 +263,22 @@ void CPImageCtrl::OnDraw(wxDC & dc)
 		return;
 	}
 
-    // draw known points.
-    unsigned int i=0;
-    m_labelPos.resize(points.size());
-    vector<FDiff2D>::const_iterator it;
-    for (it = points.begin(); it != points.end(); ++it) {
-        if (! (editState == KNOWN_POINT_SELECTED && i==selectedPointNr)) {
-            m_labelPos[i] = drawPoint(dc, *it, i);
+    if( editState != PREP_LINE && editState != ADDING_LINE ) {
+        // draw known points.
+        unsigned int i=0;
+        m_labelPos.resize(points.size());
+        vector<FDiff2D>::const_iterator it;
+        for (it = points.begin(); it != points.end(); ++it) {
+            if (! (editState == KNOWN_POINT_SELECTED && i==selectedPointNr)) {
+                m_labelPos[i] = drawPoint(dc, *it, i);
+            }
+            i++;
         }
-        i++;
     }
+    
+    drawLines(dc);
 
     switch(editState) {
-    case NEW_LINE: // fix these
-        break;
     case SELECT_REGION:
         dc.SetLogicalFunction(wxINVERT);
         dc.SetPen(wxPen(wxT("WHITE"), 1, wxSOLID));
@@ -305,7 +315,10 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         m_labelPos[selectedPointNr] = drawPoint(dc, points[selectedPointNr], selectedPointNr, true);
         break;
     case ADDING_LINE:
-        drawLine(dc, newLine);
+        drawLine(dc, newLine.start, m_mousePos);
+        break;
+    case PREP_LINE:
+        //m_showSearchArea = true;
         break;
     case NO_SELECTION:
     case NO_IMAGE:
@@ -542,14 +555,20 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 #endif
 
-void CPImageCtrl::drawLine(wxDC & dc, const StraightLine in)
+void CPImageCtrl::drawLine(wxDC & dc, const hugin_utils::FDiff2D start, const hugin_utils::FDiff2D end)
 {
     wxCoord x1,x2,y1,y2;
-    x1 = roundi(in.start.x);
-    y1 = roundi(in.start.y);
-    x2 = m_mousePos.x;
-    y2 = m_mousePos.y;
+    x1 = start.x;
+    y1 = start.y;
+    x2 = end.x;
+    y2 = end.y;
     dc.DrawLine(x1,y1,x2,y2);
+}
+void CPImageCtrl::drawLines(wxDC & dc)
+{
+    for( unsigned int i = 0; i < lines.size(); i++ ) {
+        drawLine( dc, lines[i].start, lines[i].end );
+    }
 }
 
 class ScalingTransform
@@ -925,11 +944,6 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
     // only if the shift key is not pressed.
     if (mouse.LeftIsDown() && ! mouse.ShiftDown()) {
         switch(editState) {
-        case ADDING_LINE: // fix these
-            //mousePos = mouse.GetLogicalPosition();
-        case NEW_LINE:
-            doUpdate = true;
-            break;
         case NO_SELECTION:
             DEBUG_DEBUG("mouse down movement without selection, in NO_SELECTION state!");
             break;
@@ -970,6 +984,14 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
             doUpdate = true;
             break;
         case NO_IMAGE:
+            break;
+        case ADDING_LINE: // fix these
+            doUpdate = true;
+            showPosition(mpos);
+            break;
+        case PREP_LINE:
+            doUpdate = true;
+            showPosition(mpos);
             break;
         }
     }
@@ -1012,7 +1034,8 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
 
     unsigned int selPointNr;
     if (isOccupied(mouse.GetPosition(), mpos, selPointNr) == KNOWN_POINT_SELECTED &&
-        (! (editState == KNOWN_POINT_SELECTED && selectedPointNr == selPointNr) ) ) {
+        (! (editState == KNOWN_POINT_SELECTED && selectedPointNr == selPointNr) ) &&
+        (editState != ADDING_LINE && editState != PREP_LINE)) {
         SetCursor(wxCursor(wxCURSOR_ARROW));
     } else {
         SetCursor(*m_CPSelectCursor);
@@ -1049,15 +1072,15 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
 //    EditorState oldstate = editState;
     EditorState clickState = isOccupied(mouse.GetPosition(), mpos, selPointNr); // check if mouse is over a CP
 
+    // if mouse is inside image boundaries
     if (mouse.LeftDown() && editState != NO_IMAGE
-        && mpos.x < m_realSize.x && mpos.y < m_realSize.y)
+        && mpos.x < m_realSize.x && mpos.y < m_realSize.y) // mouse.LeftIsDown()?
     {
-        if (editState == ADDING_LINE) { // clicking second point on line
-            
-        } else if (editState == NEW_LINE) { // clicking first point on line
-            editState = ADDING_LINE;
-            
         // we can always select a new point
+        if (editState == ADDING_LINE) { // clicking second point on line
+            showPosition(mpos);
+        } else if (editState == PREP_LINE) { // clicking first point on line
+            showPosition(mpos);
         } else if (clickState == KNOWN_POINT_SELECTED) {
             DEBUG_DEBUG("click on point: " << selPointNr);
             selectedPointNr = selPointNr;
@@ -1113,9 +1136,6 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
 //    EditorState oldState = editState;
     if (mouse.LeftUp()) {
         switch(editState) {
-        case ADDING_LINE: // fix these
-        case NEW_LINE:
-            break;
         case NO_SELECTION:
             DEBUG_DEBUG("mouse release without selection");
             break;
@@ -1170,7 +1190,20 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
         }
         case NO_IMAGE:
             break;
-
+        case ADDING_LINE: // just clicked line endpoint
+        {
+            newLine.end = m_mousePos;
+            //m_showSearchArea = false;
+            CPEvent e( this, newLine ); // emit newLine event
+            emit(e);
+            break;
+        }
+        case PREP_LINE:
+        {
+            newLine.start = m_mousePos;
+            editState = ADDING_LINE;
+            break;
+        }
         }
 //        DEBUG_DEBUG("ImageDisplay: mouse release, state change: " << oldState
 //                    << " -> " << editState);
@@ -1524,7 +1557,17 @@ void CPImageCtrl::setNewPoint(const FDiff2D & p)
 
 void CPImageCtrl::setNewLine(const StraightLine & l)
 {
-    
+    lines.push_back(l);
+}
+
+void CPImageCtrl::startNewLine(void)
+{
+    editState = PREP_LINE;
+}
+
+void CPImageCtrl::cancelNewLine(void)
+{
+    editState = NO_SELECTION;
 }
 
 void CPImageCtrl::showSearchArea(bool show)

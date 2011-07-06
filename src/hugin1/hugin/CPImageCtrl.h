@@ -43,7 +43,7 @@ class CPEvent : public wxCommandEvent
 {
     DECLARE_DYNAMIC_CLASS(CPEvent)
 
-    enum CPEventMode { NONE, NEW_POINT_CHANGED, POINT_SELECTED, POINT_CHANGED, REGION_SELECTED, RIGHT_CLICK, SCROLLED, DELETE_REGION_SELECTED };
+    enum CPEventMode { NONE, NEW_POINT_CHANGED, POINT_SELECTED, POINT_CHANGED, REGION_SELECTED, RIGHT_CLICK, SCROLLED, DELETE_REGION_SELECTED, NEW_LINE };
 
 public:
     CPEvent( );
@@ -51,8 +51,10 @@ public:
     CPEvent(wxWindow* win, CPEventMode mode);
     /// a new point has been created.
     CPEvent(wxWindow* win, hugin_utils::FDiff2D & p);
+    /// a new line has been created
+    CPEvent(wxWindow* win, StraightLine & l);
     /// a point has been selected
-    CPEvent(wxWindow *win, unsigned int cpNr);
+    CPEvent(wxWindow* win, unsigned int cpNr);
     /// a point has been moved
     CPEvent(wxWindow* win, unsigned int cpNr, const hugin_utils::FDiff2D & p);
     /// region selected
@@ -74,6 +76,9 @@ public:
 
     const hugin_utils::FDiff2D & getPoint()
         { return point; }
+        
+    const StraightLine & getLine()
+        { return line; }
 
     unsigned int getPointNr()
         { return pointNr; }
@@ -81,6 +86,7 @@ private:
     CPEventMode mode;
     wxRect region;
     hugin_utils::FDiff2D point;
+    StraightLine line;
     int pointNr;
 };
 
@@ -139,7 +145,6 @@ public:
     void setCtrlPoints(const std::vector<hugin_utils::FDiff2D> & points);
     
     /// control lines inside this image
-    //extern struct StraightLine;
     void setCtrlLines(const std::vector<StraightLine> & linesIn);
 
     /// clear new point
@@ -148,8 +153,10 @@ public:
     /// set new point to a specific point
     void setNewPoint(const hugin_utils::FDiff2D & p);
 
-    /// set new point to a specific point
+    /// start new line
     void setNewLine(const StraightLine & l);
+    void startNewLine();
+    void cancelNewLine();
 
     /// select a point for usage
     void selectPoint(unsigned int);
@@ -208,7 +215,8 @@ public:
 
 protected:
     wxRect drawPoint(wxDC & p, const hugin_utils::FDiff2D & point, int i, bool selected = false) const;
-    void drawLine(wxDC & DC, const StraightLine in);
+    void drawLine(wxDC & DC, const hugin_utils::FDiff2D start, const hugin_utils::FDiff2D end);
+    void drawLines(wxDC & DC);
 
     // draw the magnified view of a selected control point
     wxBitmap generateMagBitmap(hugin_utils::FDiff2D point, wxPoint canvasPos) const;
@@ -425,6 +433,11 @@ private:
      *    - SELECT_DELETE_REGION user can draw rectangle inside which all cp should be removed
      *        - NO_SELECTION
 
+     *    - PREP_LINE (a new line has been created)
+     *        - CPs should be hidden
+     *        - Next click will add add the line's start point
+     *          - 
+     *
      *    - ADDING_LINE (a new line is being added), mouse up reports change,
      *           movement can be tracked?
      *        - A line should be drawn from the active line's start point to the mouse cursor
@@ -434,7 +447,7 @@ private:
      *          - 
      *
      */
-    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, ADDING_LINE, NEW_LINE};
+    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, PREP_LINE, ADDING_LINE};
     EditorState editState;
 
     // colors for the different points

@@ -295,6 +295,8 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_rightChoice->Disable();
 #endif
 
+    tempPair.img1Nr = tempPair.img2Nr = UINT_MAX;
+
     // apply zoom specified in xrc file
     wxCommandEvent dummy;
     dummy.SetInt(XRCCTRL(*this,"cp_editor_choice_zoom",wxChoice)->GetSelection());
@@ -546,6 +548,12 @@ void CPEditorPanel::OnCPEvent( CPEvent&  ev)
         d = m_leftImg->MaxScrollDelta(d);
         m_rightImg->ScrollDelta(d);
         m_leftImg->ScrollDelta(d);
+        break;
+    }
+    case CPEvent::NEW_LINE:
+    {
+        NewLineAdded(ev.getLine(),left);
+        break;
     }
     break;
 
@@ -1238,6 +1246,63 @@ double CPEditorPanel::PointFineTune_old(unsigned int tmplImgNr,
 #endif
 
 
+void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
+{
+    if( left ) { // new line is in left image
+        if( tempPair.img1Nr == UINT_MAX ) { // first image has not been set, add the line
+            tempPair.img1Nr = m_leftImageNr;
+            tempPair.img1Lines.push_back(l);
+        } else { // first image has been set, is it the same one?
+            if( tempPair.img1Nr == m_leftImageNr ) { // must be redoing the first line
+                tempPair.img1Nr = m_leftImageNr;
+                tempPair.img1Lines.pop_back();
+                tempPair.img1Lines.push_back(l);
+            } else { // new line in other image - now there is a pair
+                tempPair.img2Nr = m_leftImageNr;
+                tempPair.img2Lines.push_back(l);
+            }
+        }
+        m_leftImg->setNewLine(l);
+    } else { // new line is in right image
+        if( tempPair.img1Nr == UINT_MAX ) { // see above
+            tempPair.img1Nr = m_rightImageNr;
+            tempPair.img1Lines.push_back(l);
+        } else {
+            if( tempPair.img1Nr == m_rightImageNr ) {
+                tempPair.img1Nr = m_rightImageNr;
+                tempPair.img1Lines.pop_back();
+                tempPair.img1Lines.push_back(l);
+            } else {
+                tempPair.img2Nr = m_rightImageNr;
+                tempPair.img2Lines.push_back(l);
+            }
+        }
+        m_rightImg->setNewLine(l);
+    }
+    
+    if( tempPair.img1Nr < UINT_MAX && tempPair.img2Nr < UINT_MAX ) // completed corresponding lines
+    {
+        bool found = false;
+        for( int i = 0; i < allLines.size(), found == false; i++ )  // find other entries for this image pair
+        {
+            if( (allLines[i].img1Nr == tempPair.img1Nr) && (allLines[i].img2Nr == tempPair.img2Nr) ) {
+                allLines[i].img1Lines.push_back(tempPair.img1Lines[1]);
+                allLines[i].img2Lines.push_back(tempPair.img2Lines[1]);
+                found = true;
+            } else if( (allLines[i].img1Nr == tempPair.img2Nr) && (allLines[i].img2Nr == tempPair.img1Nr) ) {
+                allLines[i].img1Lines.push_back(tempPair.img2Lines[1]);
+                allLines[i].img2Lines.push_back(tempPair.img1Lines[1]);
+                found = true;
+            }
+        }
+        if( !found )
+            allLines.push_back(tempPair);
+        // reset tempPair
+        tempPair.img1Nr = tempPair.img2Nr = UINT_MAX;
+        tempPair.img1Lines.clear();
+        tempPair.img2Lines.clear();
+    }
+}
 void CPEditorPanel::panoramaChanged(PT::Panorama &pano)
 {
     int nGui = m_cpModeChoice->GetCount();
@@ -1584,14 +1649,14 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     
     // get list of control lines
     
-    for (int i = 0; i < allLines.size(); i++) {
+    for (unsigned int i = 0; i < allLines.size(); i++) {
         if ((allLines[i].img1Nr == m_leftImageNr) && (allLines[i].img2Nr == m_rightImageNr)) {
-            m_leftImg->setCtrlLines( allLines[i].img1lines );
-            m_rightImg->setCtrlLines( allLines[i].img2lines );
+            m_leftImg->setCtrlLines( allLines[i].img1Lines );
+            m_rightImg->setCtrlLines( allLines[i].img2Lines );
             i = allLines.size();
         } else if ((allLines[i].img2Nr == m_leftImageNr) && (allLines[i].img1Nr == m_rightImageNr)) {
-            m_leftImg->setCtrlLines( allLines[i].img2lines );
-            m_rightImg->setCtrlLines( allLines[i].img1lines );
+            m_leftImg->setCtrlLines( allLines[i].img2Lines );
+            m_rightImg->setCtrlLines( allLines[i].img1Lines );
             i = allLines.size();
         }
     }
@@ -2034,46 +2099,58 @@ void CPEditorPanel::OnAddButton(wxCommandEvent & e)
 
 void CPEditorPanel::OnAddLine(wxCommandEvent & e)
 {
-    //wxListEvent dummy;
-    //OnCPListDeselect(dummy);
-    
-    
     const char* addl = "Add Line";
     const char* cncl = "Cancel";
     // toggle add line mode
     if (addingLine) {
-        m_cpModeChoice->Enable();
-        m_autoAddCB->Enable();
-        m_fineTuneCB->Enable();
-        m_estimateCB->Enable();
-        m_addLineButton->Enable();
-        XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
-        XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
-        //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
-        XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
-        XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Enable();
-        XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
+        EnableButtons();
         m_addLineButton->SetLabel(wxString(addl,wxConvUTF8));
         addingLine = false;
+        m_leftImg->cancelNewLine();
+        m_rightImg->cancelNewLine();
     } else {
-        m_autoAddCB->Disable();
-        m_fineTuneCB->Disable();
-        m_estimateCB->Disable();
-        m_cpModeChoice->Disable();
-        m_addButton->Disable();
-        m_delButton->Disable();
-        XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
-        XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
-        //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
-        XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
-        XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
-        XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
-        m_selectedPoint = UINT_MAX;
-        changeState(NO_POINT);
-        UpdateDisplay(true);
+        DisableButtons();
         m_addLineButton->SetLabel(wxString(cncl,wxConvUTF8));
         addingLine = true;
+        m_leftImg->startNewLine();
+        m_rightImg->startNewLine();
     }
+}
+
+void CPEditorPanel::DisableButtons(void)
+{
+    m_cpList->Disable();
+    m_autoAddCB->Disable();
+    m_fineTuneCB->Disable();
+    m_estimateCB->Disable();
+    m_cpModeChoice->Disable();
+    m_addButton->Disable();
+    m_delButton->Disable();
+    XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
+    XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
+    //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
+    XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Disable();
+    XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Disable();
+    XRCCTRL(*this, "cp_editor_next_img", wxButton)->Disable();
+    m_selectedPoint = UINT_MAX;
+    changeState(NO_POINT);
+    UpdateDisplay(true);
+}
+
+void CPEditorPanel::EnableButtons(void)
+{
+    m_cpList->Enable();
+    m_cpModeChoice->Enable();
+    m_autoAddCB->Enable();
+    m_fineTuneCB->Enable();
+    m_estimateCB->Enable();
+    m_addLineButton->Enable();
+    XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
+    XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
+    //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
+    XRCCTRL(*this, "cp_editor_previous_img", wxButton)->Enable();
+    XRCCTRL(*this, "cp_editor_swap_img", wxButton)->Enable();
+    XRCCTRL(*this, "cp_editor_next_img", wxButton)->Enable();
 }
 
 void CPEditorPanel::OnDeleteButton(wxCommandEvent & e)
