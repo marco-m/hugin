@@ -315,7 +315,8 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         m_labelPos[selectedPointNr] = drawPoint(dc, points[selectedPointNr], selectedPointNr, true);
         break;
     case ADDING_LINE:
-        drawLine(dc, newLine.start, m_mousePos);
+        drawLine(dc, newLine.start, newLine.end);//m_mousePos);
+        drawPoint(dc, newLine.start, 0, false);
         break;
     case PREP_LINE:
         //m_showSearchArea = true;
@@ -557,12 +558,31 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 void CPImageCtrl::drawLine(wxDC & dc, const hugin_utils::FDiff2D start, const hugin_utils::FDiff2D end)
 {
-    wxCoord x1,x2,y1,y2;
-    x1 = start.x;
-    y1 = start.y;
-    x2 = end.x;
-    y2 = end.y;
-    dc.DrawLine(x1,y1,x2,y2);
+    //wxCoord x1,x2,y1,y2;
+    //x1 = start.x;
+    //y1 = start.y;
+    //x2 = end.x;
+    //y2 = end.y;
+    wxBrush brush;
+    wxColour color;
+    
+    wxPoint lstart = roundP(scale(applyRot(start)));
+    wxPoint lend = roundP(scale(applyRot(end)));
+    
+    const char* str = "RGB(0,0,255)"; // blue
+    wxString wxstr(str,wxConvUTF8);
+    color = wxstr;
+    brush.SetColour(color);
+    dc.SetBrush(brush);
+    
+    wxPen pen;
+    pen.SetColour(color);
+    pen.SetStyle(wxSOLID);
+    pen.SetWidth(5);
+    dc.SetPen(pen);
+    
+    //dc.DrawLine(x1,y1,x2,y2);
+    dc.DrawLine(lstart,lend);
 }
 void CPImageCtrl::drawLines(wxDC & dc)
 {
@@ -862,7 +882,7 @@ void CPImageCtrl::showPosition(FDiff2D point, bool warpPointer)
     if (warpPointer) {
         int sx,sy;
         GetViewStart(&sx, &sy);
-        DEBUG_DEBUG("relative coordinages: " << x-sx << "," << y-sy);
+        DEBUG_DEBUG("relative coordinates: " << x-sx << "," << y-sy);
         WarpPointer(x-sx,y-sy);
     }
 }
@@ -985,15 +1005,17 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
             break;
         case NO_IMAGE:
             break;
-        case ADDING_LINE: // fix these
-            doUpdate = true;
-            showPosition(mpos);
-            break;
-        case PREP_LINE:
-            doUpdate = true;
-            showPosition(mpos);
+        default:
             break;
         }
+    }
+    if (editState == ADDING_LINE) {
+        doUpdate = true;
+        showPosition(mpos);
+        newLine.end = mpos;
+    } else if (editState == PREP_LINE) {
+        //doUpdate = true;
+        //showPosition(mpos);
     }
 
     if ((mouse.MiddleIsDown() || mouse.ShiftDown() || mouse.m_controlDown ) && editState!=SELECT_DELETE_REGION) {
@@ -1074,14 +1096,11 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
 
     // if mouse is inside image boundaries
     if (mouse.LeftDown() && editState != NO_IMAGE
-        && mpos.x < m_realSize.x && mpos.y < m_realSize.y) // mouse.LeftIsDown()?
+        && mpos.x < m_realSize.x && mpos.y < m_realSize.y
+        && editState != ADDING_LINE && editState != PREP_LINE) // mouse.LeftIsDown()?
     {
         // we can always select a new point
-        if (editState == ADDING_LINE) { // clicking second point on line
-            showPosition(mpos);
-        } else if (editState == PREP_LINE) { // clicking first point on line
-            showPosition(mpos);
-        } else if (clickState == KNOWN_POINT_SELECTED) {
+        if (clickState == KNOWN_POINT_SELECTED) {
             DEBUG_DEBUG("click on point: " << selPointNr);
             selectedPointNr = selPointNr;
             point = points[selectedPointNr];
@@ -1102,7 +1121,15 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
 //        DEBUG_DEBUG("ImageDisplay: mouse down, state change: " << oldstate
 //                    << " -> " << editState);
     }
+    
     m_mousePos = mpos;
+    if (editState == ADDING_LINE) { // clicking second point on line
+        //showPosition(mpos);
+        update();
+    } else if (editState == PREP_LINE) { // clicking first point on line
+        //showPosition(mpos);
+        update();
+    }
 }
 
 void CPImageCtrl::OnTimer(wxTimerEvent & e)

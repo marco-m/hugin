@@ -1302,6 +1302,8 @@ void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
         tempPair.img1Lines.clear();
         tempPair.img2Lines.clear();
     }
+    wxCommandEvent dummy;
+    OnAddLine(dummy);
 }
 void CPEditorPanel::panoramaChanged(PT::Panorama &pano)
 {
