@@ -66,7 +66,6 @@ using namespace vigra_ext;
 using namespace vigra::functor;
 using namespace hugin_utils;
 
-
 /*
 void ToGray(wxImageIterator sy, wxImageIterator send, vigra::BImage::Iterator dy)
 {
