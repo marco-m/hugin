@@ -1262,6 +1262,7 @@ void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
                 tempPair.img2Lines.push_back(l);
             }
         }
+        DEBUG_DEBUG("New line added, setting to m_leftImg");
         m_leftImg->setNewLine(l);
     } else { // new line is in right image
         if( tempPair.img1Nr == UINT_MAX ) { // see above
@@ -1278,31 +1279,42 @@ void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
             }
         }
         m_rightImg->setNewLine(l);
+        DEBUG_DEBUG("New line added, setting to m_rightImg");
     }
     
     if( tempPair.img1Nr < UINT_MAX && tempPair.img2Nr < UINT_MAX ) // completed corresponding lines
     {
+        DEBUG_DEBUG("Found pair of lines in " << tempPair.img1Nr << " and " << tempPair.img2Nr << ": looking for existing lines for this pair");
         bool found = false;
-        for( int i = 0; i < allLines.size(), found == false; i++ )  // find other entries for this image pair
+        for( int i = 0; i < allLines.size(); i++ )  // find other entries for this image pair
         {
+            /*
             if( (allLines[i].img1Nr == tempPair.img1Nr) && (allLines[i].img2Nr == tempPair.img2Nr) ) {
                 allLines[i].img1Lines.push_back(tempPair.img1Lines[1]);
                 allLines[i].img2Lines.push_back(tempPair.img2Lines[1]);
                 found = true;
+                i = allLines;size();
             } else if( (allLines[i].img1Nr == tempPair.img2Nr) && (allLines[i].img2Nr == tempPair.img1Nr) ) {
                 allLines[i].img1Lines.push_back(tempPair.img2Lines[1]);
                 allLines[i].img2Lines.push_back(tempPair.img1Lines[1]);
                 found = true;
+                i = allLines;size();
             }
+            */
         }
-        if( !found )
+        if( found )
+            DEBUG_DEBUG("Existing lines for that pair exist - pushing to that pair");
+        if( !found ) {
+            DEBUG_DEBUG("No pairs exist - adding new pair");
             allLines.push_back(tempPair);
-        // reset tempPair
+        }
+        // Reset tempPair
         tempPair.img1Nr = tempPair.img2Nr = UINT_MAX;
         tempPair.img1Lines.clear();
         tempPair.img2Lines.clear();
     }
     wxCommandEvent dummy;
+    DEBUG_DEBUG("Calling OnAddLine()");
     OnAddLine(dummy);
 }
 void CPEditorPanel::panoramaChanged(PT::Panorama &pano)
@@ -2101,6 +2113,7 @@ void CPEditorPanel::OnAddButton(wxCommandEvent & e)
 
 void CPEditorPanel::OnAddLine(wxCommandEvent & e)
 {
+    DEBUG_DEBUG("OnAddLine() - disabling buttons and such");
     const char* addl = "Add Line";
     const char* cncl = "Cancel";
     // toggle add line mode
