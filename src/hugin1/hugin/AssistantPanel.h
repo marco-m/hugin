@@ -71,6 +71,7 @@ private:
 
     // event handlers
     void OnLoadImages( wxCommandEvent & e );
+    void OnLoadProject( wxCommandEvent & e );
     void OnAlign( wxCommandEvent & e );
     void OnAlignSendToBatch(wxCommandEvent & e);
     void OnCreate( wxCommandEvent & e );

@@ -84,6 +84,7 @@ BEGIN_EVENT_TABLE(AssistantPanel, wxPanel)
     EVT_TEXT_ENTER ( XRCID("ass_cropfactor_text"),  AssistantPanel::OnCropFactorChanged)
     EVT_BUTTON     ( XRCID("ass_load_lens_button"), AssistantPanel::OnLoadLens)
     EVT_BUTTON     ( XRCID("ass_load_images_button"), AssistantPanel::OnLoadImages)
+    EVT_BUTTON     ( XRCID("ass_load_project_button"), AssistantPanel::OnLoadProject)
     EVT_BUTTON     ( XRCID("ass_align_button"),     AssistantPanel::OnAlign)
     EVT_BUTTON     ( XRCID("ass_create_button"),    AssistantPanel::OnCreate)
     EVT_BUTTON     ( XRCID("ass_align_batch_button"), AssistantPanel::OnAlignSendToBatch)
@@ -353,6 +354,13 @@ void AssistantPanel::OnLoadImages( wxCommandEvent & e )
         OnAlign(dummy);
     }
 
+}
+
+void AssistantPanel::OnLoadProject( wxCommandEvent & e )
+{
+    // load the images.
+    wxCommandEvent dummy;
+    MainFrame::Get()->OnLoadProject(dummy);
 }
 
 void AssistantPanel::OnAlign( wxCommandEvent & e )

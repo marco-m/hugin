@@ -139,6 +139,7 @@ public:
     void OnTogglePreviewFrame(wxCommandEvent & e);
     void OnToggleGLPreviewFrame(wxCommandEvent & e);
     void OnAddImages(wxCommandEvent & e);
+    void OnLoadProject(wxCommandEvent & e);
     void OnSaveProject(wxCommandEvent & e);
     /** call help browser with given file */
     void DisplayHelp(wxString section);
@@ -192,7 +193,6 @@ private:
     void OnRedo(wxCommandEvent & e);
     void OnSaveProjectAs(wxCommandEvent & e);
     void OnSavePTStitcherAs(wxCommandEvent & e);
-    void OnLoadProject(wxCommandEvent & e);
     void OnNewProject(wxCommandEvent & e);
     void OnAddTimeImages(wxCommandEvent & e);
     void OnFineTuneAll(wxCommandEvent & e);
