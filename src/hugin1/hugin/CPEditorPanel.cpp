@@ -116,6 +116,7 @@ BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
     EVT_CHECKBOX(XRCID("cp_editor_auto_add_cb"), CPEditorPanel::OnAutoAddCB)
     EVT_BUTTON(XRCID("cp_editor_delete"), CPEditorPanel::OnDeleteButton)
     EVT_BUTTON(XRCID("cp_editor_add"), CPEditorPanel::OnAddButton)
+    EVT_BUTTON(XRCID("cp_line_add"), CPEditorPanel::OnAddLine)
     EVT_BUTTON(XRCID("cp_line_pair_add"), CPEditorPanel::OnAddLinePair)
     EVT_BUTTON(XRCID("cp_editor_previous_img"), CPEditorPanel::OnPrevImg)
     EVT_BUTTON(XRCID("cp_editor_swap_img"), CPEditorPanel::OnSwapImg)
@@ -235,6 +236,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
 
     m_cpModeChoice = XRCCTRL(*this, "cp_editor_mode", wxChoice);
     m_addButton = XRCCTRL(*this, "cp_editor_add", wxButton);
+    m_addLineButton = XRCCTRL(*this, "cp_line_add", wxButton);
     m_addLinePairButton = XRCCTRL(*this, "cp_line_pair_add", wxButton);
     m_delButton = XRCCTRL(*this, "cp_editor_delete", wxButton);
 
@@ -281,6 +283,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_addButton->Disable();
     m_delButton->Disable();
     m_addLinePairButton->Disable();
+    m_addLineButton->Disable();
     m_autoAddCB->Disable();
     m_fineTuneCB->Disable();
     m_estimateCB->Disable();
@@ -1376,10 +1379,10 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_addButton->Disable();
       m_delButton->Disable();
       m_addLinePairButton->Disable();
+      m_addLineButton->Disable();
       m_autoAddCB->Disable();
       m_fineTuneCB->Disable();
       m_estimateCB->Disable();
-      m_addLinePairButton->Disable();
       XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
       XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
       XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
@@ -1397,6 +1400,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
       m_fineTuneCB->Enable();
       m_estimateCB->Enable();
       m_addLinePairButton->Enable();
+      m_addLineButton->Enable();
       XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
       XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
       XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
@@ -2156,6 +2160,7 @@ void CPEditorPanel::DisableButtons(void)
     m_cpModeChoice->Disable();
     m_addButton->Disable();
     m_delButton->Disable();
+    m_addLineButton->Disable();
     XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Disable();
     //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Disable();
@@ -2175,6 +2180,7 @@ void CPEditorPanel::EnableButtons(void)
     m_fineTuneCB->Enable();
     m_estimateCB->Enable();
     m_addLinePairButton->Enable();
+    m_addLineButton->Enable();
     XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable();
     XRCCTRL(*this, "cp_editor_celeste_button", wxButton)->Enable();
     //XRCCTRL(*this, "cp_editor_choice_zoom", wxChoice)->Enable();
