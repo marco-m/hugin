@@ -186,7 +186,7 @@ bool CPImageCtrl::Create(wxWindow * parent, wxWindowID id,
     pointColors.push_back(wxTheColourDatabase->Find(wxT("BLUE")));
     textColours.push_back(wxTheColourDatabase->Find(wxT("WHITE")));
 
-    pointColors.push_back(wxTheColourDatabase->Find(wxT("GREEN")));
+    pointColors.push_back(wxTheColourDatabase->Find(wxT("DARK GREEN")));
     textColours.push_back(wxTheColourDatabase->Find(wxT("WHITE")));
 
     pointColors.push_back(wxTheColourDatabase->Find(wxT("CYAN")));
