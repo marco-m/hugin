@@ -1279,13 +1279,13 @@ void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
         for( int i = 0; i < allLines.size(); i++ )  // find other entries for this image pair
         {
             if( (allLines[i].img1Nr == tempPair.img1Nr) && (allLines[i].img2Nr == tempPair.img2Nr) ) {
-                allLines[i].img1Lines.push_back(tempPair.img1Lines[1]);
-                allLines[i].img2Lines.push_back(tempPair.img2Lines[1]);
+                allLines[i].img1Lines.push_back(tempPair.img1Lines[0]);
+                allLines[i].img2Lines.push_back(tempPair.img2Lines[0]);
                 found = true;
                 i = allLines.size();
             } else if( (allLines[i].img1Nr == tempPair.img2Nr) && (allLines[i].img2Nr == tempPair.img1Nr) ) {
-                allLines[i].img1Lines.push_back(tempPair.img2Lines[1]);
-                allLines[i].img2Lines.push_back(tempPair.img1Lines[1]);
+                allLines[i].img1Lines.push_back(tempPair.img2Lines[0]);
+                allLines[i].img2Lines.push_back(tempPair.img1Lines[0]);
                 found = true;
                 i = allLines.size();
             }
