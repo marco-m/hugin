@@ -594,8 +594,10 @@ void CPImageCtrl::drawLine(wxDC & dc, const hugin_utils::FDiff2D start, const hu
 }
 void CPImageCtrl::drawLines(wxDC & dc)
 {
+    //DEBUG_DEBUG("Drawing lines - there are " << lines.size() << " lines to draw");
     for( unsigned int i = 0; i < lines.size(); i++ ) {
         drawLine( dc, lines[i].start, lines[i].end );
+        DEBUG_DEBUG("Drawing line " << i << " from " << lines[i].start << " to " << lines[i].end);
     }
 }
 
@@ -1617,6 +1619,8 @@ void CPImageCtrl::startNewLine(void)
 void CPImageCtrl::cancelNewLine(void)
 {
     editState = NO_SELECTION;
+    //newLine.start = UINT_MAX;
+    //newLine.end = UINT_MAX;
     dimOverlay = false;
     update();
 }

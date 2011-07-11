@@ -1255,18 +1255,21 @@ double CPEditorPanel::PointFineTune_old(unsigned int tmplImgNr,
 void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
 {
     // todo: allow linking of lines through multiple images
+    DEBUG_DEBUG("Line endpoints are " << l.start.x << "," << l.start.y << " to "  << l.end.x << "," << l.end.y );
     if( left ) {
         DEBUG_DEBUG("New line added, setting to m_leftImg");
         tempPair.img1Nr = m_leftImageNr;
         tempPair.img1Lines.clear();
         tempPair.img1Lines.push_back(l);
         //m_leftImg->setNewLine(l);
+        DEBUG_DEBUG("Pushed line " << tempPair.img1Lines[0].start.x << "," << tempPair.img1Lines[0].start.y << " to "  << tempPair.img1Lines[0].end.x << "," << tempPair.img1Lines[0].end.y );
     } else {
         DEBUG_DEBUG("New line added, setting to m_rightImg");
         tempPair.img2Nr = m_rightImageNr;
         tempPair.img2Lines.clear();
         tempPair.img2Lines.push_back(l);
         //m_rightImg->setNewLine(l);
+        DEBUG_DEBUG("Pushed line " << tempPair.img2Lines[0].start.x << "," << tempPair.img2Lines[0].start.y << " to "  << tempPair.img2Lines[0].end.x << "," << tempPair.img2Lines[0].end.y );
     }
     
     if( tempPair.img1Nr < UINT_MAX && tempPair.img2Nr < UINT_MAX ) // completed corresponding lines
