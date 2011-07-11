@@ -260,6 +260,7 @@ private:
     //struct line { hugin_utils::FDiff2D start, end; };
     std::vector<StraightLine> lines;
     StraightLine newLine;
+    bool dimOverlay;
 
     // position of the point labels (in screen coordinates)
     std::vector<wxRect> m_labelPos;
@@ -432,8 +433,8 @@ private:
      *
      *    - SELECT_DELETE_REGION user can draw rectangle inside which all cp should be removed
      *        - NO_SELECTION
-
-     *    - PREP_LINE (a new line has been created)
+     *
+     *    - PREP_LINE (a new line will be created)
      *        - CPs should be hidden
      *        - Next click will add add the line's start point
      *          - 
@@ -446,8 +447,16 @@ private:
      *        - 
      *          - 
      *
+     *    - ADDED_LINE (a new line has been added)
+     *           Waiting for matching line in other image
+     *        - A line should be drawn from the active line's start point to the mouse cursor
+     *          - Next click will add mouse click location as line's end point
+     *          - 
+     *        - 
+     *          - 
+     *
      */
-    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, PREP_LINE, ADDING_LINE};
+    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, PREP_LINE, ADDING_LINE, ADDED_LINE};
     EditorState editState;
 
     // colors for the different points

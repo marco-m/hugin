@@ -188,6 +188,7 @@ private:
     void OnCPListDeselect(wxListEvent & e);
     void OnAddButton(wxCommandEvent & e);
     void OnAddLine(wxCommandEvent & e);
+    void OnAddLinePair(wxCommandEvent & e);
     void DisableButtons(void);
     void EnableButtons(void);
     void OnZoom(wxCommandEvent & e);
@@ -266,6 +267,7 @@ private:
     // Line controls
     bool addingLine;
     struct linesPair { unsigned int img1Nr, img2Nr; std::vector<StraightLine> img1Lines, img2Lines; };
+    //struct { bool oneSet, twoSet; linePair pair } tempPair;
     linesPair tempPair;
     std::vector<linesPair> allLines;
 
@@ -283,7 +285,7 @@ private:
     wxTextCtrl *m_x1Text, *m_y1Text, *m_x2Text, *m_y2Text, *m_errorText;
     wxChoice *m_cpModeChoice;
     wxButton *m_addButton;
-    wxButton *m_addLineButton;
+    wxButton *m_addLinePairButton;
     wxButton *m_delButton;
     wxCheckBox *m_autoAddCB;
     wxCheckBox *m_fineTuneCB;
