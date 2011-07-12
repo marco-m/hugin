@@ -596,7 +596,7 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     wxPoint center;
     wxCoord radius;
     
-    if( findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
+    if( false ){//findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
         dc.DrawCircle(center,radius);
     } else {
         lstart = scale(lstart);
@@ -1317,6 +1317,7 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
                 case TWO_POINTS: // clicking line endpoint
                 {
                     newLine.end = m_mousePos;
+                    //editState = NO_SELECTION;
                     lineState = THREE_POINTS;
                     CPEvent e( this, newLine ); // emit newLine event
                     emit(e);
