@@ -574,7 +574,7 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     wxPen pen;
     pen.SetColour(color);
     pen.SetStyle(wxSOLID);
-    pen.SetWidth(4);
+    pen.SetWidth(3);
     dc.SetPen(pen);
     
     wxPoint lstart = roundP(l.start);//applyRot(l.start));
@@ -602,8 +602,13 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     wxCoord radius;
     //radius = sqrt((lendx-lstartx)*(lendx-lstartx) + (lendy-lstarty)*(lendy-lstarty));
     
-    if( findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) || !isCollinear(l) ) {
+    if( findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
+        center = scale(center);
+        radius = scale(radius);
         dc.DrawCircle(center,radius);
+        drawPoint(dc, l.start, 0, false);
+        drawPoint(dc, l.mid, 0, false);
+        drawPoint(dc, l.end, 0, false);
     } else {
         lstart = scale(lstart);
         lend   = scale(lend);
@@ -919,24 +924,28 @@ bool CPImageCtrl::findCircle(double startx, double starty, double midx, double m
 {
     //if( isCollinear(l) )
     //    return false;
+    if ((startx == midx && starty == midy)||
+        (startx == endx && starty == endy)||
+        (  midx == endx &&   midx == endy))
+        return false;
     
     double a = determinant(startx, starty, 1,
-                                 midx,   midy, 1,
-                                 endx,   endy, 1);
+                             midx,   midy, 1,
+                             endx,   endy, 1);
     if( a == 0 )
         return false;
     
-    double d = -determinant(startx * startx + starty * starty, starty, 1,
-                              midx *   midx +   midy *   midy,   midy, 1,
-                              endx *   endx +   endy *   endy,   endy, 1);
+    double d = -determinant((startx * startx) + (starty * starty), starty, 1,
+                            (  midx *   midx) + (  midy *   midy),   midy, 1,
+                            (  endx *   endx) + (  endy *   endy),   endy, 1);
     
-    double e =  determinant(startx * startx + starty * starty,  startx, 1,
-                              midx *   midx +   midy *   midy,    midx, 1,
-                              endx *   endx +   endy *   endy,    endx, 1);
+    double e =  determinant((startx * startx) + (starty * starty),  startx, 1,
+                            (  midx *   midx) + (  midy *   midy),    midx, 1,
+                            (  endx *   endx) + (  endy *   endy),    endx, 1);
     
-    double f = -determinant(startx * startx + starty * starty, startx, starty,
-                              midx *   midx +   midy *   midy,   midx,   midy,
-                              endx *   endx +   endy *   endy,   endx,   endy);
+    double f = -determinant((startx * startx) + (starty * starty), startx, starty,
+                            (  midx *   midx) + (  midy *   midy),   midx,   midy,
+                            (  endx *   endx) + (  endy *   endy),   endx,   endy);
     
     center.x = hugin_utils::roundi(-d / (2* a));
     center.y = hugin_utils::roundi(-e / (2* a));
@@ -944,7 +953,7 @@ bool CPImageCtrl::findCircle(double startx, double starty, double midx, double m
     radius = hugin_utils::roundi(sqrt((d*d+e*e)/(4*a*a)-f/a));
     
     DEBUG_DEBUG("Input coordinates are " << startx << "," << starty << " to " << midx << "," << midy << " to " << endx << "," << endy);
-    DEBUG_DEBUG("Calculated center and radius " << center.x << "," << center.y << " and " << radius);
+    DEBUG_DEBUG("Calculated center (" << center.x << "," << center.y << ") and radius " << radius);
     return true;
 }
 
@@ -1311,24 +1320,27 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
             switch(lineState) {
                 case NO_POINT:
                 {
-                    newLine.start = m_mousePos;
-                    newLine.mid   = m_mousePos;
-                    newLine.end   = m_mousePos;
+                    newLine.start = mpos;
+                    newLine.mid   = mpos;
+                    newLine.end   = mpos;
                     lineState = ONE_POINT;
+                    DEBUG_DEBUG("Switch lineState to ONE_POINT");
                     break;
                 }
                 case ONE_POINT:
                 {
-                    newLine.mid   = m_mousePos;
-                    newLine.end   = m_mousePos;
+                    newLine.mid   = mpos;
+                    newLine.end   = mpos;
                     lineState = TWO_POINTS;
+                    DEBUG_DEBUG("Switch lineState to TWO_POINTS");
                     break;
                 }
                 case TWO_POINTS: // clicking line endpoint
                 {
-                    newLine.end = m_mousePos;
+                    newLine.end = mpos;
                     //editState = NO_SELECTION;
                     lineState = THREE_POINTS;
+                    DEBUG_DEBUG("Switch lineState to THREE_POINTS");
                     CPEvent e( this, newLine ); // emit newLine event
                     emit(e);
                     break;
@@ -1336,10 +1348,11 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
                 case THREE_POINTS: // already had complete line, redoing
                 {
                     // todo: allow reselecting of the points to drag them around
-                    newLine.start = m_mousePos;
-                    newLine.mid   = m_mousePos;
-                    newLine.end   = m_mousePos;
+                    newLine.start = mpos;
+                    newLine.mid   = mpos;
+                    newLine.end   = mpos;
                     lineState = NO_POINT;
+                    DEBUG_DEBUG("Switch lineState to NO_POINT");
                     break;
                 }
             }
