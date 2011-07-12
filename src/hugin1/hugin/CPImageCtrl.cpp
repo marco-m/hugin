@@ -960,7 +960,7 @@ bool CPImageCtrl::findCircle(double startx, double starty, double midx, double m
 // todo: use the functions in the math functions files
 double CPImageCtrl::determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i)
 {
-    return a*e*i + b*f*g + c*d*h - a*f*h - c*d*i - b*e*g;
+    return a*e*i + b*f*g + c*d*h - a*f*h - b*d*i - c*e*g;
 }
 
 bool CPImageCtrl::isCollinear(StraightLine l)
