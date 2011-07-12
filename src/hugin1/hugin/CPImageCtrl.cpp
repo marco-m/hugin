@@ -568,35 +568,41 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     wxString wxstr(str,wxConvUTF8);
     color = wxstr;
     brush.SetColour(color);
-    dc.SetBrush(brush);
+    //dc.SetBrush(brush);
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
     wxPen pen;
     pen.SetColour(color);
     pen.SetStyle(wxSOLID);
-    pen.SetWidth(5);
+    pen.SetWidth(4);
     dc.SetPen(pen);
     
-    wxPoint lstart = roundP(applyRot(l.start));
-    double lstartx = scale(double(lstart.x));
-    double lstarty = scale(double(lstart.y));
+    wxPoint lstart = roundP(l.start);//applyRot(l.start));
+    double lstartx = (double(lstart.x));
+    double lstarty = (double(lstart.y));
     
     wxPoint lmid = roundP(applyRot(l.mid));
-    double lmidx= scale(double(lmid.x));
-    double lmidy= scale(double(lmid.y));
+    double lmidx= (double(lmid.x));
+    double lmidy= (double(lmid.y));
     
     wxPoint lend = roundP(applyRot(l.end));
-    double lendx = scale(double(lend.x));
-    double lendy = scale(double(lend.y));
+    double lendx = (double(lend.x));
+    double lendy = (double(lend.y));
     
     //double lmidx = scale(applyRot(double(l.mid.x)));
     //double lmidy = scale(applyRot(double(l.mid.y)));
     //double lendx = scale(applyRot(double(l.end.x)));
     //double lendy = scale(applyRot(double(l.end.y)));
     
-    wxPoint center;
-    wxCoord radius;
+    //roundP(scale(applyRot(<fdiff2d>)))
     
-    if( false ){//findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
+    wxPoint center;
+    //center.x = lstartx;
+    //center.y = lstarty;
+    wxCoord radius;
+    //radius = sqrt((lendx-lstartx)*(lendx-lstartx) + (lendy-lstarty)*(lendy-lstarty));
+    
+    if( findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) || !isCollinear(l) ) {
         dc.DrawCircle(center,radius);
     } else {
         lstart = scale(lstart);
@@ -914,27 +920,31 @@ bool CPImageCtrl::findCircle(double startx, double starty, double midx, double m
     //if( isCollinear(l) )
     //    return false;
     
-    double denom = determinant(startx, starty, 1,
+    double a = determinant(startx, starty, 1,
                                  midx,   midy, 1,
                                  endx,   endy, 1);
-    if( denom == 0 )
+    if( a == 0 )
         return false;
     
-    double cxtop = determinant(startx * startx + starty * starty,                            starty, 1,
-                                 midx *   midx +   midy *   midy,                              midy, 1,
-                                 endx *   endx +   endy *   endy,                              endy, 1);
-    double cytop = determinant(                              startx,  startx*startx + starty*starty, 1,
-                                                               midx,    midx*  midx +   midy*  midy, 1,
-                                                               endx,    endx*  endx +   endy*  endy, 1);
+    double d = -determinant(startx * startx + starty * starty, starty, 1,
+                              midx *   midx +   midy *   midy,   midy, 1,
+                              endx *   endx +   endy *   endy,   endy, 1);
     
-    double rtop = determinant(startx,   starty,   startx*startx + starty*starty,
-                                midx,     midy,     midx * midx +   midy * midy,
-                                endx,     endy,     endx * endx +   endy * endy);
+    double e =  determinant(startx * startx + starty * starty,  startx, 1,
+                              midx *   midx +   midy *   midy,    midx, 1,
+                              endx *   endx +   endy *   endy,    endx, 1);
     
-    center.x = hugin_utils::roundi(cxtop / (2* denom));
-    center.y = hugin_utils::roundi(cytop / (2* denom));
-    radius   = hugin_utils::roundi(sqrt(center.x * center.x + center.y * center.y + rtop / denom));
+    double f = -determinant(startx * startx + starty * starty, startx, starty,
+                              midx *   midx +   midy *   midy,   midx,   midy,
+                              endx *   endx +   endy *   endy,   endx,   endy);
     
+    center.x = hugin_utils::roundi(-d / (2* a));
+    center.y = hugin_utils::roundi(-e / (2* a));
+    //radius   = hugin_utils::roundi(sqrt(center.x * center.x + center.y * center.y + rtop / a));
+    radius = hugin_utils::roundi(sqrt((d*d+e*e)/(4*a*a)-f/a));
+    
+    DEBUG_DEBUG("Input coordinates are " << startx << "," << starty << " to " << midx << "," << midy << " to " << endx << "," << endy);
+    DEBUG_DEBUG("Calculated center and radius " << center.x << "," << center.y << " and " << radius);
     return true;
 }
 
