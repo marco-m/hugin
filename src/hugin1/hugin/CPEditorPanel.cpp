@@ -156,6 +156,13 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_rightRot=CPImageCtrl::ROT0;
     addingLine = false;
 
+    tempPair.leftNr  = UINT_MAX;
+    tempPair.rightNr = UINT_MAX;
+    
+    addl = "Add Line";
+    addp = "Add Line";
+    cncl = "Cancel";
+
     DEBUG_TRACE("");
     wxXmlResource::Get()->LoadPanel(this, wxT("cp_editor_panel"));
     wxPanel * panel = XRCCTRL(*this, "cp_editor_panel", wxPanel);
@@ -298,11 +305,6 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_rightChoice->Disable();
 #endif
 
-    //tempPair.oneSet = false;
-    //tempPair.twoSet = false;
-    tempPair.img1Nr = UINT_MAX;
-    tempPair.img2Nr = UINT_MAX;
-
     // apply zoom specified in xrc file
     wxCommandEvent dummy;
     dummy.SetInt(XRCCTRL(*this,"cp_editor_choice_zoom",wxChoice)->GetSelection());
@@ -367,7 +369,8 @@ void CPEditorPanel::setLeftImage(unsigned int imgNr)
         }
 #endif
         m_leftFile = m_pano->getImage(imgNr).getFilename();
-        changeState(NO_POINT);
+        if( !addingLine )
+            changeState(NO_POINT);
         UpdateDisplay(true);
     }
     m_selectedPoint = UINT_MAX;
@@ -409,7 +412,8 @@ void CPEditorPanel::setRightImage(unsigned int imgNr)
 #endif
         m_rightFile = m_pano->getImage(imgNr).getFilename();
         // update the rest of the display (new control points etc)
-        changeState(NO_POINT);
+        if( !addingLine )
+            changeState(NO_POINT);
         UpdateDisplay(true);
     }
     m_selectedPoint = UINT_MAX;
@@ -1255,64 +1259,42 @@ double CPEditorPanel::PointFineTune_old(unsigned int tmplImgNr,
 void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
 {
     // todo: allow linking of lines through multiple images
-    DEBUG_DEBUG("Line endpoints are " << l.start.x << "," << l.start.y << " to "  << l.end.x << "," << l.end.y );
+    DEBUG_DEBUG("Line added: endpoints (" << l.start.x << "," << l.start.y << ") to ("  << l.end.x << "," << l.end.y << ")");
     if( left ) {
-        DEBUG_DEBUG("New line added, setting to m_leftImg");
-        tempPair.img1Nr = m_leftImageNr;
-        tempPair.img1Lines.clear();
-        tempPair.img1Lines.push_back(l);
+        DEBUG_DEBUG("Setting to m_leftImg");
+        tempPair.leftNr   = m_leftImageNr;
+        tempPair.leftLine = l;
         //m_leftImg->setNewLine(l);
-        DEBUG_DEBUG("Pushed line " << tempPair.img1Lines[0].start.x << "," << tempPair.img1Lines[0].start.y << " to "  << tempPair.img1Lines[0].end.x << "," << tempPair.img1Lines[0].end.y );
+        //DEBUG_DEBUG("Pushed line " << tempPair.img1Lines[0].start.x << "," << tempPair.img1Lines[0].start.y << " to "  << tempPair.img1Lines[0].end.x << "," << tempPair.img1Lines[0].end.y );
     } else {
-        DEBUG_DEBUG("New line added, setting to m_rightImg");
-        tempPair.img2Nr = m_rightImageNr;
-        tempPair.img2Lines.clear();
-        tempPair.img2Lines.push_back(l);
+        DEBUG_DEBUG("Setting to m_rightImg");
+        tempPair.rightNr   = m_rightImageNr;
+        tempPair.rightLine = l;
         //m_rightImg->setNewLine(l);
-        DEBUG_DEBUG("Pushed line " << tempPair.img2Lines[0].start.x << "," << tempPair.img2Lines[0].start.y << " to "  << tempPair.img2Lines[0].end.x << "," << tempPair.img2Lines[0].end.y );
+        //DEBUG_DEBUG("Pushed line " << tempPair.img2Lines[0].start.x << "," << tempPair.img2Lines[0].start.y << " to "  << tempPair.img2Lines[0].end.x << "," << tempPair.img2Lines[0].end.y );
     }
     
-    if( tempPair.img1Nr < UINT_MAX && tempPair.img2Nr < UINT_MAX ) // completed corresponding lines
+    if( tempPair.leftNr < UINT_MAX && tempPair.rightNr < UINT_MAX ) // completed corresponding lines
     {
-        DEBUG_DEBUG("Found pair of lines in " << tempPair.img1Nr << " and " << tempPair.img2Nr << ": looking for existing lines for this pair");
-        bool found = false;
-        for( int i = 0; i < allLines.size(); i++ )  // find other entries for this image pair
-        {
-            if( (allLines[i].img1Nr == tempPair.img1Nr) && (allLines[i].img2Nr == tempPair.img2Nr) ) {
-                allLines[i].img1Lines.push_back(tempPair.img1Lines[0]);
-                allLines[i].img2Lines.push_back(tempPair.img2Lines[0]);
-                found = true;
-                i = allLines.size();
-            } else if( (allLines[i].img1Nr == tempPair.img2Nr) && (allLines[i].img2Nr == tempPair.img1Nr) ) {
-                allLines[i].img1Lines.push_back(tempPair.img2Lines[0]);
-                allLines[i].img2Lines.push_back(tempPair.img1Lines[0]);
-                found = true;
-                i = allLines.size();
-            }
-        }
-        if( found )
-            DEBUG_DEBUG("Existing lines for that pair exist - pushing to that pair");
-        if( !found ) {
-            DEBUG_DEBUG("No pairs exist - adding new pair");
-            allLines.push_back(tempPair);
-        }
-        for (int i = 0; i < allLines.size(); i++) {
-            if (m_leftImageNr == allLines[i].img1Nr && m_rightImageNr == allLines[i].img2Nr) {
-                m_leftImg->setCtrlLines(allLines[i].img1Lines);
-                m_rightImg->setCtrlLines(allLines[i].img2Lines);
-            } else if (m_rightImageNr == allLines[i].img1Nr && m_leftImageNr == allLines[i].img2Nr) {
-                m_leftImg->setCtrlLines(allLines[i].img2Lines);
-                m_rightImg->setCtrlLines(allLines[i].img1Lines);
-            }
-        }
+        DEBUG_DEBUG("New lines line pair: " << tempPair.leftNr << " and " << tempPair.rightNr);
+        addPairToList(tempPair);
+        
+        // Reset buttons and such
+        EnableButtons();
+        m_addLineButton->SetLabel(wxString(addl,wxConvUTF8));
+        m_addLinePairButton->SetLabel(wxString(addp,wxConvUTF8));
+        addingLine = false;
+        m_leftImg->cancelNewLine();
+        m_rightImg->cancelNewLine();
+        
+        m_leftImg->setCtrlLines(extractLines(m_leftImageNr, m_rightImageNr));
+        m_rightImg->setCtrlLines(extractLines(m_rightImageNr, m_leftImageNr));
+        
         // Reset tempPair
-        tempPair.img1Nr = UINT_MAX;
-        tempPair.img2Nr = UINT_MAX;
-        tempPair.img1Lines.clear();
-        tempPair.img2Lines.clear();
-        wxCommandEvent dummy;
-        DEBUG_DEBUG("Calling OnAddLinePair()");
-        OnAddLinePair(dummy);
+        tempPair.leftNr  = UINT_MAX;
+        tempPair.rightNr = UINT_MAX;
+        //tempPair.img1Lines.clear();
+        //tempPair.img2Lines.clear();
     }
 }
 void CPEditorPanel::panoramaChanged(PT::Panorama &pano)
@@ -1660,19 +1642,9 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     m_leftImg->setCtrlPoints(left);
     m_rightImg->setCtrlPoints(right);
     
-    // get list of control lines
-    
-    for (unsigned int i = 0; i < allLines.size(); i++) {
-        if ((allLines[i].img1Nr == m_leftImageNr) && (allLines[i].img2Nr == m_rightImageNr)) {
-            m_leftImg->setCtrlLines( allLines[i].img1Lines );
-            m_rightImg->setCtrlLines( allLines[i].img2Lines );
-            i = allLines.size();
-        } else if ((allLines[i].img2Nr == m_leftImageNr) && (allLines[i].img1Nr == m_rightImageNr)) {
-            m_leftImg->setCtrlLines( allLines[i].img2Lines );
-            m_rightImg->setCtrlLines( allLines[i].img1Lines );
-            i = allLines.size();
-        }
-    }
+    // get control lines
+    m_leftImg->setCtrlLines(extractLines(m_leftImageNr, m_rightImageNr));
+    m_rightImg->setCtrlLines(extractLines(m_rightImageNr, m_leftImageNr));
 
     // put these control points into our listview.
     unsigned int selectedCP = UINT_MAX;
@@ -2113,18 +2085,16 @@ void CPEditorPanel::OnAddButton(wxCommandEvent & e)
 void CPEditorPanel::OnAddLine(wxCommandEvent & e)
 {
     DEBUG_DEBUG("OnAddLine() - disabling buttons and such");
-    const char* addl = "Add Line Pair";
-    const char* cncl = "Cancel";
     // toggle add line mode
     if (addingLine) {
         EnableButtons();
-        m_addLinePairButton->SetLabel(wxString(addl,wxConvUTF8));
+        m_addLineButton->SetLabel(wxString(addl,wxConvUTF8));
         addingLine = false;
         m_leftImg->cancelNewLine();
         m_rightImg->cancelNewLine();
     } else {
         DisableButtons();
-        m_addLinePairButton->SetLabel(wxString(cncl,wxConvUTF8));
+        m_addLineButton->SetLabel(wxString(cncl,wxConvUTF8));
         addingLine = true;
         m_leftImg->startNewLine();
         m_rightImg->startNewLine();
@@ -2134,8 +2104,6 @@ void CPEditorPanel::OnAddLine(wxCommandEvent & e)
 void CPEditorPanel::OnAddLinePair(wxCommandEvent & e)
 {
     DEBUG_DEBUG("OnAddLinePair() - disabling buttons and such");
-    const char* addl = "Add Line Pair";
-    const char* cncl = "Cancel";
     // toggle add line mode
     if (addingLine) {
         EnableButtons();
@@ -2610,6 +2578,82 @@ void CPEditorPanel::OnSize(wxSizeEvent & e)
     }
     */
     e.Skip();
+}
+
+int CPEditorPanel::getLinesIndexNr(int target)
+{
+    for( int i = 0; i < allLinesIndex.size(); i++ ) {
+        if( allLinesIndex[i].srcNr == target )
+            return i;
+    }
+    return -1;
+}
+
+void CPEditorPanel::convertLineListToIndex(void)
+{
+    int insertIndex;
+    lineIndex tmpIndex;
+    linesIndex tmpEntry;
+    
+    // fix to be persistent, or make bidirectional conversion routine
+    allLinesIndex.clear();
+    
+    for( int i = 0; i < allLines.size(); i++ ) {
+        // left
+        insertIndex = getLinesIndexNr(allLines[i].leftNr);
+        tmpIndex.srcLine  = allLines[i].leftLine;
+        tmpIndex.destLine = allLines[i].rightLine;
+        tmpIndex.destNr   = allLines[i].rightNr;
+        
+        if( insertIndex >= 0 ) { // found existing lines in image
+            allLinesIndex[insertIndex].destPaths.push_back(tmpIndex);
+        } else {
+            tmpEntry.srcNr = allLines[i].leftNr;
+            tmpEntry.destPaths.clear();
+            tmpEntry.destPaths.push_back(tmpIndex);
+            allLinesIndex.push_back(tmpEntry);
+        }
+
+        // right
+        insertIndex = getLinesIndexNr(allLines[i].rightNr);
+        tmpIndex.srcLine  = allLines[i].rightLine;
+        tmpIndex.destLine = allLines[i].leftLine;
+        tmpIndex.destNr   = allLines[i].leftNr;
+        
+        if( insertIndex >= 0 ) { // found existing lines in image
+            allLinesIndex[insertIndex].destPaths.push_back(tmpIndex);
+        } else {
+            tmpEntry.srcNr = allLines[i].rightNr;
+            tmpEntry.destPaths.clear();
+            tmpEntry.destPaths.push_back(tmpIndex);
+            allLinesIndex.push_back(tmpEntry);
+        }
+    }
+}
+
+std::vector<StraightLine> CPEditorPanel::extractLines(int src, int dest)
+{
+    int targetIndex = getLinesIndexNr(src);
+    std::vector<StraightLine> lines;
+    if( targetIndex < 0 )
+        return lines;
+    for( int i = 0; i < allLinesIndex[targetIndex].destPaths.size(); i++ ) {
+        if( allLinesIndex[targetIndex].destPaths[i].destNr == dest )
+            lines.push_back(allLinesIndex[targetIndex].destPaths[i].srcLine );
+    }
+    return lines;
+}
+
+void CPEditorPanel::addPairToList(linePair pair)
+{
+    // todo: check for duplicate pairs?
+    allLines.push_back(pair);
+    convertLineListToIndex();
+}
+
+void CPEditorPanel::convertIndexToLineList(void)
+{
+    // should not be done - work everything off of the line list
 }
 
 CPImageCtrl::ImageRotation CPEditorPanel::GetRot(double yaw, double pitch, double roll)

@@ -26,6 +26,7 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include <base_wx/wxImageCache.h>
 
@@ -215,7 +216,7 @@ public:
 
 protected:
     wxRect drawPoint(wxDC & p, const hugin_utils::FDiff2D & point, int i, bool selected = false) const;
-    void drawLine(wxDC & DC, const hugin_utils::FDiff2D start, const hugin_utils::FDiff2D end);
+    void drawLine(wxDC & DC, const StraightLine l);
     void drawLines(wxDC & DC);
 
     // draw the magnified view of a selected control point
@@ -261,6 +262,10 @@ private:
     std::vector<StraightLine> lines;
     StraightLine newLine;
     bool dimOverlay;
+
+    bool findCircle(double startx, double starty, double midx, double midy, double endx, double endy, wxPoint &center, wxCoord &radius);
+    double determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i);
+    bool isCollinear(StraightLine l);
 
     // position of the point labels (in screen coordinates)
     std::vector<wxRect> m_labelPos;
@@ -455,10 +460,16 @@ private:
      *        - 
      *          - 
      *
+     *     - NEW_LINE
+     *        - Indicates a new line is being added
+     *          - See indicator lineState for indicator of when line is finished being added
+     *
      */
-    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, PREP_LINE, ADDING_LINE, ADDED_LINE};
+    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, NEW_LINE};
     EditorState editState;
-
+    enum LineState {NO_POINT=0, ONE_POINT, TWO_POINTS, THREE_POINTS};
+    LineState lineState;
+    
     // colors for the different points
     std::vector<wxColour> pointColors;
     std::vector<wxColour> textColours;

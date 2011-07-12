@@ -157,6 +157,7 @@ bool CPImageCtrl::Create(wxWindow * parent, wxWindowID id,
     wxScrolledWindow::Create(parent, id, pos, size, style, name);
     selectedPointNr = 0;
     editState = NO_IMAGE;
+    lineState = NO_POINT;
     scaleFactor = 1;
     fitToWindow = false;
     m_showSearchArea = false;
@@ -264,7 +265,7 @@ void CPImageCtrl::OnDraw(wxDC & dc)
 		return;
 	}
 
-    if( editState != PREP_LINE && editState != ADDING_LINE && editState != ADDED_LINE ) {
+    if( editState != NEW_LINE ) {
         // draw known points.
         unsigned int i=0;
         m_labelPos.resize(points.size());
@@ -314,14 +315,8 @@ void CPImageCtrl::OnDraw(wxDC & dc)
     case KNOWN_POINT_SELECTED:
         m_labelPos[selectedPointNr] = drawPoint(dc, points[selectedPointNr], selectedPointNr, true);
         break;
-    case ADDED_LINE:
-    case ADDING_LINE:
-        drawLine(dc, newLine.start, newLine.end);//m_mousePos);
-        //drawPoint(dc, newLine.start, 0, false);
-        break;
-    case PREP_LINE:
-        //m_showSearchArea = true;
-        drawLine(dc, newLine.start, newLine.start);
+    case NEW_LINE:
+        drawLine(dc, newLine);
         break;
     case NO_SELECTION:
     case NO_IMAGE:
@@ -564,18 +559,10 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 #endif
 
-void CPImageCtrl::drawLine(wxDC & dc, const hugin_utils::FDiff2D start, const hugin_utils::FDiff2D end)
+void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
 {
-    //wxCoord x1,x2,y1,y2;
-    //x1 = start.x;
-    //y1 = start.y;
-    //x2 = end.x;
-    //y2 = end.y;
     wxBrush brush;
     wxColour color;
-    
-    wxPoint lstart = roundP(scale(applyRot(start)));
-    wxPoint lend = roundP(scale(applyRot(end)));
     
     const char* str = "RGB(0,0,255)"; // blue
     wxString wxstr(str,wxConvUTF8);
@@ -589,14 +576,39 @@ void CPImageCtrl::drawLine(wxDC & dc, const hugin_utils::FDiff2D start, const hu
     pen.SetWidth(5);
     dc.SetPen(pen);
     
-    //dc.DrawLine(x1,y1,x2,y2);
-    dc.DrawLine(lstart,lend);
+    wxPoint lstart = roundP(applyRot(l.start));
+    double lstartx = scale(double(lstart.x));
+    double lstarty = scale(double(lstart.y));
+    
+    wxPoint lmid = roundP(applyRot(l.mid));
+    double lmidx= scale(double(lmid.x));
+    double lmidy= scale(double(lmid.y));
+    
+    wxPoint lend = roundP(applyRot(l.end));
+    double lendx = scale(double(lend.x));
+    double lendy = scale(double(lend.y));
+    
+    //double lmidx = scale(applyRot(double(l.mid.x)));
+    //double lmidy = scale(applyRot(double(l.mid.y)));
+    //double lendx = scale(applyRot(double(l.end.x)));
+    //double lendy = scale(applyRot(double(l.end.y)));
+    
+    wxPoint center;
+    wxCoord radius;
+    
+    if( findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
+        dc.DrawCircle(center,radius);
+    } else {
+        lstart = scale(lstart);
+        lend   = scale(lend);
+        dc.DrawLine(lstart,lend);
+    }
 }
 void CPImageCtrl::drawLines(wxDC & dc)
 {
     //DEBUG_DEBUG("Drawing lines - there are " << lines.size() << " lines to draw");
     for( unsigned int i = 0; i < lines.size(); i++ ) {
-        drawLine( dc, lines[i].start, lines[i].end );
+        drawLine( dc, lines[i] );
         DEBUG_DEBUG("Drawing line " << i << " from " << lines[i].start << " to " << lines[i].end);
     }
 }
@@ -897,6 +909,52 @@ void CPImageCtrl::showPosition(FDiff2D point, bool warpPointer)
     }
 }
 
+bool CPImageCtrl::findCircle(double startx, double starty, double midx, double midy, double endx, double endy, wxPoint &center, wxCoord &radius)
+{
+    //if( isCollinear(l) )
+    //    return false;
+    
+    double denom = determinant(startx, starty, 1,
+                                 midx,   midy, 1,
+                                 endx,   endy, 1);
+    if( denom == 0 )
+        return false;
+    
+    double cxtop = determinant(startx * startx + starty * starty,                            starty, 1,
+                                 midx *   midx +   midy *   midy,                              midy, 1,
+                                 endx *   endx +   endy *   endy,                              endy, 1);
+    double cytop = determinant(                              startx,  startx*startx + starty*starty, 1,
+                                                               midx,    midx*  midx +   midy*  midy, 1,
+                                                               endx,    endx*  endx +   endy*  endy, 1);
+    
+    double rtop = determinant(startx,   starty,   startx*startx + starty*starty,
+                                midx,     midy,     midx * midx +   midy * midy,
+                                endx,     endy,     endx * endx +   endy * endy);
+    
+    center.x = hugin_utils::roundi(cxtop / (2* denom));
+    center.y = hugin_utils::roundi(cytop / (2* denom));
+    radius   = hugin_utils::roundi(sqrt(center.x * center.x + center.y * center.y + rtop / denom));
+    
+    return true;
+}
+
+// todo: use the functions in the math functions files
+double CPImageCtrl::determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i)
+{
+    return a*e*i + b*f*g + c*d*h - a*f*h - c*d*i - b*e*g;
+}
+
+bool CPImageCtrl::isCollinear(StraightLine l)
+{
+    double slope1, slope2;
+    slope1 = double(l.mid.y-l.start.y)/double(l.mid.x-l.start.x);
+    slope2 = double(l.mid.y - l.end.y)/double(l.mid.x - l.end.x);
+    if( slope1 == slope2 )
+        return true;
+    else
+        return false;
+}
+
 CPImageCtrl::EditorState CPImageCtrl::isOccupied(wxPoint mousePos, const FDiff2D &p, unsigned int & pointNr) const
 {
     // check if mouse is hovering over a label
@@ -1019,15 +1077,28 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
             break;
         }
     }
-    if (editState == ADDING_LINE) {
+    
+    if (editState == NEW_LINE) {
+        switch(lineState) {
+            case NO_POINT:
+                newLine.start = mpos;
+                newLine.mid   = mpos;
+                newLine.end   = mpos;
+                break;
+            case ONE_POINT:
+                newLine.mid   = mpos;
+                newLine.end   = mpos;
+                break;
+            case TWO_POINTS:
+                newLine.end   = mpos;
+                break;
+            case THREE_POINTS:
+                break;
+        }
         doUpdate = true;
-        showPosition(mpos);
-        newLine.end = mpos;
-    } else if (editState == PREP_LINE) {
-        //doUpdate = true;
         //showPosition(mpos);
     }
-
+    
     if ((mouse.MiddleIsDown() || mouse.ShiftDown() || mouse.m_controlDown ) && editState!=SELECT_DELETE_REGION) {
         // scrolling with the mouse
         if (m_mouseScrollPos !=mouse.GetPosition()) {
@@ -1067,7 +1138,7 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
     unsigned int selPointNr;
     if (isOccupied(mouse.GetPosition(), mpos, selPointNr) == KNOWN_POINT_SELECTED &&
         (! (editState == KNOWN_POINT_SELECTED && selectedPointNr == selPointNr) ) &&
-        (editState != PREP_LINE && editState != ADDING_LINE && editState != ADDED_LINE)) {
+        (editState != NEW_LINE)) {
         SetCursor(wxCursor(wxCURSOR_ARROW));
     } else {
         SetCursor(*m_CPSelectCursor);
@@ -1107,7 +1178,7 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
     // if mouse is inside image boundaries
     if (mouse.LeftDown() && editState != NO_IMAGE
         && mpos.x < m_realSize.x && mpos.y < m_realSize.y
-        && editState != PREP_LINE && editState != ADDING_LINE && editState != ADDED_LINE) // mouse.LeftIsDown()?
+        && editState != NEW_LINE) // mouse.LeftIsDown()?
     {
         // we can always select a new point
         if (clickState == KNOWN_POINT_SELECTED) {
@@ -1133,16 +1204,10 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
     }
     
     m_mousePos = mpos;
-    if (editState == ADDING_LINE) { // clicking second point on line
+    if (editState == NEW_LINE) {
         //showPosition(mpos);
+        //newLine.start = mpos;
         update();
-    } else if (editState == PREP_LINE) { // clicking first point on line
-        //showPosition(mpos);
-        newLine.start = mpos;
-        update();
-    } else if (editState == ADDED_LINE) { // already had complete line, redoing
-        //editState = PREP_LINE;
-        //update();
     }
 }
 
@@ -1231,24 +1296,42 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
         }
         case NO_IMAGE:
             break;
-        case ADDED_LINE: // already had complete line, redoing
-            newLine.start = m_mousePos;
-            editState = ADDING_LINE;
-            break;
-        case ADDING_LINE: // clicking line endpoint
+        case NEW_LINE:
         {
-            editState = ADDED_LINE;
-            newLine.end = m_mousePos;
-            //m_showSearchArea = false;
-            CPEvent e( this, newLine ); // emit newLine event
-            emit(e);
-            break;
-        }
-        case PREP_LINE:
-        {
-            newLine.start = m_mousePos;
-            editState = ADDING_LINE;
-            break;
+            switch(lineState) {
+                case NO_POINT:
+                {
+                    newLine.start = m_mousePos;
+                    newLine.mid   = m_mousePos;
+                    newLine.end   = m_mousePos;
+                    lineState = ONE_POINT;
+                    break;
+                }
+                case ONE_POINT:
+                {
+                    newLine.mid   = m_mousePos;
+                    newLine.end   = m_mousePos;
+                    lineState = TWO_POINTS;
+                    break;
+                }
+                case TWO_POINTS: // clicking line endpoint
+                {
+                    newLine.end = m_mousePos;
+                    lineState = THREE_POINTS;
+                    CPEvent e( this, newLine ); // emit newLine event
+                    emit(e);
+                    break;
+                }
+                case THREE_POINTS: // already had complete line, redoing
+                {
+                    // todo: allow reselecting of the points to drag them around
+                    newLine.start = m_mousePos;
+                    newLine.mid   = m_mousePos;
+                    newLine.end   = m_mousePos;
+                    lineState = NO_POINT;
+                    break;
+                }
+            }
         }
         }
 //        DEBUG_DEBUG("ImageDisplay: mouse release, state change: " << oldState
@@ -1564,7 +1647,7 @@ void CPImageCtrl::OnMouseLeave(wxMouseEvent & e)
         m_tempZoom = false;
     }
 #endif
-    if( editState == PREP_LINE || editState == ADDING_LINE || editState == ADDED_LINE )
+    if( editState == NEW_LINE )
         dimOverlay = true;
     m_mousePos = FDiff2D(-1,-1);
     m_mouseInWindow = false;
@@ -1604,6 +1687,7 @@ void CPImageCtrl::setNewPoint(const FDiff2D & p)
     // out its own change messages.
 }
 
+// probably not needed
 void CPImageCtrl::setNewLine(const StraightLine & l)
 {
     lines.push_back(l);
@@ -1611,7 +1695,8 @@ void CPImageCtrl::setNewLine(const StraightLine & l)
 
 void CPImageCtrl::startNewLine(void)
 {
-    editState = PREP_LINE;
+    editState = NEW_LINE;
+    lineState = NO_POINT;
     dimOverlay = true;
     update();
 }
@@ -1619,6 +1704,7 @@ void CPImageCtrl::startNewLine(void)
 void CPImageCtrl::cancelNewLine(void)
 {
     editState = NO_SELECTION;
+    lineState = NO_POINT;
     //newLine.start = UINT_MAX;
     //newLine.end = UINT_MAX;
     dimOverlay = false;

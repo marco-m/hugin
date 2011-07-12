@@ -266,10 +266,27 @@ private:
 
     // Line controls
     bool addingLine;
-    struct linesPair { unsigned int img1Nr, img2Nr; std::vector<StraightLine> img1Lines, img2Lines; };
-    //struct { bool oneSet, twoSet; linePair pair } tempPair;
-    linesPair tempPair;
-    std::vector<linesPair> allLines;
+    //struct linesPair { unsigned int img1Nr, img2Nr; std::vector<StraightLine> img1Lines, img2Lines; };
+    
+    //std::vector<linesPair> allLines;
+    
+    struct linePair { unsigned int leftNr, rightNr; StraightLine leftLine, rightLine; };
+    std::vector<linePair> allLines;
+    linePair tempPair;
+    std::vector<StraightLine> tempLineVec;
+    struct lineIndex { StraightLine srcLine, destLine; unsigned int destNr; };
+    struct linesIndex { unsigned int srcNr; std::vector<lineIndex> destPaths; };
+    std::vector<linesIndex> allLinesIndex;
+    
+    char* addl;
+    char* addp;
+    char* cncl;
+
+    int getLinesIndexNr(int target);
+    void convertLineListToIndex(void);
+    std::vector<StraightLine> extractLines(int src, int dest);
+    void addPairToList(linePair pair);
+    void convertIndexToLineList(void);
 
     // GUI controls
 #ifdef HUGIN_CP_IMG_CHOICE
