@@ -577,7 +577,7 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     pen.SetWidth(3);
     dc.SetPen(pen);
     
-    wxPoint lstart = roundP(l.start);//applyRot(l.start));
+    wxPoint lstart = roundP(l.start);
     double lstartx = (double(lstart.x));
     double lstarty = (double(lstart.y));
     
@@ -589,20 +589,10 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     double lendx = (double(lend.x));
     double lendy = (double(lend.y));
     
-    //double lmidx = scale(applyRot(double(l.mid.x)));
-    //double lmidy = scale(applyRot(double(l.mid.y)));
-    //double lendx = scale(applyRot(double(l.end.x)));
-    //double lendy = scale(applyRot(double(l.end.y)));
-    
-    //roundP(scale(applyRot(<fdiff2d>)))
-    
     wxPoint center;
-    //center.x = lstartx;
-    //center.y = lstarty;
     wxCoord radius;
-    //radius = sqrt((lendx-lstartx)*(lendx-lstartx) + (lendy-lstarty)*(lendy-lstarty));
     
-    if( findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
+    if( !isCollinear(l) && findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
         center = scale(center);
         radius = scale(radius);
         dc.DrawCircle(center,radius);
@@ -922,13 +912,6 @@ void CPImageCtrl::showPosition(FDiff2D point, bool warpPointer)
 
 bool CPImageCtrl::findCircle(double startx, double starty, double midx, double midy, double endx, double endy, wxPoint &center, wxCoord &radius)
 {
-    //if( isCollinear(l) )
-    //    return false;
-    if ((startx == midx && starty == midy)||
-        (startx == endx && starty == endy)||
-        (  midx == endx &&   midx == endy))
-        return false;
-    
     double a = determinant(startx, starty, 1,
                              midx,   midy, 1,
                              endx,   endy, 1);
@@ -965,7 +948,18 @@ double CPImageCtrl::determinant(double a, double b, double c, double d, double e
 
 bool CPImageCtrl::isCollinear(StraightLine l)
 {
+    if ((l.start.x == l.mid.x && l.start.y == l.mid.y)||
+        (l.start.x == l.end.x && l.start.y == l.end.y)||
+        (  l.mid.x == l.end.x &&   l.mid.x == l.end.y))
+        return true;
+    
+    if( determinant(l.start.x, l.start.y, 1,
+                      l.mid.x,   l.mid.y, 1,
+                      l.end.x,   l.end.y, 1) == 0 )
+        return true;
+    
     double slope1, slope2;
+    
     slope1 = double(l.mid.y-l.start.y)/double(l.mid.x-l.start.x);
     slope2 = double(l.mid.y - l.end.y)/double(l.mid.x - l.end.x);
     if( slope1 == slope2 )
