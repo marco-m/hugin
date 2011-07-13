@@ -568,8 +568,8 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     wxString wxstr(str,wxConvUTF8);
     color = wxstr;
     brush.SetColour(color);
-    //dc.SetBrush(brush);
-    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    dc.SetBrush(brush);
+    //dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
     wxPen pen;
     pen.SetColour(color);
@@ -589,16 +589,75 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
     double lendx = (double(lend.x));
     double lendy = (double(lend.y));
     
-    wxPoint center;
-    wxCoord radius;
+    hugin_utils::FDiff2D center;
+    double radius;
     
     if( !isCollinear(l) && findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
         center = scale(center);
         radius = scale(radius);
-        dc.DrawCircle(center,radius);
-        drawPoint(dc, l.start, 0, false);
-        drawPoint(dc, l.mid, 0, false);
-        drawPoint(dc, l.end, 0, false);
+        
+        double arcLength = sqrt(hugin_utils::sqr(lmidx-lstartx)+hugin_utils::sqr(lmidy-lstarty)) +
+                           sqrt(hugin_utils::sqr(lmidx-lendx)  +hugin_utils::sqr(lmidy-lendy)); // approximate
+        // todo: make this user-selectable
+        int linePointNr = int(arcLength / 100.0);
+        if( linePointNr < 10 )
+            linePointNr = 10;
+        
+        // circle parametrized is x(t) = r cos(t) + x0, y(t) = r sin(t) + y0, t in [0,2PI)
+        // center.x - lstartx > 0 so theta in (PI/2,3PI/2)
+        // center.y - lstarty > 0 so theta in (PI,0)
+        double thetaStart = atan2((center.y - lstarty),(center.x - lstartx));
+        if( center.y - lstarty < 0 && center.x - lstartx < 0 ) {
+            //thetaStart += 3.14159;
+        } else if( center.x - lstartx < 0 ) {
+            thetaStart += 3.14159;
+        }
+        double thetaEnd = atan2((center.y - lendy),(center.x - lendx));
+        if( center.y - lendy < 0 && center.x - lendx < 0 ) {
+            thetaEnd += 3.14159;
+        } else if( center.x - lendx < 0 ) {
+            thetaEnd += 3.14159;
+        }
+        DEBUG_DEBUG("thetas are " << thetaStart << " and " << thetaEnd);
+        
+        double step = (thetaEnd - thetaStart) / linePointNr;
+        
+        double prevx = radius * cos( thetaStart ) + center.x, prevy = radius * sin( thetaStart ) + center.y;
+        hugin_utils::FDiff2D dropPoint;
+        dropPoint.x = radius * cos( thetaStart ) + center.x;
+        dropPoint.y = radius * sin( thetaStart ) + center.y;
+        
+        drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
+        if( thetaEnd < thetaStart )
+            thetaEnd += 2 * 3.14159;
+        //for( double i = thetaStart + step; i < thetaEnd + step; i += step ) {
+        for( double i = thetaStart; i < thetaEnd; i += 3.14159 / 10 ) {
+            dropPoint.x = radius * cos( i ) + center.x;
+            dropPoint.y = radius * sin( i ) + center.y;
+            drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
+            dc.DrawLine( hugin_utils::roundi(prevx), hugin_utils::roundi(prevy), hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
+            prevx = dropPoint.x;
+            prevy = dropPoint.y;
+        }
+        /*
+        dc.DrawCircle(roundP(center),(int)radius);
+        for (double i = 0; i < 3.14159 * 2; i += 3.14158 / 5) {
+            dropPoint.x = radius * cos( i ) + center.x;
+            dropPoint.y = radius * sin( i ) + center.y;
+            drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
+        }
+        */
+        
+        
+        
+        
+        
+        
+        
+        
+        //drawPoint(dc, l.start, 0, false);
+        //drawPoint(dc, l.mid, 0, false);
+        //drawPoint(dc, l.end, 0, false);
     } else {
         lstart = scale(lstart);
         lend   = scale(lend);
@@ -910,7 +969,7 @@ void CPImageCtrl::showPosition(FDiff2D point, bool warpPointer)
     }
 }
 
-bool CPImageCtrl::findCircle(double startx, double starty, double midx, double midy, double endx, double endy, wxPoint &center, wxCoord &radius)
+bool CPImageCtrl::findCircle(double startx, double starty, double midx, double midy, double endx, double endy, FDiff2D &center, double &radius)
 {
     double a = determinant(startx, starty, 1,
                              midx,   midy, 1,
@@ -930,10 +989,12 @@ bool CPImageCtrl::findCircle(double startx, double starty, double midx, double m
                             (  midx *   midx) + (  midy *   midy),   midx,   midy,
                             (  endx *   endx) + (  endy *   endy),   endx,   endy);
     
-    center.x = hugin_utils::roundi(-d / (2* a));
-    center.y = hugin_utils::roundi(-e / (2* a));
+    //center.x = hugin_utils::roundi(-d / (2* a));
+    //center.y = hugin_utils::roundi(-e / (2* a));
+    center.x = -d / ( 2 * a );
+    center.y = -e / ( 2 * a );
     //radius   = hugin_utils::roundi(sqrt(center.x * center.x + center.y * center.y + rtop / a));
-    radius = hugin_utils::roundi(sqrt((d*d+e*e)/(4*a*a)-f/a));
+    radius = sqrt((d*d+e*e)/(4*a*a)-f/a);
     
     DEBUG_DEBUG("Input coordinates are " << startx << "," << starty << " to " << midx << "," << midy << " to " << endx << "," << endy);
     DEBUG_DEBUG("Calculated center (" << center.x << "," << center.y << ") and radius " << radius);
