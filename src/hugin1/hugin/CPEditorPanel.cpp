@@ -159,6 +159,7 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     tempPair.leftNr  = UINT_MAX;
     tempPair.rightNr = UINT_MAX;
     
+    // Line button labels
     addl = "Add Line";
     addp = "Add Line";
     cncl = "Cancel";
@@ -1479,7 +1480,7 @@ void CPEditorPanel::panoramaImagesChanged(Panorama &pano, const UIntSet &changed
         if (nrImages > 0) {
             // select some other image if we deleted the current image
             if (m_leftImageNr >= nrImages) {
-                setLeftImage(nrImages -1);
+                setLeftImage(nrImages - 1);
 //                m_leftFile = pano.getImage(nrImages-1).getFilename();
 //                m_leftImg->setImage(m_leftFile);
             }
