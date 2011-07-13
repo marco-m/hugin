@@ -210,7 +210,7 @@ namespace hugin_utils
         return sqrt(t.x*t.x + t.y*t.y);
     }
 
-    /** calculate squared Euclidean distance between two vectors.
+    /** calculate Euclidean distance between two vectors.
      */
     template <class InputIterator1, class InputIterator2>
     double euclid_dist(InputIterator1 first1, InputIterator1 last1,
