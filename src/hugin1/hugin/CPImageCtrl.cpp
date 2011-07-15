@@ -277,7 +277,7 @@ void CPImageCtrl::OnDraw(wxDC & dc)
             i++;
         }
     }
-    
+
     drawLines(dc);
     switch(editState) {
     case SELECT_REGION:
@@ -563,106 +563,136 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
 {
     wxBrush brush;
     wxColour color;
-    
+
     const char* str = "RGB(0,0,255)"; // blue
     wxString wxstr(str,wxConvUTF8);
     color = wxstr;
     brush.SetColour(color);
     dc.SetBrush(brush);
     //dc.SetBrush(*wxTRANSPARENT_BRUSH);
-    
+
     wxPen pen;
     pen.SetColour(color);
     pen.SetStyle(wxSOLID);
-    pen.SetWidth(3);
+    pen.SetWidth(2);
     dc.SetPen(pen);
-    
-    wxPoint lstart = roundP(l.start);
+
+    wxPoint lstart = roundP(applyRot(l.start));
     double lstartx = (double(lstart.x));
     double lstarty = (double(lstart.y));
-    
+
     wxPoint lmid = roundP(applyRot(l.mid));
     double lmidx= (double(lmid.x));
     double lmidy= (double(lmid.y));
-    
+
     wxPoint lend = roundP(applyRot(l.end));
     double lendx = (double(lend.x));
     double lendy = (double(lend.y));
-    
+
     hugin_utils::FDiff2D center;
     double radius;
-    
+
     if( !isCollinear(l) && findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
         center = scale(center);
         radius = scale(radius);
-        
+
         double arcLength = sqrt(hugin_utils::sqr(lmidx-lstartx)+hugin_utils::sqr(lmidy-lstarty)) +
                            sqrt(hugin_utils::sqr(lmidx-lendx)  +hugin_utils::sqr(lmidy-lendy)); // approximate
         // todo: make this user-selectable
         int linePointNr = int(arcLength / 100.0);
         if( linePointNr < 10 )
             linePointNr = 10;
-        
-        // circle parametrized is x(t) = r cos(t) + x0, y(t) = r sin(t) + y0, t in [0,2PI)
-        // center.x - lstartx > 0 so theta in (PI/2,3PI/2)
-        // center.y - lstarty > 0 so theta in (PI,0)
-        double thetaStart = atan2((center.y - lstarty),(center.x - lstartx));
-        if( center.y - lstarty < 0 && center.x - lstartx < 0 ) {
-            //thetaStart += 3.14159;
-        } else if( center.x - lstartx < 0 ) {
-            thetaStart += 3.14159;
-        }
-        double thetaEnd = atan2((center.y - lendy),(center.x - lendx));
-        if( center.y - lendy < 0 && center.x - lendx < 0 ) {
-            thetaEnd += 3.14159;
-        } else if( center.x - lendx < 0 ) {
-            thetaEnd += 3.14159;
-        }
-        DEBUG_DEBUG("thetas are " << thetaStart << " and " << thetaEnd);
-        
-        double step = (thetaEnd - thetaStart) / linePointNr;
-        
-        double prevx = radius * cos( thetaStart ) + center.x, prevy = radius * sin( thetaStart ) + center.y;
-        hugin_utils::FDiff2D dropPoint;
-        dropPoint.x = radius * cos( thetaStart ) + center.x;
-        dropPoint.y = radius * sin( thetaStart ) + center.y;
-        
-        drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
-        if( thetaEnd < thetaStart )
-            thetaEnd += 2 * 3.14159;
-        //for( double i = thetaStart + step; i < thetaEnd + step; i += step ) {
-        for( double i = thetaStart; i < thetaEnd; i += 3.14159 / 10 ) {
-            dropPoint.x = radius * cos( i ) + center.x;
-            dropPoint.y = radius * sin( i ) + center.y;
+
+        double stx = scale(lstartx) - center.x;
+        double sty = scale(lstarty) - center.y;
+        double mdx = scale(lmidx  ) - center.x;
+        double mdy = scale(lmidy  ) - center.y;
+        double edx = scale(lendx  ) - center.x;
+        double edy = scale(lendy  ) - center.y;
+        //enum Quadrant {FIRST, SECOND, THIRD, FOURTH};
+        int quadStart, quadMid, quadEnd;
+
+        findQuadrant(stx, sty, quadStart);
+        findQuadrant(mdx, mdy, quadMid  );
+        findQuadrant(edx, edy, quadEnd  );
+
+        stx = abs(stx);     sty = abs(sty);
+        mdx = abs(mdx);     mdy = abs(mdy);
+        edx = abs(edx);     edy = abs(edy);
+
+        // should this skip the quadrant checks and use atan2 ?
+        double thetaStart = atan(sty/stx);
+        double thetaMid   = atan(mdy/mdx);
+        double thetaEnd   = atan(edy/edx);
+
+        correctAngle( thetaStart, quadStart );
+        correctAngle( thetaMid,   quadMid   );
+        correctAngle( thetaEnd,   quadEnd   );
+
+        if( thetaStart < thetaMid && thetaStart < thetaEnd && thetaMid < thetaEnd ); // nothing to do
+        if( thetaStart < thetaMid && thetaStart < thetaEnd && thetaMid > thetaEnd ) {thetaStart += 2 * 3.14159;}
+      //if( thetaStart < thetaMid && thetaStart > thetaEnd && thetaMid < thetaEnd ); // not possible
+        if( thetaStart < thetaMid && thetaStart > thetaEnd && thetaMid > thetaEnd ) {thetaEnd += 2 * 3.14159;}
+        if( thetaStart > thetaMid && thetaStart < thetaEnd && thetaMid < thetaEnd ) {thetaEnd -= 2 * 3.14159;}
+      //if( thetaStart > thetaMid && thetaStart < thetaEnd && thetaMid > thetaEnd ); // not possible
+        if( thetaStart > thetaMid && thetaStart > thetaEnd && thetaMid < thetaEnd ) {thetaEnd += 2 * 3.14159;}
+        if( thetaStart > thetaMid && thetaStart > thetaEnd && thetaMid > thetaEnd ); // nothing to do
+
+        double thetaSpan = thetaEnd - thetaStart;
+        double step = thetaSpan / 10; // todo: make this adaptive and user-selectable
+
+        double prevx = radius * cos( thetaStart ) + center.x;
+        double prevy = radius * sin( thetaStart ) + center.y;
+        hugin_utils::FDiff2D dropPoint( prevx, prevy );
+
+        //dc.DrawCircle(roundP(center),(int)radius);
+        drawPoint(dc, invScale(applyRotInv(dropPoint)), 4, false);
+        for( int i = 0; i < 10; i++ ) {
+            dropPoint.x = radius * cos( thetaStart + i*step ) + center.x;
+            dropPoint.y = radius * sin( thetaStart + i*step ) + center.y;
             drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
             dc.DrawLine( hugin_utils::roundi(prevx), hugin_utils::roundi(prevy), hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
             prevx = dropPoint.x;
             prevy = dropPoint.y;
         }
-        /*
-        dc.DrawCircle(roundP(center),(int)radius);
-        for (double i = 0; i < 3.14159 * 2; i += 3.14158 / 5) {
-            dropPoint.x = radius * cos( i ) + center.x;
-            dropPoint.y = radius * sin( i ) + center.y;
-            drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
-        }
-        */
-        
-        
-        
-        
-        
-        
-        
-        
-        //drawPoint(dc, l.start, 0, false);
-        //drawPoint(dc, l.mid, 0, false);
-        //drawPoint(dc, l.end, 0, false);
+        drawPoint(dc, invScale(applyRotInv(center)), 1, false);
+            dropPoint.x = lstartx;
+            dropPoint.y = lstarty;
+        //drawPoint(dc, invScale(applyRotInv(dropPoint)), 1, false);
+            dropPoint.x = lendx;
+            dropPoint.y = lendy;
+        //drawPoint(dc, invScale(applyRotInv(dropPoint)), 1, false);
+        //drawPoint(dc, l.start, 2, false);
+        drawPoint(dc, l.mid, 2, false);
+        drawPoint(dc, l.end, 2, false);
     } else {
         lstart = scale(lstart);
         lend   = scale(lend);
         dc.DrawLine(lstart,lend);
     }
+}
+void CPImageCtrl::findQuadrant(double x, double y, int &quad)
+{
+         if( x >= 0 && y >= 0 )
+        quad = 0; // first
+    else if( x <  0 && y >= 0 )
+        quad = 1; // second
+    else if( x <  0 && y <  0 )
+        quad = 2; // third
+    else if( x >= 0 && y <  0 )
+        quad = 3; // fourth
+}
+void CPImageCtrl::correctAngle(double &theta, int quad)
+{
+         if( quad == 1 ) // quadrant 2
+             theta = -theta + 3.14159;
+    else if( quad == 2 ) // quadrant 3
+        theta =  theta + 3.14159;
+    else if( quad == 3 ) // quadrant 4
+        theta = -theta + 3.14159 * 2;
+    while( theta >= 0 )
+        theta -= 2 * 3.14159;
+    theta += 2 * 3.14159;
 }
 void CPImageCtrl::drawLines(wxDC & dc)
 {
@@ -671,6 +701,67 @@ void CPImageCtrl::drawLines(wxDC & dc)
         drawLine( dc, lines[i] );
         DEBUG_DEBUG("Drawing line " << i << " from " << lines[i].start << " to " << lines[i].end);
     }
+}
+
+bool CPImageCtrl::findCircle(double startx, double starty, double midx, double midy, double endx, double endy, FDiff2D &center, double &radius)
+{
+    double a = determinant(startx, starty, 1,
+                             midx,   midy, 1,
+                             endx,   endy, 1);
+    if( a == 0 )
+        return false;
+
+    double d = -determinant((startx * startx) + (starty * starty), starty, 1,
+                            (  midx *   midx) + (  midy *   midy),   midy, 1,
+                            (  endx *   endx) + (  endy *   endy),   endy, 1);
+
+    double e =  determinant((startx * startx) + (starty * starty),  startx, 1,
+                            (  midx *   midx) + (  midy *   midy),    midx, 1,
+                            (  endx *   endx) + (  endy *   endy),    endx, 1);
+
+    double f = -determinant((startx * startx) + (starty * starty), startx, starty,
+                            (  midx *   midx) + (  midy *   midy),   midx,   midy,
+                            (  endx *   endx) + (  endy *   endy),   endx,   endy);
+
+    //center.x = hugin_utils::roundi(-d / (2* a));
+    //center.y = hugin_utils::roundi(-e / (2* a));
+    center.x = -d / ( 2 * a );
+    center.y = -e / ( 2 * a );
+    //radius   = hugin_utils::roundi(sqrt(center.x * center.x + center.y * center.y + rtop / a));
+    radius = sqrt((d*d+e*e)/(4*a*a)-f/a);
+
+    DEBUG_DEBUG("Input coordinates are " << startx << "," << starty << " to " << midx << "," << midy << " to " << endx << "," << endy);
+    DEBUG_DEBUG("Calculated center (" << center.x << "," << center.y << ") and radius " << radius);
+    return true;
+}
+
+// todo: use the functions in the math functions files
+double CPImageCtrl::determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i)
+{
+    return a*e*i + b*f*g + c*d*h - a*f*h - b*d*i - c*e*g;
+}
+
+bool CPImageCtrl::isCollinear(StraightLine l)
+{
+    // todo: add tolerance for nearly-straight lines
+    if ((l.start.x == l.mid.x && l.start.y == l.mid.y)||
+        (l.start.x == l.end.x && l.start.y == l.end.y)||
+        (  l.mid.x == l.end.x &&   l.mid.x == l.end.y))
+        return true;
+
+    if( determinant(l.start.x, l.start.y, 1,
+                      l.mid.x,   l.mid.y, 1,
+                      l.end.x,   l.end.y, 1) == 0 )
+        return true;
+
+    double slope1, slope2;
+
+    slope1 = double(l.mid.y-l.start.y)/double(l.mid.x-l.start.x);
+    slope2 = double(l.mid.y - l.end.y)/double(l.mid.x - l.end.x);
+    if( slope1 == slope2 )
+        return true;
+    else
+        return false;
 }
 
 class ScalingTransform
@@ -969,66 +1060,6 @@ void CPImageCtrl::showPosition(FDiff2D point, bool warpPointer)
     }
 }
 
-bool CPImageCtrl::findCircle(double startx, double starty, double midx, double midy, double endx, double endy, FDiff2D &center, double &radius)
-{
-    double a = determinant(startx, starty, 1,
-                             midx,   midy, 1,
-                             endx,   endy, 1);
-    if( a == 0 )
-        return false;
-    
-    double d = -determinant((startx * startx) + (starty * starty), starty, 1,
-                            (  midx *   midx) + (  midy *   midy),   midy, 1,
-                            (  endx *   endx) + (  endy *   endy),   endy, 1);
-    
-    double e =  determinant((startx * startx) + (starty * starty),  startx, 1,
-                            (  midx *   midx) + (  midy *   midy),    midx, 1,
-                            (  endx *   endx) + (  endy *   endy),    endx, 1);
-    
-    double f = -determinant((startx * startx) + (starty * starty), startx, starty,
-                            (  midx *   midx) + (  midy *   midy),   midx,   midy,
-                            (  endx *   endx) + (  endy *   endy),   endx,   endy);
-    
-    //center.x = hugin_utils::roundi(-d / (2* a));
-    //center.y = hugin_utils::roundi(-e / (2* a));
-    center.x = -d / ( 2 * a );
-    center.y = -e / ( 2 * a );
-    //radius   = hugin_utils::roundi(sqrt(center.x * center.x + center.y * center.y + rtop / a));
-    radius = sqrt((d*d+e*e)/(4*a*a)-f/a);
-    
-    DEBUG_DEBUG("Input coordinates are " << startx << "," << starty << " to " << midx << "," << midy << " to " << endx << "," << endy);
-    DEBUG_DEBUG("Calculated center (" << center.x << "," << center.y << ") and radius " << radius);
-    return true;
-}
-
-// todo: use the functions in the math functions files
-double CPImageCtrl::determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i)
-{
-    return a*e*i + b*f*g + c*d*h - a*f*h - b*d*i - c*e*g;
-}
-
-bool CPImageCtrl::isCollinear(StraightLine l)
-{
-    if ((l.start.x == l.mid.x && l.start.y == l.mid.y)||
-        (l.start.x == l.end.x && l.start.y == l.end.y)||
-        (  l.mid.x == l.end.x &&   l.mid.x == l.end.y))
-        return true;
-    
-    if( determinant(l.start.x, l.start.y, 1,
-                      l.mid.x,   l.mid.y, 1,
-                      l.end.x,   l.end.y, 1) == 0 )
-        return true;
-    
-    double slope1, slope2;
-    
-    slope1 = double(l.mid.y-l.start.y)/double(l.mid.x-l.start.x);
-    slope2 = double(l.mid.y - l.end.y)/double(l.mid.x - l.end.x);
-    if( slope1 == slope2 )
-        return true;
-    else
-        return false;
-}
-
 CPImageCtrl::EditorState CPImageCtrl::isOccupied(wxPoint mousePos, const FDiff2D &p, unsigned int & pointNr) const
 {
     // check if mouse is hovering over a label
@@ -1151,7 +1182,7 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
             break;
         }
     }
-    
+
     if (editState == NEW_LINE) {
         switch(lineState) {
             case NO_POINT:
@@ -1172,7 +1203,7 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
         doUpdate = true;
         //showPosition(mpos);
     }
-    
+
     if ((mouse.MiddleIsDown() || mouse.ShiftDown() || mouse.m_controlDown ) && editState!=SELECT_DELETE_REGION) {
         // scrolling with the mouse
         if (m_mouseScrollPos !=mouse.GetPosition()) {
@@ -1276,7 +1307,7 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
 //        DEBUG_DEBUG("ImageDisplay: mouse down, state change: " << oldstate
 //                    << " -> " << editState);
     }
-    
+
     m_mousePos = mpos;
     if (editState == NEW_LINE) {
         //showPosition(mpos);

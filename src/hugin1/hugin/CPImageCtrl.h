@@ -266,6 +266,8 @@ private:
     bool findCircle(double startx, double starty, double midx, double midy, double endx, double endy, hugin_utils::FDiff2D &center, double &radius);
     double determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i);
     bool isCollinear(StraightLine l);
+    void findQuadrant(double x, double y, int &quad);
+    void correctAngle(double &theta, int quad);
 
     // position of the point labels (in screen coordinates)
     std::vector<wxRect> m_labelPos;
