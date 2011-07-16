@@ -316,7 +316,7 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         m_labelPos[selectedPointNr] = drawPoint(dc, points[selectedPointNr], selectedPointNr, true);
         break;
     case NEW_LINE:
-        drawLine(dc, newLine);
+        drawLine(dc, newLine, true);
         break;
     case NO_SELECTION:
     case NO_IMAGE:
@@ -559,24 +559,41 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 #endif
 
-void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
+void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
 {
+    /*
     wxBrush brush;
     wxColour color;
 
     const char* str = "RGB(0,0,255)"; // blue
+    const char* hlt = "RGB(128,0,128)"; // purple?
     wxString wxstr(str,wxConvUTF8);
-    color = wxstr;
+    wxString hlstr(hlt,wxConvUTF8);
+    if( selected )
+        color = hlstr;
+    else
+        color = wxstr;
     brush.SetColour(color);
     dc.SetBrush(brush);
     //dc.SetBrush(*wxTRANSPARENT_BRUSH);
-
     wxPen pen;
     pen.SetColour(color);
     pen.SetStyle(wxSOLID);
-    pen.SetWidth(2);
+    if( selected )
+        pen.SetWidth(4);
+    else
+        pen.SetWidth(2);
     dc.SetPen(pen);
-
+    */
+    wxString color;
+    if( selected )
+        color = wxT("CYAN");
+    else
+        color = wxT("DARK GREEN");
+    dc.SetBrush(wxBrush(color, wxSOLID));
+    int width = (selected ? 4 : 2);
+    dc.SetPen(wxPen(color, width, wxSOLID));
+    
     wxPoint lstart = roundP(applyRot(l.start));
     double lstartx = (double(lstart.x));
     double lstarty = (double(lstart.y));
@@ -647,28 +664,47 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
 
         //dc.DrawCircle(roundP(center),(int)radius);
         drawPoint(dc, invScale(applyRotInv(dropPoint)), 4, false);
-        for( int i = 0; i < 10; i++ ) {
+        for( int i = 0; i <= 10; i++ ) {
             dropPoint.x = radius * cos( thetaStart + i*step ) + center.x;
             dropPoint.y = radius * sin( thetaStart + i*step ) + center.y;
-            drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
-            dc.DrawLine( hugin_utils::roundi(prevx), hugin_utils::roundi(prevy), hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
+            //drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
+            dc.DrawLine( hugin_utils::roundi(prevx),       hugin_utils::roundi(prevy),
+                         hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
+            dc.DrawCircle(roundP(dropPoint), 5);
             prevx = dropPoint.x;
             prevy = dropPoint.y;
         }
-        drawPoint(dc, invScale(applyRotInv(center)), 1, false);
-            dropPoint.x = lstartx;
-            dropPoint.y = lstarty;
+        if( selected )
+            color = wxT("RED");
+        else
+            color = wxT("DARK BLUE");
+        dc.SetPen(wxPen(color, width, wxSOLID));
+        dc.SetBrush(wxBrush(color, wxSOLID));
+        dc.DrawCircle(roundP(center), 5);
+        //drawPoint(dc, invScale(applyRotInv(center)), 1, false);
+        //    dropPoint.x = lstartx;
+        //    dropPoint.y = lstarty;
         //drawPoint(dc, invScale(applyRotInv(dropPoint)), 1, false);
-            dropPoint.x = lendx;
-            dropPoint.y = lendy;
+        //    dropPoint.x = lendx;
+        //    dropPoint.y = lendy;
         //drawPoint(dc, invScale(applyRotInv(dropPoint)), 1, false);
         //drawPoint(dc, l.start, 2, false);
-        drawPoint(dc, l.mid, 2, false);
-        drawPoint(dc, l.end, 2, false);
+        //drawPoint(dc, l.mid, 2, false);
+        //drawPoint(dc, l.end, 2, false);
     } else {
         lstart = scale(lstart);
         lend   = scale(lend);
         dc.DrawLine(lstart,lend);
+        // todo: fix this!
+        double prevx = lstart.x;
+        double prevy = lstart.y;
+        hugin_utils::FDiff2D dropPoint( lstart.x, lstart.y );
+        for( int i = 0; i <= 10; i++ ) {
+            dropPoint.x = lstart.x * (10 - i) / 10 + i * (lend.x) / 10;
+            dropPoint.y = lstart.y * (10 - i) / 10 + i * (lend.y) / 10;
+            dc.DrawLine( hugin_utils::roundi(prevx),       hugin_utils::roundi(prevy),
+                         hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
+        }
     }
 }
 void CPImageCtrl::findQuadrant(double x, double y, int &quad)
@@ -696,10 +732,14 @@ void CPImageCtrl::correctAngle(double &theta, int quad)
 }
 void CPImageCtrl::drawLines(wxDC & dc)
 {
-    //DEBUG_DEBUG("Drawing lines - there are " << lines.size() << " lines to draw");
+    bool sel = false;
+    DEBUG_DEBUG("Drawing all " << lines.size() << " lines");
     for( unsigned int i = 0; i < lines.size(); i++ ) {
-        drawLine( dc, lines[i] );
+        if( i == selectedLineNr )
+            sel = true;
+        drawLine( dc, lines[i], sel );
         DEBUG_DEBUG("Drawing line " << i << " from " << lines[i].start << " to " << lines[i].end);
+        sel = false;
     }
 }
 
@@ -723,15 +763,9 @@ bool CPImageCtrl::findCircle(double startx, double starty, double midx, double m
                             (  midx *   midx) + (  midy *   midy),   midx,   midy,
                             (  endx *   endx) + (  endy *   endy),   endx,   endy);
 
-    //center.x = hugin_utils::roundi(-d / (2* a));
-    //center.y = hugin_utils::roundi(-e / (2* a));
     center.x = -d / ( 2 * a );
     center.y = -e / ( 2 * a );
-    //radius   = hugin_utils::roundi(sqrt(center.x * center.x + center.y * center.y + rtop / a));
     radius = sqrt((d*d+e*e)/(4*a*a)-f/a);
-
-    DEBUG_DEBUG("Input coordinates are " << startx << "," << starty << " to " << midx << "," << midy << " to " << endx << "," << endy);
-    DEBUG_DEBUG("Calculated center (" << center.x << "," << center.y << ") and radius " << radius);
     return true;
 }
 
@@ -1035,6 +1069,12 @@ void CPImageCtrl::deselect()
         // update view
         update();
     }
+
+void CPImageCtrl::selectLine(unsigned int nr)
+{
+    selectedLineNr = nr;
+    update();
+}
 
 void CPImageCtrl::showPosition(FDiff2D point, bool warpPointer)
 {
@@ -1573,14 +1613,14 @@ void CPImageCtrl::setScale(double factor)
     // update if factor changed
     if (factor != scaleFactor) {
         scaleFactor = factor;
-        // keep existing scale focussed.
+        // keep existing scale focused.
         rescaleImage();
     }
 }
 
 double CPImageCtrl::calcAutoScaleFactor(wxSize size)
 {
-    // TODO correctly autoscale rotated iamges
+    // TODO correctly autoscale rotated images
     int w = size.GetWidth();
     int h = size.GetHeight();
     if (m_imgRotation ==  ROT90 || m_imgRotation == ROT270) {
@@ -1606,7 +1646,7 @@ double CPImageCtrl::getScaleFactor() const
 void CPImageCtrl::OnSize(wxSizeEvent &e)
 {
     DEBUG_TRACE("size: " << e.GetSize().GetWidth() << "x" << e.GetSize().GetHeight());
-    // rescale bitmap if needed.
+    // rescale bitmap if needed
     if (imageFilename != "") {
         if (fitToWindow) {
             setScale(0);
@@ -1616,7 +1656,7 @@ void CPImageCtrl::OnSize(wxSizeEvent &e)
 
 void CPImageCtrl::OnKey(wxKeyEvent & e)
 {
-    if (!m_img.get()) return; // ignore events if no image loaded.
+    if (!m_img.get()) return; // ignore events if no image loaded
     DEBUG_TRACE(" OnKey, key:" << e.m_keyCode);
     wxPoint delta(0,0);
     // check for cursor keys, if control is not pressed
@@ -1795,12 +1835,6 @@ void CPImageCtrl::setNewPoint(const FDiff2D & p)
     // we do not send an event, since CPEditorPanel
     // caused the change.. so it doesn't need to filter
     // out its own change messages.
-}
-
-// probably not needed
-void CPImageCtrl::setNewLine(const StraightLine & l)
-{
-    lines.push_back(l);
 }
 
 void CPImageCtrl::startNewLine(void)

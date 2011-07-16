@@ -155,9 +155,9 @@ public:
     void setNewPoint(const hugin_utils::FDiff2D & p);
 
     /// start new line
-    void setNewLine(const StraightLine & l);
     void startNewLine();
     void cancelNewLine();
+    void selectLine(unsigned int);
 
     /// select a point for usage
     void selectPoint(unsigned int);
@@ -216,7 +216,7 @@ public:
 
 protected:
     wxRect drawPoint(wxDC & p, const hugin_utils::FDiff2D & point, int i, bool selected = false) const;
-    void drawLine(wxDC & DC, const StraightLine l);
+    void drawLine(wxDC & DC, const StraightLine l, bool selected);
     void drawLines(wxDC & DC);
 
     // draw the magnified view of a selected control point
@@ -261,7 +261,8 @@ private:
     //struct line { hugin_utils::FDiff2D start, end; };
     std::vector<StraightLine> lines;
     StraightLine newLine;
-    bool dimOverlay;
+    bool dimOverlay; // not useful currently
+    unsigned int selectedLineNr;
 
     bool findCircle(double startx, double starty, double midx, double midy, double endx, double endy, hugin_utils::FDiff2D &center, double &radius);
     double determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i);

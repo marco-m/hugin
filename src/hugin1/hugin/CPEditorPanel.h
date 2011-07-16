@@ -156,6 +156,9 @@ private:
 
     // function called when a new line is added
     void NewLineAdded(StraightLine l, bool left);
+    
+    // select a line
+    void SelectLine(unsigned int nr);
 
     /// this is used to finally create the point in the panorama model
     void CreateNewPoint();
@@ -186,9 +189,10 @@ private:
 #endif
     void OnCPListSelect(wxListEvent & e);
     void OnCPListDeselect(wxListEvent & e);
+    void OnLineListSelect(wxListEvent & e);
+    void OnLineListDeselect(wxListEvent & e);
     void OnAddButton(wxCommandEvent & e);
     void OnAddLine(wxCommandEvent & e);
-    void OnAddLinePair(wxCommandEvent & e);
     void DisableButtons(void);
     void EnableButtons(void);
     void OnZoom(wxCommandEvent & e);
@@ -266,10 +270,6 @@ private:
 
     // Line controls
     bool addingLine;
-    //struct linesPair { unsigned int img1Nr, img2Nr; std::vector<StraightLine> img1Lines, img2Lines; };
-    
-    //std::vector<linesPair> allLines;
-    
     struct linePair { unsigned int leftNr, rightNr; StraightLine leftLine, rightLine; };
     std::vector<linePair> allLines;
     linePair tempPair;
@@ -297,7 +297,7 @@ private:
     wxNotebook *m_leftTabs, *m_rightTabs;
 #endif
     CPImageCtrl *m_leftImg, *m_rightImg;
-    wxListCtrl *m_cpList;
+    wxListCtrl *m_cpList, *m_lineList;
 
     wxTextCtrl *m_x1Text, *m_y1Text, *m_x2Text, *m_y2Text, *m_errorText;
     wxChoice *m_cpModeChoice;
@@ -325,6 +325,7 @@ private:
     double m_detailZoomFactor;
 
     unsigned int m_selectedPoint;
+    unsigned int m_selectedLine;
     unsigned int m_cursorType;
 
     // contains the control points shown currently.
