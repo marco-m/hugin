@@ -156,13 +156,13 @@ private:
 
     // function called when a new line is added
     void NewLineAdded(StraightLine l, bool left);
-    
-    // select a line
-    void SelectLine(unsigned int nr);
 
     /// this is used to finally create the point in the panorama model
     void CreateNewPoint();
 
+    // adds the points along a line to the panorama model
+    //  ? should this be using the StraightLine returned on the CPevent fire ?
+    void AddLinePoints();
 
     /// search for region in destImg
 //    bool FindTemplate(unsigned int tmplImgNr, const wxRect &region, unsigned int dstImgNr, vigra_ext::CorrelationResult & res);
@@ -250,6 +250,9 @@ private:
     };
     // used to change the point selection state
     void changeState(CPCreationState newState);
+    
+    // used to change the line selection state
+    void changeLineState(int imgNr);
 
     /** estimate and set point in other image */
     void estimateAndAddOtherPoint(const hugin_utils::FDiff2D & p,

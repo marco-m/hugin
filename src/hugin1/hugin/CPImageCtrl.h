@@ -158,6 +158,7 @@ public:
     void startNewLine();
     void cancelNewLine();
     void selectLine(unsigned int);
+    void deselectLine();
 
     /// select a point for usage
     void selectPoint(unsigned int);
@@ -204,6 +205,9 @@ public:
 
     /// get the new point
     hugin_utils::FDiff2D getNewPoint();
+
+    /// get the new line
+    StraightLine getNewLine();
 
     /// initiate redraw
     void update();
@@ -262,7 +266,7 @@ private:
     std::vector<StraightLine> lines;
     StraightLine newLine;
     bool dimOverlay; // not useful currently
-    unsigned int selectedLineNr;
+    int selectedLineNr;
 
     bool findCircle(double startx, double starty, double midx, double midy, double endx, double endy, hugin_utils::FDiff2D &center, double &radius);
     double determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i);

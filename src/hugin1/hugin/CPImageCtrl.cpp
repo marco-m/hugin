@@ -561,30 +561,6 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
 {
-    /*
-    wxBrush brush;
-    wxColour color;
-
-    const char* str = "RGB(0,0,255)"; // blue
-    const char* hlt = "RGB(128,0,128)"; // purple?
-    wxString wxstr(str,wxConvUTF8);
-    wxString hlstr(hlt,wxConvUTF8);
-    if( selected )
-        color = hlstr;
-    else
-        color = wxstr;
-    brush.SetColour(color);
-    dc.SetBrush(brush);
-    //dc.SetBrush(*wxTRANSPARENT_BRUSH);
-    wxPen pen;
-    pen.SetColour(color);
-    pen.SetStyle(wxSOLID);
-    if( selected )
-        pen.SetWidth(4);
-    else
-        pen.SetWidth(2);
-    dc.SetPen(pen);
-    */
     wxString color;
     if( selected )
         color = wxT("CYAN");
@@ -664,9 +640,13 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
 
         //dc.DrawCircle(roundP(center),(int)radius);
         drawPoint(dc, invScale(applyRotInv(dropPoint)), 4, false);
+        newLine.points.clear();
+        newLine.points.push_back(dropPoint);
         for( int i = 0; i <= 10; i++ ) {
+            // todo: change circle color for selected CPs
             dropPoint.x = radius * cos( thetaStart + i*step ) + center.x;
             dropPoint.y = radius * sin( thetaStart + i*step ) + center.y;
+            newLine.points.push_back(applyRotInv(invScale(dropPoint)));
             //drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
             dc.DrawLine( hugin_utils::roundi(prevx),       hugin_utils::roundi(prevy),
                          hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
@@ -734,7 +714,7 @@ void CPImageCtrl::drawLines(wxDC & dc)
 {
     bool sel = false;
     DEBUG_DEBUG("Drawing all " << lines.size() << " lines");
-    for( unsigned int i = 0; i < lines.size(); i++ ) {
+    for( int i = 0; i < (int)lines.size(); i++ ) {
         if( i == selectedLineNr )
             sel = true;
         drawLine( dc, lines[i], sel );
@@ -1072,7 +1052,13 @@ void CPImageCtrl::deselect()
 
 void CPImageCtrl::selectLine(unsigned int nr)
 {
-    selectedLineNr = nr;
+    selectedLineNr = (int)nr;
+    update();
+}
+
+void CPImageCtrl::deselectLine()
+{
+    selectedLineNr = -1;
     update();
 }
 
@@ -1466,6 +1452,7 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
                     newLine.end = mpos;
                     //editState = NO_SELECTION;
                     lineState = THREE_POINTS;
+                    selectedLineNr = -1;
                     DEBUG_DEBUG("Switch lineState to THREE_POINTS");
                     CPEvent e( this, newLine ); // emit newLine event
                     emit(e);
@@ -1822,6 +1809,13 @@ FDiff2D CPImageCtrl::getNewPoint()
     return newPoint;
 }
 
+StraightLine CPImageCtrl::getNewLine()
+{
+    // only possible if a new line is actually selected
+    // are there two newLine things being returned?
+    // DEBUG_ASSERT(editState == NEW_LINE);
+    return newLine;
+}
 void CPImageCtrl::setNewPoint(const FDiff2D & p)
 {
     DEBUG_DEBUG("setting new point " << p.x << "," << p.y);

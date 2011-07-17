@@ -687,6 +687,39 @@ void CPEditorPanel::CreateNewPoint()
 #endif
 }
 
+void CPEditorPanel::AddLinePoints()
+{
+    // todo: add check for leftNr == rightNr
+    ControlPoint point;
+    point.mode = PT::ControlPoint::X_Y;
+    StraightLine line1 = m_leftImg->getNewLine();
+    StraightLine line2 = m_rightImg->getNewLine();
+    //changeState(NO_POINT); // ?
+    DEBUG_DEBUG("AddLinePoints(): " << line1.points.size() << " points from the new line pair");
+    for (int i = 0; i < line1.points.size(); i++) {
+        point.image1Nr = m_leftImageNr;         point.image2Nr = m_rightImageNr;
+        point.x1 = line1.points[i].x;             point.x2 = line2.points[i].x;
+        point.y1 = line1.points[i].y;             point.y2 = line2.points[i].y;
+        
+        // todo: track points added for later line editing
+        //PT::AddCtrlPointCmd(*m_pano, point);
+        GlobalCmdHist::getInstance().addCommand(
+            new PT::AddCtrlPointCmd(*m_pano, point)
+            );
+    }
+    // todo: history
+    //    GlobalCmdHist::getInstance().addCommand(
+    //        new PT::AddCtrlPointCmd(*m_pano, point)
+    //        );
+
+    changeState(NO_POINT);
+    MainFrame::Get()->SetStatusText(_("new control point added"));
+#ifdef HUGIN_CP_IMG_CHOICE
+    m_leftChoice->CalcCPDistance(m_pano);
+    m_rightChoice->CalcCPDistance(m_pano);
+#endif
+}
+
 
 const float CPEditorPanel::getVerticalCPBias()
 {
@@ -1308,17 +1341,10 @@ void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
         //tempPair.img1Lines.clear();
         //tempPair.img2Lines.clear();
         UpdateDisplay(false);
+        
+        
+        AddLinePoints();
     }
-}
-
-void CPEditorPanel::SelectLine(unsigned int nr)
-{
-    m_leftImg->selectLine(nr);
-    m_rightImg->selectLine(nr);
-    m_selectedLine = nr;
-    m_lineList->SetItemState(m_selectedLine, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-    //m_lineList->SetItemState(nr, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-    m_lineList->EnsureVisible(nr);
 }
 
 void CPEditorPanel::panoramaChanged(PT::Panorama &pano)
@@ -1918,19 +1944,15 @@ void CPEditorPanel::OnLineListSelect(wxListEvent & ev)
     //OnCPListDeselect(ev);
     int t = ev.GetIndex();
     DEBUG_DEBUG("Line selected: " << t);
-    if (t >=0) {
-        SelectLine((unsigned int) t);
-    }
     changeState(NO_POINT);
+    changeLineState(t);
     //UpdateDisplay(false);
 }
 
 void CPEditorPanel::OnLineListDeselect(wxListEvent & ev)
 {
-    // disable CP controls
-    m_lineList->SetItemState(m_selectedLine, 0, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);//wxLIST_STATE_SELECTED);
-    m_selectedLine = UINT_MAX;
     changeState(NO_POINT);
+    changeLineState(-1);
     UpdateDisplay(false);
 }
 
@@ -2333,6 +2355,23 @@ void CPEditorPanel::changeState(CPCreationState newState)
     }
     // apply the change
     cpCreationState = newState;
+}
+
+void CPEditorPanel::changeLineState(int imgNr)
+{
+    if( imgNr < 0) { // unselect lines
+        m_leftImg->deselectLine();
+        m_rightImg->deselectLine();
+        m_selectedLine = UINT_MAX;
+        m_lineList->SetItemState(m_selectedLine, 0, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);//wxLIST_STATE_SELECTED) only?
+    } else {
+        m_leftImg->selectLine(imgNr);
+        m_rightImg->selectLine(imgNr);
+        m_selectedLine = imgNr;
+        m_lineList->SetItemState(m_selectedLine, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        //m_lineList->SetItemState(imgNr, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        m_lineList->EnsureVisible(imgNr);
+    }
 }
 
 void CPEditorPanel::OnPrevImg(wxCommandEvent & e)
