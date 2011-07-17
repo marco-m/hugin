@@ -33,6 +33,8 @@
 #include "celeste/Celeste.h"
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
+#include "hugin_base/lines/FindLines.h"
+#include "PT/ImageGraph.h"
 #ifdef HUGIN_HSI
 #include "hugin/PythonProgress.h"
 #endif
@@ -591,6 +593,31 @@ PT::PanoCommand* CelesteOperation::GetInternalCommand(wxWindow* parent, PT::Pano
         MainFrame::Get()->SetStatusText(wxT(""),0);
         return NULL;
     };
+};
+
+PT::PanoCommand* VerticalLineOperation::GetInternalCommand(wxWindow* parent, PT::Panorama& pano, HuginBase::UIntSet images)
+{
+    CPVector cpLines;
+    deregisterPTWXDlgFcn();
+    ProgressReporterDialog progress(images.size()+1, _("Searching vertical lines"), _("Control point generation"),parent,wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ELAPSED_TIME);
+
+    for (UIntSet::const_iterator it=images.begin(); it!=images.end(); it++)
+    {
+        wxFileName file(wxString(pano.getImage(*it).getFilename().c_str(),HUGIN_CONV_FILENAME));
+        progress.increaseProgress(1.0, std::wstring(wxString::Format(_("Searching in image %s"),file.GetFullName().c_str()).wc_str(wxConvLocal)));
+        // Image to analyse
+        ImageCache::EntryPtr img=ImageCache::getInstance().getImage(pano.getImage(*it).getFilename());
+        CPVector foundLines=HuginLines::GetVerticalLines(pano,(*it),*(img->get8BitImage()));
+        if(foundLines.size()>0)
+        {
+            for(CPVector::const_iterator cpIt=foundLines.begin(); cpIt!=foundLines.end(); cpIt++)
+            {
+                cpLines.push_back(*cpIt);
+            };
+        };
+    };
+    registerPTWXDlgFcn(MainFrame::Get());
+    return new PT::AddCtrlPointsCmd(pano,cpLines);
 };
 
 #ifdef HUGIN_HSI

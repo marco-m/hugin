@@ -153,6 +153,13 @@ protected:
     virtual PT::PanoCommand* GetInternalCommand(wxWindow* parent, PT::Panorama& pano, HuginBase::UIntSet images);
 };
 
+/** PanoOperation to find vertical lines */
+class VerticalLineOperation : public PanoMultiImageOperation
+{
+protected:
+    virtual PT::PanoCommand* GetInternalCommand(wxWindow* parent, PT::Panorama& pano, HuginBase::UIntSet images);
+};
+
 #ifdef HUGIN_HSI
 /** PanoOperation to run a python script with given selected images */
 class PythonOperation : public PanoOperation

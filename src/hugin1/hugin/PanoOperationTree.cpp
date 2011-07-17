@@ -53,6 +53,8 @@ void PanoOperationTreeCtrl::GenerateTree()
     AppendItem(m_stacks,_("Change stack..."),-1,-1,(wxTreeItemData*)op);
     m_cp=AppendItem(root,_("Control points"));
     m_cpDetectors=AppendItem(m_cp,_("Control point detectors"));
+    op=new VerticalLineOperation();
+    AppendItem(m_cp,_("Find vertical lines"),-1,-1,(wxTreeItemData*)op);
     op=new RemoveControlPointsOperation();
     AppendItem(m_cp,_("Remove control points"),-1,-1,(wxTreeItemData*)op);
     op=new CelesteOperation();
