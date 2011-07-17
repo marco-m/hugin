@@ -53,10 +53,8 @@ panodata/StandardImageVariableGroups.cpp
 panotools/PanoToolsInterface.cpp
 panotools/PanoToolsOptimizerWrapper.cpp
 panotools/PanoToolsUtils.cpp
-panotools/PanoToolsTransformGPU.cpp
 vigra_ext/emor.cpp
 vigra_ext/MultiThreadOperations.cpp
-vigra_ext/ImageTransformsGPU.cpp
 )
 
 SET(HUGIN_BASE_HEADER
@@ -119,7 +117,6 @@ panotools/PanoToolsOptimizerWrapper.h
 panotools/PanoToolsUtils.h
 vigra_ext/emor.h
 vigra_ext/MultiThreadOperations.h
-vigra_ext/ImageTransformsGPU.h
 )
 
 IF (${HUGIN_SHARED_LIBS})

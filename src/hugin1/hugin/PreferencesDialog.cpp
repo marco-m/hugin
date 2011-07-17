@@ -584,8 +584,6 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         MY_CHOICE_VAL("prefs_nona_interpolator", cfg->Read(wxT("/Nona/Interpolator"), HUGIN_NONA_INTERPOLATOR));
         t = cfg->Read(wxT("/Nona/CroppedImages"), HUGIN_NONA_CROPPEDIMAGES) == 1;
         MY_BOOL_VAL("prefs_nona_createCroppedImages", t);
-        t = cfg->Read(wxT("/Nona/UseGPU"), HUGIN_NONA_USEGPU) == 1;
-        MY_BOOL_VAL("prefs_nona_useGpu", t);
 
         /////
         /// ENBLEND
@@ -877,7 +875,6 @@ void PreferencesDialog::UpdateConfigData()
     /// STITCHING
     cfg->Write(wxT("/Nona/Interpolator"), MY_G_CHOICE_VAL("prefs_nona_interpolator"));
     cfg->Write(wxT("/Nona/CroppedImages"), MY_G_BOOL_VAL("prefs_nona_createCroppedImages"));
-    cfg->Write(wxT("/Nona/UseGPU"), MY_G_BOOL_VAL("prefs_nona_useGpu"));
 
     /////
     /// ENBLEND

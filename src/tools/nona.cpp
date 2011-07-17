@@ -87,7 +87,6 @@ static void usage(const char * name)
     << "      -c         create coordinate images (only TIFF_m output)" << std::endl
     << "      -v         quiet, do not output progress indicators" << std::endl
     << "      -t num     number of threads to be used (default: nr of available cores)" << std::endl
-    << "      -g         perform image remapping on the GPU" << std::endl
     << std::endl
     << "  The following options can be used to override settings in the project file:" << std::endl
     << "      -i num     remap only image with number num" << std::endl
@@ -113,62 +112,11 @@ static void usage(const char * name)
     << std::endl;
 }
 
-/** Try to initalise GLUT and GLEW, and create an OpenGL context for GPU stitching.
- * OpenGL extensions required by the GPU stitcher (-g option) are checked here.
- * @return true if everything went OK, false if we can't use GPGPU mode.
- */
-static bool initGPU(int *argcp,char **argv) {
-    glutInit(argcp,argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA | GLUT_ALPHA);
-    GlutWindowHandle = glutCreateWindow("nona");
-
-    int err = glewInit();
-    if (err != GLEW_OK) {
-        cerr << "nona: an error occured while setting up the GPU:" << endl;
-        cerr << glewGetErrorString(err) << endl;
-        cerr << "nona: Switching to CPU calculation." << endl;
-        glutDestroyWindow(GlutWindowHandle);
-        return false;
-    }
-
-    cout << "nona: using graphics card: " << glGetString(GL_VENDOR) << " " << glGetString(GL_RENDERER) << endl;
-
-    GLboolean has_arb_fragment_shader = glewGetExtension("GL_ARB_fragment_shader");
-    GLboolean has_arb_vertex_shader = glewGetExtension("GL_ARB_vertex_shader");
-    GLboolean has_arb_shader_objects = glewGetExtension("GL_ARB_shader_objects");
-    GLboolean has_arb_shading_language = glewGetExtension("GL_ARB_shading_language_100");
-    GLboolean has_arb_texture_rectangle = glewGetExtension("GL_ARB_texture_rectangle");
-    GLboolean has_arb_texture_border_clamp = glewGetExtension("GL_ARB_texture_border_clamp");
-    GLboolean has_arb_texture_float = glewGetExtension("GL_ARB_texture_float");
-
-    if (!(has_arb_fragment_shader && has_arb_vertex_shader && has_arb_shader_objects && has_arb_shading_language && has_arb_texture_rectangle && has_arb_texture_border_clamp && has_arb_texture_float)) {
-        const char * msg[] = {"false", "true"};
-        cerr << "nona: extension GL_ARB_fragment_shader = " << msg[has_arb_fragment_shader] << endl;
-        cerr << "nona: extension GL_ARB_vertex_shader = " << msg[has_arb_vertex_shader] << endl;
-        cerr << "nona: extension GL_ARB_shader_objects = " << msg[has_arb_shader_objects] << endl;
-        cerr << "nona: extension GL_ARB_shading_language_100 = " << msg[has_arb_shading_language] << endl;
-        cerr << "nona: extension GL_ARB_texture_rectangle = " << msg[has_arb_texture_rectangle] << endl;
-        cerr << "nona: extension GL_ARB_texture_border_clamp = " << msg[has_arb_texture_border_clamp] << endl;
-        cerr << "nona: extension GL_ARB_texture_float = " << msg[has_arb_texture_float] << endl;
-        cerr << "nona: This graphics system lacks the necessary extensions for -g." << endl;
-        cerr << "nona: Switching to CPU calculation." << endl;
-        glutDestroyWindow(GlutWindowHandle);
-        return false;
-    }
-
-    return true;
-}
-
-static bool wrapupGPU() {
-    glutDestroyWindow(GlutWindowHandle);
-    return true;
-}
-
 int main(int argc, char *argv[])
 {
     
     // parse arguments
-    const char * optstring = "z:cho:i:t:m:p:r:e:vg";
+    const char * optstring = "z:cho:i:t:m:p:r:e:v";
     int c;
     
     opterr = 0;
@@ -185,7 +133,6 @@ int main(int argc, char *argv[])
     bool overrideExposure = false;
     double exposure=0;
     int verbose = 0;
-    bool useGPU = false;
     string outputPixelType;
     
     while ((c = getopt (argc, argv, optstring)) != -1)
@@ -235,9 +182,6 @@ int main(int argc, char *argv[])
             case 'z':
                 compression = optarg;
                 std::transform(compression.begin(), compression.end(), compression.begin(), (int(*)(int)) toupper);
-                break;
-            case 'g':
-                useGPU = true;
                 break;
             default:
 		usage(argv[0]);
@@ -345,43 +289,10 @@ int main(int argc, char *argv[])
             << "Nothing to do for nona." << std::endl;
         return 0;
     };
-    if(useGPU)
-    {
-        switch(opts.getProjection())
-        {
-            // the following projections are not supported by nona-gpu
-            case HuginBase::PanoramaOptions::ARCHITECTURAL:
-            case HuginBase::PanoramaOptions::BIPLANE:
-            case HuginBase::PanoramaOptions::TRIPLANE:
-            case HuginBase::PanoramaOptions::EQUISOLID:
-            case HuginBase::PanoramaOptions::THOBY_PROJECTION:
-            case HuginBase::PanoramaOptions::ORTHOGRAPHIC:
-            case HuginBase::PanoramaOptions::PANINI:
-            case HuginBase::PanoramaOptions::EQUI_PANINI:
-            case HuginBase::PanoramaOptions::GENERAL_PANINI:
-                useGPU=false;
-                std::cout << "Nona-GPU does not support this projection. Switch to CPU calculation."<<std::endl;
-                break;
-        };
-        for(UIntSet::const_iterator it=outputImages.begin(); it!=outputImages.end();it++)
-        {
-            const SrcPanoImage & img = pano.getImage(*it);
-            if(img.getX()!=0 || img.getY()!=0 || img.getZ()!=0)
-            {
-                useGPU=false;
-                std::cout << "Nona-GPU does not support the translation parameters. Switch to CPU calculation." << std::endl;
-                break;
-            };
-        };
-    };
-    
+
     DEBUG_DEBUG("output basename: " << basename);
     
     try {
-        if (useGPU) {
-            useGPU = initGPU(&argc, argv);
-        }
-        opts.remapUsingGPU = useGPU;
         pano.setOptions(opts);
 
         // stitch panorama
@@ -389,10 +300,6 @@ int main(int argc, char *argv[])
         // add a final newline, after the last progress message
         if (verbose > 0) {
             cout << std::endl;
-        }
-
-        if (useGPU) {
-            wrapupGPU();
         }
 
     } catch (std::exception & e) {

@@ -160,7 +160,6 @@ bool RunStitchPanel::StitchProject(wxString scriptFile, wxString outname,
 			opts.enfuseOptions = wxConfigBase::Get()->Read(wxT("/Enfuse/Args"), wxT(HUGIN_ENFUSE_ARGS)).mb_str(wxConvLocal);
 
         }
-        opts.remapUsingGPU = wxConfigBase::Get()->Read(wxT("/Nona/UseGPU"), HUGIN_NONA_USEGPU) == 1;
         pano.setOptions(opts);
     } else {
         wxLogError( wxString::Format(_("error while parsing panotools script: %s"), scriptFile.c_str()) );

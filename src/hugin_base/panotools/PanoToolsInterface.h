@@ -213,15 +213,10 @@ class IMPEX Transform
         bool transformImgCoord(double & x_dest, double & y_dest,
                                double x_src, double y_src) const;
 
-        bool transformImgCoordPartial(double & x_dest, double & y_dest, double x_src, double y_src) const;
-
         ///
         bool transformImgCoord(hugin_utils::FDiff2D& dest, const hugin_utils::FDiff2D & src) const
             { return transformImgCoord(dest.x, dest.y, src.x, src.y); }
 
-
-        bool emitGLSL(std::ostringstream& oss) const;
-        
     private:
         // update internal PT data structs.
         void updatePTData(const vigra::Diff2D &srcSize,

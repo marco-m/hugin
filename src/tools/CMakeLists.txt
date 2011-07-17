@@ -3,7 +3,7 @@ add_executable(fulla fulla.cpp)
 target_link_libraries(fulla ${common_libs} huginlensdb ${image_libs})
 
 add_executable(nona nona.cpp)
-target_link_libraries(nona ${common_libs} ${image_libs} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES})
+target_link_libraries(nona ${common_libs} ${image_libs})
 
 #add_executable(autocreate autocreate.cpp)
 #target_link_libraries(autocreate ${common_libs} ${image_libs})
@@ -15,7 +15,7 @@ add_executable(vig_optimize vig_optimize.cpp ExtractPoints.h)
 target_link_libraries(vig_optimize ${common_libs} ${image_libs})
 
 add_executable(align_image_stack align_image_stack.cpp)
-target_link_libraries(align_image_stack ${common_libs} ${image_libs} ${GLEW_LIBRARIES} ${GLUT_LIBRARIES})
+target_link_libraries(align_image_stack ${common_libs} ${image_libs})
 
 add_executable(linefind linefind.cpp)
 target_link_libraries(linefind ${common_libs} ${image_libs} huginlines)

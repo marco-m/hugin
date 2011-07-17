@@ -236,7 +236,6 @@ bool PanoramaMakefilelibExport::createItems()
     mgr.own_add(new Comment("options for the programs"));
     // set remapper specific settings
     mf::Variable* vnonaldr = nullvar;
-    mf::Variable* vnonaopts = nullvar;
     if(opts.remapper == PanoramaOptions::NONA)
     {
         makefile::string val;
@@ -247,10 +246,6 @@ bool PanoramaMakefilelibExport::createItems()
 
         vnonaldr = mgr.own(new mf::Variable("NONA_LDR_REMAPPED_COMP", val, Makefile::NONE));
         vnonaldr->getDef().add();
-
-        vnonaopts = mgr.own(new mf::Variable("NONA_OPTS",
-                opts.remapUsingGPU ? "-g " : "", Makefile::NONE));
-        vnonaopts->getDef().add();
     }
 
     // set blender specific settings
@@ -758,8 +753,6 @@ bool PanoramaMakefilelibExport::createItems()
         if(opts.outputHDRLayers)
             echoInfo(*info,"* Remapped images");
     };
-    if(opts.remapUsingGPU)
-        echoInfo(*info,"Using GPU for remapping");
 
     echoInfo(*info,"===========================================================================");
     echoInfo(*info,"Input images");
@@ -801,7 +794,7 @@ bool PanoramaMakefilelibExport::createItems()
             ruleldr->addPrereq(source);
             ruleldr->addPrereq(vprojectfile);
             ruleldr->addCommand(
-                    vnona->getRef() +" "+ vnonaopts->getRef() +" "+ vnonaldr->getRef()
+                    vnona->getRef() + " " + vnonaldr->getRef()
                     + " -r ldr -m " + ldrRemappedMode + " -o " + vldrremappedprefixshell->getRef() +
                     " -i " + imgnr.str() +" "+ vprojectfileshell->getRef());
 
@@ -811,7 +804,7 @@ bool PanoramaMakefilelibExport::createItems()
             rulehdr->addPrereq(source);
             rulehdr->addPrereq(vprojectfile);
             rulehdr->addCommand(
-                    vnona->getRef() +" "+ vnonaopts->getRef() +" -r hdr -m " + hdrRemappedMode + " -o " +
+                    vnona->getRef() + " -r hdr -m " + hdrRemappedMode + " -o " +
                     vhdrstackremappedprefixshell->getRef() + " -i " + imgnr.str() +" "+ vprojectfileshell->getRef());
         }
 
@@ -831,7 +824,7 @@ bool PanoramaMakefilelibExport::createItems()
                 rule->addPrereq(Makefile::quote(pano.getImage(*it).getFilename(), Makefile::MAKE));
                 rule->addPrereq(vprojectfile);
                 rule->addCommand(
-                        vnona->getRef() +" "+ vnonaopts->getRef() +" "+ vnonaldr->getRef()
+                        vnona->getRef() +" "+ vnonaldr->getRef()
                         + " -r ldr -e " + expvalue.str() + " -m " + ldrRemappedMode + " -o " + vldrexposureremappedprefixshell->getRef() +
                         " -i " + imgnr.str() +" "+ vprojectfileshell->getRef());
 
