@@ -254,7 +254,7 @@
                                 <label>Fine-tune</label>
                                 <tooltip>Tries to optimize the currently active point</tooltip>
                               </object>
-                              <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                               <border>3</border>
                             </object>
                             <object class="sizeritem">
@@ -262,12 +262,11 @@
                                 <label>Celeste</label>
                                 <tooltip>Tries to remove control points from clouds</tooltip>
                               </object>
-                              <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                               <border>3</border>
                             </object>
                           </object>
                           <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                          <border>5</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
@@ -327,9 +326,16 @@
                         <label>Straight Lines</label>
                         <object class="sizeritem">
                           <object class="wxButton" name="cp_line_add">
-                            <label>Add Straight Line</label>
+                            <label>Add Line</label>
                           </object>
-                          <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                          <border>3</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="cp_line_delete">
+                            <label>Delete</label>
+                          </object>
+                          <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
                           <border>3</border>
                         </object>
                       </object>
