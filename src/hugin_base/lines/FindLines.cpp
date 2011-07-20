@@ -229,11 +229,6 @@ HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsig
         opts.setHeight(hugin_utils::roundi(fitPano.getResultHeight()));
         tempPano.setOptions(opts);
 
-        HuginBase::CalculateOptimalROI cropPano(tempPano);
-        cropPano.run();
-        opts.setROI(cropPano.getResultOptimalROI());
-        tempPano.setOptions(opts);
-
         //finally remap image
         HuginBase::Nona::RemappedPanoImage<vigra::UInt8RGBImage,vigra::BImage>* remapped=new HuginBase::Nona::RemappedPanoImage<vigra::UInt8RGBImage,vigra::BImage>;
         AppBase::MultiProgressDisplay* progress=new AppBase::DummyMultiProgressDisplay();
