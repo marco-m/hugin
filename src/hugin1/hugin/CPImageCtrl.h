@@ -146,7 +146,7 @@ public:
     void setCtrlPoints(const std::vector<hugin_utils::FDiff2D> & points);
     
     /// control lines inside this image
-    void setCtrlLines(const std::vector<StraightLine> & linesIn);
+    void setLines(const std::vector<StraightLine> & linesIn);
 
     /// clear new point
     void clearNewPoint();
@@ -157,8 +157,9 @@ public:
     /// start new line
     void startNewLine();
     void cancelNewLine();
-    void selectLine(unsigned int);
+    void selectLine(int);
     void deselectLine();
+    void deleteLine(int);
 
     /// select a point for usage
     void selectPoint(unsigned int);
@@ -208,6 +209,9 @@ public:
 
     /// get the new line
     StraightLine getNewLine();
+    
+    /// extract control points from the indexed line
+    std::vector<ControlPoint> getPoints(int index);
 
     /// initiate redraw
     void update();

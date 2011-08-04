@@ -113,6 +113,30 @@
                           <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
                         </object>
                         <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxBitmapButton" name="cp_editor_line_to_pts">
+                                <bitmap stock_id="wxART_GO_BACK" />
+                                <default>1</default>
+                                <tooltip>Turn selected line into control points</tooltip>
+                              </object>
+                              <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                              <border>5</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxBitmapButton" name="cp_editor_pts_to_line">
+                                <bitmap stock_id="wxART_GO_FORWARD" />
+                                <default>1</default>
+                                <tooltip>Turn selected control points into a line (careful!)</tooltip>
+                              </object>
+                              <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                              <border>5</border>
+                            </object>
+                          </object>
+                          <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        </object>
+                        <object class="sizeritem">
                           <object class="wxListCtrl" name="cp_editor_line_list">
                             <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
                           </object>

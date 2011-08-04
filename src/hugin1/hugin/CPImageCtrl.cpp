@@ -278,7 +278,6 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         }
     }
 
-    drawLines(dc);
     switch(editState) {
     case SELECT_REGION:
         dc.SetLogicalFunction(wxINVERT);
@@ -328,6 +327,7 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         //dc.SetBrush(wxBrush(wxColour(128,128,128,200),wxSOLID));
         //dc.DrawRectangle(0,0,bitmap.GetWidth(),bitmap.GetHeight());
     }
+    drawLines(dc);
 
     if (m_showSearchArea && m_mousePos.x != -1){
         dc.SetLogicalFunction(wxINVERT);
@@ -561,15 +561,6 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
 {
-    wxString color;
-    if( selected )
-        color = wxT("CYAN");
-    else
-        color = wxT("DARK GREEN");
-    dc.SetBrush(wxBrush(color, wxSOLID));
-    int width = (selected ? 4 : 2);
-    dc.SetPen(wxPen(color, width, wxSOLID));
-    
     wxPoint lstart = roundP(applyRot(l.start));
     double lstartx = (double(lstart.x));
     double lstarty = (double(lstart.y));
@@ -638,8 +629,18 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
         double prevy = radius * sin( thetaStart ) + center.y;
         hugin_utils::FDiff2D dropPoint( prevx, prevy );
 
-        //dc.DrawCircle(roundP(center),(int)radius);
-        drawPoint(dc, invScale(applyRotInv(dropPoint)), 4, false);
+        /* Set up pen for drawing */
+        wxString color;
+        if( selected )
+            color = wxT("CYAN");
+        else
+            color = wxT("DARK GREEN");
+        dc.SetBrush(wxBrush(color, wxSOLID));
+        int width = (selected ? 4 : 2);
+        dc.SetPen(wxPen(color, width, wxSOLID));
+        /* End pen setup */
+        
+        //drawPoint(dc, invScale(applyRotInv(dropPoint)), 4, false);
         newLine.points.clear();
         newLine.points.push_back(dropPoint);
         for( int i = 0; i <= 10; i++ ) {
@@ -660,18 +661,20 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
             color = wxT("DARK BLUE");
         dc.SetPen(wxPen(color, width, wxSOLID));
         dc.SetBrush(wxBrush(color, wxSOLID));
+        
         dc.DrawCircle(roundP(center), 5);
-        //drawPoint(dc, invScale(applyRotInv(center)), 1, false);
-        //    dropPoint.x = lstartx;
-        //    dropPoint.y = lstarty;
-        //drawPoint(dc, invScale(applyRotInv(dropPoint)), 1, false);
-        //    dropPoint.x = lendx;
-        //    dropPoint.y = lendy;
-        //drawPoint(dc, invScale(applyRotInv(dropPoint)), 1, false);
-        //drawPoint(dc, l.start, 2, false);
-        //drawPoint(dc, l.mid, 2, false);
-        //drawPoint(dc, l.end, 2, false);
     } else {
+        /* Set up pen for drawing */
+        wxString color;
+        if( selected )
+            color = wxT("CYAN");
+        else
+            color = wxT("DARK GREEN");
+        dc.SetBrush(wxBrush(color, wxSOLID));
+        int width = (selected ? 4 : 2);
+        dc.SetPen(wxPen(color, width, wxSOLID));
+        /* End pen setup */
+        
         lstart = scale(lstart);
         lend   = scale(lend);
         dc.DrawLine(lstart,lend);
@@ -778,6 +781,30 @@ bool CPImageCtrl::isCollinear(StraightLine l)
         return false;
 }
 
+void CPImageCtrl::setLines(const std::vector<StraightLine> & linesIn)
+{
+    lines = linesIn;
+    //if(editState == ADDING_LINE)
+    editState = NO_SELECTION;
+    update();
+}
+
+void CPImageCtrl::selectLine(int nr)
+{
+    selectedLineNr = nr;
+    update();
+}
+
+void CPImageCtrl::deselectLine()
+{
+    selectedLineNr = -1;
+    update();
+}
+
+void CPImageCtrl::deleteLine(int nr)
+{
+    // not needed? just use setLines...
+}
 class ScalingTransform
 {
 public:
@@ -1010,14 +1037,6 @@ void CPImageCtrl::setCtrlPoints(const std::vector<FDiff2D> & cps)
     update();
 }
 
-void CPImageCtrl::setCtrlLines(const std::vector<StraightLine> & linesIn)
-{
-    lines = linesIn;
-    //if(editState == ADDING_LINE)
-    editState = NO_SELECTION;
-    update();
-}
-
 void CPImageCtrl::clearNewPoint()
 {
     DEBUG_TRACE("clearNewPoint");
@@ -1041,24 +1060,12 @@ void CPImageCtrl::selectPoint(unsigned int nr)
 }
 
 void CPImageCtrl::deselect()
-    {
-        DEBUG_TRACE("deselecting points");
-        if (editState == KNOWN_POINT_SELECTED) {
-            editState = NO_SELECTION;
-        }
-        // update view
-        update();
+{
+    DEBUG_TRACE("deselecting points");
+    if (editState == KNOWN_POINT_SELECTED) {
+        editState = NO_SELECTION;
     }
-
-void CPImageCtrl::selectLine(unsigned int nr)
-{
-    selectedLineNr = (int)nr;
-    update();
-}
-
-void CPImageCtrl::deselectLine()
-{
-    selectedLineNr = -1;
+    // update view
     update();
 }
 
@@ -1094,12 +1101,15 @@ CPImageCtrl::EditorState CPImageCtrl::isOccupied(wxPoint mousePos, const FDiff2D
         for(int i=m_labelPos.size()-1; i >= 0; i--) {
 #if wxCHECK_VERSION(2,8,0)
             if (m_labelPos[i].Contains(mousePos)) {
-#else
-            if (m_labelPos[i].Inside(mousePos)) {
-#endif
                 pointNr = i;
                 return KNOWN_POINT_SELECTED;
             }
+#else
+            if (m_labelPos[i].Inside(mousePos)) {
+                pointNr = i;
+                return KNOWN_POINT_SELECTED;
+            }
+#endif
         }
     }
 
@@ -1815,6 +1825,10 @@ StraightLine CPImageCtrl::getNewLine()
     // are there two newLine things being returned?
     // DEBUG_ASSERT(editState == NEW_LINE);
     return newLine;
+}
+std::vector<ControlPoint> CPImageCtrl::getPoints(int index)
+{
+    selectedLineNr
 }
 void CPImageCtrl::setNewPoint(const FDiff2D & p)
 {

@@ -164,6 +164,7 @@ private:
     //  ? should this be using the StraightLine returned on the CPevent fire ?
     void AddLinePoints();
 
+    void DeleteLinePoints(int index);
     /// search for region in destImg
 //    bool FindTemplate(unsigned int tmplImgNr, const wxRect &region, unsigned int dstImgNr, vigra_ext::CorrelationResult & res);
 
@@ -189,12 +190,16 @@ private:
 #endif
     void OnCPListSelect(wxListEvent & e);
     void OnCPListDeselect(wxListEvent & e);
-    void OnLineListSelect(wxListEvent & e);
-    void OnLineListDeselect(wxListEvent & e);
     void OnAddButton(wxCommandEvent & e);
-    void OnAddLine(wxCommandEvent & e);
     void DisableButtons(void);
     void EnableButtons(void);
+    void OnLineListSelect(wxListEvent & e);
+    void OnLineListDeselect(wxListEvent & e);
+    void OnLineDelete(wxListEvent & ev);
+    void OnAddLineButton(wxCommandEvent & e);
+    void OnDeleteLineButton(wxCommandEvent & e);
+    void OnPtsToLine(wxCommandEvent & e);
+    void OnLineToPoints(wxCommandEvent & e);
     void OnZoom(wxCommandEvent & e);
     void OnTextPointChange(wxCommandEvent &e);
     void OnKey(wxKeyEvent & e);
@@ -282,7 +287,6 @@ private:
     std::vector<linesIndex> allLinesIndex;
     
     char* addl;
-    char* addp;
     char* cncl;
 
     int getLinesIndexNr(int target);
@@ -290,6 +294,7 @@ private:
     std::vector<StraightLine> extractLines(int src, int dest);
     void addPairToList(linePair pair);
     void convertIndexToLineList(void);
+    bool removeActiveLine(void);
 
     // GUI controls
 #ifdef HUGIN_CP_IMG_CHOICE
