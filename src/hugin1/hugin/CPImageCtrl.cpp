@@ -690,29 +690,6 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
         }
     }
 }
-void CPImageCtrl::findQuadrant(double x, double y, int &quad)
-{
-         if( x >= 0 && y >= 0 )
-        quad = 0; // first
-    else if( x <  0 && y >= 0 )
-        quad = 1; // second
-    else if( x <  0 && y <  0 )
-        quad = 2; // third
-    else if( x >= 0 && y <  0 )
-        quad = 3; // fourth
-}
-void CPImageCtrl::correctAngle(double &theta, int quad)
-{
-         if( quad == 1 ) // quadrant 2
-             theta = -theta + 3.14159;
-    else if( quad == 2 ) // quadrant 3
-        theta =  theta + 3.14159;
-    else if( quad == 3 ) // quadrant 4
-        theta = -theta + 3.14159 * 2;
-    while( theta >= 0 )
-        theta -= 2 * 3.14159;
-    theta += 2 * 3.14159;
-}
 void CPImageCtrl::drawLines(wxDC & dc)
 {
     bool sel = false;
@@ -1826,9 +1803,9 @@ StraightLine CPImageCtrl::getNewLine()
     // DEBUG_ASSERT(editState == NEW_LINE);
     return newLine;
 }
-std::vector<ControlPoint> CPImageCtrl::getPoints(int index)
+std::vector<hugin_utils::FDiff2D> CPImageCtrl::getPoints(int index)
 {
-    selectedLineNr
+    return lines[index].extractPathPoints(); // todo: should these be rotated and scaled?
 }
 void CPImageCtrl::setNewPoint(const FDiff2D & p)
 {

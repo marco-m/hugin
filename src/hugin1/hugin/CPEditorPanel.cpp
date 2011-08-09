@@ -162,8 +162,8 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
     m_rightRot=CPImageCtrl::ROT0;
     addingLine = false;
 
-    tempPair.leftNr  = UINT_MAX;
-    tempPair.rightNr = UINT_MAX;
+    leftLineSet = false;
+    rightLineSet = false;
     
     // Line button labels
     addl = "Add Line";
@@ -733,24 +733,12 @@ void CPEditorPanel::AddLinePoints()
 #endif
 }
 
-void CPEditorPanel::DeleteLinePoints(int index)
+void CPEditorPanel::DeleteLine(int index)
 {
-    DEBUG_DEBUG("DeleteLinePoints()");//: deleting " << allLines[index].leftLine.points.size() - allLines[index].leftLine.indexStart << " points");
+    DEBUG_DEBUG("DeleteLine()");
     
-    // todo: handle other deleted lines/points
-    GlobalCmdHist::getInstance().addCommand(
-            new PT::RemoveCtrlPointsCmd(*m_pano,allLines[index].leftLine.globalPointsNr)
-            );
-    for (std::vector<linePair>::iterator alit = allLines.begin(); alit != allLines.end(); ++alit) {
-        for (HuginBase::UIntSet::iterator it = alit->leftLine.globalPointsNr.begin();
-             it != alit->leftLine.globalPointsNr.end();
-             ++it) {
-                *it -= allLines[index].leftLine.globalPointsNr.size();
-        } // todo: do this for the right line too?
-    }
-    DEBUG_DEBUG("Erasing line " << index);
-    allLines.erase(allLines.begin()+index);
-    convertLineListToIndex();
+    // todo: history
+    m_pano->ctrlLines.removeLine(index, m_leftImageNr, m_rightImageNr);
 }
 
 const float CPEditorPanel::getVerticalCPBias()
@@ -1336,135 +1324,42 @@ double CPEditorPanel::PointFineTune_old(unsigned int tmplImgNr,
 
 void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
 {
-    // todo: allow linking of lines through multiple images
     DEBUG_DEBUG("Line added: endpoints (" << l.start.x << "," << l.start.y << ") to ("  << l.end.x << "," << l.end.y << ")");
     if( left ) {
         DEBUG_DEBUG("Setting to m_leftImg");
-        tempPair.leftNr   = m_leftImageNr;
-        tempPair.leftLine = l;
-        //m_leftImg->setNewLine(l);
-        //DEBUG_DEBUG("Pushed line " << tempPair.img1Lines[0].start.x << "," << tempPair.img1Lines[0].start.y << " to "  << tempPair.img1Lines[0].end.x << "," << tempPair.img1Lines[0].end.y );
+        l.imageNr = m_leftImageNr;
+        tempPair.first = l;
+        leftLineSet = true;
     } else {
         DEBUG_DEBUG("Setting to m_rightImg");
-        tempPair.rightNr   = m_rightImageNr;
-        tempPair.rightLine = l;
-        //m_rightImg->setNewLine(l);
-        //DEBUG_DEBUG("Pushed line " << tempPair.img2Lines[0].start.x << "," << tempPair.img2Lines[0].start.y << " to "  << tempPair.img2Lines[0].end.x << "," << tempPair.img2Lines[0].end.y );
+        l.imageNr = m_rightImageNr;
+        tempPair.second = l;
+        rightLineSet = true;
     }
     
-    if( tempPair.leftNr < UINT_MAX && tempPair.rightNr < UINT_MAX ) // completed corresponding lines
+    if( leftLineSet == true && rightLineSet == true;) // completed corresponding lines
     {
-        DEBUG_DEBUG("New lines line pair: " << tempPair.leftNr << " and " << tempPair.rightNr);
-        //tempPair.leftLine.indexStart = m_cpList->GetItemCount();
-        AddLinePoints();
-        addPairToList(tempPair);
+        DEBUG_DEBUG("New lines line pair: " << tempPair.first.imageNr << " and " << tempPair.second.imageNr);
+        m_pano->ctrlLines.addPair(tempPair);
         
         // Reset buttons and such
         EnableButtons();
         m_addLineButton->SetLabel(wxString(addl,wxConvUTF8));
-        addingLine = false;
         m_leftImg->cancelNewLine();
         m_rightImg->cancelNewLine();
         
-        m_leftImg->setLines(extractLines(m_leftImageNr, m_rightImageNr));
-        m_rightImg->setLines(extractLines(m_rightImageNr, m_leftImageNr));
+        m_leftImg->setLines(m_pano->ctrlLines.extractLines(m_leftImageNr, m_rightImageNr));
+        m_rightImg->setLines(m_pano->ctrlLines.extractLines(m_rightImageNr, m_leftImageNr));
         
-        // Reset tempPair
-        tempPair.leftNr  = UINT_MAX;
-        tempPair.rightNr = UINT_MAX;
-        //tempPair.img1Lines.clear();
-        //tempPair.img2Lines.clear();
+        addingLine = false;
+        leftLineSet = false;
+        rightLineSet = false;
         
         wxListEvent dummy;
-        OnLineListDeselect(dummy);
+        //OnLineListDeselect(dummy);
         //UpdateDisplay(false);
     }
 }
-
-int CPEditorPanel::getLinesIndexNr(int target)
-{
-    for( int i = 0; i < allLinesIndex.size(); i++ ) {
-        if( allLinesIndex[i].srcNr == target )
-            return i;
-    }
-    return -1;
-}
-
-void CPEditorPanel::convertLineListToIndex(void)
-{
-    int insertIndex;
-    lineIndex tmpIndex;
-    linesIndex tmpEntry;
-    
-    // fix to be persistent, or make bidirectional conversion routine
-    allLinesIndex.clear();
-    
-    for( int i = 0; i < allLines.size(); i++ ) {
-        // left
-        insertIndex = getLinesIndexNr(allLines[i].leftNr);
-        tmpIndex.srcLine  = allLines[i].leftLine;
-        tmpIndex.destLine = allLines[i].rightLine;
-        tmpIndex.destNr   = allLines[i].rightNr;
-        
-        if( insertIndex >= 0 ) { // found existing lines in image
-            allLinesIndex[insertIndex].destPaths.push_back(tmpIndex);
-        } else {
-            tmpEntry.srcNr = allLines[i].leftNr;
-            tmpEntry.destPaths.clear();
-            tmpEntry.destPaths.push_back(tmpIndex);
-            allLinesIndex.push_back(tmpEntry);
-        }
-
-        // right
-        insertIndex = getLinesIndexNr(allLines[i].rightNr);
-        tmpIndex.srcLine  = allLines[i].rightLine;
-        tmpIndex.destLine = allLines[i].leftLine;
-        tmpIndex.destNr   = allLines[i].leftNr;
-        
-        if( insertIndex >= 0 ) { // found existing lines in image
-            allLinesIndex[insertIndex].destPaths.push_back(tmpIndex);
-        } else {
-            tmpEntry.srcNr = allLines[i].rightNr;
-            tmpEntry.destPaths.clear();
-            tmpEntry.destPaths.push_back(tmpIndex);
-            allLinesIndex.push_back(tmpEntry);
-        }
-    }
-}
-
-std::vector<StraightLine> CPEditorPanel::extractLines(int src, int dest)
-{
-    int targetIndex = getLinesIndexNr(src);
-    std::vector<StraightLine> lines;
-    if( targetIndex < 0 )
-        return lines;
-    for (unsigned int i = 0; i < allLinesIndex[targetIndex].destPaths.size(); i++) {
-        if( allLinesIndex[targetIndex].destPaths[i].destNr == dest )
-            lines.push_back(allLinesIndex[targetIndex].destPaths[i].srcLine );
-    }
-    return lines;
-}
-
-void CPEditorPanel::addPairToList(linePair pair)
-{
-    // todo: check for duplicate pairs?
-    allLines.push_back(pair);
-    convertLineListToIndex();
-}
-
-void CPEditorPanel::convertIndexToLineList(void)
-{
-    // should not be done - work everything off of the line list
-}
-
-
-
-bool CPEditorPanel::removeActiveLine(void)
-{
-    
-}
-
-
 
 void CPEditorPanel::panoramaChanged(PT::Panorama &pano)
 {
@@ -1812,8 +1707,9 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     m_rightImg->setCtrlPoints(right);
     
     // set control lines for each image
-    m_leftImg->setLines(extractLines(m_leftImageNr, m_rightImageNr));
-    m_rightImg->setLines(extractLines(m_rightImageNr, m_leftImageNr));
+    m_leftImg->setLines(m_pano->ctrlLines.extractLines(m_leftImageNr, m_rightImageNr));
+    m_rightImg->setLines(m_pano->ctrlLines.extractLines(m_rightImageNr, m_leftImageNr));
+    
 
     // put these control points into our listview.
     unsigned int selectedCP = UINT_MAX;
@@ -1892,7 +1788,7 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     m_lineList->Freeze();
     m_lineList->DeleteAllItems();
     
-    tempLineVec = extractLines(m_leftImageNr, m_rightImageNr);
+    tempLineVec = m_pano->ctrlLines.extractLines(m_leftImageNr, m_rightImageNr);
     for( int i = 0; i < tempLineVec.size(); i++ )
     {
         DEBUG_DEBUG("inserting LVItem " << i);
@@ -2062,11 +1958,11 @@ void CPEditorPanel::OnLineListSelect(wxListEvent & ev)
 {
     //OnCPListDeselect(ev);
     XRCCTRL(*this, "cp_line_delete", wxButton)->Enable();
-    XRCCTRL(*this, "cp_editor_line_to_pts", wxButton)->Disable();
+    XRCCTRL(*this, "cp_editor_line_to_pts", wxButton)->Enable();
     int t = ev.GetIndex();
     DEBUG_DEBUG("Line selected: " << t);
     changeState(NO_POINT);
-    changeLineState(t);
+    changeWhichLine(t);
     //UpdateDisplay(false);
 }
 
@@ -2075,7 +1971,7 @@ void CPEditorPanel::OnLineListDeselect(wxListEvent & ev)
     XRCCTRL(*this, "cp_line_delete", wxButton)->Disable();
     XRCCTRL(*this, "cp_editor_line_to_pts", wxButton)->Enable();
     changeState(NO_POINT);
-    changeLineState(-1);
+    changeWhichLine(-1);
     UpdateDisplay(false);
 }
 
@@ -2085,17 +1981,13 @@ void CPEditorPanel::OnLineDelete(wxListEvent & ev)
     //changeState(NO_POINT);
     long index = m_lineList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED); // find selected item
     if( index >= 0 ) {
-        DeleteLinePoints(index);
-        //m_lineList->DeleteItem(index);
-        
-        //m_leftImg->deleteLine(ev.GetIndex());
-        //m_rightImg->deleteLine(ev.GetIndex());
-        m_leftImg->setLines(extractLines(m_leftImageNr, m_rightImageNr));
-        m_rightImg->setLines(extractLines(m_rightImageNr, m_leftImageNr));
+        DeleteLine(index);
+        m_leftImg->setLines(m_pano->ctrlLines.extractLines(m_leftImageNr, m_rightImageNr));
+        m_rightImg->setLines(m_pano->ctrlLines.extractLines(m_rightImageNr, m_leftImageNr));
         UpdateDisplay(false);
     }
     //m_lineList->SetItemState(index, 0, wxLIST_STATE_SELECTED);
-    changeLineState(-1);
+    changeWhichLine(-1);
 }
 
 void CPEditorPanel::OnZoom(wxCommandEvent & e)
@@ -2314,7 +2206,7 @@ void CPEditorPanel::OnAddLineButton(wxCommandEvent & e)
     // toggle add line mode
     if (addingLine) {
         EnableButtons();
-        m_addLineButton->SetLabel(wxString(addl,wxConvUTF8));
+        m_addLineButton->SetLabel(wxString(addl,wxConvUTF8)); // use wxT()?
         addingLine = false;
         m_leftImg->cancelNewLine();
         m_rightImg->cancelNewLine();
@@ -2342,11 +2234,18 @@ void CPEditorPanel::OnPtsToLine(wxCommandEvent & e)
 void CPEditorPanel::OnLineToPoints(wxCommandEvent & e)
 {
     std::vector<ControlPoint> points;
-    points = m_leftImg->getPoints(m_selectedLine);
+    std::vector<hugin_utils::FDiff2D> lpoints, rpoints;
+    lpoints = m_leftImg->getPoints(m_selectedLine); // todo: should go straight to m_pano->ctrlLines.etc.
+    rpoints = m_rightImg->getPoints(m_selectedLine);
+    for( int i = 0; i < lpoints.size(); i++ ) {
+        points.push_back(ControlPoint(m_leftImageNr, lpoints[i].x, lpoints[i].y,
+                                     m_rightImageNr, rpoints[i].x, rpoints[i].y));
+    }
+    
     GlobalCmdHist::getInstance().addCommand(
         new PT::AddCtrlPointsCmd(*m_pano, points)
         );
-    removeActiveLine();
+    DeleteLine(m_selectedLine);
 }
 
 void CPEditorPanel::DisableButtons(void)
@@ -2523,7 +2422,7 @@ void CPEditorPanel::changeState(CPCreationState newState)
 }
 
 // make target line active (-1 for all inactive)
-void CPEditorPanel::changeLineState(int imgNr)
+void CPEditorPanel::changeWhichLine(int imgNr)
 {
     if( imgNr < 0) { // no line active
         m_leftImg->deselectLine();

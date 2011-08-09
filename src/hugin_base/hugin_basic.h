@@ -74,6 +74,7 @@
 #include <hugin_math/Matrix3.h>
 
 #include <panodata/ControlPoint.h>
+#include <panodata/ControlLine.h>
 #include <panodata/Lens.h>
 #include <panodata/Panorama.h>
 #include <panodata/PanoramaOptions.h>

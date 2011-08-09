@@ -44,11 +44,6 @@
 
 #include "CPImagesComboBox.h"
 
-#ifndef _LINEFILE
-#include "CPSharedStructs.h"
-#define _LINEFILE
-#endif
-
 // Always use wxChoice, the tabs behave badly with many images on GTK as well.
 #define HUGIN_CP_IMG_CHOICE
 
@@ -162,9 +157,10 @@ private:
 
     // adds the points along a line to the panorama model
     //  ? should this be using the StraightLine returned on the CPevent fire ?
+    // delete this once the convert line to points function is done!
     void AddLinePoints();
 
-    void DeleteLinePoints(int index);
+    void DeleteLine(int index);
     /// search for region in destImg
 //    bool FindTemplate(unsigned int tmplImgNr, const wxRect &region, unsigned int dstImgNr, vigra_ext::CorrelationResult & res);
 
@@ -257,7 +253,7 @@ private:
     void changeState(CPCreationState newState);
     
     // used to change the line selection state
-    void changeLineState(int imgNr);
+    void changeWhichLine(int imgNr);
 
     /** estimate and set point in other image */
     void estimateAndAddOtherPoint(const hugin_utils::FDiff2D & p,
@@ -278,23 +274,12 @@ private:
 
     // Line controls
     bool addingLine;
-    struct linePair { unsigned int leftNr, rightNr; StraightLine leftLine, rightLine; };
-    std::vector<linePair> allLines;
-    linePair tempPair;
+    std::pair<StraightLine, StraightLine> tempPair;
+    bool leftLineSet, rightLineSet;
     std::vector<StraightLine> tempLineVec;
-    struct lineIndex { StraightLine srcLine, destLine; unsigned int destNr; };
-    struct linesIndex { unsigned int srcNr; std::vector<lineIndex> destPaths; };
-    std::vector<linesIndex> allLinesIndex;
     
     char* addl;
     char* cncl;
-
-    int getLinesIndexNr(int target);
-    void convertLineListToIndex(void);
-    std::vector<StraightLine> extractLines(int src, int dest);
-    void addPairToList(linePair pair);
-    void convertIndexToLineList(void);
-    bool removeActiveLine(void);
 
     // GUI controls
 #ifdef HUGIN_CP_IMG_CHOICE

@@ -30,11 +30,6 @@
 
 #include <base_wx/wxImageCache.h>
 
-#ifndef _LINEFILE
-#include "CPSharedStructs.h"
-#define _LINEFILE
-#endif
-
 class CPEditorPanel;
 
 /** Events to notify about new point / region / point change
@@ -211,7 +206,7 @@ public:
     StraightLine getNewLine();
     
     /// extract control points from the indexed line
-    std::vector<ControlPoint> getPoints(int index);
+    std::vector<hugin_utils::FDiff2D> getPoints(int index);
 
     /// initiate redraw
     void update();
