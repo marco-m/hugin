@@ -40,6 +40,7 @@
 #include <panodata/PanoramaVariable.h>
 #include <panodata/SrcPanoImage.h>
 #include <panodata/ControlPoint.h>
+#include <panodata/ControlLine.h>
 #include <panodata/Lens.h>
 #include <panodata/PanoramaOptions.h>
 

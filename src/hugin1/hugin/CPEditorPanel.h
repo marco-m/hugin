@@ -274,7 +274,7 @@ private:
 
     // Line controls
     bool addingLine;
-    std::pair<StraightLine, StraightLine> tempPair;
+    LineCollection::linePair tempPair;
     bool leftLineSet, rightLineSet;
     std::vector<StraightLine> tempLineVec;
     
