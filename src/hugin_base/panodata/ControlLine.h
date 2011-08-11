@@ -105,9 +105,11 @@ class StraightLine
         bool isStraight, isOverLine;
         unsigned int imageNr;   // associate image - does this change with image addition/deletion?
         int numpoints; // number of points to return along path
+        double selectionDistance;
         
-        bool lineSelected;
+        bool lineSelected, pointIsSelected;
         whichPoint pointSelected, isOverPoint;
+        Point selectedPoint;
         
         /* Functions */
         StraightLine(unsigned int=UINT_MAX); // constructor
@@ -123,6 +125,7 @@ class StraightLine
         void moveActivePoint(Point); // for moving a point on a complete line
         void moveLastPoint(Point);   // for moving a point on a new line
         //void moveLine(Point);
+        
         double getNearestPointDistance(Point destination);
         double getLineDistance(Point destination);
         //double getDistance(Point); // sets pointNear for future use
@@ -136,7 +139,7 @@ class StraightLine
         //void update(Point);
     private:
         /* Variables */
-        double tolerance, selectionDistance;
+        double tolerance;
         bool startSet, midSet, endSet;
 
         whichPoint pointNear, pointsAdded;
@@ -153,9 +156,8 @@ class LineCollection // allLines
 {
     public:
         LineCollection(void);
-        //typedef hugin_utils::FDiff2D Point;
         struct linePair {StraightLine first, second;};
-    //typedef std::pair<StraightLine,StraightLine> Pair;
+        //typedef std::pair<StraightLine,StraightLine> Pair;
         bool addPair(linePair);
         bool addPair(StraightLine,StraightLine);
         bool removePair(int); // removes line by index
@@ -177,7 +179,6 @@ class LineCollection // allLines
         int selectedLine;
         //std::vector<linePair> allLines;
         double selectionDistance;
-        
     
         std::vector<StraightLine*> extractLinesPointer(int,int);
 };

@@ -39,6 +39,7 @@ StraightLine::StraightLine(unsigned int nr) : tolerance(3.e-10), selectionDistan
         midSet = false;
         endSet = false;
     
+    pointIsSelected = false;
     pointSelected = NONE;
     pointNear     = NONE;
     
@@ -209,12 +210,19 @@ bool StraightLine::removeNearPoint(Point point)
 inline void StraightLine::selectLastNearPoint(void)
 {
     pointSelected = pointNear;
+    switch( pointSelected )
+    {
+        case NONE:                         pointIsSelected = false; break;
+        case START: selectedPoint = start; pointIsSelected = true;  break;
+        case MID:   selectedPoint = mid;   pointIsSelected = true;  break;
+        case END:   selectedPoint = end;   pointIsSelected = true;  break;
+    }
     //if( pointSelected != NONE )?
         lineSelected = true;
 }
 
 inline void StraightLine::deselectPoint(void)
-{ pointSelected = NONE; }
+{ pointSelected = NONE; pointIsSelected = false; }
 
 inline void StraightLine::selectLine(void)
 { lineSelected = true; }
@@ -425,8 +433,10 @@ bool LineCollection::selectNearest(Point point, int src, int dest)
 bool LineCollection::selectLine(int index, int src, int dest)
 {
     std::vector<StraightLine*> lines(extractLinesPointer(src,dest));
+    std::vector<StraightLine*> line2(extractLinesPointer(dest,src));
     deselectAll();
     lines[index]->selectLine();
+    line2[index]->selectLine();
 }
 
 void LineCollection::swapAll(void)
@@ -458,7 +468,7 @@ void LineCollection::update(Point location, int src, int dest)
         dist = lines[i]->getNearestPointDistance(location);
         if( dist < nearestDist ) {
             nearestIndex = i;
-            nearestDist = selectionDistance;
+            nearestDist = dist;
         }
     }
     if( nearestIndex < 0 ) { // no points close enough
@@ -466,7 +476,7 @@ void LineCollection::update(Point location, int src, int dest)
             dist = lines[i]->getLineDistance(location);
             if( dist < nearestDist ) {
                 nearestIndex = i;
-                nearestDist = selectionDistance;
+                nearestDist = dist;
             }
         }
         if( nearestIndex < 0 ) { // no line close enough

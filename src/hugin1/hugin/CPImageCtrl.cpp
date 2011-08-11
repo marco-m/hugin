@@ -315,7 +315,7 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         m_labelPos[selectedPointNr] = drawPoint(dc, points[selectedPointNr], selectedPointNr, true);
         break;
     case NEW_LINE:
-        drawLine(dc, newLine, true);
+        drawLine(dc, newLine);
         break;
     case NO_SELECTION:
     case NO_IMAGE:
@@ -557,16 +557,16 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 #endif
 
-void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
+void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
 {
     /* Set up pen for drawing */
     wxString color;
-    if( selected )
+    if( l.lineSelected )
         color = wxT("CYAN");
     else
         color = wxT("DARK GREEN");
     dc.SetBrush(wxBrush(color, wxSOLID));
-    int width = (selected ? 4 : 2);
+    int width = (l.lineSelected ? 2 : 1);
     dc.SetPen(wxPen(color, width, wxSOLID));
     /* End pen setup */
     
@@ -588,11 +588,17 @@ void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
             dropPoint.y = radius * sin( l.thetaStart + i*step ) + center.y;
             dc.DrawLine( hugin_utils::roundi(prevx),       hugin_utils::roundi(prevy),
                          hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
-            dc.DrawCircle(roundP(dropPoint), 5);
+            dc.DrawCircle(roundP(dropPoint), 3);
             prevx = dropPoint.x;
             prevy = dropPoint.y;
         }
-        dc.DrawCircle(roundP(center), 5);
+        dc.DrawCircle(roundP(center), 3);
+    }
+    if( l.pointIsSelected ) {
+        color = wxT("RED");
+        dc.SetBrush(wxBrush(color, wxSOLID));
+        dc.SetPen(wxPen(color, width, wxSOLID));
+        dc.DrawCircle(roundP(scale(applyRot(l.selectedPoint))), 3);
     }
 }
 void CPImageCtrl::drawLines(wxDC & dc)
@@ -600,9 +606,7 @@ void CPImageCtrl::drawLines(wxDC & dc)
     bool sel = false;
     DEBUG_DEBUG("Drawing all " << lines.size() << " lines");
     for( int i = 0; i < (int)lines.size(); i++ ) {
-        if( i == selectedLineNr )
-            sel = true;
-        drawLine( dc, lines[i], sel );
+        drawLine(dc, lines[i]);
         DEBUG_DEBUG("Drawing line " << i << " from " << lines[i].start << " to " << lines[i].end);
         sel = false;
     }
@@ -976,8 +980,7 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
     mpos = applyRotInv(invScale(mpos));
     mpos_ = applyRotInv(invScale(mpos_));
     // if mouseclick is out of image, ignore
-    if ((mpos.x >= m_realSize.GetWidth() || mpos.y >= m_realSize.GetHeight()) && editState!=SELECT_DELETE_REGION)
-    {
+    if ((mpos.x >= m_realSize.GetWidth() || mpos.y >= m_realSize.GetHeight()) && editState!=SELECT_DELETE_REGION) {
         return;
     }
 
@@ -1031,24 +1034,6 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
         }
     }
 
-    if (editState == NEW_LINE) {
-        switch(lineState) {
-            case NO_POINT:
-                newLine.moveLastPoint(mpos);
-                break;
-            case ONE_POINT:
-                newLine.moveLastPoint(mpos);
-                break;
-            case TWO_POINTS:
-                newLine.moveLastPoint(mpos);
-                break;
-            case THREE_POINTS:
-                break;
-        }
-        doUpdate = true;
-        //showPosition(mpos);
-    }
-
     if ((mouse.MiddleIsDown() || mouse.ShiftDown() || mouse.m_controlDown ) && editState!=SELECT_DELETE_REGION) {
         // scrolling with the mouse
         if (m_mouseScrollPos !=mouse.GetPosition()) {
@@ -1072,14 +1057,33 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
         }
     }
 
-    if(mouse.RightIsDown() && editState==SELECT_DELETE_REGION)
-    {
+    if (mouse.RightIsDown() && editState==SELECT_DELETE_REGION) {
         //update selection rectangle
         DrawSelectionRectangle(rectStartPos,m_mousePos);
         DrawSelectionRectangle(rectStartPos,mpos);
     }
 //    DEBUG_DEBUG("ImageDisplay: mouse move, state: " << editState);
-
+    //selectedLineNr = linesUpdate(mpos);
+    if (editState == NEW_LINE) {
+        switch(lineState) {
+            case NO_POINT:
+                newLine.moveLastPoint(mpos);
+                break;
+            case ONE_POINT:
+                newLine.moveLastPoint(mpos);
+                break;
+            case TWO_POINTS:
+                newLine.moveLastPoint(mpos);
+                break;
+            case THREE_POINTS:
+                break;
+        }
+        doUpdate = true;
+        //showPosition(mpos);
+    }// else if( editState == MOVING_LINE )
+    //{
+    //    lines[selectedLineNr].moveActivePoint(mpos);
+    //}
     // draw a rectangle
     if (m_showSearchArea) {
         doUpdate = true;
@@ -1101,6 +1105,41 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
     }
 }
 
+// move this up a few functions
+int CPImageCtrl::linesUpdate(FDiff2D location)
+{
+    return -1;
+    if( lines.empty() )
+        return -1;
+    int nearestIndex = -1;
+    double dist;
+    double nearestDist = lines[0].selectionDistance;
+    for( int i = 0; i < lines.size(); i++ ) {
+        dist = lines[i].getNearestPointDistance(location);
+        if( dist < nearestDist ) {
+            nearestIndex = i;
+            nearestDist = dist;
+        }
+    }
+    if( nearestIndex < 0 ) { // no points close enough
+        for( int i = 0; i < lines.size(); i++ ) {
+            dist = lines[i].getLineDistance(location);
+            if( dist < nearestDist ) {
+                nearestIndex = i;
+                nearestDist = dist;
+            }
+        }
+        if( nearestIndex < 0 ) { // no line close enough
+            return -1;
+        } else {
+            lines[nearestIndex].selectLine();
+            return nearestIndex;
+        }
+    } else { // found a point
+        lines[nearestIndex].selectLastNearPoint();
+        return nearestIndex;
+    }
+}
 
 void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
 {
@@ -1155,8 +1194,6 @@ void CPImageCtrl::mousePressLMBEvent(wxMouseEvent& mouse)
 
     m_mousePos = mpos;
     if (editState == NEW_LINE) {
-        //showPosition(mpos);
-        //newLine.start = mpos;
         update();
     }
 }
@@ -1207,12 +1244,18 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
         }
         case NEW_POINT_SELECTED:
         {
-//            assert(drawNewPoint);
-            DEBUG_DEBUG("new Point changed (event fire): x:" << mpos.x << " y:" << mpos.y);
-            // fire the wxWin event
-            CPEvent e( this, newPoint);
-            emit(e);
-            //emit(newPointChanged(newPoint));
+            //selectedLineNr = linesUpdate(mpos);
+            //if( lines[selectedLineNr].pointIsSelected ) {
+                //editState = MOVING_LINE;
+            //    lines[selectedLineNr].moveActivePoint(mpos);
+            //} else {
+    //            assert(drawNewPoint);
+                DEBUG_DEBUG("new Point changed (event fire): x:" << mpos.x << " y:" << mpos.y);
+                // fire the wxWin event
+                CPEvent e( this, newPoint);
+                emit(e);
+                //emit(newPointChanged(newPoint));
+            //}
             break;
         }
         case SELECT_REGION:
@@ -1269,7 +1312,6 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
                     newLine.addPoint( mpos );
                     //editState = NO_SELECTION;
                     lineState = THREE_POINTS;
-                    selectedLineNr = -1;
                     DEBUG_DEBUG("Switch lineState to THREE_POINTS");
                     CPEvent e( this, newLine ); // emit newLine event
                     emit(e);
@@ -1286,6 +1328,10 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
                 }
             }
         }
+        //case MOVING_LINE:
+        //{
+        //    editState = NEW_POINT_SELECTED; // is this the right state?
+        //}
         }
 //        DEBUG_DEBUG("ImageDisplay: mouse release, state change: " << oldState
 //                    << " -> " << editState);
@@ -1650,6 +1696,7 @@ void CPImageCtrl::startNewLine(void)
     lineState = NO_POINT;
     dimOverlay = true;
     newLine = StraightLine();
+    newLine.selectLine();
     update();
 }
 
@@ -1657,10 +1704,9 @@ void CPImageCtrl::cancelNewLine(void)
 {
     editState = NO_SELECTION;
     lineState = NO_POINT;
-    //newLine.start = UINT_MAX;
-    //newLine.end = UINT_MAX;
     dimOverlay = false;
     newLine = StraightLine();
+    newLine.selectLine();
     update();
 }
 

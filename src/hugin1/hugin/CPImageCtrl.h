@@ -213,7 +213,7 @@ public:
 
 protected:
     wxRect drawPoint(wxDC & p, const hugin_utils::FDiff2D & point, int i, bool selected = false) const;
-    void drawLine(wxDC & DC, const StraightLine l, bool selected);
+    void drawLine(wxDC & DC, const StraightLine l);
     void drawLines(wxDC & DC);
 
     // draw the magnified view of a selected control point
@@ -259,7 +259,9 @@ private:
     std::vector<StraightLine> lines;
     StraightLine newLine;
     bool dimOverlay; // not useful currently
-    int selectedLineNr;
+    int  selectedLineNr;
+
+    int linesUpdate(hugin_utils::FDiff2D location);
 
     // position of the point labels (in screen coordinates)
     std::vector<wxRect> m_labelPos;
@@ -433,33 +435,12 @@ private:
      *    - SELECT_DELETE_REGION user can draw rectangle inside which all cp should be removed
      *        - NO_SELECTION
      *
-     *    - PREP_LINE (a new line will be created)
-     *        - CPs should be hidden
-     *        - Next click will add add the line's start point
-     *          - 
-     *
-     *    - ADDING_LINE (a new line is being added), mouse up reports change,
-     *           movement can be tracked?
-     *        - A line should be drawn from the active line's start point to the mouse cursor
-     *          - Next click will add mouse click location as line's end point
-     *          - 
-     *        - 
-     *          - 
-     *
-     *    - ADDED_LINE (a new line has been added)
-     *           Waiting for matching line in other image
-     *        - A line should be drawn from the active line's start point to the mouse cursor
-     *          - Next click will add mouse click location as line's end point
-     *          - 
-     *        - 
-     *          - 
-     *
      *     - NEW_LINE
      *        - Indicates a new line is being added
      *          - See indicator lineState for indicator of when line is finished being added
      *
      */
-    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, NEW_LINE};
+    enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, NEW_LINE, MOVING_LINE};
     EditorState editState;
     enum LineState {NO_POINT=0, ONE_POINT, TWO_POINTS, THREE_POINTS};
     LineState lineState;

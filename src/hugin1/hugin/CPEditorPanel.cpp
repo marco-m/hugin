@@ -1316,7 +1316,7 @@ void CPEditorPanel::NewLineAdded(StraightLine l, bool left)
         
         wxListEvent dummy;
         //OnLineListDeselect(dummy);
-        //UpdateDisplay(false);
+        UpdateDisplay(false);
     }
 }
 
@@ -1926,7 +1926,7 @@ void CPEditorPanel::OnLineListSelect(wxListEvent & ev)
 void CPEditorPanel::OnLineListDeselect(wxListEvent & ev)
 {
     XRCCTRL(*this, "cp_line_delete", wxButton)->Disable();
-    XRCCTRL(*this, "cp_editor_line_to_pts", wxButton)->Enable();
+    XRCCTRL(*this, "cp_editor_line_to_pts", wxButton)->Disable();
     changeState(NO_POINT);
     changeWhichLine(-1);
     UpdateDisplay(false);
@@ -1940,10 +1940,10 @@ void CPEditorPanel::OnLineDelete(wxListEvent & ev)
     if( index >= 0 ) {
         DeleteLine(index);
         updateLines();
-        UpdateDisplay(false);
     }
     //m_lineList->SetItemState(index, 0, wxLIST_STATE_SELECTED);
     changeWhichLine(-1);
+    UpdateDisplay(false);
 }
 
 void CPEditorPanel::OnZoom(wxCommandEvent & e)
@@ -2205,6 +2205,8 @@ void CPEditorPanel::OnLineToPoints(wxCommandEvent & e)
         new PT::AddCtrlPointsCmd(*m_pano, points)
         );
     DeleteLine(m_selectedLine);
+    wxListEvent dummy;
+    OnLineListDeselect(dummy);
 }
 
 void CPEditorPanel::AddLinePoints()
@@ -2425,6 +2427,7 @@ void CPEditorPanel::changeWhichLine(int imgNr)
     } else {
         m_selectedLine = imgNr;
         m_pano->ctrlLines.selectLine(m_selectedLine, m_leftImageNr, m_rightImageNr);
+        updateLines();
         m_lineList->SetItemState(m_selectedLine, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
         m_lineList->EnsureVisible(m_selectedLine);
     }
