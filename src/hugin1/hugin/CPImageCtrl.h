@@ -149,12 +149,9 @@ public:
     /// set new point to a specific point
     void setNewPoint(const hugin_utils::FDiff2D & p);
 
-    /// start new line
+    /// line controls
     void startNewLine();
     void cancelNewLine();
-    void selectLine(int);
-    void deselectLine();
-    void deleteLine(int);
 
     /// select a point for usage
     void selectPoint(unsigned int);
@@ -201,9 +198,6 @@ public:
 
     /// get the new point
     hugin_utils::FDiff2D getNewPoint();
-
-    /// get the new line
-    StraightLine getNewLine();
     
     /// extract control points from the indexed line
     std::vector<hugin_utils::FDiff2D> getPoints(int index);
@@ -261,17 +255,11 @@ private:
     wxSize m_realSize;
 
     std::vector<hugin_utils::FDiff2D> points;
-    //struct line { hugin_utils::FDiff2D start, end; };
+
     std::vector<StraightLine> lines;
     StraightLine newLine;
     bool dimOverlay; // not useful currently
     int selectedLineNr;
-
-    bool findCircle(double startx, double starty, double midx, double midy, double endx, double endy, hugin_utils::FDiff2D &center, double &radius);
-    double determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i);
-    bool isCollinear(StraightLine l);
-    void findQuadrant(double x, double y, int &quad);
-    void correctAngle(double &theta, int quad);
 
     // position of the point labels (in screen coordinates)
     std::vector<wxRect> m_labelPos;

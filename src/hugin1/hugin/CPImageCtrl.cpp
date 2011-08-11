@@ -342,8 +342,6 @@ void CPImageCtrl::OnDraw(wxDC & dc)
         dc.DrawRectangle(roundi(upperLeft.x - width), roundi(upperLeft.y-width), 2*width, 2*width);
         dc.SetLogicalFunction(wxCOPY);
     }
-
-
 }
 
 
@@ -561,133 +559,40 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l, bool selected)
 {
-    wxPoint lstart = roundP(applyRot(l.start));
-    double lstartx = (double(lstart.x));
-    double lstarty = (double(lstart.y));
-
-    wxPoint lmid = roundP(applyRot(l.mid));
-    double lmidx= (double(lmid.x));
-    double lmidy= (double(lmid.y));
-
-    wxPoint lend = roundP(applyRot(l.end));
-    double lendx = (double(lend.x));
-    double lendy = (double(lend.y));
-
-    hugin_utils::FDiff2D center;
-    double radius;
-
-    if( !isCollinear(l) && findCircle(lstartx, lstarty, lmidx, lmidy, lendx, lendy, center, radius) ) {
-        center = scale(center);
-        radius = scale(radius);
-
-        double arcLength = sqrt(hugin_utils::sqr(lmidx-lstartx)+hugin_utils::sqr(lmidy-lstarty)) +
-                           sqrt(hugin_utils::sqr(lmidx-lendx)  +hugin_utils::sqr(lmidy-lendy)); // approximate
-        // todo: make this user-selectable
-        int linePointNr = int(arcLength / 100.0);
-        if( linePointNr < 10 )
-            linePointNr = 10;
-
-        double stx = scale(lstartx) - center.x;
-        double sty = scale(lstarty) - center.y;
-        double mdx = scale(lmidx  ) - center.x;
-        double mdy = scale(lmidy  ) - center.y;
-        double edx = scale(lendx  ) - center.x;
-        double edy = scale(lendy  ) - center.y;
-        //enum Quadrant {FIRST, SECOND, THIRD, FOURTH};
-        int quadStart, quadMid, quadEnd;
-
-        findQuadrant(stx, sty, quadStart);
-        findQuadrant(mdx, mdy, quadMid  );
-        findQuadrant(edx, edy, quadEnd  );
-
-        stx = abs(stx);     sty = abs(sty);
-        mdx = abs(mdx);     mdy = abs(mdy);
-        edx = abs(edx);     edy = abs(edy);
-
-        // should this skip the quadrant checks and use atan2 ?
-        double thetaStart = atan(sty/stx);
-        double thetaMid   = atan(mdy/mdx);
-        double thetaEnd   = atan(edy/edx);
-
-        correctAngle( thetaStart, quadStart );
-        correctAngle( thetaMid,   quadMid   );
-        correctAngle( thetaEnd,   quadEnd   );
-
-        if( thetaStart < thetaMid && thetaStart < thetaEnd && thetaMid < thetaEnd ); // nothing to do
-        if( thetaStart < thetaMid && thetaStart < thetaEnd && thetaMid > thetaEnd ) {thetaStart += 2 * 3.14159;}
-      //if( thetaStart < thetaMid && thetaStart > thetaEnd && thetaMid < thetaEnd ); // not possible
-        if( thetaStart < thetaMid && thetaStart > thetaEnd && thetaMid > thetaEnd ) {thetaEnd += 2 * 3.14159;}
-        if( thetaStart > thetaMid && thetaStart < thetaEnd && thetaMid < thetaEnd ) {thetaEnd -= 2 * 3.14159;}
-      //if( thetaStart > thetaMid && thetaStart < thetaEnd && thetaMid > thetaEnd ); // not possible
-        if( thetaStart > thetaMid && thetaStart > thetaEnd && thetaMid < thetaEnd ) {thetaEnd += 2 * 3.14159;}
-        if( thetaStart > thetaMid && thetaStart > thetaEnd && thetaMid > thetaEnd ); // nothing to do
-
-        double thetaSpan = thetaEnd - thetaStart;
-        double step = thetaSpan / 10; // todo: make this adaptive and user-selectable
-
-        double prevx = radius * cos( thetaStart ) + center.x;
-        double prevy = radius * sin( thetaStart ) + center.y;
-        hugin_utils::FDiff2D dropPoint( prevx, prevy );
-
-        /* Set up pen for drawing */
-        wxString color;
-        if( selected )
-            color = wxT("CYAN");
-        else
-            color = wxT("DARK GREEN");
-        dc.SetBrush(wxBrush(color, wxSOLID));
-        int width = (selected ? 4 : 2);
-        dc.SetPen(wxPen(color, width, wxSOLID));
-        /* End pen setup */
+    /* Set up pen for drawing */
+    wxString color;
+    if( selected )
+        color = wxT("CYAN");
+    else
+        color = wxT("DARK GREEN");
+    dc.SetBrush(wxBrush(color, wxSOLID));
+    int width = (selected ? 4 : 2);
+    dc.SetPen(wxPen(color, width, wxSOLID));
+    /* End pen setup */
+    
+    if( l.isStraight ) {
+        dc.DrawLine( scale(applyRot(l.start).x),   scale(applyRot(l.start).y),
+                       scale(applyRot(l.mid).x),   scale(applyRot(l.mid).y) );
+            
+    } else {
+        int numpoints = 10;
+        double step = (l.thetaEnd - l.thetaStart) / numpoints; // todo: fix this
+        double radius = scale(l.radius);
+        hugin_utils::FDiff2D center = scale(applyRot(l.center));
         
-        //drawPoint(dc, invScale(applyRotInv(dropPoint)), 4, false);
-        newLine.points.clear();
-        newLine.points.push_back(dropPoint);
-        for( int i = 0; i <= 10; i++ ) {
-            // todo: change circle color for selected CPs
-            dropPoint.x = radius * cos( thetaStart + i*step ) + center.x;
-            dropPoint.y = radius * sin( thetaStart + i*step ) + center.y;
-            newLine.points.push_back(applyRotInv(invScale(dropPoint)));
-            //drawPoint(dc, invScale(applyRotInv(dropPoint)), 0, false);
+        double prevx = radius * cos( l.thetaStart ) + center.x;
+        double prevy = radius * sin( l.thetaStart ) + center.y;
+        hugin_utils::FDiff2D dropPoint( prevx, prevy );
+        for( int i = 0; i <= numpoints; i++ ) {
+            dropPoint.x = radius * cos( l.thetaStart + i*step ) + center.x;
+            dropPoint.y = radius * sin( l.thetaStart + i*step ) + center.y;
             dc.DrawLine( hugin_utils::roundi(prevx),       hugin_utils::roundi(prevy),
                          hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
             dc.DrawCircle(roundP(dropPoint), 5);
             prevx = dropPoint.x;
             prevy = dropPoint.y;
         }
-        if( selected )
-            color = wxT("RED");
-        else
-            color = wxT("DARK BLUE");
-        dc.SetPen(wxPen(color, width, wxSOLID));
-        dc.SetBrush(wxBrush(color, wxSOLID));
-        
         dc.DrawCircle(roundP(center), 5);
-    } else {
-        /* Set up pen for drawing */
-        wxString color;
-        if( selected )
-            color = wxT("CYAN");
-        else
-            color = wxT("DARK GREEN");
-        dc.SetBrush(wxBrush(color, wxSOLID));
-        int width = (selected ? 4 : 2);
-        dc.SetPen(wxPen(color, width, wxSOLID));
-        /* End pen setup */
-        
-        lstart = scale(lstart);
-        lend   = scale(lend);
-        dc.DrawLine(lstart,lend);
-        // todo: fix this!
-        double prevx = lstart.x;
-        double prevy = lstart.y;
-        hugin_utils::FDiff2D dropPoint( lstart.x, lstart.y );
-        for( int i = 0; i <= 10; i++ ) {
-            dropPoint.x = lstart.x * (10 - i) / 10 + i * (lend.x) / 10;
-            dropPoint.y = lstart.y * (10 - i) / 10 + i * (lend.y) / 10;
-            dc.DrawLine( hugin_utils::roundi(prevx),       hugin_utils::roundi(prevy),
-                         hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
-        }
     }
 }
 void CPImageCtrl::drawLines(wxDC & dc)
@@ -703,61 +608,6 @@ void CPImageCtrl::drawLines(wxDC & dc)
     }
 }
 
-bool CPImageCtrl::findCircle(double startx, double starty, double midx, double midy, double endx, double endy, FDiff2D &center, double &radius)
-{
-    double a = determinant(startx, starty, 1,
-                             midx,   midy, 1,
-                             endx,   endy, 1);
-    if( a == 0 )
-        return false;
-
-    double d = -determinant((startx * startx) + (starty * starty), starty, 1,
-                            (  midx *   midx) + (  midy *   midy),   midy, 1,
-                            (  endx *   endx) + (  endy *   endy),   endy, 1);
-
-    double e =  determinant((startx * startx) + (starty * starty),  startx, 1,
-                            (  midx *   midx) + (  midy *   midy),    midx, 1,
-                            (  endx *   endx) + (  endy *   endy),    endx, 1);
-
-    double f = -determinant((startx * startx) + (starty * starty), startx, starty,
-                            (  midx *   midx) + (  midy *   midy),   midx,   midy,
-                            (  endx *   endx) + (  endy *   endy),   endx,   endy);
-
-    center.x = -d / ( 2 * a );
-    center.y = -e / ( 2 * a );
-    radius = sqrt((d*d+e*e)/(4*a*a)-f/a);
-    return true;
-}
-
-// todo: use the functions in the math functions files
-double CPImageCtrl::determinant(double a, double b, double c, double d, double e, double f, double g, double h, double i)
-{
-    return a*e*i + b*f*g + c*d*h - a*f*h - b*d*i - c*e*g;
-}
-
-bool CPImageCtrl::isCollinear(StraightLine l)
-{
-    // todo: add tolerance for nearly-straight lines
-    if ((l.start.x == l.mid.x && l.start.y == l.mid.y)||
-        (l.start.x == l.end.x && l.start.y == l.end.y)||
-        (  l.mid.x == l.end.x &&   l.mid.x == l.end.y))
-        return true;
-
-    if( determinant(l.start.x, l.start.y, 1,
-                      l.mid.x,   l.mid.y, 1,
-                      l.end.x,   l.end.y, 1) == 0 )
-        return true;
-
-    double slope1, slope2;
-
-    slope1 = double(l.mid.y-l.start.y)/double(l.mid.x-l.start.x);
-    slope2 = double(l.mid.y - l.end.y)/double(l.mid.x - l.end.x);
-    if( slope1 == slope2 )
-        return true;
-    else
-        return false;
-}
-
 void CPImageCtrl::setLines(const std::vector<StraightLine> & linesIn)
 {
     lines = linesIn;
@@ -766,22 +616,7 @@ void CPImageCtrl::setLines(const std::vector<StraightLine> & linesIn)
     update();
 }
 
-void CPImageCtrl::selectLine(int nr)
-{
-    selectedLineNr = nr;
-    update();
-}
 
-void CPImageCtrl::deselectLine()
-{
-    selectedLineNr = -1;
-    update();
-}
-
-void CPImageCtrl::deleteLine(int nr)
-{
-    // not needed? just use setLines...
-}
 class ScalingTransform
 {
 public:
@@ -1199,16 +1034,13 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
     if (editState == NEW_LINE) {
         switch(lineState) {
             case NO_POINT:
-                newLine.start = mpos;
-                newLine.mid   = mpos;
-                newLine.end   = mpos;
+                newLine.moveLastPoint(mpos);
                 break;
             case ONE_POINT:
-                newLine.mid   = mpos;
-                newLine.end   = mpos;
+                newLine.moveLastPoint(mpos);
                 break;
             case TWO_POINTS:
-                newLine.end   = mpos;
+                newLine.moveLastPoint(mpos);
                 break;
             case THREE_POINTS:
                 break;
@@ -1419,24 +1251,22 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
             switch(lineState) {
                 case NO_POINT:
                 {
-                    newLine.start = mpos;
-                    newLine.mid   = mpos;
-                    newLine.end   = mpos;
+                    newLine.addPoint( mpos );
+                    newLine.addPoint( mpos );
                     lineState = ONE_POINT;
                     DEBUG_DEBUG("Switch lineState to ONE_POINT");
                     break;
                 }
                 case ONE_POINT:
                 {
-                    newLine.mid   = mpos;
-                    newLine.end   = mpos;
+                    newLine.addPoint( mpos );
                     lineState = TWO_POINTS;
                     DEBUG_DEBUG("Switch lineState to TWO_POINTS");
                     break;
                 }
                 case TWO_POINTS: // clicking line endpoint
                 {
-                    newLine.end = mpos;
+                    newLine.addPoint( mpos );
                     //editState = NO_SELECTION;
                     lineState = THREE_POINTS;
                     selectedLineNr = -1;
@@ -1448,9 +1278,8 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
                 case THREE_POINTS: // already had complete line, redoing
                 {
                     // todo: allow reselecting of the points to drag them around
-                    newLine.start = mpos;
-                    newLine.mid   = mpos;
-                    newLine.end   = mpos;
+                    newLine.removeLastPoint(); newLine.removeLastPoint(); newLine.removeLastPoint();
+                    newLine.addPoint( mpos );
                     lineState = NO_POINT;
                     DEBUG_DEBUG("Switch lineState to NO_POINT");
                     break;
@@ -1796,13 +1625,6 @@ FDiff2D CPImageCtrl::getNewPoint()
     return newPoint;
 }
 
-StraightLine CPImageCtrl::getNewLine()
-{
-    // only possible if a new line is actually selected
-    // are there two newLine things being returned?
-    // DEBUG_ASSERT(editState == NEW_LINE);
-    return newLine;
-}
 std::vector<hugin_utils::FDiff2D> CPImageCtrl::getPoints(int index)
 {
     return lines[index].extractPathPoints(); // todo: should these be rotated and scaled?
@@ -1827,6 +1649,7 @@ void CPImageCtrl::startNewLine(void)
     editState = NEW_LINE;
     lineState = NO_POINT;
     dimOverlay = true;
+    newLine = StraightLine();
     update();
 }
 
@@ -1837,6 +1660,7 @@ void CPImageCtrl::cancelNewLine(void)
     //newLine.start = UINT_MAX;
     //newLine.end = UINT_MAX;
     dimOverlay = false;
+    newLine = StraightLine();
     update();
 }
 

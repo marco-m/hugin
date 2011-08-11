@@ -277,6 +277,7 @@ private:
     LineCollection::linePair tempPair;
     bool leftLineSet, rightLineSet;
     std::vector<StraightLine> tempLineVec;
+    void updateLines(void);
     
     char* addl;
     char* cncl;

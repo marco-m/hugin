@@ -86,10 +86,11 @@ bool StraightLine::addPoint(Point point)
     //    return false;
     switch( pointsAdded )
     {
-        case NONE:  start = point; pointsAdded = START; break;
+        case NONE:  start = point;
+                      mid = point; pointsAdded = START; break;
         case START:   mid = point; pointsAdded = MID;   break;
         case MID:     end = point; pointsAdded = END;   break;
-        case END:                  return false;
+        case END:     end = point;               break;//return false;
     }
     recalculate();
     return true;
@@ -104,6 +105,19 @@ void StraightLine::moveActivePoint(Point destination)
         case MID:     mid = destination; break;
         case END:     end = destination; break;
     }
+    recalculate();
+}
+
+void StraightLine::moveLastPoint(Point destination)
+{
+    switch( pointsAdded )
+    {
+        case NONE:                       break;
+        case START: start = destination; break;
+        case MID:     mid = destination; break;
+        case END:     end = destination; break;
+    }
+    recalculate();
 }
 
 double StraightLine::getNearestPointDistance(Point point)
@@ -381,7 +395,7 @@ bool LineCollection::removePair(int index, int src, int dest)
 
 int LineCollection::findLine(Point point, int src, int dest)
 {
-    selectNearest(point);
+    selectNearest(point, src, dest);
     return selectedLine;
 }
 
@@ -408,11 +422,29 @@ bool LineCollection::selectNearest(Point point, int src, int dest)
     }
 }
 
+bool LineCollection::selectLine(int index, int src, int dest)
+{
+    std::vector<StraightLine*> lines(extractLinesPointer(src,dest));
+    deselectAll();
+    lines[index]->selectLine();
+}
+
+void LineCollection::swapAll(void)
+{
+    linePair tmp;
+    for( int i = 0; i < allLines.size(); i++ )
+    {
+        tmp.second = allLines[i].first;
+        tmp.first  = allLines[i].second;
+        allLines[i] = tmp;
+    }
+}
+
 void LineCollection::moveActiveLine(Point destination)
 {
     if( selectedLine < 0 )
         return;
-    allLines[selectedLine].moveActivePoint(destination);
+    allLines[selectedLine].first.moveActivePoint(destination);
 }
 
 void LineCollection::update(Point location, int src, int dest)
@@ -464,7 +496,8 @@ std::vector<StraightLine> LineCollection::extractLines(int src, int dest)
 void LineCollection::deselectAll(void)
 {
     for( int i = 0; i < allLines.size(); i++ ) {
-        allLines[i].deselectLine();
+        allLines[i].first.deselectLine();
+        allLines[i].second.deselectLine();
     }
 }
 

@@ -360,7 +360,8 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         
     // = Control Lines =
         // todo: I don't know where to put this - LinesCollection has built-in most functionality already
-        std::vector<LineCollection> ctrlLines;
+        //std::vector<LineCollection> ctrlLines;
+        LineCollection ctrlLines;
         
     // = Variables =    
         
