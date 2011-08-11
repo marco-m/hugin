@@ -1294,22 +1294,22 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
             switch(lineState) {
                 case NO_POINT:
                 {
-                    newLine.addPoint( mpos );
-                    newLine.addPoint( mpos );
+                    newLine.addPoint( applyRot(mpos) ); // ?!?
+                    newLine.addPoint( applyRot(mpos) );
                     lineState = ONE_POINT;
                     DEBUG_DEBUG("Switch lineState to ONE_POINT");
                     break;
                 }
                 case ONE_POINT:
                 {
-                    newLine.addPoint( mpos );
+                    newLine.addPoint( applyRot(mpos) );
                     lineState = TWO_POINTS;
                     DEBUG_DEBUG("Switch lineState to TWO_POINTS");
                     break;
                 }
                 case TWO_POINTS: // clicking line endpoint
                 {
-                    newLine.addPoint( mpos );
+                    newLine.addPoint( applyRot(mpos) );
                     //editState = NO_SELECTION;
                     lineState = THREE_POINTS;
                     DEBUG_DEBUG("Switch lineState to THREE_POINTS");
@@ -1321,7 +1321,7 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
                 {
                     // todo: allow reselecting of the points to drag them around
                     newLine.removeLastPoint(); newLine.removeLastPoint(); newLine.removeLastPoint();
-                    newLine.addPoint( mpos );
+                    newLine.addPoint( applyRot(mpos) );
                     lineState = NO_POINT;
                     DEBUG_DEBUG("Switch lineState to NO_POINT");
                     break;

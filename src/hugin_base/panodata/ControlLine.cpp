@@ -27,7 +27,6 @@
 #ifndef PI
 #define PI 3.14159
 #endif
-#define Point hugin_utils::FDiff2D
 
 StraightLine::StraightLine(unsigned int nr) : tolerance(3.e-10), selectionDistance(30)
 {
@@ -179,7 +178,6 @@ bool StraightLine::removeLastPoint(void)
         case MID:   pointsAdded = START; return true;
         case END:   pointsAdded = MID;   return true;
     }
-    
 }
 
 // todo: the current structure does not allow deleting the middle point intuitively
@@ -191,19 +189,10 @@ bool StraightLine::removeNearPoint(Point point)
     getNearestPointDistance( point );
     switch( pointNear )
     {
-        case NONE:
-            return false;
-        case START:
-            start = end;
-            removeLastPoint();
-            return true;
-        case MID:
-            start = end;
-            pointsAdded = MID;
-            return true;
-        case END:
-            pointsAdded = MID;
-            return true;
+        case NONE:                                  return false;
+        case START: start = end; removeLastPoint(); return true;
+        case MID:   start = end; pointsAdded = MID; return true;
+        case END:                pointsAdded = MID; return true;
     }
 }
 
@@ -399,6 +388,7 @@ bool LineCollection::removePair(int index, int src, int dest)
     }
     i--;
     allLines.erase(allLines.begin() + i);
+    return true;
 }
 
 int LineCollection::findLine(Point point, int src, int dest)
@@ -428,6 +418,7 @@ bool LineCollection::selectNearest(Point point, int src, int dest)
         lines[index]->selectLastNearPoint();
         return true;
     }
+    return false;
 }
 
 bool LineCollection::selectLine(int index, int src, int dest)
@@ -437,6 +428,7 @@ bool LineCollection::selectLine(int index, int src, int dest)
     deselectAll();
     lines[index]->selectLine();
     line2[index]->selectLine();
+    return true;
 }
 
 void LineCollection::swapAll(void)

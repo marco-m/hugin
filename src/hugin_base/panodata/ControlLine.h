@@ -87,14 +87,13 @@ External function for dealing with lines:
 
 #include <utility>
 #include <vector>
-#define Point hugin_utils::FDiff2D
 
 #ifndef STRAIGHTLINE
 #define STRAIGHTLINE
+typedef hugin_utils::FDiff2D Point;
 class StraightLine
 {
     public:
-        //typedef hugin_utils::FDiff2D Point;
         enum whichPoint {NONE=0, START, MID, END};
         /* Variables */
     
