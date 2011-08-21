@@ -163,8 +163,19 @@ void PythonProgress::OnPythonFinished(wxCommandEvent &e)
 
 wxThread::ExitCode PythonProgress::Entry()
 {
-    wxCriticalSectionLocker lock(m_panoCS);
-    int success = hpi::callhpi((const char *)m_scriptfile.mb_str(HUGIN_CONV_FILENAME), 1, "HuginBase::Panorama*", &m_pano);
+    Panorama localPano;
+    wxString localScriptfile;
+    {
+        wxCriticalSectionLocker lock(m_panoCS);
+        localPano=m_pano.duplicate();
+        localScriptfile=m_scriptfile;
+    };
+    int success = hpi::callhpi((const char *)localScriptfile.mb_str(HUGIN_CONV_FILENAME), 1, "HuginBase::Panorama*", &localPano);
+    if(success==0)
+    {
+        wxCriticalSectionLocker lock(m_panoCS);
+        m_pano=localPano.duplicate();
+    };
     //notify window in thread-safe way
 #if wxCHECK_VERSION(2,9,0)
     wxCommandEvent* cmdEvent=new wxCommandEvent(EVT_PYTHON_FINISHED,wxID_ANY);
@@ -186,10 +197,22 @@ PythonWithImagesProgress::PythonWithImagesProgress(wxWindow* parent, PT::Panoram
 
 wxThread::ExitCode PythonWithImagesProgress::Entry()
 {
-    wxCriticalSectionLocker lock(m_panoCS);
-    HuginBase::UIntSet images=m_images;
-    int success = hpi::callhpi((const char *)m_scriptfile.mb_str(HUGIN_CONV_FILENAME), 2, 
-        "HuginBase::Panorama*", &m_pano, "HuginBase::UIntSet*", &images);
+    Panorama localPano;
+    wxString localScriptfile;
+    UIntSet localImgNr;
+    {
+        wxCriticalSectionLocker lock(m_panoCS);
+        localPano=m_pano.duplicate();
+        localImgNr=m_images;
+        localScriptfile=m_scriptfile;
+    };
+    int success = hpi::callhpi((const char *)localScriptfile.mb_str(HUGIN_CONV_FILENAME), 2, 
+        "HuginBase::Panorama*", &localPano, "HuginBase::UIntSet*", &localImgNr);
+    if(success==0)
+    {
+        wxCriticalSectionLocker lock(m_panoCS);
+        m_pano=localPano.duplicate();
+    };
     //notify window in thread-safe way
 #if wxCHECK_VERSION(2,9,0)
     wxCommandEvent* cmdEvent=new wxCommandEvent(EVT_PYTHON_FINISHED,wxID_ANY);
