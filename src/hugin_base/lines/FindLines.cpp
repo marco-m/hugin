@@ -158,6 +158,54 @@ struct VerticalLine
 
 typedef std::vector<VerticalLine> VerticalLineVector;
 
+//return footpoint of point p on line between point p1 and p2
+vigra::Point2D GetFootpoint(vigra::Point2D p, vigra::Point2D p1, vigra::Point2D p2)
+{
+    hugin_utils::FDiff2D diff=p2-p1;
+    double u=((p.x-p1.x)*(p2.x-p1.x)+(p.y-p1.y)*(p2.y-p1.y))/hugin_utils::sqr(hugin_utils::norm(diff));
+    diff*=u;
+    return vigra::Point2D(p1.x+diff.x,p1.y+diff.y);
+};
+
+//linear fit of given line, returns endpoints of fitted line
+VerticalLine FitLine(SingleLine line)
+{
+    size_t n=line.line.size();
+    VerticalLine vl;
+    double s_x=0;
+    double s_y=0;
+    double s_xy=0;
+    double s_x2=0;
+    for(size_t i=0;i<n;i++)
+    {
+        s_x+=(double)line.line[i].x/n;
+        s_y+=(double)line.line[i].y/n;
+        s_xy+=(double)line.line[i].x*line.line[i].y/n;
+        s_x2+=(double)line.line[i].x*line.line[i].x/n;
+    };
+    if(abs(s_x2-s_x*s_x)<0.00001)
+    {
+        //vertical line needs special treatment
+        vl.start.x=s_x;
+        vl.start.y=line.line[0].y;
+        vl.end.x=s_x;
+        vl.end.y=line.line[n-1].y;
+    }
+    else
+    {
+        //calculate slope and offset
+        double slope=(s_xy-s_x*s_y)/(s_x2-s_x*s_x);
+        double offset=s_y-slope*s_x;
+        //convert to parametric form
+        vigra::Point2D p1(0,offset);
+        vigra::Point2D p2(100,100*slope+offset);
+        //calculate footpoint of first and last point
+        vl.start=GetFootpoint(line.line[0],p1,p2);
+        vl.end=GetFootpoint(line.line[n-1],p1,p2);
+    };
+    return vl;
+};
+
 VerticalLineVector FilterLines(Lines lines,double roll)
 {
     VerticalLineVector vertLines;
@@ -165,11 +213,9 @@ VerticalLineVector FilterLines(Lines lines,double roll)
     {
         for(Lines::const_iterator it=lines.begin(); it!=lines.end(); it++)
         {
-            if((*it).status==valid_line)
+            if((*it).status==valid_line && (*it).line.size()>2)
             {
-                VerticalLine vl;
-                vl.start=(*it).line[0];
-                vl.end=(*it).line[(*it).line.size()-1];
+                VerticalLine vl=FitLine(*it);
                 vigra::Diff2D diff=vl.end-vl.start;
                 if(diff.magnitude()>20)
                 {
@@ -202,7 +248,7 @@ HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsig
     }
     else
     {
-        //remap all other image to cylindrical
+        //remap all other image to equirectangular
         //create temporary SrcPanoImage, set appropriate image variables
         remappedImage=pano.getSrcImage(imgNr);
         remappedImage.setYaw(0);
@@ -235,6 +281,7 @@ HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsig
         remapped->setPanoImage(remappedImage,opts,opts.getROI());
         remapped->remapImage(vigra::srcImageRange(image),vigra_ext::INTERP_CUBIC,*progress);
         vigra::UInt8RGBImage remappedBitmap=remapped->m_image;
+        //detect edges
         edge=detectEdges(remappedBitmap,2,4,std::max(remappedBitmap.width(),remappedBitmap.height())+10,size_factor);
         delete remapped;
         delete progress;
