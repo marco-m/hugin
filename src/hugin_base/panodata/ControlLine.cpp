@@ -44,6 +44,14 @@
 #define PI 3.14159
 #endif
 
+template <class T>
+void ptrswap(T *first, T *second)
+{
+    T third = *first;
+    *first = *second;
+    *second = third;
+}
+
 StraightLine::StraightLine(void) : tolerance(3.e-10), selectionDistance(30), numpoints(10)
 {
     label = "line"; // todo: set this upstream to avoid duplicate labeling
@@ -147,7 +155,7 @@ Point StraightLine::selectedPoint(void)
         return end;
     }
 }
-void StraightLine::moveSelectedPont(Point dest)
+void StraightLine::moveSelectedPoint(Point dest)
 {
     if (!isPointSelected) {
         return;
@@ -316,7 +324,9 @@ void StraightLine::correctAngle(double &theta, int quad)
 
 ImageLinesCollection::ImageLinesCollection(void)
 {
-    
+    lines.clear();
+    isLineSelected = false;
+    whichLineSelected = -1;
 }
 
 void ImageLinesCollection::update(Point)
@@ -476,15 +486,16 @@ void ImageLinesPair::setLabel(int index, std::string l)
     second.lines[index].label = l;
 }
 
-bool ImageLinesPair::isWhichPair(int left,int right,ImageLinesPair* pair)
+bool ImageLinesPair::isWhichPair(int left,int right,ImageLinesPair*& pair)
 {
     if (left == firstNr && right == secondNr) {
         pair = this;
         return true;
     } else if (right == firstNr && left == secondNr) { // swap first and second, then return
-        ImageLinesCollection third = first;
-        second = first;
-        first = third;
+        //ImageLinesCollection *third = &first;
+        //second = first;
+        //first = &third;
+        ptrswap(&first,&second);
         pair = this;
         return true;
     } else { // not this pair
@@ -500,7 +511,7 @@ ImageLinesPair* LineCollection::getPair(int left, int right)
     ImageLinesPair *foundPair;
     std::vector<ImageLinesPair>::iterator it;
     for (it = allLinesPairs.begin(); it != allLinesPairs.end(); ++it) {
-        if (it->isWhichPair(left,right,foundPair)) // pair exists
+        if (it->isWhichPair(left,right,foundPair) && foundPair != NULL) // pair exists
             return foundPair;
     }
     // otherwise make new pair

@@ -1098,7 +1098,7 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
 //    DEBUG_DEBUG("ImageDisplay: mouse move, state: " << editState);
     lines->update(mpos); //?
     if (editState == NEW_LINE) {
-        newLine.moveSelectedPont(mpos);
+        newLine.moveSelectedPoint(mpos);
         doUpdate = true;
     }
     

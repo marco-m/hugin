@@ -1774,7 +1774,10 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
 
     m_cpList->Thaw();
     
+    DEBUG_DEBUG("Setting currentLinesPair");
     currentLinesPair = m_pano->ctrlLines.getPair(m_leftImageNr, m_rightImageNr);
+    if (currentLinesPair == NULL)
+        DEBUG_FATAL("Unable to set currentLinesPair. Sorry.");
      m_leftImg->setLines(currentLinesPair->first);
     m_rightImg->setLines(currentLinesPair->second);
     
@@ -2431,7 +2434,7 @@ void CPEditorPanel::selectLine(int target)
         m_lineList->SetItemState(m_selectedLine, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
         m_lineList->EnsureVisible(m_selectedLine);
     }
-    UpdateDisplay(false); //?
+    //UpdateDisplay(false); //?
 }
 
 void CPEditorPanel::OnPrevImg(wxCommandEvent & e)

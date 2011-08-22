@@ -60,7 +60,7 @@ class StraightLine
         bool isComplete(void);
         void addPoint(Point);
         Point selectedPoint(void);
-        void moveSelectedPont(Point); // moves selected point to destination
+        void moveSelectedPoint(Point); // moves selected point to destination
         //void deleteSelectedPoint(Point); // todo: later. Maybe.
         double getNearestPointDistance(void);
         double getLineDistance(void);
@@ -130,7 +130,7 @@ class ImageLinesPair //: protected ImageLinesCollection
     
         
         
-        bool isWhichPair(int,int,ImageLinesPair*); // todo: name this better
+        bool isWhichPair(int,int,ImageLinesPair*&); // todo: name this better
                                                    // assigns this class if it is the pair, otherwise returns false
     private:
         unsigned int firstNr, secondNr, selectedIndex;
