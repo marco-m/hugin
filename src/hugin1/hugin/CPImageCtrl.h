@@ -105,9 +105,9 @@ END_DECLARE_EVENT_TYPES()
                             (wxObject *) NULL ),
 
 
-/** brief description.
+/** Control class for an image
  *
- *  What this does
+ *  This class defines functions for working with an image in a wxScrolledWindow. Image rotation, control point/line interactions, and other associated image functions are handled here.
  */
 class CPImageCtrl : public wxScrolledWindow
 {
@@ -139,15 +139,15 @@ public:
 
     /// control point inside this image
     void setCtrlPoints(const std::vector<hugin_utils::FDiff2D> & points);
-    
-    /// control lines inside this image
-    void setLines(const std::vector<StraightLine> & linesIn);
 
     /// clear new point
     void clearNewPoint();
 
     /// set new point to a specific point
     void setNewPoint(const hugin_utils::FDiff2D & p);
+    
+    /// control lines inside this image
+    void setLines(ImageLinesCollection &linesIn);
 
     /// line controls
     void startNewLine();
@@ -198,9 +198,6 @@ public:
 
     /// get the new point
     hugin_utils::FDiff2D getNewPoint();
-    
-    /// extract control points from the indexed line
-    std::vector<hugin_utils::FDiff2D> getPoints(int index);
 
     /// initiate redraw
     void update();
@@ -256,12 +253,11 @@ private:
 
     std::vector<hugin_utils::FDiff2D> points;
 
-    std::vector<StraightLine> lines;
+    //std::vector<StraightLine> lines;
+    ImageLinesCollection *lines;
     StraightLine newLine;
-    bool dimOverlay; // not useful currently
+    bool dimOverlay; // not useful currently - put this in OnMouseLeave/Enter() functions?
     int  selectedLineNr;
-
-    int linesUpdate(hugin_utils::FDiff2D location);
 
     // position of the point labels (in screen coordinates)
     std::vector<wxRect> m_labelPos;
@@ -363,6 +359,8 @@ private:
                 break;
         }
     }
+    
+    double applyAngleRot(double angle);
 
     // this is only valid during MOVE_POINT
     unsigned int selectedPointNr;
@@ -437,14 +435,11 @@ private:
      *
      *     - NEW_LINE
      *        - Indicates a new line is being added
-     *          - See indicator lineState for indicator of when line is finished being added
      *
      */
     enum EditorState {NO_IMAGE=0, NO_SELECTION, KNOWN_POINT_SELECTED, NEW_POINT_SELECTED, SELECT_REGION, SELECT_DELETE_REGION, NEW_LINE, MOVING_LINE};
     EditorState editState;
-    enum LineState {NO_POINT=0, ONE_POINT, TWO_POINTS, THREE_POINTS};
-    LineState lineState;
-    
+
     // colors for the different points
     std::vector<wxColour> pointColors;
     std::vector<wxColour> textColours;

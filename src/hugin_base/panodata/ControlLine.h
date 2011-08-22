@@ -20,165 +20,130 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
-
-
-/* Notes to self regarding straight lines
-
-Straight lines in Hugin are used for two things:
-    Matching control points (and eventually being a separate class for image alignment)
-    Calibrating a lens
-    
-Straight line inputs are line points:
-    Start = OK
-    Mid   = OK
-    End   = OK
-
-Straight line outputs are:
-    A list of control points = extractPathPoints()
-    
-Straight line interactions are:
-    Mouse rolls over a line = 
-    Mouse clicks a line
-    Mouse clicks a Point (from line inputs)
-    Deleting a Point (from line inputs)
-    Mouse distance from:
-        The line path
-        A Point (from line inputs)
-    
-Automated processes:
-    Find edges near line
-    Fine-tune line using:
-        Edges
-        Other feature detection
-        
-
-Overall straight line control:
-    Adding a new line
-        
-    Deleting an existing line
-    
-    Selecting a specific line (activating)
-        By index (from a list)
-        By proximity (get distance from mouse to each line)
-    Deselecting all lines
-    Editing a specific line
-        By proximity (get distance from mouse to each Point on each line)
-            Activate line closest to mouse
-                Activate Point on active line
-                    Input:
-                        Click to select Point
-                            Move selected Point with mouse
-                                Click to place Point (deselect)
-                        Keyboard arrows highlight Point
-                        Keyboard Return selects highlighted Point
-                            Keyboard arrows move Point
-                             Keyboard Return places Point (deselect)
-
-External function for dealing with lines:
-    Draw line
-        One   Point  set
-        Two   points set
-        Three points set
-        
-        Selected (activated)
-
-*/
-
+ 
 #include <utility>
 #include <vector>
 
 #ifndef STRAIGHTLINE
 #define STRAIGHTLINE
 typedef hugin_utils::FDiff2D Point;
+
 class StraightLine
 {
     public:
-        enum whichPoint {NONE=0, START, MID, END};
         /* Variables */
+        std::string label;
+        bool isPointSelected, isLineSelected, overrideLineSelected;
+        int whichPointSelected; // 0 for start, etc.
     
-        // Note: input unrotated, unscaled coordinates
-        Point start, mid, end;
-        Point center;
+        bool isNearPoint, isNearLine;
+        int whichPointsAdded; // -1 for none, 0 for start, etc.
+        
+        //Point points[3]; // maybe todo: switch to this for easier coding...?
+        Point straightBegin, straightEnd; // for if the line is straight
+    
+        Point start, mid, end, center;    // for if the line is curved
         double radius, thetaStart, thetaEnd;
-        bool isStraight, isOverLine;
-        unsigned int imageNr;   // associate image - does this change with image addition/deletion?
-        int numpoints; // number of points to return along path
-        double selectionDistance;
-        
-        bool lineSelected, pointIsSelected;
-        whichPoint pointSelected, isOverPoint;
-        Point selectedPoint;
-        
+        bool isStraight;
+    
         /* Functions */
-        StraightLine(unsigned int=UINT_MAX); // constructor
+        StraightLine(void);
+    //    StraightLine(Point[],int); // todo for adding existing line
         bool operator==(const StraightLine &l) const {
-            return(    imageNr == l.imageNr    &&   center == l.center && radius == l.radius &&
+            return(     center == l.center     && radius == l.radius &&
                     thetaStart == l.thetaStart && thetaEnd == l.thetaEnd                        );
         } // boolean equality
-        
-        std::vector<hugin_utils::FDiff2D> extractPathPoints(void);
-        
-        /* Editing functions */
-        bool addPoint(Point);
-        void moveActivePoint(Point); // for moving a point on a complete line
-        void moveLastPoint(Point);   // for moving a point on a new line
-        //void moveLine(Point);
-        
-        double getNearestPointDistance(Point destination);
-        double getLineDistance(Point destination);
-        //double getDistance(Point); // sets pointNear for future use
-        //bool removePoint(int); // remove point by index: 1 = start, etc.
-        bool removeLastPoint(void);
-        bool removeNearPoint(Point);
-        void selectLastNearPoint(void);
-        void deselectPoint(void);
-        void    selectLine(void);
-        void  deselectLine(void);
-        //void update(Point);
+    
+        void update(Point); // call this first - updates current near point, etc.
+                            //    this may benefit from a boolean parameter to (not?)activate the line...
+        void useThisLine(void); // confirms nearest point/line as selected point/line
+        bool isComplete(void);
+        void addPoint(Point);
+        Point selectedPoint(void);
+        void moveSelectedPont(Point); // moves selected point to destination
+        //void deleteSelectedPoint(Point); // todo: later. Maybe.
+        double getNearestPointDistance(void);
+        double getLineDistance(void);
+        std::vector<Point> extractPathPoints(void);
     private:
         /* Variables */
-        double tolerance;
-        bool startSet, midSet, endSet;
-
-        whichPoint pointNear, pointsAdded;
-
-        std::vector<Point> points; // not implemented
-
+        double tolerance, selectionDistance;
+        int numpoints;
+    
+        int whichPointNear;
+        double nearestPointDistance, lineDistance;
+    
         /* Functions */
         void recalculate(void);
         void findQuadrant(Point, int&);
         void correctAngle(double&, int);
 };
 
-class LineCollection // allLines
+/*----------------------------------------------------------------------------------------------*/
+
+class ImageLinesCollection //: protected ImageLinesPair
 {
     public:
-        LineCollection(void);
-        struct linePair {StraightLine first, second;};
-        //typedef std::pair<StraightLine,StraightLine> Pair;
-        bool addPair(linePair);
-        bool addPair(StraightLine,StraightLine);
-        bool removePair(int); // removes line by index
-        bool removePair(int,int,int); // removes line by index in set returned from extractLines()
-        int  findLine(Point,int,int); // returns line index nearest given Point
-        bool selectNearest(Point,int,int); // activates nearest line, returns true if one near enough
-        bool selectLine(int,int,int); // activates indexed line in list of lines from src to dest
-        void swapAll(void);
-        void moveActiveLine(Point); // !NEEDS LEFT,RIGHT definition! - moves active line to destination
-        // todo: instead of using update(), how about mouseEnters() and mouseLeaves()
-        //        to avoid calling extractLines() so often?
-        void update(Point,int,int); // check all lines and points against position - access by entering position, imageNr mouse is in, imageNr of paired image
-        std::vector<StraightLine> extractLines(int,int); // returns lines in src that are in dest
-        void deselectAll(void);
-    private:
-        //std::pair<StraightLine,StraightLine> linePair;
-        //StraightLine *selectedLine // must use std::list<linePair> for this to work...
-        std::vector<linePair> allLines;
-        int selectedLine;
-        //std::vector<linePair> allLines;
-        double selectionDistance;
+        std::vector<StraightLine> lines;
+        bool isLineSelected;
+        int whichLineSelected;
     
-        std::vector<StraightLine*> extractLinesPointer(int,int);
+        ImageLinesCollection(void);
+        void update(Point);
+    //protected:
+        
+        void addLine(StraightLine);
+        bool select(int);
+        void selectNone(void);
+        bool deleteByIndex(unsigned int);
+        std::vector<Point> extractPathPoints(unsigned int);
+    
+    private:
+        
+};
+
+/*----------------------------------------------------------------------------------------------*/
+
+class ImageLinesPair //: protected ImageLinesCollection
+{
+    public:
+        /* Variables */
+        bool isPairSelected;
+        ImageLinesCollection first, second;
+        
+        /* Functions */
+        ImageLinesPair(int,int);
+        ImageLinesPair(int,int,ImageLinesCollection,ImageLinesCollection);
+    
+        void addLinePair(StraightLine,StraightLine);
+        //bool extractSelectedPathPoints(std::vector<ControlPoint> &);
+        bool extractSelectedPathPoints(std::vector<Point> &, std::vector<Point> &);
+    
+    //protected: //?
+        bool selectByIndex(int); // select line in each ImageLinesCollection
+        void selectNone(void);
+        bool deleteByIndex(int);
+        int  indexOfSelected(void);
+        int  getSize(void);
+        std::string getLabel(int);
+        void setLabel(int, std::string);
+    
+        
+        
+        bool isWhichPair(int,int,ImageLinesPair*); // todo: name this better
+                                                   // assigns this class if it is the pair, otherwise returns false
+    private:
+        unsigned int firstNr, secondNr, selectedIndex;
+};
+
+/*----------------------------------------------------------------------------------------------*/
+
+class LineCollection
+{
+    public:
+        ImageLinesPair* getPair(int,int);    // gets (creates if necessary) ImageLinesPair of leftImageNr and rightImageNr
+    
+    private:
+        std::vector<ImageLinesPair> allLinesPairs;
 };
 #endif

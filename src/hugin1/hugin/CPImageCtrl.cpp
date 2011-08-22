@@ -44,6 +44,10 @@
 
 #include "vigra_ext/ImageTransforms.h"
 
+#ifndef PI
+#define PI 3.14159
+#endif
+
 using namespace std;
 using namespace hugin_utils;
 
@@ -157,7 +161,6 @@ bool CPImageCtrl::Create(wxWindow * parent, wxWindowID id,
     wxScrolledWindow::Create(parent, id, pos, size, style, name);
     selectedPointNr = 0;
     editState = NO_IMAGE;
-    lineState = NO_POINT;
     scaleFactor = 1;
     fitToWindow = false;
     m_showSearchArea = false;
@@ -242,28 +245,28 @@ void CPImageCtrl::OnDraw(wxDC & dc)
     wxSize vSize = GetClientSize();
     // draw image (FIXME, redraw only visible regions.)
     if (editState != NO_IMAGE && m_img.get()) {
-		//clear the blank rectangle to the left of the image
+        //clear the blank rectangle to the left of the image
         if (bitmap.GetWidth() < vSize.GetWidth()) {
             dc.SetPen(wxPen(GetBackgroundColour(), 1, wxSOLID));
             dc.SetBrush(wxBrush(GetBackgroundColour(),wxSOLID));
             dc.DrawRectangle(bitmap.GetWidth(), 0,
                              vSize.GetWidth() - bitmap.GetWidth(),vSize.GetHeight());
         }
-		//clear the blank rectangle below the image
+        //clear the blank rectangle below the image
         if (bitmap.GetHeight() < vSize.GetHeight()) {
             dc.SetPen(wxPen(GetBackgroundColour(), 1, wxSOLID));
             dc.SetBrush(wxBrush(GetBackgroundColour(),wxSOLID));
-			dc.DrawRectangle(0, bitmap.GetHeight(),
+            dc.DrawRectangle(0, bitmap.GetHeight(),
                              vSize.GetWidth(), vSize.GetHeight() - bitmap.GetHeight());
         }
         dc.DrawBitmap(bitmap,0,0);
-	} else {
-		// clear the rectangle and exit
+    } else {
+        // clear the rectangle and exit
         dc.SetPen(wxPen(GetBackgroundColour(), 1, wxSOLID));
         dc.SetBrush(wxBrush(GetBackgroundColour(),wxSOLID));
         dc.Clear();
-		return;
-	}
+        return;
+    }
 
     if( editState != NEW_LINE ) {
         // draw known points.
@@ -559,62 +562,71 @@ void CPImageCtrl::drawHighlightPoint(wxDC & dc, const FDiff2D & pointIn, int i) 
 
 void CPImageCtrl::drawLine(wxDC & dc, const StraightLine l)
 {
+    if (l.whichPointsAdded < 0)
+        return;
+    DEBUG_DEBUG("drawLine()");
     /* Set up pen for drawing */
     wxString color;
-    if( l.lineSelected )
+    int width;
+    if (l.isLineSelected) {
         color = wxT("CYAN");
-    else
+        width = 2;
+    } else {
         color = wxT("DARK GREEN");
+        width = 1;
+    }
     dc.SetBrush(wxBrush(color, wxSOLID));
-    int width = (l.lineSelected ? 2 : 1);
     dc.SetPen(wxPen(color, width, wxSOLID));
     /* End pen setup */
     
-    if( l.isStraight ) {
+    if (l.isStraight) {
+        DEBUG_DEBUG("The line to draw is straight!");
         dc.DrawLine( scale(applyRot(l.start).x),   scale(applyRot(l.start).y),
-                       scale(applyRot(l.mid).x),   scale(applyRot(l.mid).y) );
-            
+                     scale(applyRot(l.end  ).x),   scale(applyRot(l.end  ).y) );
     } else {
         int numpoints = 10;
-        double step = (l.thetaEnd - l.thetaStart) / numpoints; // todo: fix this
-        double radius = scale(l.radius);
-        hugin_utils::FDiff2D center = scale(applyRot(l.center));
-        
-        double prevx = radius * cos( l.thetaStart ) + center.x;
-        double prevy = radius * sin( l.thetaStart ) + center.y;
-        hugin_utils::FDiff2D dropPoint( prevx, prevy );
-        for( int i = 0; i <= numpoints; i++ ) {
-            dropPoint.x = radius * cos( l.thetaStart + i*step ) + center.x;
-            dropPoint.y = radius * sin( l.thetaStart + i*step ) + center.y;
-            dc.DrawLine( hugin_utils::roundi(prevx),       hugin_utils::roundi(prevy),
+        double thetaStart = l.thetaStart;//applyAngleRot(l.thetaStart);
+        double thetaEnd   = l.thetaEnd;//applyAngleRot(l.thetaEnd);
+        double step = (thetaEnd - thetaStart) / double(numpoints); // todo: fix numpoints?
+        double radius = (l.radius);
+        hugin_utils::FDiff2D center = l.center;//scale(applyRot(l.center));
+        hugin_utils::FDiff2D prev(radius * cos( thetaStart ) + center.x, radius * sin( thetaStart ) + center.y);
+        prev = scale(applyRot(prev));
+        hugin_utils::FDiff2D dropPoint;
+        for( int i = 1; i <= numpoints; i++ ) {
+            dropPoint.x = radius * cos( thetaStart + i*step ) + center.x;
+            dropPoint.y = radius * sin( thetaStart + i*step ) + center.y;
+            dropPoint = scale(applyRot(dropPoint));
+            dc.DrawLine( hugin_utils::roundi(     prev.x), hugin_utils::roundi(     prev.y),
                          hugin_utils::roundi(dropPoint.x), hugin_utils::roundi(dropPoint.y) );
             dc.DrawCircle(roundP(dropPoint), 3);
-            prevx = dropPoint.x;
-            prevy = dropPoint.y;
+            prev = dropPoint;
         }
-        dc.DrawCircle(roundP(center), 3);
+        dc.DrawCircle(roundP(scale(applyRot(center))), 3);
     }
-    if( l.pointIsSelected ) {
+    /*
+    if (l.isPointSelected) {
         color = wxT("RED");
         dc.SetBrush(wxBrush(color, wxSOLID));
         dc.SetPen(wxPen(color, width, wxSOLID));
-        dc.DrawCircle(roundP(scale(applyRot(l.selectedPoint))), 3);
+        dc.DrawCircle(roundP(scale(applyRot(l.selectedPoint()))), 3);
     }
+    */
 }
 void CPImageCtrl::drawLines(wxDC & dc)
 {
     bool sel = false;
-    DEBUG_DEBUG("Drawing all " << lines.size() << " lines");
-    for( int i = 0; i < (int)lines.size(); i++ ) {
-        drawLine(dc, lines[i]);
-        DEBUG_DEBUG("Drawing line " << i << " from " << lines[i].start << " to " << lines[i].end);
+    DEBUG_DEBUG("Drawing all " << lines->lines.size() << " lines");
+    for( int i = 0; i < lines->lines.size(); i++ ) {
+        drawLine(dc, lines->lines[i]);
+        DEBUG_DEBUG("Drawing line " << i << " from " << lines->lines[i].start << " to " << lines->lines[i].end);
         sel = false;
     }
 }
 
-void CPImageCtrl::setLines(const std::vector<StraightLine> & linesIn)
+void CPImageCtrl::setLines(ImageLinesCollection &linesIn)
 {
-    lines = linesIn;
+    lines = &linesIn;
     //if(editState == ADDING_LINE)
     editState = NO_SELECTION;
     update();
@@ -957,6 +969,27 @@ CPImageCtrl::EditorState CPImageCtrl::isOccupied(wxPoint mousePos, const FDiff2D
 */
 }
 
+double CPImageCtrl::applyAngleRot(double angle)
+{
+    switch (m_imgRotation) {
+        case ROT0:
+            return angle;
+            break;
+        case ROT90:
+            return angle+PI/2.0;
+            break;
+        case ROT180:
+            return angle+PI;
+            break;
+        case ROT270:
+            return angle+3.0*PI/2.0;
+            break;
+        default:
+            return angle;
+            break;
+    }
+}
+
 void CPImageCtrl::DrawSelectionRectangle(hugin_utils::FDiff2D pos1,hugin_utils::FDiff2D pos2)
 {
     wxClientDC dc(this);
@@ -1063,27 +1096,16 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
         DrawSelectionRectangle(rectStartPos,mpos);
     }
 //    DEBUG_DEBUG("ImageDisplay: mouse move, state: " << editState);
-    //selectedLineNr = linesUpdate(mpos);
+    lines->update(mpos); //?
     if (editState == NEW_LINE) {
-        switch(lineState) {
-            case NO_POINT:
-                newLine.moveLastPoint(mpos);
-                break;
-            case ONE_POINT:
-                newLine.moveLastPoint(mpos);
-                break;
-            case TWO_POINTS:
-                newLine.moveLastPoint(mpos);
-                break;
-            case THREE_POINTS:
-                break;
-        }
+        newLine.moveSelectedPont(mpos);
         doUpdate = true;
-        //showPosition(mpos);
-    }// else if( editState == MOVING_LINE )
-    //{
-    //    lines[selectedLineNr].moveActivePoint(mpos);
-    //}
+    }
+    
+    // else if (editState == MOVING_LINE)
+    // {
+    //    moveActivePoint(mpos);
+    // }
     // draw a rectangle
     if (m_showSearchArea) {
         doUpdate = true;
@@ -1102,42 +1124,6 @@ void CPImageCtrl::mouseMoveEvent(wxMouseEvent& mouse)
     // repaint
     if (doUpdate) {
         update();
-    }
-}
-
-// move this up a few functions
-int CPImageCtrl::linesUpdate(FDiff2D location)
-{
-    return -1;
-    if( lines.empty() )
-        return -1;
-    int nearestIndex = -1;
-    double dist;
-    double nearestDist = lines[0].selectionDistance;
-    for( int i = 0; i < lines.size(); i++ ) {
-        dist = lines[i].getNearestPointDistance(location);
-        if( dist < nearestDist ) {
-            nearestIndex = i;
-            nearestDist = dist;
-        }
-    }
-    if( nearestIndex < 0 ) { // no points close enough
-        for( int i = 0; i < lines.size(); i++ ) {
-            dist = lines[i].getLineDistance(location);
-            if( dist < nearestDist ) {
-                nearestIndex = i;
-                nearestDist = dist;
-            }
-        }
-        if( nearestIndex < 0 ) { // no line close enough
-            return -1;
-        } else {
-            lines[nearestIndex].selectLine();
-            return nearestIndex;
-        }
-    } else { // found a point
-        lines[nearestIndex].selectLastNearPoint();
-        return nearestIndex;
     }
 }
 
@@ -1230,8 +1216,10 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
     if (mouse.LeftUp()) {
         switch(editState) {
         case NO_SELECTION:
+        {
             DEBUG_DEBUG("mouse release without selection");
             break;
+        }
         case KNOWN_POINT_SELECTED:
         {
             DEBUG_DEBUG("mouse release with known point " << selectedPointNr);
@@ -1244,18 +1232,11 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
         }
         case NEW_POINT_SELECTED:
         {
-            //selectedLineNr = linesUpdate(mpos);
-            //if( lines[selectedLineNr].pointIsSelected ) {
-                //editState = MOVING_LINE;
-            //    lines[selectedLineNr].moveActivePoint(mpos);
-            //} else {
-    //            assert(drawNewPoint);
-                DEBUG_DEBUG("new Point changed (event fire): x:" << mpos.x << " y:" << mpos.y);
-                // fire the wxWin event
-                CPEvent e( this, newPoint);
-                emit(e);
-                //emit(newPointChanged(newPoint));
-            //}
+            lines->update(mpos); //?
+            DEBUG_DEBUG("new Point changed (event fire): x:" << mpos.x << " y:" << mpos.y);
+            // fire the wxWin event
+            CPEvent e( this, newPoint);
+            emit(e);
             break;
         }
         case SELECT_REGION:
@@ -1291,42 +1272,12 @@ void CPImageCtrl::mouseReleaseLMBEvent(wxMouseEvent& mouse)
             break;
         case NEW_LINE:
         {
-            switch(lineState) {
-                case NO_POINT:
-                {
-                    newLine.addPoint( applyRot(mpos) ); // ?!?
-                    newLine.addPoint( applyRot(mpos) );
-                    lineState = ONE_POINT;
-                    DEBUG_DEBUG("Switch lineState to ONE_POINT");
-                    break;
-                }
-                case ONE_POINT:
-                {
-                    newLine.addPoint( applyRot(mpos) );
-                    lineState = TWO_POINTS;
-                    DEBUG_DEBUG("Switch lineState to TWO_POINTS");
-                    break;
-                }
-                case TWO_POINTS: // clicking line endpoint
-                {
-                    newLine.addPoint( applyRot(mpos) );
-                    //editState = NO_SELECTION;
-                    lineState = THREE_POINTS;
-                    DEBUG_DEBUG("Switch lineState to THREE_POINTS");
-                    CPEvent e( this, newLine ); // emit newLine event
-                    emit(e);
-                    break;
-                }
-                case THREE_POINTS: // already had complete line, redoing
-                {
-                    // todo: allow reselecting of the points to drag them around
-                    newLine.removeLastPoint(); newLine.removeLastPoint(); newLine.removeLastPoint();
-                    newLine.addPoint( applyRot(mpos) );
-                    lineState = NO_POINT;
-                    DEBUG_DEBUG("Switch lineState to NO_POINT");
-                    break;
-                }
+            newLine.addPoint(mpos);
+            if (newLine.whichPointsAdded >= 2) {
+                CPEvent e(this, newLine); // emit newLine event
+                emit(e);
             }
+            break;
         }
         //case MOVING_LINE:
         //{
@@ -1671,10 +1622,6 @@ FDiff2D CPImageCtrl::getNewPoint()
     return newPoint;
 }
 
-std::vector<hugin_utils::FDiff2D> CPImageCtrl::getPoints(int index)
-{
-    return lines[index].extractPathPoints(); // todo: should these be rotated and scaled?
-}
 void CPImageCtrl::setNewPoint(const FDiff2D & p)
 {
     DEBUG_DEBUG("setting new point " << p.x << "," << p.y);
@@ -1693,20 +1640,17 @@ void CPImageCtrl::setNewPoint(const FDiff2D & p)
 void CPImageCtrl::startNewLine(void)
 {
     editState = NEW_LINE;
-    lineState = NO_POINT;
     dimOverlay = true;
     newLine = StraightLine();
-    newLine.selectLine();
+    newLine.overrideLineSelected = true;
     update();
 }
 
 void CPImageCtrl::cancelNewLine(void)
 {
     editState = NO_SELECTION;
-    lineState = NO_POINT;
     dimOverlay = false;
     newLine = StraightLine();
-    newLine.selectLine();
     update();
 }
 

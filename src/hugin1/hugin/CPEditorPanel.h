@@ -130,6 +130,30 @@ private:
      */
     void UpdateDisplay(bool newImages);
 
+
+
+    // function called when a new line is added
+    void NewLineAdded(StraightLine l, bool left);
+    void DeleteLine(void);
+    void UpdateLineList(void);
+    // used to select a line (-1 for no line)
+    void selectLine(int target);
+
+    // Line controls
+    bool addingLine;
+    StraightLine leftTempLine, rightTempLine;
+    bool leftLineSet, rightLineSet;
+    std::vector<StraightLine> tempLineVec;
+    void updateLines(void);
+    
+    char* addl;
+    char* cncl;
+    
+    // New line controls
+    ImageLinesPair *currentLinesPair; // update this when the images change
+    
+    
+    
     /** enable or disable controls for editing other points */
     void EnablePointEdit(bool state);
 
@@ -149,18 +173,9 @@ private:
     void NewPointChange(hugin_utils::FDiff2D p, bool left);
 //    void CreateNewPointRight(wxPoint p);
 
-    // function called when a new line is added
-    void NewLineAdded(StraightLine l, bool left);
-
     /// this is used to finally create the point in the panorama model
     void CreateNewPoint();
 
-    // adds the points along a line to the panorama model
-    //  ? should this be using the StraightLine returned on the CPevent fire ?
-    // delete this once the convert line to points function is done!
-    void AddLinePoints();
-
-    void DeleteLine(int index);
     /// search for region in destImg
 //    bool FindTemplate(unsigned int tmplImgNr, const wxRect &region, unsigned int dstImgNr, vigra_ext::CorrelationResult & res);
 
@@ -191,6 +206,7 @@ private:
     void EnableButtons(void);
     void OnLineListSelect(wxListEvent & e);
     void OnLineListDeselect(wxListEvent & e);
+    //void OnLineListLabelEdit(wxListEvent & e);
     void OnLineDelete(wxListEvent & ev);
     void OnAddLineButton(wxCommandEvent & e);
     void OnDeleteLineButton(wxCommandEvent & e);
@@ -251,9 +267,6 @@ private:
     };
     // used to change the point selection state
     void changeState(CPCreationState newState);
-    
-    // used to change the line selection state
-    void changeWhichLine(int imgNr);
 
     /** estimate and set point in other image */
     void estimateAndAddOtherPoint(const hugin_utils::FDiff2D & p,
@@ -271,16 +284,6 @@ private:
     CPImageCtrl::ImageRotation GetRot(double yaw, double roll, double pitch);
 
     CPCreationState cpCreationState;
-
-    // Line controls
-    bool addingLine;
-    LineCollection::linePair tempPair;
-    bool leftLineSet, rightLineSet;
-    std::vector<StraightLine> tempLineVec;
-    void updateLines(void);
-    
-    char* addl;
-    char* cncl;
 
     // GUI controls
 #ifdef HUGIN_CP_IMG_CHOICE
