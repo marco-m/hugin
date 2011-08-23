@@ -57,7 +57,8 @@ static void usage(const char* name)
          << endl
          << "  Options:" << endl
          << "     -o, --output=file.pto  Output Hugin PTO file. Default: <filename>_line.pto" << endl
-         << "     -i, --image=imgNr      Work only on given image numbers" << endl
+         << "     -i, --image=IMGNR      Work only on given image numbers" << endl
+         << "     -l, --lines=COUNT      Save maximal COUNT lines (default: 5)" << endl
          << "     -h, --help             Shows this help" << endl
          << endl;
 }
@@ -75,12 +76,13 @@ static int ptinfoDlg( int command, char* argument )
 int main(int argc, char* argv[])
 {
     // parse arguments
-    const char* optstring = "o:i:h";
+    const char* optstring = "o:i:l:h";
 
     static struct option longOptions[] =
     {
         {"output", required_argument, NULL, 'o' },
         {"image", required_argument, NULL, 'i' },
+        {"lines", required_argument, NULL, 'l' },
         {"help", no_argument, NULL, 'h' },
         0
     };
@@ -88,6 +90,7 @@ int main(int argc, char* argv[])
     UIntSet cmdlineImages;
     int c;
     int optionIndex = 0;
+    int nrLines = 5;
     string output;
     while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
     {
@@ -108,6 +111,14 @@ int main(int argc, char* argv[])
                         return 1;
                     };
                     cmdlineImages.insert(imgNr);
+                };
+                break;
+            case 'l':
+                nrLines=atoi(optarg);
+                if(nrLines<1)
+                {
+                    cerr << "Cound not parse number of lines or invalid number.";
+                    return 1;
                 };
                 break;
             case ':':
@@ -183,8 +194,10 @@ int main(int argc, char* argv[])
     PT_setProgressFcn(ptProgress);
     PT_setInfoDlgFcn(ptinfoDlg);
 
+    cout << argv[0] << " is searching for vertical lines" << endl;
 #ifdef HAS_PPL
-    Concurrency::parallel_for<size_t>(0,imagesToProcess.size(),[&pano,imagesToProcess](size_t i)
+    size_t nrCPS=pano.getNrOfCtrlPoints();
+    Concurrency::parallel_for<size_t>(0,imagesToProcess.size(),[&pano,imagesToProcess,nrLines](size_t i)
 #else
     for(size_t i=0;i<imagesToProcess.size();i++)
 #endif
@@ -194,7 +207,7 @@ int main(int argc, char* argv[])
         vigra::ImageImportInfo imageInfo(pano.getImage(imgNr).getFilename().c_str());
         vigra::UInt8RGBImage image(imageInfo.width(),imageInfo.height());
         vigra::importImage(imageInfo,destImage(image));
-        CPVector foundLines=HuginLines::GetVerticalLines(pano,imgNr,image);
+        CPVector foundLines=HuginLines::GetVerticalLines(pano,imgNr,image,nrLines);
 #ifndef HAS_PPL
         cout << "Found " << foundLines.size() << " vertical lines" << endl;
 #endif
@@ -208,6 +221,7 @@ int main(int argc, char* argv[])
     }
 #ifdef HAS_PPL
     );
+    cout << endl << "Found " << pano.getNrOfCtrlPoints() - nrCPS << " vertical lines" << endl << endl;
 #endif
 
     //write output

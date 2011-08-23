@@ -607,7 +607,7 @@ PT::PanoCommand* VerticalLineOperation::GetInternalCommand(wxWindow* parent, PT:
         progress.increaseProgress(1.0, std::wstring(wxString::Format(_("Searching in image %s"),file.GetFullName().c_str()).wc_str(wxConvLocal)));
         // Image to analyse
         ImageCache::EntryPtr img=ImageCache::getInstance().getImage(pano.getImage(*it).getFilename());
-        CPVector foundLines=HuginLines::GetVerticalLines(pano,(*it),*(img->get8BitImage()));
+        CPVector foundLines=HuginLines::GetVerticalLines(pano,(*it),*(img->get8BitImage()),5);
         if(foundLines.size()>0)
         {
             for(CPVector::const_iterator cpIt=foundLines.begin(); cpIt!=foundLines.end(); cpIt++)

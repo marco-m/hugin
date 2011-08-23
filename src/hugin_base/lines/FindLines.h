@@ -72,8 +72,9 @@ namespace HuginLines
      *  @param pano panorama object in which is searched
      *  @param imgNr number of image in which should be searched
      *  @param image vigra image in which should be searched
+     *  @param nrLine maximal number of lines to return
      *  @return HuginBase::CPVector with all vertical control points
      */
-    LINESIMPEX HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::UInt8RGBImage& image);
+    LINESIMPEX HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::UInt8RGBImage& image,const unsigned int nrLines);
 };
 #endif

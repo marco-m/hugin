@@ -206,6 +206,8 @@ VerticalLine FitLine(SingleLine line)
     return vl;
 };
 
+//filter detected lines
+//return fitted lines which have only a small deviation from the vertical
 VerticalLineVector FilterLines(Lines lines,double roll)
 {
     VerticalLineVector vertLines;
@@ -230,9 +232,16 @@ VerticalLineVector FilterLines(Lines lines,double roll)
     return vertLines;
 };
 
-HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::UInt8RGBImage& image)
+//function to sort HuginBase::CPVector by error distance
+bool SortByError(const HuginBase::ControlPoint& cp1, const HuginBase::ControlPoint& cp2)
+{
+    return cp1.error<cp2.error;
+};
+
+HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::UInt8RGBImage& image, const unsigned int nrLines)
 {
     HuginBase::CPVector verticalLines;
+    HuginBase::CPVector detectedLines;
     const HuginBase::SrcPanoImage& srcImage=pano.getImage(imgNr);
     bool needsRemap=srcImage.getProjection()!=HuginBase::SrcPanoImage::RECTILINEAR;
     double roll=(needsRemap?0:srcImage.getRoll());
@@ -310,8 +319,8 @@ HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsig
         for(size_t i=0; i<filteredLines.size(); i++)
         {
             HuginBase::ControlPoint cp;
-            cp.image1Nr=imgNr;
-            cp.image2Nr=imgNr;
+            cp.image1Nr=0;
+            cp.image2Nr=0;
             cp.mode=HuginBase::ControlPoint::X;
             if(!needsRemap)
             {
@@ -337,28 +346,28 @@ HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsig
                 cp.x2=xout;
                 cp.y2=yout;
             };
-            verticalLines.push_back(cp);
+            detectedLines.push_back(cp);
         };
         //now a final check of the found vertical lines
         //we optimize the pano with a single image and disregard vertical lines with bigger errors
-        if(verticalLines.size()>0)
+        //we need at least 2 lines
+        if(detectedLines.size()>1)
         {
             HuginBase::Panorama tempPano;
             HuginBase::SrcPanoImage tempImage=pano.getSrcImage(imgNr);
             tempImage.setYaw(0);
+            tempImage.setPitch(0);
+            tempImage.setRoll(0);
             tempImage.setX(0);
             tempImage.setY(0);
             tempImage.setZ(0);
             tempPano.addImage(tempImage);
-            for(size_t i=0; i<verticalLines.size(); i++)
+            for(size_t i=0; i<detectedLines.size(); i++)
             {
-                HuginBase::ControlPoint newCP=verticalLines[i];
-                newCP.image1Nr=0;
-                newCP.image2Nr=0;
-                tempPano.addCtrlPoint(newCP);
+                tempPano.addCtrlPoint(detectedLines[i]);
             };
             HuginBase::PanoramaOptions opt2;
-            opt2.setProjection(HuginBase::PanoramaOptions::CYLINDRICAL);
+            opt2.setProjection(HuginBase::PanoramaOptions::EQUIRECTANGULAR);
             tempPano.setOptions(opt2);
             HuginBase::OptimizeVector optVec;
             std::set<std::string> imgopt;
@@ -367,16 +376,58 @@ HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsig
             optVec.push_back(imgopt);
             tempPano.setOptimizeVector(optVec);
             HuginBase::PTools::optimize(tempPano);
+            //first filter stage
+            //we disregard all lines with big error
             //calculate statistic and determine limit
-            double min,max,mean,var;
-            HuginBase::CalculateCPStatisticsError::calcCtrlPntsErrorStats(tempPano,min,max,mean,var);
+            double minError,maxError,mean,var;
+            HuginBase::CalculateCPStatisticsError::calcCtrlPntsErrorStats(tempPano,minError,maxError,mean,var);
+            detectedLines=tempPano.getCtrlPoints();
             double limit=mean+sqrt(var);
-            HuginBase::CPVector cps=tempPano.getCtrlPoints();
-            for(int i=cps.size()-1; i>=0; i--)
+            maxError=0;
+            for(int i=detectedLines.size()-1; i>=0; i--)
             {
-                if(cps[i].error>limit)
+                if(detectedLines[i].error>limit)
                 {
-                    verticalLines.erase(verticalLines.begin()+i);
+                    detectedLines.erase(detectedLines.begin()+i);
+                }
+                else
+                {
+                    //we need the max error of the remaining lines for the next step
+                    maxError=std::max(detectedLines[i].error,maxError);
+                };
+            };
+            if(detectedLines.size()>0 && maxError>0) //security check, should never be false
+            {
+                //now keep only the best nrLines lines
+                //we are using error and line length as figure of merrit
+                for(size_t i=0;i<detectedLines.size();i++)
+                {
+                    double length=sqrt(hugin_utils::sqr(detectedLines[i].x2-detectedLines[i].x1)+hugin_utils::sqr(detectedLines[i].y2-detectedLines[i].y1));
+                    //calculate number of merrit
+                    detectedLines[i].error=detectedLines[i].error/maxError+(1.0-std::min(length,500.0)/500.0);
+                };
+                std::sort(detectedLines.begin(),detectedLines.end(),SortByError);
+                //only save best nrLines control points
+                for(size_t i=0;i<detectedLines.size() && i<nrLines; i++)
+                {
+                    HuginBase::ControlPoint cp=detectedLines[i];
+                    cp.image1Nr=imgNr;
+                    cp.image2Nr=imgNr;
+                    cp.error=0;
+                    verticalLines.push_back(cp);
+                };
+            };
+        }
+        else
+        {
+            //if only one line was detected we do a special check
+            //the allow deviation between line and roll angle is checked more narrow than in the first check
+            if(detectedLines.size()==1)
+            {
+                vigra::Diff2D diff((double)detectedLines[0].x2-detectedLines[0].x1,(double)detectedLines[0].y2-detectedLines[0].y1);
+                if(abs((diff.x*cos(DEG_TO_RAD(roll))+diff.y*sin(DEG_TO_RAD(roll)))/diff.magnitude())<0.05)
+                {
+                        verticalLines.push_back(detectedLines[0]);
                 };
             };
         };
