@@ -665,7 +665,9 @@ IF(NOT DISABLE_DPKG)
   string(REGEX REPLACE "^/(.*)" "\\1" LDLIBPATH "${CMAKE_INSTALL_RPATH}")
   #message(STATUS "CMAKE_INSTALL_RPATH set to ${CMAKE_INSTALL_RPATH}")
   #message(STATUS "LDLIBPATH = ${LDLIBPATH}")
+  # Say cpack, where to find more settings to use
   set(CPACK_PROJECT_CONFIG_FILE "${CMAKE_BINARY_DIR}/CPackEnv.cmake")
+  # Add needed settings
   FILE(WRITE "${CPACK_PROJECT_CONFIG_FILE}" "set(ENV{LD_LIBRARY_PATH} \"${LDLIBPATH}\")")
 
 ELSE()
@@ -675,8 +677,7 @@ ELSE()
 ENDIF()
 
 message(STATUS "Current source dir = ${CMAKE_CURRENT_SOURCE_DIR}")
-SET(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/Debian/postinst"
-				       "${CMAKE_CURRENT_SOURCE_DIR}/Debian/shlibs.local")
+SET(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/Debian/postinst")
 INCLUDE(CPack)
 
 ##
