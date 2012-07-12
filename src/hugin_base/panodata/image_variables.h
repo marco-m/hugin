@@ -80,7 +80,11 @@ image_variable( Yaw, double, 0.0 )
 
 image_variable( X, double , 0.0 )
 image_variable( Y, double , 0.0 )
-image_variable( Z, double, 0.0 )
+image_variable( Z, double, 1.0 )
+
+image_variable( Spin, double , 0.0 )
+image_variable( Tilt, double , 0.0 )
+image_variable( Rotate, double, 0.0 )
 
 // stack information
 // Currently only the link information is used, the value means nothing.

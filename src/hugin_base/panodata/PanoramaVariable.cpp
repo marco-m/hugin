@@ -55,6 +55,10 @@ void fillVariableMap(VariableMap & vars)
     vars.insert(std::pair<const char*, Variable>("TrY",Variable("TrY",0)));
     vars.insert(std::pair<const char*, Variable>("TrZ",Variable("TrZ",0)));
     
+    vars.insert(std::pair<const char*, Variable>("Te0",Variable("Te0",0)));
+    vars.insert(std::pair<const char*, Variable>("Te1",Variable("Te1",0)));
+    vars.insert(std::pair<const char*, Variable>("Te2",Variable("Te2",0)));
+
     vars.insert(std::pair<const char*, Variable>("j",Variable("j",0)));
     
     // Lens variables

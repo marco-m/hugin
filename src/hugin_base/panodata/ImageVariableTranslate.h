@@ -297,6 +297,11 @@ typedef PTOVariableConverterSingle<'T','r','X'> PTOVariableConverterForX;
 typedef PTOVariableConverterSingle<'T','r','Y'> PTOVariableConverterForY;
 typedef PTOVariableConverterSingle<'T','r','Z'> PTOVariableConverterForZ;
 
+typedef PTOVariableConverterSingle<'T','e','0'> PTOVariableConverterForSpin;
+typedef PTOVariableConverterSingle<'T','e','1'> PTOVariableConverterForTilt;
+typedef PTOVariableConverterSingle<'T','e','2'> PTOVariableConverterForRotate;
+
+
 typedef PTOVariableConverterSingle<'j'> PTOVariableConverterForStack;
 
 typedef PTOVariableConverterVector<double, 3> PTOVariableConverterForRadialDistortion;

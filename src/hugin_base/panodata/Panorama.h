@@ -107,6 +107,11 @@ class IMPEX PanoramaMemento : public PanoramaDataMemento
         // control points or lens parameters after the
         // last optimisation
         bool needsOptimization;
+
+	// Dev: set boolean "mosaicNotPano" to true to indicate user is
+	// optimizing six-parameter mosaic model (TrX, TrY, TrZ, Te0, Te1, Te2)
+	// not a panorama.
+	bool mosaicNotPano;
         
         void deleteAllImages();
 };

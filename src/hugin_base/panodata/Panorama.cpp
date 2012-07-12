@@ -63,6 +63,9 @@ Panorama::Panorama()
     m_ptoptimizerVarNames.insert("TrX");
     m_ptoptimizerVarNames.insert("TrY");
     m_ptoptimizerVarNames.insert("TrZ");
+    m_ptoptimizerVarNames.insert("Te0");
+    m_ptoptimizerVarNames.insert("Te1");
+    m_ptoptimizerVarNames.insert("Te2");
 
 /*
     settings.setPath("dangelo","PanoAssistant");
@@ -680,7 +683,10 @@ void Panorama::printPanoramaScript(std::ostream & o,
                                 (vit->first == "c" && set_contains(optvars[imgNr], "c") )|| \
                                 (vit->first == "TrX" && set_contains(optvars[imgNr], "TrX") )|| \
                                 (vit->first == "TrY" && set_contains(optvars[imgNr], "TrY") )|| \
-                                (vit->first == "TrZ" && set_contains(optvars[imgNr], "TrZ") )\
+                                (vit->first == "TrZ" && set_contains(optvars[imgNr], "TrZ") )|| \
+                                (vit->first == "Te0" && set_contains(optvars[imgNr], "Te0") )|| \
+                                (vit->first == "Te1" && set_contains(optvars[imgNr], "Te1") )|| \
+                                (vit->first == "Te2" && set_contains(optvars[imgNr], "Te2") )\
                                )\
                                && forPTOptimizer && vit->second.getValue() == 0.0) \
                     {\
@@ -984,9 +990,19 @@ void Panorama::parseOptimizerScript(std::istream & i, const UIntSet & imgs,
             readVar(map_get(var, "TrZ"), link, line);
             DEBUG_ASSERT(link == -1);
 
+            readVar(map_get(var, "Te0"), link, line);
+            DEBUG_ASSERT(link == -1);
+            readVar(map_get(var, "Te1"), link, line);
+            DEBUG_ASSERT(link == -1);
+            readVar(map_get(var, "Te2"), link, line);
+            DEBUG_ASSERT(link == -1);
+
             DEBUG_DEBUG("X: " << map_get(var, "TrX").getValue()
                         << " Y " << map_get(var, "TrY").getValue()
-                        << " Z " << map_get(var, "TrZ").getValue());
+                        << " Z " << map_get(var, "TrZ").getValue()
+                        << " Spin " << map_get(var, "Te0").getValue()
+                        << " Tilt " << map_get(var, "Te1").getValue()
+                        << " Rotate " << map_get(var, "Te2").getValue());
             // read lens variables
 
 

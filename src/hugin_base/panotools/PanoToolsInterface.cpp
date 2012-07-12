@@ -113,6 +113,10 @@ void Transform::createInvTransform(const SrcPanoImage & src, const PanoramaOptio
     vars.insert(make_pair(std::string("TrY"), Variable("TrY", src.getY())));
     vars.insert(make_pair(std::string("TrZ"), Variable("TrZ", src.getZ())));
 
+    vars.insert(make_pair(std::string("Te0"), Variable("Te0", src.getSpin())));
+    vars.insert(make_pair(std::string("Te1"), Variable("Te1", src.getTilt())));
+    vars.insert(make_pair(std::string("Te2"), Variable("Te2", src.getRotate())));
+
     createInvTransform(src.getSize(),
                        vars,
                        (Lens::LensProjectionFormat) src.getProjection(),
@@ -144,6 +148,10 @@ void Transform::createTransform(const SrcPanoImage & src, const PanoramaOptions 
     vars.insert(make_pair(std::string("TrX"), Variable("TrX", src.getX())));
     vars.insert(make_pair(std::string("TrY"), Variable("TrY", src.getY())));
     vars.insert(make_pair(std::string("TrZ"), Variable("TrZ", src.getZ())));
+
+    vars.insert(make_pair(std::string("Te0"), Variable("Te0", src.getSpin())));
+    vars.insert(make_pair(std::string("Te1"), Variable("Te1", src.getTilt())));
+    vars.insert(make_pair(std::string("Te2"), Variable("Te2", src.getRotate())));
 
     createTransform(src.getSize(),
                     vars,
@@ -509,6 +517,11 @@ VariableMapVector GetAlignInfoVariables(const AlignInfo& gl)
             vars.insert(make_pair(std::string("TrY"), Variable("TrY", gl.im[i].cP.trans_y)));
             vars.insert(make_pair(std::string("TrZ"), Variable("TrZ", gl.im[i].cP.trans_z)));
 
+            vars.insert(make_pair(std::string("Te0"), Variable("Te0", gl.im[i].cP.test_p0)));
+            vars.insert(make_pair(std::string("Te1"), Variable("Te1", gl.im[i].cP.test_p1)));
+            vars.insert(make_pair(std::string("Te2"), Variable("Te2", gl.im[i].cP.test_p2)));
+
+
             vars.insert(make_pair(std::string("v"), Variable("v", gl.im[i].hfov)));
             vars.insert(make_pair(std::string("y"), Variable("y", gl.im[i].yaw)));
             vars.insert(make_pair(std::string("r"), Variable("r", gl.im[i].roll)));
@@ -622,6 +635,9 @@ void initCPrefs(cPrefs & p, const VariableMap &vars)
     p.trans_x = const_map_get(vars,"TrX").getValue();
     p.trans_y = const_map_get(vars,"TrY").getValue();
     p.trans_z = const_map_get(vars,"TrZ").getValue();
+    p.test_p0 = const_map_get(vars,"Te0").getValue();
+    p.test_p1 = const_map_get(vars,"Te1").getValue();
+    p.test_p2 = const_map_get(vars,"Te2").getValue();
     if (p.trans_x != 0 || p.trans_y != 0 || p.trans_z != 0) {
 	p.trans = TRUE;
     } else {

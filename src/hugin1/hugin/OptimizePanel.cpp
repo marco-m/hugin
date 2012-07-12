@@ -93,7 +93,7 @@ END_EVENT_TABLE()
 
 // local optimize definition. need to be in sync with the xrc file
 enum OptimizeMode { OPT_PAIRWISE=0, OPT_YRP, OPT_YRP_V, OPT_YRP_B, OPT_YRP_BV, OPT_ALL_NOTXYZ, OPT_SEPARATOR1,
-                    OPT_YRP_XYZ, OPT_YRP_XYZ_V, OPT_YRP_XYZ_B, OPT_YRP_XYZ_BV, OPT_SEPARATOR2,
+                    OPT_YRP_XYZ, OPT_YRP_XYZ_V, OPT_YRP_XYZ_B, OPT_YRP_XYZ_BV, OPT_STR_XYZ, OPT_SEPARATOR2,
                     OPT_CUSTOM, OPT_END_MARKER};
 
 OptimizePanel::OptimizePanel()
