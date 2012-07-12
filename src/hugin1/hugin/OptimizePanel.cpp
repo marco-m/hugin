@@ -127,6 +127,13 @@ bool OptimizePanel::Create(wxWindow* parent, wxWindowID id , const wxPoint& pos,
     m_yaw_list = XRCCTRL(*this, "optimizer_yaw_list", wxCheckListBox);
     m_pitch_list = XRCCTRL(*this, "optimizer_pitch_list", wxCheckListBox);
     m_roll_list = XRCCTRL(*this, "optimizer_roll_list", wxCheckListBox);
+
+    // Dev: Create checkbox lists for spin,tilt,rot
+    m_spin_list = XRCCTRL(*this, "optimizer_spin_list", wxCheckListBox);
+    m_tilt_list = XRCCTRL(*this, "optimizer_tilt_list", wxCheckListBox);
+    m_rot_list = XRCCTRL(*this, "optimizer_rot_list", wxCheckListBox);
+
+
     m_x_list = XRCCTRL(*this, "optimizer_x_list", wxCheckListBox);
     m_y_list = XRCCTRL(*this, "optimizer_y_list", wxCheckListBox);
     m_z_list = XRCCTRL(*this, "optimizer_z_list", wxCheckListBox);
@@ -350,6 +357,18 @@ OptimizeVector OptimizePanel::getOptimizeVector()
         if (m_z_list->IsChecked(i)) {
             imgopt.insert("TrZ");
         }
+
+        // Dev: spin, tilt, rotate for 6 param mosaic model
+        if (m_spin_list->IsChecked(i)) {
+            imgopt.insert("Te0");
+        }
+        if (m_tilt_list->IsChecked(i)) {
+            imgopt.insert("Te1");
+        }
+        if (m_rot_list->IsChecked(i)) {
+            imgopt.insert("Te2");
+        }
+
 
         optvars.push_back(imgopt);
     }
@@ -966,6 +985,13 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,true);
                 SetCheckMark(m_d_list,true);
                 SetCheckMark(m_e_list,true);
+                break;
+            case OPT_STR_XYZ:
+                // Dev: six parameter mosaic model (spin,tilt,rot,x,y,z)
+                printf("selected Dev's tilt model\n");
+                SetCheckMark(m_x_list,true);
+                SetCheckMark(m_y_list,true);
+                SetCheckMark(m_z_list,true);                
                 break;
             case OPT_CUSTOM:
                 break;

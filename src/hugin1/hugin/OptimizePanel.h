@@ -94,6 +94,11 @@ protected:
     wxCheckListBox * m_pitch_list;
     wxCheckListBox * m_roll_list;
 
+    // Dev: spin, tilt, rotate for mosaic alignment
+    wxCheckListBox * m_spin_list;
+    wxCheckListBox * m_tilt_list;
+    wxCheckListBox * m_rot_list;
+
     wxCheckListBox * m_x_list;
     wxCheckListBox * m_y_list;
     wxCheckListBox * m_z_list;
