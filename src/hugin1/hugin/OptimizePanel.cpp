@@ -129,9 +129,9 @@ bool OptimizePanel::Create(wxWindow* parent, wxWindowID id , const wxPoint& pos,
     m_roll_list = XRCCTRL(*this, "optimizer_roll_list", wxCheckListBox);
 
     // Dev: Create checkbox lists for spin,tilt,rot
-    m_spin_list = XRCCTRL(*this, "optimizer_spin_list", wxCheckListBox);
-    m_tilt_list = XRCCTRL(*this, "optimizer_tilt_list", wxCheckListBox);
-    m_rot_list = XRCCTRL(*this, "optimizer_rot_list", wxCheckListBox);
+    //m_spin_list = XRCCTRL(*this, "optimizer_spin_list", wxCheckListBox);
+    //m_tilt_list = XRCCTRL(*this, "optimizer_tilt_list", wxCheckListBox);
+    //m_rot_list = XRCCTRL(*this, "optimizer_rot_list", wxCheckListBox);
 
 
     m_x_list = XRCCTRL(*this, "optimizer_x_list", wxCheckListBox);
@@ -359,7 +359,7 @@ OptimizeVector OptimizePanel::getOptimizeVector()
         }
 
         // Dev: spin, tilt, rotate for 6 param mosaic model
-        if (m_spin_list->IsChecked(i)) {
+       /* if (m_spin_list->IsChecked(i)) {
             imgopt.insert("Te0");
         }
         if (m_tilt_list->IsChecked(i)) {
@@ -367,7 +367,7 @@ OptimizeVector OptimizePanel::getOptimizeVector()
         }
         if (m_rot_list->IsChecked(i)) {
             imgopt.insert("Te2");
-        }
+        }*/
 
 
         optvars.push_back(imgopt);
