@@ -81,6 +81,7 @@ private:
     void OnCropFactorChanged(wxCommandEvent & e);
 
     wxPanel *  m_panel;
+    wxStaticText * m_mosaicText; // Dev: tell user not to use assistant for mosaics
     wxStaticText * m_imagesText;
     wxButton * m_alignButton;
     wxButton * m_alignBatchButton;

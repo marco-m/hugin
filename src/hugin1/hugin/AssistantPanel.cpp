@@ -120,6 +120,10 @@ bool AssistantPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
     SetSizer( topsizer );
     //topsizer->SetSizeHints( this );
 
+    // Dev: new warning text box in assistant panel
+    m_mosaicText = XRCCTRL(*this, "mosaic_warning_text", wxStaticText);
+    DEBUG_ASSERT(m_mosaicText);
+
     m_imagesText = XRCCTRL(*this, "ass_load_images_text", wxStaticText);
     DEBUG_ASSERT(m_imagesText);
 
