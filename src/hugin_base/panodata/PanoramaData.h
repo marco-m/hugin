@@ -358,7 +358,8 @@ public:
                              const PanoramaOptions & target,
                              const UIntSet & imgs) const =0;
     
-    
+    // Dev: stub for activating mosaic mode. "=0" makes pure virtual function.
+    virtual void devMosaic() =0;           // must be implemented in a subclass
 // -- maintainance --
     
 public:

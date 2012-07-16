@@ -598,6 +598,8 @@ void Panorama::printPanoramaScript(std::ostream & o,
         o << "# hugin project file" << std::endl;
         o << "#hugin_ptoversion 2" << std::endl;
     }
+    printf("Dev: called Panorama::printPanoramaScript() to write script to memory or disk\n");
+    printf("Dev: will write comment to pto script here\n");
     // output options..
 
     output.printScriptLine(o, forPTOptimizer);
@@ -1833,6 +1835,13 @@ Panorama::ReadWriteError Panorama::writeData(std::ostream& dataOutput, std::stri
     printPanoramaScript(dataOutput, getOptimizeVector(), getOptions(), all, false, getFilePrefix());
     
     return SUCCESSFUL;
+}
+
+
+// Dev: stub function in HuginBase/Panorama inherited from HuginBase/PanoramaData
+void Panorama::devMosaic()
+{
+    printf("Entered the stub function in HuginBase/Panorama inherited from HuginBase/PanoramaData\n");
 }
 
 void Panorama::updateWhiteBalance(double redFactor, double blueFactor)

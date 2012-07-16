@@ -987,11 +987,18 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_e_list,true);
                 break;
             case OPT_STR_XYZ:
+            {
                 // Dev: six parameter mosaic model (spin,tilt,rot,x,y,z)
                 printf("selected Dev's tilt model\n");
+                printf("Dev: called OptimizePanel::OnChangeMode() after selecting six param mosaic model\n");
+                Panorama localPano;
+                localPano = m_pano->duplicate();
+                localPano.devMosaic();
+
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
-                SetCheckMark(m_z_list,true);                
+                SetCheckMark(m_z_list,true);
+            }
                 break;
             case OPT_CUSTOM:
                 break;

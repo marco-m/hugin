@@ -485,7 +485,8 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
                                  const UIntSet & imgs) const;
 
         
-        
+        // Dev: stub for activating mosaic mode - inherited from PanoramaData
+        void devMosaic();
     //=========== ManagedPanoramaData ==============================================
 
 
