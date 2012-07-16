@@ -1422,6 +1422,14 @@ void MainFrame::OnTogglePreviewFrame(wxCommandEvent & e)
 
 void MainFrame::OnToggleGLPreviewFrame(wxCommandEvent & e)
 {
+    // Dev: warn user mosaic preview won't be accurate except in rectilinear mode
+    wxString msg;
+    int style=0;
+
+    msg.Printf( _("Dev's example openGL preview warning message\n Don't change FOV, projection, etc."));                
+    style = wxOK | wxICON_EXCLAMATION;
+    wxMessageBox(msg,_("warning box caption"),style,this);
+
 #if defined __WXMSW__ || defined __WXMAC__
     gl_preview_frame->InitPreviews();
 #endif

@@ -995,6 +995,13 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 localPano = m_pano->duplicate();
                 localPano.devMosaic();
 
+                wxString msg;
+                int style=0;
+
+                msg.Printf( _("Dev's example warning string"));                
+                style = wxOK | wxICON_EXCLAMATION;
+                wxMessageBox(msg,_("warning box caption"),style,this);
+
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
                 SetCheckMark(m_z_list,true);
