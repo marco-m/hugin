@@ -487,6 +487,12 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         
         // Dev: stub for activating mosaic mode - inherited from PanoramaData
         void devMosaic();
+
+        bool isMosaicNotPano()
+        {
+             return mosaicNotPano;
+        }
+
     //=========== ManagedPanoramaData ==============================================
 
 
@@ -619,6 +625,11 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
             dirty = false;
             changeFinished(true);
         }
+
+        void setMosaicNotPano(const bool mosNotPano)
+        {
+             this->mosaicNotPano = mosNotPano;
+        }
         
     protected:
         void setDirty(const bool& dirty = true)
@@ -627,7 +638,8 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
             
             this->dirty = dirty;
         }
-        
+    
+            
         
     // == additional methods for documents ==
         
@@ -695,6 +707,11 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         bool m_forceImagesUpdate;
 
         std::set<std::string> m_ptoptimizerVarNames;
+
+        // Dev: set boolean "mosaicNotPano" to true to indicate user is
+	// optimizing six-parameter mosaic model (TrX, TrY, TrZ, Te0, Te1, Te2)
+	// not a panorama.
+	bool mosaicNotPano;
 };
 
 

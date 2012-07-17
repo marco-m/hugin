@@ -995,10 +995,16 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 localPano = m_pano->duplicate();
                 localPano.devMosaic();
 
+                localPano.setMosaicNotPano(true);
+                if ( localPano.isMosaicNotPano() )
+                {
+                     printf("mosaic mode set to true\n");
+                }
+
                 wxString msg;
                 int style=0;
 
-                msg.Printf( _("Dev's example warning string"));                
+                msg.Printf( _("You've switched to Mosaic Mode.\n  Do NOT adjust the field of view in the Stitcher tab!"));                
                 style = wxOK | wxICON_EXCLAMATION;
                 wxMessageBox(msg,_("warning box caption"),style,this);
 
