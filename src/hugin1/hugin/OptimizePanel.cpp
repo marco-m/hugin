@@ -988,25 +988,24 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 break;
             case OPT_STR_XYZ:
             {
-                // Dev: six parameter mosaic model (spin,tilt,rot,x,y,z)
-                printf("selected Dev's tilt model\n");
+                // Dev: six parameter mosaic model (spin,tilt,rot,x,y,z)               
                 printf("Dev: called OptimizePanel::OnChangeMode() after selecting six param mosaic model\n");
-                Panorama localPano;
-                localPano = m_pano->duplicate();
-                localPano.devMosaic();
 
-                localPano.setMosaicNotPano(true);
-                if ( localPano.isMosaicNotPano() )
+
+                if ( m_pano->isMosaicNotPano() != true)  // check if pano already set to mosaic mode
                 {
-                     printf("mosaic mode set to true\n");
+                     printf("Dev: switching to mosaic mode\n");
+                     m_pano->setMosaicNotPano(true);     // switch to mosaic mode
+                     m_pano->devMosaic();                // call stub function for mosaic mode
+
+                     wxString msg;                       // display message box with warning about mosaic mode
+                     int style=0;
+
+                     msg.Printf( _("You've switched to Mosaic Mode.\n  Do NOT adjust the field of view in the Stitcher tab!"));                
+                     style = wxOK | wxICON_EXCLAMATION;
+                     wxMessageBox(msg,_("warning box caption"),style,this);
                 }
 
-                wxString msg;
-                int style=0;
-
-                msg.Printf( _("You've switched to Mosaic Mode.\n  Do NOT adjust the field of view in the Stitcher tab!"));                
-                style = wxOK | wxICON_EXCLAMATION;
-                wxMessageBox(msg,_("warning box caption"),style,this);
 
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
