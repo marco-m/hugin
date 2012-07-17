@@ -138,6 +138,11 @@ bool OptimizePanel::Create(wxWindow* parent, wxWindowID id , const wxPoint& pos,
     m_y_list = XRCCTRL(*this, "optimizer_y_list", wxCheckListBox);
     m_z_list = XRCCTRL(*this, "optimizer_z_list", wxCheckListBox);
 
+    m_spin_list = XRCCTRL(*this, "optimizer_spin_list", wxCheckListBox);
+    m_tilt_list = XRCCTRL(*this, "optimizer_tilt_list", wxCheckListBox);
+    m_rot_list = XRCCTRL(*this, "optimizer_rot_list", wxCheckListBox);
+
+
     m_v_list = XRCCTRL(*this, "optimizer_v_list", wxCheckListBox);
     m_a_list = XRCCTRL(*this, "optimizer_a_list", wxCheckListBox);
     m_b_list = XRCCTRL(*this, "optimizer_b_list", wxCheckListBox);
