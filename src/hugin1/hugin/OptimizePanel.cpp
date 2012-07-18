@@ -62,6 +62,14 @@ BEGIN_EVENT_TABLE(OptimizePanel, wxPanel)
     EVT_BUTTON(XRCID("opt_y_clear"), OptimizePanel::OnListButton)
     EVT_BUTTON(XRCID("opt_z_select"), OptimizePanel::OnListButton)
     EVT_BUTTON(XRCID("opt_z_clear"), OptimizePanel::OnListButton)
+
+    EVT_BUTTON(XRCID("opt_spin_select"), OptimizePanel::OnListButton)
+    EVT_BUTTON(XRCID("opt_spin_clear"), OptimizePanel::OnListButton)
+    EVT_BUTTON(XRCID("opt_tilt_select"), OptimizePanel::OnListButton)
+    EVT_BUTTON(XRCID("opt_tilt_clear"), OptimizePanel::OnListButton)
+    EVT_BUTTON(XRCID("opt_rot_select"), OptimizePanel::OnListButton)
+    EVT_BUTTON(XRCID("opt_rot_clear"), OptimizePanel::OnListButton)
+
     EVT_BUTTON(XRCID("opt_v_select"), OptimizePanel::OnListButton)
     EVT_BUTTON(XRCID("opt_v_clear"), OptimizePanel::OnListButton)
     EVT_BUTTON(XRCID("opt_a_select"), OptimizePanel::OnListButton)
@@ -83,6 +91,12 @@ BEGIN_EVENT_TABLE(OptimizePanel, wxPanel)
     EVT_CHECKLISTBOX(XRCID("optimizer_x_list"), OptimizePanel::OnCheckBoxChanged)
     EVT_CHECKLISTBOX(XRCID("optimizer_y_list"), OptimizePanel::OnCheckBoxChanged)
     EVT_CHECKLISTBOX(XRCID("optimizer_z_list"), OptimizePanel::OnCheckBoxChanged)
+
+    EVT_CHECKLISTBOX(XRCID("optimizer_spin_list"), OptimizePanel::OnCheckBoxChanged)
+    EVT_CHECKLISTBOX(XRCID("optimizer_tilt_list"), OptimizePanel::OnCheckBoxChanged)
+    EVT_CHECKLISTBOX(XRCID("optimizer_rot_list"), OptimizePanel::OnCheckBoxChanged)
+
+
     EVT_CHECKLISTBOX(XRCID("optimizer_v_list"), OptimizePanel::OnCheckBoxChanged)
     EVT_CHECKLISTBOX(XRCID("optimizer_a_list"), OptimizePanel::OnCheckBoxChanged)
     EVT_CHECKLISTBOX(XRCID("optimizer_b_list"), OptimizePanel::OnCheckBoxChanged)
@@ -232,6 +246,20 @@ void OptimizePanel::OnListButton(wxCommandEvent & e)
         SetCheckMark(m_z_list,true);
     } else if (e.GetId() == XRCID("opt_z_clear")) {
         SetCheckMark(m_z_list,false);
+
+    } else if (e.GetId() == XRCID("opt_spin_select")) {
+        SetCheckMark(m_spin_list,true);
+    } else if (e.GetId() == XRCID("opt_spin_clear")) {
+        SetCheckMark(m_spin_list,false);
+    } else if (e.GetId() == XRCID("opt_tilt_select")) {
+        SetCheckMark(m_tilt_list,true);
+    } else if (e.GetId() == XRCID("opt_tilt_clear")) {
+        SetCheckMark(m_tilt_list,false);
+    } else if (e.GetId() == XRCID("opt_rot_select")) {
+        SetCheckMark(m_rot_list,true);
+    } else if (e.GetId() == XRCID("opt_rot_clear")) {
+        SetCheckMark(m_rot_list,false);
+
     } else if (e.GetId() == XRCID("opt_v_select")) {
         SetCheckMark(m_v_list,true);
     } else if (e.GetId() == XRCID("opt_v_clear")) {
@@ -364,7 +392,7 @@ OptimizeVector OptimizePanel::getOptimizeVector()
         }
 
         // Dev: spin, tilt, rotate for 6 param mosaic model
-       /* if (m_spin_list->IsChecked(i)) {
+        if (m_spin_list->IsChecked(i)) {
             imgopt.insert("Te0");
         }
         if (m_tilt_list->IsChecked(i)) {
@@ -372,7 +400,7 @@ OptimizeVector OptimizePanel::getOptimizeVector()
         }
         if (m_rot_list->IsChecked(i)) {
             imgopt.insert("Te2");
-        }*/
+        }
 
 
         optvars.push_back(imgopt);
@@ -451,6 +479,11 @@ void OptimizePanel::panoramaImagesChanged(PT::Panorama &pano,
         m_x_list->Append(wxString::Format(wxT("%d"),nr));
         m_y_list->Append(wxString::Format(wxT("%d"),nr));
         m_z_list->Append(wxString::Format(wxT("%d"),nr));
+        
+        m_spin_list->Append(wxString::Format(wxT("%d"),nr));
+        m_tilt_list->Append(wxString::Format(wxT("%d"),nr));
+        m_rot_list->Append(wxString::Format(wxT("%d"),nr));
+
         nr++;
     }
 
@@ -463,6 +496,11 @@ void OptimizePanel::panoramaImagesChanged(PT::Panorama &pano,
         m_x_list->Delete(nr-1);
         m_y_list->Delete(nr-1);
         m_z_list->Delete(nr-1);
+
+        m_spin_list->Delete(nr-1);
+        m_tilt_list->Delete(nr-1);
+        m_rot_list->Delete(nr-1);
+
         nr--;
     }
 
@@ -501,6 +539,22 @@ void OptimizePanel::panoramaImagesChanged(PT::Panorama &pano,
         m_z_list->SetString(*it, wxString::Format(wxT("%d (%.3f)"),
                                 *it, const_map_get(vars,"TrZ").getValue()));
         m_z_list->Check(*it,sel);
+
+        sel = m_spin_list->IsChecked(*it);
+        m_spin_list->SetString(*it, wxString::Format(wxT("%d (%.3f)"),
+                                *it, const_map_get(vars,"Te0").getValue()));
+        m_spin_list->Check(*it,sel);
+
+        sel = m_tilt_list->IsChecked(*it);
+        m_tilt_list->SetString(*it, wxString::Format(wxT("%d (%.3f)"),
+                                *it, const_map_get(vars,"Te1").getValue()));
+        m_tilt_list->Check(*it,sel);
+
+        sel = m_rot_list->IsChecked(*it);
+        m_rot_list->SetString(*it, wxString::Format(wxT("%d (%.3f)"),
+                                *it, const_map_get(vars,"Te2").getValue()));
+        m_rot_list->Check(*it,sel);
+
     }
 
     // display lens values if they are linked
@@ -621,6 +675,17 @@ void OptimizePanel::setOptimizeVector(const OptimizeVector & optvec)
                 m_z_list->Check(i);
             }
 
+
+            if (*it == "Te0") {
+                m_spin_list->Check(i);
+            }
+            if (*it == "Te1") {
+                m_tilt_list->Check(i);
+            }
+            if (*it == "Te2") {
+                m_rot_list->Check(i);
+            }
+
             if (*it == "v") {
                 m_v_list->Check(lensNr);
             }
@@ -677,9 +742,13 @@ void OptimizePanel::runOptimizer(const UIntSet & imgs)
         optvars2.insert("p");
         optvars2.insert("r");
   // TODO: check tilt mode here, before inserting the parameters.
-        /* optvars2.insert("TrX");
+        /*optvars2.insert("TrX");
         optvars2.insert("TrY");
-        optvars2.insert("TrZ"); */
+        optvars2.insert("TrZ");
+
+        optvars2.insert("Te0");
+        optvars2.insert("Te1");
+        optvars2.insert("Te2");*/
 
         // remove vertical and horizontal control points
         CPVector cps = optPano.getCtrlPoints();
@@ -821,6 +890,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
         XRCCTRL(*this, "opt_x_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_y_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_z_select", wxButton)->Disable();
+
+        XRCCTRL(*this, "opt_spin_select", wxButton)->Disable();
+        XRCCTRL(*this, "opt_tilt_select", wxButton)->Disable();
+        XRCCTRL(*this, "opt_rot_select", wxButton)->Disable();
+
         XRCCTRL(*this, "opt_v_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_a_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_b_select", wxButton)->Disable();
@@ -833,6 +907,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
         XRCCTRL(*this, "opt_x_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_y_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_z_clear", wxButton)->Disable();
+
+        XRCCTRL(*this, "opt_spin_clear", wxButton)->Disable();
+        XRCCTRL(*this, "opt_tilt_clear", wxButton)->Disable();
+        XRCCTRL(*this, "opt_rot_clear", wxButton)->Disable();
+
         XRCCTRL(*this, "opt_v_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_a_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_b_clear", wxButton)->Disable();
@@ -849,6 +928,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,false);
                 SetCheckMark(m_y_list,false);
                 SetCheckMark(m_z_list,false);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,false);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,false);
@@ -864,6 +948,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,false);
                 SetCheckMark(m_y_list,false);
                 SetCheckMark(m_z_list,false);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,false);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,false);
@@ -879,6 +968,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
                 SetCheckMark(m_z_list,true);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,false);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,false);
@@ -894,6 +988,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,false);
                 SetCheckMark(m_y_list,false);
                 SetCheckMark(m_z_list,false);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,true);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,false);
@@ -909,6 +1008,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
                 SetCheckMark(m_z_list,true);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,true);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,false);
@@ -924,6 +1028,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,false);
                 SetCheckMark(m_y_list,false);
                 SetCheckMark(m_z_list,false);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,false);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,true);
@@ -939,6 +1048,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
                 SetCheckMark(m_z_list,true);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,false);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,true);
@@ -954,6 +1068,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,false);
                 SetCheckMark(m_y_list,false);
                 SetCheckMark(m_z_list,false);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,true);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,true);
@@ -969,6 +1088,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
                 SetCheckMark(m_z_list,true);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,true);
                 SetCheckMark(m_a_list,false);
                 SetCheckMark(m_b_list,true);
@@ -984,6 +1108,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_x_list,false);
                 SetCheckMark(m_y_list,false);
                 SetCheckMark(m_z_list,false);
+
+                SetCheckMark(m_spin_list,false);
+                SetCheckMark(m_tilt_list,false);
+                SetCheckMark(m_rot_list,false);
+
                 SetCheckMark(m_v_list,true);
                 SetCheckMark(m_a_list,true);
                 SetCheckMark(m_b_list,true);
@@ -1011,10 +1140,25 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                      wxMessageBox(msg,_("warning box caption"),style,this);
                 }
 
+                SetCheckMark(m_yaw_list,false);
+                SetCheckMark(m_roll_list,false);
+                SetCheckMark(m_pitch_list,false);
 
                 SetCheckMark(m_x_list,true);
                 SetCheckMark(m_y_list,true);
                 SetCheckMark(m_z_list,true);
+
+                SetCheckMark(m_spin_list,true);
+                SetCheckMark(m_tilt_list,true);
+                SetCheckMark(m_rot_list,true);
+
+                SetCheckMark(m_v_list,false);
+                SetCheckMark(m_a_list,false);
+                SetCheckMark(m_b_list,false);
+                SetCheckMark(m_c_list,false);
+                SetCheckMark(m_d_list,false);
+                SetCheckMark(m_e_list,false);
+
             }
                 break;
             case OPT_CUSTOM:
@@ -1101,6 +1245,24 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                     m_pitch_list->Check(*it,true);
                 };
             }
+
+            bool optSTR_XYZ=m_spin_list->IsChecked(0) || m_tilt_list->IsChecked(0) || m_rot_list->IsChecked(0);
+            // don't optimize translation of anchor image
+            // if translation should be optimized, then also optimise yaw and pitch of anchor
+            for (std::vector<unsigned int>::iterator it = refImgs.begin();
+                it != refImgs.end(); it++)
+            {
+                m_yaw_list->Check(*it, false);
+                m_pitch_list->Check(*it, false);
+                m_roll_list->Check(*it, false);
+                if(optSTR_XYZ)
+                {
+                    m_spin_list->Check(*it,true);
+                    m_tilt_list->Check(*it,true);
+                    m_rot_list->Check(*it,false);
+                };
+            }
+
             // disable all manual settings
             m_yaw_list->Disable();
             m_pitch_list->Disable();
@@ -1108,6 +1270,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             m_x_list->Disable();
             m_y_list->Disable();
             m_z_list->Disable();
+
+            m_spin_list->Disable();
+            m_tilt_list->Disable();
+            m_rot_list->Disable();
+
             m_v_list->Disable();
             m_a_list->Disable();
             m_b_list->Disable();
@@ -1120,6 +1287,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             XRCCTRL(*this, "opt_x_select", wxButton)->Disable();
             XRCCTRL(*this, "opt_y_select", wxButton)->Disable();
             XRCCTRL(*this, "opt_z_select", wxButton)->Disable();
+
+            XRCCTRL(*this, "opt_spin_select", wxButton)->Disable();
+            XRCCTRL(*this, "opt_tilt_select", wxButton)->Disable();
+            XRCCTRL(*this, "opt_rot_select", wxButton)->Disable();
+
             XRCCTRL(*this, "opt_v_select", wxButton)->Disable();
             XRCCTRL(*this, "opt_a_select", wxButton)->Disable();
             XRCCTRL(*this, "opt_b_select", wxButton)->Disable();
@@ -1132,6 +1304,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             XRCCTRL(*this, "opt_x_clear", wxButton)->Disable();
             XRCCTRL(*this, "opt_y_clear", wxButton)->Disable();
             XRCCTRL(*this, "opt_z_clear", wxButton)->Disable();
+
+            XRCCTRL(*this, "opt_spin_clear", wxButton)->Disable();
+            XRCCTRL(*this, "opt_tilt_clear", wxButton)->Disable();
+            XRCCTRL(*this, "opt_rot_clear", wxButton)->Disable();
+
             XRCCTRL(*this, "opt_v_clear", wxButton)->Disable();
             XRCCTRL(*this, "opt_a_clear", wxButton)->Disable();
             XRCCTRL(*this, "opt_b_clear", wxButton)->Disable();
@@ -1145,6 +1322,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             m_x_list->Enable();
             m_y_list->Enable();
             m_z_list->Enable();
+
+            m_spin_list->Enable();
+            m_tilt_list->Enable();
+            m_rot_list->Enable();
+
             m_v_list->Enable();
             m_a_list->Enable();
             m_b_list->Enable();
@@ -1157,6 +1339,11 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             XRCCTRL(*this, "opt_x_select", wxButton)->Enable();
             XRCCTRL(*this, "opt_y_select", wxButton)->Enable();
             XRCCTRL(*this, "opt_z_select", wxButton)->Enable();
+
+            XRCCTRL(*this, "opt_spin_select", wxButton)->Enable();
+            XRCCTRL(*this, "opt_tilt_select", wxButton)->Enable();
+            XRCCTRL(*this, "opt_rot_select", wxButton)->Enable();
+
             XRCCTRL(*this, "opt_v_select", wxButton)->Enable();
             XRCCTRL(*this, "opt_a_select", wxButton)->Enable();
             XRCCTRL(*this, "opt_b_select", wxButton)->Enable();
@@ -1169,6 +1356,12 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             XRCCTRL(*this, "opt_x_clear", wxButton)->Enable();
             XRCCTRL(*this, "opt_y_clear", wxButton)->Enable();
             XRCCTRL(*this, "opt_z_clear", wxButton)->Enable();
+
+            XRCCTRL(*this, "opt_spin_clear", wxButton)->Enable();
+            XRCCTRL(*this, "opt_tilt_clear", wxButton)->Enable();
+            XRCCTRL(*this, "opt_rot_clear", wxButton)->Enable();
+
+
             XRCCTRL(*this, "opt_v_clear", wxButton)->Enable();
             XRCCTRL(*this, "opt_a_clear", wxButton)->Enable();
             XRCCTRL(*this, "opt_b_clear", wxButton)->Enable();
