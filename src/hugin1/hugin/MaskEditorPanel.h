@@ -58,8 +58,13 @@ public:
 
     void SetPano(PT::Panorama * panorama)
         { m_pano = panorama; };
-    /** sets the image, which is currently edited, set imgNr to UINT_MAX if no image is editing */
-    void setImage(unsigned int imgNr);
+    /** sets the image, which is currently edited 
+         @param imgNr the image which should be shown, use UINT_MAX for no image selected 
+         @param updateListSelection if true, the selection of the images list is updated, 
+                otherwise the selection of the list remains unchanged (e.g. when calling 
+                 from the list selection changed event handler)
+      */
+    void setImage(unsigned int imgNr, bool updateListSelection=false);
     /** sets active mask number, set to UINT_MAX, if no mask is currently editing */
     void setMask(unsigned int maskNr);
     /** called when mask where changed in MaskImageCtrl */
@@ -68,6 +73,14 @@ public:
     void AddMask();
     /** selects the mask with index newMaskNr in the listbox */
     void SelectMask(unsigned int newMaskNr);
+
+    /** updated the crop in the Panorama object with the current values from GUI 
+      *  @param updateFromImgCtrl if true, the crop is updated from the image control, otherwise from the values inside
+      *  MaskEditorPanel (so from wxTextCtrls)
+      */
+    void UpdateCrop(bool updateFromImgCtrl=false);
+    /** updates the displayed crop in the text boxes (for dragging) */
+    void UpdateCropFromImage();
 
     /** called when the panorama changes and we should
      *  update our display
@@ -99,6 +112,14 @@ public:
     void OnColourChanged(wxColourPickerEvent &e);
     /** event handler for changing option if active masks should be drawn */
     void OnShowActiveMasks(wxCommandEvent &e);
+    // reset crop area. 
+    void OnResetButton(wxCommandEvent & e);
+    void OnSetLeft(wxCommandEvent & e);
+    void OnSetRight(wxCommandEvent & e);
+    void OnSetTop(wxCommandEvent & e);
+    void OnSetBottom(wxCommandEvent & e);
+    void OnAutoCenter(wxCommandEvent & e);
+    void OnModeChanged(wxNotebookEvent & e);
 
 private:
 
@@ -116,23 +137,46 @@ private:
     void SaveMaskToStream(std::ostream& stream);
     /** determines, if the image should be rotated for display */
     MaskImageCtrl::ImageRotation GetRot(const unsigned int imgNr);
+    /** copies the crop information from the Panorama object to GUI */
+    void DisplayCrop(int imgNr);
+
+    /** update GUI display */
+    void UpdateCropDisplay();
+    // ensure that the crop roi is centered
+    void CenterCrop();
+
+    size_t GetImgNr();
 
     // GUI controls
     MaskImageCtrl *m_editImg;
     ImagesListMask *m_imagesListMask;
     wxListCtrl *m_maskList;
     wxChoice *m_maskType;
+    wxNotebook *m_maskCropCtrl;
 
     // my data
     PT::Panorama * m_pano;
     // current masks vector
     HuginBase::MaskPolygonVector m_currentMasks;
+    // mask or crop mode
+    bool m_maskMode;
     // the current images
-    unsigned int m_ImageNr;
+    HuginBase::UIntSet m_selectedImages;
     // the current mask
     unsigned int m_MaskNr;
     // the filename of the current image
     std::string m_File;
+
+    // controls for crop editing
+    wxTextCtrl * m_left_textctrl;
+    wxTextCtrl * m_right_textctrl;
+    wxTextCtrl * m_top_textctrl;
+    wxTextCtrl * m_bottom_textctrl;
+    wxCheckBox * m_autocenter_cb;
+    HuginBase::SrcPanoImage::CropMode m_cropMode;
+    vigra::Rect2D m_cropRect;
+    bool m_autoCenterCrop;
+    vigra::Point2D m_cropCenter;
 
     DECLARE_EVENT_TABLE();
     DECLARE_DYNAMIC_CLASS(MaskEditorPanel)

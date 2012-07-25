@@ -44,16 +44,14 @@
 
 // Celeste header
 #include "Celeste.h"
+#include "GuiLevel.h"
 
 using namespace PT;
 
 // forward declarations, to save the #include statements
-class AssistantPanel;
 class CPEditorPanel;
-class LensPanel;
 class ImgPreview;
 class ImagesPanel;
-class CropPanel;
 class MaskEditorPanel;
 class OptimizePhotometricPanel;
 class PanoPanel;
@@ -119,32 +117,33 @@ public:
 
     // load a project
     void LoadProjectFile(const wxString & filename);
-	
-    // Restore the layout
-    void RestoreLayout();
-    
-    /// hack to restore the layout on next resize
-    void RestoreLayoutOnNextResize();
-    
 
 #ifdef __WXMAC__
     void MacOnOpenFile(const wxString & filename);
 #endif
-    bool CloseProject(bool cnacelable);
+    bool CloseProject(bool cancelable);
 
     // TODO: create a nice generic optimisation & stitching function
     // instead of these gateway functions to the optimizer and pano panels.
     void OnOptimize(wxCommandEvent & e);
+    void OnPhotometricOptimize(wxCommandEvent & e);
     void OnDoStitch(wxCommandEvent & e);
     void OnTogglePreviewFrame(wxCommandEvent & e);
     void OnToggleGLPreviewFrame(wxCommandEvent & e);
     void OnAddImages(wxCommandEvent & e);
     void OnSaveProject(wxCommandEvent & e);
+    void OnSetGuiSimple(wxCommandEvent & e);
+    void OnSetGuiAdvanced(wxCommandEvent & e);
+    void OnSetGuiExpert(wxCommandEvent & e);
+
     /** call help browser with given file */
     void DisplayHelp(wxString section);
 
-
+    /** opens the control points tab with the both images selected */
     void ShowCtrlPointEditor(unsigned int img1, unsigned int img2);
+    /** opens the mask/crop editor with the given image selected */
+    void ShowMaskEditor(size_t imgNr);
+    /** opens the stitcher tab */
     void ShowStitcherTab();
 
     void resetProgress(double max);
@@ -164,6 +163,10 @@ public:
 #ifdef __WXMSW__
     wxCHMHelpController& GetHelpController() { return m_msHtmlHelp; }
 #endif
+    void SetGuiLevel(GuiLevel newLevel, const bool updateMenu=false);
+    const GuiLevel GetGuiLevel() const { return m_guiLevel; };
+
+    wxFileHistory* GetFileHistory() { return &m_mruFiles; };
 
 protected:
     // called when a progress message should be displayed
@@ -222,14 +225,13 @@ private:
     wxFileHistory m_mruFiles;
     wxNotebook * m_notebook;
     // tab panels
-    AssistantPanel* assistant_panel;
     ImagesPanel* images_panel;
-    LensPanel* lens_panel;
-    CropPanel* crop_panel;
     MaskEditorPanel* mask_panel;
     CPEditorPanel * cpe;
     OptimizePanel * opt_panel;
+    bool m_show_opt_panel;
     OptimizePhotometricPanel * opt_photo_panel;
+    bool m_show_opt_photo_panel;
     PanoPanel * pano_panel;
     struct celeste::svm_model* svmModel;
 
@@ -237,6 +239,7 @@ private:
     PreviewFrame * preview_frame;
     GLPreviewFrame * gl_preview_frame;
     CPListFrame * cp_frame;
+    GuiLevel m_guiLevel;
 
     // Image Preview
     ImgPreview *canvas;
@@ -250,11 +253,11 @@ private:
     // filename of the current project
     wxString m_filename;
 
-
-    bool m_doRestoreLayout;
-
     // self
     static MainFrame* m_this;
+    // file menu
+    wxMenu* m_menu_file_simple;
+    wxMenu* m_menu_file_advanced;
 
     // progress reporter
     double m_progressMax;

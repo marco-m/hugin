@@ -87,6 +87,7 @@ class GLwxAuiFloatingFrame;
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
 #include <wx/clrpicker.h>
+#include "hugin/GuiLevel.h"
 
 #include <iostream>
 
@@ -213,6 +214,8 @@ public:
     void LoadOpenGLLayout();
     /** init previews */
     void InitPreviews();
+    /** sets the gui level */
+    void SetGuiLevel(GuiLevel newLevel);
 
     GLwxAuiManager* getAuiManager() {return m_mgr;}
     GLPreview* getPreview() {return m_GLPreview;}
@@ -276,6 +279,8 @@ protected:
     void OnProjParameterReset(wxCommandEvent & e);
     /** event handler for switch on/off grid on preview */
     void OnSwitchPreviewGrid(wxCommandEvent & e);
+    /** user wants to quit program */
+    void OnUserExit(wxCommandEvent & e);
 
     void OnDefaultExposure( wxCommandEvent & e );
     void OnDecreaseExposure( wxSpinEvent & e );
@@ -306,10 +311,6 @@ protected:
     void updatePano();
     /** event handler for full screen */
     void OnFullScreen(wxCommandEvent &e);
-    /** event handler for undo */
-    void OnUndo(wxCommandEvent &e);
-    /** event handler for redo */
-    void OnRedo(wxCommandEvent &e);
     /** event handler for selection of new mode */
     void OnSelectMode(wxNotebookEvent &e);
     /** event handler for blocking changing mode when panorama contains no images*/
@@ -322,7 +323,16 @@ protected:
     void OnPreviewBackgroundColorChanged(wxColourPickerEvent & e);
     /** event handler when user selects different guide */
     void OnGuideChanged(wxCommandEvent &e);
-    
+    /** event handler to show main frame */
+    void OnShowMainFrame(wxCommandEvent &e);
+    // assistant related event handler
+    void OnLoadImages( wxCommandEvent & e );
+    void OnAlign( wxCommandEvent & e );
+    void OnCreate( wxCommandEvent & e );
+    void OnLensTypeChanged (wxCommandEvent & e);
+    void OnFocalLengthChanged(wxCommandEvent & e);
+    void OnCropFactorChanged(wxCommandEvent & e);
+
 private:
     /** changes the visibility of the group check boxes
      * @param isShown true if the group checkboxes should be visible
@@ -341,6 +351,8 @@ private:
 
     GLPreview * m_GLPreview;
     GLOverview * m_GLOverview;
+
+    GuiLevel m_guiLevel;
 
     ViewState* m_view_state;
 
@@ -377,6 +389,17 @@ private:
     // True if the status bar text has been replaced with projection information
     bool m_projectionStatusPushed;
 #endif
+    //assistant related controls
+    wxStaticText * m_imagesText;
+    wxButton * m_alignButton;
+    wxButton * m_createButton;
+    wxChoice   * m_lensTypeChoice;
+    wxTextCtrl * m_focalLengthText;
+    wxTextCtrl * m_cropFactorText;
+    wxButton   * m_loadLensButton;
+    wxMenu* m_filemenuSimple;
+
+    int m_degDigits;
 
     wxColour m_preview_background_color;
 
@@ -385,9 +408,9 @@ private:
     // index of difference mode
     int m_differenceIndex;
 
-	  wxScrolledWindow * m_ButtonPanel;
-	  wxBoxSizer * m_ButtonSizer;
-	  wxStaticBoxSizer * m_ToggleButtonSizer;
+    wxScrolledWindow * m_ButtonPanel;
+    wxBoxSizer * m_ButtonSizer;
+    wxStaticBoxSizer * m_ToggleButtonSizer;
 
     wxBoxSizer * m_topsizer;
     wxBoxSizer * m_projParamSizer;
@@ -404,8 +427,6 @@ private:
     std::vector<wxPanel *> m_ToggleButtonPanel;
     std::vector<ImageToogleButtonEventHandler *> toogle_button_event_handlers;
     std::vector<ImageGroupButtonEventHandler *> toggle_group_button_event_handlers;
-
-    wxToggleButton * m_OverviewToggle;
 
     DECLARE_EVENT_TABLE()
 

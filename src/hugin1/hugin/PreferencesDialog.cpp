@@ -488,7 +488,6 @@ void PreferencesDialog::UpdateDisplayData(int panel)
                    wxT(HUGIN_STITCHER_EDITOR)));
         MY_STR_VAL("prefs_ass_editor_args", cfg->Read(wxT("/Stitcher/EditorArgs"),
                    wxT(HUGIN_STITCHER_EDITOR_ARGS)));
-        MY_CHOICE_VAL("prefs_ass_preview", cfg->Read(wxT("/Assistant/PreviewWindow"), HUGIN_ASS_PREVIEW));
         t = cfg->Read(wxT("/Assistant/Linefind"), HUGIN_ASS_LINEFIND) == 1;
         MY_BOOL_VAL("prefs_ass_linefind", t);
         t = cfg->Read(wxT("/Celeste/Auto"), HUGIN_CELESTE_AUTO) == 1;
@@ -612,13 +611,13 @@ void PreferencesDialog::UpdateDisplayData(int panel)
     
     if (panel==0 || panel == 7) {
         // Celeste settings
-
         d=HUGIN_CELESTE_THRESHOLD;
         cfg->Read(wxT("/Celeste/Threshold"), &d, HUGIN_CELESTE_THRESHOLD);
         tstr = hugin_utils::doubleTowxString(d);
         MY_STR_VAL("prefs_celeste_threshold", tstr);
-
-	MY_CHOICE_VAL("prefs_celeste_filter", cfg->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER));
+        MY_CHOICE_VAL("prefs_celeste_filter", cfg->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER));
+        // photometric optimizer settings
+        MY_SPIN_VAL("prefs_photo_optimizer_nr_points", cfg->Read(wxT("/OptimizePhotometric/nRandomPointsPerImage"), HUGIN_PHOTOMETRIC_OPTIMIZER_NRPOINTS));
 
     }
 
@@ -691,7 +690,6 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent & e)
             cfg->Write(wxT("/Stitcher/RunEditor"), HUGIN_STITCHER_RUN_EDITOR);
             cfg->Write(wxT("/Stitcher/Editor"), wxT(HUGIN_STITCHER_EDITOR));
             cfg->Write(wxT("/Stitcher/EditorArgs"), wxT(HUGIN_STITCHER_EDITOR_ARGS));
-            cfg->Write(wxT("/Assistant/PreviewWindow"), HUGIN_ASS_PREVIEW);
             cfg->Write(wxT("/Assistant/Linefind"), HUGIN_ASS_LINEFIND);
             cfg->Write(wxT("/Celeste/Auto"), HUGIN_CELESTE_AUTO);
             cfg->Write(wxT("/Assistant/AutoCPClean"), HUGIN_ASS_AUTO_CPCLEAN);
@@ -748,13 +746,14 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent & e)
             cfg->Write(wxT("/Enfuse/Custom"), HUGIN_ENFUSE_EXE_CUSTOM);
             cfg->Write(wxT("/Enfuse/Args"), wxT(HUGIN_ENFUSE_ARGS));
         }
-	
+
         if (noteb->GetSelection() == 6) {
             /// Celeste
             cfg->Write(wxT("/Celeste/Threshold"), HUGIN_CELESTE_THRESHOLD);
             cfg->Write(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER);
-        }	
-	
+            cfg->Write(wxT("/OptimizePhotometric/nRandomPointsPerImage"), HUGIN_PHOTOMETRIC_OPTIMIZER_NRPOINTS);
+        }
+
 /*
         if (noteb->GetSelection() == 5) {
             cfg->Write(wxT("/PTmender/Exe"), wxT(HUGIN_PT_MENDER_EXE) );
@@ -781,7 +780,6 @@ void PreferencesDialog::UpdateConfigData()
     cfg->Write(wxT("/Assistant/autoAlign"),MY_G_BOOL_VAL("prefs_ass_autoAlign"));
     cfg->Write(wxT("/Assistant/nControlPoints"), MY_G_SPIN_VAL("prefs_ass_nControlPoints"));
     cfg->Write(wxT("/Assistant/panoDownsizeFactor"), MY_G_SPIN_VAL("prefs_ass_panoDownsizeFactor") / 100.0);
-    cfg->Write(wxT("/Assistant/PreviewWindow"), MY_G_CHOICE_VAL("prefs_ass_preview"));
     cfg->Write(wxT("/Assistant/Linefind"), MY_G_BOOL_VAL("prefs_ass_linefind"));
     cfg->Write(wxT("/Celeste/Auto"), MY_G_BOOL_VAL("prefs_celeste_auto"));
     cfg->Write(wxT("/Assistant/AutoCPClean"), MY_G_BOOL_VAL("prefs_auto_cpclean"));
@@ -889,6 +887,8 @@ void PreferencesDialog::UpdateConfigData()
     hugin_utils::stringToDouble(std::string(t.mb_str(wxConvLocal)), td);
     cfg->Write(wxT("/Celeste/Threshold"), td);
     cfg->Write(wxT("/Celeste/Filter"), MY_G_CHOICE_VAL("prefs_celeste_filter"));
+    //photometric optimizer
+    cfg->Write(wxT("/OptimizePhotometric/nRandomPointsPerImage"), MY_G_SPIN_VAL("prefs_photo_optimizer_nr_points"));
 
     cfg->Flush();
     UpdateDisplayData(0);

@@ -33,6 +33,8 @@
 #include <base_wx/wxImageCache.h>
 #include <base_wx/platform.h>
 #include <hugin/wxPanoCommand.h>
+#include <hugin/MainFrame.h>
+#include <panodata/OptimizerSwitches.h>
 
 #include <vigra/cornerdetection.hxx>
 #include <vigra/localminmax.hxx>
@@ -50,10 +52,8 @@ using namespace hugin_utils;
 
 namespace PT {
 
-void wxAddCtrlPointGridCmd::execute()
+bool wxAddCtrlPointGridCmd::processPanorama(Panorama& pano)
 {
-    PanoCommand::execute();
-
     // TODO: rewrite, and use same function for modular image creation.
 #if 1
     const SrcPanoImage & i1 = pano.getImage(img1);
@@ -140,14 +140,12 @@ void wxAddCtrlPointGridCmd::execute()
         }
     }
 #endif
-    pano.changeFinished();
+    return true;
 }
 
 
-void wxAddImagesCmd::execute()
+bool wxAddImagesCmd::processPanorama(Panorama& pano)
 {
-    PanoCommand::execute();
-
     // check if the files should be sorted by date
     long sort = wxConfigBase::Get()->Read(wxT("General/SortNewImgOnAdd"), HUGIN_GUI_SORT_NEW_IMG_ON_ADD);
 
@@ -200,7 +198,7 @@ void wxAddImagesCmd::execute()
         };
         if (srcImg.getSize().x == 0 || srcImg.getSize().y == 0) {
             wxMessageBox(wxString::Format(_("Could not decode image:\n%s\nAbort"), fname.c_str()), _("Unsupported image file format"));
-            return;
+            return false;
         }
         try
         {
@@ -351,27 +349,24 @@ void wxAddImagesCmd::execute()
             }
         }
     }
-    pano.changeFinished();
+    return true;
 }
 
 
-void wxLoadPTProjectCmd::execute()
+bool wxLoadPTProjectCmd::processPanorama(Panorama& pano)
 {
-    PanoCommand::execute();
-#ifdef _Hgn1_PANOCOMMAND_H
-    Panorama& pano = o_pano;
-#endif
-
     PanoramaMemento newPano;
     int ptoVersion = 0;
     std::ifstream in(filename.c_str());
-    if (newPano.loadPTScript(in, ptoVersion, prefix)) {
+    if (newPano.loadPTScript(in, ptoVersion, prefix))
+    {
         pano.setMemento(newPano);
         PanoramaOptions opts = pano.getOptions();
         // always reset to TIFF_m ...
         opts.outputFormat = PanoramaOptions::TIFF_m;
         // get enblend and enfuse options from preferences
-        if (ptoVersion < 2) {
+        if (ptoVersion < 2)
+        {
             // no options stored in file, use default arguments in config file
             opts.enblendOptions = wxConfigBase::Get()->Read(wxT("/Enblend/Args"), wxT(HUGIN_ENBLEND_ARGS)).mb_str(wxConvLocal);
             opts.enfuseOptions = wxConfigBase::Get()->Read(wxT("/Enfuse/Args"), wxT(HUGIN_ENFUSE_ARGS)).mb_str(wxConvLocal);
@@ -432,8 +427,7 @@ void wxLoadPTProjectCmd::execute()
                     PanoramaMemento emptyPano;
                     pano.setMemento(emptyPano);
                             // set an empty panorama
-                    pano.changeFinished();
-                    return;
+                    return true;
                 }
                 fname.Assign(dlg.GetPath());
             }
@@ -517,16 +511,11 @@ void wxLoadPTProjectCmd::execute()
     {
         pano.markAsOptimized();
     };
-    pano.changeFinished();
+    return true;
 }
 
-void wxNewProjectCmd::execute()
+bool wxNewProjectCmd::processPanorama(Panorama& pano)
 {
-    PanoCommand::execute();
-#ifdef _Hgn1_PANOCOMMAND_H
-    Panorama& pano = o_pano;
-#endif
-
     pano.reset();
 
     // Setup pano with options from preferences
@@ -581,18 +570,14 @@ void wxNewProjectCmd::execute()
     opts.hdrmergeOptions = HUGIN_HDRMERGE_ARGS;
     pano.setOptions(opts);
 
-    pano.changeFinished();
+    pano.setOptimizerSwitch(HuginBase::OPT_PAIR);
+    pano.setPhotometricOptimizerSwitch(HuginBase::OPT_EXPOSURE | HuginBase::OPT_VIGNETTING | HuginBase::OPT_RESPONSE);
+    return true;
 }
 
 
-void wxApplyTemplateCmd::execute()
+bool wxApplyTemplateCmd::processPanorama(Panorama& pano)
 {
-    PanoCommand::execute();
-#ifdef _Hgn1_PANOCOMMAND_H
-    Panorama& pano = o_pano;
-#endif
-
-
     wxConfigBase* config = wxConfigBase::Get();
 
     if (pano.getNrOfImages() == 0) {
@@ -674,8 +659,7 @@ void wxApplyTemplateCmd::execute()
         if (nOldImg != nNewImg) {
             wxString errMsg = wxString::Format(_("Error, template expects %d images,\ncurrent project contains %d images\n"), nNewImg, nOldImg);
             wxMessageBox(errMsg, _("Could not apply template"), wxICON_ERROR);
-            pano.changeFinished();
-            return;
+            return false;
         }
 
         // check image sizes, and correct parameters if required.
@@ -701,7 +685,7 @@ void wxApplyTemplateCmd::execute()
     } else {
         wxMessageBox(_("Error loading project file"), _("Could not apply template"), wxICON_ERROR);
     }
-    pano.changeFinished();
+    return true;
 }
 
 #ifdef HUGIN_HSI
@@ -723,7 +707,6 @@ bool PythonScriptPanoCmd::processPanorama(Panorama& pano)
             pano.imageChanged(i);
         };
     };
-    pano.changeFinished();
 
     return true;
 }

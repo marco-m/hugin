@@ -118,12 +118,11 @@ namespace PT {
     public:
         NewPanoCmd(Panorama & pano)
             : PanoCommand(pano)
-            { };
+            { m_clearDirty=true; };
 
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.reset();
-                pano.changeFinished();
 
                 return true;
             }
@@ -151,7 +150,6 @@ namespace PT {
                 for (it = imgs.begin(); it != imgs.end(); ++it) {
                     pano.addImage(*it);
                 }
-                pano.changeFinished();
 
                 return true;
             }
@@ -184,7 +182,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.removeImage(imgNr);
-                pano.changeFinished();
 
                 return true;
             }
@@ -219,7 +216,6 @@ namespace PT {
                 {
                     pano.removeImage(*it);
                 }
-                pano.changeFinished();
 
                 return true;
             }
@@ -275,7 +271,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.updateVariables(vars);
-                pano.changeFinished();
 
                 return true;
             }
@@ -312,7 +307,6 @@ namespace PT {
                 {
                     HuginBase::PTools::calcCtrlPointErrors(pano);
                 };
-                pano.changeFinished();
 
                 return true;
             }
@@ -344,7 +338,6 @@ namespace PT {
             {
                 pano.updateVariables(vars);
                 pano.updateCtrlPointErrors(cps);
-                pano.changeFinished();
 
                 return true;
             }
@@ -379,7 +372,6 @@ namespace PT {
                 pano.updateVariables(m_imgs, vars);
                 pano.updateCtrlPointErrors(m_imgs, cps);
                 pano.markAsOptimized();
-                pano.changeFinished();
 
                 return true;
             }
@@ -410,7 +402,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.updateVariables(imgNr, vars);
-                pano.changeFinished();
 
                 return true;
             }
@@ -446,7 +437,6 @@ namespace PT {
                     ++v_it;
                 }
                 HuginBase::PTools::calcCtrlPointErrors(pano);
-                pano.changeFinished();
 
                 return true;
             }
@@ -462,6 +452,10 @@ namespace PT {
     };
 
 
+    //=========================================================================
+    //=========================================================================
+
+    /** updates the optimize vector, aka all variables which should be optimized */
     class UpdateOptimizeVectorCmd : public PanoCommand
     {
     public:
@@ -473,7 +467,6 @@ namespace PT {
     virtual bool processPanorama(Panorama & pano)
         {
             pano.setOptimizeVector(m_optvec);
-            pano.changeFinished();
             return true;
         }
 
@@ -487,7 +480,61 @@ namespace PT {
         int mode;
 
     };
-        
+
+
+    //=========================================================================
+    //=========================================================================
+
+    /** update the optimizer master switch */
+    class UpdateOptimizerSwitchCmd : public PanoCommand
+    {
+    public:
+        UpdateOptimizerSwitchCmd(Panorama &p, int mode)
+            : PanoCommand(p),
+              m_mode(mode)
+        { };
+
+    virtual bool processPanorama(Panorama & pano)
+        {
+            pano.setOptimizerSwitch(m_mode);
+            return true;
+        }
+
+    virtual std::string getName() const
+        {
+            return "update optimizer master switch";
+        }
+
+    private:
+        int m_mode;
+    };
+
+    //=========================================================================
+    //=========================================================================
+
+    /** update the photometric optimizer master switch */
+    class UpdatePhotometricOptimizerSwitchCmd : public PanoCommand
+    {
+    public:
+        UpdatePhotometricOptimizerSwitchCmd(Panorama &p, int mode)
+            : PanoCommand(p),
+              m_mode(mode)
+        { };
+
+    virtual bool processPanorama(Panorama & pano)
+        {
+            pano.setPhotometricOptimizerSwitch(m_mode);
+            return true;
+        }
+
+    virtual std::string getName() const
+        {
+            return "update photometric optimizer master switch";
+        }
+
+    private:
+        int m_mode;
+    };
 
 
     //=========================================================================
@@ -509,7 +556,6 @@ namespace PT {
                     pano.updateVariable(*it, var);
                 }
                 HuginBase::PTools::calcCtrlPointErrors(pano);
-                pano.changeFinished();
 
                 return true;
             }
@@ -547,7 +593,6 @@ namespace PT {
                 opts.setHFOV(hfov);
                 opts.setHeight(hugin_utils::roundi(height));
                 pano.setOptions(opts);
-                pano.changeFinished();
 
                 return true;
             }
@@ -588,7 +633,6 @@ namespace PT {
                 opts.setHFOV(hfov);
                 opts.setHeight(hugin_utils::roundi(height));
                 pano.setOptions(opts);
-                pano.changeFinished();
 
                 return true;
             }
@@ -618,7 +662,6 @@ namespace PT {
             {
                 pano.addCtrlPoint(point);
                 HuginBase::PTools::calcCtrlPointErrors(pano);
-                pano.changeFinished();
 
                 return true;
             }
@@ -654,7 +697,6 @@ namespace PT {
                     pano.addCtrlPoint(*it);
                 }
                 HuginBase::PTools::calcCtrlPointErrors(pano);
-                pano.changeFinished();
 
                 return true;
             }
@@ -684,7 +726,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.removeCtrlPoint(pointNr);
-                pano.changeFinished();
 
                 return true;
             }
@@ -718,7 +759,6 @@ namespace PT {
                 {
                     pano.removeCtrlPoint(*it);
                 }
-                pano.changeFinished();
 
                 return true;
             }
@@ -749,7 +789,6 @@ namespace PT {
             {
                 pano.changeControlPoint(pNr, point);
                 HuginBase::PTools::calcCtrlPointErrors(pano);
-                pano.changeFinished();
 
                 return true;
             }
@@ -787,7 +826,6 @@ namespace PT {
 						pano.activateImage(i, false);
 					}
                 }
-                pano.changeFinished();
 
                 return true;
             }
@@ -816,7 +854,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.swapImages(m_i1, m_i2);
-                pano.changeFinished();
 
                 return true;
             }
@@ -831,6 +868,30 @@ namespace PT {
         unsigned int m_i2;
     };
 
+    /** move image from position1 to position2 */
+    class MoveImageCmd : public PanoCommand
+    {
+    public:
+        MoveImageCmd(Panorama & p, size_t i1, size_t i2)
+            : PanoCommand(p), m_i1(i1), m_i2(i2)
+            { };
+
+        virtual bool processPanorama(Panorama& pano)
+            {
+                pano.moveImage(m_i1, m_i2);
+
+                return true;
+            }
+        
+        virtual std::string getName() const
+            {
+                return "move images";
+            }
+
+    private:
+        unsigned int m_i1;
+        unsigned int m_i2;
+    };
 
     /** merge two project files */
     class MergePanoCmd : public PanoCommand
@@ -844,7 +905,6 @@ namespace PT {
             {
                 pano.mergePanorama(newPano);
                 HuginBase::PTools::calcCtrlPointErrors(pano);
-                pano.changeFinished();
 
                 return true;
             }
@@ -873,7 +933,6 @@ namespace PT {
             virtual bool processPanorama(Panorama& pano)
             {
                 pano.setSrcImage(imgNr, img);
-                pano.changeFinished();
 
                 return true;
             }
@@ -910,7 +969,6 @@ namespace PT {
                     i++;
                 }
                 HuginBase::PTools::calcCtrlPointErrors(pano);
-                pano.changeFinished();
 
                 return true;
             }
@@ -940,7 +998,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.setOptions(options);
-                pano.changeFinished();
 
                 return true;
             }
@@ -969,7 +1026,7 @@ namespace PT {
             : PanoCommand(p),
             filename(filename),
             prefix(prefix)
-            { }
+            { m_clearDirty=true; }
 
         virtual bool processPanorama(Panorama& pano)
             {
@@ -990,7 +1047,6 @@ namespace PT {
 #endif
                 
                 in.close();
-                pano.changeFinished();
 
                 return true;
             }
@@ -1020,7 +1076,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.rotate(y, p, r);
-                pano.changeFinished();
 
                 return true;
             }
@@ -1049,7 +1104,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.translate(X, Y, Z);
-                pano.changeFinished();
 
                 return true;
             }
@@ -1080,7 +1134,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.UpdateFocalLength(imgNrs,m_focalLength);
-                pano.changeFinished();
                 return true;
             }
         
@@ -1131,7 +1184,6 @@ namespace PT {
                     };
                 };
                 pano.UpdateCropFactor(allImgWithSameLens, m_cropFactor);
-                pano.changeFinished();
                 return true;
             }
         
@@ -1177,7 +1229,6 @@ namespace PT {
                     // update the lens number if it changes.
                     new_new_part_number = group.getPartNumber(*it);
                 }
-                pano.changeFinished();
                 return true;
             }
         
@@ -1252,7 +1303,6 @@ namespace PT {
                         }
                     }
                 }
-                pano.changeFinished();
                 return true;
             }
         
@@ -1296,7 +1346,6 @@ namespace PT {
                 {
                     lenses.linkVariablePart(*it, lens_number);
                 }
-                pano.changeFinished();
                 return true;
             }
         
@@ -1334,7 +1383,6 @@ namespace PT {
                     img.set##name(value);\
                     pano.setSrcImage(*it, img);\
                 }\
-                pano.changeFinished();\
                 return true;\
             }\
         \
@@ -1402,7 +1450,6 @@ namespace PT {
                 std::size_t part_number = group.getPartNumber(image_index);
                 group.switchParts(*it, part_number);
             }
-            pano.changeFinished();
             return true;
         }
         
@@ -1431,7 +1478,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.updateMasksForImage(m_img,m_mask);
-                pano.changeFinished();
 
                 return true;
             }
@@ -1461,7 +1507,6 @@ namespace PT {
         virtual bool processPanorama(Panorama& pano)
             {
                 pano.updateWhiteBalance(m_red,m_blue);
-                pano.changeFinished();
 
                 return true;
             }
@@ -1492,7 +1537,6 @@ namespace PT {
                 HuginBase::PanoramaOptions opts=pano.getOptions();
                 opts.outputExposureValue = PT::calcMeanExposure(pano);
                 pano.setOptions(opts);
-                pano.changeFinished();
 
                 return true;
             }
@@ -1500,6 +1544,83 @@ namespace PT {
         virtual std::string getName() const
             {
                 return "set exposure to mean exposure";
+            }
+    };
+
+    //=========================================================================
+    //=========================================================================
+
+    /** distributes all images above the sphere, for the assistant */
+    class DistributeImagesCmd : public PanoCommand
+    {
+    public:
+        DistributeImagesCmd(Panorama & p)
+            : PanoCommand(p)
+        { };
+
+        virtual bool processPanorama(Panorama& pano)
+            {
+                int nrImages=pano.getNrOfImages();
+                if(nrImages>0)
+                {
+                    const SrcPanoImage& img=pano.getImage(0);
+                    double hfov=img.getHFOV();
+                    int imgsPerRow;
+                    //distribute all images
+                    //for rectilinear images calculate number of rows
+                    if(img.getProjection()==HuginBase::SrcPanoImage::RECTILINEAR)
+                    {
+                        imgsPerRow=std::max(3, int(360/(0.8*hfov)));
+                        imgsPerRow=std::min(imgsPerRow, nrImages);
+                    }
+                    else
+                    {
+                        //all other images do in one row to prevent cluttered images with fisheye images and the like
+                        imgsPerRow=nrImages;
+                    };
+                    double offset=0.75*hfov;
+                    if((imgsPerRow-1)*offset>360)
+                    {
+                        offset=360/(imgsPerRow-1);
+                    };
+                    double yaw=-(imgsPerRow-1)/2.0*offset;
+                    double pitch=0;
+                    if(imgsPerRow<nrImages)
+                    {
+                        pitch=(-(std::ceil(double(nrImages)/double(imgsPerRow))-1)/2.0*offset);
+                    };
+                    HuginBase::VariableMapVector varsVec=pano.getVariables();
+                    size_t counter=0;
+                    for(size_t i=0; i<nrImages; i++)
+                    {
+                        HuginBase::VariableMap::iterator it=varsVec[i].find("y");
+                        if(it!=varsVec[i].end())
+                        {
+                            it->second.setValue(yaw);
+                        };
+                        it=varsVec[i].find("p");
+                        if(it!=varsVec[i].end())
+                        {
+                            it->second.setValue(pitch);
+                        };
+                        yaw+=offset;
+                        counter++;
+                        if(counter==imgsPerRow)
+                        {
+                            counter=0;
+                            pitch+=offset;
+                            yaw=-(imgsPerRow-1)/2.0*offset;
+                        };
+                    };
+                    pano.updateVariables(varsVec);
+                };
+
+                return true;
+            }
+        
+        virtual std::string getName() const
+            {
+                return "distribute images";
             }
     };
 

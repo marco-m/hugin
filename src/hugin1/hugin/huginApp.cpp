@@ -37,14 +37,11 @@
 
 #include "hugin/config_defaults.h"
 #include "hugin/huginApp.h"
-#include "hugin/AssistantPanel.h"
 #include "hugin/ImagesPanel.h"
-#include "hugin/CropPanel.h"
 #include "hugin/MaskEditorPanel.h"
 #include "hugin/CPEditorPanel.h"
 #include "hugin/OptimizePhotometricPanel.h"
 #include "hugin/PanoPanel.h"
-#include "hugin/LensPanel.h"
 #include "hugin/ImagesList.h"
 #include "hugin/PreviewPanel.h"
 #include "hugin/GLPreviewFrame.h"
@@ -52,6 +49,8 @@
 #include "hugin/CommandHistory.h"
 #include "hugin/wxPanoCommand.h"
 #include "hugin/HtmlWindow.h"
+#include "hugin/treelistctrl.h"
+#include "hugin/ImagesTree.h"
 
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
@@ -301,14 +300,7 @@ bool huginApp::OnInit()
     #else
 
     // add custom XRC handlers
-    wxXmlResource::Get()->AddHandler(new AssistantPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new ImagesPanelXmlHandler());
-    wxXmlResource::Get()->AddHandler(new LensPanelXmlHandler());
-    wxXmlResource::Get()->AddHandler(new ImagesListImageXmlHandler());
-    wxXmlResource::Get()->AddHandler(new ImagesListLensXmlHandler());
-    wxXmlResource::Get()->AddHandler(new ImagesListCropXmlHandler());
-    wxXmlResource::Get()->AddHandler(new CropPanelXmlHandler());
-    wxXmlResource::Get()->AddHandler(new CenterCanvasXmlHandler());
     wxXmlResource::Get()->AddHandler(new CPEditorPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new CPImageCtrlXmlHandler());
     wxXmlResource::Get()->AddHandler(new CPImagesComboBoxXmlHandler());
@@ -320,9 +312,10 @@ bool huginApp::OnInit()
     wxXmlResource::Get()->AddHandler(new PanoPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new PreviewPanelXmlHandler());
     wxXmlResource::Get()->AddHandler(new HtmlWindowXmlHandler());
+    wxXmlResource::Get()->AddHandler(new wxTreeListCtrlXmlHandler());
+    wxXmlResource::Get()->AddHandler(new ImagesTreeCtrlXmlHandler());
 
     // load XRC files
-    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("crop_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("cp_list_frame.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("preview_frame.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("edit_script_dialog.xrc"));
@@ -335,13 +328,12 @@ bool huginApp::OnInit()
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("optimize_photo_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("cp_editor_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("images_panel.xrc"));
-    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("lens_panel.xrc"));
-    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("assistant_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("main_frame.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("optimize_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("pano_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("mask_editor_panel.xrc"));
     wxXmlResource::Get()->Load(m_xrcPrefix + wxT("lensdb_dialogs.xrc"));
+    wxXmlResource::Get()->Load(m_xrcPrefix + wxT("image_variable_dlg.xrc"));
 #endif
 
 #ifdef __WXMAC__
@@ -354,9 +346,6 @@ bool huginApp::OnInit()
     frame = new MainFrame(NULL, pano);
     SetTopWindow(frame);
 
-    // restore layout
-    frame->RestoreLayoutOnNextResize();
-
     // setup main frame size, after it has been created.
     RestoreFramePosition(frame, wxT("MainFrame"));
 #ifdef __WXMSW__
@@ -365,8 +354,17 @@ bool huginApp::OnInit()
     frame->SendSizeEvent();
 #endif
 
+    // we are closing Hugin, if the top level window is deleted
+    SetExitOnFrameDelete(true);
     // show the frame.
-    frame->Show(TRUE);
+    if(frame->GetGuiLevel()==GUI_SIMPLE)
+    {
+        SetTopWindow(frame->getGLPreview());
+    }
+    else
+    {
+        frame->Show(TRUE);
+    };
 
     wxString cwd = wxFileName::GetCwd();
 
@@ -411,7 +409,20 @@ bool huginApp::OnInit()
     GlobalCmdHist::getInstance().addCommand(new wxNewProjectCmd(pano));
     GlobalCmdHist::getInstance().clear();
 
-    if (argc > 1) {
+    // suppress tiff warnings
+    TIFFSetWarningHandler(0);
+
+    if (argc > 1)
+    {
+#ifdef __WXMSW__
+        //on Windows we need to update the fast preview first
+        //otherwise there is an infinite loop when starting with a project file
+        //and closed panorama editor aka mainframe
+        if(frame->GetGuiLevel()==GUI_SIMPLE)
+        {
+            frame->getGLPreview()->Update();
+        };
+#endif
         wxFileName file(argv[1]);
         // if the first file is a project file, open it
         if (file.GetExt().CmpNoCase(wxT("pto")) == 0 ||
@@ -420,9 +431,9 @@ bool huginApp::OnInit()
         {
             if(file.IsRelative())
                 file.MakeAbsolute(cwd);
-	    // Loading the project file with set actualPath to its
-	    // parent directory.  (actualPath is used as starting
-	    // directory by many subsequent file selection dialogs.)
+            // Loading the project file with set actualPath to its
+            // parent directory.  (actualPath is used as starting
+            // directory by many subsequent file selection dialogs.)
             frame->LoadProjectFile(file.GetFullPath());
         } else {
             std::vector<std::string> filesv;
@@ -477,9 +488,14 @@ bool huginApp::OnInit()
                 } while (dir.GetNext(&foundFile));
 #endif
             }
-            GlobalCmdHist::getInstance().addCommand(
-                    new PT::wxAddImagesCmd(pano,filesv)
-                                                );
+            if(filesv.size()>0)
+            {
+                std::vector<PT::PanoCommand*> cmds;
+                cmds.push_back(new PT::wxAddImagesCmd(pano,filesv));
+                cmds.push_back(new PT::DistributeImagesCmd(pano));
+                cmds.push_back(new PT::CenterPanoCmd(pano));
+                GlobalCmdHist::getInstance().addCommand(new PT::CombinedPanoCommand(pano, cmds));
+            }
         }
     }
 #ifdef __WXMAC__
@@ -502,12 +518,6 @@ bool huginApp::OnInit()
 			frame->OnTipOfDay(dummy);
 		}
 	}
-
-    // suppress tiff warnings
-    TIFFSetWarningHandler(0);
-
-    pano.changeFinished();
-    pano.clearDirty();
 
     DEBUG_TRACE("=========================== huginApp::OnInit() end ===================");
     return true;

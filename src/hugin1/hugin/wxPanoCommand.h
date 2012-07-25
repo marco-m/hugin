@@ -29,7 +29,6 @@
 #include "PT/PanoToolsUtils.h"
 #include "PT/PanoCommand.h"
 #include "vigra/impex.hxx"
-#include "hugin/LensPanel.h"
 #include "hugin/config_defaults.h"
 #include "base_wx/platform.h"
 
@@ -54,7 +53,7 @@ public:
     : PanoCommand(pano), files(newfiles)
     { };
 
-    virtual void execute();
+    virtual bool processPanorama(Panorama& pano);
 
     virtual std::string getName() const
         {
@@ -77,9 +76,9 @@ public:
           filename(filename),
           prefix(prefix),
           markAsOptimized(markAsOptimized)
-    { };
+    { m_clearDirty=true; };
 
-    virtual void execute();
+    virtual bool processPanorama(Panorama& pano);
 
     virtual std::string getName() const
     {
@@ -97,9 +96,9 @@ private:
 class wxNewProjectCmd : public PanoCommand
 {
 public:
-    wxNewProjectCmd(Panorama & p) : PanoCommand(p){};
+    wxNewProjectCmd(Panorama & p) : PanoCommand(p) { m_clearDirty=true; };
 
-    virtual void execute();
+    virtual bool processPanorama(Panorama& pano);
 
     virtual std::string getName() const
     {
@@ -119,7 +118,7 @@ public:
           in(i)
     { };
 
-    virtual void execute();
+    virtual bool processPanorama(Panorama& pano);
 
     virtual std::string getName() const
     {
@@ -142,7 +141,7 @@ private:
             : PanoCommand(p), img1(i1), img2(i2), scale(scale), cornerThreshold(threshold)
             { }
 
-        virtual void execute();
+        virtual bool processPanorama(Panorama& pano);
 
         virtual std::string getName() const
             {
