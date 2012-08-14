@@ -7,7 +7,8 @@
         <object class="wxScrolledWindow" name="optimize_controls_panel">
           <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
+            
+            <object class="sizeritem"> <!-- top of opt panel: quick opt text label, dev's pano/mos mode, pulldown menu -->
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
@@ -23,6 +24,22 @@
                   <flag>wxBOTTOM</flag>
                   <border>6</border>
                 </object>
+
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="opt_panel_mosaic_text">
+                        <label>temp</label>
+                      </object>
+                      <flag>wxBOTTOM|wxEXPAND|wxADJUST_MINSIZE</flag>
+                      <border>6</border>
+                    </object>
+                  </object>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>12</border>
+                </object>
+
                 <object class="sizeritem">
                   <object class="wxBoxSizer">
                     <orient>wxHORIZONTAL</orient>
@@ -74,16 +91,24 @@
               <flag>wxALL|wxEXPAND</flag>
               <border>6</border>
             </object>
-            <object class="sizeritem">
-              <object class="wxBoxSizer">
+
+            <object class="sizeritem"> <!-- Dev: sizeritem for "bottom of opt panel"
+                                            1. any vars text, 
+                                            2. selected images checkbox, 
+                                            3. image orientation, 
+                                            4. NEW mosaic mode image orientation boxes (x,y,z, spin, tilt rotate)
+                                            5. lens params 
+                                            6. edit script check box-->
+
+              <object class="wxBoxSizer"> <!-- wxBoxsizer for "bottom of opt panel" -->
                 <orient>wxVERTICAL</orient>
                 <object class="spacer">
                   <size>0,15</size>
                 </object>
-                <object class="sizeritem">
+
+                <object class="sizeritem"> <!-- Dev: any vars text -->
                   <object class="wxStaticText">
-                    <label>Any variables below which are marked [x] will be optimized.
-Variables which are cleared [ ] will act as references or anchors.</label>
+                    <label>Any variables below which are marked [x] will be optimized. \n Variables which are cleared [ ] will act as references or anchors.</label>
                   </object>
                   <flag>wxLEFT</flag>
                   <border>12</border>
@@ -91,7 +116,8 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                 <object class="spacer">
                   <size>0,6</size>
                 </object>
-                <object class="sizeritem">
+
+                <object class="sizeritem"> <!-- selected images checkbox -->
                   <object class="wxCheckBox" name="optimizer_only_active_images">
                     <label>Only use control points between image selected in preview window.</label>
                     <checked>0</checked>
@@ -103,12 +129,18 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                 <object class="spacer">
                   <size>0,20</size>
                 </object>
-                <object class="sizeritem">
+
+                <object class="sizeritem"> <!-- Dev: 3. image orientation, 
+                                                     4. NEW image orientation boxes (x,y,z, spin, tilt rotate)
+                                                     5. lens params  -->
                   <object class="wxBoxSizer">
                     <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
+
+                    <object class="sizeritem">  <!-- Dev: 3a. image orientation text label, 
+                                                          3b. image orientation -->
                       <object class="wxBoxSizer">
-                        <object class="sizeritem">
+
+                        <object class="sizeritem"> <!-- Dev: Image Orientation text label -->
                           <object class="wxStaticText">
                             <label>Image Orientation</label>
                             <font>
@@ -122,10 +154,12 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                           <border>6</border>
                         </object>
                         <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxGridSizer">
-                            <object class="sizeritem">
-                              <object class="wxBoxSizer">
+
+                        <object class="sizeritem"> <!-- Dev: 6x1 y,p,r,x,y,z checklistboxes w/ labels and all/none controls-->
+                          <object class="wxGridSizer"> <!-- Dev: begin OLD gridsizer for pano mode params, y,p,r,x,y,z -->
+
+                            <object class="sizeritem">  <!-- yaw checklist box with text label, controls -->
+                              <object class="wxBoxSizer"> 
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
                                   <object class="wxStaticText">
@@ -166,7 +200,8 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <option>1</option>
                               <flag>wxEXPAND</flag>
                             </object>
-                            <object class="sizeritem">
+
+                            <object class="sizeritem"> <!-- pitch checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
@@ -208,7 +243,8 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <option>1</option>
                               <flag>wxEXPAND</flag>
                             </object>
-                            <object class="sizeritem">
+
+                            <object class="sizeritem"> <!-- roll checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
@@ -250,14 +286,15 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <option>1</option>
                               <flag>wxEXPAND</flag>
                             </object>
-                            <cols>6</cols>
+                            <cols>6</cols> <!-- top (original y,p,r,x,y,z gridsizer dimensions -->
                             <rows>1</rows>
                             <hgap>12</hgap>
-                            <object class="sizeritem">
+
+                            <object class="sizeritem"> <!-- X checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="">
                                     <label>X:</label>
                                   </object>
                                 </object>
@@ -295,11 +332,12 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <option>1</option>
                               <flag>wxEXPAND</flag>
                             </object>
-                            <object class="sizeritem">
+
+                            <object class="sizeritem"> <!-- Y checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="">
                                     <label>Y:</label>
                                   </object>
                                 </object>
@@ -337,11 +375,12 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <option>1</option>
                               <flag>wxEXPAND</flag>
                             </object>
-                            <object class="sizeritem">
+
+                            <object class="sizeritem"> <!-- Z checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="">
                                     <label>Z:</label>
                                   </object>
                                 </object>
@@ -378,15 +417,34 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               </object>
                               <option>1</option>
                               <flag>wxEXPAND</flag>
-                            </object>
+                            </object> 
+
+                          </object> <!-- Dev: end OLD gridsizer for pano mode params, y,p,r,x,y,z -->
+                          <option>1</option>
+                          <flag>wxLEFT|wxEXPAND</flag>
+                          <border>12</border>                                                  
+
+                        </object>                        
+
+                      </object>
+                      <option>3</option>
+                      <flag>wxEXPAND</flag>
+                    </object>
+
+                    <object class="sizeritem">  <!-- copy of above sizeritem Dev: 3a. NO LABEL for now... later? mosaic  text label, 
+                                                           4. NEW image orientation boxes (x,y,z, spin, tilt rotate) -->
+                      <object class="wxBoxSizer" name="mosaic_params_sizer">
+
+                        <object class="sizeritem"> <!-- Dev: 3x1 s,t,r,x,y,z checklistboxes w/ labels and all/none controls-->                                                    
+                          <object class="wxGridSizer"> <!-- Dev: begin NEW gridsizer for mosaic mode params, s,t,r,x,y,z -->
+
                             
-                            
-                            <object class="sizeritem">
+                            <object class="sizeritem"> <!-- spin checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Spin:</label>
+                                  <object class="wxStaticText" name="opt_spin_label">
+                                    <label>Spin (Te0):</label>
                                   </object>
                                 </object>
                                 <object class="sizeritem">
@@ -424,12 +482,12 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <flag>wxEXPAND</flag>
                             </object>
 
-                            <object class="sizeritem">
+                            <object class="sizeritem"> <!-- tilt checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Tilt:</label>
+                                  <object class="wxStaticText" name="opt_tilt_label">
+                                    <label>Tilt (Te1):</label>
                                   </object>
                                 </object>
                                 <object class="sizeritem">
@@ -467,12 +525,12 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <flag>wxEXPAND</flag>
                             </object>
 
-                            <object class="sizeritem">
+                            <object class="sizeritem"> <!-- rotate checklist box with text label, controls -->
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Rotate:</label>
+                                  <object class="wxStaticText" name="opt_rot_label">
+                                    <label>Rotate (Te2):</label>
                                   </object>
                                 </object>
                                 <object class="sizeritem">
@@ -510,22 +568,30 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                               <flag>wxEXPAND</flag>
                             </object>
 
-                          </object>
+                                                 
+                            <cols>6</cols>
+                            <rows>1</rows>
+                            <hgap>12</hgap>
+
+                          </object> <!-- Dev: end of NEW gridsizer for mosaic mode params, s,t,r,x,y,z -->
                           <option>1</option>
                           <flag>wxLEFT|wxEXPAND</flag>
                           <border>12</border>
                         </object>
+
                       </object>
                       <option>3</option>
                       <flag>wxEXPAND</flag>
                     </object>
-                    <object class="sizeritem">
+
+                    <object class="sizeritem">  <!-- Lens params title text and checklistboxes -->
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="spacer">
                           <size>0,20</size>
                         </object>
-                        <object class="sizeritem">
+
+                        <object class="sizeritem"> <!-- Dev: Lens Parameter Text -->
                           <object class="wxStaticText">
                             <label>Lens Parameters</label>
                             <font>
@@ -538,7 +604,7 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                           <flag>wxBOTTOM</flag>
                           <border>6</border>
                         </object>
-                        <object class="sizeritem">
+                        <object class="sizeritem"> <!-- Dev: 6x1 array of Lens Parameter checklist boxes w/titles and all/none controls -->
                           <object class="wxGridSizer">
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
@@ -801,21 +867,25 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                           <flag>wxLEFT|wxEXPAND</flag>
                           <border>12</border>
                         </object>
+
                       </object>
                       <option>2</option>
                       <flag>wxEXPAND</flag>
                     </object>
+
                   </object>
                   <option>1</option>
                   <flag>wxEXPAND</flag>
                 </object>
-                <object class="sizeritem">
+
+                <object class="sizeritem">  <!-- Dev: edit script box -->
                   <object class="wxCheckBox" name="optimizer_edit_script">
                     <label>edit script before optimizing</label>
                     <tooltip>for advanced users</tooltip>
                   </object>
                   <flag>wxALL|wxALIGN_CENTRE_VERTICAL|wxALIGN_RIGHT</flag>
                 </object>
+
               </object>
               <option>1</option>
               <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>

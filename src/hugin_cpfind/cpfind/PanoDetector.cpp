@@ -639,6 +639,11 @@ bool PanoDetector::loadProject()
 		img.setX(0);
 		img.setY(0);
 		img.setZ(0);
+        img.setSpin(0);
+        img.setTilt(0);
+        img.setRotate(0);
+
+
 		img.setActive(true);
 		img.setResponseType(SrcPanoImage::RESPONSE_LINEAR);
 		img.setExposureValue(0);

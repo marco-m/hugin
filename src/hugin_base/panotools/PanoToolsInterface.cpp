@@ -189,6 +189,35 @@ void Transform::createTransform(const vigra::Diff2D & srcSize,
 
     updatePTData(srcSize, srcVars, srcProj,
                  destSize, destProj, destProjParam, destHFOV);
+
+    // switch( transf.m_mosaicPanoFlag)
+	// 1 -> trz = 0 for src and dest
+	// 5 ->  trz = 1 for dst and trz = 0 for src
+	// all others -> error
+
+    switch(getTransformFlag())
+    {
+    case 1: // panorama mode/forward transform
+    	//std::cout << "Dev: pano/fwd. Old TrZ  src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+    	m_dstImage.cP.trans_z = 0;
+    	m_srcImage.cP.trans_z = 0;
+    	//std::cout << " NEW TrZ for src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+    	//std::cout<< " src proj:" << m_srcImage.format << " dest proj: " << m_dstImage.format << endl;
+    	break;
+    case 5: // mosaic mode/forward transform
+    	//std::cout << "Dev: mosaic/fwd. Old TrZ  src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+		m_dstImage.cP.trans_z = 1;
+		m_srcImage.cP.trans_z = 0;
+    	//std::cout << " NEW TrZ for src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+    	//std::cout<< " src proj:" << m_srcImage.format << " dest proj: " << m_dstImage.format << endl;
+    	break;
+    //default:
+    	//std::cout << "Transform::createTransform error" << endl;
+    	// error - replace with hugin error
+
+    }
+
+
     // create the actual stack
     SetMakeParams( m_stack, &m_mp, &m_srcImage , &m_dstImage, 0 );
 }
@@ -202,6 +231,14 @@ void Transform::createInvTransform(const PanoramaData & pano, unsigned int imgNr
         srcSize.x = img.getWidth();
         srcSize.y = img.getHeight();
     }
+
+    //Dev:
+    //std::cout << "Dev: inverse function source projection:" << pano.getImage(imgNr).getProjection() << endl;
+    //std::cout << "Dev: inverse function dest projection:" << dest.getProjection() << endl;
+    //if ((Lens::LensProjectionFormat)pano.getImage(imgNr).getProjection() == _rectilinear){
+	//	std::cout << "Dev: inverse function source projection == rectilinear " << endl;
+    //}
+
     createInvTransform(srcSize,
                        pano.getImageVariables(imgNr),
                        (Lens::LensProjectionFormat)pano.getImage(imgNr).getProjection(),
@@ -239,6 +276,32 @@ void Transform::createInvTransform(const vigra::Diff2D & srcSize,
                  destSize, destProj, 
                  destProjParam,
                  destHFOV);
+    // Dev:
+	// switch( transf.m_mosaicPanoFlag)
+	// 3 -> trz = 0 for src and dest
+	// 7 ->  m_srcImage->cP.trans_z = 0 for dst and trz = 1 for src
+	// all others -> error
+    switch(getTransformFlag())
+	{
+	case 3: // panorama mode/inverse transform
+		//std::cout << "Dev: pano/inv. Old TrZ  src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+		m_dstImage.cP.trans_z = 0;
+		m_srcImage.cP.trans_z = 0;
+    	//std::cout << " NEW TrZ for src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+    	//std::cout<< " src proj:" << m_srcImage.format << " dest proj: " << m_dstImage.format << endl;
+		break;
+	case 7: // mosaic mode/inverse transform
+		//std::cout << "Dev: mos/inv. Old TrZ  src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+		m_dstImage.cP.trans_z = 1;
+		m_srcImage.cP.trans_z = 0;
+    	//std::cout << " NEW TrZ for src:" << m_srcImage.cP.trans_z << " / dest:" << m_dstImage.cP.trans_z;
+    	//std::cout<< " src proj:" << m_srcImage.format << " dest proj: " << m_dstImage.format << endl;
+		break;
+	//default:
+		//std::cout << "Transform createInvTransform error" << endl;
+		// error - replace with hugin error
+	}
+
     // create the actual stack
     SetInvMakeParams( m_stack, &m_mp, &m_srcImage , &m_dstImage, 0 );
 }
@@ -325,7 +388,7 @@ AlignInfoWrap::~AlignInfoWrap()
 
 }
 
-
+//Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
 bool AlignInfoWrap::setInfo(const PanoramaData & pano)
 {
     const VariableMapVector & variables = pano.getVariables();
@@ -402,6 +465,8 @@ bool AlignInfoWrap::setInfo(const PanoramaData & pano)
     }
 
     const PanoramaOptions & opts = pano.getOptions();
+    //Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
+
     setDestImage(gl.pano, vigra::Diff2D(opts.getWidth(), opts.getHeight()),
                  0, opts.getProjection(), 
                  opts.getProjectionParameters(),
@@ -638,11 +703,17 @@ void initCPrefs(cPrefs & p, const VariableMap &vars)
     p.test_p0 = const_map_get(vars,"Te0").getValue();
     p.test_p1 = const_map_get(vars,"Te1").getValue();
     p.test_p2 = const_map_get(vars,"Te2").getValue();
-    if (p.trans_x != 0 || p.trans_y != 0 || p.trans_z != 0) {
-	p.trans = TRUE;
+    if (p.trans_x != 0 || p.trans_y != 0 || p.trans_z != 1) { 		// Dev: (TrX,TrY,TrZ) = (0, 0, 1) => default cam location
+	    p.trans = TRUE;
     } else {
-	p.trans = FALSE;
+	    p.trans = FALSE;
     }
+    if (p.test_p0 != 0 || p.test_p1 != 0 || p.test_p2 != 0) {		// Dev: (Te0,Te1,Te2) = (0, 0, 0) => cam looking directly at surface
+	    p.test = TRUE;
+	} else {
+	    p.test = FALSE;
+	}
+
 
     // FIXME add shear parameters
     val = const_map_get(vars, "g").getValue();
@@ -794,6 +865,7 @@ void freeImage(Image &img)
     }
 }
 
+//Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
 void setAdjustSrcImg(TrformStr & trf, aPrefs & ap,
                              int width, int height, unsigned char * imageData,
                              const VariableMap & vars,
@@ -809,6 +881,7 @@ void setAdjustSrcImg(TrformStr & trf, aPrefs & ap,
     ap.im = *(trf.src);
 }
 
+//Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
 void setAdjustDestImg(TrformStr & trf, aPrefs & ap,
                               int width, int height, unsigned char * imageData,
                               const PanoramaOptions & opts)
@@ -817,6 +890,7 @@ void setAdjustDestImg(TrformStr & trf, aPrefs & ap,
     if (trf.dest->data) {
         myfree((void**)trf.dest->data);
     }
+    //Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
     setDestImage(*(trf.dest), vigra::Diff2D(width, height), imageData, opts.getProjection(), 
                    opts.getProjectionParameters(),
                    opts.getHFOV());

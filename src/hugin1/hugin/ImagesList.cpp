@@ -447,9 +447,14 @@ bool ImagesListImage::Create(wxWindow* parent, wxWindowID id,
     InsertColumn( 7, _("X (TrX)"), wxLIST_FORMAT_RIGHT, 60 );
     InsertColumn( 8, _("Y (TrY)"), wxLIST_FORMAT_RIGHT, 60 );
     InsertColumn( 9, _("Z (TrZ)"), wxLIST_FORMAT_RIGHT, 60 );
-    InsertColumn( 10, _("Anchor"), wxLIST_FORMAT_RIGHT, 60 );
-    InsertColumn( 11, _("# Ctrl Pnts"), wxLIST_FORMAT_RIGHT, 60);
-    InsertColumn( 12, _("Stack Number"), wxLIST_FORMAT_RIGHT, 60);
+
+    InsertColumn( 10, _("Spin (Te0)"), wxLIST_FORMAT_RIGHT, 60 );
+    InsertColumn( 11, _("Tilt (Te1)"), wxLIST_FORMAT_RIGHT, 60 );
+    InsertColumn( 12, _("Rotate (Te2)"), wxLIST_FORMAT_RIGHT, 75 );
+
+    InsertColumn( 13, _("Anchor"), wxLIST_FORMAT_RIGHT, 60 );
+    InsertColumn( 14, _("# Ctrl Pnts"), wxLIST_FORMAT_RIGHT, 60);
+    InsertColumn( 15, _("Stack Number"), wxLIST_FORMAT_RIGHT, 60);
     
     //get saved width
     for ( int j=0; j < GetColumnCount() ; j++ )
@@ -485,6 +490,12 @@ void ImagesListImage::UpdateItem(unsigned int imgNr)
     SetItem(imgNr, 7, doubleTowxString(img.getX(), m_distDigits));
     SetItem(imgNr, 8, doubleTowxString(img.getY(), m_distDigits));
     SetItem(imgNr, 9, doubleTowxString(img.getZ(), m_distDigits));
+    
+    SetItem(imgNr, 10, doubleTowxString(img.getSpin(), m_distDigits));
+    SetItem(imgNr, 11, doubleTowxString(img.getTilt(), m_distDigits));
+    SetItem(imgNr, 12, doubleTowxString(img.getRotate(), m_distDigits));
+
+
     wxChar flags[] = wxT("--");
     if (pano->getOptions().optimizeReferenceImage == imgNr) {
         flags[0]='A';
@@ -492,7 +503,7 @@ void ImagesListImage::UpdateItem(unsigned int imgNr)
     if (pano->getOptions().colorReferenceImage == imgNr) {
         flags[1]='C';
     }
-    SetItem(imgNr,10, wxString(flags, wxConvLocal));
+    SetItem(imgNr,13, wxString(flags, wxConvLocal));
     // urgh.. slow.. stupid.. traverse control point list for each image..
     const CPVector & cps = pano->getCtrlPoints();
     int nCP=0;
@@ -501,13 +512,13 @@ void ImagesListImage::UpdateItem(unsigned int imgNr)
             nCP++;
         }
     }
-    SetItem(imgNr, 11, wxString::Format(wxT("%d"), nCP));
+    SetItem(imgNr, 14, wxString::Format(wxT("%d"), nCP));
 }
 
 void ImagesListImage::UpdatePartNumbersForItem(unsigned int imgNr)
 {
     unsigned int stackNumber = variable_groups->getStacks().getPartNumber(imgNr);
-    SetItem(imgNr, 12, wxString::Format(wxT("%d"), stackNumber));
+    SetItem(imgNr, 15, wxString::Format(wxT("%d"), stackNumber));
 }
 
 IMPLEMENT_DYNAMIC_CLASS(ImagesListImage, ImagesList)

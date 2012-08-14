@@ -232,7 +232,7 @@
                                   <object class="wxTextCtrl" name="images_text_X">
                                     <size>60,-1</size>
                                     <style>wxTE_PROCESS_ENTER</style>
-                                    <tooltip>set yaw for selected image(s)</tooltip>
+                                    <tooltip>set X for selected image(s)</tooltip>
                                   </object>
                                   <flag>wxALIGN_CENTRE_VERTICAL</flag>
                                 </object>
@@ -246,7 +246,7 @@
                                   <object class="wxTextCtrl" name="images_text_Y">
                                     <size>60,-1</size>
                                     <style>wxTE_PROCESS_ENTER</style>
-                                    <tooltip>set pitch for selected image(s)</tooltip>
+                                    <tooltip>set Y for selected image(s)</tooltip>
                                   </object>
                                   <flag>wxALIGN_CENTRE_VERTICAL</flag>
                                 </object>
@@ -260,23 +260,72 @@
                                   <object class="wxTextCtrl" name="images_text_Z">
                                     <size>60,-1</size>
                                     <style>wxTE_PROCESS_ENTER</style>
-                                    <tooltip>set roll for selected image(s)</tooltip>
+                                    <tooltip>set Z for selected image(s)</tooltip>
                                   </object>
                                   <flag>wxALIGN_CENTRE_VERTICAL</flag>
                                 </object>
+                                <!--
+                                <object class="spacer">
+                                  <size>12,6</size>
+                                </object>
+                              -->
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="images_reset_pos">
+                                    <label>Reset</label>
+                                    <style></style>
+                                    <tooltip>Reset position of selected image(s)</tooltip>
+                                  </object>
+                                  <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+
+
+                                <object class="sizeritem">
+                                <object class="wxStaticText">
+                                  <label>Spin:</label>
+                                </object>
+                                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="images_text_S">
+                                    <size>60,-1</size>
+                                    <style>wxTE_PROCESS_ENTER</style>
+                                    <tooltip>set Spin for selected image(s)</tooltip>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText">
+                                    <label>Tilt:</label>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="images_text_T">
+                                    <size>60,-1</size>
+                                    <style>wxTE_PROCESS_ENTER</style>
+                                    <tooltip>set Tilt for selected image(s)</tooltip>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText" name="">
+                                    <label>Rotate:</label>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="images_text_R">
+                                    <size>60,-1</size>
+                                    <style>wxTE_PROCESS_ENTER</style>
+                                    <tooltip>set Rotate for selected image(s)</tooltip>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+
                               </object>
-                            </object>
-                            <object class="spacer">
-                              <size>12,6</size>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxButton" name="images_reset_pos">
-                                <label>Reset</label>
-                                <style></style>
-                                <tooltip>Reset position of selected image(s)</tooltip>
-                              </object>
-                              <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                            </object>
+                            </object>                            
+
+
                           </object>
                           <flag>wxLEFT</flag>
                           <border>12</border>

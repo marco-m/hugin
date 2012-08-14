@@ -1877,7 +1877,7 @@ CPDetectorSetting& MainFrame::GetDefaultSetting()
 
 void MainFrame::RestoreLayoutOnNextResize()
 {
-    cout << "MainFrame::RestoreLayoutOnNextResize()" << endl;
+    //cout << "MainFrame::RestoreLayoutOnNextResize()" << endl;
     m_doRestoreLayout = true;
     //crop_panel->RestoreLayoutOnNextResize();
     //images_panel->RestoreLayoutOnNextResize();

@@ -55,7 +55,7 @@ class IMPEX PanoramaMemento : public PanoramaDataMemento
         
     public:
         PanoramaMemento()
-        : PanoramaDataMemento(), needsOptimization(false)
+        : PanoramaDataMemento(), needsOptimization(false), PMmosaicNotPano(false)
         {};
         
         /// copy ctor.
@@ -66,6 +66,15 @@ class IMPEX PanoramaMemento : public PanoramaDataMemento
         
         virtual ~PanoramaMemento();
         
+        /*bool isPMmosaicNotPano()
+        {
+            return PMmosaicNotPano; 
+        }
+
+        void setPMmosaicNotPano(bool PMmosNotPano)
+        {
+            PMmosaicNotPano = PMmosNotPano;
+        }*/
         
     protected:
         /** enum for supported PTScript syntax bastards */
@@ -108,10 +117,10 @@ class IMPEX PanoramaMemento : public PanoramaDataMemento
         // last optimisation
         bool needsOptimization;
 
-	// Dev: set boolean "mosaicNotPano" to true to indicate user is
-	// optimizing six-parameter mosaic model (TrX, TrY, TrZ, Te0, Te1, Te2)
-	// not a panorama.
-	bool mosaicNotPano;
+    	// Dev: set boolean "PMmosaicNotPano" to true to indicate user is
+    	// optimizing six-parameter mosaic model (TrX, TrY, TrZ, Te0, Te1, Te2)
+    	// not a panorama.
+    	bool PMmosaicNotPano;  // Class PanoramaMemento mosaicNotPano flag (not Class Panorama)
         
         void deleteAllImages();
 };
@@ -490,8 +499,15 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
 
         bool isMosaicNotPano()
         {
-             return mosaicNotPano;
+             return state.PMmosaicNotPano;
         }
+
+        void setMosaicNotPano(const bool mosNotPano)
+        {
+        	state.PMmosaicNotPano = mosNotPano;
+            state.options.PO_setMosaicNotPano(mosNotPano);  // propagate mosaic mode to Class PanoramaOptions
+        	//std::cout<<"set PanoramaMemento state.mosaicNotPano flag to true\n";
+		}
 
     //=========== ManagedPanoramaData ==============================================
 
@@ -626,11 +642,8 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
             changeFinished(true);
         }
 
-        void setMosaicNotPano(const bool mosNotPano)
-        {
-             this->mosaicNotPano = mosNotPano;
-        }
         
+
     protected:
         void setDirty(const bool& dirty = true)
         { 
@@ -709,9 +722,9 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         std::set<std::string> m_ptoptimizerVarNames;
 
         // Dev: set boolean "mosaicNotPano" to true to indicate user is
-	// optimizing six-parameter mosaic model (TrX, TrY, TrZ, Te0, Te1, Te2)
-	// not a panorama.
-	bool mosaicNotPano;
+	    // optimizing six-parameter mosaic model (TrX, TrY, TrZ, Te0, Te1, Te2)
+	    // not a panorama.
+	    bool mosaicNotPano;
 };
 
 

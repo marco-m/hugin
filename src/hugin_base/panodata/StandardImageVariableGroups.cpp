@@ -78,7 +78,10 @@ const ConstImageVariableGroup::ImageVariableEnum stack_variables_array[]
                ImageVariableGroup::IVE_Stack,
                ImageVariableGroup::IVE_X,
                ImageVariableGroup::IVE_Y,
-               ImageVariableGroup::IVE_Z
+               ImageVariableGroup::IVE_Z,
+               ImageVariableGroup::IVE_Spin,
+               ImageVariableGroup::IVE_Tilt,
+               ImageVariableGroup::IVE_Rotate
             };
 
 /** A set containing the stack image variables.

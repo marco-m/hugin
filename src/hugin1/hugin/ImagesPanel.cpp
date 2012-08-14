@@ -102,6 +102,12 @@ BEGIN_EVENT_TABLE(ImagesPanel, wxPanel)
     EVT_TEXT_ENTER ( XRCID("images_text_X"), ImagesPanel::OnVarTextChanged )
     EVT_TEXT_ENTER ( XRCID("images_text_Y"), ImagesPanel::OnVarTextChanged )
     EVT_TEXT_ENTER ( XRCID("images_text_Z"), ImagesPanel::OnVarTextChanged )
+
+    EVT_TEXT_ENTER ( XRCID("images_text_S"), ImagesPanel::OnVarTextChanged )
+    EVT_TEXT_ENTER ( XRCID("images_text_T"), ImagesPanel::OnVarTextChanged )
+    EVT_TEXT_ENTER ( XRCID("images_text_R"), ImagesPanel::OnVarTextChanged )
+
+
     EVT_CHECKBOX   ( XRCID("images_check_link"), ImagesPanel::OnImageLinkChanged )
     EVT_COMMAND    (wxID_ANY, EVT_IMAGE_ADD, ImagesPanel::OnAddImages )
     EVT_COMMAND    (wxID_ANY, EVT_IMAGE_DEL, ImagesPanel::OnRemoveImages )
@@ -172,6 +178,10 @@ bool ImagesPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, co
     XRCCTRL(*this, "images_text_Y", wxTextCtrl)->PushEventHandler(new TextKillFocusHandler(this));
     XRCCTRL(*this, "images_text_Z", wxTextCtrl)->PushEventHandler(new TextKillFocusHandler(this));
 
+    XRCCTRL(*this, "images_text_S", wxTextCtrl)->PushEventHandler(new TextKillFocusHandler(this));
+    XRCCTRL(*this, "images_text_T", wxTextCtrl)->PushEventHandler(new TextKillFocusHandler(this));
+    XRCCTRL(*this, "images_text_R", wxTextCtrl)->PushEventHandler(new TextKillFocusHandler(this));
+
     m_empty.Create(0,0);
 //    m_empty.LoadFile(huginApp::Get()->GetXRCPath() +
 //                     wxT("data/") + wxT("transparent.png"),
@@ -215,6 +225,10 @@ ImagesPanel::~ImagesPanel()
     XRCCTRL(*this, "images_text_X", wxTextCtrl)->PopEventHandler(true);
     XRCCTRL(*this, "images_text_Y", wxTextCtrl)->PopEventHandler(true);
     XRCCTRL(*this, "images_text_Z", wxTextCtrl)->PopEventHandler(true);
+
+    XRCCTRL(*this, "images_text_S", wxTextCtrl)->PopEventHandler(true);
+    XRCCTRL(*this, "images_text_T", wxTextCtrl)->PopEventHandler(true);
+    XRCCTRL(*this, "images_text_R", wxTextCtrl)->PopEventHandler(true);
 /*
     delete(m_tkf);
 */
@@ -393,7 +407,7 @@ void ImagesPanel::OnVarTextChanged ( wxCommandEvent & e )
 	double val;
 
 	
-	const char vars[] = "rpyXYZ";
+	const char vars[] = "rpyXYZSTR";
 	for (const char * var = vars; *var; var++) {
 	    wxString ctrl_name(wxT("images_text_"));
 	    ctrl_name.Append(wxChar(*var));
@@ -407,10 +421,28 @@ void ImagesPanel::OnVarTextChanged ( wxCommandEvent & e )
 
 		// hack to add the T to the x. This should really use SrcPanoImage instead..
 		char name[4];
-		if (*var > 'Z') {
+		if (*var > 'Z') { // var is 'r', 'p', or 'y'
 		    name[0] = *var; name[1] = 0;
 		} else {
-		    name[0] = 'T'; name[1]='r'; name[2]=*var; name[3] = 0;
+            if (*var > 'T') { // var is 'X', 'Y', or 'Z'
+                name[0] = 'T'; name[1]='r'; name[2]=*var; name[3] = 0;    // variable name is TrX, TrY, TrZ
+            }
+            else { // var must be 'S', 'T', or 'R'
+                name[0] = 'T'; name[1]='e'; name[3] = 0;    // variable name is Te0, Te1, Te2 (spin, tilt, rotate)
+                switch (*var) {
+                    case 'S': 
+                        name[2] = '0';
+                        break;
+                    case 'T':
+                        name[2] = '1';
+                        break;
+                    case 'R':
+                        name[2] = '2';
+                        break;
+                }
+                
+            }
+		    
 		}
 		if (!str2double(text, val)){
 		    DEBUG_NOTICE("Value (" << text << ") for var " << name << " must be numeric.");
@@ -524,6 +556,11 @@ void ImagesPanel::DisableImageCtrls()
     XRCCTRL(*this, "images_text_X", wxTextCtrl) ->Disable();
     XRCCTRL(*this, "images_text_Y", wxTextCtrl) ->Disable();
     XRCCTRL(*this, "images_text_Z", wxTextCtrl) ->Disable();
+
+    XRCCTRL(*this, "images_text_S", wxTextCtrl) ->Disable();
+    XRCCTRL(*this, "images_text_T", wxTextCtrl) ->Disable();
+    XRCCTRL(*this, "images_text_R", wxTextCtrl) ->Disable();
+
     m_smallImgCtrl->SetBitmap(m_empty);
     m_smallImgCtrl->GetParent()->Layout();
     m_smallImgCtrl->Refresh();
@@ -548,6 +585,12 @@ void ImagesPanel::EnableImageCtrls()
         XRCCTRL(*this, "images_text_X", wxTextCtrl) ->Enable();
         XRCCTRL(*this, "images_text_Y", wxTextCtrl) ->Enable();
         XRCCTRL(*this, "images_text_Z", wxTextCtrl) ->Enable();
+
+        XRCCTRL(*this, "images_text_S", wxTextCtrl) ->Enable();
+        XRCCTRL(*this, "images_text_T", wxTextCtrl) ->Enable();
+        XRCCTRL(*this, "images_text_R", wxTextCtrl) ->Enable();
+
+
         m_moveDownButton->Enable();
         m_moveUpButton->Enable();
         XRCCTRL(*this, "images_reset_pos", wxButton)->Enable();
@@ -582,6 +625,16 @@ void ImagesPanel::ShowImgParameters(unsigned int imgNr)
     val = doubleToString(const_map_get(vars,"TrZ").getValue(),m_degDigits);
     XRCCTRL(*this, "images_text_Z", wxTextCtrl) ->SetValue(wxString(val.c_str(), wxConvLocal));
     
+    val = doubleToString(const_map_get(vars,"Te0").getValue(),m_degDigits);
+    XRCCTRL(*this, "images_text_S", wxTextCtrl) ->SetValue(wxString(val.c_str(), wxConvLocal));
+
+    val = doubleToString(const_map_get(vars,"Te1").getValue(),m_degDigits);
+    XRCCTRL(*this, "images_text_T", wxTextCtrl) ->SetValue(wxString(val.c_str(), wxConvLocal));
+
+    val = doubleToString(const_map_get(vars,"Te2").getValue(),m_degDigits);
+    XRCCTRL(*this, "images_text_R", wxTextCtrl) ->SetValue(wxString(val.c_str(), wxConvLocal));
+
+
     m_linkCheckBox->SetValue(pano->getImage(imgNr).YawisLinked());
     
     ShowExifInfo(imgNr);
@@ -685,6 +738,10 @@ void ImagesPanel::ClearImgParameters()
     XRCCTRL(*this, "images_text_X", wxTextCtrl) ->Clear();
     XRCCTRL(*this, "images_text_Y", wxTextCtrl) ->Clear();
     XRCCTRL(*this, "images_text_Z", wxTextCtrl) ->Clear();
+
+    XRCCTRL(*this, "images_text_S", wxTextCtrl) ->Clear();
+    XRCCTRL(*this, "images_text_T", wxTextCtrl) ->Clear();
+    XRCCTRL(*this, "images_text_R", wxTextCtrl) ->Clear();
 
     m_smallImgCtrl->SetBitmap(m_empty);
     m_smallImgCtrl->GetParent()->Layout();
@@ -845,7 +902,12 @@ void ImagesPanel::OnResetImagePositions(wxCommandEvent & e)
             vars[i].insert(make_pair("r", Variable("r",pano->getSrcImage(*it).getExifOrientation())));
             vars[i].insert(make_pair("TrX", Variable("TrX",0.0)));
             vars[i].insert(make_pair("TrY", Variable("TrY",0.0)));
-            vars[i].insert(make_pair("TrZ", Variable("TrZ",0.0)));
+            vars[i].insert(make_pair("TrZ", Variable("TrZ",1.0)));
+
+            vars[i].insert(make_pair("Te0X", Variable("Te0",0.0)));
+            vars[i].insert(make_pair("Te1", Variable("Te1",0.0)));
+            vars[i].insert(make_pair("Te2", Variable("Te2",0.0)));
+
             i++;
         }
         GlobalCmdHist::getInstance().addCommand(

@@ -225,7 +225,11 @@ void AssistantPanel::panoramaChanged(PT::Panorama &pano)
 
     if (pano.getNrOfImages() == 0) {
         m_createButton->Disable();
-        m_imagesText->SetLabel(_("Please load images by pressing on the Load images button."));
+
+        m_imagesText->SetLabel(_("Please load images by pressing on the Load images button. \n\nTo make a mosaic, after loading images, select Mosaic Assembly from the Optimizer tab. Don't use 2. Align and 3. Create Panorama buttons below."));
+        m_imagesText->Wrap(600);
+
+
         m_exifToggle->Disable();
         XRCCTRL(*this, "ass_lens_group", wxPanel)->Disable();
         m_noImage = true;
@@ -343,6 +347,22 @@ void AssistantPanel::panoramaChanged(PT::Panorama &pano)
     // re-layout panel (adjusts m_alignText size)
     m_panel->Layout();
     m_panel->FitInside();
+
+    // Dev: always tell user whether hugin is in pano or mosaic mode
+    if (m_pano->isMosaicNotPano()) {
+        XRCCTRL(*this, "mosaic_warning_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in MOSAIC mode.  \nAlign and Create Panorama buttons are disabled below.  Use the Control Points, Optimizer, Exposure, and Stitcher tabs to create your mosaic.")));
+        XRCCTRL(*this, "mosaic_warning_text", wxStaticText)->Wrap(600);
+
+        m_alignButton->Disable();
+        m_alignBatchButton->Disable();       
+        m_createButton->Disable();
+
+    }
+    else {
+        XRCCTRL(*this, "mosaic_warning_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in PANORAMA mode.")));
+    }
+
+
 
     // TODO: update meaningful help text and dynamic links to relevant tabs
 }

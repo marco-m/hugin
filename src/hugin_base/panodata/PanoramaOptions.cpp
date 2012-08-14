@@ -350,7 +350,21 @@ void PanoramaOptions::setVFOV(double VFOV)
     src.setProjection(SrcPanoImage::EQUIRECTANGULAR);
     src.setHFOV(360);
     src.setSize(vigra::Size2D(360,180));
+
+    // set m_mosaicPanoFlag member of transf:
+    //   are we in pano or mosaic mode?
+    //   are describing a forward or inverse transform inside transf
+    // transf.m_mosaicPanoFlag =
+    if (PO_isMosaicNotPano()) {
+		transf.setTransformFlag(7); // mosaic/inverse transform
+	}
+	else {
+		transf.setTransformFlag(3); // pano/inverse transform
+	}
+
     transf.createInvTransform(src, *this);
+
+
 
     FDiff2D pmiddle;
 
@@ -360,6 +374,13 @@ void PanoramaOptions::setVFOV(double VFOV)
     } else {
         transf.transform(pmiddle, FDiff2D(0, VFOV/2));
     }
+
+    // Dev:  print pmiddle (before and after transf)
+    // check (0,400) on rectilinear maps to (0,90) on equirec
+    FDiff2D pmiddleCurrent = FDiff2D(0, m_size.y/2.0);
+	//std::cout << "Dev: in PanoramaOptions::setVFOV(), top middle coord of current pano = " << pmiddleCurrent << endl;
+	//std::cout << "Dev: in PanoramaOptions::setVFOV(), pmiddle = " << pmiddle << endl;
+
     // try to keep the same ROI
     vigra::Size2D oldSize = m_size;
     m_size.y = abs(hugin_utils::roundi(2*pmiddle.y));
@@ -386,11 +407,33 @@ double PanoramaOptions::getVFOV() const
     src.setProjection(SrcPanoImage::EQUIRECTANGULAR);
     src.setHFOV(360);
     src.setSize(vigra::Size2D(360,180));
+
+    // set m_mosaicPanoFlag member of transf:
+    //   are we in pano or mosaic mode?
+    //   are describing a forward or inverse transform inside transf
+    //transf.m_mosaicPanoFlag =
+    if (PO_isMosaicNotPano()) {
+    	transf.setTransformFlag(5); // mosaic/forward transform
+    }
+    else {
+    	transf.setTransformFlag(1); // pano/forward transform
+    }
+
     transf.createTransform(src, *this);
+
 
     FDiff2D pmiddle;
     FDiff2D pcorner;
     transf.transform(pmiddle, FDiff2D(0, m_size.y/2.0));
+
+    // Dev:
+    // Dev:  print pmiddle (before and after transf)
+    // check (0,90) on equirec maps to (0,400) on rectilinear
+
+    FDiff2D pmiddleCurrent = FDiff2D(0, m_size.y/2.0);
+    //std::cout << "Dev: in PanoramaOptions::getVFOV(), top middle coord of current pano = " << pmiddleCurrent << endl;
+    //std::cout << "Dev: in PanoramaOptions::getVFOV(), pmiddle = " << pmiddle << endl;
+
 //    transf.transform(pcorner, FDiff2D(m_size.x/2.0, m_size.y/2.0));
     double VFOV;
     if (pmiddle.x > 90 ||pmiddle.y < -90) {

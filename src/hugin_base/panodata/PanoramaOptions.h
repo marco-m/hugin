@@ -338,9 +338,23 @@ class IMPEX PanoramaOptions
         double getMaxVFOV() const
             { return m_projFeatures.maxVFOV; }
 
+
+        bool PO_isMosaicNotPano() const
+        {
+             return PO_mosaicNotPano;             
+        }
+
+        void PO_setMosaicNotPano(const bool mosNotPano)
+        {
+            PO_mosaicNotPano = mosNotPano;
+        }
+
     public:
         //TODO: Write accessor methods; make instance variables private unless absolutely neccesary for backward-compatibility.
         
+        
+        
+
         std::string outfile;
         FileFormat outputFormat;
 
@@ -418,6 +432,25 @@ class IMPEX PanoramaOptions
         std::vector<double> m_projectionParams;
         vigra::Size2D m_size;
         vigra::Rect2D m_roi;
+
+        // Dev: PO_mosaicNotPano, a boolean switch for PanormaOptions class.
+        // When true, PanoramaOptions functions:
+        //      PanoramaOptions::getVFOV(), PanoramaOptions::setVFOV()
+        //      PanoramaOptions::getHFOV(), PanoramaOptions::setHFOV()
+        // modify the PTools::Transform object transf so its default CorrectPrefs
+        // value for TrZ = 1 for rectilinear (mosaic) projections and
+        //           TrZ = 0 for equirectangular (panosphere) projections.
+
+        // For mosaic-making, setVFOV() creates an INVERSE transform
+        // FROM EQUIRECTANGULAR (panosphere)
+        // TO   RECTILINEAR (mosaic) projection
+        // e.g. transf.createInvTransform(src, *this);
+
+        // For mosaic-making, setVFOV() creates an FORWARD transform
+        // FROM RECTILINEAR (mosaic) projection
+        // TO   EQUIRECTANGULAR (panosphere)
+        // e.g. transf.createTransform(src, *this);
+        bool PO_mosaicNotPano;
 };
 
 

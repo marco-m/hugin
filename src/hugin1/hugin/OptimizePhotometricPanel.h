@@ -64,6 +64,8 @@ public:
     /** run the optimizer */
     void OnOptimizeButton(wxCommandEvent & e);
 
+    void DisplayMosaicModeHelp();
+
 protected:
 
     void OnClose(wxCloseEvent& e);
@@ -87,6 +89,8 @@ protected:
     void OnChangeMode(wxCommandEvent & e);
 
     void runOptimizer(const PT::UIntSet & img);
+
+    wxStaticText * m_mosaic_photo_opt_text;
 
     wxCheckBox * m_only_active_images_cb;
 

@@ -138,6 +138,7 @@ public:
 // TODO remove
 //    void DoPreview(wxCommandEvent & e);
     void DoCalcFOV(wxCommandEvent & e);
+    void DoCalcMosaicPanoFOV(wxCommandEvent & e);
     void OnDoStitch(wxCommandEvent & e);
 
     /** set the highest sensible width
@@ -177,6 +178,9 @@ public:
     bool m_hasStacks;
 
     // controls of this frame
+
+    wxStaticText * m_mosaicPanoText;
+
     wxChoice    * m_ProjectionChoice;
     wxTextCtrl  * m_HFOVText;
     wxTextCtrl  * m_VFOVText;

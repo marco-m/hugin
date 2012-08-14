@@ -71,7 +71,7 @@ BEGIN_EVENT_TABLE(PanoPanel, wxPanel)
     EVT_CHOICE ( XRCID("pano_choice_pano_type"),PanoPanel::ProjectionChanged )
     EVT_TEXT_ENTER( XRCID("pano_text_hfov"),PanoPanel::HFOVChanged )
     EVT_TEXT_ENTER( XRCID("pano_text_vfov"),PanoPanel::VFOVChanged )
-    EVT_BUTTON ( XRCID("pano_button_calc_fov"), PanoPanel::DoCalcFOV)
+    EVT_BUTTON ( XRCID("pano_button_calc_fov"), PanoPanel::DoCalcMosaicPanoFOV)
     EVT_TEXT_ENTER ( XRCID("pano_val_width"),PanoPanel::WidthChanged )
     EVT_TEXT_ENTER ( XRCID("pano_val_height"),PanoPanel::HeightChanged )
     EVT_TEXT_ENTER ( XRCID("pano_val_roi_top"),PanoPanel::ROIChanged )
@@ -172,6 +172,11 @@ bool PanoPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, cons
             m_ProjectionChoice->Append(wxGetTranslation(str2));
         }
     }
+
+    // Dev: tell user whether pano or mosaic mode is selected
+    m_mosaicPanoText = XRCCTRL(*this, "mosaic_pano_text", wxStaticText);
+    DEBUG_ASSERT(m_mosaicPanoText);
+
     m_HFOVText = XRCCTRL(*this, "pano_text_hfov" ,wxTextCtrl);
     DEBUG_ASSERT(m_HFOVText);
     m_CalcHFOVButton = XRCCTRL(*this, "pano_button_calc_fov" ,wxButton);
@@ -361,6 +366,20 @@ void PanoPanel::UpdateDisplay(const PanoramaOptions & opt, const bool hasStacks)
 
 //    m_HFOVSpin->SetRange(1,opt.getMaxHFOV());
 //    m_VFOVSpin->SetRange(1,opt.getMaxVFOV());
+
+    if (pano->isMosaicNotPano()) {
+        //cout << "Dev: PanoPanel::UpdateDisplay() can call MosaicNotPano accessor function " << endl;
+        XRCCTRL(*this, "mosaic_pano_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in MOSAIC mode. \n- Keep projection set to rectilinear.\n- Set desired Canvas Size Width and Height. \n- Do not adjust field of view manually. Use the Calculate Mosaic Field of View button. \n- Use Fit Crop to Images to trim empty space from edges of mosaic.")));
+        XRCCTRL(*this, "pano_button_calc_fov", wxStaticText)->SetLabel(wxString::Format(wxT("Calculate Mosaic Field of View")));
+        m_CalcOptWidthButton->Disable();
+
+    }
+    else {
+        XRCCTRL(*this, "mosaic_pano_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in PANORAMA mode.")));
+        XRCCTRL(*this, "pano_button_calc_fov", wxStaticText)->SetLabel(wxString::Format(wxT("Calculate Field of View")));
+        m_CalcOptWidthButton->Enable();
+
+    }
 
     m_ProjectionChoice->SetSelection(opt.getProjection());
     m_keepViewOnResize = opt.fovCalcSupported(opt.getProjection());
@@ -896,7 +915,47 @@ void PanoPanel::OnHDRMergeOptions(wxCommandEvent & e)
     }
 }
 
+void PanoPanel::DoCalcMosaicPanoFOV(wxCommandEvent & e)
+{
 
+    cout << "Dev: called PanoPanel::DoMosaicPanoFOV()" << endl;
+
+    if (!(pano->isMosaicNotPano())) {
+    	cout << "In pano mode in PanoPanel::DoMosaicPanoFOV()" << endl;
+    	DoCalcFOV( e);  // built-in default FOV computation (finds bounding FOV large enough for entire output pano)
+    }
+    else {
+    	cout << "In MOSAIC mode in PanoPanel::DoMosaicPanoFOV()" << endl;
+    	// **** Mosaic Mode Active: given anchor camera width and HFOV
+		// ****                           and mosaic width
+		// ****                     compute mosaic HFOV
+		// ****                       then setHFOV() for mosaic.
+		// ****                       VFOV should be computed automatically
+
+    	// local copy of PanoramaOptions object
+    	PanoramaOptions opt = pano->getOptions();
+
+		//   get anchor image index:
+		int anchorImageID = opt.optimizeReferenceImage;
+		SrcPanoImage anchorImg = pano->getImage(anchorImageID);
+
+		int anchorImgWidth = anchorImg.getWidth();
+		double anchorImgFOV = DEG_TO_RAD(anchorImg.getHFOV());
+		int mosaicImgWidth = opt.getWidth();
+		double mosaicHFOV = 2.0*atan2((mosaicImgWidth / 2.0), (anchorImgWidth / 2.0) / tan(anchorImgFOV/2.0));
+		opt.setHFOV(RAD_TO_DEG(mosaicHFOV));
+
+		GlobalCmdHist::getInstance().addCommand(
+			new PT::SetPanoOptionsCmd( *pano, opt )
+			);
+
+		PanoramaOptions opt2 = pano->getOptions();
+		DEBUG_INFO ( "hfov: " << opt2.getHFOV() << "  w: " << opt2.getWidth() << " h: " << opt2.getHeight() << "  => vfov: " << opt2.getVFOV()  << "  after update");
+
+
+    }
+
+    }
 
 void PanoPanel::DoCalcFOV(wxCommandEvent & e)
 {
@@ -906,6 +965,12 @@ void PanoPanel::DoCalcFOV(wxCommandEvent & e)
     double hfov, height;
     pano->fitPano(hfov, height);
     PanoramaOptions opt = pano->getOptions();
+
+    // Dev:
+    cout << "Dev: called PanoPanel::DoCalcFOV()" << endl;
+    cout << "Dev: hfov: " << opt.getHFOV() << "  w: " << opt.getWidth() << " h: " << opt.getHeight() << "  => vfov: " << opt.getVFOV()  << "  before update" << endl;
+
+
     opt.setHFOV(hfov);
     opt.setHeight(roundi(height));
 
@@ -917,6 +982,10 @@ void PanoPanel::DoCalcFOV(wxCommandEvent & e)
 
     PanoramaOptions opt2 = pano->getOptions();
     DEBUG_INFO ( "hfov: " << opt2.getHFOV() << "  w: " << opt2.getWidth() << " h: " << opt2.getHeight() << "  => vfov: " << opt2.getVFOV()  << "  after update");
+
+
+    // Dev:
+    //cout << "Dev: hfov: " << opt2.getHFOV() << "  w: " << opt2.getWidth() << " h: " << opt2.getHeight() << "  => vfov: " << opt2.getVFOV()  << "  after update" << endl;
 
 }
 

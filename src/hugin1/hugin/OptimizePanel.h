@@ -30,6 +30,8 @@
 
 class wxCheckListBox;
 class wxCheckBox;
+class wxStaticText;
+class wxBoxSizer;
 
 /** run the optimizer. this is tied into the wxWindows hugin
  *
@@ -70,6 +72,8 @@ public:
     /** updates the display to custom mode **/
     void setModeCustom();
 
+
+
 protected:
 
     void OnClose(wxCloseEvent& e);
@@ -79,6 +83,15 @@ protected:
 
     // helper function for wxCheckListBox
     void SetCheckMark(wxCheckListBox * l, int check);
+
+    // Dev: hides all mosaic optimization controls (spin/tilt/rotate labels, checkbox lists, 
+    // selectors) from optimizer panel
+    void HideMosaicOptControls();
+
+    // Dev: show all mosaic optimization controls (spin/tilt/rotate labels, checkbox lists, 
+    // selectors) from optimizer panel
+    void ShowMosaicOptControls();    
+
 
     // called whenever the optimize mode changes
     void OnChangeMode(wxCommandEvent & e);
@@ -90,6 +103,8 @@ protected:
 
     bool AskApplyResult(const PT::Panorama & pano);
 
+    wxStaticText * m_optPanelMosaicModeText;
+
     wxCheckListBox * m_yaw_list;
     wxCheckListBox * m_pitch_list;
     wxCheckListBox * m_roll_list;
@@ -98,6 +113,8 @@ protected:
     wxCheckListBox * m_spin_list;
     wxCheckListBox * m_tilt_list;
     wxCheckListBox * m_rot_list;
+
+    wxBoxSizer * m_mosaic_params_sizer;
 
     wxCheckListBox * m_x_list;
     wxCheckListBox * m_y_list;

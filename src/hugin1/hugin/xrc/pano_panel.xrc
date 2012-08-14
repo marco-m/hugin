@@ -153,6 +153,24 @@
         <object class="wxScrolledWindow" name="pano_controls_panel">
           <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
+
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="mosaic_pano_text">
+                    <label></label>
+                  </object>
+                  <flag>wxALL|wxEXPAND|wxADJUST_MINSIZE</flag>
+                  <border>10</border>
+                </object>
+              </object>
+              <flag>wxRIGHT|wxEXPAND</flag>
+              <border>55</border>
+            </object>
+
+
+
             <object class="sizeritem">
               <object class="wxGridBagSizer">
               <!-- The projection, field of view, and crop rows could be
@@ -160,7 +178,7 @@
                    numeric entries) on the fast preview.
                    People still use them since when creating things like
                    gores and cube faces they are located near the stitch
-                   and send to batch buttons. -->
+                   and send to batch buttons. -->                                
                 <object class="sizeritem">
                   <object class="wxStaticText">
                     <label>Projection:</label>
@@ -183,6 +201,9 @@
                   <cellspan>1,5</cellspan>
                   <flag>wxEXPAND</flag>
                 </object>
+
+                
+
                 <object class="sizeritem">
                   <object class="wxStaticText">
                     <label>Field of View:</label>

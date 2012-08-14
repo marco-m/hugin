@@ -97,6 +97,7 @@ void Panorama::reset()
     state.options.reset();
     state.optvec.clear();
     state.needsOptimization = false;
+    setMosaicNotPano(false);
 }
 
 
@@ -583,6 +584,9 @@ void Panorama::printPanoramaScript(std::ostream & o,
 {
     using namespace std;
     
+    //printf("Dev: called printPanoramaScript \n");
+
+
 #ifdef __unix__
     // set numeric locale to C, for correct number output
     char * t = setlocale(LC_NUMERIC,NULL);
@@ -598,8 +602,8 @@ void Panorama::printPanoramaScript(std::ostream & o,
         o << "# hugin project file" << std::endl;
         o << "#hugin_ptoversion 2" << std::endl;
     }
-    printf("Dev: called Panorama::printPanoramaScript() to write script to memory or disk\n");
-    printf("Dev: will write comment to pto script here\n");
+    //printf("Dev: called Panorama::printPanoramaScript() to write script to memory or disk\n");
+    //printf("Dev: will write comment to pto script here\n");
     // output options..
 
     output.printScriptLine(o, forPTOptimizer);
@@ -1841,7 +1845,29 @@ Panorama::ReadWriteError Panorama::writeData(std::ostream& dataOutput, std::stri
 // Dev: stub function in HuginBase/Panorama inherited from HuginBase/PanoramaData
 void Panorama::devMosaic()
 {
-    printf("Entered the stub function in HuginBase/Panorama inherited from HuginBase/PanoramaData\n");
+    //printf("Entered the stub function in HuginBase/Panorama inherited from HuginBase/PanoramaData\n");
+
+    // change output projection to rectilinear (in state.options.ProjectionFormat)
+    // call Class PanoramaOptions functions setMosaicFOV(), setMosaicWidth(), setMosaicHeight()
+    // set enblend options to --fine-mask (to prevent excessive overlap error messages)
+
+    PanoramaOptions outputMosaicOptions = getOptions();
+
+    //std::cout << "Dev: hfov from PanoramaOptions = " << outputMosaicOptions.getHFOV() << endl;
+    //std::cout << "Dev: width from PanoramaOptions = " << outputMosaicOptions.getWidth() << endl;
+    //std::cout << "Dev: height from PanoramaOptions = " << outputMosaicOptions.getHeight() << endl;
+
+    outputMosaicOptions.setProjection(PanoramaOptions::RECTILINEAR);
+    outputMosaicOptions.enblendOptions = "--fine-mask";
+    outputMosaicOptions.outputLDRLayers = true;
+    outputMosaicOptions.outputImageTypeCompression = "NONE";
+    //outputMosaicOptions.setHeight(800);
+    setOptions(outputMosaicOptions);
+
+    //std::cout << "Dev: NEW height from PanoramaOptions = " << getOptions().getHeight() << endl;
+
+
+
 }
 
 void Panorama::updateWhiteBalance(double redFactor, double blueFactor)
@@ -1931,6 +1957,8 @@ PanoramaMemento & PanoramaMemento::operator=(const PanoramaMemento & data)
     optvec = data.optvec;
     
     needsOptimization = data.needsOptimization;
+
+    PMmosaicNotPano = data.PMmosaicNotPano;
     
     return *this;
 }
@@ -1957,6 +1985,8 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
     using namespace std;
     using namespace PTScriptParsing;
     
+    //printf("Dev: called loadPTScript()\n");
+
     DEBUG_TRACE("");
     // set numeric locale to C, for correct number output
     char * p = setlocale(LC_NUMERIC,NULL);
@@ -2006,7 +2036,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
     ptoVersion = 1;
 
     bool firstOptVecParse = true;
-    unsigned int lineNr = 0;    
+    unsigned int lineNr = 0;
     while (i.good()) {
         std::getline(i, line);
         lineNr++;
@@ -2178,6 +2208,13 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
         }
         case 'v':
         {
+            //this->PMmosaicNotPano == true;
+            /*if (this->PMmosaicNotPano == true)
+            {
+                 printf("Dev: confirmed mosaic mode from PanoramaMemento::loadPTScript()\n");
+            }*/
+
+
             DEBUG_DEBUG("v line: " << line);
             if (!PTGUIScriptFile) {
                 if (firstOptVecParse) {
@@ -2195,15 +2232,42 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         // special case for PTGUI
                         var += "0";
                     }
+
+
                     // find first numerical character
                     std::string::size_type np = var.find_first_of("0123456789");
+
+                    //cout << "Dev: var = " << var << endl; 
+                    //cout << "Dev: np = " << np << endl;
+
                     if (np == std::string::npos) {
                         // invalid, continue
                         continue;
                     }
+
                     std::string name=var.substr(0,np);
                     std::string number = var.substr(np);
+                                            //cout << "Dev: var name = " << name << ", var num = " << number << endl;
+
+                    // Dev: insert an if or switch that checks if number = 0,1, or 2.
+                    //      Next, check if variable string == "Te"
+                    //      If both of these are true, change the variable name to "Te" + number
+                    if (name == "Te") {
+                        this->PMmosaicNotPano = true; // use setMosaicNotPano(true)
+                        //cout << "Dev: Te variable read \n";
+                        //cout << (np+1) << endl;
+                        //std::string newName = var.substr(0,np+1);
+                        //std::string newNumber = var.substr(np+1);
+                        name = var.substr(0,np+1);
+                        number = var.substr(np+1);
+
+                        //cout << "Dev: var new name = " << newName << ", var new num = " << newNumber << endl;
+                    }
+
+
+
                     unsigned int nr = hugin_utils::lexical_cast<unsigned int>(number);
+                                            //printf("Dev: nr = %d\n",nr);
                     DEBUG_ASSERT(nr < optvec.size());
                     optvec[nr].insert(name);
                     DEBUG_DEBUG("parsing opt: >" << var << "< : var:" << name << " image:" << nr);

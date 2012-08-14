@@ -133,29 +133,30 @@ bool OptimizePanel::Create(wxWindow* parent, wxWindowID id , const wxPoint& pos,
     topsizer->Add(panel, 1, wxEXPAND, 0);
     SetSizer( topsizer );
 
+    // Dev: mosaic_params_sizer holds wxCheckListBox, wxStaticText titles, and all/none buttons    
+    //m_mosaic_params_sizer->Add(topsizer,1,wxEXPAND,0);
+    //SetSizer( m_mosaic_params_sizer);
+
     m_only_active_images_cb = XRCCTRL(*this, "optimizer_only_active_images", wxCheckBox);
     DEBUG_ASSERT(m_only_active_images_cb);
     m_only_active_images_cb->SetValue(wxConfigBase::Get()->Read(wxT("/OptimizePanel/OnlyActiveImages"),1l) != 0);
 
 
+    m_optPanelMosaicModeText = XRCCTRL(*this, "opt_panel_mosaic_text", wxStaticText);    
+
     m_yaw_list = XRCCTRL(*this, "optimizer_yaw_list", wxCheckListBox);
     m_pitch_list = XRCCTRL(*this, "optimizer_pitch_list", wxCheckListBox);
     m_roll_list = XRCCTRL(*this, "optimizer_roll_list", wxCheckListBox);
 
-    // Dev: Create checkbox lists for spin,tilt,rot
-    //m_spin_list = XRCCTRL(*this, "optimizer_spin_list", wxCheckListBox);
-    //m_tilt_list = XRCCTRL(*this, "optimizer_tilt_list", wxCheckListBox);
-    //m_rot_list = XRCCTRL(*this, "optimizer_rot_list", wxCheckListBox);
-
-
+    
     m_x_list = XRCCTRL(*this, "optimizer_x_list", wxCheckListBox);
     m_y_list = XRCCTRL(*this, "optimizer_y_list", wxCheckListBox);
     m_z_list = XRCCTRL(*this, "optimizer_z_list", wxCheckListBox);
 
-    m_spin_list = XRCCTRL(*this, "optimizer_spin_list", wxCheckListBox);
+    // Dev: Create checkbox lists for spin,tilt,rot
+    m_spin_list = XRCCTRL(*this, "optimizer_spin_list", wxCheckListBox);    
     m_tilt_list = XRCCTRL(*this, "optimizer_tilt_list", wxCheckListBox);
     m_rot_list = XRCCTRL(*this, "optimizer_rot_list", wxCheckListBox);
-
 
     m_v_list = XRCCTRL(*this, "optimizer_v_list", wxCheckListBox);
     m_a_list = XRCCTRL(*this, "optimizer_a_list", wxCheckListBox);
@@ -334,6 +335,59 @@ void OptimizePanel::SetCheckMark(wxCheckListBox * l, int check)
 }
 
 
+// Dev: Hide all Mosaic optimization controls from Optimize Panel (see ShowMosaicOptControls())
+void OptimizePanel::HideMosaicOptControls()
+{
+    XRCCTRL(*this, "opt_panel_mosaic_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in PANORAMA mode.")));        
+    /*XRCCTRL(*this, "opt_spin_select", wxButton)->Hide();
+    XRCCTRL(*this, "opt_tilt_select", wxButton)->Hide();
+    XRCCTRL(*this, "opt_rot_select", wxButton)->Hide();
+
+    XRCCTRL(*this, "opt_spin_clear", wxButton)->Hide();
+    XRCCTRL(*this, "opt_tilt_clear", wxButton)->Hide();
+    XRCCTRL(*this, "opt_rot_clear", wxButton)->Hide();
+
+    XRCCTRL(*this, "opt_spin_label", wxStaticText)->Hide();
+    XRCCTRL(*this, "opt_tilt_label", wxStaticText)->Hide();
+    XRCCTRL(*this, "opt_rot_label", wxStaticText)->Hide();
+
+    m_spin_list->Hide();
+    m_tilt_list->Hide();
+    m_rot_list->Hide(); 
+    */
+
+    //XRCCTRL(*this, "mosaic_params_sizer", wxBoxSizer)->Hide(*m_mosaic_params_sizer,false,true);
+    //m_mosaic_params_sizer->Show(this->m_mosaic_params_sizer,false,true);
+    //m_mosaic_params_sizer->Layout();
+}
+
+// Dev: Show all Mosaic optimization controls from Optimize Panel (see HideMosaicOptControls())
+void OptimizePanel::ShowMosaicOptControls()
+{
+    //m_mosaic_params_sizer->Show(*this,true);
+    //m_mosaic_params_sizer->Layout();
+
+    XRCCTRL(*this, "opt_spin_select", wxButton)->Show();
+    XRCCTRL(*this, "opt_tilt_select", wxButton)->Show();
+    XRCCTRL(*this, "opt_rot_select", wxButton)->Show();
+
+    XRCCTRL(*this, "opt_spin_clear", wxButton)->Show();
+    XRCCTRL(*this, "opt_tilt_clear", wxButton)->Show();
+    XRCCTRL(*this, "opt_rot_clear", wxButton)->Show();
+
+    XRCCTRL(*this, "opt_spin_label", wxStaticText)->Show();
+    XRCCTRL(*this, "opt_tilt_label", wxStaticText)->Show();
+    XRCCTRL(*this, "opt_rot_label", wxStaticText)->Show();
+
+    m_spin_list->Show();
+    m_tilt_list->Show();
+    m_rot_list->Show();
+}
+
+
+
+
+
 OptimizeVector OptimizePanel::getOptimizeVector()
 {
 
@@ -416,9 +470,23 @@ void OptimizePanel::panoramaChanged(PT::Panorama & pano)
     variable_groups->update();
     setOptimizeVector(pano.getOptimizeVector());
 
+    //Dev
+    if (m_pano->isMosaicNotPano()) {
+        //cout << "Dev: mosaic not pano flag TRUE in OptimizePanel::panoramaChanged()" << endl;
+        m_mode_cb->SetSelection(OPT_STR_XYZ); // 11 == Dev's mosaic mode
+        XRCCTRL(*this, "opt_panel_mosaic_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in MOSAIC mode.")));        
+    }
+    else {
+        XRCCTRL(*this, "opt_panel_mosaic_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in PANORAMA mode.")));
+    }
+    
+
     // update accordingly to the choosen mode
     wxCommandEvent dummy;
     dummy.SetInt(m_mode_cb->GetSelection());
+    
+    //cout << "Dev: in OptimizePanel::panoramaChanged(), m_mode_cb = " << m_mode_cb->GetSelection() << endl;
+
     OnChangeMode(dummy);
 }
 
@@ -626,7 +694,15 @@ void OptimizePanel::panoramaImagesChanged(PT::Panorama &pano,
 void OptimizePanel::setModeCustom()
 {
     DEBUG_TRACE("Setting optmizer preset to custom");
-    m_mode_cb->SetSelection(OPT_CUSTOM);
+    //cout << "called OptimizePanel::setModeCustom()" << endl;
+    if (m_pano->isMosaicNotPano()) {
+
+        //cout << "Dev: mosaic not pano flag TRUE in OptimizePanel::setModeCustom()" << endl;
+        m_mode_cb->SetSelection(OPT_STR_XYZ); // OPT_STR_XYZ == Dev's mosaic mode
+    }
+    else {
+        m_mode_cb->SetSelection(OPT_CUSTOM);
+    }
 }
 
 
@@ -651,6 +727,11 @@ void OptimizePanel::setOptimizeVector(const OptimizeVector & optvec)
         m_x_list->Check(i,false);
         m_y_list->Check(i,false);
         m_z_list->Check(i,false);
+
+        m_spin_list->Check(i,false);
+        m_tilt_list->Check(i,false);
+        m_rot_list->Check(i,false);
+
         unsigned int lensNr = variable_groups->getLenses().getPartNumber(i);
 
         for(set<string>::const_iterator it = optvec[i].begin();
@@ -882,8 +963,8 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
     DEBUG_TRACE("");
     int mode = m_mode_cb->GetSelection();
     DEBUG_ASSERT(mode >= 0 && mode < OPT_END_MARKER);
-    if (m_pano->getNrOfImages() == 0)
-    {
+    if (m_pano->getNrOfImages() == 0) // Dev: pano/mosaic project file has no images
+    {                                 // so disable all optimizer controls
         XRCCTRL(*this, "opt_yaw_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_roll_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_pitch_select", wxButton)->Disable();
@@ -894,6 +975,9 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
         XRCCTRL(*this, "opt_spin_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_tilt_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_rot_select", wxButton)->Disable();
+
+        HideMosaicOptControls();
+
 
         XRCCTRL(*this, "opt_v_select", wxButton)->Disable();
         XRCCTRL(*this, "opt_a_select", wxButton)->Disable();
@@ -910,7 +994,7 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
 
         XRCCTRL(*this, "opt_spin_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_tilt_clear", wxButton)->Disable();
-        XRCCTRL(*this, "opt_rot_clear", wxButton)->Disable();
+        XRCCTRL(*this, "opt_rot_clear", wxButton)->Disable();        
 
         XRCCTRL(*this, "opt_v_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_a_clear", wxButton)->Disable();
@@ -918,7 +1002,7 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
         XRCCTRL(*this, "opt_c_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_d_clear", wxButton)->Disable();
         XRCCTRL(*this, "opt_e_clear", wxButton)->Disable();
-    } else {
+    } else {        
         switch (mode) {
             case OPT_PAIRWISE:
                 // smart auto optimize
@@ -939,6 +1023,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                //m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP:
                 // simple position
@@ -959,6 +1047,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP_XYZ:
                 // position + translation
@@ -979,6 +1071,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP_V:
                 // v + position
@@ -999,6 +1095,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP_XYZ_V:
                 // v + position + translation
@@ -1019,6 +1119,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP_B:
                 // important lens distortion + position
@@ -1039,6 +1143,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP_XYZ_B:
                 // important lens distortion + position + translation
@@ -1059,6 +1167,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP_BV:
                 // important lens distortion + v + position
@@ -1079,6 +1191,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_YRP_XYZ_BV:
                 // important lens distortion + v + position + translation
@@ -1099,6 +1215,10 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,false);
                 SetCheckMark(m_d_list,false);
                 SetCheckMark(m_e_list,false);
+
+                HideMosaicOptControls();                
+                m_pano->setMosaicNotPano(false);
+
                 break;
             case OPT_ALL_NOTXYZ:
                 // everything but translation
@@ -1119,26 +1239,34 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
                 SetCheckMark(m_c_list,true);
                 SetCheckMark(m_d_list,true);
                 SetCheckMark(m_e_list,true);
+
+                HideMosaicOptControls();
+                m_pano->setMosaicNotPano(false);
+
+
                 break;
             case OPT_STR_XYZ:
             {
                 // Dev: six parameter mosaic model (spin,tilt,rot,x,y,z)               
-                printf("Dev: called OptimizePanel::OnChangeMode() after selecting six param mosaic model\n");
-
-
+                ShowMosaicOptControls();
+                
                 if ( m_pano->isMosaicNotPano() != true)  // check if pano already set to mosaic mode
                 {
-                     printf("Dev: switching to mosaic mode\n");
-                     m_pano->setMosaicNotPano(true);     // switch to mosaic mode
-                     m_pano->devMosaic();                // call stub function for mosaic mode
+                    //printf("Dev: switching to mosaic mode\n");
+                    m_pano->setMosaicNotPano(true);     // switch to mosaic mode
+                    m_pano->devMosaic();                // call stub function for mosaic mode
+                    XRCCTRL(*this, "opt_panel_mosaic_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in MOSAIC mode.")));
+                    wxWindow *getparent = GetParent();
+                    cout << getparent;
+
 
                      wxString msg;                       // display message box with warning about mosaic mode
                      int style=0;
 
                      msg.Printf( _("You've switched to Mosaic Mode.\n  Do NOT adjust the field of view in the Stitcher tab!"));                
                      style = wxOK | wxICON_EXCLAMATION;
-                     wxMessageBox(msg,_("warning box caption"),style,this);
-                }
+                     wxMessageBox(msg,_("Mosaic Mode Warning"),style,this);
+                }                
 
                 SetCheckMark(m_yaw_list,false);
                 SetCheckMark(m_roll_list,false);
@@ -1162,6 +1290,7 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             }
                 break;
             case OPT_CUSTOM:
+                m_pano->setMosaicNotPano(false);
                 break;
         }
         // do not try to do anything on our own
@@ -1248,7 +1377,7 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
 
             bool optSTR_XYZ=m_spin_list->IsChecked(0) || m_tilt_list->IsChecked(0) || m_rot_list->IsChecked(0);
             // don't optimize translation of anchor image
-            // if translation should be optimized, then also optimise yaw and pitch of anchor
+            // if translation should be optimized, then also optimise spin and tilt of anchor
             for (std::vector<unsigned int>::iterator it = refImgs.begin();
                 it != refImgs.end(); it++)
             {
@@ -1370,7 +1499,7 @@ void OptimizePanel::OnChangeMode(wxCommandEvent & e)
             XRCCTRL(*this, "opt_e_clear", wxButton)->Enable();
         }
     }
-    m_edit_cb->Enable(mode != OPT_PAIRWISE);
+    m_edit_cb->Enable(mode != OPT_PAIRWISE); 
 }
 
 

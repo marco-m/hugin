@@ -114,7 +114,7 @@ class IMPEX Transform
          */
         Transform()
           : m_initialized(false), m_srcTX(0), m_srcTY(0),
-            m_destTX(0), m_destTY(0)
+            m_destTX(0), m_destTY(0), m_mosaicPanoFlag(0)
         {
             // initialize pointer
             m_srcImage.data = NULL;
@@ -128,6 +128,8 @@ class IMPEX Transform
         // private, no copy constructor for the pt structures yet.
         Transform(const Transform &);
         Transform & operator=(const Transform &);
+        // Dev: explicitly declare copy constructor with the qualifier "private"
+        // to override/eliminate the default "protected" copy constructor.
 
         
     public:
@@ -201,10 +203,12 @@ class IMPEX Transform
 
         /** excecute transform
          */
+        // Dev:  caution "transform" is not a C++ constructor
         bool transform(double & x_dest, double & y_dest,
                        double x_src, double y_src) const;
 
         ///
+        // Dev:  caution "transform" is not a C++ constructor
         bool transform(hugin_utils::FDiff2D& dest, const hugin_utils::FDiff2D & src) const;
 
         /** like transform, but return image coordinates, not cartesian
@@ -221,6 +225,16 @@ class IMPEX Transform
 
 
         bool emitGLSL(std::ostringstream& oss) const;
+
+        int getTransformFlag()
+        {
+             return m_mosaicPanoFlag;             
+        }
+
+        void setTransformFlag(const int transformFlag)
+        {
+            m_mosaicPanoFlag = transformFlag;
+        }
         
     private:
         // update internal PT data structs.
@@ -245,6 +259,39 @@ class IMPEX Transform
         double m_srcTX, m_srcTY;
         double m_destTX, m_destTY;
         
+        // Dev: flag set in Class PanoramaOptions functions getVFOV() and setVFOV()
+        // to record whether we're in Mosaic or Panorama mode
+        // (copied from Panorama::isMosaicNotPano() ) and
+        // whether "this" Transform object describes a forward or inverse transform.
+        // In Transform Class, "forward" means create transform stack in m_stack[]
+        // that converts pixel coords in m_dstImage to pixel coords  in m_srcImage.
+
+        // Reverse means opposite: src -> dest
+
+        // allowed m_mosaicPanoFlag values:
+        // 0 == not initialized. something went wrong 	000
+        // 1 == pano mode, forward transform 			001
+        // 3 == pano mode, inverse transform 			011
+        // 5 == mosaic mode, forward transform 			101
+        // 7 == mosaic mode, inverse transform 			111
+        // ( LSB == invalid/valid, 2SB == forward/inverse, 3SB == pano/mosaic)
+
+        // read by Class Transform SetFullImage() and setDestImage()
+        // functions so at the end of setFullImage()
+        // function,
+        // that in MOSAIC mode,
+        //   m_dstImage->cP.trans_z = 1 for rectilinear projection and
+        //   m_srcImage->cP.trans_z = 0 for equirectangular projection (spherical)
+
+        // In PANORAMA mode,
+        //   m_dstImage->cP.trans_z = 0 for rectilinear projection and
+        //   m_srcImage->cP.trans_z = 0 for equirectangular projection (spherical)
+        int m_mosaicPanoFlag;
+
+
+
+
+
 };
 
 
@@ -264,6 +311,7 @@ class IMPEX AlignInfoWrap
         
     public:
         ///
+        //Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
         bool setInfo(const PanoramaData& pano);
         
         ///
@@ -307,11 +355,13 @@ IMPEX void setFullImage(Image & image, vigra::Diff2D size, unsigned char * image
  *
  *  the input/output pictures must be specified with: setAdjustSrcImg()
  *  and setAdjustDestImg()
+ *  //Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
  */
 IMPEX void createAdjustPrefs(aPrefs  & p, TrformStr & transf);
 
 /** set a new input image for inserting into the panorama.
  */
+//Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
 IMPEX void setAdjustSrcImg(TrformStr & trf, aPrefs & ap,
                      int width, int height, unsigned char * imageData,
                      const VariableMap & vars,
@@ -320,6 +370,7 @@ IMPEX void setAdjustSrcImg(TrformStr & trf, aPrefs & ap,
 
 
 /** set a new output image for the panorama */
+//Dev:: obsolete?? not called anywhere in entire Hugin/Panotools projects
 IMPEX void setAdjustDestImg(TrformStr & trf, aPrefs & ap,
                       int width, int height, unsigned char * imageData,
                       const PanoramaOptions & opts);

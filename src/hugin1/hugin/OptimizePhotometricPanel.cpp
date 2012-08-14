@@ -92,6 +92,9 @@ bool OptimizePhotometricPanel::Create(wxWindow *parent, wxWindowID id, const wxP
     topsizer->Add(panel, 1, wxEXPAND, 0);
     SetSizer(topsizer);
 
+
+    m_mosaic_photo_opt_text = XRCCTRL(*this, "mosaic_photo_opt_text", wxStaticText);
+
     m_only_active_images_cb = XRCCTRL(*this, "optimize_photo_only_active_images", wxCheckBox);
     DEBUG_ASSERT(m_only_active_images_cb);
     m_only_active_images_cb->SetValue(wxConfigBase::Get()->Read(wxT("/OptimizeOptimizePhotometricPanelPanel/OnlyActiveImages"),1l) != 0);
@@ -135,6 +138,8 @@ void OptimizePhotometricPanel::Init(Panorama * panorama)
     wxCommandEvent dummy;
     dummy.SetInt(m_mode_cb->GetSelection());
     OnChangeMode(dummy);
+
+    DisplayMosaicModeHelp();
 }
 
 OptimizePhotometricPanel::~OptimizePhotometricPanel()
@@ -145,6 +150,21 @@ OptimizePhotometricPanel::~OptimizePhotometricPanel()
     m_pano->removeObserver(this);
     DEBUG_TRACE("dtor end");
 }
+
+
+void OptimizePhotometricPanel::DisplayMosaicModeHelp()
+{
+    if (m_pano->isMosaicNotPano()) {
+        //cout << "in mosaic mode in OptimizePhotometricPanel::panoramaChanged()" << endl;
+        //XRCCTRL(*this, "mosaic_warning_text", wxStaticText)->Enable();
+        XRCCTRL(*this, "mosaic_photo_opt_text", wxStaticText)->SetLabel(wxString::Format(wxT("Hugin is in MOSAIC mode.  \nDefault Low dynamic range settings correct for differences in exposure, vignetting, and camera response.")));
+        XRCCTRL(*this, "mosaic_photo_opt_text", wxStaticText)->Wrap(600);        
+    }
+    else {
+        XRCCTRL(*this, "mosaic_photo_opt_text", wxStaticText)->SetLabel(wxString::Format(wxT("")));
+    }
+}
+
 
 void OptimizePhotometricPanel::OnOptimizeButton(wxCommandEvent & e)
 {
@@ -291,11 +311,14 @@ void OptimizePhotometricPanel::panoramaChanged(PT::Panorama & pano)
     // update accordingly to the choosen mode
 //    wxCommandEvent dummy;
 //    OnChangeMode(dummy);
+    DisplayMosaicModeHelp();
 }
 
 void OptimizePhotometricPanel::panoramaImagesChanged(PT::Panorama &pano,
                                           const PT::UIntSet & imgNr)
 {
+    DisplayMosaicModeHelp();
+
     DEBUG_TRACE("nr of changed images: " << imgNr.size());
     variable_groups->update();
     if (pano.getNrOfImages() <= 1)

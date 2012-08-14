@@ -68,6 +68,10 @@ double CalculateOptimalScale::calcOptimalPanoScale(const SrcPanoImage & src,
     timg.setX(0);
     timg.setY(0);
     timg.setZ(0);
+    timg.setSpin(0);
+    timg.setTilt(0);
+    timg.setRotate(0);
+
     transf.createTransform(timg, dest);
     FDiff2D imgp1;
     FDiff2D imgp2;
