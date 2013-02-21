@@ -212,7 +212,7 @@ inline bool isTrueType(vigra::VigraFalseType) {
 }
 
 inline bool isTrueType(vigra::VigraTrueType) {
-    return true;
+    return true;    
 }
 
 template<class T>
