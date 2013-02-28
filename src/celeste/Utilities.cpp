@@ -28,7 +28,7 @@ Copyright (c) 2002-3 Adriaan Tijsseling
 #include <math.h>
 #include <stdlib.h>
 #include "Utilities.h"
-
+#include <unistd.h> /* TLD 28/02/2013 */
 using namespace std; 
 
 namespace celeste

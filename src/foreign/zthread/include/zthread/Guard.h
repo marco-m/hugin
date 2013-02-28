@@ -428,7 +428,7 @@ public:
   template <class U, class V>
   Guard(Guard<U, V>& g) : LockHolder<LockType>(g) {
 
-    LockingPolicy::shareScope(*this, extract(g));
+    LockingPolicy::shareScope(*this, this->extract(g));
     
   }
 
@@ -442,7 +442,7 @@ public:
    */
   Guard(Guard& g) : LockHolder<LockType>(g) {
 
-    LockingPolicy::shareScope(*this, g);
+    LockingPolicy::shareScope(*this, this->g);
     
   }
 
@@ -458,7 +458,7 @@ public:
   template <class U, class V>
   Guard(Guard<U, V>& g, LockType& lock) : LockHolder<LockType>(lock) {
 
-    LockingPolicy::transferScope(*this, extract(g));
+    LockingPolicy::transferScope(*this, this->extract(g));
 
   }
 
@@ -473,7 +473,7 @@ public:
    */
   Guard(Guard& g, LockType& lock) : LockHolder<LockType>(lock) {
 
-    LockingPolicy::transferScope(*this, g);
+    LockingPolicy::transferScope(*this, this->g);
 
   }
   
