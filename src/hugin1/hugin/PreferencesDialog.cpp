@@ -246,11 +246,6 @@ PreferencesDialog::PreferencesDialog(wxWindow* parent)
     cfg->Write(wxT("/Enfuse/Custom"), HUGIN_ENFUSE_EXE_CUSTOM);
 #endif
 
-#ifndef EXIFTOOL_GPANO_SUPPORT
-    //hide GPano tags checkbox if ExifTool is too old
-    XRCCTRL(*this, "pref_exiftool_gpano", wxCheckBox)->Hide();
-#endif
-
     RestoreFramePosition(this, wxT("PreferencesDialog"));
 }
 
@@ -531,15 +526,6 @@ void PreferencesDialog::UpdateDisplayData(int panel)
 #endif
         MY_SPIN_VAL("prefs_cache_UpperBound", mem >> 20);
 
-        // number of threads
-        int nThreads = wxThread::GetCPUCount();
-        if (nThreads < 1)
-        {
-            nThreads = 1;
-        }
-        nThreads = cfg->Read(wxT("/Nona/NumberOfThreads"), nThreads);
-        MY_SPIN_VAL("prefs_nona_NumberOfThreads", nThreads);
-
         // language
         // check if current language is in list and activate it then.
         wxChoice* lang_choice = XRCCTRL(*this, "prefs_gui_language", wxChoice);
@@ -574,10 +560,6 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         // copy log to clipboard
         t = cfg->Read(wxT("CopyLogToClipboard"), 0l) == 1;
         MY_BOOL_VAL("prefs_copy_log", t);
-
-        // save makefile 
-        t = cfg->Read(wxT("SaveMakefile"), 0l) == 1;
-        MY_BOOL_VAL("prefs_makefile", t);
 
         t = cfg->Read(wxT("/GLPreviewFrame/ShowProjectionHints"), HUGIN_SHOW_PROJECTION_HINTS) == 1;
         MY_BOOL_VAL("pref_show_projection_hints", t)
@@ -685,8 +667,6 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         MY_CHOICE_VAL("pref_processor_gui", cfg->Read(wxT("/Processor/gui"), HUGIN_PROCESSOR_GUI));
         t = cfg->Read(wxT("/Processor/start"), HUGIN_PROCESSOR_START) == 1;
         MY_BOOL_VAL("pref_processor_start", t);
-        t = cfg->Read(wxT("/Processor/parallel"), HUGIN_PROCESSOR_PARALLEL) == 1;
-        MY_BOOL_VAL("pref_processor_parallel", t);
         t = cfg->Read(wxT("/Processor/overwrite"), HUGIN_PROCESSOR_OVERWRITE) == 1;
         MY_BOOL_VAL("pref_processor_overwrite", t);
         t = cfg->Read(wxT("/Processor/verbose"), HUGIN_PROCESSOR_VERBOSE) == 1;
@@ -705,10 +685,9 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         MY_BOOL_VAL("pref_exiftool_gpano", t);
         wxCommandEvent dummy;
         OnExifTool(dummy);
-
+        // number of threads
         int nThreads = cfg->Read(wxT("/output/NumberOfThreads"), 0l);
         MY_SPIN_VAL("prefs_output_NumberOfThreads", nThreads);
-
     }
 
     if (panel==0 || panel == 8)
@@ -787,19 +766,11 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent& e)
             #endif
             */
             cfg->Write(wxT("/ImageCache/UpperBound"), HUGIN_IMGCACHE_UPPERBOUND);
-            // number of threads
-            int cpucount = wxThread::GetCPUCount();
-            if (cpucount < 1)
-            {
-                cpucount = 1;
-            }
-            cfg->Write(wxT("/Nona/NumberOfThreads"), cpucount);
             // locale
             cfg->Write(wxT("language"), int(HUGIN_LANGUAGE));
             // smart undo
             cfg->Write(wxT("smartUndo"), HUGIN_SMART_UNDO);
             cfg->Write(wxT("CopyLogToClipboard"), 0l);
-            cfg->Write(wxT("SaveMakefile"), 0l);
             // projection hints
             cfg->Write(wxT("/GLPreviewFrame/ShowProjectionHints"), HUGIN_SHOW_PROJECTION_HINTS);
         }
@@ -854,7 +825,6 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent& e)
             // stitching engine
             cfg->Write(wxT("/Processor/gui"), HUGIN_PROCESSOR_GUI);
             cfg->Write(wxT("/Processor/start"), HUGIN_PROCESSOR_START);
-            cfg->Write(wxT("/Processor/parallel"), HUGIN_PROCESSOR_PARALLEL);
             cfg->Write(wxT("/Processor/overwrite"), HUGIN_PROCESSOR_OVERWRITE);
             cfg->Write(wxT("/Processor/verbose"), HUGIN_PROCESSOR_VERBOSE);
         }
@@ -865,7 +835,6 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent& e)
             cfg->Write(wxT("/output/FinalArgfile"), wxT(""));
             cfg->Write(wxT("/output/writeGPano"), HUGIN_EXIFTOOL_CREATE_GPANO);
             cfg->Write(wxT("/output/NumberOfThreads"), 0l);
-
         }
         if (noteb->GetSelection() == 7)
         {
@@ -943,9 +912,6 @@ void PreferencesDialog::UpdateConfigData()
     cfg->Write(wxT("/ImageCache/UpperBoundHigh"), (long) MY_G_SPIN_VAL("prefs_cache_UpperBound") >> 12);
 #endif
     cfg->Write(wxT("/ImageCache/UpperBound"), (long) MY_G_SPIN_VAL("prefs_cache_UpperBound") << 20);
-    // number of threads
-    cfg->Write(wxT("/Nona/NumberOfThreads"), MY_G_SPIN_VAL("prefs_nona_NumberOfThreads"));
-
     // locale
     // language
     wxChoice* lang = XRCCTRL(*this, "prefs_gui_language", wxChoice);
@@ -960,7 +926,6 @@ void PreferencesDialog::UpdateConfigData()
     // smart undo
     cfg->Write(wxT("smartUndo"), MY_G_BOOL_VAL("prefs_smart_undo"));
     cfg->Write(wxT("CopyLogToClipboard"), MY_G_BOOL_VAL("prefs_copy_log"));
-    cfg->Write(wxT("SaveMakefile"), MY_G_BOOL_VAL("prefs_makefile"));
     // show projections hints
     cfg->Write(wxT("/GLPreviewFrame/ShowProjectionHints"), MY_G_BOOL_VAL("pref_show_projection_hints"));
     // tempdir
@@ -992,7 +957,6 @@ void PreferencesDialog::UpdateConfigData()
     /// PROCESSOR
     cfg->Write(wxT("/Processor/gui"), MY_G_CHOICE_VAL("pref_processor_gui"));
     cfg->Write(wxT("/Processor/start"), MY_G_BOOL_VAL("pref_processor_start"));
-    cfg->Write(wxT("/Processor/parallel"), MY_G_BOOL_VAL("pref_processor_parallel"));
     cfg->Write(wxT("/Processor/overwrite"), MY_G_BOOL_VAL("pref_processor_overwrite"));
     cfg->Write(wxT("/Processor/verbose"), MY_G_BOOL_VAL("pref_processor_verbose"));
 
@@ -1190,7 +1154,6 @@ void PreferencesDialog::UpdateProcessorControls()
 {
     int i=MY_G_CHOICE_VAL("pref_processor_gui");
     XRCCTRL(*this,"pref_processor_start",wxCheckBox)->Enable(i==0);
-    XRCCTRL(*this,"pref_processor_parallel",wxCheckBox)->Enable(i==0);
     XRCCTRL(*this,"pref_processor_verbose",wxCheckBox)->Enable(i==0);
     switch(i)
     {
@@ -1199,14 +1162,12 @@ void PreferencesDialog::UpdateProcessorControls()
             {
                 wxConfigBase* config=wxConfigBase::Get();
                 XRCCTRL(*this,"pref_processor_start",wxCheckBox)->SetValue(config->Read(wxT("/Processor/start"), HUGIN_PROCESSOR_START) == 1);
-                XRCCTRL(*this,"pref_processor_parallel",wxCheckBox)->SetValue(config->Read(wxT("/Processor/parallel"), HUGIN_PROCESSOR_PARALLEL) == 1);
                 XRCCTRL(*this,"pref_processor_verbose",wxCheckBox)->SetValue(config->Read(wxT("/Processor/verbose"), HUGIN_PROCESSOR_VERBOSE) == 1);
             }
             break;
         case 1:
             //Hugin_stitch_project
             XRCCTRL(*this,"pref_processor_start",wxCheckBox)->SetValue(true);
-            XRCCTRL(*this,"pref_processor_parallel",wxCheckBox)->SetValue(false);
             XRCCTRL(*this,"pref_processor_verbose",wxCheckBox)->SetValue(true);
             break;
     };

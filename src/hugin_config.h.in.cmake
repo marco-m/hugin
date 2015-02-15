@@ -60,10 +60,13 @@
    is not set. */
 #define INSTALL_OSX_BUNDLE_DIR "${INSTALL_OSX_BUNDLE_DIR}"
 
-/* if ExifTool version is recent enough */
-#cmakedefine EXIFTOOL_GPANO_SUPPORT 1
-
 /* if compiler supports OpenMP */
 #cmakedefine HAVE_OPENMP 1
+
+/* if we are compiling in C++11 mode */
+#cmakedefine HAVE_CXX11
+
+/* if compiler supports C++11 threads */
+#cmakedefine USE_CXX11_THREAD
 
 #endif

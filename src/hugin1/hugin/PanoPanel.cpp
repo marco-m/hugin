@@ -54,6 +54,7 @@ extern "C" {
 #include "hugin/config_defaults.h"
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
+#include "base_wx/LensTools.h"
 #include "algorithms/basic/LayerStacks.h"
 #include "lensdb/LensDB.h"
 
@@ -217,6 +218,7 @@ bool PanoPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, cons
     DEBUG_ASSERT(m_HDRMergeChoice);
     m_BlenderChoice = XRCCTRL(*this, "pano_choice_blender", wxChoice);
     DEBUG_ASSERT(m_BlenderChoice);
+    FillBlenderList(m_BlenderChoice);
 
     m_StitchButton = XRCCTRL(*this, "pano_button_stitch", wxButton);
     DEBUG_ASSERT(m_StitchButton);
@@ -468,7 +470,9 @@ void PanoPanel::UpdateDisplay(const PanoramaOptions & opt, const bool hasStacks)
 
     m_BlenderChoice->Enable(blenderEnabled);
     m_BlenderChoice->Show(m_guiLevel>GUI_SIMPLE);
-    XRCCTRL(*this, "pano_button_blender_opts", wxButton)->Enable(blenderEnabled);
+    // select correct blending mechanism
+    SelectListValue(m_BlenderChoice, opt.blendMode);
+    XRCCTRL(*this, "pano_button_blender_opts", wxButton)->Enable(blenderEnabled && opt.blendMode!=HuginBase::PanoramaOptions::INTERNAL_BLEND);
     XRCCTRL(*this, "pano_button_blender_opts", wxButton)->Show(m_guiLevel>GUI_SIMPLE);
     XRCCTRL(*this, "pano_text_blender", wxStaticText)->Enable(blenderEnabled);
     XRCCTRL(*this, "pano_text_blender", wxStaticText)->Show(m_guiLevel>GUI_SIMPLE);
@@ -817,25 +821,8 @@ void PanoPanel::OnRemapperOptions(wxCommandEvent & e)
 
 void PanoPanel::BlenderChanged(wxCommandEvent & e)
 {
-    int blender = m_BlenderChoice->GetSelection();
-    DEBUG_DEBUG("changing stitcher to " << blender);
-
     PanoramaOptions opt = pano->getOptions();
-    switch (blender) {
-        case 1:
-            opt.blendMode = PanoramaOptions::NO_BLEND;
-            break;
-        case 2:
-            opt.blendMode = PanoramaOptions::PTMASKER_BLEND;
-            break;
-        case 3:
-            opt.blendMode = PanoramaOptions::PTBLENDER_BLEND;
-            break;
-        default:
-        case 0:
-            opt.blendMode = PanoramaOptions::ENBLEND_BLEND;
-            break;
-    }
+    opt.blendMode = static_cast<HuginBase::PanoramaOptions::BlendingMechanism>(GetSelectedValue(m_BlenderChoice));
 
     GlobalCmdHist::getInstance().addCommand(
             new PT::SetPanoOptionsCmd( *pano, opt )
@@ -1145,10 +1132,6 @@ void PanoPanel::DoSendToBatch()
     {
         switches += wxT("-b ");
     }
-    if (wxConfigBase::Get()->Read(wxT("/Processor/parallel"), HUGIN_PROCESSOR_PARALLEL) != 0)
-    {
-        switches += wxT("-p ");
-    }
     if (wxConfigBase::Get()->Read(wxT("/Processor/overwrite"), HUGIN_PROCESSOR_OVERWRITE) != 0)
     {
         switches += wxT("-o ");
@@ -1244,12 +1227,8 @@ void PanoPanel::DoSendToBatch()
 		}
 		
 #else
-#ifdef __WINDOWS__
-        wxString huginPath = getExePath(wxGetApp().argv[0])+wxFileName::GetPathSeparator();
-#else
-        wxString huginPath = wxT(""); //we call the batch processor directly without path on linux
-#endif
-        wxExecute(huginPath+wxT("PTBatcherGUI")+switches+wxQuoteFilename(projectFile)+wxT(" ")+wxQuoteFilename(dlg.GetPath()));
+        const wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+        wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + wxT("PTBatcherGUI ")+switches+wxQuoteFilename(projectFile)+wxT(" ")+wxQuoteFilename(dlg.GetPath()));
 #endif
         HuginBase::LensDB::SaveLensDataFromPano(*pano);
     }

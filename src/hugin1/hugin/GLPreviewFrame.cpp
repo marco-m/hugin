@@ -799,8 +799,14 @@ void GLPreviewFrame::LoadOpenGLLayout()
 #ifdef __WXGTK__
         if(!GetMenuBar()->FindItem(XRCID("action_show_overview"))->IsChecked())
         {
+            wxAuiPaneInfo &inf = m_mgr->GetPane(wxT("overview"));
+            if (inf.IsOk())
+            {
+                inf.Hide();
+            }
             m_GLOverview->SetActive(false);
         };
+        m_mgr->Update();
         wxShowEvent dummy;
         dummy.SetShow(true);
         OnShowEvent(dummy);
@@ -1041,7 +1047,7 @@ void GLPreviewFrame::panoramaChanged(Panorama &pano)
 
         // update data in lens display
         const SrcPanoImage& img=pano.getImage(0);
-        SelectProjection(m_lensTypeChoice, img.getProjection());
+        SelectListValue(m_lensTypeChoice, img.getProjection());
         double focal_length = SrcPanoImage::calcFocalLength(img.getProjection(), img.getHFOV(), img.getCropFactor(), img.getSize());
         m_focalLengthText->SetValue(doubleTowxString(focal_length,m_degDigits));
         m_cropFactorText->SetValue(doubleTowxString(img.getCropFactor(),m_degDigits));
@@ -3189,7 +3195,7 @@ void GLPreviewFrame::OnCreate( wxCommandEvent & e )
 void GLPreviewFrame::OnLensTypeChanged (wxCommandEvent & e)
 {
     // uses enum Lens::LensProjectionFormat from PanoramaMemento.h
-    size_t var = GetSelectedProjection(m_lensTypeChoice);
+    size_t var = GetSelectedValue(m_lensTypeChoice);
     const SrcPanoImage& img=m_pano.getImage(0);
     if (img.getProjection() != (Lens::LensProjectionFormat) var)
     {

@@ -25,14 +25,13 @@
  */
 
 #include <hugin_config.h>
-#include <hugin_version.h>
 
 #include <fstream>
 #include <sstream>
 #include <cmath>
 #include <algorithm>
 
-#include <boost/shared_ptr.hpp>
+#include "hugin_utils/shared_ptr.h"
 
 #include <vigra/error.hxx>
 #include <vigra/functorexpression.hxx>
@@ -68,8 +67,7 @@ using namespace deghosting;
 typedef vigra::FRGBImage ImageType;
 
 // smart pointers to the images.
-typedef boost::shared_ptr<ImageType> ImagePtr;
-//typedef boost::shared_ptr<vigra::BImage> BImagePtr;
+typedef sharedPtrNamespace::shared_ptr<ImageType> ImagePtr;
 
 static int g_verbose = 0;
 
@@ -195,7 +193,7 @@ static void usage(const char* name)
 {
     cerr << name << ": merge overlapping images" << std::endl
          << std::endl
-         << "hugin_hdrmerge version " << DISPLAY_VERSION << std::endl
+         << "hugin_hdrmerge version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl
          << "Usage: " << name  << " [options] -o output.exr <input-files>" << std::endl
          << "Valid options are:" << std::endl
@@ -280,11 +278,11 @@ int main(int argc, char* argv[])
                 g_verbose++;
                 break;
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             default:
                 cerr << "Invalid parameter: " << optarg << std::endl;
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 1;
         }
     }//end while
@@ -293,7 +291,7 @@ int main(int argc, char* argv[])
     if (nFiles == 0)
     {
         std::cerr << std::endl << "Error: at least one input image needed" << std::endl <<std::endl;
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     }
     else if (nFiles == 1)

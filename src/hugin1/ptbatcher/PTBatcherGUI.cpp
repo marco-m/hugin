@@ -26,7 +26,8 @@
 
 #include "PTBatcherGUI.h"
 #ifdef __WXMSW__
-#include "wx/cshelp.h"
+#include <wx/cshelp.h>
+#include <wx/stdpaths.h>
 #endif
 #include "lensdb/LensDB.h"
 
@@ -41,6 +42,9 @@ END_EVENT_TABLE()
 bool PTBatcherGUI::OnInit()
 {
     // Required to access the preferences of hugin
+#if wxUSE_ON_FATAL_EXCEPTION
+    wxHandleFatalExceptions();
+#endif
     SetAppName(wxT("hugin"));
 
 #if defined __WXMSW__
@@ -56,15 +60,13 @@ bool PTBatcherGUI::OnInit()
 
     // setup the environment for the different operating systems
 #if defined __WXMSW__
-    wxString huginExeDir = getExePath(argv[0]);
-
-    wxString huginRoot;
-    wxFileName::SplitPath(huginExeDir, &huginRoot, NULL, NULL);
-    m_xrcPrefix = wxString(huginRoot + wxT("/share/hugin/xrc/"));
+    wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+    exePath.RemoveLastDir();
+    const wxString huginRoot(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+    m_xrcPrefix = huginRoot + wxT("share\\hugin\\xrc\\");
 
     // locale setup
-    m_locale.AddCatalogLookupPathPrefix(huginRoot + wxT("/share/locale"));
-
+    m_locale.AddCatalogLookupPathPrefix(huginRoot + wxT("share\\locale"));
 #elif defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
     {
         wxString exec_path = MacGetPathToBundledResourceFile(CFSTR("xrc"));
@@ -134,7 +136,6 @@ bool PTBatcherGUI::OnInit()
             wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP
         },
         { wxCMD_LINE_SWITCH, "b", "batch",  "run batch immediately" },
-        { wxCMD_LINE_SWITCH, "p", "parallel",  "run batch projects in parallel" },
         { wxCMD_LINE_SWITCH, "o", "overwrite",  "overwrite previous files without asking" },
         { wxCMD_LINE_SWITCH, "s", "shutdown",  "shutdown computer after batch is complete" },
         { wxCMD_LINE_SWITCH, "v", "verbose",  "show verbose output when processing projects" },
@@ -150,7 +151,6 @@ bool PTBatcherGUI::OnInit()
             wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP
         },
         { wxCMD_LINE_SWITCH, wxT("b"), wxT("batch"),  wxT("run batch immediately") },
-        { wxCMD_LINE_SWITCH, wxT("p"), wxT("parallel"),  wxT("run batch projects in parallel") },
         { wxCMD_LINE_SWITCH, wxT("o"), wxT("overwrite"),  wxT("overwrite previous files without asking") },
         { wxCMD_LINE_SWITCH, wxT("s"), wxT("shutdown"),  wxT("shutdown computer after batch is complete") },
         { wxCMD_LINE_SWITCH, wxT("v"), wxT("verbose"),  wxT("show verbose output when processing projects") },
@@ -336,10 +336,6 @@ bool PTBatcherGUI::OnInit()
     if(IsFirstInstance)
     {
         wxConfigBase* config=wxConfigBase::Get();
-        if (parser.Found(wxT("p")))
-        {
-            config->Write(wxT("/BatchFrame/ParallelCheck"), 1l);
-        }
         if (parser.Found(wxT("s")))
         {
             config->DeleteEntry(wxT("/BatchFrame/ShutdownCheck"));
@@ -360,10 +356,6 @@ bool PTBatcherGUI::OnInit()
     }
     else
     {
-        if (parser.Found(wxT("p")))
-        {
-            conn->Request(wxT("SetParallelCheck"));
-        }
         if (parser.Found(wxT("s")))
         {
 #if !defined __WXMAC__ && !defined __WXOSX_COCOA__
@@ -410,6 +402,13 @@ int PTBatcherGUI::OnExit()
     delete m_server;
     return 0;
 }
+
+#if wxUSE_ON_FATAL_EXCEPTION
+void PTBatcherGUI::OnFatalException()
+{
+    GenerateReport(wxDebugReport::Context_Exception);
+};
+#endif
 
 void PTBatcherGUI::OnItemActivated(wxListEvent& event)
 {
@@ -488,12 +487,6 @@ wxChar* BatchIPCConnection::OnRequest(const wxString& topic, const wxString& ite
     };
     wxCommandEvent event;
     event.SetInt(1);
-    if(item==wxT("SetParallelCheck"))
-        if(!MyBatchFrame->GetCheckParallel())
-        {
-            MyBatchFrame->OnCheckParallel(event);
-            MyBatchFrame->SetCheckboxes();
-        };
 #if !defined __WXMAC__ && !defined __WXOSX_COCOA__
     // wxMac has not wxShutdown
     if(item==wxT("SetShutdownCheck"))

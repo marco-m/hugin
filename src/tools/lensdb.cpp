@@ -25,8 +25,6 @@
  *
  */
 
-#include <hugin_version.h>
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -137,7 +135,7 @@ bool CheckProjectFile(boost::filesystem::path filename)
 static void usage(const char* name)
 {
     std::cout << name << ": tool for lens database maintenance" << std::endl
-              << name << " version " << DISPLAY_VERSION << std::endl
+              << name << " version " << hugin_utils::GetHuginVersion() << std::endl
               << std::endl
               << "Usage:  lensdb [--recrusive] --populate BASEPATH " << std::endl
               << "             Populate database with information from all pto files" << std::endl
@@ -175,7 +173,7 @@ int main(int argc, char* argv[])
         switch (c)
         {
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case 'c':
                 compress=true;
@@ -197,7 +195,7 @@ int main(int argc, char* argv[])
     {
         if (argc - optind != 1)
         {
-            usage(argv[0]);
+            usage(hugin_utils::stripPath(argv[0]).c_str());
             return -1;
         };
 

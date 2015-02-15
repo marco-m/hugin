@@ -40,30 +40,7 @@
                           <border>5</border>
                         </object>
                         <cols>3</cols>
-                        <rows>2</rows>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Number of CPUs:</label>
-                          </object>
-                          <flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>5</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxSpinCtrl" name="prefs_nona_NumberOfThreads">
-                            <value>1</value>
-                            <min>1</min>
-                            <tooltip>Hugin's preview window can use multiple threads for processing.\nSet this to the number of processors or processor cores available in your system.</tooltip>
-                          </object>
-                          <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>5</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label/>
-                          </object>
-                          <flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>5</border>
-                        </object>
+                        <rows>1</rows>
                       </object>
                       <flag>wxEXPAND</flag>
                     </object>
@@ -133,25 +110,6 @@
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="prefs_copy_log">
                             <label>Copy log messages to clipboard.</label>
-                          </object>
-                          <flag>wxALL|wxEXPAND|wxALIGN_TOP</flag>
-                          <border>5</border>
-                        </object>
-                        <object class="spacer">
-                          <flag>wxALL|wxEXPAND|wxALIGN_TOP</flag>
-                          <border>5</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>Project save:</label>
-                          </object>
-                          <flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>5</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxCheckBox" name="prefs_makefile">
-                            <label>Create makefile automatically during project save</label>
-                            <tooltip>Saves a makefile (.mk) beside the project file (.pto) for command line stitching</tooltip>
                           </object>
                           <flag>wxALL|wxEXPAND|wxALIGN_TOP</flag>
                           <border>5</border>
@@ -866,14 +824,6 @@ per overlap</label>
                               <object class="wxCheckBox" name="pref_processor_start">
                                 <label>Start stitching jobs immediately</label>
                                 <tooltip>If selected, the processor will immediately resume processing the jobs queue.  Otherwise the processor is started in suspended state and the user has to start the processing manually.</tooltip>
-                              </object>
-                              <flag>wxALL</flag>
-                              <border>5</border>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxCheckBox" name="pref_processor_parallel">
-                                <label>Run stitching jobs in parallel</label>
-                                <tooltip>If selected, the processor will run multiple jobs contemporaneously.  Otherwise it will run one job at a time.  Note that selecting this option may actually result in slower stitches, depending on the system's resources and bottlenecks.</tooltip>
                               </object>
                               <flag>wxALL</flag>
                               <border>5</border>

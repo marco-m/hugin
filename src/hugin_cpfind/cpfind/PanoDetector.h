@@ -23,16 +23,14 @@
 #define __detectpano_panodetector_h
 
 #include <hugin_config.h>
-#include <hugin_version.h>
 
 #include "PanoDetectorDefs.h"
+#include "hugin_utils/shared_ptr.h"
 #include <string>
 #include <map>
 #include <localfeatures/Image.h>
 #include <localfeatures/PointMatch.h>
 #include "TestCode.h"
-#include <zthread/Runnable.h>
-#include <zthread/PoolExecutor.h>
 
 #include <localfeatures/KeyPoint.h>
 #include <localfeatures/KeyPointDetector.h>
@@ -53,7 +51,7 @@ public:
     typedef std::vector<std::string>						FileNameList_t;
     typedef std::vector<std::string>::iterator				FileNameListIt_t;
     typedef KDTreeSpace::KDTree<KDElemKeyPoint, double>		KPKDTree;
-    typedef boost::shared_ptr<KPKDTree >					KPKDTreePtr;
+    typedef sharedPtrNamespace::shared_ptr<KPKDTree>        KPKDTreePtr;
 
     typedef lfeat::KeyPointDetector KeyPointDetector;
 
@@ -73,8 +71,8 @@ public:
     void printFilenames();
     void printHelp();
     void run();
-    bool match(ZThread::PoolExecutor& aExecutor, std::vector<HuginBase::UIntSet> &checkedPairs);
-    bool matchMultiRow(ZThread::PoolExecutor& aExecutor);
+    bool match(std::vector<HuginBase::UIntSet> &checkedPairs);
+    bool matchMultiRow();
     /** does only matches image pairs which overlaps and don't have control points
         @param aExecutor executor for threading
         @param pano pano, which should be used for determing of overlap, can contain also less images than _panoramaInfo
@@ -84,7 +82,7 @@ public:
                  to take also narrow overlaps better into account
         @return true, if detection was successful
     */
-    bool matchPrealigned(ZThread::PoolExecutor& aExecutor, Panorama* pano, std::vector<HuginBase::UIntSet> &connectedImages, std::vector<size_t> imgMap, bool exactOverlap=true);
+    bool matchPrealigned(Panorama* pano, std::vector<HuginBase::UIntSet> &connectedImages, std::vector<size_t> imgMap, bool exactOverlap=true);
 
 
     // accessors
@@ -408,6 +406,10 @@ public:
         flann::Matrix<double> _flann_descriptors;
         flann::Index<flann::L2<double> > * _flann_index;
 
+        ImgData()
+        {
+            _loadFail = false;
+        }
     };
 
     typedef std::map<int, ImgData>					ImgData_t;
@@ -443,7 +445,6 @@ public:
 private:
     bool LoadSVMModel();
     ImgData_t				_filesData;
-    MatchData_t				_matchesData;
     struct celeste::svm_model* svmModel;
 };
 

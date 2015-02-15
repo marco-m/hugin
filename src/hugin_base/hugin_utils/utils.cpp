@@ -23,6 +23,7 @@
  */
 
 #include "utils.h"
+#include "hugin_version.h"
 
 #ifdef WIN32
     #define NOMINMAX
@@ -252,6 +253,77 @@ std::string doubleToString(double d, int digits)
     return number;
 }
 
+bool stringToInt(const std::string& s, int& val)
+{
+    if (StrTrim(s) == "0")
+    {
+        val = 0;
+        return true;
+    };
+    int x = atoi(s.c_str());
+    if (x != 0)
+    {
+        val = x;
+        return true;
+    };
+    return false;
+};
+
+bool stringToUInt(const std::string&s, unsigned int& val)
+{
+    int x;
+    if (stringToInt(s, x))
+    {
+        if (x >= 0)
+        {
+            val = static_cast<unsigned int>(x);
+            return true;
+        };
+    };
+    return false;
+};
+
+std::vector<std::string> SplitString(const std::string& s, const std::string& sep)
+{
+    std::vector<std::string> result;
+    std::size_t pos = s.find_first_of(sep, 0);
+    std::size_t pos2 = 0;
+    while (pos != std::string::npos)
+    {
+        if (pos - pos2 > 0)
+        {
+            std::string t(s.substr(pos2, pos - pos2));
+            t=StrTrim(t);
+            if (!t.empty())
+            {
+                result.push_back(t);
+            };
+        };
+        pos2 = pos + 1;
+        pos = s.find_first_of(sep, pos2);
+    }
+    if (pos2 < s.length())
+    {
+        std::string t(s.substr(pos2));
+        t = StrTrim(t);
+        if (!t.empty())
+        {
+            result.push_back(t);
+        };
+    };
+    return result;
+};
+
+void ReplaceAll(std::string& s, const std::string& oldChar, char newChar)
+{
+    std::size_t found = s.find_first_of(oldChar);
+    while (found != std::string::npos)
+    {
+        s[found] = newChar;
+        found = s.find_first_of(oldChar, found + 1);
+    };
+};
+
     void ControlPointErrorColour(const double cperr, 
         double &r,double &g, double &b)
     {
@@ -321,8 +393,8 @@ std::string GetDataDir()
 #if _WINDOWS
     char buffer[MAX_PATH];//always use MAX_PATH for filepaths
     GetModuleFileName(NULL,buffer,sizeof(buffer));
-    std::string working_path=(buffer);
-    std::string data_path="";
+    std::string working_path(buffer);
+    std::string data_path("");
     //remove filename
     std::string::size_type pos=working_path.rfind("\\");
     if(pos!=std::string::npos)
@@ -415,7 +487,7 @@ bool initGPU(int *argcp, char **argv)
         return false;
     }
 
-    std::cout << argv[0] << ": using graphics card: " << glGetString(GL_VENDOR) << " " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << hugin_utils::stripPath(argv[0]) << ": using graphics card: " << glGetString(GL_VENDOR) << " " << glGetString(GL_RENDERER) << std::endl;
 
     GLboolean has_arb_fragment_shader = glewGetExtension("GL_ARB_fragment_shader");
     GLboolean has_arb_vertex_shader = glewGetExtension("GL_ARB_vertex_shader");
@@ -448,5 +520,10 @@ bool wrapupGPU()
     glutDestroyWindow(GlutWindowHandle);
     return true;
 }
+
+std::string GetHuginVersion()
+{
+    return std::string(DISPLAY_VERSION);
+};
 
 } //namespace

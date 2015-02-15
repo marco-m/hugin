@@ -24,6 +24,7 @@
  */
 
 #include "panoinc_WX.h"
+#include <wx/msgdlg.h>
 #include "panoinc.h"
 #include "LensTools.h"
 #include <algorithm>
@@ -46,11 +47,19 @@ void FillLensProjectionList(wxControlWithItems* list)
     list->SetSelection(0);
 };
 
-void SelectProjection(wxControlWithItems* list,size_t new_projection)
+void FillBlenderList(wxControlWithItems* list)
+{
+    list->Clear();
+    list->Append(_("enblend"), (void*)HuginBase::PanoramaOptions::ENBLEND_BLEND);
+    list->Append(_("builtin"), (void*)HuginBase::PanoramaOptions::INTERNAL_BLEND);
+    list->SetSelection(0);
+};
+
+void SelectListValue(wxControlWithItems* list, size_t newValue)
 {
     for(unsigned int i=0;i<list->GetCount();i++)
     {
-        if((size_t)list->GetClientData(i)==new_projection)
+        if((size_t)list->GetClientData(i)==newValue)
         {
             list->SetSelection(i);
             return;
@@ -59,9 +68,42 @@ void SelectProjection(wxControlWithItems* list,size_t new_projection)
     list->SetSelection(0);
 };
 
-size_t GetSelectedProjection(wxControlWithItems* list)
+size_t GetSelectedValue(wxControlWithItems* list)
 {
     return (size_t)(list->GetClientData(list->GetSelection()));
+};
+
+wxString getProjectionString(const HuginBase::SrcPanoImage& img)
+{
+    wxString ps;
+    switch (img.getProjection())
+    {
+    case HuginBase::SrcPanoImage::RECTILINEAR:          ps << _("Normal (rectilinear)"); break;
+    case HuginBase::SrcPanoImage::PANORAMIC:            ps << _("Panoramic (cylindrical)"); break;
+    case HuginBase::SrcPanoImage::CIRCULAR_FISHEYE:     ps << _("Circular fisheye"); break;
+    case HuginBase::SrcPanoImage::FULL_FRAME_FISHEYE:   ps << _("Full frame fisheye"); break;
+    case HuginBase::SrcPanoImage::EQUIRECTANGULAR:      ps << _("Equirectangular"); break;
+    case HuginBase::SrcPanoImage::FISHEYE_ORTHOGRAPHIC: ps << _("Orthographic"); break;
+    case HuginBase::SrcPanoImage::FISHEYE_STEREOGRAPHIC:ps << _("Stereographic"); break;
+    case HuginBase::SrcPanoImage::FISHEYE_EQUISOLID:    ps << _("Equisolid"); break;
+    case HuginBase::SrcPanoImage::FISHEYE_THOBY:        ps << _("Fisheye Thoby"); break;
+    }
+    return ps;
+};
+
+wxString getResponseString(const HuginBase::SrcPanoImage& img)
+{
+    wxString s;
+    switch (img.getResponseType())
+    {
+    case HuginBase::BaseSrcPanoImage::RESPONSE_EMOR:
+        s = _("custom (EMoR)");
+        break;
+    case HuginBase::BaseSrcPanoImage::RESPONSE_LINEAR:
+        s = _("Linear");
+        break;
+    };
+    return s;
 };
 
 void SaveLensParameters(const wxString filename, HuginBase::Panorama* pano, unsigned int imgNr)
@@ -376,4 +418,58 @@ void SaveLensParametersToIni(wxWindow * parent, PT::Panorama *pano, const HuginB
     }
 }
 
+bool CheckLensStacks(HuginBase::Panorama* pano, bool allowCancel)
+{
+    if (pano->getNrOfImages() < 2)
+    {
+        return true;
+    };
+    const size_t nrImages = pano->getNrOfImages();
+    bool stacksCorrectLinked = true;
+    for (size_t i = 0; i < nrImages - 1; ++i)
+    {
+        const HuginBase::SrcPanoImage& image1 = pano->getImage(i);
+        if (image1.YawisLinked())
+        {
+            for (size_t j = i + 1; j < nrImages && stacksCorrectLinked; ++j)
+            {
+                const HuginBase::SrcPanoImage& image2 = pano->getImage(j);
+                if (image1.YawisLinkedWith(image2))
+                {
+                    stacksCorrectLinked = stacksCorrectLinked &
+                        image1.HFOVisLinkedWith(image2) &
+                        image1.RadialDistortionisLinkedWith(image2) &
+                        image1.RadialDistortionCenterShiftisLinkedWith(image2) &
+                        image1.ShearisLinkedWith(image2);
+                };
+            };
+        };
+    };
+    if (stacksCorrectLinked)
+    {
+        return true;
+    }
+    else
+    {
+        int flags = wxICON_EXCLAMATION | wxOK;
+        if (allowCancel)
+        {
+            flags = flags | wxCANCEL;
+        };
+        if (wxMessageBox(_("This project contains stacks with linked positions. But the lens parameters are not linked for these images.\nThis will result in unwanted results.\nPlease check and correct this before proceeding."),
+#ifdef _WINDOWS
+            _("Hugin"),
+#else
+            wxT(""),
+#endif
+            flags)==wxOK)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        };
+    };
+};
 

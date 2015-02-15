@@ -29,6 +29,7 @@
 #include "panoinc_WX.h"
 #include "panoinc.h"
 #include "base_wx/wxPlatform.h"
+#include "base_wx/LensTools.h"
 
 #include <base_wx/wxImageCache.h>
 #include <base_wx/platform.h>
@@ -280,10 +281,10 @@ bool wxAddImagesCmd::processPanorama(Panorama& pano)
         applyColorBalanceValue(srcImg, pano);
         double redBal=srcImg.getWhiteBalanceRed();
         double blueBal=srcImg.getWhiteBalanceBlue();
-        if(srcImg.getCropFactor()<=0)
+        if(srcImg.getCropFactor()<0.1)
         {
             srcImg.readCropfactorFromDB();
-            ok=(srcImg.getExifFocalLength()>0 && srcImg.getCropFactor()>0);
+            ok=(srcImg.getExifFocalLength()>0 && srcImg.getCropFactor()>0.1);
         };
         if (! ok ) {
                  // search for image with matching size and exif data
@@ -582,7 +583,7 @@ bool wxLoadPTProjectCmd::processPanorama(Panorama& pano)
                 // open file dialog
                 wxFileDialog dlg(MainFrame::Get(), _("Add images"),
                                  basedir, fname.GetFullName(),
-                                 HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN, wxDefaultPosition);
+                                 HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN  | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition);
                 dlg.SetDirectory(basedir);
                 if (dlg.ShowModal() == wxID_OK) {
                     pano.setImageFilename(i, (const char *)dlg.GetPath().mb_str(HUGIN_CONV_FILENAME));
@@ -634,14 +635,22 @@ bool wxLoadPTProjectCmd::processPanorama(Panorama& pano)
             pano.setSrcImage(i, srcImg);
         }
         // Link image projection across each lens, since it is not saved.
-        for (unsigned int i = 0; i < lenses.getNumberOfParts(); i++)
+        const HuginBase::UIntSetVector imgSetLens = lenses.getPartsSet();
+        for (size_t i = 0; i < imgSetLens.size(); ++i)
         {
-            // link the variables
-            lenses.linkVariablePart(
-                                HuginBase::ImageVariableGroup::IVE_Projection,
-                                i
-                                   );
-        }
+            const HuginBase::UIntSet imgLens = imgSetLens[i];
+            if (imgLens.size()>1)
+            {
+                HuginBase::UIntSet::const_iterator it = imgLens.begin();
+                const size_t img1 = *it;
+                ++it;
+                do
+                {
+                    pano.linkImageVariableProjection(img1, *it);
+                    ++it;
+                } while (it != imgLens.end());
+            };
+        };
     } else {
         DEBUG_ERROR("could not load panotools script");
     }
@@ -678,6 +687,8 @@ bool wxLoadPTProjectCmd::processPanorama(Panorama& pano)
         pano.setCtrlPoints(goodCPs);
     }
 
+    // check stacks and warn users in case
+    CheckLensStacks(&pano, false);
     // Update control point error values
     HuginBase::PTools::calcCtrlPointErrors(pano);
     if(markAsOptimized)
@@ -758,7 +769,7 @@ bool wxApplyTemplateCmd::processPanorama(Panorama& pano)
         wxString path = config->Read(wxT("actualPath"), wxT(""));
         wxFileDialog dlg(MainFrame::Get(), _("Add images"),
                 path, wxT(""),
-                HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN|wxFD_MULTIPLE , wxDefaultPosition);
+                HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN|wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW , wxDefaultPosition);
         dlg.SetDirectory(path);
 
         // remember the image extension

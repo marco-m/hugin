@@ -37,7 +37,11 @@
 
 #include "vigra/stdimage.hxx"
 #include "vigra/resizeimage.hxx"
+#ifdef HAVE_CXX11
+#include <functional>  // std::bind
+#else
 #include <boost/bind.hpp>
+#endif
 #include "base_wx/wxImageCache.h"
 #include "photometric/ResponseTransform.h"
 #include "panodata/Mask.h"
@@ -58,6 +62,11 @@
 #include <GL/glu.h>
 #endif
 
+// for loading preview images
+#include "wx/mstream.h"
+#include "exiv2/exiv2.hpp"
+#include "exiv2/preview.hpp"
+
 TextureManager::TextureManager(PT::Panorama *pano, ViewState *view_state_in)
 {
     m_pano = pano;
@@ -75,14 +84,14 @@ void TextureManager::DrawImage(unsigned int image_number,
                                unsigned int display_list)
 {
     // bind the texture that represents the given image number.
-    std::map<TextureKey, TextureInfo>::iterator it;
+    TexturesMap::iterator it;
     HuginBase::SrcPanoImage *img_p = view_state->GetSrcImage(image_number);
     TextureKey key(img_p, &photometric_correct);
     it = textures.find(key);
     DEBUG_ASSERT(it != textures.end());
-    it->second.Bind();
+    it->second->Bind();
     glColor4f(1.0,1.0,1.0,1.0);
-    if (it->second.GetUseAlpha() || it->second.GetHasActiveMasks())
+    if (it->second->GetUseAlpha() || it->second->GetHasActiveMasks())
     {
         // use an alpha blend if there is a alpha channel or a mask for this image.
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -145,7 +154,7 @@ void TextureManager::DrawImage(unsigned int image_number,
     } else {
         // we've already corrected all the photometrics, just draw once normally
         glCallList(display_list);
-        if (it->second.GetUseAlpha() || it->second.GetHasActiveMasks())
+        if (it->second->GetUseAlpha() || it->second->GetHasActiveMasks())
         {
             glDisable(GL_BLEND);
         }
@@ -155,23 +164,23 @@ void TextureManager::DrawImage(unsigned int image_number,
 unsigned int TextureManager::GetTextureName(unsigned int image_number)
 {
     // bind the texture that represents the given image number.
-    std::map<TextureKey, TextureInfo>::iterator it;
+    TexturesMap::iterator it;
     HuginBase::SrcPanoImage *img_p = view_state->GetSrcImage(image_number);
     TextureKey key(img_p, &photometric_correct);
     it = textures.find(key);
     DEBUG_ASSERT(it != textures.end());
-    return it->second.GetNumber();
+    return it->second->GetNumber();
 }
 
 void TextureManager::BindTexture(unsigned int image_number)
 {
     // bind the texture that represents the given image number.
-    std::map<TextureKey, TextureInfo>::iterator it;
+    TexturesMap::iterator it;
     HuginBase::SrcPanoImage *img_p = view_state->GetSrcImage(image_number);
     TextureKey key(img_p, &photometric_correct);
     it = textures.find(key);
     DEBUG_ASSERT(it != textures.end());
-    it->second.Bind();
+    it->second->Bind();
 }
 
 void TextureManager::DisableTexture(bool maskOnly)
@@ -250,7 +259,7 @@ void TextureManager::CheckUpdate()
     {    
         // find this texture
         // if it has not been created before, it will be created now.
-        std::map<TextureKey, TextureInfo>::iterator it;
+        TexturesMap::iterator it;
         HuginBase::SrcPanoImage *img_p = view_state->GetSrcImage(image_index);
         TextureKey key(img_p, &photometric_correct);
         it = textures.find(key);
@@ -400,8 +409,8 @@ void TextureManager::CheckUpdate()
         // we have a nice size
         texels_used += 1 << (tex_width_p + tex_height_p);
         if (   it == textures.end()
-            || (it->second).width_p != tex_width_p
-            || (it->second).height_p != tex_height_p)
+            || (it->second)->width_p != tex_width_p
+            || (it->second)->height_p != tex_height_p)
         {
             // Either: 1. We haven't seen this image before
             //     or: 2. Our texture for this is image is the wrong size
@@ -414,15 +423,15 @@ void TextureManager::CheckUpdate()
                 textures.erase(checkKey);
             }
 
-            std::pair<std::map<TextureKey, TextureInfo>::iterator, bool> ins;
-            ins = textures.insert(std::pair<TextureKey, TextureInfo>
+            std::pair<TexturesMap::iterator, bool> ins;
+            ins = textures.insert(std::pair<TextureKey, sharedPtrNamespace::shared_ptr<TextureInfo> >
                                  (TextureKey(img_p, &photometric_correct),
                 // the key is used to identify the image with (or without)
                 // photometric correction parameters.
-                              TextureInfo(view_state, tex_width_p, tex_height_p)
+                              sharedPtrNamespace::make_shared<TextureInfo>(view_state, tex_width_p, tex_height_p)
                             ));
            // create and upload the texture image
-           texinfo = &((ins.first)->second);
+           texinfo = (ins.first)->second.get();
            texinfo->DefineLevels(0, // minimum mip level
                                  // maximum mip level
                         tex_width_p > tex_height_p ? tex_width_p : tex_height_p,
@@ -436,7 +445,7 @@ void TextureManager::CheckUpdate()
             if(view_state->RequireRecalculateMasks(image_index))
             {
                 //mask for this image has changed, also update only mask
-                (*it).second.UpdateMask(*view_state->GetSrcImage(image_index));
+                it->second->UpdateMask(*view_state->GetSrcImage(image_index));
             };
         }
     }
@@ -510,7 +519,7 @@ void TextureManager::CleanTextures()
     // TODO can this be more efficient?
     unsigned int num_images = m_pano->getNrOfImages();
     bool retry = true;
-    std::map<TextureKey, TextureInfo>::iterator tex;
+    TexturesMap::iterator tex;
     while (retry)
     {
       retry = false;
@@ -539,6 +548,24 @@ void TextureManager::CleanTextures()
       }
     }
 }
+
+// helper class for the image cache
+// this procedure is called when a image was sucessfull loaded
+// we check if we still need the image and if so prepare the texture with DefineLevels
+void TextureManager::LoadingImageFinished(int min, int max,
+    bool texture_photometric_correct,
+    const HuginBase::PanoramaOptions &dest_img,
+    const HuginBase::SrcPanoImage &state)
+{
+    TexturesMap::iterator it = textures.find(TextureKey(&state, &texture_photometric_correct));
+    // check if image is still there
+    if (it != textures.end())
+    {
+        // new shared pointer to keep class alive
+        sharedPtrNamespace::shared_ptr<TextureInfo> tex(it->second);
+        tex->DefineLevels(min, max, texture_photometric_correct, dest_img, state);
+    };
+};
 
 TextureManager::TextureInfo::TextureInfo(ViewState *new_view_state)
 {
@@ -702,38 +729,116 @@ void TextureManager::TextureInfo::DefineLevels(int min,
         // Image isn't loaded yet. Request it for later.
         m_imageRequest = ImageCache::getInstance().requestAsyncImage(img_name);
         // call this function with the same parameters after the image loads
-        m_imageRequest->ready.connect(0, 
-            boost::bind(&TextureManager::TextureInfo::DefineLevels, this,
-                        min, max, photometric_correct, dest_img, src_img));
+        // it would be easier to call DefineLevels directly
+        // but this fails if the TextureInfo object is destroyed during loading of the image
+        // this can happen if a new project is opened during the loading cycling
+        // so we go about LoadingImageFinished to check if the texture is still needed
+        m_imageRequest->ready.push_back(
+#ifdef HAVE_CXX11
+            std::bind(&TextureManager::LoadingImageFinished, m_viewState->GetTextureManager(),
+                      min, max, photometric_correct, dest_img, src_img)
+#else
+            boost::bind(&TextureManager::LoadingImageFinished, m_viewState->GetTextureManager(),
+                        min, max, photometric_correct, dest_img, src_img)
+#endif
+        );
         // After that, redraw the preview.
-        m_imageRequest->ready.connect(1,
+        m_imageRequest->ready.push_back(
+#ifdef HAVE_CXX11
+            std::bind(&GLPreviewFrame::redrawPreview,
+                      huginApp::getMainFrame()->getGLPreview())
+#else
             boost::bind(&GLPreviewFrame::redrawPreview,
-                        huginApp::getMainFrame()->getGLPreview()));
+                        huginApp::getMainFrame()->getGLPreview())
+#endif
+        );
         
         // make a temporary placeholder image.
-        GLubyte placeholder_image[64][64][4];
-        for (int i = 0; i < 64; i++) {
-            for (int j = 0; j < 64; j++) {
-                // checkboard pattern
-                GLubyte c = (i/8+j/8)%2 ? 63 : 191;
-                placeholder_image[i][j][0] = c;
-                placeholder_image[i][j][1] = c;
-                placeholder_image[i][j][2] = c;
-                // alpha is low, so the placeholder is mostly transparent.
-                placeholder_image[i][j][3] = 63;
-            }
+        GLubyte* placeholder_image;
+        size_t placeholderWidth = 64;
+        size_t placeholderHeight = 64;
+        Exiv2::Image::AutoPtr image;
+        bool hasPreview = false;
+        try
+        {
+            image = Exiv2::ImageFactory::open(img_name.c_str());
+            hasPreview = true;
         }
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, 64, 64,
+        catch (...)
+        {
+            std::cerr << __FILE__ << " " << __LINE__ << " Error opening file" << std::endl;
+        }
+        if (hasPreview)
+        {
+            image->readMetadata();
+            // read all thumbnails
+            Exiv2::PreviewManager previews(*image);
+            Exiv2::PreviewPropertiesList lists = previews.getPreviewProperties();
+            if (lists.empty())
+            {
+                // no preview found
+                hasPreview = false;
+            }
+            else
+            {
+                // select a preview with matching size
+                int previewIndex = 0;
+                while (previewIndex < lists.size() - 1 && lists[previewIndex].width_ < 200 && lists[previewIndex].height_ < 200)
+                {
+                    ++previewIndex;
+                };
+                // load preview image to wxImage
+                wxImage rawImage;
+                Exiv2::PreviewImage previewImage = previews.getPreviewImage(lists[previewIndex]);
+                wxMemoryInputStream stream(previewImage.pData(), previewImage.size());
+                rawImage.LoadFile(stream, wxString(previewImage.mimeType().c_str(), wxConvLocal), -1);
+                placeholderWidth = rawImage.GetWidth();
+                placeholderHeight = rawImage.GetHeight();
+                placeholder_image = new GLubyte[placeholderWidth * placeholderHeight * 4];
+                size_t index = 0;
+                for (size_t y = 0; y < placeholderHeight; ++y)
+                {
+                    for (size_t x = 0; x < placeholderWidth; ++x)
+                    {
+                        placeholder_image[index++] = rawImage.GetRed(x, y);
+                        placeholder_image[index++] = rawImage.GetGreen(x, y);
+                        placeholder_image[index++] = rawImage.GetBlue(x, y);
+                        placeholder_image[index++] = 63;
+                    };
+                };
+            };
+        };
+        if (!hasPreview)
+        {
+            // no preview, create checker board
+            placeholder_image = new GLubyte[placeholderWidth * placeholderHeight * 4];
+            size_t index = 0;
+            for (int i = 0; i < placeholderHeight; i++)
+            {
+                for (int j = 0; j < placeholderWidth; j++)
+                {
+                    // checkboard pattern
+                    GLubyte c = (i / 8 + j / 8) % 2 ? 63 : 191;
+                    placeholder_image[index++] = c;
+                    placeholder_image[index++] = c;
+                    placeholder_image[index++] = c;
+                    // alpha is low, so the placeholder is mostly transparent.
+                    placeholder_image[index++] = 63;
+                }
+            }
+        };
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, placeholderWidth, placeholderHeight,
                                GL_RGBA, GL_UNSIGNED_BYTE,
                                placeholder_image);
         SetParameters();
+        delete[] placeholder_image;
         return;
     }
     // forget the request if we made one before.
     m_imageRequest = ImageCache::RequestPtr();
     DEBUG_INFO("Converting to 8 bits");
-    boost::shared_ptr<vigra::BRGBImage> img = entry->get8BitImage();
-    boost::shared_ptr<vigra::BImage> mask = entry->mask;
+    sharedPtrNamespace::shared_ptr<vigra::BRGBImage> img = entry->get8BitImage();
+    sharedPtrNamespace::shared_ptr<vigra::BImage> mask = entry->mask;
     // first make the biggest mip level.
     int wo = 1 << (width_p - min), ho = 1 << (height_p - min);
     if (wo < 1) wo = 1; if (ho < 1) ho = 1;
@@ -951,7 +1056,7 @@ void TextureManager::TextureInfo::SetMaxLevel(int level)
     }
 }
 
-TextureManager::TextureKey::TextureKey(HuginBase::SrcPanoImage *source,
+TextureManager::TextureKey::TextureKey(const HuginBase::SrcPanoImage *source,
                                        bool *photometric_correct_ptr)
 {
     SetOptions(source);
@@ -1000,7 +1105,7 @@ const bool TextureManager::TextureKey::operator<(const TextureKey& comp) const
     return false;
 }
 
-void TextureManager::TextureKey::SetOptions(HuginBase::SrcPanoImage *source)
+void TextureManager::TextureKey::SetOptions(const HuginBase::SrcPanoImage *source)
 {
     filename = source->getFilename();
     // Record the masks. Images with different masks require different

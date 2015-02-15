@@ -25,7 +25,6 @@
  */
 
 #include <hugin_config.h>
-#include <hugin_version.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -76,7 +75,7 @@ int g_verbose = 0;
 static void usage(const char* name)
 {
     cerr << name << ": align overlapping images for HDR creation" << std::endl
-         << "align_image_stack version " << DISPLAY_VERSION << std::endl
+         << "align_image_stack version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl
          << "Usage: " << name  << " [options] input files" << std::endl
          << "Valid options are:" << std::endl
@@ -116,7 +115,6 @@ static void usage(const char* name)
          << "  --distortion Try to load distortion information from lens database" << std::endl
          << "  --use-given-order  Use the image order as given from command line" << std::endl
          << "                     (By default images will be sorted by exposure values.)" << std::endl
-         << "  --threads=NUM  Use NUM threads" << std::endl
          << "  --gpu     Use GPU for remapping" << std::endl
          << "  -h        Display help (this text)" << std::endl
          << std::endl;
@@ -942,11 +940,6 @@ int main(int argc, char* argv[])
         0
     };
     int optionIndex = 0;
-    int nThread = getCPUCount();
-    if (nThread < 0)
-    {
-        nThread = 1;
-    }
     while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
         switch (c)
         {
@@ -1034,7 +1027,7 @@ int main(int argc, char* argv[])
                 g_verbose++;
                 break;
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case 's':
                 param.pyrLevel = atoi(optarg);
@@ -1053,7 +1046,7 @@ int main(int argc, char* argv[])
                 };
                 break;
             case THREADS:
-                nThread = atoi(optarg);
+                std::cout << "WARNING: Switch --threads is deprecated. Set environment variable OMP_NUM_THREADS instead" << std::endl;
                 break;
             case GPU:
                 param.gpu = true;
@@ -1066,7 +1059,7 @@ int main(int argc, char* argv[])
                 break;
             default:
                 cerr << "Invalid parameter: " << optarg << std::endl;
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 1;
         }
 
@@ -1079,7 +1072,7 @@ int main(int argc, char* argv[])
     if (nFiles < 2)
     {
         std::cerr << std::endl << "Error: at least two files need to be specified" << std::endl <<std::endl;
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     }
 
@@ -1088,7 +1081,7 @@ int main(int argc, char* argv[])
         std::cerr << std::endl
                   << "ERROR: Please specify at least one of the -p, -o or -a options." << std::endl
                   << std::endl;
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     }
 
@@ -1098,12 +1091,6 @@ int main(int argc, char* argv[])
     {
         files.push_back(argv[optind+i]);
     }
-
-    if (nThread == 0)
-    {
-        nThread = 1;
-    }
-    vigra_ext::ThreadManager::get().setNThreads(nThread);
 
     std::string pixelType;
 

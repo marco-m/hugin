@@ -25,12 +25,28 @@
  *
  */
 
-#include <hugin_version.h>
-
 #include <iostream>
 #include <string>
 #include <fstream>
 #define BOOST_FILESYSTEM_VERSION 3
+#ifdef __GNUC__
+  #include "hugin_config.h"
+  #ifdef HAVE_CXX11
+    #include <boost/version.hpp>
+    #if BOOST_VERSION<105700
+      #if BOOST_VERSION>=105100
+        // workaround a bug in boost filesystem
+        // boost filesystem is probably compiled with C++03
+        // but Hugin is compiled with C++11, this results in
+        // conflicts in boost::filesystems at a enum
+        // see https://svn.boost.org/trac/boost/ticket/6779
+        #define BOOST_NO_CXX11_SCOPED_ENUMS
+      #else
+        #define BOOST_NO_SCOPED_ENUMS
+      #endif
+    #endif
+  #endif
+#endif
 #include <boost/filesystem.hpp>
 #include <getopt.h>
 #include <panodata/Panorama.h>
@@ -328,7 +344,7 @@ void SearchPTOFilesInDirectory(pathVec& projectFiles, std::string src, bool recu
 static void usage(const char* name)
 {
     std::cout << name << ": move a project file with all images in it" << std::endl
-              << name << " version " << DISPLAY_VERSION << std::endl
+              << name << " version " << hugin_utils::GetHuginVersion() << std::endl
               << std::endl
               << "Usage:  pto_move [options] path1/source.pto path2/dest.pto" << std::endl
               << "             Rename project file path1/source.pto to " << std::endl
@@ -374,7 +390,7 @@ int main(int argc, char* argv[])
         switch (c)
         {
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case 'c':
                 movingFiles=false;

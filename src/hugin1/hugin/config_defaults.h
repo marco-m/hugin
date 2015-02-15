@@ -81,11 +81,7 @@
 
 // Exiftool
 #define HUGIN_USE_EXIFTOOL                    1l
-#ifdef EXIFTOOL_GPANO_SUPPORT
 #define HUGIN_EXIFTOOL_CREATE_GPANO           1l
-#else
-#define HUGIN_EXIFTOOL_CREATE_GPANO           0l
-#endif
 
 // Program defaults
 #if defined WIN32
@@ -183,7 +179,6 @@
 // processor
 #define HUGIN_PROCESSOR_GUI             0l    // first in the list in the xrc file
 #define HUGIN_PROCESSOR_START           1l    // boolean
-#define HUGIN_PROCESSOR_PARALLEL        0l    // boolean
 #define HUGIN_PROCESSOR_OVERWRITE       0l    // boolean
 #define HUGIN_PROCESSOR_VERBOSE         1l    // boolean
 

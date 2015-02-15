@@ -24,8 +24,6 @@
  *
  */
 
-#include <hugin_version.h>
-
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
@@ -34,9 +32,7 @@
 #endif
 #include <panodata/Panorama.h>
 #include <panodata/StandardImageVariableGroups.h>
-#include <boost/algorithm/string.hpp>
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
+#include "hugin_utils/utils.h"
 
 using namespace std;
 using namespace HuginBase;
@@ -46,60 +42,61 @@ struct ParsedImg
 {
     int imgNr;
     int lensStackNr;
+    ParsedImg(): imgNr(-1), lensStackNr(-1) {};
 };
 
 typedef std::vector<ParsedImg> ParseImgVec;
 
 // parse a single variable and put result in struct ParseVar
-void ParseSingleImage(ParseImgVec& varVec, std::string s, std::string regExpression)
+void ParseSingleImage(ParseImgVec& varVec, const std::string& s)
 {
-    boost::regex reg(regExpression);
-    boost::smatch matches;
-    if(boost::regex_match(s, matches, reg))
+    std::string text(s);
+    if (text[0] == 'i')
     {
-        bool valid=true;
-        if(matches.size()>1)
+        text.erase(0, 1);
+        ParsedImg var;
+        // search =
+        const std::size_t pos = text.find_first_of("=", 0);
+        if (pos == std::string::npos)
         {
-            ParsedImg var;
-            // parse image number
-            std::string temp(matches[1].first, matches[1].second);
-            try
+            // no =, try to convert to number
+            if (!hugin_utils::stringToInt(text, var.imgNr))
             {
-                var.imgNr=boost::lexical_cast<int>(temp);
+                return;
             }
-            catch (boost::bad_lexical_cast)
+        }
+        else
+        {
+            if (pos > 0 && pos < text.length() - 1)
             {
-                var.imgNr=-1;
-            };
-            // read lens/stack number
-            if(matches.size()>2)
-            {
-                temp=std::string(matches[2].first, matches[2].second);
-                try
+                std::string tempString(text.substr(0, pos));
+                if (!hugin_utils::stringToInt(tempString, var.imgNr))
                 {
-                    var.lensStackNr=boost::lexical_cast<int>(temp);
-                }
-                catch (boost::bad_lexical_cast)
-                {
-                    valid=false;
+                    return;
                 };
-            };
-            if(valid)
+                tempString = text.substr(pos + 1, text.length() - pos - 1);
+                if(!hugin_utils::stringToInt(tempString, var.lensStackNr))
+                {
+                    return;
+                };
+            }
+            else
             {
-                varVec.push_back(var);
+                // = at first or last position of string
+                return;
             };
         };
+        varVec.push_back(var);
     };
 };
 
 //parse complete variables string
-void ParseImageLensStackString(ParseImgVec& parseVec, std::string input, std::string regExpression)
+void ParseImageLensStackString(ParseImgVec& parseVec, std::string input)
 {
-    std::vector<std::string> splitResult;
-    boost::algorithm::split(splitResult, input, boost::algorithm::is_any_of(", "), boost::algorithm::token_compress_on);
+    std::vector<std::string> splitResult = hugin_utils::SplitString(input, ", ");
     for(size_t i=0; i<splitResult.size(); i++)
     {
-        ParseSingleImage(parseVec, splitResult[i], regExpression);
+        ParseSingleImage(parseVec, splitResult[i]);
     };
 };
 
@@ -123,7 +120,7 @@ case HuginBase::ImageVariableGroup::IVE_##name:\
 static void usage(const char* name)
 {
     cout << name << ": modify assigned lenses and stack in pto files" << endl
-         << name << " version " << DISPLAY_VERSION << endl
+         << name << " version " << hugin_utils::GetHuginVersion() << endl
          << endl
          << "Usage:  " << name << " [options] --switches imglist input.pto" << endl
          << endl
@@ -183,19 +180,19 @@ int main(int argc, char* argv[])
                 output = optarg;
                 break;
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case SWITCH_NEW_LENS:
-                ParseImageLensStackString(newLensImgs, std::string(optarg), "i(\\d+?)");
+                ParseImageLensStackString(newLensImgs, std::string(optarg));
                 break;
             case SWITCH_NEW_STACK:
-                ParseImageLensStackString(newStackImgs, std::string(optarg), "i(\\d+?)");
+                ParseImageLensStackString(newStackImgs, std::string(optarg));
                 break;
             case SWITCH_CHANGE_LENS:
-                ParseImageLensStackString(changeLensImgs, std::string(optarg), "i(\\d+?)=(\\d+?)");
+                ParseImageLensStackString(changeLensImgs, std::string(optarg));
                 break;
             case SWITCH_CHANGE_STACK:
-                ParseImageLensStackString(changeStackImgs, std::string(optarg), "i(\\d+?)=(\\d+?)");
+                ParseImageLensStackString(changeStackImgs, std::string(optarg));
                 break;
             case ':':
                 cerr <<"Option " << longOptions[optionIndex].name << " requires a parameter" << endl;

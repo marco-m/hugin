@@ -28,32 +28,30 @@
 #define _MYEXTERNALCMDEXECDIALOG__H
 
 #include <hugin_shared.h>
+#include <wx/utils.h>
+#include "Executor.h"
 
 const int HUGIN_EXIT_CODE_CANCELLED = -255;
 
-class MyExternalCmdExecDialog;
-class HuginPipedProcess;
+/** execute a single command in own dialog, redirect output to frame and allow canceling */
 WXIMPEX int MyExecuteCommandOnDialog(wxString command, wxString args, wxWindow* parent, wxString title, bool isQuoted=false);
-
-//#define HUGIN_EXEC_LISTBOX 1
+/** execute all commands in queue with redirection of output to frame and allow canceling 
+    the queue will be delete at the end, don't use it further */
+WXIMPEX int MyExecuteCommandQueue(HuginQueue::CommandQueue* queue, wxWindow* parent, const wxString& title, const wxString& comment = wxEmptyString);
 
 // Define an array of process pointers used by MyFrame
 class MyPipedProcess;
 WX_DEFINE_ARRAY_PTR(MyPipedProcess *, MyProcessesArray);
 
-
-class MyPipedProcess;
-
-class MyProcessListener
+class WXIMPEX MyProcessListener
 {
 public:
     virtual void OnProcessTerminated(MyPipedProcess *process, int pid, int status) = 0;
     virtual ~MyProcessListener() {}
 };
 
-
 // Define a new exec dialog
-class MyExecPanel : public wxPanel, public MyProcessListener
+class WXIMPEX MyExecPanel : public wxPanel, public MyProcessListener
 {
 public:
     // ctor(s)
@@ -64,22 +62,23 @@ public:
 	void ContinueProcess();
 	long GetPid();
 
-    void OnExecWithRedirect(wxCommandEvent& event);
-
     int ExecWithRedirect(wxString command);
+    int ExecQueue(HuginQueue::CommandQueue* queue);
 
     // polling output of async processes
     void OnTimer(wxTimerEvent& event);
 
     // for MyPipedProcess
     void OnProcessTerminated(MyPipedProcess *process, int pid, int status);
-    //wxListBox *GetLogListBox() const { return m_lbox; }
+
     /** save the content of the window into a given log file 
         @return true if log was saved successful */
     bool SaveLog(const wxString &filename);
     /** copy the content of the log window into the clipboard */
     void CopyLogToClipboard();
-    
+    /** display the string in the panel */
+    void AddString(const wxString& s);
+
     virtual ~MyExecPanel();
 
 private:
@@ -92,27 +91,26 @@ private:
 
     void RemoveAsyncProcess(MyPipedProcess *process);
 
+    int ExecNextQueue();
+
     // the PID of the last process we launched asynchronously
     long m_pidLast;
 
-    // last command we executed
-    wxString m_cmdLast;
-
-//    wxString m_output;
-
-#ifdef HUGIN_EXEC_LISTBOX
-    wxListBox *m_lbox;
-    wxString   m_currLine;
-#else
     wxTextCtrl *m_textctrl;
     long m_lastLineStart;
-#endif
 
     MyProcessesArray m_running;
 
     // the idle event wake up timer
     wxTimer m_timerIdleWakeUp;
-
+    // store queue
+    HuginQueue::CommandQueue* m_queue;
+    size_t m_queueLength;
+    // if the return code of the process should be checked
+    bool m_checkReturnCode;
+#if wxCHECK_VERSION(3,0,0)
+    wxExecuteEnv m_executeEnv;
+#endif
     // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };
@@ -121,40 +119,26 @@ private:
 // wxProcess-derived classes
 // ----------------------------------------------------------------------------
 
-// This is the handler for process termination events
-class MyProcess : public wxProcess
+// A specialization of MyProcess for redirecting the output
+class WXIMPEX MyPipedProcess : public wxProcess
 {
 public:
-    MyProcess(MyProcessListener *parent, const wxString& cmd)
+    MyPipedProcess(MyProcessListener *parent, const wxString& cmd)
         : wxProcess(0), m_cmd(cmd)
-    {
-        m_parent = parent;
-    }
-    // instead of overriding this virtual function we might as well process the
-    // event from it in the frame class - this might be more convenient in some
-    // cases
+        {
+            m_parent = parent;
+            Redirect();
+        }
+
+    // This is the handler for process termination events
     virtual void OnTerminate(int pid, int status);
 protected:
     MyProcessListener *m_parent;
     wxString m_cmd;
 };
 
-// A specialization of MyProcess for redirecting the output
-class MyPipedProcess : public MyProcess
-{
-public:
-    MyPipedProcess(MyProcessListener *parent, const wxString& cmd)
-        : MyProcess(parent, cmd)
-        {
-            Redirect();
-        }
-
-    virtual void OnTerminate(int pid, int status);
-};
-
-
 // Define a new exec dialog, which uses MyExecPanel defined above
-class MyExecDialog : public wxDialog
+class WXIMPEX MyExecDialog : public wxDialog
 {
 public:
 // ctor(s)
@@ -163,7 +147,10 @@ public:
     void OnCancel(wxCommandEvent& event);
 
     int ExecWithRedirect(wxString command);
-    
+    int ExecQueue(HuginQueue::CommandQueue* queue);
+    /** display the string in the panel */
+    void AddString(const wxString& s);
+
     void OnProcessTerminate(wxProcessEvent & event);
     
     virtual ~MyExecDialog();
@@ -177,64 +164,6 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-//----------
-
-
-
-class MyExternalCmdExecDialog : public wxDialog
-{
-public:
-    MyExternalCmdExecDialog(wxWindow* parent, 
-                            wxWindowID id, 
-                            const wxString& title = _("Command Line Progress"), 
-                            const wxPoint& pos = wxDefaultPosition, 
-                            const wxSize& size = wxDefaultSize, 
-#ifdef __WXMAC__
-                            long style = wxRESIZE_BORDER|wxFRAME_FLOAT_ON_PARENT|wxMINIMIZE_BOX,
-#else
-                            long style = wxDEFAULT_DIALOG_STYLE,
-#endif
-                            const wxString& name = wxT("externalCmDialogBox"));
-    
-    int ShowModal(const wxString &cmd);
-	int Execute(const wxString & cmd);
-	int GetExitCode();
-    void SetExitCode(int ret);
-    void OnTimer(wxTimerEvent& WXUNUSED(event));
-    void OnIdle(wxIdleEvent& event);
-    //wxListBox *GetLogListBox() const { return m_lbox; }
-    wxTextCtrl *GetLogTextBox() const { return m_tbox; }
-    virtual ~MyExternalCmdExecDialog();
-    
-private:
-    //wxListBox *m_lbox;
-    wxTextCtrl *m_tbox;
-    wxTimer m_timerIdleWakeUp;
-    HuginPipedProcess *process;
-    long processID;
-    int m_exitCode;
-
-    DECLARE_EVENT_TABLE()
-};
-
-//----------
-
-class HuginPipedProcess : public wxProcess
-{
-public:
-    HuginPipedProcess(MyExternalCmdExecDialog *parent, const wxString& cmd)
-    : wxProcess(parent), m_cmd(cmd)
-    {
-        m_parent = parent;
-        Redirect();
-    }
-    
-    virtual void OnTerminate(int pid, int status);
-    virtual bool HasInput();
-    
-protected:
-    MyExternalCmdExecDialog *m_parent;
-    wxString m_cmd;
-};
+DECLARE_EVENT_TYPE(EVT_QUEUE_PROGRESS, -1)
 
 #endif

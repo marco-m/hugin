@@ -34,7 +34,11 @@
 #include "base_wx/wxPlatform.h"
 #include <vector>
 #include <map>
+#ifdef HAVE_CXX11
+#include <functional>    // std::bind
+#else
 #include <boost/bind.hpp>
+#endif
 
 #include "hugin/ImagesPanel.h"
 #include "hugin/CommandHistory.h"
@@ -380,7 +384,7 @@ void ImagesPanel::OnSelectionChanged(wxTreeEvent & e)
 
         if(identical_projection)
         {
-            SelectProjection(m_lenstype, proj);
+            SelectListValue(m_lenstype, proj);
         }
         else
         {
@@ -458,8 +462,13 @@ void ImagesPanel::UpdatePreviewImage()
         thumbnail_request = ImageCache::getInstance().requestAsyncSmallImage(
                 m_pano->getImage(m_showImgNr).getFilename());
         // When the image is ready, try this function again.
-        thumbnail_request->ready.connect(
-            boost::bind(&ImagesPanel::UpdatePreviewImage, this));
+        thumbnail_request->ready.push_back(
+#ifdef HAVE_CXX11
+            std::bind(&ImagesPanel::UpdatePreviewImage, this)
+#else
+            boost::bind(&ImagesPanel::UpdatePreviewImage, this)
+#endif
+            );
     } else {
         // forget any request now the image has loaded.
         thumbnail_request = ImageCache::RequestPtr();
@@ -500,7 +509,7 @@ void ImagesPanel::ReloadCPDetectorSettings()
 
 void ImagesPanel::OnLensTypeChanged (wxCommandEvent & e)
 {
-    size_t var = GetSelectedProjection(m_lenstype);
+    size_t var = GetSelectedValue(m_lenstype);
     UIntSet images=m_images_tree->GetSelectedImages();
     if(images.size()>0)
     {
@@ -608,7 +617,7 @@ void ImagesPanel::OnMinimumOverlapChanged(wxCommandEvent & e)
     {
         return;
     }
-    if(val<=0 || val>1)
+    if(fabs(val)<0.001 || val>1)
     {
         wxMessageBox(_("The minimum overlap has to be greater than 0 and smaller than 1."),
 #ifdef _WINDOWS
@@ -619,7 +628,11 @@ void ImagesPanel::OnMinimumOverlapChanged(wxCommandEvent & e)
             wxOK | wxICON_INFORMATION, this);
         return;
     };
-    PanoramaOptions opt=m_pano->getOptions();
+    if (val < 0)
+    {
+        val = -1;
+    };
+    PanoramaOptions opt = m_pano->getOptions();
     opt.outputStacksMinOverlap=val;
     GlobalCmdHist::getInstance().addCommand(
         new PT::SetPanoOptionsCmd(*m_pano,opt)

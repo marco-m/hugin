@@ -19,8 +19,6 @@ algorithms/nona/ComputeImageROI.cpp
 algorithms/optimizer/ImageGraph.cpp
 algorithms/optimizer/PhotometricOptimizer.cpp
 algorithms/optimizer/PTOptimizer.cpp
-algorithms/panorama_makefile/PanoramaMakefilelibExport.cpp
-algorithms/assistant_makefile/AssistantMakefilelibExport.cpp
 algorithms/point_sampler/PointSampler.cpp
 algorithms/control_points/CleanCP.cpp
 appbase/ProgressDisplay.cpp
@@ -42,6 +40,7 @@ nona/Stitcher2.cpp
 nona/Stitcher3.cpp
 nona/Stitcher4.cpp
 nona/Stitcher.cpp
+nona/StitcherOptions.cpp
 panodata/ControlPoint.cpp
 panodata/Lens.cpp
 panodata/Mask.cpp
@@ -58,7 +57,6 @@ panotools/PanoToolsOptimizerWrapper.cpp
 panotools/PanoToolsUtils.cpp
 panotools/PanoToolsTransformGPU.cpp
 vigra_ext/emor.cpp
-vigra_ext/MultiThreadOperations.cpp
 vigra_ext/ImageTransformsGPU.cpp
 )
 
@@ -82,8 +80,6 @@ algorithms/nona/ComputeImageROI.h
 algorithms/optimizer/ImageGraph.h
 algorithms/optimizer/PhotometricOptimizer.h
 algorithms/optimizer/PTOptimizer.h
-algorithms/panorama_makefile/PanoramaMakefilelibExport.h
-algorithms/assistant_makefile/AssistantMakefilelibExport.h
 algorithms/point_sampler/PointSampler.h
 algorithms/control_points/CleanCP.h
 appbase/Command.h
@@ -105,6 +101,7 @@ nona/ImageRemapper.h
 nona/RemappedPanoImage.h
 nona/SpaceTransform.h
 nona/Stitcher.h
+nona/StitcherOptions.h
 panodata/ControlPoint.h
 panodata/Lens.h
 panodata/Mask.h
@@ -128,7 +125,7 @@ vigra_ext/Correlation.h
 vigra_ext/emor.h
 vigra_ext/FileRAII.h
 vigra_ext/HDRUtils.h
-vigra_ext/MultiThreadOperations.h
+vigra_ext/ImageTransforms.h
 vigra_ext/ImageTransformsGPU.h
 vigra_ext/ReduceOpenEXR.h
 )
@@ -148,13 +145,10 @@ ELSE (${HUGIN_SHARED_LIBS})
   add_library(huginbase STATIC ${HUGIN_BASE_SRC} ${HUGIN_BASE_HEADER})
 ENDIF (${HUGIN_SHARED_LIBS})
 
-TARGET_LINK_LIBRARIES(huginbase huginlevmar ${VIGRA_LIBRARIES} makefilelib
+TARGET_LINK_LIBRARIES(huginbase huginlevmar ${VIGRA_LIBRARIES} 
         ${Boost_LIBRARIES} ${EXIV2_LIBRARIES} ${PANO_LIBRARIES}
         ${TIFF_LIBRARIES} ${LAPACK_LIBRARIES} ${GLEW_LIBRARIES}
         ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT}
         ${SQLITE3_LIBRARIES} )
 
-INSTALL(FILES algorithms/panorama_makefile/hugin_exiftool_copy.arg DESTINATION ${INSTALL_DATA_DIR})
-        
-add_subdirectory(makefilelib)
 add_subdirectory(lines)

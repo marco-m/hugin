@@ -190,6 +190,12 @@ namespace hugin_utils
         }
     }
 
+    /** convert string to integer value, returns true, if sucessful */
+    IMPEX bool stringToInt(const std::string& s, int& val);
+
+    /** convert string to unsigned integer value, returns true, if sucessful */
+    IMPEX bool stringToUInt(const std::string& s, unsigned int& val);
+
     /** Get the path to a filename */
     IMPEX std::string getPathPrefix(const std::string & filename);
 
@@ -206,26 +212,12 @@ namespace hugin_utils
 
     /** remove trailing and leading white spaces and tabs */
     IMPEX std::string StrTrim(const std::string& str);
-    template <typename Target, typename Source>
-    Target lexical_cast(Source arg) {
 
-        std::stringstream interpreter;
+    /** split string s at given sep, returns vector of strings */
+    IMPEX std::vector<std::string> SplitString(const std::string& s, const std::string& sep);
 
-        Target result;
-
-        if (!(interpreter << arg) ||
-            !(interpreter >> result) ||
-            !(interpreter >> std::ws).eof()) {
-
-            DEBUG_ERROR("lexical cast error");
-            // cast error.  handle it somehow
-            // boost guys throw an exception here
-        };
-
-        return result;
-
-    }; // lexical cast
-
+    /** replace all characters oldChar in s with newChar */
+    IMPEX void ReplaceAll(std::string& s, const std::string& oldChar, char newChar);
 
     template <class str>
     str QuoteStringInternal(const str & arg, const str & quotechar,
@@ -249,23 +241,7 @@ namespace hugin_utils
         }
         return ret;
     }
-    
-    ///
-    template <class str>
-    str replaceAll(const str& arg, const str& target, const str& replacement)
-    {
-        str ret(arg);
-        typename str::size_type pos = ret.find(target, 0);
-        
-        for ( typename str::size_type n = 0 ;  pos != str::npos ;  pos = ret.find(target, n) )
-        {
-            ret.replace(pos, target.size(), replacement);
-            n = pos + replacement.size();
-        }
-        
-        return ret;
-    }
-    
+
     IMPEX void ControlPointErrorColour(const double cperr, 
         double &r,double &g, double &b);
 
@@ -290,6 +266,8 @@ namespace hugin_utils
     IMPEX bool initGPU(int *argcp, char **argv);
     /** cleanup GPU settings */
     IMPEX bool wrapupGPU();
+    /** return a string with version numbers */
+    IMPEX std::string GetHuginVersion();
 
 } // namespace
 

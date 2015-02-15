@@ -26,8 +26,6 @@
  *
  */
 
-#include <hugin_version.h>
-
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
@@ -43,7 +41,7 @@ using namespace AppBase;
 static void usage(const char* name)
 {
     cout << name << ": merges several project files" << endl
-         << "pto_merge version " << DISPLAY_VERSION << endl
+         << "pto_merge version " << hugin_utils::GetHuginVersion() << endl
          << endl
          << "Usage:  " << name << " [options] input.pto input2.pto ..." << endl
          << endl
@@ -77,7 +75,7 @@ int main(int argc, char* argv[])
                 output = optarg;
                 break;
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case '?':
                 break;
@@ -89,7 +87,7 @@ int main(int argc, char* argv[])
     if (argc - optind < 2)
     {
         cout << "Warning: pto_merge requires at least 2 project files" << endl << endl;
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     };
 

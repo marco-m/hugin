@@ -25,13 +25,14 @@
 #define _HUGINAPP_IMAGECACHE_H
 
 #include <hugin_shared.h>
+#include "hugin_config.h"
 #include <map>
-#include <boost/version.hpp>
-#include <boost/shared_ptr.hpp>
-#if BOOST_VERSION>=105400
-#include <boost/signals2.hpp>
+#include <vector>
+#include "hugin_utils/shared_ptr.h"
+#ifdef HAVE_CXX11
+#include <functional>
 #else
-#include <boost/signal.hpp>
+#include <boost/function.hpp>
 #endif
 #include <vigra/stdimage.hxx>
 #include <vigra/imageinfo.hxx>
@@ -57,10 +58,10 @@ class IMPEX ImageCache
 
     public:
         /// use reference counted pointers
-        typedef boost::shared_ptr<vigra::BRGBImage> ImageCacheRGB8Ptr;
-        typedef boost::shared_ptr<vigra::UInt16RGBImage> ImageCacheRGB16Ptr;
-        typedef boost::shared_ptr<vigra::FRGBImage> ImageCacheRGBFloatPtr;
-        typedef boost::shared_ptr<vigra::BImage> ImageCache8Ptr;
+        typedef sharedPtrNamespace::shared_ptr<vigra::BRGBImage> ImageCacheRGB8Ptr;
+        typedef sharedPtrNamespace::shared_ptr<vigra::UInt16RGBImage> ImageCacheRGB16Ptr;
+        typedef sharedPtrNamespace::shared_ptr<vigra::FRGBImage> ImageCacheRGBFloatPtr;
+        typedef sharedPtrNamespace::shared_ptr<vigra::BImage> ImageCache8Ptr;
 
         /** information about an image inside the cache */
         struct IMPEX Entry
@@ -106,7 +107,7 @@ class IMPEX ImageCache
         };
 
         /** a shared pointer to the entry */
-        typedef boost::shared_ptr<Entry> EntryPtr;
+        typedef sharedPtrNamespace::shared_ptr<Entry> EntryPtr;
         
         /** Request for an image to load
          *  Connect to the ready signal so when the image loads you can respond.
@@ -125,10 +126,10 @@ class IMPEX ImageCache
                  *  The image could be freed after the signal fires, but keeping
                  *  the EntryPtr prevents this.
                  */
-#if BOOST_VERSION>=105400
-                boost::signals2::signal<void(EntryPtr, std::string, bool)> ready;
+#ifdef HAVE_CXX11
+                std::vector <std::function<void(EntryPtr, std::string, bool)>> ready;
 #else
-                boost::signal<void(EntryPtr, std::string, bool)> ready;
+                std::vector <boost::function<void(EntryPtr, std::string, bool)> > ready;
 #endif
                 bool getIsSmall() const
                     {return m_isSmall;};
@@ -149,7 +150,7 @@ class IMPEX ImageCache
          *
          * It is reference counted, so you can freely copy and delete it.
          */
-        typedef boost::shared_ptr<Request> RequestPtr;
+        typedef sharedPtrNamespace::shared_ptr<Request> RequestPtr;
 
     private:
         // ctor. private, nobody execpt us can create an instance.
@@ -384,8 +385,7 @@ class IMPEX ImageCache
                   : filename(str), level(lv)
                 {};
             
-                std::string toString()
-                    { return filename + hugin_utils::lexical_cast<std::string>(level); }
+                std::string toString();
         };
         
         std::map<std::string, vigra::BImage *> pyrImages;

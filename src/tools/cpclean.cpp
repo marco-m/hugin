@@ -28,8 +28,6 @@
  *
  */
 
-#include <hugin_version.h>
-
 #include <fstream>
 #include <sstream>
 #ifdef WIN32
@@ -40,6 +38,7 @@
 
 #include <algorithms/optimizer/PTOptimizer.h>
 #include <algorithms/control_points/CleanCP.h>
+#include "panotools/PanoToolsInterface.h"
 
 using namespace std;
 using namespace HuginBase;
@@ -48,7 +47,7 @@ using namespace AppBase;
 static void usage(const char* name)
 {
     cout << name << ": remove wrong control points by statistic method" << endl
-         << "cpclean version " << DISPLAY_VERSION << endl
+         << "cpclean version " << hugin_utils::GetHuginVersion() << endl
          << endl
          << "Usage:  " << name << " [options] input.pto" << endl
          << endl
@@ -71,10 +70,21 @@ static void usage(const char* name)
          << endl;
 }
 
+// dummy panotools progress functions
+static int ptProgress(int command, char* argument)
+{
+    return 1;
+}
+
+static int ptinfoDlg(int command, char* argument)
+{
+    return 1;
+}
+
 int main(int argc, char* argv[])
 {
     // parse arguments
-    const char* optstring = "o:hn:pwsl";
+    const char* optstring = "o:hn:pwslv";
 
     int c;
     string output;
@@ -82,6 +92,7 @@ int main(int argc, char* argv[])
     bool wholePano = false;
     bool skipOptimisation = false;
     bool includeLineCp = false;
+    bool verbose = false;
     double n = 2.0;
     while ((c = getopt (argc, argv, optstring)) != -1)
     {
@@ -91,7 +102,7 @@ int main(int argc, char* argv[])
                 output = optarg;
                 break;
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case 'n':
                 n = atof(optarg);
@@ -118,6 +129,9 @@ int main(int argc, char* argv[])
             case 'l':
                 includeLineCp = true;
                 break;
+            case 'v':
+                verbose = true;
+                break;
             case ':':
                 cerr <<"Option -n requires a number" << endl;
                 return 1;
@@ -131,7 +145,7 @@ int main(int argc, char* argv[])
 
     if (argc - optind != 1)
     {
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     };
 
@@ -169,6 +183,12 @@ int main(int argc, char* argv[])
     if (pano.getNrOfCtrlPoints() < 3)
     {
         cerr << "Panorama should contain at least 3 control point" << endl;
+    };
+
+    if (!verbose)
+    {
+        PT_setProgressFcn(ptProgress);
+        PT_setInfoDlgFcn(ptinfoDlg);
     };
 
     size_t cpremoved1=0;

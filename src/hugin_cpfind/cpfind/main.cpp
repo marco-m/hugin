@@ -22,7 +22,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <boost/foreach.hpp>
 #include "Utils.h"
 #include <getopt.h>
 #include "hugin_utils/stl_utils.h"
@@ -33,7 +32,7 @@ using namespace std;
 
 void printVersion()
 {
-    std::cout << "Hugin's cpfind " << DISPLAY_VERSION << endl;
+    std::cout << "Hugin's cpfind " << hugin_utils::GetHuginVersion() << endl;
     std::cout << "based on Pan-o-matic by Anael Orlinski" << endl;
 };
 

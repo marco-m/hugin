@@ -48,7 +48,6 @@ DEFINE_EVENT_TYPE(EVT_UPDATE_PARENT)
 Batch::Batch(wxFrame* parent) : wxFrame(parent, wxID_ANY, _T("Batch"))
 {
     //default flag settings
-    parallel = false;
     deleteFiles = false;
     atEnd = DO_NOTHING;
     overwrite = true;
@@ -65,26 +64,6 @@ Batch::Batch(wxFrame* parent) : wxFrame(parent, wxID_ANY, _T("Batch"))
     // Required to access the preferences of hugin
     //SetAppName(wxT("hugin"));
 
-    // setup the environment for the different operating systems
-    wxConfigBase* config = wxConfigBase::Get();
-    LoadSettings(config);
-}
-
-void Batch::LoadSettings(wxConfigBase* config)
-{
-#if defined __WXMSW__
-    wxString huginExeDir = getExePath(wxTheApp->argv[0]);
-
-    wxString huginRoot;
-    wxFileName::SplitPath(huginExeDir, &huginRoot, NULL, NULL);
-
-    progs = getPTProgramsConfig(huginExeDir, config);
-    progsAss = getAssistantProgramsConfig(huginExeDir, config);
-#else
-    // add the locale directory specified during configure
-    progs = getPTProgramsConfig(wxT(""), config);
-    progsAss = getAssistantProgramsConfig(wxT(""), config);
-#endif
 }
 
 void Batch::AddAppToBatch(wxString app)
@@ -145,13 +124,44 @@ void Batch::AppendBatchFile(wxString file)
         //TO-DO: batch file error checking?
         //first line in file is idGenerator, we save it a temp variable, cause it gets set when adding projects
         long idGenTemp = 1;
+        if (fileStream.Eof())
+        {
+            return;
+        };
         textStream.ReadLine().ToLong(&idGenTemp);
         //then for each project: project path, prefix, id, status, skip
+        if (fileStream.Eof())
+        {
+            return;
+        };
         while((projectName = textStream.ReadLine()).Cmp(wxT(""))!=0)
         {
-            //we add project to internal list
+            // read all line, check before reading
+            if (fileStream.Eof())
+            {
+                break;
+            };
             wxString line=textStream.ReadLine();
-            if(line.IsEmpty())
+            if (fileStream.Eof())
+            {
+                break;
+            };
+            long id;
+            textStream.ReadLine().ToLong(&id);
+            long status;
+            if (fileStream.Eof())
+            {
+                break;
+            };
+            textStream.ReadLine().ToLong(&status);
+            if (fileStream.Eof())
+            {
+                break;
+            };
+            const bool skip = textStream.ReadLine().StartsWith(_T("T"));
+
+            //we add project to internal list
+            if (line.IsEmpty())
             {
                 AddProjectToBatch(projectName,wxT(""),Project::DETECTING);
             }
@@ -159,19 +169,22 @@ void Batch::AppendBatchFile(wxString file)
             {
                 AddProjectToBatch(projectName,line);
             };
-            textStream.ReadLine().ToLong(&m_projList.Last().id);
-            long status;
-            textStream.ReadLine().ToLong(&status);
             //if status was RUNNING or PAUSED, we set it to FAILED
             if(status==(long)Project::RUNNING || status==(long)Project::PAUSED)
             {
                 status=(long)Project::FAILED;
             }
+            m_projList.Last().id = id;
             m_projList.Last().status = (Project::Status)status;
-            if(textStream.ReadLine().StartsWith(_T("T")))
+            if(skip)
             {
                 m_projList.Last().skip = true;
-            }
+            };
+
+            if (fileStream.Eof())
+            {
+                break;
+            };
         }
         //we set the id generator we got from file
         Project::idGenerator = idGenTemp;
@@ -594,24 +607,7 @@ void Batch::OnProcessTerminate(wxProcessEvent& event)
             }
             else
             {
-                if(parallel)	//if we are running in parallel
-                {
-                    //the last executed process in parallel runs next
-                    if(GetRunningCount() == 0)
-                    {
-                        //SetStatusText(_T("Project \""+m_projList.Item(i).path)+_T("\" finished. Running next project..."));
-                        RunNextInBatch();
-                    }
-                    else
-                    {
-                        //SetStatusText(_T("Project \""+m_projList.Item(i).path)+_T("\" finished. Waiting for all in parallel to complete..."));
-                    }
-                }
-                else
-                {
-                    //SetStatusText(_T("Project \""+m_projList.Item(i).path)+_T("\" finished. Running next project..."));
-                    RunNextInBatch();
-                }
+                RunNextInBatch();
             }
         }
         else
@@ -631,7 +627,6 @@ bool Batch::OnStitch(wxString scriptFile, wxString outname, int id)
     // delete the existing wxConfig to force reloading of settings from file/registy
     delete wxConfigBase::Set((wxConfigBase*)NULL);
     wxConfigBase* config = wxConfigBase::Get();
-    LoadSettings(config);
     if(wxIsEmpty(scriptFile))
     {
         wxString defaultdir = config->Read(wxT("/actualPath"),wxT(""));
@@ -697,7 +692,7 @@ bool Batch::OnStitch(wxString scriptFile, wxString outname, int id)
         stitchFrame->m_stitchPanel->SetOverwrite(true);
     }
 
-    bool n = stitchFrame->StitchProject(scriptFile, outname, progs);
+    bool n = stitchFrame->StitchProject(scriptFile, outname);
     if(n)
     {
         m_stitchFrames.Add(stitchFrame);
@@ -714,7 +709,6 @@ bool Batch::OnDetect(wxString scriptFile, int id)
 {
     // delete the existing wxConfig to force reloading of settings from file/registy
     delete wxConfigBase::Set((wxConfigBase*)NULL);
-    LoadSettings(wxConfigBase::Get());
     RunStitchFrame* stitchFrame = new RunStitchFrame(this, wxT("Hugin Assistant"), wxDefaultPosition, wxSize(640, 600));
     stitchFrame->SetProjectId(id);
     if(verbose)
@@ -726,7 +720,7 @@ bool Batch::OnDetect(wxString scriptFile, int id)
     wxFileName basename(scriptFile);
     stitchFrame->SetTitle(wxString::Format(_("%s - Assistant"), basename.GetName().c_str()));
 
-    bool n = stitchFrame->DetectProject(scriptFile, progsAss);
+    bool n = stitchFrame->DetectProject(scriptFile);
     if(n)
     {
         m_stitchFrames.Add(stitchFrame);
@@ -834,7 +828,7 @@ void Batch::RunNextInBatch()
         //execute command line instructions
         if(m_projList.Item(i).id<0)
         {
-            SetStatusText(_("Running command \"")+m_projList.Item(i).path+_T("\""));
+            SetStatusText(wxString::Format(_("Running command \"%s\""), m_projList.Item(i).path.c_str()));
             m_projList.Item(i).status=Project::RUNNING;
             //we create a fake stitchFrame, so program waits for app to complete
             if(wxExecute(m_projList.Item(i).path, wxEXEC_SYNC)==0)
@@ -848,67 +842,29 @@ void Batch::RunNextInBatch()
         }
         else
         {
-            //we run in sequence
-            if(!parallel)
+            m_projList.Item(i).status=Project::RUNNING;
+            m_running = true;
+            if(m_projList.Item(i).target==Project::STITCHING)
             {
-                m_projList.Item(i).status=Project::RUNNING;
-                m_running = true;
-                if(m_projList.Item(i).target==Project::STITCHING)
-                {
-                    wxCommandEvent e(EVT_INFORMATION,wxID_ANY);
-                    e.SetString(wxString::Format(_("Now stitching: %s"),m_projList.Item(i).path.c_str()));
-                    GetParent()->GetEventHandler()->AddPendingEvent(e);
-                    value = OnStitch(m_projList.Item(i).path, m_projList.Item(i).prefix, m_projList.Item(i).id);
-                }
-                else
-                {
-                    wxCommandEvent e(EVT_INFORMATION,wxID_ANY);
-                    e.SetString(wxString::Format(_("Now detecting: %s"),m_projList.Item(i).path.c_str()));
-                    GetParent()->GetEventHandler()->AddPendingEvent(e);
-                    value = OnDetect(m_projList.Item(i).path,m_projList.Item(i).id);
-                };
-                if(!value)
-                {
-                    m_projList.Item(i).status=Project::FAILED;
-                }
-                else
-                {
-                    repeat = false;
-                }
+                wxCommandEvent e(EVT_INFORMATION,wxID_ANY);
+                e.SetString(wxString::Format(_("Now stitching: %s"),m_projList.Item(i).path.c_str()));
+                GetParent()->GetEventHandler()->AddPendingEvent(e);
+                value = OnStitch(m_projList.Item(i).path, m_projList.Item(i).prefix, m_projList.Item(i).id);
             }
             else
             {
-                while((i = GetFirstAvailable())!=-1)
-                {
-                    if(m_projList.Item(i).id<0)
-                    {
-                        break;
-                    }
-                    m_projList.Item(i).status=Project::RUNNING;
-                    m_running = true;
-                    if(m_projList.Item(i).target==Project::STITCHING)
-                    {
-                        wxCommandEvent e(EVT_INFORMATION,wxID_ANY);
-                        e.SetString(wxString::Format(_("Now stitching: %s"),m_projList.Item(i).path.c_str()));
-                        GetParent()->GetEventHandler()->AddPendingEvent(e);
-                        value = OnStitch(m_projList.Item(i).path, m_projList.Item(i).prefix, m_projList.Item(i).id);
-                    }
-                    else
-                    {
-                        wxCommandEvent e(EVT_INFORMATION,wxID_ANY);
-                        e.SetString(wxString::Format(_("Now detecting: %s"),m_projList.Item(i).path.c_str()));
-                        GetParent()->GetEventHandler()->AddPendingEvent(e);
-                        value = OnDetect(m_projList.Item(i).path,m_projList.Item(i).id);
-                    };
-                    if(!value)
-                    {
-                        m_projList.Item(i).status=Project::FAILED;
-                    }
-                    else
-                    {
-                        repeat = false;
-                    }
-                }
+                wxCommandEvent e(EVT_INFORMATION,wxID_ANY);
+                e.SetString(wxString::Format(_("Now detecting: %s"),m_projList.Item(i).path.c_str()));
+                GetParent()->GetEventHandler()->AddPendingEvent(e);
+                value = OnDetect(m_projList.Item(i).path,m_projList.Item(i).id);
+            };
+            if(!value)
+            {
+                m_projList.Item(i).status=Project::FAILED;
+            }
+            else
+            {
+                repeat = false;
             }
         }
     }

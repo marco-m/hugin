@@ -375,16 +375,19 @@ void LensCalFrame::AddImages(wxArrayString files)
         };
         m_images.push_back(image);
         SetStatusText(wxString::Format(_("Added %s"),image->GetFilename().c_str()));
-        if(image->GetPanoImage()->getExifFocalLength()>0 && image->GetPanoImage()->getExifCropFactor()>0)
+        if (image->GetPanoImage()->getExifFocalLength() > 0)
         {
-            XRCCTRL(*this,"lenscal_focallength",wxTextCtrl)->SetValue( 
-                hugin_utils::doubleTowxString(image->GetPanoImage()->getExifFocalLength(),2)
+            XRCCTRL(*this, "lenscal_focallength", wxTextCtrl)->SetValue(
+                hugin_utils::doubleTowxString(image->GetPanoImage()->getExifFocalLength(), 2)
                 );
-            XRCCTRL(*this,"lenscal_cropfactor",wxTextCtrl)->SetValue(
-                hugin_utils::doubleTowxString(image->GetPanoImage()->getCropFactor(),2)
-                );
-            SelectProjection(m_choice_projection,image->GetPanoImage()->getProjection());
         };
+        if (image->GetPanoImage()->getExifCropFactor() > 0)
+        {
+            XRCCTRL(*this, "lenscal_cropfactor", wxTextCtrl)->SetValue(
+                hugin_utils::doubleTowxString(image->GetPanoImage()->getCropFactor(), 2)
+                );
+        };
+        SelectListValue(m_choice_projection,image->GetPanoImage()->getProjection());
     }
     UpdateList(false);
     m_images_list->SetSelection(m_images_list->GetCount()-1);
@@ -426,7 +429,7 @@ void LensCalFrame::OnAddImage(wxCommandEvent &e)
     wxFileDialog dlg(this,_("Add images"),
                      path, wxT(""),
                      HUGIN_WX_FILE_IMG_FILTER,
-                     wxFD_OPEN | wxFD_MULTIPLE, wxDefaultPosition);
+                     wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition);
     dlg.SetDirectory(path);
 
     // remember the image extension
@@ -556,7 +559,7 @@ bool LensCalFrame::ReadInputs(bool readFocalLength,bool readOptions,bool readLen
 {
     if(readFocalLength)
     {
-        m_projection=(SrcPanoImage::Projection)GetSelectedProjection(m_choice_projection);
+        m_projection = (SrcPanoImage::Projection)GetSelectedValue(m_choice_projection);
         if(!str2double(XRCCTRL(*this,"lenscal_focallength",wxTextCtrl)->GetValue(),m_focallength))
             return false;
         if(m_focallength<1)

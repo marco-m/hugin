@@ -172,7 +172,7 @@ ENDIF(WIN32)
 ##
 #  This must come before FINDs for tiff, jpeg, png, zlib to enable
 #  finding the wxWidgets distributions of those packages (Win32 only).
-SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl net)
+SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl net qa)
 FIND_PACKAGE(wxWidgets REQUIRED)
 
 # hugin requires wxwidgets 2.8.0 or above
@@ -261,6 +261,31 @@ ELSE(PANO13_FOUND)
 ENDIF(PANO13_FOUND) 
 INCLUDE_DIRECTORIES(${PANO_INCLUDE_DIR})
 
+# Check CXX11 compiler
+
+OPTION(USE_BOOST "Set to true to use Boost instead of C++11 features" OFF)
+
+IF(USE_BOOST)
+  UNSET(USE_CXX11_THREAD)
+  UNSET(HAVE_CXX11)
+  MESSAGE(STATUS "Using Boost Thread")
+ELSE()
+  FIND_PACKAGE(CXX11Compiler)
+  IF(CXX11COMPILER_FOUND)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_FLAG}")
+    SET(HAVE_CXX11 ON)
+  ELSE()
+    UNSET(HAVE_CXX11)
+  ENDIF()
+  IF(CXX11_THREAD)
+    SET(USE_CXX11_THREAD ON)
+    MESSAGE(STATUS "Using C++11 std::thread")
+  ELSE()
+    UNSET(USE_CXX11_THREAD)
+    MESSAGE(STATUS "Using Boost Thread")
+  ENDIF()
+ENDIF()
+
 ##
 ## Boost
 ##
@@ -289,23 +314,24 @@ IF(WIN32)
     set(BOOST_ROOT ${SOURCE_BASE_DIR}/boost${Boost_root_suffix}) 
    endif(NOT BOOST_ROOT AND NOT $ENV{BOOST_ROOT} STREQUAL "") 
 ENDIF(WIN32)
-FIND_PACKAGE(Boost 1.54 COMPONENTS thread date_time regex filesystem iostreams system)
-IF(NOT Boost_FOUND)
-  FIND_PACKAGE(Boost 1.47 COMPONENTS thread date_time regex filesystem iostreams system signals)
-  IF (NOT Boost_FOUND)
-    IF(WIN32)
-      MESSAGE(FATAL_ERROR "Boost not found. Bad BOOST_ROOT? On windows, try editing Boost_root_suffix")
-    ELSE()
-      MESSAGE(FATAL_ERROR "Boost not found. Maybe wrong version. Hugin requires at least version 1.47")
-    ENDIF()
-  ENDIF (NOT Boost_FOUND)
+
+IF(USE_CXX11_THREAD)
+  FIND_PACKAGE(Boost 1.47 COMPONENTS filesystem system)
+ELSE()
+  FIND_PACKAGE(Boost 1.47 COMPONENTS filesystem system thread date_time iostreams)
+ENDIF()
+
+IF (NOT Boost_FOUND)
+  IF(WIN32)
+    MESSAGE(FATAL_ERROR "Boost not found. Bad BOOST_ROOT? On windows, try editing Boost_root_suffix")
+  ELSE()
+    MESSAGE(FATAL_ERROR "Boost not found. Maybe wrong version. Hugin requires at least version 1.47")
+  ENDIF()
 ENDIF (NOT Boost_FOUND)
 
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-FIND_PACKAGE(Threads)
-FIND_PACKAGE(ZThread)
 FIND_PACKAGE(flann)
 
 IF(NOT FLANN_FOUND)
@@ -332,6 +358,8 @@ IF(OPENMP_FOUND)
     SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${OpenMP_CXX_FLAGS}")
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${OpenMP_CXX_FLAGS}")
   ENDIF()
+ELSE()
+  MESSAGE(WARNING "Compiler does not support OpenMP. OpenMP is required for multi-threaded processes. So only single threaded execution is compiled now.") 
 ENDIF()
 
 IF(WIN32)
@@ -432,30 +460,6 @@ ENDIF(ENABLE_LAPACK)
 #ENDIF (WIN32)
 #INCLUDE_DIRECTORIES( ${VIPSCC_INCLUDE_DIRS} )
 #LINK_DIRECTORIES( ${VIPSCC_LIBRARY_DIRS} )
-
-#Check exiftool version
-IF(WIN32)
-  FIND_PATH(EXIFTOOL_EXE_DIR exiftool.exe
-        ${SOURCE_BASE_DIR}/tools
-        ${SOURCE_BASE_DIR}/exiftool
-        DOC "Location of exiftool.exe"
-        NO_DEFAULT_PATH)
-  EXECUTE_PROCESS(COMMAND ${EXIFTOOL_EXE_DIR}/exiftool.exe -ver OUTPUT_VARIABLE _exiftool_version OUTPUT_STRIP_TRAILING_WHITESPACE)
-ELSE()
-  EXECUTE_PROCESS(COMMAND exiftool -ver RESULT_VARIABLE _exiftool_result OUTPUT_VARIABLE _exiftool_version OUTPUT_STRIP_TRAILING_WHITESPACE)
-  IF(NOT _exiftool_result EQUAL 0) 
-    MESSAGE(FATAL_ERROR "Could not execute ExifTool. Check if ExifTool is installed correctly.")
-  ENDIF()
-ENDIF()
-
-MESSAGE(STATUS "Found Exiftool version ${_exiftool_version}")
-IF(${_exiftool_version} VERSION_LESS 9.09)
-  MESSAGE(WARNING "Support for GPano tags is disabled. For these tags ExifTool version 9.09 is required.")
-  SET(EXIFTOOL_GPANO_SUPPORT FALSE)
-ELSE()
-  MESSAGE(STATUS "ExifTool version is recent enough. Activating support for GPano tags.")
-  SET(EXIFTOOL_GPANO_SUPPORT TRUE)
-ENDIF()
 
 #
 # Check build type and set options accordingly

@@ -35,7 +35,6 @@
 
 #include "panoinc.h"
 
-
 #include "hugin/config_defaults.h"
 #include "hugin/huginApp.h"
 #include "hugin/ImagesPanel.h"
@@ -57,15 +56,18 @@
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
 #ifdef __WXMSW__
-#include "wx/dir.h"
-#include "wx/cshelp.h"
+#include <wx/dir.h>
+#include <wx/cshelp.h>
+#include <wx/stdpaths.h>
+#if wxCHECK_VERSION(3,1,0)
+#include <wx/taskbarbutton.h>
+#endif
 #endif
 
 #include <tiffio.h>
 
 #include "AboutDialog.h"
 
-#include <hugin_version.h>
 //for natural sorting
 #include "hugin_utils/alphanum.h"
 #include "lensdb/LensDB.h"
@@ -129,6 +131,9 @@ huginApp::huginApp()
 {
     DEBUG_TRACE("ctor");
     m_this=this;
+#if wxUSE_ON_FATAL_EXCEPTION
+    wxHandleFatalExceptions();
+#endif
 }
 
 huginApp::~huginApp()
@@ -171,17 +176,15 @@ bool huginApp::OnInit()
     wxHelpControllerHelpProvider* provider = new wxHelpControllerHelpProvider;
     wxHelpProvider::Set(provider);
 
-    wxString huginExeDir = getExePath(argv[0]);
-
-    wxString huginRoot;
-    wxFileName::SplitPath( huginExeDir, &huginRoot, NULL, NULL );
-
-    m_xrcPrefix = huginRoot + wxT("/share/hugin/xrc/");
-	m_DataDir = huginRoot + wxT("/share/hugin/data/");
-    m_utilsBinDir = huginRoot + wxT("/bin/");
+    wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+    m_utilsBinDir = exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    exePath.RemoveLastDir();
+    const wxString huginRoot=exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    m_xrcPrefix = huginRoot + wxT("share\\hugin\\xrc\\");
+    m_DataDir = huginRoot + wxT("share\\hugin\\data\\");
 
     // locale setup
-    locale.AddCatalogLookupPathPrefix(huginRoot + wxT("/share/locale"));
+    locale.AddCatalogLookupPathPrefix(huginRoot + wxT("share\\locale"));
 
 #elif defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
     // initialize paths
@@ -328,6 +331,16 @@ bool huginApp::OnInit()
     provider->SetHelpController(&frame->GetHelpController());
     frame->GetHelpController().Initialize(m_xrcPrefix+wxT("data/hugin_help_en_EN.chm"));
     frame->SendSizeEvent();
+#if wxCHECK_VERSION(3,1,0)
+    wxTaskBarJumpList jumpList;
+    wxFileName ptbatcher(wxStandardPaths::Get().GetExecutablePath());
+    ptbatcher.SetName("PTBatcherGUI");
+    wxTaskBarJumpListItem *item1 = new wxTaskBarJumpListItem(
+        NULL, wxTASKBAR_JUMP_LIST_TASK, _("Open Batch Processor"), ptbatcher.GetFullPath(), wxEmptyString, 
+        _("Opens PTBatcher, the batch processor for Hugin's project files"),
+        ptbatcher.GetFullPath(), 0);
+    jumpList.GetTasks().Append(item1);
+#endif
 #endif
 
     // we are closing Hugin, if the top level window is deleted
@@ -552,6 +565,13 @@ void huginApp::MacOpenFile(const wxString &fileName)
 
     if(frame) frame->MacOnOpenFile(fileName);
 }
+#endif
+
+#if wxUSE_ON_FATAL_EXCEPTION
+void huginApp::OnFatalException()
+{
+    GenerateReport(wxDebugReport::Context_Exception);
+};
 #endif
 
 huginApp * huginApp::m_this = 0;

@@ -72,17 +72,6 @@ IF(WIN32)
   INSTALL(FILES ${ENBLEND_EXECUTABLES} DESTINATION ${BINDIR})
   INSTALL(FILES ${ENBLEND_DOC_FILES} DESTINATION doc/enblend)
 
-  # find path to gnu make 
-  FIND_PATH(GNUMake_DIR make.exe
-            ${SOURCE_BASE_DIR}/Make-4.0/x64/Release
-            ${SOURCE_BASE_DIR}/Make-4.0/Release
-            ${SOURCE_BASE_DIR}/Make-3.82/Release
-            ${SOURCE_BASE_DIR}/Make-3.81/Release
-            DOC "Location of gnu make"
-            NO_DEFAULT_PATH)
-  INSTALL(FILES ${GNUMake_DIR}/make.exe
-          DESTINATION ${BINDIR})
- 
   # install exiftool
   INSTALL(FILES ${EXIFTOOL_EXE_DIR}/exiftool.exe DESTINATION ${BINDIR})
 
@@ -133,19 +122,17 @@ IF(WIN32)
        PATHS ${SOURCE_BASE_DIR}/vigra/bin
        NO_SYSTEM_ENVIRONMENT_PATH
     )
-    FILE(GLOB BOOST_THREAD_DLL ${Boost_LIBRARY_DIRS}/boost_thread*.dll)
-    FILE(GLOB BOOST_DATE_TIME_DLL ${Boost_LIBRARY_DIRS}/boost_date_time*.dll)
     FILE(GLOB BOOST_SYSTEM_DLL ${Boost_LIBRARY_DIRS}/boost_system*.dll)
-    FILE(GLOB BOOST_REGEX_DLL ${Boost_LIBRARY_DIRS}/boost_regex*.dll)
     FILE(GLOB BOOST_FILESYSTEM_DLL ${Boost_LIBRARY_DIRS}/boost_filesystem*.dll)
-    FILE(GLOB BOOST_CHRONO_DLL ${Boost_LIBRARY_DIRS}/boost_chrono*.dll)
-    LIST(APPEND BOOST_DLLs ${BOOST_THREAD_DLL} ${BOOST_DATE_TIME_DLL} ${BOOST_SYSTEM_DLL} ${BOOST_REGEX_DLL} ${BOOST_FILESYSTEM_DLL})
-    IF(NOT "${BOOST_CHRONO_DLL}" MATCHES "-NOTFOUND")
+    LIST(APPEND BOOST_DLLs ${BOOST_SYSTEM_DLL} ${BOOST_FILESYSTEM_DLL})
+    IF(NOT CXX11_THREAD)
+      FILE(GLOB BOOST_THREAD_DLL ${Boost_LIBRARY_DIRS}/boost_thread*.dll)
+      FILE(GLOB BOOST_DATE_TIME_DLL ${Boost_LIBRARY_DIRS}/boost_date_time*.dll)
+      FILE(GLOB BOOST_CHRONO_DLL ${Boost_LIBRARY_DIRS}/boost_chrono*.dll)
+      LIST(APPEND BOOST_DLLs ${BOOST_THREAD_DLL} ${BOOST_DATE_TIME_DLL})
+      IF(NOT "${BOOST_CHRONO_DLL}" MATCHES "-NOTFOUND")
         LIST(APPEND BOOST_DLLs ${BOOST_CHRONO_DLL})
-    ENDIF()
-    IF(Boost_VERSION<105400)
-      FILE(GLOB BOOST_SIGNALS_DLL ${Boost_LIBRARY_DIRS}/boost_signals*.dll)
-      LIST(APPEND BOOST_DLLs ${BOOST_SIGNALS_DLL})
+      ENDIF()
     ENDIF()
     FIND_FILE(EXIV2_DLL 
       NAMES exiv2.dll 
@@ -192,12 +179,15 @@ IF(WIN32)
     FIND_FILE(WXWIDGETS_DLL8 
               NAMES wxmsw310u_aui_vc_custom.dll wxmsw30u_aui_vc_custom.dll wxmsw295u_aui_vc_custom.dll wxmsw294u_aui_vc_custom.dll wxmsw293u_aui_vc_custom.dll wxmsw292u_aui_vc_custom.dll wxmsw291u_aui_vc_custom.dll wxmsw28u_aui_vc_custom.dll
               PATHS ${wxWidgets_LIB_DIR} NO_SYSTEM_ENVIRONMENT_PATH)
+    FIND_FILE(WXWIDGETS_DLL9 
+              NAMES wxmsw310u_qa_vc_custom.dll wxmsw30u_qa_vc_custom.dll wxmsw295u_qa_vc_custom.dll wxmsw294u_qa_vc_custom.dll wxmsw293u_qa_vc_custom.dll wxmsw292u_qa_vc_custom.dll wxmsw291u_qa_vc_custom.dll wxmsw28u_qa_vc_custom.dll
+              PATHS ${wxWidgets_LIB_DIR} NO_SYSTEM_ENVIRONMENT_PATH)
 
     INSTALL(FILES ${TIFF_DLL} ${JPEG_DLL} ${PNG_DLL} ${ZLIB_DLL} ${OPENEXR_DLL} ${VIGRA_DLL}
         ${BOOST_DLLs} ${EXIV2_DLL} ${LIBEXPAT_DLL} ${GLEW_DLL} ${GLUT_DLL}
         ${WXWIDGETS_DLL1} ${WXWIDGETS_DLL2} ${WXWIDGETS_DLL2} ${WXWIDGETS_DLL3}
         ${WXWIDGETS_DLL3} ${WXWIDGETS_DLL4} ${WXWIDGETS_DLL5} ${WXWIDGETS_DLL6}
-        ${WXWIDGETS_DLL7} ${WXWIDGETS_DLL8}
+        ${WXWIDGETS_DLL7} ${WXWIDGETS_DLL8} ${WXWIDGETS_DLL9}
         DESTINATION ${BINDIR}
     )
     
@@ -207,7 +197,9 @@ IF(WIN32)
     IF(HAVE_FFTW)
       FIND_FILE(FFTW3_DLL 
         NAMES libfftw-3.3.dll
-        PATHS ${SOURCE_BASE_DIR}/fftw-3.3.3/fftw-3.3-libs/x64 
+        PATHS ${SOURCE_BASE_DIR}/fftw-3.3.4/fftw-3.3-libs/x64 
+              ${SOURCE_BASE_DIR}/fftw-3.3.4/fftw-3.3-libs/
+              ${SOURCE_BASE_DIR}/fftw-3.3.3/fftw-3.3-libs/x64 
               ${SOURCE_BASE_DIR}/fftw-3.3.3/fftw-3.3-libs/
           NO_SYSTEM_ENVIRONMENT_PATH)
       INSTALL(FILES ${FFTW3_DLL} DESTINATION ${BINDIR})

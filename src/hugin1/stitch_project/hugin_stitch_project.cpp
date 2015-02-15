@@ -25,12 +25,13 @@
  */
 
 #include <hugin_config.h>
-#include <hugin_version.h>
 #include "panoinc_WX.h"
 #include "panoinc.h"
 
 #include <wx/wfstream.h>
-
+#ifdef __WXMSW__
+#include <wx/stdpaths.h>
+#endif
 
 #include <fstream>
 #include <sstream>
@@ -63,12 +64,11 @@ class RunStitchFrame: public wxFrame
 public:
     RunStitchFrame(wxWindow * parent, const wxString& title, const wxPoint& pos, const wxSize& size);
 
-    bool StitchProject(wxString scriptFile, wxString outname,
-                       HuginBase::PanoramaMakefilelibExport::PTPrograms progs,
-                       bool doDeleteOnExit);
+    bool StitchProject(wxString scriptFile, wxString outname, bool doDeleteOnExit);
 
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    void OnProgress(wxCommandEvent& event);
     /** sets, if existing output file should be automatic overwritten */
     void SetOverwrite(bool doOverwrite);
 
@@ -77,6 +77,7 @@ private:
     bool m_isStitching;
     wxString m_scriptFile;
     bool m_deleteOnExit;
+    wxGauge* m_progress;
 
     void OnProcessTerminate(wxProcessEvent & event);
     void OnCancel(wxCommandEvent & event);
@@ -98,33 +99,27 @@ BEGIN_EVENT_TABLE(RunStitchFrame, wxFrame)
     EVT_MENU(ID_About, RunStitchFrame::OnAbout)
     EVT_BUTTON(wxID_CANCEL, RunStitchFrame::OnCancel)
     EVT_END_PROCESS(-1, RunStitchFrame::OnProcessTerminate)
+    EVT_COMMAND(wxID_ANY, EVT_QUEUE_PROGRESS, RunStitchFrame::OnProgress)
 END_EVENT_TABLE()
 
 RunStitchFrame::RunStitchFrame(wxWindow * parent, const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxFrame(parent, -1, title, pos, size), m_isStitching(false)
 {
-    /*
-    wxMenu *menuFile = new wxMenu;
-
-    menuFile->AppendSeparator();
-    menuFile->Append( ID_Quit, _("E&xit") );
-
-    wxMenu *menuHelp = new wxMenu;
-    menuHelp->Append( ID_About, _("&About...") );
-
-    wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append( menuFile, _("&File") );
-    menuBar->Append( menuHelp, _("&Help") );
-    SetMenuBar( menuBar );
-    */
-
     wxBoxSizer * topsizer = new wxBoxSizer( wxVERTICAL );
     m_stitchPanel = new RunStitchPanel(this);
 
     topsizer->Add(m_stitchPanel, 1, wxEXPAND | wxALL, 2);
 
-    topsizer->Add( new wxButton(this, wxID_CANCEL, _("Cancel")),
+    wxBoxSizer* bottomsizer = new wxBoxSizer(wxHORIZONTAL);
+#if wxCHECK_VERSION(3,1,0)
+    m_progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL | wxGA_PROGRESS);
+#else
+    m_progress = new wxGauge(this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+#endif
+    bottomsizer->Add(m_progress, 1, wxEXPAND | wxALL, 10);
+    bottomsizer->Add( new wxButton(this, wxID_CANCEL, _("Cancel")),
                    0, wxALL | wxALIGN_RIGHT, 10);
+    topsizer->Add(bottomsizer, 0, wxEXPAND);
 
 #ifdef __WXMSW__
     // wxFrame does have a strange background color on Windows..
@@ -138,7 +133,7 @@ RunStitchFrame::RunStitchFrame(wxWindow * parent, const wxString& title, const w
 
 void RunStitchFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox( wxString::Format(_("HuginStitchProject. Application to stitch hugin project files.\n Version: %s"), wxT(DISPLAY_VERSION)),
+    wxMessageBox(wxString::Format(_("HuginStitchProject. Application to stitch hugin project files.\n Version: %s"), hugin_utils::GetHuginVersion().c_str()),
                   wxT("About hugin_stitch_project"),
                   wxOK | wxICON_INFORMATION );
 }
@@ -199,10 +194,17 @@ void RunStitchFrame::OnProcessTerminate(wxProcessEvent & event)
     }
 }
 
-bool RunStitchFrame::StitchProject(wxString scriptFile, wxString outname,
-                                   HuginBase::PanoramaMakefilelibExport::PTPrograms progs, bool doDeleteOnExit)
+void RunStitchFrame::OnProgress(wxCommandEvent& event)
 {
-    if (! m_stitchPanel->StitchProject(scriptFile, outname, progs)) {
+    if (event.GetInt() >= 0)
+    {
+        m_progress->SetValue(event.GetInt());
+    };
+};
+
+bool RunStitchFrame::StitchProject(wxString scriptFile, wxString outname, bool doDeleteOnExit)
+{
+    if (! m_stitchPanel->StitchProject(scriptFile, outname)) {
         return false;
     }
     m_isStitching = true;
@@ -282,19 +284,14 @@ bool stitchApp::OnInit()
 
     // setup the environment for the different operating systems
 #if defined __WXMSW__
-    wxString huginExeDir = getExePath(argv[0]);
+    wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+    exePath.RemoveLastDir();
+    // locale setup
+    m_locale.AddCatalogLookupPathPrefix(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + wxT("share\\locale"));
 
-    wxString huginRoot;
-    wxFileName::SplitPath(huginExeDir, &huginRoot, NULL, NULL);
-	
-	// locale setup
-    m_locale.AddCatalogLookupPathPrefix(huginRoot + wxT("/share/locale"));
-
-    PTPrograms progs = getPTProgramsConfig(huginExeDir, wxConfigBase::Get());
 #else
     // add the locale directory specified during configure
     m_locale.AddCatalogLookupPathPrefix(wxT(INSTALL_LOCALE_DIR));
-    PTPrograms progs = getPTProgramsConfig(wxT(""), wxConfigBase::Get());
 #endif
 
 #if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
@@ -457,7 +454,7 @@ bool stitchApp::OnInit()
     wxFileName basename(scriptFile);
     frame->SetTitle(wxString::Format(_("%s - Stitching"), basename.GetName().c_str()));
     frame->SetOverwrite(parser.Found(wxT("w")));
-    bool n = frame->StitchProject(scriptFile, outname, progs, parser.Found(wxT("d")));
+    bool n = frame->StitchProject(scriptFile, outname, parser.Found(wxT("d")));
     return n;
 }
 

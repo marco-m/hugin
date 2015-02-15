@@ -36,6 +36,7 @@
 #endif
 #include "BatchTrayIcon.h"
 //#include <wx/app.h>
+#include "ProgressStatusBar.h"
 
 /** Simple class that forward the drop to the mainframe */
 class BatchDropTarget : public wxFileDropTarget
@@ -57,6 +58,8 @@ public:
     BatchFrame(wxLocale* locale, wxString xrc);
     //Main thread for all file polling - checking for new projects and updating modified ones.
     void* Entry();
+    // create statusbar with progress control
+    wxStatusBar* OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
 
     void OnUserExit(wxCommandEvent& event);
     void OnButtonAddCommand(wxCommandEvent& event);
@@ -84,7 +87,6 @@ public:
     void OnButtonSkip(wxCommandEvent& event);
 
     void OnCheckOverwrite(wxCommandEvent& event);
-    void OnCheckParallel(wxCommandEvent& event);
     void OnChoiceEnd(wxCommandEvent& event);
     void OnCheckVerbose(wxCommandEvent& event);
     /** event handler called when auto remove checkbox was changed */
@@ -93,7 +95,8 @@ public:
     void OnCheckAutoStitch(wxCommandEvent& event);
     /** event handler called when always save log checkbox was changed */
     void OnCheckSaveLog(wxCommandEvent& event);
-
+    /** event handler for update progress controls */
+    void OnProgress(wxCommandEvent& event);
 
     //Called on window close to take care of the child thread
     void OnClose(wxCloseEvent& event);
@@ -110,8 +113,6 @@ public:
     //Swaps the project entry at index in the list with the next (at index+1).
     void SwapProject(int index);
     //PanoramaOptions readOptions(wxString projectFile);
-    /** return if parallel checkbox is checked */
-    bool GetCheckParallel();
     /** return which task should be executed at end*/
     Batch::EndTask GetEndTask();
     /** return if overwrite checkbox is checked */
@@ -145,6 +146,8 @@ public:
     };
     /** sets the current verbose status, does not update the checkbox */
     void SetInternalVerbose(bool newVerbose);
+    /** update the progress bar in the task bar */
+    void UpdateTaskBarProgressBar();
 
 #ifdef __WXMSW__
     /** return help controller for open help */
@@ -173,6 +176,7 @@ private:
     wxHtmlHelpController* m_help;
 #endif
     BatchTaskBarIcon* m_tray;
+    ProgressStatusBar* m_progStatusBar;
     bool m_startedMinimized;
 
     void OnProcessTerminate(wxProcessEvent& event);

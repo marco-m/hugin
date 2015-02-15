@@ -439,14 +439,14 @@ const wxString getInvalidCharacters()
 {
 #if defined __WXMSW__
     // the characters :"*?<>| are not allowed in filenames, these are handled well by the file dialog
-    // we need only to check for characters, which does not work with the makefiles
-    return wxT("=;%");
+    // all other characters should work
+    return wxEmptyString;
 #else
     // the characters =;:% does not work with the makefile
     // we are also rejecting the characters <>*?| which are principally allowed in filenames but will probably make problems when used
     // the double quote does not work with the panotools file format, so also reject
     //@BUG tilde ~ and backslash \ are not working with vigraimpex, if this works again these characters can be removed from the list
-    return wxT("=;:%*?<>|\"\\~");
+    return wxT("*?<>|\"\\~");
 #endif
 };
 
@@ -473,3 +473,20 @@ void ShowFilenameWarning(wxWindow* parent, const wxArrayString filelist)
     dlg.CenterOnScreen();
     dlg.ShowModal();
 };
+
+#if wxUSE_ON_FATAL_EXCEPTION
+void GenerateReport(wxDebugReport::Context ctx)
+{
+    //from the debugrpt sample inspired
+    wxDebugReportCompress report;
+    report.AddAll(ctx);
+    if (wxDebugReportPreviewStd().Show(report))
+    {
+        if (report.Process())
+        {
+            wxLogMessage(_("Debug report generated in \"%s\"."), report.GetCompressedFileName().c_str());
+            report.Reset();
+        };
+    };
+};
+#endif

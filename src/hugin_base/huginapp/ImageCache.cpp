@@ -27,7 +27,12 @@
 #include "ImageCache.h"
 
 #include <iostream>
+#include "hugin_config.h"
+#ifdef USE_CXX11_THREAD
+#include <thread>
+#else
 #include <boost/thread/thread.hpp>
+#endif
 #include <vigra/inspectimage.hxx>
 #include <vigra/accessor.hxx>
 #include <vigra/functorexpression.hxx>
@@ -154,6 +159,12 @@ void ImageCache::removeImage(const std::string & filename)
     } while (found);
 }
 
+std::string ImageCache::PyramidKey::toString()
+{
+    std::ostringstream s;
+    s << filename << level;
+    return s.str();
+};
 
 void ImageCache::flush()
 {
@@ -889,7 +900,11 @@ void ImageCache::postEvent(RequestPtr request, EntryPtr entry)
         } else if (getSmallImageIfAvailable(it->first).get()) {
             // already loaded.
             // signal to anything waiting and remove from the list.
-            it->second->ready(getSmallImage(it->first), it->first, true);
+            while (!it->second->ready.empty())
+            {
+                it->second->ready.front()(getSmallImage(it->first), it->first, true);
+                it->second->ready.erase(it->second->ready.begin());
+            };
             m_smallRequests.erase(it);
         }
         it = next_it;
@@ -907,7 +922,11 @@ void ImageCache::postEvent(RequestPtr request, EntryPtr entry)
         } else if (getImageIfAvailable(it->first).get()) {
             // already loaded.
             // Signal to anything waiting.
-            it->second->ready(getImage(it->first), it->first, false);
+            while (!it->second->ready.empty())
+            {
+                it->second->ready.front()(getImage(it->first), it->first, false);
+                it->second->ready.erase(it->second->ready.begin());
+            };
             m_requests.erase(it);
         }
         it = next_it;
@@ -930,7 +949,12 @@ void ImageCache::spawnAsyncThread()
         {
             DEBUG_DEBUG("Not staring a thread to load an image, since no images are wanted.");
         } else {
+#ifdef USE_CXX11_THREAD
+            std::thread thread(loadSafely, it->second, EntryPtr());
+            thread.detach();
+#else
             boost::thread(loadSafely, it->second, EntryPtr());
+#endif
         }
     } else {
         // got a small image request, check if its larger version has loaded.
@@ -940,10 +964,20 @@ void ImageCache::spawnAsyncThread()
         {
             // the larger one is needed to generate it.
             RequestPtr request(new Request(filename, false));
+#ifdef USE_CXX11_THREAD
+            std::thread thread(loadSafely, request, EntryPtr());
+            thread.detach();
+#else
             boost::thread(loadSafely, request, EntryPtr());
+#endif
         } else {
             // we have the large image.
+#ifdef USE_CXX11_THREAD
+            std::thread thread(loadSafely, it->second, large);
+            thread.detach();
+#else
             boost::thread(loadSafely, it->second, large);
+#endif
         }
     }
     // thread should be processing the image asynchronously now.

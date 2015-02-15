@@ -55,8 +55,6 @@
 #include <hugin_utils/openmp_lock.h>
 #include <lensdb/LensDB.h>
 
-#include <hugin_version.h>
-
 #include <getopt.h>
 #ifndef WIN32
 #include <unistd.h>
@@ -434,7 +432,7 @@ void optimize_new(PanoramaData& pano)
 static void usage(const char* name)
 {
     cerr << name << ": Parameter estimation of transverse chromatic abberations" << std::endl
-         << name << " version " << DISPLAY_VERSION << endl
+         << name << " version " << hugin_utils::GetHuginVersion() << endl
          << std::endl
          << "Usage: " << name  << " [options] <inputfile>" << std::endl
          << "  option are: " << std::endl
@@ -958,7 +956,7 @@ int main(int argc, char* argv[])
         switch (c)
         {
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case 'l':
                 g_param.load = true;
@@ -1022,14 +1020,14 @@ int main(int argc, char* argv[])
                 break;
             default:
                 cerr << "Invalid parameter: '" << argv[optind-1] << " " << optarg << "'" << std::endl;
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 1;
         }
     };
 
     if ((argc - optind) != 1)
     {
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     }
 
@@ -1048,7 +1046,7 @@ int main(int argc, char* argv[])
     if ( g_param.optvars.empty())
     {
         cerr << "No parameters to optimize." << endl;
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     }
 

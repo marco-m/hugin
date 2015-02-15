@@ -721,6 +721,9 @@ void Panorama::printPanoramaScript(std::ostream & o,
         case PanoramaOptions::PTMASKER_BLEND:
             o << "PTmasker" << endl;
             break;
+        case PanoramaOptions::INTERNAL_BLEND:
+            o << "internal" << endl;
+            break;
         default:
         case PanoramaOptions::ENBLEND_BLEND:
             o << "enblend" << endl;
@@ -2259,6 +2262,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
     vector<ImgInfo> huginImgInfo;
     // vector with readed masks
     MaskPolygonVector ImgMasks;
+    CPVector loadedCp;
 
     // indicate lines that should be skipped for whatever reason
     bool skipNextLine = false;
@@ -2476,8 +2480,12 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         continue;
                     }
                     std::string name=var.substr(0,np);
-                    std::string number = var.substr(np);
-                    unsigned int nr = hugin_utils::lexical_cast<unsigned int>(number);
+                    unsigned int nr;
+                    if (!hugin_utils::stringToUInt(var.substr(np), nr))
+                    {
+                        // invalid, continue
+                        continue;
+                    };
                     DEBUG_ASSERT(nr < optvec.size());
                     if(nr < optvec.size())
                     {
@@ -2508,7 +2516,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
             }
 
             point.mode = t;
-            ctrlPoints.push_back(point);
+            loadedCp.push_back(point);
             state = P_CP;
             break;
         }
@@ -2623,13 +2631,21 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                 // arghhh. I like string processing without regexps.
                 int b = line.find_first_not_of(" ",9);
                 int e = line.find_first_of(" ",b);
-                DEBUG_DEBUG(" width:" << line.substr(b,e-b)<<":")
-                int nextWidth = hugin_utils::lexical_cast<int,string>(line.substr(b,e-b));
+                DEBUG_DEBUG(" width:" << line.substr(b, e - b) << ":")
+                int nextWidth;
+                if (!hugin_utils::stringToInt(line.substr(b, e - b), nextWidth))
+                {
+                    continue;
+                };
                 DEBUG_DEBUG("next width " << nextWidth);
                 b = line.find_first_not_of(" ",e);
                 e = line.find_first_of(" ",b);
-                DEBUG_DEBUG(" height:" << line.substr(b,e-b)<<":")
-                int nextHeight = hugin_utils::lexical_cast<int, string>(line.substr(b,e-b));
+                DEBUG_DEBUG(" height:" << line.substr(b, e - b) << ":")
+                int nextHeight;
+                if (!hugin_utils::stringToInt(line.substr(b, e - b), nextHeight))
+                {
+                    continue;
+                };
                 DEBUG_DEBUG("next height " << nextHeight);
 
                 string nextFilename;
@@ -2680,6 +2696,8 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                             options.blendMode = PanoramaOptions::PTMASKER_BLEND;
                         } else if (value == "smartblend") {
                             options.blendMode = PanoramaOptions::SMARTBLEND_BLEND;
+                        } else if (value == "internal") {
+                            options.blendMode = PanoramaOptions::INTERNAL_BLEND;
                         }
 
                     } else if (var == "#hugin_enblendOptions") {
@@ -2736,6 +2754,10 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         if(val>0 && val <= 1)
                         {
                             options.outputStacksMinOverlap = val;
+                        };
+                        if (val < 0)
+                        {
+                            options.outputStacksMinOverlap = -1;
                         };
                     } else if (var == "#hugin_outputLayersExposureDiff") {
                         double val=atof(value.c_str());
@@ -3045,6 +3067,25 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
     if (optvec.size() != images.size()) {
         optvec = OptimizeVector(images.size());
     }
+
+    if (!loadedCp.empty())
+    {
+        // check if control points are linked with existing images
+        const size_t nrImg = images.size();
+        for (CPVector::const_iterator it = loadedCp.begin(); it != loadedCp.end(); ++it)
+        {
+            HuginBase::ControlPoint cp = *it;
+            if (cp.image1Nr < nrImg && cp.image2Nr < nrImg)
+            {
+                ctrlPoints.push_back(cp);
+            };
+        };
+        if (loadedCp.size() != ctrlPoints.size())
+        {
+            std::cout << "WARNING: Project file contains control points that are connected with" << std::endl
+                << "  non existing images. Ignoring these control points." << std::endl;
+        };
+    };
 
     // reset locale
     setlocale(LC_NUMERIC,old_locale);

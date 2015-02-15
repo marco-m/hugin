@@ -26,8 +26,6 @@
  *
  */
 
-#include <hugin_version.h>
-
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
@@ -44,7 +42,7 @@
 #include <algorithms/basic/CalculateOptimalROI.h>
 #include <algorithms/basic/LayerStacks.h>
 #include <algorithms/basic/CalculateMeanExposure.h>
-#include <boost/algorithm/string.hpp>
+#include "hugin_utils/utils.h"
 
 using namespace std;
 using namespace HuginBase;
@@ -53,7 +51,7 @@ using namespace AppBase;
 static void usage(const char* name)
 {
     cout << name << ": change output parameters of project file" << endl
-         << "pano_modify version " << DISPLAY_VERSION << endl
+         << "pano_modify version " << hugin_utils::GetHuginVersion() << endl
          << endl
          << "Usage:  " << name << " [options] input.pto" << endl
          << endl
@@ -182,7 +180,7 @@ int main(int argc, char* argv[])
                 output = optarg;
                 break;
             case 'h':
-                usage(argv[0]);
+                usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case 'p':
                 //projection
@@ -404,7 +402,7 @@ int main(int argc, char* argv[])
     if (argc - optind != 1)
     {
         cout << "Warning: pano_modify can only work on one project file at one time" << endl << endl;
-        usage(argv[0]);
+        usage(hugin_utils::stripPath(argv[0]).c_str());
         return 1;
     };
 
@@ -484,8 +482,7 @@ int main(int argc, char* argv[])
         // exposure layers
         opt.outputLDRExposureLayers = false;
         // now parse string and set corresponding options
-        std::vector<std::string> tokens;
-        boost::algorithm::split(tokens, outputType, boost::is_any_of(","), boost::algorithm::token_compress_on);
+        std::vector<std::string> tokens = hugin_utils::SplitString(outputType, ",");
         size_t counter = 0;
         for (size_t i = 0; i < tokens.size(); i++)
         {

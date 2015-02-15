@@ -32,6 +32,9 @@
 #ifdef __WXMSW__
 #include <powrprof.h>
 #pragma comment(lib, "PowrProf.lib")
+#if wxCHECK_VERSION(3,1,0)
+#include <wx/taskbarbutton.h>
+#endif
 #endif
 
 /* file drag and drop handler method */
@@ -107,7 +110,6 @@ BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
     EVT_BUTTON(XRCID("button_edit"),BatchFrame::OnButtonOpenWithHugin)
     EVT_BUTTON(XRCID("button_move_up"),BatchFrame::OnButtonMoveUp)
     EVT_BUTTON(XRCID("button_move_down"),BatchFrame::OnButtonMoveDown)
-    EVT_CHECKBOX(XRCID("cb_parallel"), BatchFrame::OnCheckParallel)
     EVT_CHECKBOX(XRCID("cb_overwrite"), BatchFrame::OnCheckOverwrite)
     EVT_CHOICE(XRCID("choice_end"), BatchFrame::OnChoiceEnd)
     EVT_CHECKBOX(XRCID("cb_verbose"), BatchFrame::OnCheckVerbose)
@@ -121,6 +123,7 @@ BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
     EVT_COMMAND(wxID_ANY, EVT_BATCH_FAILED, BatchFrame::OnBatchFailed)
     EVT_COMMAND(wxID_ANY, EVT_INFORMATION, BatchFrame::OnBatchInformation)
     EVT_COMMAND(wxID_ANY, EVT_UPDATE_PARENT, BatchFrame::OnRefillListBox)
+    EVT_COMMAND(wxID_ANY, EVT_QUEUE_PROGRESS, BatchFrame::OnProgress)
     EVT_ICONIZE(BatchFrame::OnMinimize)
 END_EVENT_TABLE()
 
@@ -145,7 +148,9 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     // create tool bar
     SetToolBar(wxXmlResource::Get()->LoadToolBar(this, wxT("batch_toolbar")));
 
-    CreateStatusBar(1);
+    int widths[2] = { -1, 150 };
+    CreateStatusBar(2);
+    SetStatusWidths(2, widths);
     SetStatusText(_("Not doing much..."));
 
     // set the minimize icon
@@ -253,6 +258,7 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     //TO-DO: include a batch or project progress gauge?
     projListBox->Fill(m_batch);
     SetDropTarget(new BatchDropTarget());
+    UpdateTaskBarProgressBar();
 }
 
 void* BatchFrame::Entry()
@@ -298,6 +304,13 @@ void* BatchFrame::Entry()
         GetThread()->Sleep(1000);
     }
     return 0;
+}
+
+wxStatusBar* BatchFrame::OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name)
+{
+    m_progStatusBar = new ProgressStatusBar(this, id, style, name);
+    m_progStatusBar->SetFieldsCount(number);
+    return m_progStatusBar;
 }
 
 bool BatchFrame::IsRunning()
@@ -488,7 +501,7 @@ void BatchFrame::AddDirToList(wxString aDir)
         projListBox->AppendProject(proj);
     };
     m_batch->SaveTemp();
-    SetStatusText(_("Added projects from dir ")+aDir);
+    SetStatusText(wxString::Format(_("Added projects from dir %s"), aDir.c_str()));
 };
 
 void BatchFrame::AddToList(wxString aFile,Project::Target target)
@@ -702,17 +715,13 @@ void BatchFrame::OnButtonOpenBatch(wxCommandEvent& event)
 
 void BatchFrame::OnButtonOpenWithHugin(wxCommandEvent& event)
 {
-#ifdef __WINDOWS__
-    wxString huginPath = getExePath(wxGetApp().argv[0])+wxFileName::GetPathSeparator();
-#else
-    wxString huginPath = _T("");	//we call hugin directly without path on linux
-#endif
+    const wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
     if(projListBox->GetSelectedIndex()!=-1)
         if(projListBox->GetText(projListBox->GetSelectedIndex(),0).Cmp(_T(""))!=0)
 #ifdef __WXMAC__
             wxExecute(_T("open -b net.sourceforge.hugin.hugin \"" + projListBox->GetSelectedProject()+_T("\"")));
 #else
-            wxExecute(huginPath+_T("hugin \"" + projListBox->GetSelectedProject()+_T("\" -notips")));
+            wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)+_T("hugin \"" + projListBox->GetSelectedProject()+_T("\" -notips")));
 #endif
         else
         {
@@ -733,7 +742,7 @@ void BatchFrame::OnButtonOpenWithHugin(wxCommandEvent& event)
 #ifdef __WXMAC__
             wxExecute(_T("open -b net.sourceforge.hugin.hugin"));
 #else
-            wxExecute(huginPath+_T("hugin"));
+            wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)+_T("hugin"));
 #endif
         }
     }
@@ -813,7 +822,7 @@ void BatchFrame::OnButtonRemoveFromList(wxCommandEvent& event)
         }
         else
         {
-            SetStatusText(_("Removed project ")+projListBox->GetSelectedProject());
+            SetStatusText(wxString::Format(_("Removed project %s"), projListBox->GetSelectedProject().c_str()));
             projListBox->Deselect(selIndex);
             projListBox->DeleteItem(selIndex);
             m_batch->RemoveProjectAtIndex(selIndex);
@@ -849,7 +858,7 @@ void BatchFrame::OnButtonReset(wxCommandEvent& event)
         else
         {
             m_batch->SetStatus(selIndex,Project::WAITING);
-            SetStatusText(_("Reset project ")+projListBox->GetSelectedProject());
+            SetStatusText(wxString::Format(_("Reset project %s"), projListBox->GetSelectedProject().c_str()));
         }
     }
     else
@@ -973,9 +982,6 @@ void BatchFrame::SetCheckboxes()
 {
     wxConfigBase* config=wxConfigBase::Get();
     int i;
-    i=config->Read(wxT("/BatchFrame/ParallelCheck"), 0l);
-    XRCCTRL(*this,"cb_parallel",wxCheckBox)->SetValue(i!=0);
-    m_batch->parallel=(i!=0);
     // read older version
 #if defined __WXMAC__ || defined __WXOSX_COCOA__
     i = 0;
@@ -1005,7 +1011,7 @@ void BatchFrame::SetCheckboxes()
     i=config->Read(wxT("/BatchFrame/VerboseCheck"), 0l);
     XRCCTRL(*this,"cb_verbose",wxCheckBox)->SetValue(i!=0);
     m_batch->verbose=(i!=0);
-    i=config->Read(wxT("/BatchFrame/AutoRemoveCheck"), 0l);
+    i=config->Read(wxT("/BatchFrame/AutoRemoveCheck"), 1l);
     XRCCTRL(*this,"cb_autoremove",wxCheckBox)->SetValue(i!=0);
     m_batch->autoremove=(i!=0);
     i=config->Read(wxT("/BatchFrame/AutoStitchCheck"), 0l);
@@ -1014,11 +1020,6 @@ void BatchFrame::SetCheckboxes()
     i=config->Read(wxT("/BatchFrame/SaveLog"), 0l);
     XRCCTRL(*this, "cb_savelog",wxCheckBox)->SetValue(i!=0);
     m_batch->saveLog=(i!=0);
-};
-
-bool BatchFrame::GetCheckParallel()
-{
-    return XRCCTRL(*this,"cb_parallel",wxCheckBox)->IsChecked();
 };
 
 Batch::EndTask BatchFrame::GetEndTask()
@@ -1062,20 +1063,6 @@ void BatchFrame::OnCheckOverwrite(wxCommandEvent& event)
     {
         m_batch->overwrite = false;
         wxConfigBase::Get()->Write(wxT("/BatchFrame/OverwriteCheck"), 0l);
-    }
-}
-
-void BatchFrame::OnCheckParallel(wxCommandEvent& event)
-{
-    if(event.IsChecked())
-    {
-        m_batch->parallel = true;
-        wxConfigBase::Get()->Write(wxT("/BatchFrame/ParallelCheck"), 1l);
-    }
-    else
-    {
-        m_batch->parallel = false;
-        wxConfigBase::Get()->Write(wxT("/BatchFrame/ParallelCheck"), 0l);
     }
 }
 
@@ -1192,7 +1179,6 @@ void BatchFrame::OnClose(wxCloseEvent& event)
 
 void BatchFrame::PropagateDefaults()
 {
-    m_batch->parallel=GetCheckParallel();
     m_batch->atEnd = GetEndTask();
     m_batch->overwrite=GetCheckOverwrite();
     m_batch->verbose=GetCheckVerbose();
@@ -1301,6 +1287,36 @@ void BatchFrame::SetStatusInformation(wxString status,bool showBalloon)
     };
 };
 
+void BatchFrame::OnProgress(wxCommandEvent& e)
+{
+    m_progStatusBar->SetProgress(e.GetInt());
+    UpdateTaskBarProgressBar();
+};
+
+void BatchFrame::UpdateTaskBarProgressBar()
+{
+#if defined __WXMSW__ && wxCHECK_VERSION(3,1,0)
+    // provide also a feedback in task bar if available
+    if (IsShown())
+    {
+        wxTaskBarButton* taskBarButton = MSWGetTaskBarButton();
+        if (taskBarButton != NULL)
+        {
+            if (m_progStatusBar->GetProgress() < 0)
+            {
+                taskBarButton->SetProgressValue(wxTASKBAR_BUTTON_NO_PROGRESS);
+            }
+            else
+            {
+                taskBarButton->SetProgressRange(100);
+                taskBarButton->SetProgressState(wxTASKBAR_BUTTON_NORMAL);
+                taskBarButton->SetProgressValue(m_progStatusBar->GetProgress());
+            };
+        };
+    };
+#endif
+};
+
 void BatchFrame::OnMinimize(wxIconizeEvent& e)
 {
     //hide/show window in taskbar when minimizing
@@ -1321,11 +1337,21 @@ void BatchFrame::OnMinimize(wxIconizeEvent& e)
         else
         {
             m_batch->verbose=XRCCTRL(*this,"cb_verbose",wxCheckBox)->IsChecked();
+            UpdateTaskBarProgressBar();
         };
         m_batch->ShowOutput(m_batch->verbose);
     }
     else //don't hide window if no tray icon
     {
+#if wxCHECK_VERSION(2,9,0)
+        if (!e.IsIconized())
+#else
+        if (!e.Iconized())
+#endif
+        {
+            // window is restored, update progress indicators
+            UpdateTaskBarProgressBar();
+        };
         e.Skip();
     };
 };

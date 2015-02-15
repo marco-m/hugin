@@ -22,8 +22,6 @@
  */
 
 #include "LensDB.h"
-#define BOOST_FILESYSTEM_VERSION 3
-#include <boost/filesystem.hpp>
 #include <iostream>
 #include <sstream>
 #include <hugin_utils/stl_utils.h>
@@ -77,8 +75,7 @@ public:
     //constructor, open database
     Database(const std::string& filename) : m_filename(filename), m_runningTransaction(false)
     {
-        boost::filesystem::path dbFile(m_filename);
-        bool newDB = (!boost::filesystem::exists(dbFile));
+        bool newDB = (!hugin_utils::FileExists(m_filename));
         int error = sqlite3_open(m_filename.c_str(), &m_db);
         if (error)
         {
@@ -200,13 +197,22 @@ public:
             };
         };
         sqlite3_finalize(statement);
-        return cropFactor > 0;
+        if (cropFactor < 0.1 || cropFactor>100)
+        {
+            cropFactor = 0;
+        };
+        return cropFactor > 0.1;
     };
     // saves the crop factor for the given camera in the database
     // returns true, if data were successful saved into db, false if errors occured during saving
     bool SaveCropFactor(const std::string& maker, const std::string& model, const double cropFactor)
     {
         if (m_db == NULL)
+        {
+            return false;
+        };
+        // do some range checking
+        if (cropFactor < 0.1 || cropFactor > 100)
         {
             return false;
         };
@@ -322,6 +328,11 @@ public:
     bool SaveHFOV(const std::string& lens, const double focallength, const double HFOV, const int weight = 10)
     {
         if (m_db == NULL)
+        {
+            return false;
+        };
+        // range checking
+        if (HFOV < 0.1 || HFOV>360)
         {
             return false;
         };

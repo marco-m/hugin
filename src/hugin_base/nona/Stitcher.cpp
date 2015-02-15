@@ -38,95 +38,6 @@ using namespace std;
 using namespace vigra;
 using namespace vigra_ext;
 
-
-/** determine blending order (starting with image 0), and continue to
- *  stitch the image with the biggest overlap area with the real image..
- *  do everything on a low res version of the masks
- */
-void estimateBlendingOrder(const PanoramaData & pano, UIntSet images, vector<unsigned int> & blendOrder)
-{
-    unsigned int nImg = images.size();
-    DEBUG_ASSERT(nImg > 0);
-
-    typedef RemappedPanoImage<vigra::BRGBImage, vigra::BImage> RPImg;
-
-    PanoramaOptions opts = pano.getOptions();
-    // small area, for alpha mask overlap analysis.
-    opts.setWidth(400);
-    Size2D size(opts.getWidth(), opts.getHeight());
-    Rect2D completeAlphaROI(size);
-    // find intersecting regions, on a small version of the panorama.
-    std::map<unsigned int, RemappedPanoImage<vigra::BRGBImage, vigra::BImage> * > rimg;
-	std::map<unsigned int, RemappedPanoImage<vigra::BRGBImage, vigra::BImage> * >::iterator rimgIter;
-
-    BImage alpha(size);
-    Rect2D alphaROI;
-
-    for (UIntSet::iterator it = images.begin(); it != images.end(); ++it)
-    {
-        // calculate alpha channel
-        rimg[*it] = new RPImg;
-        rimg[*it]->setPanoImage(pano.getSrcImage(*it), opts, vigra::Rect2D(size));
-        rimg[*it]->calcAlpha();
-#ifdef DEBUG
-//	vigra::exportImage(rimg[*it].alpha(), vigra::ImageExportInfo("debug_alpha.tif"));
-#endif
-    }
-
-    int firstImg = *(images.begin());
-    // copy first alpha channel
-    alphaROI = rimg[firstImg]->boundingBox();
-    // restrict to output pano size
-    alphaROI = alphaROI & completeAlphaROI;
-    DEBUG_DEBUG("alphaROI: " << alphaROI);
-    DEBUG_DEBUG("alpha size: " << alpha.size());
-    copyImage(applyRect(alphaROI, vigra_ext::srcMaskRange(*(rimg[firstImg]))),
-//    copyImage(vigra_ext::srcMaskRange(rimg[firstImg]),
-              applyRect(alphaROI, destImage(alpha)));
-
-    Rect2D overlap;
-    // intersect ROI's & masks of all images
-    while (images.size() > 0) {
-	unsigned int maxSize = 0;
-	unsigned int choosenImg = *(images.begin());
-	// search for maximum overlap
-	for (UIntSet::iterator it = images.begin(); it != images.end(); ++it) {
-	    // check for possible overlap
-	    DEBUG_DEBUG("examing overlap with image " << *it);
-	    // overlapping images..
-	    overlap = alphaROI & rimg[*it]->boundingBox();
-	    if (!overlap.isEmpty()) {
-	      DEBUG_DEBUG("ROI intersects: " << overlap.upperLeft()
-                          << " to " << overlap.lowerRight());
-		// if the overlap ROI is smaller than the current maximum,
-		// ignore.
-	        if (overlap.area() > (int) maxSize) {
-		    OverlapSizeCounter counter;
-                    inspectTwoImages(applyRect(overlap, srcMaskRange(*(rimg[*it]))),
-				     applyRect(overlap, srcImage(alpha)),
-				     counter);
-		    DEBUG_DEBUG("overlap size in pixel: " << counter.getSize());
-		    if (counter.getSize() > maxSize) {
-			choosenImg = *it;
-			maxSize = counter.getSize();
-		    }
-		}
-	    }
-        }
-	// add to the blend list
-	blendOrder.push_back(choosenImg);
-	images.erase(choosenImg);
-	// update alphaROI, to new roi.
-	alphaROI = alphaROI | rimg[choosenImg]->boundingBox();
-        alphaROI = alphaROI & completeAlphaROI;
-    }
-	// All images have been erased so just iterate through the map
-    for (rimgIter = rimg.begin(); rimgIter != rimg.end(); ++rimgIter) {
-        delete rimgIter->second;
-    }
-}
-
-
 /** The main stitching function.
  *  This function delegates all the work to the other functions
  *
@@ -138,7 +49,8 @@ void stitchPanorama(const PanoramaData & pano,
                         const PanoramaOptions & opt,
                         AppBase::MultiProgressDisplay & progress,
                         const std::string & basename,
-                        const UIntSet & usedImgs)
+                        const UIntSet & usedImgs,
+                        const AdvancedOptions& advOptions)
 {
     DEBUG_ASSERT(pano.getNrOfImages() > 0);
 
@@ -191,9 +103,9 @@ void stitchPanorama(const PanoramaData & pano,
 #if 1
     if (opts.outputMode == PanoramaOptions::OUTPUT_HDR) {
         if (bands == 1 || bands == 2 && extraBands == 1) {
-            stitchPanoIntern<FImage,BImage>(pano, opts, progress, basename, usedImgs);
+            stitchPanoIntern<FImage,BImage>(pano, opts, progress, basename, usedImgs, advOptions);
         } else if (bands == 3 || bands == 4 && extraBands == 1) {
-            stitchPanoIntern<FRGBImage,BImage>(pano, opts, progress, basename, usedImgs);
+            stitchPanoIntern<FRGBImage,BImage>(pano, opts, progress, basename, usedImgs, advOptions);
         } else {
             DEBUG_ERROR("unsupported depth, only images with 1 and 3 channel images are supported");
             throw std::runtime_error("unsupported depth, only images with 1 and 3 channel images are supported");
@@ -206,18 +118,18 @@ void stitchPanorama(const PanoramaData & pano,
                 pixelType == "INT16" ||
                 pixelType == "UINT16" )
             {
-                stitchPanoGray_8_16(pano, opts, progress, basename, usedImgs, pixelType.c_str());
+                stitchPanoGray_8_16(pano, opts, progress, basename, usedImgs, pixelType.c_str(), advOptions);
             } else {
-                stitchPanoGray_32_float(pano, opts, progress, basename, usedImgs, pixelType.c_str());
+                stitchPanoGray_32_float(pano, opts, progress, basename, usedImgs, pixelType.c_str(), advOptions);
             }
         } else if (bands == 3 || bands == 4 && extraBands == 1) {
             if (pixelType == "UINT8" ||
                 pixelType == "INT16" ||
                 pixelType == "UINT16" )
             {
-                stitchPanoRGB_8_16(pano, opts, progress, basename, usedImgs, pixelType.c_str());
+                stitchPanoRGB_8_16(pano, opts, progress, basename, usedImgs, pixelType.c_str(), advOptions);
             } else {
-                stitchPanoRGB_32_float(pano, opts, progress, basename, usedImgs, pixelType.c_str());
+                stitchPanoRGB_32_float(pano, opts, progress, basename, usedImgs, pixelType.c_str(), advOptions);
             }
         }
     }

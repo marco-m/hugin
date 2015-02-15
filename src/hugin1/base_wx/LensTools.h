@@ -34,10 +34,19 @@
 /** Fills a wxControlWithItem with all input projection formats, 
   * the client data contains the associated projection number */
 WXIMPEX void FillLensProjectionList(wxControlWithItems* list);
-/** Selects the given projection in the given list item */
-WXIMPEX void SelectProjection(wxControlWithItems* list,size_t new_projection);
-/** Returns the selected projection number from list */
-WXIMPEX size_t GetSelectedProjection(wxControlWithItems* list);
+/** Fills a wxControlWithItem with all possible blender options,
+* the client data contains the associated blender mod from PanoramaOptions */
+WXIMPEX void FillBlenderList(wxControlWithItems* list);
+
+/** Selects the given value (stored in the client data) in the given list item */
+WXIMPEX void SelectListValue(wxControlWithItems* list,size_t newValue);
+/** Returns the client value of the selected item from list */
+WXIMPEX size_t GetSelectedValue(wxControlWithItems* list);
+
+/** Returns translated projection for given image */
+WXIMPEX wxString getProjectionString(const HuginBase::SrcPanoImage& img);
+/** Returns translated response type for given SrcPanoImage */
+WXIMPEX wxString getResponseString(const HuginBase::SrcPanoImage& img);
 
 /** save the lens parameters of the image to a lens file named filename */
 WXIMPEX void SaveLensParameters(const wxString filename, HuginBase::Panorama* pano, unsigned int imgNr);
@@ -63,5 +72,11 @@ WXIMPEX bool ApplyLensParameters(wxWindow * parent, PT::Panorama *pano, HuginBas
 WXIMPEX bool LoadLensParametersChoose(wxWindow * parent, HuginBase::Lens & lens, 
     bool & cropped, bool & autoCenterCrop, vigra::Rect2D & cropRect);
 
+/** check, if lens and stacks are correctly linked 
+ *   shows message box with short information if not 
+ *  @param pano Panorama which should be checked 
+ *  @param allowCancel if true the message box contains also a Cancel button, if false there is only ok button 
+ *  @returns true, if all conditions are satisfied, false if user selected cancel in dialog box */
+WXIMPEX bool CheckLensStacks(HuginBase::Panorama* pano, bool allowCancel);
 
 #endif // LENSTOOLS_H

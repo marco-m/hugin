@@ -152,7 +152,6 @@ SET(hsi_wrappees
   "${HUGIN_BASE_DIR}/panotools/PanoToolsOptimizerWrapper.h"
   "${HUGIN_BASE_DIR}/algorithms/PanoramaAlgorithm.h"
   "${HUGIN_BASE_DIR}/algorithms/StitcherAlgorithm.h"
-  "${HUGIN_BASE_DIR}/algorithms/assistant_makefile/AssistantMakefilelibExport.h"
   "${HUGIN_BASE_DIR}/algorithms/basic/CalculateCPStatistics.h"
   "${HUGIN_BASE_DIR}/algorithms/basic/CalculateMeanExposure.h"
   "${HUGIN_BASE_DIR}/algorithms/basic/CalculateOptimalROI.h"
@@ -170,7 +169,6 @@ SET(hsi_wrappees
   "${HUGIN_BASE_DIR}/algorithms/nona/NonaFileStitcher.h"
   "${HUGIN_BASE_DIR}/algorithms/optimizer/PhotometricOptimizer.h"
   "${HUGIN_BASE_DIR}/algorithms/optimizer/PTOptimizer.h"
-  "${HUGIN_BASE_DIR}/algorithms/panorama_makefile/PanoramaMakefilelibExport.h"
   "${HUGIN_BASE_DIR}/algorithms/point_sampler/PointSampler.h"
 )
 
