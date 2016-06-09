@@ -27,7 +27,7 @@ ORGPATH=$PATH
 VERSION="2.0"
 FULLVERSION="2.0.0"
 
-export LIBFFI_CFLAGS="-I$REPOSITORYDIR/libffi-3.0.13/include"
+# export LIBFFI_CFLAGS="-I$REPOSITORYDIR/libffi-3.0.13/include"
 export LIBFFI_LIBS="-L$REPOSITORYDIR/lib -lffi"
 export MSGFMT="$REPOSITORYDIR/bin/msgfmt"
 

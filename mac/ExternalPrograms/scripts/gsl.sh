@@ -33,7 +33,7 @@ fail()
 }
 
 
-GSLVER="0"
+GSLVER="19"
 
 let NUMARCH="0"
 
@@ -94,7 +94,7 @@ done
 
 # merge gsl libs
 
-for liba in lib/libgsl.a lib/libgsl.$GSLVER.dylib lib/libgslcblas.a lib/libgslcblas.$GSLVER.dylib
+for liba in lib/libgsl.a lib/libgsl.$GSLVER.dylib lib/libgslcblas.a lib/libgslcblas.0.dylib
 do
 
  if [ $NUMARCH -eq 1 ] ; then

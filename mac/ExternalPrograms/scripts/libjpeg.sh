@@ -24,7 +24,7 @@
 # 20120427.0 hvdw compile x86_64 with gcc 4.6 for Lion and up openmp compatibility
 # -------------------------------
 
-JPEGLIBVER="8"
+JPEGLIBVER="9"
 
 fail()
 {
