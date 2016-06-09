@@ -389,10 +389,9 @@ ENDIF()
 # Check for OpenMP
 IF(APPLE)
   #we need a special search routine for mac, see changes in file CMakeModules/FindOpenMPMac.cmake
-	FIND_PACKAGE(OpenMPMac)
-	SET(OPENMP_FOUND ${OPENMPMAC_FOUND})
+  FIND_PACKAGE(OpenMPMac)
 ELSE()
-	FIND_PACKAGE(OpenMP)
+  FIND_PACKAGE(OpenMP)
 ENDIF()
 IF(OPENMP_FOUND)
   MESSAGE(STATUS "Compiler supports OpenMP. Activating support for it.")
