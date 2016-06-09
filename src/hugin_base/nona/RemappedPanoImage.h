@@ -381,13 +381,13 @@ void RemappedPanoImage<RemapImage,AlphaImage>::calcAlpha()
     int ystart = Base::boundingBox().top();
     int yend   = Base::boundingBox().bottom();
 
-// DGSW FIXME - Unreferenced
-//		int interpolHalfWidth=0;
-    // create dist y iterator
-    typename AlphaImage::Iterator yalpha(Base::m_mask.upperLeft());
     // loop over the image and transform
-    for(int y=ystart; y < yend; ++y, ++yalpha.y)
+#pragma omp parallel for schedule(dynamic, 100)
+    for(int y=ystart; y < yend; ++y)
     {
+        // create dist y iterator
+        typename AlphaImage::Iterator yalpha(Base::m_mask.upperLeft());
+        yalpha.y += y - ystart;
         // create x iterators
         typename AlphaImage::Iterator xalpha(yalpha);
         for(int x=xstart; x < xend; ++x, ++xalpha.x)
