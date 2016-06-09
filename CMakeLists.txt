@@ -18,6 +18,8 @@ if(APPLE)
       set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/mac/ExternalPrograms/repository/lib)
       set(CMAKE_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/mac/ExternalPrograms/repository/include ${CMAKE_SOURCE_DIR}/mac/ExternalPrograms/repository/bin)
   endif(MAC_SELF_CONTAINED_BUNDLE)
+  # for FindOpenMP
+  set(CMAKE_REQUIRED_INCLUDES ${CMAKE_SOURCE_DIR}/mac/ExternalPrograms/repository/include)
 endif(APPLE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMakeModules )
@@ -385,7 +387,13 @@ ELSE()
 ENDIF()
 
 # Check for OpenMP
-FIND_PACKAGE(OpenMP)
+IF(APPLE)
+  #we need a special search routine for mac, see changes in file CMakeModules/FindOpenMPMac.cmake
+	FIND_PACKAGE(OpenMPMac)
+	SET(OPENMP_FOUND ${OPENMPMAC_FOUND})
+ELSE()
+	FIND_PACKAGE(OpenMP)
+ENDIF()
 IF(OPENMP_FOUND)
   MESSAGE(STATUS "Compiler supports OpenMP. Activating support for it.")
   ADD_COMPILE_OPTIONS(${OpenMP_CXX_FLAGS})

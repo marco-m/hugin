@@ -78,8 +78,8 @@ ELSEIF(APPLE)
 
     FOREACH(_file ${XRC_FILES})
       GET_FILENAME_COMPONENT(_file_dir ${_file} PATH)
-      FILE(RELATIVE_PATH _file_dir ${CMAKE_CURRENT_SOURCE_DIR} ${_file_dir})
-      IF(${_file_dir} MATCHES "xrc/data/help.*")
+      FILE(RELATIVE_PATH _file_dir "${CMAKE_SOURCE_DIR}/src/hugin1/hugin/" ${_file_dir})
+      IF(${_file_dir} MATCHES "xrc/data/help_*")
         CONTINUE()
       ENDIF()
       SET_SOURCE_FILES_PROPERTIES( ${_file} PROPERTIES 

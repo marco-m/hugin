@@ -107,6 +107,10 @@ do
 # export PATH=/usr/local/texlive/2009/bin/universal-darwin:$PATH
 # To make the change permanent, edit ~/.profile.
 
+  if [ ! -x ./configure ]; then
+    make --makefile=Makefile.scm
+  fi
+
  env \
    CC=clang-omp CXX=clang-omp++ \
    CFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include -I$REPOSITORYDIR/include/OpenEXR -I$REPOSITORYDIR/include/boost $ARCHFLAG $ARCHARGs $OTHERARGs -dead_strip" \
@@ -118,9 +122,9 @@ do
    PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
    OPENEXR_CFLAGS="-I$REPOSITORYDIR/include/OpenEXR" OPENEXR_LIBS="-L$REPOSITORYDIR/lib -lIlmImf"\
    ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
-   --enable-image-cache=no --enable-openmp=yes  --disable-gpu-support \
-   --host="$TARGET" --exec-prefix=$REPOSITORYDIR/arch/$ARCH --with-apple-opengl-framework \
-   --with-glew $extraConfig --with-openexr || fail "configure step for $ARCH";
+   --enable-image-cache=no --enable-openmp=yes \
+   --host="$TARGET" --exec-prefix=$REPOSITORYDIR/arch/$ARCH \
+   $extraConfig --with-openexr || fail "configure step for $ARCH";
  # hack; AC_FUNC_MALLOC sucks!!
 
  mv ./config.h ./config.h-copy; 
@@ -137,7 +141,7 @@ do
  sed -e "s/-O[0-9]/-O3/g" "src/Makefile.bak" > src/Makefile
 
  make clean;
- make all $extraBuild || fail "failed at make step of $ARCH";
+ make $extraBuild || fail "failed at make step of $ARCH";
  make install $extraInstall || fail "make install step of $ARCH";
  
 done

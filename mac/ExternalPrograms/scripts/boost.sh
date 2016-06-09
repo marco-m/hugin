@@ -38,7 +38,7 @@ fail()
 }
 
 # Uncomment correct version
-BOOST_VER="1_60"
+BOOST_VER="1_61"
 
 echo "\n## Version set to $BOOST_VER ##\n"
 
@@ -60,13 +60,12 @@ case "$BOOST_VER" in
        BJAM=$(ls ./tools/build/v2/engine/src/bin.mac*/bjam)
        echo $BJAM
        ;;
-  1_60)
+  1_6?)
        cd "./tools/build/"
        sh "bootstrap.sh"
        mkdir -p bin
-       ./b2 install --prefix=./bin
+       ./b2 install --prefix=./bin toolset=darwin
        cd "../../"
-
        B2=$(ls ./tools/build/bin/bin/b2)
        BJAM=$(ls ./tools/build/bin/bin/bjam)
        echo $BJAM

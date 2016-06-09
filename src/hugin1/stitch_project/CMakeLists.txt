@@ -6,8 +6,10 @@ ELSEIF(APPLE)
   set( PROGNAME HuginStitchProject )
   set( MACOSX_BUNDLE_ICON_FILE Hugin.icns )
 
-  set( INFO_PLIST ${CMAKE_MODULE_PATH}/HuginBundleInfoPTO.plist.in)
-  set( MACOSX_BUNDLE_TYPE_ROLE Viewer )
+  set( INFO_PLIST ${CMAKE_MODULE_PATH}/HuginBundleInfo.plist.in)
+  # disabled because stitch_project can't handle MacOpenFiles correctly
+  # set( INFO_PLIST ${CMAKE_MODULE_PATH}/HuginBundleInfoPTO.plist.in)
+  # set( MACOSX_BUNDLE_TYPE_ROLE Viewer )
   
   set( MACOSX_BUNDLE_VERSION ${V_MAJOR}.${V_MINOR}.${V_PATCH} )
   set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${MACOSX_BUNDLE_VERSION})
@@ -35,9 +37,7 @@ ELSEIF(APPLE)
 
     #other files
     FILE(GLOB OTHER ${CMAKE_SOURCE_DIR}/src/hugin1/executor/*.executor)
-    LIST(APPEND OTHER 
-                      ${CMAKE_SOURCE_DIR}/src/celeste/data/celeste.model
-                      ${CMAKE_SOURCE_DIR}/src/hugin1/base_wx/hugin_exiftool_copy.arg)
+    LIST(APPEND OTHER ${CMAKE_SOURCE_DIR}/src/hugin1/base_wx/hugin_exiftool_copy.arg)
     FOREACH(_file ${OTHER})
       SET_SOURCE_FILES_PROPERTIES( ${_file} PROPERTIES 
            MACOSX_PACKAGE_LOCATION "Resources/xrc" )

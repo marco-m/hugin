@@ -21,10 +21,11 @@ pst=">>>>>>>>>>>>>>>>>>>>"
 
 cd $REPOSITORYDIR/
 cd $(ls -d */|head -n 1) # cd into first folder
-# To start this script in the middle, uncomment the next 2 lines and move the "fi" line down as needed
+# To start this script in the middle, move the "fi" line down as needed
 if [ -z "check for zero length string fails" ] ; then echo;
 fi
 # exit 0
+echo "$pre libomp $pst"          && cd ../libomp_oss*   || exit 1   && sh ../../scripts/libomp.sh   || exit 1
 echo "$pre boost $pst"           && cd ../boost*        || exit 1   && sh ../../scripts/boost.sh    || exit 1
 echo "$pre gettext $pst"         && cd ../gettext*      || exit 1   && sh ../../scripts/gettext.sh  || exit 1
 echo "$pre libffi $pst"          && cd ../libffi*       || exit 1   && sh ../../scripts/libffi.sh   || exit 1

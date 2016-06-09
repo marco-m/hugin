@@ -22,7 +22,7 @@ fail()
         exit 1
 }
 
-VERSION_NAME="libffi-3.0.13"
+VERSION_NAME="libffi-3.2.1"
 VERSION="6"
 
 let NUMARCH="0"
@@ -126,4 +126,4 @@ if [ -f "$REPOSITORYDIR/lib/libffi.$VERSION.dylib" ] ; then
  ln -sfn libffi.$VERSION.dylib $REPOSITORYDIR/lib/libffi.dylib;
 fi
 
-cp -vr "$REPOSITORYDIR/arch/$ARCH/lib/$VERSION_NAME" "$REPOSITORYDIR/"
+cp -vr "$REPOSITORYDIR/arch/$ARCH/lib/$VERSION_NAME/" "$REPOSITORYDIR"
