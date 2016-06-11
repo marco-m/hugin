@@ -382,7 +382,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::calcAlpha()
     int yend   = Base::boundingBox().bottom();
 
     // loop over the image and transform
-#pragma omp parallel for schedule(dynamic, 100)
+#pragma omp parallel for schedule(dynamic, 10)
     for(int y=ystart; y < yend; ++y)
     {
         // create dist y iterator
