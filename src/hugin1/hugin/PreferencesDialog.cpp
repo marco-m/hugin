@@ -110,11 +110,6 @@ PreferencesDialog::PreferencesDialog(wxWindow* parent)
     XRCCTRL(*this, "prefs_ass_nControlPoints", wxSpinCtrl)->SetRange(3,3000);
 
     wxChoice* lang_choice = XRCCTRL(*this, "prefs_gui_language", wxChoice);
-
-#if __WXMAC__
-    lang_choice->Disable();
-#endif
-
     // add languages to choice
     long* lp = new long;
     *lp = wxLANGUAGE_DEFAULT;
