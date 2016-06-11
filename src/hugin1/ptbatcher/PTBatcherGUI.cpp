@@ -121,9 +121,6 @@ bool PTBatcherGUI::OnInit()
     // parse arguments
     static const wxCmdLineEntryDesc cmdLineDesc[] =
     {
-        //On wxWidgets 2.9, wide characters don't work here.
-        //On previous versions, the wxT macro is required for unicode builds.
-#if wxCHECK_VERSION(2,9,0)
         {
             wxCMD_LINE_SWITCH, "h", "help", "show this help message",
             wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP
@@ -138,22 +135,6 @@ bool PTBatcherGUI::OnInit()
             wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL + wxCMD_LINE_PARAM_MULTIPLE
         },
         { wxCMD_LINE_NONE }
-#else
-        {
-            wxCMD_LINE_SWITCH, wxT("h"), wxT("help"), wxT("show this help message"),
-            wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP
-        },
-        { wxCMD_LINE_SWITCH, wxT("b"), wxT("batch"),  wxT("run batch immediately") },
-        { wxCMD_LINE_SWITCH, wxT("o"), wxT("overwrite"),  wxT("overwrite previous files without asking") },
-        { wxCMD_LINE_SWITCH, wxT("s"), wxT("shutdown"),  wxT("shutdown computer after batch is complete") },
-        { wxCMD_LINE_SWITCH, wxT("v"), wxT("verbose"),  wxT("show verbose output when processing projects") },
-        { wxCMD_LINE_SWITCH, wxT("a"), wxT("assistant"), wxT("run the assistant on the given projects") },
-        {
-            wxCMD_LINE_PARAM,  NULL, NULL, _("stitch_project.pto [output prefix]|assistant_project.pto"),
-            wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL + wxCMD_LINE_PARAM_MULTIPLE
-        },
-        { wxCMD_LINE_NONE }
-#endif
     };
     wxCmdLineParser parser(cmdLineDesc, argc, argv);
 
@@ -193,7 +174,7 @@ bool PTBatcherGUI::OnInit()
         }
         else
         {
-            m_frame->SetStatusInformation(_("PTBatcherGUI started"), true);
+            m_frame->SetStatusInformation(_("PTBatcherGUI started"));
         };
         m_server = new BatchIPCServer();
         if (!m_server->Create(servername))
@@ -447,32 +428,24 @@ void PTBatcherGUI::MacOpenFiles(const wxArrayString &fileNames)
 }
 #endif
 
-#if wxCHECK_VERSION(2,9,0)
-#define RETURNEMPTYSTRING return wxEmptyString
 const void* BatchIPCConnection::OnRequest(const wxString& topic, const wxString& item, size_t* size, wxIPCFormat format)
 {
     *size=wxNO_LEN;
-#else
-#define RETURNEMPTYSTRING return ((wxChar*) "")
-wxChar* BatchIPCConnection::OnRequest(const wxString& topic, const wxString& item, int* size, wxIPCFormat format)
-{
-    *size=-1;
-#endif
     BatchFrame* MyBatchFrame=wxGetApp().GetFrame();
     if(item.Left(1)==wxT("A"))
     {
         MyBatchFrame->AddToList(item.Mid(2));
-        RETURNEMPTYSTRING;
+        return wxEmptyString;
     };
     if(item.Left(1)==wxT("D"))
     {
         MyBatchFrame->AddToList(item.Mid(2),Project::DETECTING);
-        RETURNEMPTYSTRING;
+        return wxEmptyString;
     };
     if(item.Left(1)==wxT("P"))
     {
         MyBatchFrame->ChangePrefix(-1,item.Mid(2));
-        RETURNEMPTYSTRING;
+        return wxEmptyString;
     };
     wxCommandEvent event;
     event.SetInt(1);
@@ -508,7 +481,7 @@ wxChar* BatchIPCConnection::OnRequest(const wxString& topic, const wxString& ite
         wxCommandEvent myEvent(wxEVT_COMMAND_TOOL_CLICKED ,XRCID("tool_start"));
         MyBatchFrame->GetEventHandler()->AddPendingEvent(myEvent);
     };
-    RETURNEMPTYSTRING;
+    return wxEmptyString;
 };
 
 wxConnectionBase* BatchIPCServer::OnAcceptConnection (const wxString& topic)

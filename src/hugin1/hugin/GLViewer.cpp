@@ -71,21 +71,11 @@ GLViewer::GLViewer(
             GLPreviewFrame *frame_in,
             wxGLContext * shared_context
             ) :
-#if defined __WXGTK__ || wxCHECK_VERSION(2,9,0)
           wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize,
                      0, wxT("GLPreviewCanvas"), wxNullPalette)
-#else
-          wxGLCanvas(parent,shared_context,wxID_ANY,wxDefaultPosition,
-                     wxDefaultSize,0,wxT("GLPreviewCanvas"),args,wxNullPalette)
-#endif
 {
-    /* The openGL display context doesn't seem to be created automatically on
-     * wxGTK, (wxMSW and wxMac 2.8 does implicit create wxGLContext,
-     * wxWidgets 2.9 requires to explicit create wxGLContext, 
-     * so I create a new context... */
-#if defined __WXGTK__ || wxCHECK_VERSION(2,9,0)
+    /* create OpenGL context... */
     m_glContext = new wxGLContext(this, shared_context);
-#endif
   
     m_renderer = 0;
     m_visualization_state = 0;
@@ -105,9 +95,7 @@ GLViewer::GLViewer(
 
 GLViewer::~GLViewer()
 {
-#if defined __WXGTK__ || wxCHECK_VERSION(2,9,0)
     delete m_glContext;
-#endif
     if (m_renderer)
     {
       delete m_tool_helper;
@@ -129,11 +117,7 @@ void GLViewer::SetUpContext()
     // set the context
     DEBUG_INFO("Setting rendering context...");
     Show();
-#if defined __WXGTK__ || wxCHECK_VERSION(2,9,0)
     m_glContext->SetCurrent(*this);
-#else
-    SetCurrent();
-#endif
     DEBUG_INFO("...got a rendering context.");
     if (!started_creation)
     {
@@ -358,9 +342,6 @@ void GLViewer::Resized(wxSizeEvent& e)
    
     if (frame->CanResize()) {
         DEBUG_DEBUG("RESIZED_IN");
-#if !wxCHECK_VERSION(3,0,0)
-        wxGLCanvas::OnSize(e);
-#endif
         if(!IsShown()) return;
         // if we have a render at this point, tell it the new size.
         DEBUG_DEBUG("RESIZED_IN_SHOWN");

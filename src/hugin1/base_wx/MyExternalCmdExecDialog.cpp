@@ -227,11 +227,7 @@ int MyExecPanel::ExecWithRedirect(wxString cmd)
 #endif
 
     MyPipedProcess *process = new MyPipedProcess(this, cmd);
-#if wxCHECK_VERSION(3,0,0)
     m_pidLast = wxExecute(cmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, process, &m_executeEnv);
-#else
-    m_pidLast = wxExecute(cmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, process);
-#endif
     if ( m_pidLast == 0 )
     {
         wxLogError(_T("Execution of '%s' failed."), cmd.c_str());
@@ -252,7 +248,6 @@ int MyExecPanel::ExecWithRedirect(wxString cmd)
 
 int MyExecPanel::ExecQueue(HuginQueue::CommandQueue* queue)
 {
-#if wxCHECK_VERSION(3,0,0)
     wxConfigBase* config = wxConfigBase::Get();
     const long threads = config->Read(wxT("/output/NumberOfThreads"), 0l);
     if (threads > 0)
@@ -271,7 +266,6 @@ int MyExecPanel::ExecQueue(HuginQueue::CommandQueue* queue)
         m_executeEnv.env["TMP"] = tempDir;
 #endif
     };
-#endif
     m_queue = queue;
     m_queueLength = queue->size() + 1;
     if (m_queue->empty())
@@ -345,7 +339,7 @@ void MyExecPanel::RemoveAsyncProcess(MyPipedProcess *process)
 void MyExecPanel::AddToOutput(wxInputStream & s)
 {
     DEBUG_TRACE("");
-#if defined __WXGTK__ && wxCHECK_VERSION(3,0,0)
+#if defined __WXGTK__
     wxTextInputStream ts(s, " \t", wxConvLibc);
 #else
     wxTextInputStream ts(s);

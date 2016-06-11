@@ -24,11 +24,7 @@
 #include "StitchingExecutor.h"
 
 #include <wx/config.h>
-#if wxCHECK_VERSION(3,0,0)
 #include <wx/translation.h>
-#else
-#include <wx/intl.h>
-#endif
 #include <wx/arrstr.h>
 #include <wx/filefn.h>
 #include <wx/txtstrm.h>
@@ -41,12 +37,6 @@
 #include "base_wx/wxPlatform.h"
 #include "base_wx/LensTools.h"
 #include "hugin/config_defaults.h"
-
-#if wxCHECK_VERSION(3,0,0)
-#define WXSTRING(s)  s
-#else
-#define WXSTRING(s) wxString(s.c_str(), wxConvLocal)
-#endif
 
 namespace HuginQueue
 {
@@ -194,19 +184,6 @@ namespace HuginQueue
             return tempArgfileFinal.GetFullPath();
         };
 
-        double wxStringToCDouble(const wxString& s)
-        {
-            double val;
-#if wxCHECK_VERSION(2,9,1)
-            s.ToCDouble(&val);
-#else
-            wxString s2(s);
-            s2.Replace(wxT("."), wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT, wxLOCALE_CAT_NUMBER));
-            s2.ToDouble(&val);
-#endif
-            return val;
-        };
-
         wxString PrintDetailInfo(const HuginBase::Panorama& pano, const HuginBase::PanoramaOptions& opts, const HuginBase::UIntSet& allActiveImages, const wxString& prefix, const wxString& bindir, wxConfigBase* config, double& exiftoolVersion)
         {
             wxString output;
@@ -263,7 +240,7 @@ namespace HuginQueue
                 if (wxExecute(wxEscapeFilename(GetExternalProgram(config, bindir, wxT("exiftool"))) + wxT(" -ver"), version, wxEXEC_SYNC) == 0l)
                 {
                     output << _("ExifTool version:") << wxT(" ") << version[0] << wxEndl;
-                    exiftoolVersion = wxStringToCDouble(version[0]);
+                    version[0].ToCDouble(&exiftoolVersion);
                 }
                 else
                 {
@@ -354,7 +331,7 @@ namespace HuginQueue
             const HuginBase::SrcPanoImage img = pano.getImage(*allActiveImages.begin());
             output << _("First input image") << wxEndl
                 << _("Number:") << wxT(" ") << *allActiveImages.begin() << wxEndl
-                << _("Filename:") << wxT(" ") << WXSTRING(img.getFilename()) << wxEndl
+                << _("Filename:") << wxT(" ") << img.getFilename() << wxEndl
                 << wxString::Format(_("Size: %dx%d"), img.getWidth(), img.getHeight()) << wxEndl
                 << _("Projection:") << wxT(" ") << getProjectionString(img) << wxEndl
                 << _("Response type:") << wxT(" ") << getResponseString(img) << wxEndl
@@ -363,73 +340,6 @@ namespace HuginQueue
                 << wxEndl;
             return output;
         };
-
-#if !wxCHECK_VERSION(3,0,0)
-        /** create a temporary response with all images in given array, used by enblend, enfuse and exiftool 
-            only needed for wxWidgets 2.8.x */
-        const wxArrayString CreateResponsefile(const wxArrayString images, const size_t maxFileNumber=20000U)
-        {
-            wxArrayString responseFiles;
-            wxFFileOutputStream* outputStream = NULL;
-            wxTextOutputStream* outputFile = NULL;
-            wxString workingDir = wxFileName::GetCwd();
-            if (workingDir.Last() != wxFileName::GetPathSeparator())
-            {
-                workingDir.Append(wxFileName::GetPathSeparator());
-            };
-            // write response file
-            for (size_t i = 0; i < images.size(); ++i)
-            {
-                if (i % maxFileNumber == 0)
-                {
-                    wxFileName tempResponsefile(wxFileName::CreateTempFileName(GetConfigTempDir(wxConfigBase::Get()) + wxT("hb")));
-                    responseFiles.Add(tempResponsefile.GetFullPath());
-                    if (outputFile != NULL)
-                    {
-                        outputStream->Close();
-                        delete outputFile;
-                        delete outputStream;
-                    };
-                    outputStream = new wxFFileOutputStream(tempResponsefile.GetFullPath());
-                    outputFile = new wxTextOutputStream(*outputStream);
-                };
-                (*outputFile) << workingDir.c_str() << images[i].c_str() << endl;
-            };
-            if (outputFile != NULL)
-            {
-                outputStream->Close();
-                delete outputFile;
-                delete outputStream;
-            }
-            return responseFiles;
-        };
-#endif
-        /** workaround for limitation of wxExecute of wxWidgets 2.8 */
-        HuginQueue::NormalCommand* GetEnblendFuseCommand(const wxString& command, const wxString& args, const wxString& comment, const wxArrayString& images, wxArrayString& tempFilesToDelete)
-        {
-#if wxCHECK_VERSION(3,0,0)
-            // on wxWidgets 3.0 this workaround is not necessary, wxExecute process also big number of arguments
-            return new NormalCommand(command, args + wxT(" ") + GetQuotedFilenamesString(images), comment);
-#else
-            if (images.size() < 100)
-            {
-                return new NormalCommand(command, args + wxT(" ") + GetQuotedFilenamesString(images), comment);
-            }
-            // wxWidgets 2.8 accept only 127 argument for wxExecute
-            // workaround for this case
-            // use response file for enblend/enfuse
-            // but one response file can only contain 63 image files, so we need
-            // to split the response files in several parts
-            const wxArrayString tempResponsefiles = CreateResponsefile(images, 60);
-            wxString finalArgs(args);
-            for (size_t i = 0; i < tempResponsefiles.size(); ++i)
-            {
-                finalArgs.Append(wxT(" @") + wxEscapeFilename(tempResponsefiles[i]));
-                tempFilesToDelete.Add(tempResponsefiles[i]);
-            };
-            return new NormalCommand(command, finalArgs, comment);
-#endif
-        }
 
         /** build quoted filename list for verdandi */
         wxString GetQuotedFilenamesStringForVerdandi(const wxArrayString& files, const HuginBase::Panorama& pano, const HuginBase::UIntSetVector& stacks, const int referenceImage, const bool hardSeam)
@@ -507,8 +417,8 @@ namespace HuginQueue
         wxString enLayersCompressionArgs;
         if (!opts.outputLayersCompression.empty())
         {
-            nonaArgs.Append(wxT("-z ") + WXSTRING(opts.outputLayersCompression) + wxT(" "));
-            enLayersCompressionArgs.Append(wxT(" --compression=") + WXSTRING(opts.outputLayersCompression) + wxT(" "));
+            nonaArgs.Append(wxT("-z ") + opts.outputLayersCompression + wxT(" "));
+            enLayersCompressionArgs.Append(wxT(" --compression=") + opts.outputLayersCompression + wxT(" "));
         }
         else
         {
@@ -525,7 +435,7 @@ namespace HuginQueue
         wxString enblendArgs;
         if (opts.blendMode == HuginBase::PanoramaOptions::ENBLEND_BLEND)
         {
-            enblendArgs.Append(WXSTRING(opts.enblendOptions));
+            enblendArgs.Append(opts.enblendOptions);
             if ((opts.getHFOV() == 360.0) && (opts.getWidth()==opts.getROI().width()))
             {
                 enblendArgs.Append(wxT(" -w"));
@@ -545,7 +455,7 @@ namespace HuginQueue
         wxString verdandiArgs;
         if (opts.blendMode == HuginBase::PanoramaOptions::INTERNAL_BLEND)
         {
-            verdandiArgs.Append(WXSTRING(opts.verdandiOptions));
+            verdandiArgs.Append(opts.verdandiOptions);
             if ((opts.getHFOV() == 360.0) && (opts.getWidth() == opts.getROI().width()))
             {
                 verdandiArgs.Append(wxT(" -w"));
@@ -555,7 +465,7 @@ namespace HuginQueue
         wxString finalCompressionArgs;
         if (opts.outputImageType == "tif" && !opts.outputImageTypeCompression.empty())
         {
-            finalCompressionArgs << wxT(" --compression=") << WXSTRING(opts.outputImageTypeCompression);
+            finalCompressionArgs << wxT(" --compression=") << opts.outputImageTypeCompression;
         }
         else
         {
@@ -566,7 +476,7 @@ namespace HuginQueue
         };
         finalCompressionArgs.Append(wxT(" "));
         // prepare enfuse arguments
-        wxString enfuseArgs(WXSTRING(opts.enfuseOptions) + wxT(" "));
+        wxString enfuseArgs(opts.enfuseOptions + wxT(" "));
         if ((opts.getHFOV() == 360.0) && (opts.getWidth() == opts.getROI().width()))
         {
             enfuseArgs.Append(wxT(" -w"));
@@ -614,7 +524,7 @@ namespace HuginQueue
         if (opts.outputLDRBlended || opts.outputLDRLayers)
         {
             const wxArrayString remappedImages(detail::GetNumberedFilename(prefix, wxT(".tif"), allActiveImages));
-            const wxString finalFilename(prefix + wxT(".") + WXSTRING(opts.outputImageType));
+            const wxString finalFilename(prefix + wxT(".") + opts.outputImageType);
             if (opts.blendMode == HuginBase::PanoramaOptions::INTERNAL_BLEND && opts.outputLDRBlended)
             {
                 wxString finalNonaArgs(wxT("-v -r ldr "));
@@ -624,7 +534,7 @@ namespace HuginQueue
                 }
                 if (!opts.verdandiOptions.empty())
                 {
-                    finalNonaArgs.Append(WXSTRING(opts.verdandiOptions));
+                    finalNonaArgs.Append(opts.verdandiOptions);
                     finalNonaArgs.Append(wxT(" "));
                 };
                 if (opts.outputImageType == "tif")
@@ -632,7 +542,7 @@ namespace HuginQueue
                     finalNonaArgs.Append(wxT("-m TIFF "));
                     if (!opts.outputImageTypeCompression.empty())
                     {
-                        finalNonaArgs.Append(wxT("-z ") + WXSTRING(opts.outputImageTypeCompression) + wxT(" "));
+                        finalNonaArgs.Append(wxT("-z ") + opts.outputImageTypeCompression + wxT(" "));
                     };
                 }
                 else
@@ -681,8 +591,11 @@ namespace HuginQueue
                     {
                         wxString finalEnblendArgs(enblendArgs + finalCompressionArgs);
                         finalEnblendArgs.Append(wxT(" -o ") + wxEscapeFilename(finalFilename) + wxT(" -- "));
-                        commands->push_back(detail::GetEnblendFuseCommand(GetExternalProgram(config, ExePath, wxT("enblend")),
-                            finalEnblendArgs, _("Blending images..."), remappedImages, tempFilesDelete));
+                        commands->push_back(new NormalCommand(
+                            GetExternalProgram(config, ExePath, wxT("enblend")), 
+                            finalEnblendArgs + wxT(" ") + GetQuotedFilenamesString(remappedImages), 
+                            _("Blending images..."))
+                        );
                         outputFiles.Add(finalFilename);
                         if (copyMetadata)
                         {
@@ -714,7 +627,7 @@ namespace HuginQueue
                 wxString finalNonaArgs(nonaArgs);
                 if (!opts.verdandiOptions.empty())
                 {
-                    finalNonaArgs.Append(WXSTRING(opts.verdandiOptions));
+                    finalNonaArgs.Append(opts.verdandiOptions);
                     finalNonaArgs.Append(wxT(" "));
                 };
                 finalNonaArgs.append(wxT("-r ldr --create-exposure-layers --ignore-exposure -o ") + wxEscapeFilename(prefix + wxT("_exposure_")));
@@ -765,9 +678,11 @@ namespace HuginQueue
                         exposureLayersFiles.Add(exposureLayerImgName);
                         outputFiles.Add(exposureLayerImgName);
                         // variant with internal blender is handled before, so we need only enblend
-                        commands->push_back(detail::GetEnblendFuseCommand(GetExternalProgram(config, ExePath, wxT("enblend")),
-                            enblendArgs + enLayersCompressionArgs + wxT(" -o ") + wxEscapeFilename(exposureLayerImgName) + wxT(" -- "),
-                            wxString::Format(_("Blending exposure layer %u..."), exposureLayer), exposureLayersImgs, tempFilesDelete));
+                        commands->push_back(new NormalCommand(
+                            GetExternalProgram(config, ExePath, wxT("enblend")),
+                            enblendArgs + enLayersCompressionArgs + wxT(" -o ") + wxEscapeFilename(exposureLayerImgName) + wxT(" -- ") + GetQuotedFilenamesString(exposureLayersImgs),
+                            wxString::Format(_("Blending exposure layer %u..."), exposureLayer))
+                        );
                         if (copyMetadata && opts.outputLDRExposureLayers)
                         {
                             filesForCopyTagsExiftool.Add(exposureLayerImgName);
@@ -782,10 +697,13 @@ namespace HuginQueue
             if (opts.outputLDRExposureLayersFused)
             {
                 wxString finalEnfuseArgs(enfuseArgs + finalCompressionArgs);
-                const wxString fusedExposureLayersFilename(prefix + wxT("_blended_fused.") + WXSTRING(opts.outputImageType));
+                const wxString fusedExposureLayersFilename(prefix + wxT("_blended_fused.") + opts.outputImageType);
                 finalEnfuseArgs.Append(wxT(" -o ") + wxEscapeFilename(fusedExposureLayersFilename) + wxT(" -- "));
-                commands->push_back(detail::GetEnblendFuseCommand(GetExternalProgram(config, ExePath, wxT("enfuse")),
-                    finalEnfuseArgs, _("Fusing all exposure layers..."), exposureLayersFiles, tempFilesDelete));
+                commands->push_back(new NormalCommand(
+                    GetExternalProgram(config, ExePath, wxT("enfuse")),
+                    finalEnfuseArgs + wxT(" ")+GetQuotedFilenamesString(exposureLayersFiles), 
+                    _("Fusing all exposure layers..."))
+                );
                 outputFiles.Add(fusedExposureLayersFilename);
                 if (copyMetadata)
                 {
@@ -804,9 +722,11 @@ namespace HuginQueue
                     const wxString stackImgName = wxString::Format(wxT("%s_stack_ldr_%04u%s"), prefix.c_str(), stackNr, wxT(".tif"));
                     outputFiles.Add(stackImgName);
                     stackedImages.Add(stackImgName);
-                    commands->push_back(detail::GetEnblendFuseCommand(GetExternalProgram(config, ExePath, wxT("enfuse")),
-                        enfuseArgs + enLayersCompressionArgs + wxT(" -o ") + wxEscapeFilename(stackImgName) + wxT(" -- "),
-                        wxString::Format(_("Fusing stack number %u..."), stackNr), stackImgs, tempFilesDelete));
+                    commands->push_back(new NormalCommand(
+                        GetExternalProgram(config, ExePath, wxT("enfuse")),
+                        enfuseArgs + enLayersCompressionArgs + wxT(" -o ") + wxEscapeFilename(stackImgName) + wxT(" -- ") + GetQuotedFilenamesString(stackImgs),
+                        wxString::Format(_("Fusing stack number %u..."), stackNr))
+                    );
                     if (copyMetadata && opts.outputLDRStacks)
                     {
                         filesForCopyTagsExiftool.Add(stackImgName);
@@ -818,15 +738,18 @@ namespace HuginQueue
                 };
                 if (opts.outputLDRExposureBlended)
                 {
-                    const wxString fusedStacksFilename(prefix + wxT("_fused.") + WXSTRING(opts.outputImageType));
+                    const wxString fusedStacksFilename(prefix + wxT("_fused.") + opts.outputImageType);
                     switch (opts.blendMode)
                     {
                     case HuginBase::PanoramaOptions::ENBLEND_BLEND:
                         {
                             wxString finalEnblendArgs(enblendArgs + finalCompressionArgs);
                             finalEnblendArgs.Append(wxT(" -o ") + wxEscapeFilename(fusedStacksFilename) + wxT(" -- "));
-                            commands->push_back(detail::GetEnblendFuseCommand(GetExternalProgram(config, ExePath, wxT("enblend")),
-                                finalEnblendArgs, _("Blending all stacks..."), stackedImages, tempFilesDelete));
+                            commands->push_back(new NormalCommand(
+                                GetExternalProgram(config, ExePath, wxT("enblend")),
+                                finalEnblendArgs+wxT(" ")+GetQuotedFilenamesString(stackedImages), 
+                                _("Blending all stacks..."))
+                            );
                         };
                         break;
                     case HuginBase::PanoramaOptions::INTERNAL_BLEND:
@@ -874,7 +797,7 @@ namespace HuginQueue
                     stackedImages.Add(stackImgName);
                     outputFiles.Add(stackImgName);
                     commands->push_back(new NormalCommand(GetInternalProgram(ExePath, wxT("hugin_hdrmerge")),
-                        WXSTRING(opts.hdrmergeOptions) + wxT(" -o ") + wxEscapeFilename(stackImgName) + wxT(" -- ") + GetQuotedFilenamesString(stackImgs),
+                        opts.hdrmergeOptions + wxT(" -o ") + wxEscapeFilename(stackImgName) + wxT(" -- ") + GetQuotedFilenamesString(stackImgs),
                         wxString::Format(_("Merging HDR stack number %u..."), stackNr)));
                     if (!opts.outputHDRStacks)
                     {
@@ -883,13 +806,16 @@ namespace HuginQueue
                 };
                 if (opts.outputHDRBlended)
                 {
-                    const wxString mergedStacksFilename(wxEscapeFilename(prefix + wxT("_hdr.") + WXSTRING(opts.outputImageTypeHDR)));
+                    const wxString mergedStacksFilename(wxEscapeFilename(prefix + wxT("_hdr.") + opts.outputImageTypeHDR));
                     wxString finalBlendArgs(wxT(" -o ") + mergedStacksFilename + wxT(" -- "));
                     switch (opts.blendMode)
                     {
                         case HuginBase::PanoramaOptions::ENBLEND_BLEND:
-                            commands->push_back(detail::GetEnblendFuseCommand(GetExternalProgram(config, ExePath, wxT("enblend")),
-                                enblendArgs + finalBlendArgs, _("Blending HDR stacks..."), stackedImages, tempFilesDelete));
+                            commands->push_back(new NormalCommand(
+                                GetExternalProgram(config, ExePath, wxT("enblend")),
+                                enblendArgs + finalBlendArgs + wxT(" ") + GetQuotedFilenamesString(stackedImages),
+                                    _("Blending HDR stacks..."))
+                            );
                             break;
                         case HuginBase::PanoramaOptions::INTERNAL_BLEND:
                         default:  // switch to internal blender for all other cases, not exposed in GUI
@@ -910,51 +836,15 @@ namespace HuginQueue
         // update metadata
         if (!filesForCopyTagsExiftool.IsEmpty())
         {
-#if !wxCHECK_VERSION(3,0,0)
-            if (filesForCopyTagsExiftool.size() > 100)
-            {
-                // workaround for wxExecute limitation
-                const wxArrayString responseFiles = detail::CreateResponsefile(filesForCopyTagsExiftool);
-                wxString finalExiftoolArgs(exiftoolArgs);
-                for (size_t i = 0; i < responseFiles.size(); ++i)
-                {
-                    finalExiftoolArgs.Append(wxT(" -@ ") + wxEscapeFilename(responseFiles[i]));
-                };
-                commands->push_back(new OptionalCommand(GetExternalProgram(config, ExePath, wxT("exiftool")),
-                    finalExiftoolArgs, _("Updating metadata...")));
-                detail::AddToArray(responseFiles, tempFilesDelete);
-            }
-            else
-#endif
-            {
-                commands->push_back(new OptionalCommand(GetExternalProgram(config, ExePath, wxT("exiftool")),
-                    exiftoolArgs + GetQuotedFilenamesString(filesForCopyTagsExiftool),
-                    _("Updating metadata...")));
-            };
+            commands->push_back(new OptionalCommand(GetExternalProgram(config, ExePath, wxT("exiftool")),
+                exiftoolArgs + GetQuotedFilenamesString(filesForCopyTagsExiftool),
+                _("Updating metadata...")));
         };
         if (!filesForFullExiftool.IsEmpty())
         {
-#if !wxCHECK_VERSION(3,0,0)
-            if (filesForFullExiftool.size()>100)
-            {
-                // workaround for wxExecute limitation
-                const wxArrayString responseFiles = detail::CreateResponsefile(filesForCopyTagsExiftool);
-                wxString finalExiftoolArgs(exiftoolArgs + exiftoolArgsFinal);
-                for (size_t i = 0; i < responseFiles.size(); ++i)
-                {
-                    finalExiftoolArgs.Append(wxT(" -@ ") + wxEscapeFilename(responseFiles[i]));
-                };
-                commands->push_back(new OptionalCommand(GetExternalProgram(config, ExePath, wxT("exiftool")),
-                    finalExiftoolArgs, _("Updating metadata...")));
-                detail::AddToArray(responseFiles, tempFilesDelete);
-            }
-            else
-#endif
-            {
-                commands->push_back(new OptionalCommand(GetExternalProgram(config, ExePath, wxT("exiftool")),
-                    exiftoolArgs + exiftoolArgsFinal + GetQuotedFilenamesString(filesForFullExiftool),
-                    _("Updating metadata...")));
-            };
+            commands->push_back(new OptionalCommand(GetExternalProgram(config, ExePath, wxT("exiftool")),
+                exiftoolArgs + exiftoolArgsFinal + GetQuotedFilenamesString(filesForFullExiftool),
+                _("Updating metadata...")));
         };
         return commands;
     };

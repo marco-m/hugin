@@ -29,11 +29,7 @@
 #include <wx/config.h>
 #include <wx/filename.h>
 #include <wx/log.h>
-#if wxCHECK_VERSION(3,0,0)
 #include <wx/translation.h>
-#else
-#include <wx/intl.h>
-#endif
 #if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
 #include "base_wx/platform.h"
 #endif

@@ -32,18 +32,8 @@
 //#include "hugin/MainFrame.h"
 
 //declare 2 event types to communicate with parent about adding/deleting images
-#if wxCHECK_VERSION(2,9,0)
     wxDECLARE_EVENT(EVT_IMAGE_ADD,wxCommandEvent);
     wxDECLARE_EVENT(EVT_IMAGE_DEL,wxCommandEvent);
-#else
-#if defined _WIN32 && defined Hugin_shared
-    DECLARE_LOCAL_EVENT_TYPE(EVT_IMAGE_ADD,-1)
-    DECLARE_LOCAL_EVENT_TYPE(EVT_IMAGE_DEL,-1)
-#else
-    DECLARE_EVENT_TYPE(EVT_IMAGE_ADD,-1)
-    DECLARE_EVENT_TYPE(EVT_IMAGE_DEL,-1)
-#endif
-#endif
 
 /** multi use list.
  *

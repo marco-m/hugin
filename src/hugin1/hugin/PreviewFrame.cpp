@@ -99,17 +99,7 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
 #else
     EVT_CHECKBOX(-1, PreviewFrame::OnChangeDisplayedImgs)
 #endif
-#ifndef __WXMAC__
 	EVT_SCROLL_CHANGED(PreviewFrame::OnChangeFOV)
-#else
- #if wxCHECK_VERSION(2,9,0)
-	EVT_SCROLL_CHANGED(PreviewFrame::OnChangeFOV)
- #else
-	EVT_SCROLL_THUMBRELEASE(PreviewFrame::OnChangeFOV)
-	EVT_SCROLL_ENDSCROLL(PreviewFrame::OnChangeFOV)
-	EVT_SCROLL_THUMBTRACK(PreviewFrame::OnChangeFOV)
- #endif
-#endif
 	EVT_TOOL(ID_FULL_SCREEN, PreviewFrame::OnFullScreen)
     EVT_TOOL(ID_UNDO, PreviewFrame::OnUndo)
     EVT_TOOL(ID_REDO, PreviewFrame::OnRedo)
@@ -174,11 +164,7 @@ PreviewFrame::PreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
                                 _("VFOV"));
     m_VFOVSlider->SetLineSize(2);
     m_VFOVSlider->SetPageSize(10);
-#if wxCHECK_VERSION(3,0,0)
     m_VFOVSlider->SetTickFreq(5);
-#else
-    m_VFOVSlider->SetTickFreq(5,0);
-#endif
     m_VFOVSlider->SetToolTip(_("drag to change the vertical field of view"));
 
     flexSizer->Add(m_VFOVSlider, 0, wxEXPAND);
@@ -191,11 +177,7 @@ PreviewFrame::PreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
                                 _("HFOV"));
     m_HFOVSlider->SetPageSize(10);
     m_HFOVSlider->SetLineSize(2);
-#if wxCHECK_VERSION(3,0,0)
     m_HFOVSlider->SetTickFreq(5);
-#else
-    m_HFOVSlider->SetTickFreq(5,0);
-#endif
 
     m_HFOVSlider->SetToolTip(_("drag to change the horizontal field of view"));
 
@@ -595,11 +577,7 @@ void PreviewFrame::panoramaImagesChanged(HuginBase::Panorama &pano, const HuginB
     }
 
     if (dirty) {
-#if wxCHECK_VERSION(3,0,0)
         m_ButtonSizer->FitInside(m_ButtonPanel);
-#else
-		m_ButtonSizer->SetVirtualSizeHints(m_ButtonPanel);
-#endif
 		// Layout();
 		DEBUG_INFO("New m_ButtonPanel width: " << (m_ButtonPanel->GetSize()).GetWidth());
 		DEBUG_INFO("New m_ButtonPanel Height: " << (m_ButtonPanel->GetSize()).GetHeight());

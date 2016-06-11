@@ -41,12 +41,10 @@ class GLOverview;
 class ViewState;
 class wxSpinEvent;
 class wxChoice;
-#if wxCHECK_VERSION(2,9,1)
 //forward declaration for wxInfoBar works only for wxGTK
 //for other systems wxInfoBar is defined as preprocessor macro and not as class
 //class wxInfoBar;
 #include <wx/infobar.h>
-#endif
 
 class MeshManager;
 
@@ -402,13 +400,8 @@ private:
     wxBitmapButton * m_defaultExposureBut;
     wxTextCtrl* m_exposureText;
     wxSpinButton * m_exposureSpinBut;
-#if wxCHECK_VERSION(2, 9, 1)
     /// Bar for context sensitive projection information.
     wxInfoBar * m_infoBar;
-#else
-    // True if the status bar text has been replaced with projection information
-    bool m_projectionStatusPushed;
-#endif
     //assistant related controls
     wxStaticText * m_imagesText;
     wxButton * m_alignButton;
@@ -420,11 +413,7 @@ private:
     wxMenu* m_filemenuSimple;
     wxMenu* m_filemenuAdvanced;
     wxMenu* m_selectAllMenu;
-#if wxCHECK_VERSION(2,9,2)
     wxButton* m_selectAllButton;
-#else
-    wxBitmapButton* m_selectAllButton;
-#endif
     enum SelectAllMode
     {
         SELECT_ALL_IMAGES = 0,

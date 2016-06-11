@@ -150,7 +150,7 @@ IF (WIN32)
 
   # wxWidgets
   IF(NOT wxWidgets_ROOT_SUFFIX)
-    SET( wxWidgets_ROOT_SUFFIX 2.8.10 CACHE STRING "version of wxWidgets." FORCE )
+    SET( wxWidgets_ROOT_SUFFIX 3.0.0 CACHE STRING "version of wxWidgets." FORCE )
   ENDIF(NOT wxWidgets_ROOT_SUFFIX)
   IF(NOT wxWidgets_ROOT_DIR)
     SET(wxWidgets_ROOT_DIR ${SOURCE_BASE_DIR}/wxWidgets-${wxWidgets_ROOT_SUFFIX})
@@ -165,13 +165,13 @@ ENDIF(WIN32)
 SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl net qa)
 FIND_PACKAGE(wxWidgets REQUIRED)
 
-# hugin requires wxwidgets 2.8.0 or above
+# hugin requires wxwidgets 3.0 or above
 IF (UNIX)
   EXEC_PROGRAM(sh ARGS "${wxWidgets_CONFIG_EXECUTABLE} --version" OUTPUT_VARIABLE wxWidgets_VERSION)
   STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+)\\..*" "\\1"  wxWidgets_VERSION ${wxWidgets_VERSION})
-  IF(wxWidgets_VERSION VERSION_LESS "2.8")
+  IF(wxWidgets_VERSION VERSION_LESS "3.0")
     SET(wxWidgets_FOUND FALSE)
-    MESSAGE("At least wxWidgets 2.8 is required")
+    MESSAGE("At least wxWidgets 3.0 is required")
   ENDIF()
   # Ubuntu has 2 different devel packages, we need the GUI version
   EXEC_PROGRAM(sh ARGS "${wxWidgets_CONFIG_EXECUTABLE} --query-toolkit" OUTPUT_VARIABLE wxWidgets_TOOLKIT)

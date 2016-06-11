@@ -197,18 +197,6 @@ void copySrcImageExif(HuginBase::SrcPanoImage& destImg, HuginBase::SrcPanoImage 
     destImg.setFileMetadata(srcImg.getFileMetadata());
 };
 
-#if !wxCHECK_VERSION(3,0,0)
-//only needed for older wxWidgets version, in newer we are using wxMessageDialog and this workaround is not necessary
-class StackDialog :public wxDialog
-{
-public:
-    void HandleNoButton(wxCommandEvent &e)
-    {
-        EndModal(wxID_NO);
-    };
-};
-#endif
-
 bool getLensDataFromUser(wxWindow * parent, HuginBase::SrcPanoImage & srcImg)
 {
     // display lens dialog
@@ -545,7 +533,6 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
         {
             message = _("Hugin has image stacks detected in the whole project. Stack numbers will be re-assigned on base of this detection. Existing stack assignments will be overwritten.");
         };
-#if wxCHECK_VERSION(3,0,0)
         message.append(wxT("\n"));
         message.append(_("Should the position of images in each stack be linked?"));
         wxMessageDialog dialog(wxGetActiveWindow(), message,
@@ -564,25 +551,6 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
         {
             dialog.SetYesNoCancelLabels(_("Link position"), _("Don't link position"), _("Keep existing stacks"));
         };
-#else
-        wxDialog dialog;
-        wxXmlResource::Get()->LoadDialog(&dialog, wxGetActiveWindow(), wxT("stack_detected_dlg"));
-        message.append(wxT(" "));
-        message.append(_("Should the position of images in each stack be linked?"));
-        wxStaticText* text = XRCCTRL(dialog, "stack_text1", wxStaticText);
-        text->SetLabel(message);
-        text->Wrap(350);
-        dialog.Connect(XRCID("wxID_NO"), wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(StackDialog::HandleNoButton));
-        if (oldImgCount == 0)
-        {
-            XRCCTRL(dialog, "wxID_CANCEL", wxButton)->SetLabel(_("Don't assign stacks"));
-        }
-        else
-        {
-            XRCCTRL(dialog, "wxID_CANCEL", wxButton)->SetLabel(_("Keep existing stacks"));
-        };
-        dialog.Layout();
-#endif
         switch (dialog.ShowModal())
         {
             case wxID_OK:

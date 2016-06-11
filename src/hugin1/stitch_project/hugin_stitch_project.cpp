@@ -296,7 +296,6 @@ bool stitchApp::OnInit()
     {
         //On wxWidgets 2.9, wide characters don't work here.
         //On previous versions, the wxT macro is required for unicode builds.
-#if wxCHECK_VERSION(2,9,0)
       { wxCMD_LINE_SWITCH, "h", "help", "show this help message",
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
       { wxCMD_LINE_OPTION, "o", "output",  "output prefix" },
@@ -306,17 +305,6 @@ bool stitchApp::OnInit()
       { wxCMD_LINE_PARAM,  NULL, NULL, "<project>",
         wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
       { wxCMD_LINE_NONE }
-#else 
-      { wxCMD_LINE_SWITCH, wxT("h"), wxT("help"), wxT("show this help message"),
-        wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-      { wxCMD_LINE_OPTION, wxT("o"), wxT("output"),  wxT("output prefix") },
-      { wxCMD_LINE_SWITCH, wxT("d"), wxT("delete"),  wxT("delete pto file after stitching") },
-      { wxCMD_LINE_SWITCH, wxT("w"), wxT("overwrite"), wxT("overwrite existing files") },
-      { wxCMD_LINE_OPTION, wxT("u"), wxT("user-defined-output"), wxT("use user defined output") },
-      { wxCMD_LINE_PARAM,  NULL, NULL, wxT("<project>"),
-        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-      { wxCMD_LINE_NONE }
-#endif 
     };
 
     wxCmdLineParser parser(cmdLineDesc, argc, argv);

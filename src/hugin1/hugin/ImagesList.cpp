@@ -37,18 +37,8 @@
 #include "hugin/MainFrame.h"
 #endif
 
-#if wxCHECK_VERSION(2,9,0)
-    wxDEFINE_EVENT(EVT_IMAGE_ADD,wxCommandEvent);
-    wxDEFINE_EVENT(EVT_IMAGE_DEL,wxCommandEvent);
-#else
-#if defined _WIN32 && defined Hugin_shared
-    DEFINE_LOCAL_EVENT_TYPE(EVT_IMAGE_ADD)
-    DEFINE_LOCAL_EVENT_TYPE(EVT_IMAGE_DEL)
-#else
-    DEFINE_EVENT_TYPE(EVT_IMAGE_ADD)
-    DEFINE_EVENT_TYPE(EVT_IMAGE_DEL)
-#endif
-#endif
+wxDEFINE_EVENT(EVT_IMAGE_ADD,wxCommandEvent);
+wxDEFINE_EVENT(EVT_IMAGE_DEL,wxCommandEvent);
 
 //------------------------------------------------------------------------------
 

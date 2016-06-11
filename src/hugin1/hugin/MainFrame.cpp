@@ -270,11 +270,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     svmModel=NULL;
 
     bool disableOpenGL=false;
-#if wxCHECK_VERSION(2,9,4)
     if(wxGetKeyState(WXK_COMMAND))
-#else
-    if(wxGetKeyState(WXK_CONTROL))
-#endif
     {
         wxDialog dlg;
         wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("disable_opengl_dlg"));
@@ -702,7 +698,6 @@ bool MainFrame::CloseProject(bool cancelable)
                                 wxT(""),
 #endif
                                 wxICON_EXCLAMATION | wxYES_NO | (cancelable? (wxCANCEL):0));
-#if wxCHECK_VERSION(2, 9, 0)
     message.SetExtendedMessage(_("If you close without saving, changes since your last save will be discarded"));
     #if defined __WXMAC__ || defined __WXMSW__
         // Apple human interface guidelines and Windows user experience interaction guidelines
@@ -711,7 +706,6 @@ bool MainFrame::CloseProject(bool cancelable)
         // Gnome human interface guidelines:
         message.SetYesNoLabels(wxID_SAVE, _("Close without saving"));
     #endif
-#endif
         int answer = message.ShowModal();
         switch (answer){
             case wxID_YES:

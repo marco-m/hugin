@@ -137,8 +137,8 @@ public:
     bool IsPaused();
     /** sets status message, also updates tooltip of taskbar icon
      *  @param status text for status bar
-     *  @param showBalloon true if the status text should also shown in balloon */
-    void SetStatusInformation(wxString status,bool showBalloon);
+     */
+    void SetStatusInformation(wxString status);
     /** update visibility of verbose output window depending on status of verbose checkbox */
     void UpdateBatchVerboseStatus();
     /** returns true, if last session was finished minimized */

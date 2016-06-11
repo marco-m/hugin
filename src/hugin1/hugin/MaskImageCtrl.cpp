@@ -45,13 +45,6 @@ const int polygonPointSize=3;
 /** maximal distance for selection of one point */
 const int maxSelectionDistance=20;
 
-#if !wxCHECK_VERSION(3,0,0)
-#define wxPENSTYLE_SOLID wxSOLID
-#define wxPENSTYLE_DOT wxDOT
-#define wxBRUSHSTYLE_TRANSPARENT wxTRANSPARENT
-#define wxBRUSHSTYLE_SOLID wxSOLID
-#endif
-
 // our image control
 
 BEGIN_EVENT_TABLE(MaskImageCtrl, wxScrolledWindow)
@@ -1348,27 +1341,7 @@ void MaskImageCtrl::rescaleImage()
     m_bitmap=wxBitmap(img);
 
     //create disabled m_bitmap for drawing active masks
-#if wxCHECK_VERSION(2,9,0)
     img = img.ConvertToDisabled(192);
-#else
-    {
-        int width = img.GetWidth();
-        int height = img.GetHeight();
-        for (int y = height-1; y >= 0; --y)
-        {
-            for (int x = width-1; x >= 0; --x)
-            {
-                unsigned char* data = img.GetData() + (y*(width*3))+(x*3);
-                unsigned char* r = data;
-                unsigned char* g = data+1;
-                unsigned char* b = data+2;
-                *r=(unsigned char)wxMin(0.6*(*r)+77,255);
-                *b=(unsigned char)wxMin(0.6*(*b)+77,255);
-                *g=(unsigned char)wxMin(0.6*(*g)+77,255);
-            }
-        }
-    }
-#endif
     m_disabledBitmap=wxBitmap(img);
     if (m_imgRotation == ROT90 || m_imgRotation == ROT270)
     {

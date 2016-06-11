@@ -33,11 +33,7 @@
 #include "hugin/PanoOperation.h"
 
 /** the main images tree control, used on images and optimizer tabs */
-#if wxCHECK_VERSION(2,9,0)
 class ImagesTreeCtrl: public wxcode::wxTreeListCtrl, public HuginBase::PanoramaObserver
-#else
-class ImagesTreeCtrl: public wxTreeListCtrl, public HuginBase::PanoramaObserver
-#endif
 {
 public:
     /** enumeration for grouping mode */
@@ -205,11 +201,7 @@ private:
 
 
 /** xrc handler */
-#if wxCHECK_VERSION(2,9,0)
 class ImagesTreeCtrlXmlHandler : public wxcode::wxTreeListCtrlXmlHandler
-#else
-class ImagesTreeCtrlXmlHandler : public wxTreeListCtrlXmlHandler
-#endif
 {
     DECLARE_DYNAMIC_CLASS(ImagesTreeCtrlXmlHandler)
 

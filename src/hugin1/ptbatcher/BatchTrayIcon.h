@@ -55,7 +55,7 @@ protected:
     DECLARE_EVENT_TABLE()
 };
 
-#if defined __WXMSW__ && wxUSE_TASKBARICON_BALLOONS && wxCHECK_VERSION(2,9,0)
+#if defined __WXMSW__ && wxUSE_TASKBARICON_BALLOONS
 // wxMSW, version 2.9 offers a native balloon for the traybar notification
 // we need to implement a own version for the other systems only
 #else

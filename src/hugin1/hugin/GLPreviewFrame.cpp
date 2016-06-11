@@ -94,9 +94,7 @@ extern "C" {
 #include "OverviewOutlinesTool.h"
 
 #include <wx/progdlg.h>
-#if wxCHECK_VERSION(2, 9, 1)
 #include <wx/infobar.h>
-#endif
 
 // a random id, hope this doesn't break something..
 enum {
@@ -170,18 +168,10 @@ BEGIN_EVENT_TABLE(GLPreviewFrame, wxFrame)
 	EVT_SCROLL_CHANGED(GLPreviewFrame::OnChangeFOV)
 	EVT_COMMAND_SCROLL_CHANGED(XRCID("layout_scale_slider"), GLPreviewFrame::OnLayoutScaleChange)
 #else
- #if wxCHECK_VERSION(2,9,0)
     EVT_SCROLL_THUMBRELEASE(GLPreviewFrame::OnChangeFOV)
     EVT_COMMAND_SCROLL(XRCID("layout_scale_slider"), GLPreviewFrame::OnLayoutScaleChange)
     EVT_SCROLL_CHANGED(GLPreviewFrame::OnChangeFOV)
     EVT_COMMAND_SCROLL_THUMBTRACK(XRCID("layout_scale_slider"), GLPreviewFrame::OnLayoutScaleChange)
- #else
-	EVT_SCROLL_THUMBRELEASE(GLPreviewFrame::OnChangeFOV)
-	EVT_SCROLL_ENDSCROLL(GLPreviewFrame::OnChangeFOV)
-	EVT_COMMAND_SCROLL_THUMBRELEASE(XRCID("layout_scale_slider"), GLPreviewFrame::OnLayoutScaleChange)
-	EVT_COMMAND_SCROLL_ENDSCROLL(XRCID("layout_scale_slider"), GLPreviewFrame::OnLayoutScaleChange)
-	EVT_COMMAND_SCROLL_THUMBTRACK(XRCID("layout_scale_slider"), GLPreviewFrame::OnLayoutScaleChange)
- #endif
 #endif
 	EVT_SCROLL_THUMBTRACK(GLPreviewFrame::OnTrackChangeFOV)
     EVT_TEXT_ENTER(XRCID("pano_text_hfov"), GLPreviewFrame::OnHFOVChanged )
@@ -230,53 +220,6 @@ BEGIN_EVENT_TABLE(ImageGroupButtonEventHandler, wxEvtHandler)
     EVT_CHECKBOX(-1, ImageGroupButtonEventHandler::OnChange)
 END_EVENT_TABLE()
 
-
-void AddLabelToBitmapButton(wxBitmapButton* button, wxString new_label,bool TextBelow=true)
-{
-    int new_width=0;
-    int new_height=0;
-    int text_height=0;
-    int text_width=0;
-    button->GetTextExtent(new_label.append(wxT(" ")), &text_width,&text_height);
-    if(TextBelow)
-    {
-        new_height=23+text_height;
-        if(text_width<24)
-            new_width=24;
-        else
-            new_width=text_width;
-    }
-    else
-    {
-        new_height=22;
-        new_width=24+text_width;
-    };
-    wxBitmap new_bitmap(new_width,new_height);
-    wxMemoryDC dc(new_bitmap);
-    dc.SetBackground(wxBrush(button->GetBackgroundColour()));
-    dc.Clear();
-    if(TextBelow)
-    {
-        dc.DrawBitmap(button->GetBitmapLabel(),(new_width/2)-11,0,true);
-        dc.SetFont(button->GetParent()->GetFont());
-        dc.DrawText(new_label,(new_width-text_width)/2,23);
-    }
-    else
-    {
-        dc.DrawBitmap(button->GetBitmapLabel(),0,0,true);
-        dc.SetFont(button->GetParent()->GetFont());
-        dc.DrawText(new_label,24,(22-text_height)/2);
-    };
-    dc.SelectObject(wxNullBitmap);
-    //some fiddeling with mask
-    wxImage new_image=new_bitmap.ConvertToImage();
-    wxColour bg=button->GetBackgroundColour();
-    new_image.SetMaskColour(bg.Red(),bg.Green(),bg.Blue());
-    wxBitmap new_bitmap_mask(new_image);
-    button->SetBitmapLabel(new_bitmap_mask);
-    button->Refresh();
-};
-
 #define PF_STYLE (wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxRESIZE_BORDER | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN)
 GLwxAuiFloatingFrame* GLwxAuiManager::CreateFloatingFrame(wxWindow* parent, const wxAuiPaneInfo& p)
 {
@@ -323,10 +266,6 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     : wxFrame(frame,-1, _("Fast Panorama preview"), wxDefaultPosition, wxDefaultSize,
               PF_STYLE),
       m_pano(pano)
-#if !wxCHECK_VERSION(2, 9, 1)
-    ,
-      m_projectionStatusPushed(false)
-#endif
 {
 
 	DEBUG_TRACE("");
@@ -363,23 +302,13 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     SetStatusText(wxT(""),2);
     wxConfigBase * cfg = wxConfigBase::Get();
 
-#if wxCHECK_VERSION(2,9,2)
-    wxPanel *tool_panel = wxXmlResource::Get()->LoadPanel(this,wxT("mode_panel_29"));
+    wxPanel *tool_panel = wxXmlResource::Get()->LoadPanel(this,wxT("mode_panel"));
     XRCCTRL(*this,"preview_center_tool",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_fit_pano_tool",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_straighten_pano_tool",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_fit_pano_tool2",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_autocrop_tool",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_stack_autocrop_tool",wxButton)->SetBitmapMargins(0,0);
-#else
-    wxPanel *tool_panel = wxXmlResource::Get()->LoadPanel(this,wxT("mode_panel"));
-    AddLabelToBitmapButton(XRCCTRL(*this,"preview_center_tool",wxBitmapButton),_("Center"));
-    AddLabelToBitmapButton(XRCCTRL(*this,"preview_fit_pano_tool",wxBitmapButton),_("Fit"));
-    AddLabelToBitmapButton(XRCCTRL(*this,"preview_straighten_pano_tool",wxBitmapButton),_("Straighten"));
-    AddLabelToBitmapButton(XRCCTRL(*this,"preview_fit_pano_tool2",wxBitmapButton),_("Fit"));
-    AddLabelToBitmapButton(XRCCTRL(*this,"preview_autocrop_tool",wxBitmapButton),_("Autocrop"));
-    AddLabelToBitmapButton(XRCCTRL(*this,"preview_stack_autocrop_tool",wxBitmapButton),_("HDR Autocrop"));
-#endif
     m_tool_notebook = XRCCTRL(*this,"mode_toolbar_notebook",wxNotebook);
     m_ToolBar_Identify = XRCCTRL(*this,"preview_mode_toolbar",wxToolBar);
     m_ToolBar_ColorPicker = XRCCTRL(*this, "preview_color_picker_toolbar", wxToolBar);
@@ -430,13 +359,9 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     bitmap.LoadFile(huginApp::Get()->GetXRCPath()+wxT("data/preview_show_all.png"),wxBITMAP_TYPE_PNG);
     wxString showAllLabel(_("All"));
     showAllLabel.Append(wxT("\u25bc"));
-#if wxCHECK_VERSION(2,9,2)
     m_selectAllButton = new wxButton(panel, ID_SHOW_ALL, showAllLabel, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     m_selectAllButton->SetBitmap(bitmap, wxLEFT);
     m_selectAllButton->SetBitmapMargins(0, 0);
-#else
-    m_selectAllButton = new wxBitmapButton(panel,ID_SHOW_ALL,bitmap);
-#endif
     m_selectAllButton->Connect(wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(GLPreviewFrame::OnSelectContextMenu), NULL, this);
     m_selectAllMenu = wxXmlResource::Get()->LoadMenu(wxT("preview_select_menu"));
     // read last used setting
@@ -468,15 +393,9 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
         m_selectAllMenu->Check(XRCID("selectMenu_resetSelection"), true);
     };
     bitmap.LoadFile(huginApp::Get()->GetXRCPath()+wxT("data/preview_show_none.png"),wxBITMAP_TYPE_PNG);
-#if wxCHECK_VERSION(2,9,2)
     wxButton* select_none=new wxButton(panel,ID_SHOW_NONE,_("None"),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
     select_none->SetBitmap(bitmap,wxLEFT);
     select_none->SetBitmapMargins(0,0);
-#else
-    wxBitmapButton * select_none = new wxBitmapButton(panel,ID_SHOW_NONE,bitmap);
-    AddLabelToBitmapButton(m_selectAllButton, showAllLabel, false);
-    AddLabelToBitmapButton(select_none,_("None"), false);
-#endif
 
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(m_selectAllButton,0,wxALIGN_CENTER_VERTICAL | wxLEFT | wxTOP | wxBOTTOM,5);
@@ -488,12 +407,10 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     m_topsizer->Add(tool_panel, 0, wxEXPAND | wxALL, 2);
     m_topsizer->Add(toggle_panel, 0, wxEXPAND | wxBOTTOM, 5);
 
-#if wxCHECK_VERSION(2, 9, 1)
     m_infoBar = new wxInfoBar(this);
     m_infoBar->AddButton(ID_HIDE_HINTS,_("Hide"));
     m_infoBar->Connect(ID_HIDE_HINTS,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(GLPreviewFrame::OnHideProjectionHints),NULL,this);
     m_topsizer->Add(m_infoBar, 0, wxEXPAND);
-#endif
 
     //create panel that will hold gl canvases
     wxPanel * vis_panel = new wxPanel(this);
@@ -542,11 +459,7 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
                                 _("VFOV"));
     m_VFOVSlider->SetLineSize(1);
     m_VFOVSlider->SetPageSize(10);
-#if wxCHECK_VERSION(3,0,0)
     m_VFOVSlider->SetTickFreq(5);
-#else
-    m_VFOVSlider->SetTickFreq(5,0);
-#endif
     m_VFOVSlider->SetToolTip(_("drag to change the vertical field of view"));
 
     flexSizer->Add(m_VFOVSlider, 0, wxEXPAND);
@@ -559,11 +472,7 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
                                 _("HFOV"));
     m_HFOVSlider->SetPageSize(10);
     m_HFOVSlider->SetLineSize(1);
-#if wxCHECK_VERSION(3,0,0)
     m_HFOVSlider->SetTickFreq(5);
-#else
-    m_HFOVSlider->SetTickFreq(5,0);
-#endif
 
     m_HFOVSlider->SetToolTip(_("drag to change the horizontal field of view"));
 
@@ -1231,13 +1140,8 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
 
     m_oldProjFormat = opts.getProjection();
 
-#if wxCHECK_VERSION(2,9,2)
     XRCCTRL(*this,"preview_autocrop_tool",wxButton)->Enable(activeImgs);
     XRCCTRL(*this,"preview_stack_autocrop_tool",wxButton)->Enable(activeImgs);
-#else
-    XRCCTRL(*this,"preview_autocrop_tool",wxBitmapButton)->Enable(activeImgs);
-    XRCCTRL(*this,"preview_stack_autocrop_tool",wxBitmapButton)->Enable(activeImgs);
-#endif
     UpdateRoiDisplay(opts);
     
     if(m_showProjectionHints)
@@ -1384,11 +1288,7 @@ void GLPreviewFrame::panoramaImagesChanged(HuginBase::Panorama &pano, const Hugi
     }
 
     if (dirty) {
-#if wxCHECK_VERSION(3,0,0)
         m_ButtonSizer->FitInside(m_ButtonPanel);
-#else
-		m_ButtonSizer->SetVirtualSizeHints(m_ButtonPanel);
-#endif
 		Layout();
 		DEBUG_INFO("New m_ButtonPanel width: " << (m_ButtonPanel->GetSize()).GetWidth());
 		DEBUG_INFO("New m_ButtonPanel Height: " << (m_ButtonPanel->GetSize()).GetHeight());
@@ -1418,11 +1318,7 @@ void GLPreviewFrame::OnShowEvent(wxShowEvent& e)
     bool toggle_on = GetMenuBar()->FindItem(XRCID("action_show_overview"))->IsChecked();
     wxAuiPaneInfo &inf = m_mgr->GetPane(wxT("overview"));
     if (inf.IsOk()) {
-#if wxCHECK_VERSION(2,8,11)
         if (e.IsShown()) {
-#else
-        if (e.GetShow()) {
-#endif
             if (!inf.IsShown() && toggle_on ) {
                 inf.Show();
                 m_mgr->Update();
@@ -2974,40 +2870,19 @@ void GLPreviewFrame::ShowProjectionWarnings()
     }
     if (message.IsEmpty()) {
         // no message needed.
-#if wxCHECK_VERSION(2, 9, 1)
         m_infoBar->Dismiss();
-#else
-        if (m_projectionStatusPushed) {
-            m_projectionStatusPushed = false;
-            GetStatusBar()->PopStatusText();
-        }
-#endif
     } else {
-#if wxCHECK_VERSION(2, 9, 1)
         m_infoBar->ShowMessage(message, wxICON_INFORMATION);
-#else
-        if (m_projectionStatusPushed) {
-            GetStatusBar()->PopStatusText();
-        }
-        /** @todo The message doesn't really fit in the status bar, so we should have some other GUI arrangement or remove this feature.
-         * On my system, the status bar remains too short to contain the two
-         * lines of text in the message.
-         */
-        GetStatusBar()->PushStatusText(message);
-        m_projectionStatusPushed = true;
-#endif
     }
 };
 
 void GLPreviewFrame::SetShowProjectionHints(bool new_value)
 {
     m_showProjectionHints=new_value;
-#if wxCHECK_VERSION(2,9,1)
     if(!m_showProjectionHints)
     {
         m_infoBar->Dismiss();
     };
-#endif
 };
 
 void GLPreviewFrame::OnHideProjectionHints(wxCommandEvent &e)

@@ -47,13 +47,6 @@
 
 #include "vigra_ext/ImageTransforms.h"
 
-#if !wxCHECK_VERSION(3,0,0)
-#define wxPENSTYLE_SOLID wxSOLID
-#define wxPENSTYLE_DOT wxDOT
-#define wxBRUSHSTYLE_TRANSPARENT wxTRANSPARENT
-#define wxBRUSHSTYLE_SOLID wxSOLID
-#endif
-
 // definition of the control point event
 
 IMPLEMENT_DYNAMIC_CLASS( CPEvent, wxEvent )
@@ -1737,11 +1730,7 @@ void CPImageCtrl::ScrollDelta(const wxPoint & delta)
 
 const wxSize CPImageCtrl::GetBitmapSize() const
 {
-#if wxCHECK_VERSION(2,9,0)
     return bitmap.GetSize();
-#else
-    return wxSize(bitmap.GetWidth(), bitmap.GetHeight());
-#endif
 };
 
 IMPLEMENT_DYNAMIC_CLASS(CPImageCtrl, wxScrolledWindow)

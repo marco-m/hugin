@@ -1127,7 +1127,6 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
     if (res.corrPos.x < 0 || res.corrPos.y < 0 || res.maxpos.x < 0 || res.maxpos.y < 0)
     {
         // invalid transformation in fine tune
-#if wxCHECK_VERSION(2, 9, 0)
         wxMessageDialog dlg(this,
             _("No similar point found."),
 #ifdef _WIN32
@@ -1138,21 +1137,11 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
             wxICON_ERROR | wxOK);
         dlg.SetExtendedMessage(_("An internal transformation went wrong.\nCheck that the point is inside the image."));
         dlg.ShowModal();
-#else
-        wxMessageBox(_("An internal transformation went wrong.\nCheck that the point is inside the image."),
-#ifdef _WIN32
-            _("Hugin"),
-#else
-            wxT(""),
-#endif
-            wxICON_ERROR | wxOK, this);
-#endif
         return false;
     }
     if (res.maxi < corrThresh || res.curv.x < curvThresh || res.curv.y < curvThresh )
     {
         // Bad correlation result.
-#if wxCHECK_VERSION(2, 9, 0)
         wxMessageDialog dlg(this,
             _("No similar point found."),
 #ifdef _WIN32
@@ -1164,17 +1153,6 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
         dlg.SetExtendedMessage(wxString::Format(_("Check the similarity visually.\nCorrelation coefficient (%.3f) is lower than the threshold set in the preferences."),
                              res.maxi));
         dlg.ShowModal();
-#else
-        wxMessageBox(
-            wxString::Format(_("No similar point found. Check the similarity visually.\nCorrelation coefficient (%.3f) is lower than the threshold set in the preferences."),
-                             res.maxi),
-#ifdef _WIN32
-            _("Hugin"),
-#else
-            wxT(""),
-#endif
-            wxICON_ERROR | wxOK, this);
-#endif
         return false;
     }
 

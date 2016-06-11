@@ -30,11 +30,7 @@
 #include "base_wx/wxPlatform.h"
 #include "panoinc.h"
 #include "hugin/huginApp.h"
-#if wxCHECK_VERSION(3,0,0)
 #include <wx/utils.h>
-#else
-#include <wx/version.h>
-#endif
 extern "C"
 {
 #include "pano13/queryfeature.h"
@@ -194,21 +190,12 @@ void AboutDialog::GetSystemInformation(wxFont *font)
         text = text + wxT("\n") + wxString::Format(_("Monitor profile: %s"), huginApp::Get()->GetMonitorProfileName().c_str());
     }
     text=text+wxT("\n\n")+_("Libraries");
-#if wxCHECK_VERSION(3,0,0)
     wxVersionInfo info = wxGetLibraryVersionInfo();
     text = text + wxT("\nwxWidgets: ") + info.GetVersionString();
     if(info.HasDescription())
     {
         text=text+wxT("\n")+info.GetDescription();
     };
-#else
-    text=text+wxT("\n")+wxString::Format(wxT("wxWidgets: %i.%i.%i.%i"),
-                                            wxMAJOR_VERSION,
-                                            wxMINOR_VERSION,
-                                            wxRELEASE_NUMBER,
-                                            wxSUBRELEASE_NUMBER
-                                            );
-#endif
     {
         char panoVersion[255];
         if (queryFeatureString(PTVERSION_NAME_FILEVERSION, panoVersion, sizeof(panoVersion) / sizeof(panoVersion[0])))

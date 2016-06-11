@@ -106,9 +106,7 @@ bool CPListCtrl::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
             SetColumnWidth(j, width);
         };
     };
-#if wxCHECK_VERSION(3,0,0)
     EnableAlternateRowColours(true);
-#endif
     return true;
 };
 
@@ -438,10 +436,6 @@ void CPListCtrl::SelectAll()
         Select(i, true);
     };
 };
-
-#if !wxCHECK_VERSION(3,0,0)
-#define WXK_CONTROL_A 1
-#endif
 
 void CPListCtrl::OnChar(wxKeyEvent& e)
 {

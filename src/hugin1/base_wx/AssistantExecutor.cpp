@@ -24,11 +24,7 @@
 #include "AssistantExecutor.h"
 
 #include <wx/config.h>
-#if wxCHECK_VERSION(3,0,0)
 #include <wx/translation.h>
-#else
-#include <wx/intl.h>
-#endif
 #include "hugin_utils/utils.h"
 #include "algorithms/optimizer/ImageGraph.h"
 #include "base_wx/wxPlatform.h"

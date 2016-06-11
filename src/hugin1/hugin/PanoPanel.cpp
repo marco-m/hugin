@@ -972,11 +972,7 @@ void PanoPanel::DoCalcOptimalWidth(wxCommandEvent & e)
 
     HuginBase::PanoramaOptions opt = pano->getOptions();
     double sizeFactor = 1.0;
-#if wxCHECK_VERSION(2,9,4)
     if (wxGetKeyState(WXK_COMMAND))
-#else
-    if (wxGetKeyState(WXK_CONTROL))
-#endif
     {
         wxConfigBase::Get()->Read(wxT("/Assistant/panoDownsizeFactor"), &sizeFactor, HUGIN_ASS_PANO_DOWNSIZE_FACTOR);
     };
@@ -1422,11 +1418,7 @@ void PanoPanel::DoUserDefinedStitch()
 void PanoPanel::OnDoStitch ( wxCommandEvent & e )
 {
     long t;
-#if wxCHECK_VERSION(2,9,4)
     if(wxGetKeyState(WXK_COMMAND))
-#else
-    if(wxGetKeyState(WXK_CONTROL))
-#endif
     {
         t=1;
     }
@@ -1636,7 +1628,6 @@ bool PanoPanel::CheckGoodSize()
     {
         // Tell the user the stitch will be really big, and give them a
         // chance to reduce the size.
-#if wxCHECK_VERSION(2,9,0)
         wxMessageDialog dialog(this,
                 _("Are you sure you want to stitch such a large panorama?"),
 #ifdef _WIN32
@@ -1647,31 +1638,6 @@ bool PanoPanel::CheckGoodSize()
                 wxICON_EXCLAMATION | wxYES_NO);
         dialog.SetExtendedMessage(message);
         dialog.SetYesNoLabels(_("Stitch anyway"), _("Let me fix that"));
-#else // replacement for old wxWidgets versions.
-        // wxMessageDialog derives from wxDialog, but I don't understand
-        // why because on most platforms wxMessageDialog uses the native
-        // message box, and trying to make descriptive buttons through
-        // wxDialog::CreateStdButtonSizer causes a crash on wxGTK.
-        // Descriptive buttons are recommended by the Windows, Gnome, KDE,
-        // and Apple user interface guidelines.
-        // Due to this wxWidgets WTF, the buttons will are labeled Yes and
-        // No on wxWidgets 2.8 and earlier. This makes it a little
-        // confusing, and it is more likely someone will just click yes
-        // without reading the message and then wonder why their computer
-        // has ground to a halt.
-        /** @todo (Possibly) make a dialog manually with properly labelled
-         * buttons.
-         */
-        message.Prepend(wxT("\n\n"));
-        message=_("Are you sure you want to stitch such a large panorama?")+message;
-        wxMessageDialog dialog(this, message,
-#ifdef _WIN32
-                _("Hugin"),
-#else
-                wxT(""),
-#endif
-                wxICON_EXCLAMATION | wxYES_NO);
-#endif
         switch (dialog.ShowModal())
         {
             case wxID_OK:
@@ -1718,7 +1684,6 @@ bool PanoPanel::CheckFreeSpace(const wxString& folder)
         // 4 channels, 16 bit per channel, assuming the we need the 10 fold space for all temporary space
         if (pano->getOptions().getROI().area() * 80 > freeSpace)
         {
-#if wxCHECK_VERSION(2,9,0)
             wxMessageDialog dialog(this,
                 wxString::Format(_("The folder \"%s\" has only %.1f MiB free. This is not enough for stitching the current panorama. Decrease the output size or select another output folder.\nAre you sure that you still want to stitch it?"), folder.c_str(), freeSpace / 1048576.0f),
 #ifdef _WIN32
@@ -1728,16 +1693,6 @@ bool PanoPanel::CheckFreeSpace(const wxString& folder)
 #endif
                 wxICON_EXCLAMATION | wxYES_NO);
             dialog.SetYesNoLabels(_("Stitch anyway"), _("Let me fix that"));
-#else // replacement for old wxWidgets versions.
-            wxMessageDialog dialog(this,
-                wxString::Format(_("The folder \"%s\" has only %.1f MiB free. This is not enough for stitching the current panorama. Decrease the output size or select another output folder.\nAre you sure that you still want to stitch it?"), folder.c_str(), freeSpace / 1048576.0f),
-#ifdef _WIN32
-                _("Hugin"),
-#else
-                wxT(""),
-#endif
-                wxICON_EXCLAMATION | wxYES_NO);
-#endif
             if (dialog.ShowModal() == wxID_NO)
             {
                 // bring the user towards the approptiate controls.

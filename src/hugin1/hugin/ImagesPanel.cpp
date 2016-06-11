@@ -312,11 +312,7 @@ void ImagesPanel::RunCPGenerator(CPDetectorSetting &setting, const HuginBase::UI
 {
     wxConfigBase* config=wxConfigBase::Get();
     long nFeatures = HUGIN_ASS_NCONTROLPOINTS;
-#if wxCHECK_VERSION(2,9,4)
     if(wxGetKeyState(WXK_COMMAND))
-#else
-    if(wxGetKeyState(WXK_CONTROL))
-#endif
     {
         nFeatures = config->Read(wxT("/MainFrame/nControlPoints"), HUGIN_ASS_NCONTROLPOINTS);
         nFeatures = wxGetNumberFromUser(

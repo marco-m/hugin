@@ -40,10 +40,6 @@ BEGIN_EVENT_TABLE(LensCalImageCtrl, wxPanel)
     EVT_MOUSE_EVENTS(LensCalImageCtrl::OnMouseEvent)
 END_EVENT_TABLE()
 
-#if !wxCHECK_VERSION(3,0,0)
-#define wxPENSTYLE_SOLID wxSOLID
-#endif
-
 // init some values
 LensCalImageCtrl::LensCalImageCtrl() : wxPanel()
 {

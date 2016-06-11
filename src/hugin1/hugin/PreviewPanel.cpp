@@ -448,13 +448,8 @@ void PreviewPanel::DrawPreview(wxDC & dc)
         offsetY = (sz.GetHeight() - m_panoImgSize.y) / 2;
     }
 
-#if wxCHECK_VERSION(3,0,0)
     dc.SetPen(wxPen(GetBackgroundColour(), 1, wxPENSTYLE_SOLID));
     dc.SetBrush(wxBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
-#else
-    dc.SetPen(wxPen(GetBackgroundColour(), 1, wxSOLID));
-    dc.SetBrush(wxBrush(GetBackgroundColour(),wxSOLID));
-#endif
     dc.DrawRectangle(0, 0, offsetX, sz.GetHeight());
     dc.DrawRectangle(offsetX, 0, sz.GetWidth(), offsetY);
     dc.DrawRectangle(offsetX, sz.GetHeight() - offsetY,
@@ -467,13 +462,8 @@ void PreviewPanel::DrawPreview(wxDC & dc)
     dc.SetClippingRegion(offsetX, offsetY,
                          m_panoImgSize.x, m_panoImgSize.y);
 
-#if wxCHECK_VERSION(3,0,0)
     dc.SetPen(wxPen(wxT("BLACK"), 1, wxPENSTYLE_SOLID));
     dc.SetBrush(wxBrush(wxT("BLACK"), wxBRUSHSTYLE_SOLID));
-#else
-    dc.SetPen(wxPen(wxT("BLACK"), 1, wxSOLID));
-    dc.SetBrush(wxBrush(wxT("BLACK"),wxSOLID));
-#endif
     dc.DrawRectangle(offsetX, offsetY, m_panoImgSize.x, m_panoImgSize.y);
 
 
@@ -548,11 +538,7 @@ void PreviewPanel::DrawPreview(wxDC & dc)
                          m_panoImgSize.x, m_panoImgSize.y);
 
             // draw boundaries
-#if wxCHECK_VERSION(3,0,0)
             dc.SetPen(wxPen(wxT("WHITE"), 1, wxPENSTYLE_SOLID));
-#else
-            dc.SetPen(wxPen(wxT("WHITE"), 1, wxSOLID));
-#endif
             dc.SetLogicalFunction(wxINVERT);
 
             DEBUG_DEBUG("ROI scale factor: " << scale << " screen ROI: " << screenROI);
@@ -575,11 +561,7 @@ void PreviewPanel::DrawPreview(wxDC & dc)
                     m_panoImgSize.x, m_panoImgSize.y);
 
     // draw center lines over display
-#if wxCHECK_VERSION(3,0,0)
     dc.SetPen(wxPen(wxT("WHITE"), 1, wxPENSTYLE_SOLID));
-#else
-    dc.SetPen(wxPen(wxT("WHITE"), 1, wxSOLID));
-#endif
     dc.SetLogicalFunction(wxINVERT);
     dc.DrawLine(offsetX + w/2, offsetY,
                 offsetX + w/2, offsetY + h);

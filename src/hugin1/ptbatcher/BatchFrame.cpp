@@ -167,11 +167,7 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     SetIcon(m_iconNormal);
 
     m_batch = new Batch(this);
-#if wxCHECK_VERSION(2,9,4)
     if(wxGetKeyState(WXK_COMMAND))
-#else
-    if(wxGetKeyState(WXK_CONTROL))
-#endif
     {
 #ifdef __WXMAC__
         wxString text(_("You have pressed the Command key."));
@@ -224,21 +220,13 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     };
 #endif
 
-    //wxThreadHelper::Create is deprecated in wxWidgets 2.9+, but its
-    // replacement, CreateThread, does not exist in 2.8. Pick one
-    // depending on the version to a avoid compiler warning(2.9) or error(2.8).
-#if wxCHECK_VERSION(2, 9, 0)
     this->wxThreadHelper::CreateThread();
-#else
-    this->wxThreadHelper::Create();
-#endif
     this->GetThread()->Run();
     //TO-DO: include a batch or project progress gauge?
     projListBox->Fill(m_batch);
     SetDropTarget(new BatchDropTarget());
 
     m_tray = NULL;
-#if wxCHECK_VERSION(3,0,0)
     if (wxTaskBarIcon::IsAvailable())
     {
         // minimize to tray is by default disabled
@@ -250,7 +238,6 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
         GetMenuBar()->Check(XRCID("menu_tray"), minTray);
         UpdateTrayIcon(minTray);
     }
-#endif
 
     UpdateTaskBarProgressBar();
 }
@@ -265,14 +252,7 @@ void* BatchFrame::Entry()
         wxFileName aFile(m_batch->GetLastFile());
         if(!aFile.FileExists())
         {
-#if wxCHECK_VERSION(3,0,0)
-            // for thread safety wxWidgets recommends using wxQueueEvent
-            // but this function is not available for older wxWidgets versions
             wxQueueEvent(this, new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH));
-#else
-            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH);
-            wxPostEvent(this, evt);
-#endif
         }
         else
         {
@@ -280,21 +260,11 @@ void* BatchFrame::Entry()
             aFile.GetTimes(NULL,NULL,&create);
             if(create.IsLaterThan(m_batch->GetLastFileDate()))
             {
-#if wxCHECK_VERSION(3,0,0)
                 wxQueueEvent(this, new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH));
-#else
-                wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH);
-                wxPostEvent(this, evt);
-#endif
             };
         };
         //update project list box
-#if wxCHECK_VERSION(3,0,0)
         wxQueueEvent(this, new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_UPDATE_LISTBOX));
-#else
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_UPDATE_LISTBOX);
-        wxPostEvent(this, evt);
-#endif
         GetThread()->Sleep(1000);
     }
     return 0;
@@ -512,7 +482,7 @@ void BatchFrame::AddToList(wxString aFile,Project::Target target)
             s=wxString::Format(_("Add project %s to assistant queue."),aFile.c_str());
             break;
     };
-    SetStatusInformation(s,true);
+    SetStatusInformation(s);
     projListBox->AppendProject(m_batch->GetProject(m_batch->GetProjectCount()-1));
     m_batch->SaveTemp();
 }
@@ -523,7 +493,7 @@ void BatchFrame::OnButtonCancel(wxCommandEvent& event)
     GetToolBar()->ToggleTool(XRCID("tool_pause"),false);
     m_cancelled = true;
     m_batch->CancelBatch();
-    SetStatusInformation(_("Batch stopped"),true);
+    SetStatusInformation(_("Batch stopped"));
     if (m_tray)
     {
         m_tray->SetIcon(m_iconNormal, _("Hugin's Batch processor"));
@@ -758,7 +728,7 @@ void BatchFrame::OnButtonPause(wxCommandEvent& event)
         {
             m_batch->PauseBatch();
             GetToolBar()->ToggleTool(XRCID("tool_pause"),true);
-            SetStatusInformation(_("Batch paused"),true);
+            SetStatusInformation(_("Batch paused"));
             if (m_tray)
             {
                 m_tray->SetIcon(m_iconPaused, _("Pausing processing Hugin's batch queue"));
@@ -768,7 +738,7 @@ void BatchFrame::OnButtonPause(wxCommandEvent& event)
         {
             m_batch->PauseBatch();
             GetToolBar()->ToggleTool(XRCID("tool_pause"),false);
-            SetStatusInformation(_("Continuing batch..."),true);
+            SetStatusInformation(_("Continuing batch..."));
             if (m_tray)
             {
                 m_tray->SetIcon(m_iconRunning, _("Processing Hugin's batch queue"));
@@ -1160,9 +1130,7 @@ void BatchFrame::OnClose(wxCloseEvent& event)
             wxT(""),
 #endif
             wxYES_NO | wxICON_INFORMATION);
-#if wxCHECK_VERSION(3,0,0)
         message.SetYesNoLabels(_("Clear batch queue now"), _("Keep batch queue"));
-#endif
         if (message.ShowModal() == wxID_YES)
         {
             m_batch->ClearBatch();
@@ -1220,7 +1188,7 @@ void BatchFrame::RunBatch()
 {
     if(!IsRunning())
     {
-        SetStatusInformation(_("Starting batch"),true);
+        SetStatusInformation(_("Starting batch"));
         if (m_tray)
         {
             m_tray->SetIcon(m_iconRunning, _("Processing Hugin's batch queue"));
@@ -1305,7 +1273,7 @@ void BatchFrame::OnBatchFailed(wxCommandEvent& event)
 
 void BatchFrame::OnBatchInformation(wxCommandEvent& e)
 {
-    SetStatusInformation(e.GetString(),true);
+    SetStatusInformation(e.GetString());
     if (m_tray && e.GetInt() == 1)
     {
         // batch finished, reset icon in task bar
@@ -1313,12 +1281,12 @@ void BatchFrame::OnBatchInformation(wxCommandEvent& e)
     };
 };
 
-void BatchFrame::SetStatusInformation(wxString status,bool showBalloon)
+void BatchFrame::SetStatusInformation(wxString status)
 {
     SetStatusText(status);
-    if(m_tray!=NULL && showBalloon)
+    if(m_tray!=NULL)
     {
-#if defined __WXMSW__ && wxUSE_TASKBARICON_BALLOONS && wxCHECK_VERSION(2,9,0)
+#if defined __WXMSW__ && wxUSE_TASKBARICON_BALLOONS 
         m_tray->ShowBalloon(_("PTBatcherGUI"),status,5000,wxICON_INFORMATION);
 #else
 #ifndef __WXMAC__
@@ -1369,15 +1337,9 @@ void BatchFrame::OnMinimize(wxIconizeEvent& e)
     //hide/show window in taskbar when minimizing
     if(m_tray!=NULL)
     {
-#if wxCHECK_VERSION(2,9,0)
         Show(!e.IsIconized());
         //switch off verbose output if PTBatcherGUI is in tray/taskbar
         if(e.IsIconized())
-#else
-        Show(!e.Iconized());
-        //switch off verbose output if PTBatcherGUI is in tray/taskbar
-        if(e.Iconized())
-#endif
         {
             m_batch->verbose=false;
         }
@@ -1390,11 +1352,7 @@ void BatchFrame::OnMinimize(wxIconizeEvent& e)
     }
     else //don't hide window if no tray icon
     {
-#if wxCHECK_VERSION(2,9,0)
         if (!e.IsIconized())
-#else
-        if (!e.Iconized())
-#endif
         {
             // window is restored, update progress indicators
             UpdateTaskBarProgressBar();

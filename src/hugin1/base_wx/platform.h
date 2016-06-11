@@ -44,13 +44,8 @@
 
 #if defined __WXMAC__ || defined __WXOSX_COCOA__
 
-#if wxCHECK_VERSION(2,9,0)
-  #include "wx/osx/core/cfstring.h"
-  #include <wx/osx/private.h>
-#else
-  #include <CoreFoundation/CFString.h>
-  #include <wx/mac/private.h>
-#endif
+#include "wx/osx/core/cfstring.h"
+#include <wx/osx/private.h>
 
 CFStringRef MacCreateCFStringWithWxString(const wxString& string);
 
