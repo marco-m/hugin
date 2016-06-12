@@ -81,11 +81,14 @@ IF(APPLE)
     FILE(GLOB OTHER ${CMAKE_SOURCE_DIR}/src/hugin1/executor/*.executor)
     LIST(APPEND OTHER 
                       ${CMAKE_SOURCE_DIR}/src/celeste/data/celeste.model
-                      ${CMAKE_SOURCE_DIR}/src/hugin1/base_wx/hugin_exiftool_copy.arg)
+                      ${CMAKE_SOURCE_DIR}/src/hugin1/base_wx/hugin_exiftool_copy.arg
+                      ${CMAKE_BINARY_DIR}/src/hugin1/icpfind/default.setting )
     FOREACH(_file ${OTHER})
       SET_SOURCE_FILES_PROPERTIES( ${_file} PROPERTIES 
            MACOSX_PACKAGE_LOCATION "Resources/xrc" )
     ENDFOREACH(_file)
+    SET_SOURCE_FILES_PROPERTIES( ${CMAKE_BINARY_DIR}/src/hugin1/icpfind/default.setting  PROPERTIES
+      GENERATED TRUE)
 
     #translations
     FILE(GLOB PO_FILES "${CMAKE_SOURCE_DIR}/src/translations/*.po")
@@ -125,8 +128,8 @@ IF(APPLE)
 
 
     SET(XRC_2 ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/upstream.txt
-                     ${CMAKE_SOURCE_DIR}/COPYING.txt
-                     ${CMAKE_BINARY_DIR}/src/hugin1/hugin/xrc/data/about.htm )
+              ${CMAKE_SOURCE_DIR}/COPYING.txt
+              ${CMAKE_BINARY_DIR}/src/hugin1/hugin/xrc/data/about.htm)
     FOREACH(_file ${XRC_2})
       SET_SOURCE_FILES_PROPERTIES( ${_file} PROPERTIES 
            MACOSX_PACKAGE_LOCATION "Resources/xrc/data" )
@@ -169,6 +172,13 @@ IF(APPLE)
       set_target_properties(${PROGNAME} PROPERTIES
             MACOSX_BUNDLE_INFO_PLIST ${INFO_PLIST})
     endif(INFO_PLIST)
+
+    ADD_CUSTOM_COMMAND(
+        TARGET ${PROGNAME}
+        POST_BUILD
+        COMMAND ln -sf "../../../HuginStitchProject.app/" "."
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${PROGNAME}.app/Contents/Resources/"
+    )
 
     ADD_DEPENDENCIES(${PROGNAME} align_image_stack autooptimiser checkpto cpclean linefind geocpset pano_modify icpfind cpfind celeste_standalone
       fulla tca_correct vig_optimize hugin_lensdb hugin_executor pano_trafo pto_gen pto_lensstack pto_mask pto_merge
