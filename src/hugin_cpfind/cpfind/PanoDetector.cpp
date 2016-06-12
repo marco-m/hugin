@@ -1181,7 +1181,7 @@ bool PanoDetector::matchPrealigned(HuginBase::Panorama* pano, std::vector<HuginB
         HuginBase::VariableMapVector varMapVec = tempPano.getVariables();
         for(size_t i=0; i<tempPano.getNrOfImages(); i++)
         {
-            HuginBase::Variable hfovVar = map_get(varMapVec[i], "v");
+            HuginBase::Variable& hfovVar = map_get(varMapVec[i], "v");
             hfovVar.setValue(std::min(360.0, 1.25 * hfovVar.getValue()));
         };
         tempPano.updateVariables(varMapVec);
