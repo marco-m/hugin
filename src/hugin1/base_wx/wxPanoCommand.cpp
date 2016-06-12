@@ -303,7 +303,7 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
                     s.Append(wxString::Format(_("File \"%s\" is a color image, but other images in project are grayscale images."), fname.c_str()));
                 };
                 s.Append(wxT("\n"));
-                s.Append(_("Hugin does not support this mixing. Skipping this image.\nConvert this image to grayscale or RGB image and try loading again."));
+                s.Append(_("Hugin does not support this mixing. Skipping this image.\nConvert this image to grayscale or RGB image respectively and try loading again."));
                 wxMessageBox(s, _("Warning"), wxOK | wxICON_EXCLAMATION);
                 continue;
             };
