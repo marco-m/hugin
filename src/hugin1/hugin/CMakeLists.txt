@@ -68,7 +68,7 @@ IF(APPLE)
                ${CMAKE_BINARY_DIR}/src/tools/hugin_lensdb  ${CMAKE_BINARY_DIR}/src/hugin1/executor/hugin_executor ${CMAKE_BINARY_DIR}/src/tools/pano_trafo
                ${CMAKE_BINARY_DIR}/src/tools/pto_gen       ${CMAKE_BINARY_DIR}/src/tools/pto_lensstack            ${CMAKE_BINARY_DIR}/src/tools/pto_mask
                ${CMAKE_BINARY_DIR}/src/tools/pto_merge     ${CMAKE_BINARY_DIR}/src/tools/pto_move                 ${CMAKE_BINARY_DIR}/src/tools/pto_template
-               ${CMAKE_BINARY_DIR}/src/tools/pto_var  
+               ${CMAKE_BINARY_DIR}/src/tools/pto_var       ${CMAKE_BINARY_DIR}/src/deghosting/deghosting_mask
     )
 
     FOREACH(_file ${TOOLS})
@@ -182,7 +182,7 @@ IF(APPLE)
 
     ADD_DEPENDENCIES(${PROGNAME} align_image_stack autooptimiser checkpto cpclean linefind geocpset pano_modify icpfind cpfind celeste_standalone
       fulla tca_correct vig_optimize hugin_lensdb hugin_executor pano_trafo pto_gen pto_lensstack pto_mask pto_merge
-      pto_move pto_template pto_var 
+      pto_move pto_template pto_var deghosting_mask
       translations)
       
   else (MAC_SELF_CONTAINED_BUNDLE)
