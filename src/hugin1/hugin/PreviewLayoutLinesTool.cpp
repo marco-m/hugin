@@ -98,7 +98,7 @@ PreviewLayoutLinesTool::PreviewLayoutLinesTool(ToolHelper *helper)
     // In the rectangle texture, the middle is 1/8 opaque, the outer pixels
     // are completely transparent, and one pixel in from the edges is
     // a completly opaque line.
-    unsigned char rect_tex_data[rect_ts][rect_ts][2];
+    GLubyte rect_tex_data[rect_ts][rect_ts][2];
     // make everything white
     for (unsigned int x = 0; x < rect_ts; x++)
     {
