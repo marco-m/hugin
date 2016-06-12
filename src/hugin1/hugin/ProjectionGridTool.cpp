@@ -276,8 +276,8 @@ bool ProjectionGridTool::createTexture()
     double dh = height / hor_lines;
     double line_width =  (dw < dh) ? line_width_per * dw : line_width_per * dh;
 
-    unsigned char *image = new unsigned char[width * height * 4];
-    unsigned char *pix_start = image;
+    GLubyte *image = new GLubyte[width * height * 4];
+    GLubyte *pix_start = image;
 
     int horLineNr=0;
     for (int y = 0 ; y < height ; y++)
@@ -330,7 +330,7 @@ bool ProjectionGridTool::createTexture()
 
     bool has_error = false;
     GLint error;
-    error = gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, (unsigned char *) image);
+    error = gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
     delete [] image;
     static bool checked_anisotropic = false;
     static bool has_anisotropic;
