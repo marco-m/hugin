@@ -118,7 +118,7 @@ PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
             // In the rectangle texture, the middle is 1/4 opaque, the outer pixels
             // are completely transparent, and one pixel in from the edges is
             // a completly opaque line.
-            unsigned char rect_tex_data[rect_ts][rect_ts][2];
+            GLubyte rect_tex_data[rect_ts][rect_ts][2];
             // make everything white
             for (unsigned int x = 0; x < rect_ts; x++)
             {
@@ -165,7 +165,7 @@ PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
             // enlarge it so that the circle apears less blocky. We don't want to
             // make it equally sharper however, so we make it a bit fuzzier by
             // blending.
-            unsigned char circle_tex_data[circle_ts][circle_ts][2];
+            GLubyte circle_tex_data[circle_ts][circle_ts][2];
             for (unsigned int x = 0; x < circle_ts; x++)
             {
                 for (unsigned int y = 0; y < circle_ts; y++)
@@ -209,7 +209,7 @@ PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
             wxImage image = fontTexture.ConvertToImage();
             glGenTextures(1, (GLuint*)&font_tex);
             glBindTexture(GL_TEXTURE_2D, font_tex);
-            unsigned char* font_tex_data = new unsigned char[FONT_TEXTURE_HEIGHT * textureWidth * 2];
+            GLubyte* font_tex_data = new GLubyte[FONT_TEXTURE_HEIGHT * textureWidth * 2];
             for (size_t x = 0; x < textureWidth; ++x)
             {
                 for (size_t y = 0; y < FONT_TEXTURE_HEIGHT; ++y)

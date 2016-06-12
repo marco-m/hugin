@@ -977,8 +977,8 @@ void TextureManager::TextureInfo::DefineLevels(int min,
     if (has_mask)
     {
         // combine the alpha bitmap with the red green and blue one.
-        unsigned char *image = new unsigned char[ho * wo * 4];
-        unsigned char *pix_start = image;
+        GLubyte *image = new GLubyte[ho * wo * 4];
+        GLubyte *pix_start = image;
         for (int h = 0; h < ho; h++)
         {
             for (int w = 0; w < wo; w++)
@@ -1040,8 +1040,8 @@ void TextureManager::TextureInfo::DefineMaskTexture(const HuginBase::SrcPanoImag
 #ifdef __APPLE__
         // see comment to PreviewLayoutLinesTool::PreviewLayoutLinesTool
         // on MacOS a single alpha channel seems not to work, so this workaround
-        unsigned char *image = new unsigned char[maskSize * maskSize * 2];
-        unsigned char *pix_start = image;
+        GLubyte *image = new GLubyte[maskSize * maskSize * 2];
+        GLubyte *pix_start = image;
         for (int h = 0; h < maskSize; h++)
         {
             for (int w = 0; w < maskSize; w++)
