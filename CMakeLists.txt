@@ -679,7 +679,7 @@ IF(APPLE)
       LIST(GET APPS ${_var} _target)
       LIST(GET APPS_DIR ${_var} _target_dir)
       ADD_DEPENDENCIES(Mac ${_target})
-    ADD_CUSTOM_COMMAND(
+      ADD_CUSTOM_COMMAND(
         TARGET Mac
         COMMAND bash ${hugin_BINARY_DIR}/${BINDIR}/PackageMacAppBundleLibs.sh
         ARGS ${_target} ${_target_dir}
