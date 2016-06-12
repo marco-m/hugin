@@ -47,6 +47,13 @@
 #include <wx/hashmap.h>
 #include <wx/dynarray.h>
 #include <wx/arrimpl.cpp>
+#if wxCHECK_VERSION(3,1,1)
+#include <wx/itemattr.h>
+// wxTreeItemAttr was renamed to wxItemAttr
+// instead of replacing all occurances, create this placeholder
+class wxTreeItemAttr : public wxItemAttr
+{};
+#endif
 
 #if defined(__WXMAC__) && defined(__WXOSX__)
 #include "wx/osx/private.h"
@@ -795,7 +802,7 @@ public:
     };
     ~wxTreeListItemCellAttr() {
         if (m_ownsAttr) delete m_attr;
-    }
+    };
 
     // generic attribute from wxWidgets lib
     wxTreeItemAttr      *m_attr;
