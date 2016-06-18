@@ -100,11 +100,11 @@ PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
                                          GLPreviewFrame *owner)
     : Tool(helper)
 {
-    holdControl = false;
-    constantOn = false;
-    holdLeft = false;
-    stopUpdating = true;
-    preview_frame = owner;
+    m_holdControl = false;
+    m_constantOn = false;
+    m_holdLeft = false;
+    m_stopUpdating = true;
+    m_preview_frame = owner;
     if (!texture_created) {
         // make the textures. We have a circle border and a square one.
         // the textures are white with a the alpha chanel forming a border.
@@ -271,8 +271,8 @@ void PreviewIdentifyTool::Activate()
     // Assume that there are no images under the mouse when the tool is
     // activated. This should be fine if the user clicks the button to activate
     // the tool.
-    image_set.clear();
-    mouse_is_over_button = false;
+    m_image_set.clear();
+    m_mouse_is_over_button = false;
     /* TODO if it becomes possible to activate the tool by a keyboard shortcut
      * or something, call ImagesUnderMouseChangedEvent() to make sure we display
      * indicators for images currently under the cursor. */
@@ -282,25 +282,25 @@ void PreviewIdentifyTool::Activate()
 }
 
 void PreviewIdentifyTool::StopUpdating() {
-    if (!image_set.empty()) {
+    if (!m_image_set.empty()) {
         std::set<unsigned int>::iterator iterator;
-        for (iterator = image_set.begin(); iterator != image_set.end(); ++iterator)
+        for (iterator = m_image_set.begin(); iterator != m_image_set.end(); ++iterator)
         {
             DEBUG_ASSERT(*iterator < helper->GetPanoramaPtr()->getNrOfImages());
             // reset this button to its default system colour.
-            preview_frame->SetImageButtonColour(*iterator, 0, 0, 0);
+            m_preview_frame->SetImageButtonColour(*iterator, 0, 0, 0);
             // remove the notification
             helper->DoNotNotifyMeBeforeDrawing(*iterator, this);
         }
     }
-    image_set.clear();
-    preview_frame->UpdateIdentifyTools(image_set);
-    stopUpdating = true;
+    m_image_set.clear();
+    m_preview_frame->UpdateIdentifyTools(m_image_set);
+    m_stopUpdating = true;
     ForceRedraw();
 }
 
 void PreviewIdentifyTool::ContinueUpdating() {
-    stopUpdating = false;
+    m_stopUpdating = false;
     ImagesUnderMouseChangedEvent();
 }
 
@@ -310,28 +310,28 @@ void PreviewIdentifyTool::MouseMoveEvent(double x, double y, wxMouseEvent & e)
     bool stop = false;
     bool start = false;
 
-    if (constantOn) {
-        if (e.Dragging() && !(holdLeft)) {
+    if (m_constantOn) {
+        if (e.Dragging() && !(m_holdLeft)) {
             stop = true;
-            stopUpdating = true;
+            m_stopUpdating = true;
         }
 
-        if (stopUpdating && !e.LeftIsDown() && !e.MiddleIsDown() && !e.RightIsDown()) {
+        if (m_stopUpdating && !e.LeftIsDown() && !e.MiddleIsDown() && !e.RightIsDown()) {
             start = true;
         }
     }
 
-    if (holdControl && !e.m_controlDown) {
-        holdControl = false;
-        if (!constantOn) {
+    if (m_holdControl && !e.m_controlDown) {
+        m_holdControl = false;
+        if (!m_constantOn) {
             stop = true;
         }
     }
     
-    if (!holdControl && e.m_controlDown) {
-        holdControl = true;
+    if (!m_holdControl && e.m_controlDown) {
+        m_holdControl = true;
         stop = false;
-        if (stopUpdating) {
+        if (m_stopUpdating) {
             start = true;
         }
     }
@@ -349,24 +349,24 @@ void PreviewIdentifyTool::KeypressEvent(int keycode, int modifierss, int pressed
 
     if (keycode == WXK_CONTROL) {
         if (pressed) {
-            holdControl = true;
+            m_holdControl = true;
             ContinueUpdating();
         } else {
-            if(holdControl) {
+            if(m_holdControl) {
                 StopUpdating();
             }
-            holdControl = false;
+            m_holdControl = false;
         }
     }
 }
 
 void PreviewIdentifyTool::setConstantOn(bool constant_on_in) {
-    constantOn = constant_on_in;
+    m_constantOn = constant_on_in;
     if (constant_on_in) {
-        stopUpdating = false;
+        m_stopUpdating = false;
         ContinueUpdating();
     } else {
-        stopUpdating = true;
+        m_stopUpdating = true;
         StopUpdating();
     }
 
@@ -375,7 +375,7 @@ void PreviewIdentifyTool::setConstantOn(bool constant_on_in) {
 
 void PreviewIdentifyTool::ImagesUnderMouseChangedEvent()
 {
-    if (stopUpdating) {
+    if (m_stopUpdating) {
         return;
     }
     
@@ -383,14 +383,14 @@ void PreviewIdentifyTool::ImagesUnderMouseChangedEvent()
     
     //UpdateIdentifyTools() will unrequest notification for the old indicators,
     //reset the button colors, request notification for the new ones, swap in
-    //image_set with new_image_set, and force a redraw for all three
+    //m_image_set with new_image_set, and force a redraw for all three
     //PreviewIdentifyTool objects in GLPreviewFrame. This has the effect of 
     //displaying the indicators in both the preview and overview when you move
     //your mouse over either when the Identify button is toggled on. 
-    preview_frame->UpdateIdentifyTools(new_image_set);
+    m_preview_frame->UpdateIdentifyTools(new_image_set);
     
     // if there is exactly two images, tell the user they can click to edit CPs.
-    if (image_set.size() == 2)
+    if (m_image_set.size() == 2)
     {
          helper->SetStatusMessage(_("Click to create or edit control points here."));
     } else {
@@ -401,15 +401,15 @@ void PreviewIdentifyTool::ImagesUnderMouseChangedEvent()
 void PreviewIdentifyTool::AfterDrawImagesEvent()
 {
     // we draw the partly transparent identification boxes over the top of the
-    // entire stack of images in image_set so that the extents of images in the
+    // entire stack of images in m_image_set so that the extents of images in the
     // background are clearly marked.
-    unsigned int num_images = image_set.size();
+    const unsigned int num_images = m_image_set.size();
     // draw the actual images
     // the preview draws them in reverse order, so the lowest numbered appears
     // on top. We will folow this convention to avoid confusion.
     glMatrixMode(GL_MODELVIEW);
     std::set<unsigned int>::reverse_iterator it;
-    for (it = image_set.rbegin(); it != image_set.rend(); ++it)
+    for (it = m_image_set.rbegin(); it != m_image_set.rend(); ++it)
     {
         DEBUG_ASSERT(*it < helper->GetPanoramaPtr()->getNrOfImages());
         helper->GetViewStatePtr()->GetTextureManager()->
@@ -424,7 +424,7 @@ void PreviewIdentifyTool::AfterDrawImagesEvent()
     unsigned int image_counter = 0;
     const unsigned int canvasWidth = helper->GetViewStatePtr()->GetOptions()->getWidth();
     const unsigned int canvasHeight = helper->GetViewStatePtr()->GetOptions()->getHeight();
-    for (it = image_set.rbegin(); it != image_set.rend(); ++it)
+    for (it = m_image_set.rbegin(); it != m_image_set.rend(); ++it)
     {
         glMatrixMode(GL_TEXTURE);
         // Use the mask to alter the shape of the identification boxes, but
@@ -494,7 +494,7 @@ void PreviewIdentifyTool::AfterDrawImagesEvent()
         glMatrixMode(GL_TEXTURE);
         glPopMatrix();
         // tell the preview frame to update the button to show the same colour.
-        preview_frame->SetImageButtonColour(*it, r, g, b);
+        m_preview_frame->SetImageButtonColour(*it, r, g, b);
         // draw number
         HuginBase::PanoramaOptions* opts = helper->GetViewStatePtr()->GetOptions();
         HuginBase::SrcPanoImage* img = helper->GetViewStatePtr()->GetSrcImage(*it);
@@ -550,7 +550,7 @@ bool PreviewIdentifyTool::BeforeDrawImageEvent(unsigned int image)
 {
     // Delay drawing of images, so we can show them on top of the others.
     DEBUG_ASSERT(image < helper->GetPanoramaPtr()->getNrOfImages());
-    if (image_set.count(image)) return false;
+    if (m_image_set.count(image)) return false;
     return true;
 }
 
@@ -558,30 +558,30 @@ void PreviewIdentifyTool::ShowImageNumber(unsigned int image)
 {
     DEBUG_ASSERT(image < helper->GetPanoramaPtr()->getNrOfImages());
     // Add this image to the set of images drawn.
-    if (!image_set.count(image))
+    if (!m_image_set.count(image))
     {
         // it is not already in the set. Add it now
-        image_set.insert(image);
+        m_image_set.insert(image);
         // we want notification of when it is drawn so we can delay drawing.
         helper->NotifyMeBeforeDrawing(image, this);
         //  now we want a redraw.
         ForceRedraw();
     }
-    mouse_over_image = image;
-    mouse_is_over_button = true;
+    m_mouse_over_image = image;
+    m_mouse_is_over_button = true;
 }
 
 void PreviewIdentifyTool::StopShowingImages()
 {
-    if (mouse_is_over_button)
+    if (m_mouse_is_over_button)
     {
         // set the colour to the image the user just moused off to the default.
-        preview_frame->SetImageButtonColour(mouse_over_image, 0, 0, 0);
-        helper->DoNotNotifyMeBeforeDrawing(mouse_over_image, this);
-        image_set.erase(mouse_over_image);
+        m_preview_frame->SetImageButtonColour(m_mouse_over_image, 0, 0, 0);
+        helper->DoNotNotifyMeBeforeDrawing(m_mouse_over_image, this);
+        m_image_set.erase(m_mouse_over_image);
         // now redraw without the indicator.
         ForceRedraw();
-        mouse_is_over_button = false;
+        m_mouse_is_over_button = false;
     }    
 }
 
@@ -635,36 +635,36 @@ void PreviewIdentifyTool::MouseButtonEvent(wxMouseEvent & e)
 
     if ( e.LeftDown() && helper->IsMouseOverPano())
     {   
-        holdLeft = true;
+        m_holdLeft = true;
     } 
 
-    if (holdLeft && e.LeftUp() && (image_set.size()==1 || image_set.size() == 2)) 
+    if (m_holdLeft && e.LeftUp() && (m_image_set.size()==1 || m_image_set.size() == 2)) 
     {
-        holdLeft = false;
-        if (constantOn || e.CmdDown())
+        m_holdLeft = false;
+        if (m_constantOn || e.CmdDown())
         {
             // when there are only two images with indicators shown, show the
             // control point editor with those images when left clicked.
-            if(image_set.size()==2)
+            if(m_image_set.size()==2)
             {
-                MainFrame::Get()->ShowCtrlPointEditor(*(image_set.begin()),
-                                                        *(++image_set.begin()));
+                MainFrame::Get()->ShowCtrlPointEditor(*(m_image_set.begin()),
+                                                        *(++m_image_set.begin()));
             }
             else
             {
-                MainFrame::Get()->ShowMaskEditor(*image_set.begin());
+                MainFrame::Get()->ShowMaskEditor(*m_image_set.begin());
             };
             MainFrame::Get()->Raise();
         }
     }
 
-    if (holdLeft && !(e.LeftIsDown())) {
-        holdLeft = false;
+    if (m_holdLeft && !(e.LeftIsDown())) {
+        m_holdLeft = false;
     }
 
-    if (constantOn) {
+    if (m_constantOn) {
         if (e.ButtonUp() && !e.MiddleIsDown() && !e.RightIsDown()) {
-            stopUpdating = false;
+            m_stopUpdating = false;
             ImagesUnderMouseChangedEvent();
         }
     }
@@ -676,10 +676,10 @@ void PreviewIdentifyTool::UpdateWithNewImageSet(std::set<unsigned int> new_image
     // If we are currently showing indicators for some of the images, we want
     // to work out which ones are not in the new set, so we can set their
     // buttons back to the system colour.
-    if (!image_set.empty())
+    if (!m_image_set.empty())
     {
         HuginBase::UIntSet difference;
-        std::set_difference (image_set.begin(), image_set.end(),
+        std::set_difference (m_image_set.begin(), m_image_set.end(),
                              new_image_set.begin(), new_image_set.end(),
                              std::inserter(difference,difference.end()));
         if (!difference.empty())
@@ -688,7 +688,7 @@ void PreviewIdentifyTool::UpdateWithNewImageSet(std::set<unsigned int> new_image
             {
                 DEBUG_ASSERT(*iterator < helper->GetPanoramaPtr()->getNrOfImages());
                 // reset this button to its default system colour.
-                preview_frame->SetImageButtonColour(*iterator, 0, 0, 0);
+                m_preview_frame->SetImageButtonColour(*iterator, 0, 0, 0);
                 // remove the notification
                 helper->DoNotNotifyMeBeforeDrawing(*iterator, this);
             }
@@ -700,7 +700,7 @@ void PreviewIdentifyTool::UpdateWithNewImageSet(std::set<unsigned int> new_image
     {
         HuginBase::UIntSet difference;
         std::set_difference(new_image_set.begin(), new_image_set.end(),
-            image_set.begin(), image_set.end(),
+            m_image_set.begin(), m_image_set.end(),
             std::inserter(difference, difference.end()));
         if (!difference.empty())
         {
@@ -713,7 +713,7 @@ void PreviewIdentifyTool::UpdateWithNewImageSet(std::set<unsigned int> new_image
         }
     };
     // remember the new set.
-    image_set.swap(new_image_set);
+    m_image_set.swap(new_image_set);
 
     // Redraw with new indicators. Since the indicators aren't part of the
     // panorama and none of it is likely to change, we have to persuade the
