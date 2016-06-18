@@ -43,7 +43,14 @@ class GLPreviewFrame;
 class PreviewIdentifyTool : public Tool
 {
 public:
-    PreviewIdentifyTool(ToolHelper *helper, GLPreviewFrame *owner);
+    /** constructor
+      @param helper pointer to ToolHelper class for managing Tool notifications
+      @param owner pointer to GLPreviewFrame, needed for updating the color of the image buttons
+      @param showNumbers true, if the image number should be shown above the images,
+        this image show code works only for the preview, not for the panosphere and mosaic plane
+        so pass the correct parameter depending on the underlying GLRenderer/GLViewer class
+    */
+    PreviewIdentifyTool(ToolHelper *helper, GLPreviewFrame *owner, bool showNumbers);
     ~PreviewIdentifyTool();
     void Activate();
     void ImagesUnderMouseChangedEvent();
@@ -100,6 +107,7 @@ private:
     bool m_holdControl;
 
     bool m_constantOn;
+    bool m_showNumbers;
 };
 
 #endif

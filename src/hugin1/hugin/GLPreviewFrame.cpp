@@ -2131,7 +2131,7 @@ void GLPreviewFrame::MakePreviewTools(PreviewToolHelper *preview_helper_in)
     drag_tool = new PreviewDragTool(preview_helper);
     color_picker_tool = new PreviewColorPickerTool(preview_helper);
     edit_cp_tool = new PreviewEditCPTool(preview_helper);
-    identify_tool = new PreviewIdentifyTool(preview_helper, this);
+    identify_tool = new PreviewIdentifyTool(preview_helper, this, true);
     preview_helper->ActivateTool(identify_tool);
     difference_tool = new PreviewDifferenceTool(preview_helper);
     pano_mask_tool = new PreviewPanoMaskTool(preview_helper);
@@ -2161,7 +2161,7 @@ void GLPreviewFrame::MakePanosphereOverviewTools(PanosphereOverviewToolHelper *p
     overview_drag_tool = new OverviewDragTool(panosphere_overview_helper);
     panosphere_overview_camera_tool = new PanosphereOverviewCameraTool(panosphere_overview_helper);
     panosphere_overview_helper->ActivateTool(panosphere_overview_camera_tool);
-    panosphere_overview_identify_tool = new PreviewIdentifyTool(panosphere_overview_helper, this);
+    panosphere_overview_identify_tool = new PreviewIdentifyTool(panosphere_overview_helper, this, false);
     panosphere_overview_helper->ActivateTool(panosphere_overview_identify_tool);
 
     panosphere_sphere_tool = new PanosphereSphereTool(panosphere_overview_helper, GetPreviewBackgroundColor());
@@ -2188,7 +2188,7 @@ void GLPreviewFrame::MakePanosphereOverviewTools(PanosphereOverviewToolHelper *p
 void GLPreviewFrame::MakePlaneOverviewTools(PlaneOverviewToolHelper *plane_overview_helper_in)
 {
     plane_overview_helper = plane_overview_helper_in;
-    plane_overview_identify_tool = new PreviewIdentifyTool(plane_overview_helper, this);
+    plane_overview_identify_tool = new PreviewIdentifyTool(plane_overview_helper, this, false);
     plane_overview_helper->ActivateTool(plane_overview_identify_tool);
     
     plane_overview_camera_tool = new PlaneOverviewCameraTool(plane_overview_helper);

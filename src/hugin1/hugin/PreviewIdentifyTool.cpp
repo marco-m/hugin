@@ -96,8 +96,7 @@ wxBitmap GenerateFontTexture(const int textureHeight, int& textureWidth, std::ve
     return bitmap;
 }
 
-PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
-                                         GLPreviewFrame *owner)
+PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper, GLPreviewFrame *owner, bool showNumbers)
     : Tool(helper)
 {
     m_holdControl = false;
@@ -105,6 +104,7 @@ PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
     m_holdLeft = false;
     m_stopUpdating = true;
     m_preview_frame = owner;
+    m_showNumbers = showNumbers;
     if (!texture_created) {
         // make the textures. We have a circle border and a square one.
         // the textures are white with a the alpha chanel forming a border.
@@ -495,6 +495,9 @@ void PreviewIdentifyTool::AfterDrawImagesEvent()
         // tell the preview frame to update the button to show the same colour.
         m_preview_frame->SetImageButtonColour(*it, r, g, b);
         // draw number
+        // this code works only for the preview window, not for the panosphere or mosaic plane
+        if (m_showNumbers)
+        {
         HuginBase::PanoramaOptions* opts = helper->GetViewStatePtr()->GetOptions();
         HuginBase::SrcPanoImage* img = helper->GetViewStatePtr()->GetSrcImage(*it);
         HuginBase::PTools::Transform transform;
@@ -537,6 +540,7 @@ void PreviewIdentifyTool::AfterDrawImagesEvent()
             glMatrixMode(GL_MODELVIEW);
             glPopMatrix();
             delete[] listIndex;
+        };
         };
     }
     // set stuff back how we found it.
