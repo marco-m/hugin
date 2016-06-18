@@ -88,8 +88,7 @@ wxBitmap GenerateFontTexture(const int textureHeight, int& textureWidth, std::ve
     return bitmap;
 }
 
-PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
-                                         GLPreviewFrame *owner)
+PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper, GLPreviewFrame *owner, bool showNumbers)
     : Tool(helper)
 {
     m_holdControl = false;
@@ -97,6 +96,7 @@ PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper,
     m_holdLeft = false;
     m_stopUpdating = true;
     m_preview_frame = owner;
+    m_showNumbers = showNumbers;
     if (!texture_created) {
         // make the textures. We have a circle border and a square one.
         // the textures are white with a the alpha chanel forming a border.
@@ -487,43 +487,47 @@ void PreviewIdentifyTool::AfterDrawImagesEvent()
         // tell the preview frame to update the button to show the same colour.
         m_preview_frame->SetImageButtonColour(*it, r, g, b);
         // draw number
-        HuginBase::PanoramaOptions* opts = helper->GetViewStatePtr()->GetOptions();
-        HuginBase::SrcPanoImage* img = helper->GetViewStatePtr()->GetSrcImage(*it);
-        HuginBase::PTools::Transform transform;
-        transform.createInvTransform(*img, *opts);
-        hugin_utils::FDiff2D imageCenter(crop_region.upperLeft() + crop_region.size() / 2);
-        hugin_utils::FDiff2D imageCenterPano;
-        if (transform.transformImgCoord(imageCenterPano, imageCenter) && !wxGetKeyState(WXK_ALT))
+        // this code works only for the preview window, not for the panosphere or mosaic plane
+        if (m_showNumbers)
         {
-            glBindTexture(GL_TEXTURE_2D, font_tex);
-            if (helper->GetViewStatePtr()->GetSupportMultiTexture())
+            HuginBase::PanoramaOptions* opts = helper->GetViewStatePtr()->GetOptions();
+            HuginBase::SrcPanoImage* img = helper->GetViewStatePtr()->GetSrcImage(*it);
+            HuginBase::PTools::Transform transform;
+            transform.createInvTransform(*img, *opts);
+            hugin_utils::FDiff2D imageCenter(crop_region.upperLeft() + crop_region.size() / 2);
+            hugin_utils::FDiff2D imageCenterPano;
+            if (transform.transformImgCoord(imageCenterPano, imageCenter) && !wxGetKeyState(WXK_ALT))
             {
-                glActiveTexture(GL_TEXTURE1);
-                glDisable(GL_TEXTURE_2D);
-                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, font_tex);
+                if (helper->GetViewStatePtr()->GetSupportMultiTexture())
+                {
+                    glActiveTexture(GL_TEXTURE1);
+                    glDisable(GL_TEXTURE_2D);
+                    glActiveTexture(GL_TEXTURE0);
+                };
+                glMatrixMode(GL_MODELVIEW);
+                glPushMatrix();
+                wxString number;
+                number << *it;
+                int textWidth = 0;
+                unsigned char* listIndex = new unsigned char[number.Length()];
+                for (size_t i = 0; i < number.Length(); ++i)
+                {
+                    textWidth += m_glyphWidth[number[i].GetValue() - 48];
+                    listIndex[i] = number[i].GetValue() - 48;
+                }
+                float scaleFactor = std::min(canvasWidth, canvasHeight) / static_cast<float>(FONT_TEXTURE_HEIGHT) / 10;
+                imageCenterPano.x = std::min<double>(std::max<double>(imageCenterPano.x, textWidth*scaleFactor / 2.0), canvasWidth - textWidth * scaleFactor / 2.0);
+                imageCenterPano.y = std::min<double>(std::max<double>(imageCenterPano.y, FONT_TEXTURE_HEIGHT*scaleFactor / 2.0), canvasHeight - FONT_TEXTURE_HEIGHT * scaleFactor / 2.0);
+                glTranslatef(imageCenterPano.x, imageCenterPano.y, 0);
+                glScalef(scaleFactor, scaleFactor, 1.0);
+                glTranslatef(-textWidth / 2, -FONT_TEXTURE_HEIGHT / 2, 0);
+                glListBase(font_list);
+                glCallLists(number.Length(), GL_UNSIGNED_BYTE, listIndex);
+                glMatrixMode(GL_MODELVIEW);
+                glPopMatrix();
+                delete[] listIndex;
             };
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            wxString number;
-            number << *it;
-            int textWidth = 0;
-            unsigned char* listIndex = new unsigned char[number.Length()];
-            for (size_t i = 0; i < number.Length(); ++i)
-            {
-                textWidth += m_glyphWidth[number[i].GetValue() - 48];
-                listIndex[i] = number[i].GetValue() - 48;
-            }
-            float scaleFactor = std::min(canvasWidth, canvasHeight) / static_cast<float>(FONT_TEXTURE_HEIGHT) / 10;
-            imageCenterPano.x = std::min<double>(std::max<double>(imageCenterPano.x, textWidth*scaleFactor / 2.0), canvasWidth - textWidth * scaleFactor / 2.0);
-            imageCenterPano.y = std::min<double>(std::max<double>(imageCenterPano.y, FONT_TEXTURE_HEIGHT*scaleFactor / 2.0), canvasHeight - FONT_TEXTURE_HEIGHT * scaleFactor / 2.0);
-            glTranslatef(imageCenterPano.x, imageCenterPano.y, 0);
-            glScalef(scaleFactor, scaleFactor, 1.0);
-            glTranslatef(-textWidth / 2, -FONT_TEXTURE_HEIGHT / 2, 0);
-            glListBase(font_list);
-            glCallLists(number.Length(), GL_UNSIGNED_BYTE, listIndex);
-            glMatrixMode(GL_MODELVIEW);
-            glPopMatrix();
-            delete[] listIndex;
         };
     }
     // set stuff back how we found it.
