@@ -84,23 +84,22 @@ private:
     static std::vector<int> m_glyphWidth;
 
     /// Set of image numbers of the images we are displaying highlighted.
-    std::set<unsigned int> image_set;
-    GLPreviewFrame *preview_frame;
+    std::set<unsigned int> m_image_set;
+    GLPreviewFrame *m_preview_frame;
     /// The image the user last placed their mouse over the button for
-    unsigned int mouse_over_image;
-    bool mouse_is_over_button;
+    unsigned int m_mouse_over_image;
+    bool m_mouse_is_over_button;
 
     void StopUpdating();
     void ContinueUpdating();
 
-    bool stopUpdating;
+    bool m_stopUpdating;
     //user has clicked and is holding left button while over panorama
-    bool holdLeft;
+    bool m_holdLeft;
     
-    bool holdControl;
+    bool m_holdControl;
 
-    bool constantOn;
-    
+    bool m_constantOn;
 };
 
 #endif
