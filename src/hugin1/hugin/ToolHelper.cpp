@@ -75,11 +75,9 @@ void ToolHelper::MouseMoved(int x, int y, wxMouseEvent & e)
     mouse_screen_x = x;
     mouse_screen_y = y;
     // now tell tools that want notification.
-    std::set<Tool *>::iterator iterator;
-    for (iterator = mouse_move_notified_tools.begin();
-         iterator != mouse_move_notified_tools.end(); ++iterator)
+    for (auto& tool : mouse_move_notified_tools)
     {
-        (*iterator)->MouseMoveEvent(mouse_screen_x, mouse_screen_y, e);
+        tool->MouseMoveEvent(mouse_screen_x, mouse_screen_y, e);
     }
     // If the mouse has moved, then we don't know what is underneath it anoymore
     InvalidateImagesUnderMouse();
@@ -98,12 +96,9 @@ void ToolHelper::InvalidateImagesUnderMouse()
         if (old_images_under_mouse != images_under_mouse)
         {
             // The list has changed. Notifiy all tools that requested it.
-            std::set<Tool *>::iterator iterator;
-            for (iterator = images_under_mouse_notified_tools.begin();
-                 iterator != images_under_mouse_notified_tools.end();
-                 ++iterator)
+            for (auto& tool : images_under_mouse_notified_tools)
             {
-                (*iterator)->ImagesUnderMouseChangedEvent();
+                tool->ImagesUnderMouseChangedEvent();
             }
         }
     }
@@ -111,55 +106,35 @@ void ToolHelper::InvalidateImagesUnderMouse()
 
 void ToolHelper::MouseButtonEvent(wxMouseEvent &e)
 {
-//    // if there is a tool monitoring mouse button presses, notify it
-//    if (mouse_button_notified_tool)
-//    {
-//        mouse_button_notified_tool->MouseButtonEvent(e);
-//    }
-    std::set<Tool *>::iterator iterator;
-    for (iterator = mouse_button_notified_tools.begin();
-         iterator != mouse_button_notified_tools.end(); ++iterator)
+    for (auto& tool : mouse_button_notified_tools)
     {
-        (*iterator)->MouseButtonEvent(e);
+        tool->MouseButtonEvent(e);
     }
-
 }
 
 void ToolHelper::MouseWheelEvent(wxMouseEvent &e)
 {
-    std::set<Tool *>::iterator iterator;
-    for (iterator = mouse_wheel_notified_tools.begin();
-         iterator != mouse_wheel_notified_tools.end(); ++iterator)
+    for (auto& tool : mouse_wheel_notified_tools)
     {
-        (*iterator)->MouseWheelEvent(e);
+        tool->MouseWheelEvent(e);
     }
-
 }
 
 
 void ToolHelper::KeypressEvent(int keycode, int modifiers, bool pressed)
 {
-//    if (keypress_notified_tool)
-//    {
-//        keypress_notified_tool->KeypressEvent(keycode, modifiers, pressed);
-//    }
-    std::set<Tool *>::iterator iterator;
-    for (iterator = keypress_notified_tools.begin();
-         iterator != keypress_notified_tools.end(); ++iterator)
+    for (auto& tool : keypress_notified_tools)
     {
-        (*iterator)->KeypressEvent(keycode, modifiers, pressed);
+        tool->KeypressEvent(keycode, modifiers, pressed);
     }
-
 }
 
 void ToolHelper::BeforeDrawImages()
 {
     // let all tools that want to draw under the images do so.
-    std::set<Tool *>::iterator iterator;
-    for (iterator = draw_under_notified_tools.begin();
-         iterator != draw_under_notified_tools.end(); ++iterator)
+    for (auto& tool : draw_under_notified_tools)
     {
-        (*iterator)->BeforeDrawImagesEvent();
+        tool->BeforeDrawImagesEvent();
     }
     // Since we are drawing a new frame, lets assume something has changed,
     // however we want to keep with no images under the mouse if the mouse is
@@ -172,23 +147,16 @@ void ToolHelper::BeforeDrawImages()
 
 void ToolHelper::AfterDrawImages()
 {
-//    std::cerr << "begin" << std::endl;
     // let all tools that want to draw on top of the images do so.
-    std::set<Tool *>::iterator iterator;
-    for (iterator = draw_over_notified_tools.begin();
-         iterator != draw_over_notified_tools.end(); ++iterator)
+    for (auto& tool : draw_over_notified_tools)
     {
-//        std::cerr << "tool after draw" << std::endl;
-        (*iterator)->AfterDrawImagesEvent();
+        tool->AfterDrawImagesEvent();
     }
-//    std::cerr << "after draw images" << std::endl;
     // The overlays are done separetly to avoid errors with blending order.
-    for (iterator = really_draw_over_notified_tools.begin();
-         iterator != really_draw_over_notified_tools.end(); ++iterator)
+    for (auto& tool : really_draw_over_notified_tools)
     {
-        (*iterator)->ReallyAfterDrawImagesEvent();
+        tool->ReallyAfterDrawImagesEvent();
     }
-//    std::cerr << "really after draw images" << std::endl;
 }
 
 bool ToolHelper::BeforeDrawImageNumber(unsigned int image)
@@ -252,12 +220,9 @@ void ToolHelper::MouseLeave()
     if (!images_under_mouse_notified_tools.empty())
     {
         // notify tools that the set has changed.
-        std::set<Tool *>::iterator iterator;
-        for (iterator = images_under_mouse_notified_tools.begin();
-             iterator != images_under_mouse_notified_tools.end();
-             ++iterator)
+        for (auto& tool : images_under_mouse_notified_tools)
         {
-            (*iterator)->ImagesUnderMouseChangedEvent();
+            tool->ImagesUnderMouseChangedEvent();
         }        
     }
 }
