@@ -37,8 +37,8 @@ protected:
 
     bool createTexture();
 
-    bool texture_created;
-    unsigned int texture_num;
+    static bool texture_created;
+    static unsigned int texture_num;
 
     MeshManager::MeshInfo * mesh_info;
 

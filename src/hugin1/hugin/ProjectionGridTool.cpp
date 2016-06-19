@@ -36,10 +36,13 @@
 
 #include "ProjectionGridTool.h"
 
+// initialize static class members
+bool ProjectionGridTool::texture_created = false;
+unsigned int ProjectionGridTool::texture_num = 0;
+
 ProjectionGridTool::ProjectionGridTool(ToolHelper* helper) : helper_g(helper)
 {
     mesh_info = NULL;
-    texture_created = false;
 }
 
 ProjectionGridTool::~ProjectionGridTool()
