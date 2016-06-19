@@ -372,10 +372,10 @@ void ToolHelper::RemoveTool(Tool *tool, Tool **single)
 void ToolHelper::RemoveTool(Tool *tool,
                                    std::set<Tool *> *set)
 {
-    std::set<Tool *>::iterator iterator = set->find(tool);
-    if (iterator != set->end())
+    auto foundTool = set->find(tool);
+    if (foundTool != set->end())
     {
-        set->erase(iterator);
+        set->erase(foundTool);
     }
 }
 
@@ -386,10 +386,6 @@ void ToolHelper::RemoveTool(Tool *tool,
     for (unsigned int image = 0; image < vector->size(); image++)
     {
         (*vector)[image].erase(tool);
-//        if ((*vector)[image] == tool)
-//        {
-//            (*vector)[image] = 0;
-//        }
     }
 }
 
@@ -397,13 +393,9 @@ void ToolHelper::RemoveTool(Tool *tool,
                                   std::vector<std::set<Tool *> > *vector,
                                   unsigned int index)
 {
-    if ((*vector).size() > index)
+    if (vector->size() > index)
     {
         (*vector)[index].erase(tool);
-//        if ((*vector)[index] == tool)
-//        {
-//            (*vector)[index] = 0;
-//        }
     }
 }
 
@@ -451,11 +443,9 @@ void PreviewToolHelper::MouseMoved(int x, int y, wxMouseEvent &e)
     mouse_pano_x = (double) x / visualization_state->GetScale() + (double) visible.left();
     mouse_pano_y = (double) y / visualization_state->GetScale() + (double) visible.top();
     // now tell tools that want notification.
-    std::set<Tool *>::iterator iterator;
-    for (iterator = mouse_move_notified_tools.begin();
-         iterator != mouse_move_notified_tools.end(); ++iterator)
+    for (auto& tool : mouse_move_notified_tools)
     {
-        (*iterator)->MouseMoveEvent(mouse_pano_x, mouse_pano_y, e);
+        tool->MouseMoveEvent(mouse_pano_x, mouse_pano_y, e);
     }
     // If the mouse has moved, then we don't know what is underneath it anoymore
     InvalidateImagesUnderMouse();
@@ -665,41 +655,33 @@ void PanosphereOverviewToolHelper::DoNotNotifyMe(PanosphereOverviewEvent event, 
 
 void PanosphereOverviewToolHelper::BeforeDrawImagesBack()
 {
-    std::set<Tool *>::iterator iterator;
-    for (iterator = draw_under_notified_tools_back.begin();
-         iterator != draw_under_notified_tools_back.end(); ++iterator)
+    for (auto& tool : draw_under_notified_tools_back)
     {
-        ((PanosphereOverviewTool*)(*iterator))->BeforeDrawImagesBackEvent();
+        static_cast<PanosphereOverviewTool*>(tool)->BeforeDrawImagesBackEvent();
     }
 }
 
 void PanosphereOverviewToolHelper::BeforeDrawImagesFront()
 {
-    std::set<Tool *>::iterator iterator;
-    for (iterator = draw_under_notified_tools_front.begin();
-         iterator != draw_under_notified_tools_front.end(); ++iterator)
+    for (auto& tool : draw_under_notified_tools_front)
     {
-        ((PanosphereOverviewTool*)(*iterator))->BeforeDrawImagesFrontEvent();
+        static_cast<PanosphereOverviewTool*>(tool)->BeforeDrawImagesFrontEvent();
     }
 }
 
 void PanosphereOverviewToolHelper::AfterDrawImagesBack()
 {
-    std::set<Tool *>::iterator iterator;
-    for (iterator = draw_over_notified_tools_back.begin();
-         iterator != draw_over_notified_tools_back.end(); ++iterator)
+    for (auto& tool : draw_over_notified_tools_back)
     {
-        ((PanosphereOverviewTool*)(*iterator))->AfterDrawImagesBackEvent();
+        static_cast<PanosphereOverviewTool*>(tool)->AfterDrawImagesBackEvent();
     }
 }
 
 void PanosphereOverviewToolHelper::AfterDrawImagesFront()
 {
-    std::set<Tool *>::iterator iterator;
-    for (iterator = draw_over_notified_tools_front.begin();
-         iterator != draw_over_notified_tools_front.end(); ++iterator)
+    for (auto& tool : draw_over_notified_tools_front)
     {
-        ((PanosphereOverviewTool*)(*iterator))->AfterDrawImagesFrontEvent();
+        static_cast<PanosphereOverviewTool*>(tool)->AfterDrawImagesFrontEvent();
     }
 }
 
