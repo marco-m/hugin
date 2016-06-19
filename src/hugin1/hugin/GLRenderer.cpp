@@ -220,7 +220,7 @@ void GLPreviewRenderer::Redraw()
 
 void GLPanosphereOverviewRenderer::Redraw()
 {
-    glClearColor(0,0,0,0);
+    glClearColor(0,0,0,1);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -285,9 +285,9 @@ void GLPanosphereOverviewRenderer::Redraw()
     //event called only before drawing of the images with front faces culled (the inner face of the panosphere)
     static_cast<PanosphereOverviewToolHelper*>(m_tool_helper)->BeforeDrawImagesBack();
     //generic draw before images are drawn (called twice with front and back faces culled)
+    m_tex_man->Begin();
     m_tool_helper->BeforeDrawImages();
 
-    m_tex_man->Begin();
     // The old preview shows the lowest numbered image on top, so do the same:
     for (int img = imgs - 1; img != -1; img--)
     {
@@ -307,6 +307,7 @@ void GLPanosphereOverviewRenderer::Redraw()
         }
     }
 
+    m_tex_man->End();
     m_tool_helper->AfterDrawImages();
     m_tex_man->DisableTexture();
     static_cast<PanosphereOverviewToolHelper*>(m_tool_helper)->AfterDrawImagesBack();
@@ -336,6 +337,9 @@ void GLPanosphereOverviewRenderer::Redraw()
     glCullFace(GL_FRONT);
 
     static_cast<PanosphereOverviewToolHelper*>(m_tool_helper)->BeforeDrawImagesFront();
+
+    glEnable(GL_TEXTURE_2D);
+    m_tex_man->Begin();
     m_tool_helper->BeforeDrawImages();
 
     // The old preview shows the lowest numbered image on top, so do the same:
@@ -362,7 +366,7 @@ void GLPanosphereOverviewRenderer::Redraw()
     m_tool_helper->AfterDrawImages();
     m_tex_man->DisableTexture();
     static_cast<PanosphereOverviewToolHelper*>(m_tool_helper)->AfterDrawImagesFront();
-    
+
     m_tex_man->DisableTexture();
 
     glDisable(GL_CULL_FACE);
@@ -488,11 +492,16 @@ void GLPlaneOverviewRenderer::Redraw()
         }
     }
 
-    m_tex_man->DisableTexture();
+    m_tex_man->End();
     m_tool_helper->AfterDrawImages();
+
+    m_tex_man->DisableTexture();
 
     glMatrixMode(GL_MODELVIEW);
     
+    glEnable(GL_TEXTURE_2D);
+    m_tex_man->Begin();
+
     m_tool_helper->BeforeDrawImages();
     // The old preview shows the lowest numbered image on top, so do the same:
     for (int img = imgs - 1; img != -1; img--)
@@ -514,9 +523,9 @@ void GLPlaneOverviewRenderer::Redraw()
     }
 
     m_tex_man->End();
-    m_tex_man->DisableTexture();
     // drawn things after the active image.
     m_tool_helper->AfterDrawImages();
+    m_tex_man->DisableTexture();
 
     glPopMatrix();
 }
