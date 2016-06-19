@@ -400,7 +400,7 @@ void PreviewIdentifyTool::AfterDrawImagesEvent()
     // the preview draws them in reverse order, so the lowest numbered appears
     // on top. We will folow this convention to avoid confusion.
     glMatrixMode(GL_MODELVIEW);
-    for (auto& it = m_image_set.rbegin(); it != m_image_set.rend(); ++it)
+    for (auto it = m_image_set.rbegin(); it != m_image_set.rend(); ++it)
     {
         DEBUG_ASSERT(*it < helper->GetPanoramaPtr()->getNrOfImages());
         helper->GetViewStatePtr()->GetTextureManager()->
