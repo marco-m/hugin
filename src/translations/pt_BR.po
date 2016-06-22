@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2016-05-29 09:14+0200\n"
-"PO-Revision-Date: 2016-02-02 21:23-0300\n"
+"PO-Revision-Date: 2016-06-21 08:14-0300\n"
 "Last-Translator: Luis Henrique Camargo Quiroz <luishcq@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Poedit 1.7.5\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:69
@@ -823,34 +823,33 @@ msgstr ""
 msgid ""
 "Hugin supports only grayscale or RGB images (without and with alpha channel)."
 msgstr ""
+"Hugin suporta apenas imagens RGB ou tons de cinza (com ou sem canal alfa)"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:311
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File \"%s\" is a grayscale image, but other images in project are color "
 "images."
 msgstr ""
-"O arquivo \"%s\" tem o perfil \"%s\" icc embutido, mas outras imagens no "
-"projeto têm perfil \"%s\" embutido."
+"O arquivo \"%s\" é uma imagem em tons de cinza, mas outras imagens no "
+"projeto são coloridas."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:315
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File \"%s\" is a color image, but other images in project are grayscale "
 "images."
 msgstr ""
-"O arquivo \"%s\" não tem um perfil icc embutido, mas outras imagens no "
-"projeto têm um perfil \"%s\" embutido."
+"O arquivo \"%s\" é uma imagem colorida, mas outras imagens no projeto são em "
+"tons de cinza."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:318
-#, fuzzy
 msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image and try loading again."
 msgstr ""
-"O arquivo \"%s\" é uma imagem preto e branco.\n"
 "Hugin não lida com este tipo de imagem. Pulando esta imagem.\n"
-"Converta a imagem para tons de cinza e tente recarregar."
+"Converta a imagem para tons de cinza ou RGB e tente recarregar."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:335
 #, c-format
@@ -1699,9 +1698,9 @@ msgstr ""
 "necessário."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1136
-#, fuzzy, c-format
+#, c-format
 msgid "Mean error after optimization: %.1f pixel, max: %.1f"
-msgstr "Erro médio após otimização: %.1f pixel, máximo: %.1f\n"
+msgstr "Erro médio após otimização: %.1f pixel, máximo: %.1f"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1566 hugin1/hugin/PreviewFrame.cpp:641
 msgid "Rectilinear"
@@ -2657,14 +2656,12 @@ msgid "Could not read project file %s."
 msgstr "Não foi possível ler o arquivo de projeto %s."
 
 #: hugin1/hugin/MainFrame.cpp:1487
-#, fuzzy
 msgid "Open Papywizard xml file"
-msgstr "Abre um projeto existente"
+msgstr "Abre um arquivo do Papywizard"
 
 #: hugin1/hugin/MainFrame.cpp:1488
-#, fuzzy
 msgid "Papywizard xml files (*.xml)|*.xml|All files (*)|*"
-msgstr "Arquivos de máscara (*.msk)|*.msk|Todos os Arquivos (*)|*"
+msgstr "Arquivos XML do Papywizard (*.xml)|*.xml|Todos os Arquivos (*)|*"
 
 #: hugin1/hugin/MainFrame.cpp:1504
 msgid "Choose template project"
@@ -3443,9 +3440,9 @@ msgstr ""
 "Tem certeza de que ainda quer montar este panorama assim?"
 
 #: hugin1/hugin/PapywizardImport.cpp:341
-#, fuzzy, c-format
+#, c-format
 msgid "Could not parse file %s as Papywizard XML file."
-msgstr "Não foi possível 'parsear' a máscara do arquivo %s."
+msgstr "Não foi possível interpretar %s como um arquivo XML do Papywizard."
 
 #: hugin1/hugin/PapywizardImport.cpp:353
 #, c-format
@@ -3454,11 +3451,13 @@ msgid ""
 "The Papywizard file \"%s\" contains %lu images, but the Hugin project "
 "contains %lu images."
 msgstr ""
+"O projeto atual não corresponde ao arquivo xml do Papywizard.\n"
+"O arquivo \"%s\" do Papywizard contém %lu imagens, mas o projeto do Hugin "
+"conté, %lu imagens."
 
 #: hugin1/hugin/PapywizardImport.cpp:464
-#, fuzzy
 msgid "Connecting overlapping images"
-msgstr "Tente conectar todas as imagens que se sobrepõem."
+msgstr "Conectando as imagens que se sobrepõem"
 
 #: hugin1/hugin/PluginItems.cpp:71
 msgid "Miscellaneous"
@@ -4030,9 +4029,8 @@ msgid "Initializing suspend mode..."
 msgstr "Iniciando modo suspenso..."
 
 #: hugin1/ptbatcher/Batch.cpp:663
-#, fuzzy
 msgid "Specify project file"
-msgstr "Salvar arquivo de projeto"
+msgstr "Especificar arquivo de projeto"
 
 #: hugin1/ptbatcher/Batch.cpp:684
 msgid "No output prefix specified"
@@ -4068,9 +4066,8 @@ msgid "Running batch..."
 msgstr "Executando lote..."
 
 #: hugin1/ptbatcher/Batch.cpp:842
-#, fuzzy
 msgid "PTBatcherGUI is stitching"
-msgstr "Montador em lote PTBatcherGUI iniciado."
+msgstr "PTBatcherGUI está costurando."
 
 #: hugin1/ptbatcher/Batch.cpp:848
 msgid "Batch already in progress."
@@ -4391,14 +4388,12 @@ msgstr ""
 "esteja cheio."
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:385
-#, fuzzy
 msgid "Remove image from project"
-msgstr "Remove desse projeto as imagens selecionadas"
+msgstr "Remove a imagem desse projeto"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:391
-#, fuzzy
 msgid "Split here into two panoramas"
-msgstr "Procurando panoramas"
+msgstr "Divide aqui em dois panoramas"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:476
 #, c-format
@@ -5782,26 +5777,24 @@ msgid "Edit cp tools"
 msgstr "Ferramentas de edição de pontos de controle"
 
 #: hugin1/hugin/xrc/main_frame.xrc:345
-#, fuzzy
 msgid "Link positions"
-msgstr "Ligar posição"
+msgstr "Ligar posições"
 
 #: hugin1/hugin/xrc/main_frame.xrc:363
 msgid "Generate control points, additional cpfind parameters:"
-msgstr ""
+msgstr "Detecção de pontos de controle, parâmetros adicionais do cpfind:"
 
 #: hugin1/hugin/xrc/main_frame.xrc:384
 msgid "Connect orphaned images (with geocpset)"
-msgstr ""
+msgstr "Conecta imagens órfãs (com geocpset)"
 
 #: hugin1/hugin/xrc/main_frame.xrc:390
-#, fuzzy
 msgid "Control point generation"
-msgstr "Opção do detector de pontos de controle"
+msgstr "Detecção de pontos de controle"
 
 #: hugin1/hugin/xrc/main_frame.xrc:416
 msgid "Import positions from Papywizard XML"
-msgstr ""
+msgstr "Importa posições do XML do Papywizard"
 
 #: hugin1/hugin/xrc/main_menu.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:1838
 msgid "&Undo"
@@ -5838,9 +5831,8 @@ msgid "Send to assistant &queue"
 msgstr "Enviar para fila do assistente (&q)"
 
 #: hugin1/hugin/xrc/main_menu.xrc:28
-#, fuzzy
 msgid "Optimize only active &images"
-msgstr "Número de imagens ativas:"
+msgstr "Otimizar apenas imagens ativas:"
 
 #: hugin1/hugin/xrc/main_menu.xrc:29 hugin1/hugin/xrc/optimize_panel.xrc:40
 msgid ""
@@ -6122,11 +6114,11 @@ msgstr "Adiciona um projeto existente ao projeto atual."
 
 #: hugin1/hugin/xrc/main_menu.xrc:208
 msgid "Import settings from Papywizard &XML file..."
-msgstr ""
+msgstr "Importa definições do arquivo XML do Papywizard"
 
 #: hugin1/hugin/xrc/main_menu.xrc:209
 msgid "Read shoot settings from a Papywizard XML file"
-msgstr ""
+msgstr "Lê definições da foto de um arquivo XML do Papywizard"
 
 #: hugin1/hugin/xrc/main_menu.xrc:212 hugin1/hugin/xrc/main_menu.xrc:238
 msgid "Apply &Template"
@@ -6305,15 +6297,16 @@ msgid "Show extent of active masks and crop"
 msgstr "Mostra extensão de máscaras ativas e corte"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:221
-#, fuzzy
 msgid "All images of selected lens"
-msgstr "Muitas imagens selecionadas"
+msgstr "Todas as imagens da lente selecionada"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:222
 msgid ""
 "Applies all changes to all images with the same lens as the selected "
 "image(s)."
 msgstr ""
+"Aplica todas as mudanças a todas as imagens com a mesma lente que a(s) "
+"imagem(ns) selecionada(s)."
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:234
 #: hugin1/hugin/xrc/pano_panel.xrc:364
@@ -6786,17 +6779,16 @@ msgid "Output parameters"
 msgstr "Parâmetros de saída"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1357 hugin1/hugin/xrc/pref_dialog.xrc:827
-#, fuzzy
 msgid "Seam blend mode:"
-msgstr "Modo Homogeneizado:"
+msgstr "Modo de costura suavizada:"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1365 hugin1/hugin/xrc/pref_dialog.xrc:835
 msgid "hard seam (faster)"
-msgstr ""
+msgstr "costura não suavizada (mais rápido)"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1366 hugin1/hugin/xrc/pref_dialog.xrc:836
 msgid "blend seam"
-msgstr ""
+msgstr "costura suavizada"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:15
 msgid "Resource Usage"
@@ -7415,7 +7407,6 @@ msgid "Edit ExifTool argfile"
 msgstr "Editar arquivo de argumentos ExifTool"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1581
-#, fuzzy
 msgid ""
 "The following placeholders will replaced before invoking ExifTool:\n"
 "%projection - projection name (in English)\n"
@@ -7449,7 +7440,7 @@ msgstr ""
 "%width - largura da região de saída\n"
 "%height - altura da região de saída\n"
 "\n"
-"Os marcadores de posição são sensíveis à caixa."
+"Os marcadores de posição se diferenciam com maiúsculas e minúsculas."
 
 #: hugin1/hugin/xrc/preview_frame.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:632
 #: hugin1/hugin/xrc/preview_frame.xrc:1494
