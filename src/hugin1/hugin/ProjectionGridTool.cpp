@@ -131,11 +131,6 @@ void PanosphereOverviewProjectionGridTool::AfterDrawImagesBackEvent()
         }
     }
 
-    if (!mesh_info)
-    {
-        createMesh();
-    }
-
     DEBUG_DEBUG("resources created");
     glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
     glEnable( GL_TEXTURE_2D );
@@ -185,11 +180,6 @@ void PanosphereOverviewProjectionGridTool::AfterDrawImagesFrontEvent()
         }
     }
 
-    if (!mesh_info)
-    {
-        createMesh();
-    }
-
     glColor4f(1,1,1,1);
     glEnable( GL_TEXTURE_2D );
     glEnable(GL_BLEND);
@@ -234,17 +224,6 @@ void PreviewProjectionGridTool::createMesh()
     image.setHFOV(360);
     image.setProjection(HuginBase::BaseSrcPanoImage::EQUIRECTANGULAR);
     mesh_info = new MeshManager::MeshInfo(helper->GetPanoramaPtr(), &image, helper->GetVisualizationStatePtr(), false);
-}
-
-void PanosphereOverviewProjectionGridTool::createMesh()
-{
-    DEBUG_DEBUG("Create mesh projection grid");
-    HuginBase::SrcPanoImage image;
-    image.setSize(vigra::Size2D(3600,1780));
-    image.setHFOV(360);
-    image.setProjection(HuginBase::BaseSrcPanoImage::EQUIRECTANGULAR);
-    mesh_info = new MeshManager::PanosphereOverviewMeshInfo(helper->GetPanoramaPtr(), &image, helper->GetVisualizationStatePtr(), false);
-    DEBUG_DEBUG("End create mesh projection grid");
 }
 
 /**
