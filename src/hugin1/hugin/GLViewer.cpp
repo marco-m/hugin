@@ -95,7 +95,6 @@ GLViewer::GLViewer(
 
 GLViewer::~GLViewer()
 {
-    delete m_glContext;
     if (m_renderer)
     {
       delete m_tool_helper;
@@ -110,6 +109,7 @@ GLViewer::~GLViewer()
         m_view_state=NULL;
       }
     }
+    delete m_glContext;
 }
 
 void GLViewer::SetUpContext()
