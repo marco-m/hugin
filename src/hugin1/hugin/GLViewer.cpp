@@ -468,6 +468,11 @@ void GLViewer::KeyUp(wxKeyEvent& e)
         m_tool_helper->KeypressEvent(e.GetKeyCode(), e.GetModifiers(), false);
 }
 
+void GLViewer::MarkToolsDirty()
+{
+    m_tool_helper->MarkDirty();
+}
+
 void GLViewer::SetViewerBackground(wxColour col)
 {
     this->m_background_color = col;
