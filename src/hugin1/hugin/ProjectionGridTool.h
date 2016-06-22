@@ -66,8 +66,6 @@ public:
     void Activate();
     explicit PanosphereOverviewProjectionGridTool(PanosphereOverviewToolHelper *helper) : PanosphereOverviewTool(helper), ProjectionGridTool(helper) {}
 
-    void createMesh();
-
     void AfterDrawImagesBackEvent();
     void BeforeDrawImagesBackEvent();
 
