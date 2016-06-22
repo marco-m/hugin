@@ -79,12 +79,14 @@ void PanosphereOverviewOutlinesTool::Activate()
     static_cast<PanosphereOverviewToolHelper*>(helper)->NotifyMe(PanosphereOverviewToolHelper::DRAW_OVER_IMAGES_FRONT, this);
     static_cast<PanosphereOverviewToolHelper*>(helper)->NotifyMe(PanosphereOverviewToolHelper::DRAW_OVER_IMAGES_BACK, this);
 //    helper->NotifyMe(ToolHelper::DRAW_OVER_IMAGES, this);
+    helper->NotifyMe(ToolHelper::MARK_DIRTY, this);
 }
 
 
 void PlaneOverviewOutlinesTool::Activate()
 {
     (helper)->NotifyMe(ToolHelper::DRAW_OVER_IMAGES, this);
+    helper->NotifyMe(ToolHelper::MARK_DIRTY, this);
 }
 
 void PlaneOverviewOutlinesTool::AfterDrawImagesEvent()
@@ -111,6 +113,11 @@ void PanosphereOverviewOutlinesTool::drawBackground()
 
 }
 
+void PanosphereOverviewOutlinesTool::MarkDirty()
+{
+    dirty_meshes = true;
+}
+
 void PlaneOverviewOutlinesTool::drawBackground()
 {
 
@@ -125,6 +132,11 @@ void PlaneOverviewOutlinesTool::drawBackground()
 
     glEnd();
 
+}
+
+void PlaneOverviewOutlinesTool::MarkDirty()
+{
+    dirty_meshes = true;
 }
 
 void OverviewOutlinesTool::draw()

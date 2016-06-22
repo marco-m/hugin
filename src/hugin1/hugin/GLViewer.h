@@ -78,7 +78,7 @@ public:
     wxGLContext * GetContext() {return m_glContext;}
 
     void SetViewerBackground(wxColour col);
-
+    void MarkToolsDirty();
 protected:
     void OnEraseBackground(wxEraseEvent& e);
     void MouseMotion(wxMouseEvent& e);

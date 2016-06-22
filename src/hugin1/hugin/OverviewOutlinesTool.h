@@ -127,8 +127,7 @@ class PanosphereOverviewOutlinesTool : public OverviewOutlinesTool, public Panos
 
 
         void drawBackground();
-
-
+        virtual void MarkDirty() override;
 };
 
 class PlaneOverviewOutlinesTool : public OverviewOutlinesTool, public PlaneOverviewTool
@@ -141,7 +140,7 @@ class PlaneOverviewOutlinesTool : public OverviewOutlinesTool, public PlaneOverv
         void AfterDrawImagesEvent();
 
         void drawBackground();
-    
+        virtual void MarkDirty() override;
 };
 
 

@@ -81,7 +81,7 @@ public:
         MOUSE_MOVE, MOUSE_PRESS, KEY_PRESS,
         DRAW_UNDER_IMAGES, DRAW_OVER_IMAGES,
         IMAGES_UNDER_MOUSE_CHANGE, REALLY_DRAW_OVER_IMAGES,
-        MOUSE_WHEEL
+        MOUSE_WHEEL, MARK_DIRTY
     };
     ToolHelper(HuginBase::Panorama *pano,
                       VisualizationState *visualization_state,
@@ -104,6 +104,7 @@ public:
     void KeypressEvent(int keycode, int modifiers, bool pressed);
     void BeforeDrawImages();
     void AfterDrawImages();
+    void MarkDirty();
     // Return true if we want it drawn, return false and draw the image as the
     // tools specify otherwise.
     bool BeforeDrawImageNumber(unsigned int image);
@@ -154,6 +155,7 @@ protected:
     std::set<Tool *> really_draw_over_notified_tools;
     std::set<Tool *> images_under_mouse_notified_tools;
     std::set<Tool *> mouse_wheel_notified_tools;
+    std::set<Tool *> m_tools_need_dirty_flag;
     // these are vectors: the index is the image that a single tool uses.
     std::vector<std::set<Tool *> > image_draw_begin_tools;
     std::vector<std::set<Tool *> >  image_draw_end_tools;

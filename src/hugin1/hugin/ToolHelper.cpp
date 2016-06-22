@@ -159,6 +159,15 @@ void ToolHelper::AfterDrawImages()
     }
 }
 
+void ToolHelper::MarkDirty()
+{
+    // let all tools that want to draw on top of the images do so.
+    for (auto& tool : m_tools_need_dirty_flag)
+    {
+        tool->MarkDirty();
+    }
+}
+
 bool ToolHelper::BeforeDrawImageNumber(unsigned int image)
 {
     if (image_draw_begin_tools.size() > image)
@@ -290,6 +299,9 @@ void ToolHelper::NotifyMe(Event event, Tool *tool)
         case REALLY_DRAW_OVER_IMAGES:
             AddTool(tool, &really_draw_over_notified_tools);
             break;
+        case MARK_DIRTY:
+            AddTool(tool, &m_tools_need_dirty_flag);
+            break;
     }   
 }
 
@@ -334,6 +346,9 @@ void ToolHelper::DoNotNotifyMe(Event event, Tool *tool)
             break;
         case REALLY_DRAW_OVER_IMAGES:
             RemoveTool(tool, &really_draw_over_notified_tools);
+            break;
+        case MARK_DIRTY:
+            RemoveTool(tool, &m_tools_need_dirty_flag);
             break;
     }   
 }

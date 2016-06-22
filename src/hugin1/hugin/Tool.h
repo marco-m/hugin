@@ -98,6 +98,8 @@ public:
     virtual bool BeforeDrawImageEvent(unsigned int image) {return true;}
     /// Notification called just after the image was drawn normally.
     virtual void AfterDrawImageEvent(unsigned int image) {}
+    //// Notification, that some internal variables needs to updated
+    virtual void MarkDirty() {};
 protected:
     /** The PreviewToolHelper that uses the same preview window and panorama as
      * the tool should.

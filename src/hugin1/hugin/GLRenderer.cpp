@@ -43,6 +43,7 @@
 #include "MeshManager.h"
 #include "ViewState.h"
 #include "GLRenderer.h"
+#include "GLViewer.h"
 #include "ToolHelper.h"
 #include <panodata/PanoramaOptions.h>
 
@@ -410,6 +411,7 @@ vigra::Diff2D GLPanosphereOverviewRenderer::Resize(int w, int h)
     //height of the screen in screen pixels over the length of the panosphere in panorama pixels when spread out
     double scrscale = (float) h  / (2 * tan(fovy / 360.0 * M_PI) * (R - radius) / (2 * radius * M_PI) * (options->getWidth()));
     m_visualization_state->SetScale(scrscale);
+    m_visualization_state->GetViewer()->MarkToolsDirty();
 //    DEBUG_DEBUG("renderer " << scrscale << " " << h << " " << R << " " << fovy);
 //    DEBUG_DEBUG("renderer scale " << scrscale);
 
@@ -565,7 +567,8 @@ vigra::Diff2D GLPlaneOverviewRenderer::Resize(int w, int h)
     double scrscale = (float) h / (2 * tan(fovy / 360.0 * M_PI) * R   * options->getWidth() / MeshManager::PlaneOverviewMeshInfo::scale);
     m_visualization_state->SetScale(scrscale);
 //    m_visualization_state->SetGLScale(gl_scale);
-	
+    m_visualization_state->GetViewer()->MarkToolsDirty();
+
     return vigra::Diff2D(0,0);
 }
 
