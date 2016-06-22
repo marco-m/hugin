@@ -252,11 +252,15 @@ PreviewIdentifyTool::PreviewIdentifyTool(ToolHelper *helper, GLPreviewFrame *own
 }
 PreviewIdentifyTool::~PreviewIdentifyTool()
 {
-    // free the textures
-    glDeleteTextures(1, (GLuint*) &rectangle_border_tex);
-    glDeleteTextures(1, (GLuint*) &circle_border_tex);
-    glDeleteLists(font_list, 10);
-    glDeleteTextures(1, (GLuint*) &font_tex);
+    if (texture_created)
+    {
+        // free the textures
+        glDeleteTextures(1, (GLuint*)&rectangle_border_tex);
+        glDeleteTextures(1, (GLuint*)&circle_border_tex);
+        glDeleteLists(font_list, 10);
+        glDeleteTextures(1, (GLuint*)&font_tex);
+        texture_created = false;
+    };
 }
 
 void PreviewIdentifyTool::Activate()
