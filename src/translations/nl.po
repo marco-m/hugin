@@ -9,47 +9,41 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2016-05-29 09:14+0200\n"
-"PO-Revision-Date: 2013-12-31 20:04+0100\n"
+"PO-Revision-Date: 2016-06-21 09:32+0200\n"
 "Last-Translator: Harry van der Wolf <hvdwolf@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@lists.kde.org>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:69
 #: hugin1/hugin/PapywizardImport.cpp:460
-#, fuzzy
 msgid "Searching for control points..."
-msgstr "Opschonen ijkpunten"
+msgstr "Zoeken naar ijkpunten..."
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/base_wx/AssistantExecutor.cpp:81
-#, fuzzy
 msgid "Removing control points in clouds..."
-msgstr "Verwijder ijkpunten op wolken"
+msgstr "Verwijder ijkpunten in wolken..."
 
 #: hugin1/base_wx/AssistantExecutor.cpp:87
-#, fuzzy
 msgid "Statistically cleaning of control points..."
-msgstr "classificeren van ijkpunten"
+msgstr "statistisch opschonen van ijkpunten"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:105
-#, fuzzy
 msgid "Searching for vertical lines..."
-msgstr "Detecteer verticale lijnen"
+msgstr "Zoeken naar verticale lijnen"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:111
-#, fuzzy
 msgid "Optimizing..."
-msgstr "Optimaliseren"
+msgstr "Optimaliseren..."
 
 #: hugin1/base_wx/AssistantExecutor.cpp:120
-#, fuzzy
 msgid "Searching for best crop..."
-msgstr "zoeken naar wolk-achtige ijkpunten..."
+msgstr "Zoeken naar beste uitsnede..."
 
 #: hugin1/base_wx/Executor.cpp:141 hugin1/base_wx/platform.cpp:131
 #: hugin1/hugin/MainFrame.cpp:1540 hugin1/hugin/MainFrame.cpp:2210
@@ -60,21 +54,22 @@ msgstr ""
 "Extern programma %s niet gevonden in de bundel, het systeempad wordt gebruikt"
 
 #: hugin1/base_wx/Executor.cpp:164 hugin1/base_wx/Executor.cpp:214
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING: External program %s not found as specified in preferences, "
 "reverting to bundled version"
 msgstr ""
-"Extern programma %s niet gevonden zoals aangegeven in de Voorkeuren, verder "
-"met de gebundelde versie"
+"Waarschuwing: Extern programma %s niet gevonden zoals aangegeven in de "
+"Voorkeuren, verder met de gebundelde versie"
 
 #: hugin1/base_wx/Executor.cpp:176 hugin1/base_wx/Executor.cpp:186
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING: External program %s not found in the bundle, reverting to system "
 "path"
 msgstr ""
-"Extern programma %s niet gevonden in de bundel, het systeempad wordt gebruikt"
+"Waarschuwing: Extern programma %s niet gevonden in de bundel, het systeempad "
+"wordt gebruikt"
 
 #: hugin1/base_wx/HFOVDialog.cpp:73
 #, c-format
@@ -249,6 +244,10 @@ msgid ""
 "This will result in unwanted results.\n"
 "Please check and correct this before proceeding."
 msgstr ""
+"Dit project bevat lagen met gekoppelde posities. Maar de lensparameters zijn "
+"niet gelinkt voor deze afbeeldingen.\n"
+"Dit leidt tot ongewenste resultaten.\n"
+"SVP controleren en corrigeren voor verdergaan."
 
 #: hugin1/base_wx/MyExternalCmdExecDialog.cpp:122
 #, c-format
@@ -287,28 +286,24 @@ msgid "Cancel"
 msgstr "Annuleer"
 
 #: hugin1/base_wx/MyProgressDialog.cpp:35
-#, fuzzy
 msgid "Sampling points"
-msgstr "Opschonen ijkpunten"
+msgstr "Punten verzamelen"
 
 #: hugin1/base_wx/MyProgressDialog.cpp:36
-#, fuzzy
 msgid "Loading image:"
-msgstr "Openen van afbeeldingen"
+msgstr "Openen van afbeelding:"
 
 #: hugin1/base_wx/MyProgressDialog.cpp:37
-#, fuzzy
 msgid "Scaling image:"
-msgstr "Schalen van afbeelding %s"
+msgstr "Schalen van afbeelding:"
 
 #: hugin1/base_wx/MyProgressDialog.cpp:38
 msgid "sampling points"
-msgstr ""
+msgstr "Punten verzamelen"
 
 #: hugin1/base_wx/MyProgressDialog.cpp:39
-#, fuzzy
 msgid "extracting good points"
-msgstr "Opschonen ijkpunten"
+msgstr "Extraheren van goede ijkpunten"
 
 #: hugin1/base_wx/MyProgressDialog.cpp:40
 msgid "Elapsed time: "
@@ -332,7 +327,7 @@ msgstr "Kan script: %s  niet openen"
 #: hugin1/base_wx/RunStitchPanel.cpp:120
 #, c-format
 msgid "Project %s does not contain any active images."
-msgstr ""
+msgstr "Project %s bevat geen actieve afbeeldingen."
 
 #: hugin1/base_wx/RunStitchPanel.cpp:136 hugin1/base_wx/RunStitchPanel.cpp:280
 #: hugin1/ptbatcher/ProjectArray.cpp:126
@@ -343,7 +338,7 @@ msgstr "fout bij verwerking panotoolsscript: %s"
 #: hugin1/base_wx/RunStitchPanel.cpp:146
 #, c-format
 msgid "Can't open user defined output sequence \"%s\"."
-msgstr ""
+msgstr "Kan gebruikers gedefinieerde uitvoer sequentie \"%s\" niet openen."
 
 #: hugin1/base_wx/RunStitchPanel.cpp:182
 msgid "Could not create temporary file"
@@ -351,7 +346,7 @@ msgstr "Kan tijdelijk bestand niet aanmaken"
 
 #: hugin1/base_wx/RunStitchPanel.cpp:210 hugin1/base_wx/RunStitchPanel.cpp:302
 msgid "Queue is empty. This should never happen."
-msgstr ""
+msgstr "Wachtrij is leeg. Dit zou nooit mogen gebeuren."
 
 #: hugin1/base_wx/RunStitchPanel.cpp:210 hugin1/base_wx/RunStitchPanel.cpp:244
 #: hugin1/base_wx/RunStitchPanel.cpp:250
@@ -395,95 +390,84 @@ msgstr ""
 "%s"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:216
-#, fuzzy
 msgid "Stitching panorama..."
-msgstr "Samenvoegen panorama"
+msgstr "Samenvoegen panorama..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:219
 msgid "Platform:"
-msgstr ""
+msgstr "Platform:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:220
-#, fuzzy
 msgid "Version:"
-msgstr "Versie: %s"
+msgstr "Versie:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:221
-#, fuzzy
 msgid "Working directory:"
-msgstr ""
-"\n"
-" huidige map:"
+msgstr "Werk folder:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:222
-#, fuzzy
 msgid "Output prefix:"
-msgstr "Geef uitvoernaam zonder extensie"
+msgstr "Geef uitvoernaam zonder extensie: "
 
 #: hugin1/base_wx/StitchingExecutor.cpp:234
 #: hugin1/base_wx/StitchingExecutor.cpp:238
 #: hugin1/base_wx/StitchingExecutor.cpp:244
 #: hugin1/hugin/xrc/batch_frame.xrc:330 hugin1/hugin/xrc/pano_panel.xrc:809
 msgid "Blender:"
-msgstr "Blender:"
+msgstr "Samenvoeger:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:238
 msgid "Unknown blender (enblend --version failed)"
-msgstr ""
+msgstr "Onbekende samenvoeger (enblend --version mislukt)"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:244
-#, fuzzy
 msgid "internal"
-msgstr "interne fout"
+msgstr "intern"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:253
 #: hugin1/base_wx/StitchingExecutor.cpp:257
-#, fuzzy
 msgid "Exposure fusion:"
-msgstr "Belichting:"
+msgstr "Belichting samensmelting:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:257
 msgid "Unknown exposure fusion (enfuse --version failed)"
-msgstr ""
+msgstr "Onbekend belichting samensmelt programma (enfuse --version mislukt)"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:265
-#, fuzzy
 msgid "ExifTool version:"
-msgstr "ExifTool opties"
+msgstr "ExifTool versie:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:270
-#, fuzzy
 msgid "ExifTool:"
-msgstr "ExifTool opties"
+msgstr "ExifTool:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:270
 msgid "FAILED"
-msgstr ""
+msgstr "MISLUKT"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:276
-#, fuzzy
 msgid "Number of active images:"
-msgstr "Aantal ijkpunten per afbeelding:"
+msgstr "Aantal actieve afbeeldingen:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:277
-#, fuzzy, c-format
+#, c-format
 msgid "Output exposure value: %.1f"
-msgstr "Uitvoer belichtings laag %ld"
+msgstr "Uitvoer belichtings waarde: %.1f"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:278
-#, fuzzy, c-format
+#, c-format
 msgid "Canvas size: %dx%d"
-msgstr "Panoramagrootte:"
+msgstr "Canvas grootte: %dx%d"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:279
 #, c-format
 msgid "ROI: (%d, %d) - (%d, %d)"
-msgstr ""
+msgstr "ROI: (%d, %d) - (%d, %d)"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:280
 #, c-format
 msgid "FOV: %.0fx%.0f"
-msgstr ""
+msgstr "FOV: %.0fx%.0f"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:286
 #: hugin1/base_wx/StitchingExecutor.cpp:292
@@ -492,17 +476,16 @@ msgid "Projection:"
 msgstr "Projectie:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:295
-#, fuzzy
 msgid "Using GPU for remapping:"
-msgstr "Gebruik GPU voor positioneren (EXPERIMENTEEL)"
+msgstr "Gebruik GPU voor positioneren:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:295
 msgid "true"
-msgstr ""
+msgstr "waar"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:295
 msgid "false"
-msgstr ""
+msgstr "niet waar"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:299 hugin1/hugin/xrc/pano_panel.xrc:445
 msgid "Panorama Outputs:"
@@ -559,109 +542,101 @@ msgstr ""
 "Samengevoegde lagen met gelijke belichting, zonder belichtings correctie"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:355
-#, fuzzy
 msgid "First input image"
-msgstr "eerste afbeelding"
+msgstr "eerste ingevoerde afbeelding"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:356
-#, fuzzy
 msgid "Number:"
-msgstr "Aantal processoren:"
+msgstr "Aantal:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:357
 msgid "Filename:"
 msgstr "Bestandsnaam:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:358
-#, fuzzy, c-format
+#, c-format
 msgid "Size: %dx%d"
-msgstr "Panoramagrootte:"
+msgstr "Grootte: %dx%d"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:360
-#, fuzzy
 msgid "Response type:"
 msgstr "Respons type:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:361
 #, c-format
 msgid "HFOV: %.0f"
-msgstr ""
+msgstr "HFOV: %.0f"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:362
-#, fuzzy, c-format
+#, c-format
 msgid "Exposure value: %.1f"
-msgstr "Belichting waarde (EeV)"
+msgstr "Belichting waarde: %.1f"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:665
 msgid "Remapping and blending LDR images..."
-msgstr ""
+msgstr "Positioneren en samenvoegen LDR afbeeldingen..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:676
-#, fuzzy
 msgid "Remapping LDR images..."
-msgstr "Gepositioneerde afbeeldingen:"
+msgstr "Positioneren LDR afbeeldingen..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:685
-#, fuzzy
 msgid "Blending images..."
-msgstr "Positioneren en uitlijnen van afbeeldingen"
+msgstr "Samenvoegen van afbeeldingen..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:733
 msgid "Remapping LDR images and blending exposure layers..."
-msgstr ""
+msgstr "Positioneren LDR afbeeldingen en samenvoegen belichtings lagen..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:751
-#, fuzzy
 msgid "Remapping LDR images without exposure correction..."
-msgstr ""
-"Samengevoegde lagen met gelijke belichting, zonder belichtings correctie"
+msgstr "Positioneren LDR afbeeldingen zonder belichtings correctie..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:770
-#, fuzzy, c-format
+#, c-format
 msgid "Blending exposure layer %u..."
-msgstr "Uitvoer belichtings laag %ld"
+msgstr "Samenvoegen belichtings laag %u..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:788
 msgid "Fusing all exposure layers..."
-msgstr ""
+msgstr "Samenvoegen van alle belichtings lagen..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:809
-#, fuzzy, c-format
+#, c-format
 msgid "Fusing stack number %u..."
-msgstr "Toegekend set nummer"
+msgstr "Samenvoegen set nummer %u..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:829
 #: hugin1/base_wx/StitchingExecutor.cpp:839
 msgid "Blending all stacks..."
-msgstr ""
+msgstr "Samenvoegen alle sets..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:856
-#, fuzzy
 msgid "Remapping HDR images..."
-msgstr "Gepositioneerde afbeeldingen:"
+msgstr "Positioneren HDR afbeeldingen..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:878
-#, fuzzy, c-format
+#, c-format
 msgid "Merging HDR stack number %u..."
-msgstr "Toegekend set nummer"
+msgstr "Samenvoegen HDR set nummer %u..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:892
 #: hugin1/base_wx/StitchingExecutor.cpp:898
 msgid "Blending HDR stacks..."
-msgstr ""
+msgstr "Samenvoegen HDR sets..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:924
 #: hugin1/base_wx/StitchingExecutor.cpp:932
 #: hugin1/base_wx/StitchingExecutor.cpp:948
 #: hugin1/base_wx/StitchingExecutor.cpp:956
 msgid "Updating metadata..."
-msgstr ""
+msgstr "Vernieuwen metadata..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:1036
 #: hugin1/base_wx/StitchingExecutor.cpp:1040
-#, fuzzy, c-format
+#, c-format
 msgid "Stitching using \"%s\""
-msgstr "Samenvoegen %s"
+msgstr "Samenvoegen gebruik makend van \"%s\""
 
 #: hugin1/base_wx/huginConfig.cpp:37
 msgid "first image"
@@ -734,7 +709,7 @@ msgstr ""
 #: hugin1/base_wx/platform.cpp:487
 #, c-format
 msgid "Debug report generated in \"%s\"."
-msgstr ""
+msgstr "Debug rapport gegenereerd in \"%s\"."
 
 #: hugin1/base_wx/platform.h:43
 msgid ""
@@ -752,9 +727,9 @@ msgstr ""
 "bestanden (*)|*"
 
 #: hugin1/base_wx/wxLensDB.cpp:132
-#, fuzzy, c-format
+#, c-format
 msgid "Camera %s (%s)"
-msgstr "Cameragevoeligheid"
+msgstr "Camera %s (%s)"
 
 #: hugin1/base_wx/wxLensDB.cpp:207
 #, c-format
@@ -794,7 +769,6 @@ msgstr ""
 
 #: hugin1/base_wx/wxLensDB.cpp:631 hugin1/base_wx/wxLensDB.cpp:636
 #: hugin1/base_wx/wxLensDB.cpp:644
-#, fuzzy
 msgid "Could not save information into database."
 msgstr "Kon de informatie niet opslaan in het database bestand."
 
@@ -820,6 +794,9 @@ msgid ""
 "Hugin does not support this image type. Skipping this image.\n"
 "Convert image to grayscale image and try loading again."
 msgstr ""
+"Bestand \"%s\" is een zwart/wit afbeelding.\n"
+"Hugin ondersteunt dit bestand niet. Bestand wordt overgeslagen.\n"
+"Converteer afbeelding naar grijstinten en open opnieuw."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:297
 #, c-format
@@ -831,11 +808,19 @@ msgid ""
 "Hugin does not support this image type. Skipping this image.\n"
 "Convert this image to grayscale or RGB image and try loading again."
 msgstr ""
+"Hugin ondersteunt alleen grijstinten en RGB afbeeldingen (met en zonder alfa "
+"kanaal).\n"
+"Maar bestand \"%s\" heeft %d kanalen en %d  extra kanalen (waarschijnlijk "
+"alfa kanalen).\n"
+"Hugin ondersteunt deze afbeelding. Bestand wordt overgeslagen.\n"
+"Converteer de afbeelding naar grijstinten of RGB en open opnieuw."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:307
 msgid ""
 "Hugin supports only grayscale or RGB images (without and with alpha channel)."
 msgstr ""
+"Hugin ondersteunt alleen grijstinten en RGB afbeeldingen (met en zonder alfa "
+"kanaal)"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:311
 #, c-format
@@ -843,6 +828,8 @@ msgid ""
 "File \"%s\" is a grayscale image, but other images in project are color "
 "images."
 msgstr ""
+"Bestand \"%s\" is een grijstinten afbeelding, maar de andere afbeeldingen in "
+"het project zijn RGB afbeeldingen."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:315
 #, c-format
@@ -850,12 +837,16 @@ msgid ""
 "File \"%s\" is a color image, but other images in project are grayscale "
 "images."
 msgstr ""
+"Bestand \"%s\" is een RGB afbeelding, maar de andere afbeeldingen in het "
+"project zijn grijstinten afbeeldingen."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:318
 msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image and try loading again."
 msgstr ""
+"Hugin ondersteunt dit vermengen niet. Afbeelding wordt overgeslagen.\n"
+"Converteer afbeelding naar grijstinten of RGB en open opnieuw."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:335
 #, c-format
@@ -863,6 +854,8 @@ msgid ""
 "File \"%s\" has no embedded icc profile, but other images in project have "
 "profile \"%s\" embedded."
 msgstr ""
+"Bestand \"%s\" heeft geen ingebed icc profiel, maar andere afbeeldingen in "
+"dit project hebben profiel \"%s\" ingebed."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:341
 #, c-format
@@ -870,6 +863,8 @@ msgid ""
 "File \"%s\" has icc profile \"%s\" embedded, but other images in project "
 "have no embedded color profile."
 msgstr ""
+"Bestand \"%s\" heeft icc profiel \"%s\" ingebed, maar andere afbeeldingen in "
+"dit project hebben geen ingebed kleurprofiel."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:345
 #, c-format
@@ -877,18 +872,25 @@ msgid ""
 "File \"%s\" has icc profile \"%s\" embedded, but other images in project "
 "have color profile \"%s\" embedded."
 msgstr ""
+"Bestand \"%s\" heeft icc profiel \"%s\" ingebed maar de andere afbeeldingen "
+"in het project hebben kleur profiel \"%s\" ingebed."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:349
 msgid ""
 "Hugin expects all images in the same color profile.\n"
 "Please convert all images to same color profile and try again."
 msgstr ""
+"Hugin verwacht dat alle afbeeldingen hetzelfde kleur profiel hebben.\n"
+"Converteer  s.v.p. alle afbeeldingen naar hetzelfde kleurprofiel en probeer "
+"opnieuw."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:542
 msgid ""
 "Hugin has image stacks detected in the added images and will assign "
 "corresponding stack numbers to the images."
 msgstr ""
+"Hugin detecteerde afbeelding sets in de toegevoegde afbeeldingen en zal "
+"overeenkomende set nummers toekennen aan de afbeeldingen."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:546
 msgid ""
@@ -896,11 +898,13 @@ msgid ""
 "re-assigned on base of this detection. Existing stack assignments will be "
 "overwritten."
 msgstr ""
+"Hugin heeft afbeeldingen sets gedetecteerd in het project. De set nummers "
+"worden herschikt o.b.v. deze detectie.  Bestaande set toekenningen worden "
+"overschreven."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:550 hugin1/base_wx/wxPanoCommand.cpp:571
-#, fuzzy
 msgid "Should the position of images in each stack be linked?"
-msgstr "Moet het laden van de bulk reeks overgeslagen worden?"
+msgstr "Moet de positie van afbeeldingen in elke set gekoppeld worden?"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:558 hugin1/hugin/xrc/main_frame.xrc:215
 msgid ""
@@ -909,28 +913,29 @@ msgid ""
 "panorama. But if the images in each stack require a fine tune of the "
 "position (e. g. when shooting hand held), then don't link the position."
 msgstr ""
+"Bij het maken van \"bracketed\"afbeelding sets vanaf een stevig statief, "
+"kunnen de afbeeldings posities in elke set gekoppeld worden om het panorama "
+"proces te vereenvoudigen. Indien bij uit de hand geschoten afbeeldings set "
+"een nauwkeurige positionering vereist is, koppel dan de posities niet. "
 
 #: hugin1/base_wx/wxPanoCommand.cpp:561 hugin1/base_wx/wxPanoCommand.cpp:565
 #: hugin1/hugin/xrc/main_frame.xrc:236
-#, fuzzy
 msgid "Link position"
-msgstr "Reset posities"
+msgstr "Koppel positie"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:561 hugin1/base_wx/wxPanoCommand.cpp:565
 #: hugin1/hugin/xrc/main_frame.xrc:242
-#, fuzzy
 msgid "Don't link position"
-msgstr "Commandoregelparameters"
+msgstr "Koppel positie niet"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:561 hugin1/base_wx/wxPanoCommand.cpp:578
 #: hugin1/hugin/xrc/main_frame.xrc:247
 msgid "Don't assign stacks"
-msgstr ""
+msgstr "Geen sets toekennen"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:565 hugin1/base_wx/wxPanoCommand.cpp:582
-#, fuzzy
 msgid "Keep existing stacks"
-msgstr "Bestaande afbeeldingen overschrijven"
+msgstr "Bewaar bestaande sets"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:684
 #, c-format
@@ -1113,9 +1118,8 @@ msgstr "Lensparameters opslaan in ini bestand"
 
 #: hugin1/calibrate_lens/LensCalFrame.cpp:732
 #: hugin1/hugin/PanoOperation.cpp:566
-#, fuzzy
 msgid "Save lens parameters to lens database"
-msgstr "Lensparameters opslaan in de lensfun database"
+msgstr "Lensparameters opslaan in de lens database"
 
 #: hugin1/calibrate_lens/LensCalFrame.cpp:733
 msgid "Saving lens data"
@@ -1139,40 +1143,36 @@ msgid "Project files (*.pto)|*.pto|All files (*)|*"
 msgstr "Project bestanden (*.pto)|*.pto|Alle bestanden (*)|*"
 
 #: hugin1/executor/hugin_executor.cpp:193
-#, fuzzy
 msgid "Removing temporary files..."
-msgstr "verwijderen van tijdelijke ijkpunten bestanden"
+msgstr "verwijderen van tijdelijke bestanden..."
 
 #: hugin1/executor/hugin_executor.cpp:211
 msgid "shows this help message"
-msgstr ""
+msgstr "Toon deze help boodschap"
 
 #: hugin1/executor/hugin_executor.cpp:212
-#, fuzzy
 msgid "execute assistant"
-msgstr "Uitvoeren a&ssistent"
+msgstr "Uitvoeren assistent"
 
 #: hugin1/executor/hugin_executor.cpp:213
 msgid "execute stitching with given project"
-msgstr ""
+msgstr "Voer samenvoegen op opgegeven project uit"
 
 #: hugin1/executor/hugin_executor.cpp:214
-#, fuzzy
 msgid "number of used threads"
-msgstr "Aantal threads:"
+msgstr "Aantal gebruikte threads"
 
 #: hugin1/executor/hugin_executor.cpp:215
 msgid "prefix used for stitching"
-msgstr ""
+msgstr "Voorvoegingbgebruikt voor samenvoegen"
 
 #: hugin1/executor/hugin_executor.cpp:216
 msgid "use user defined commands in given file"
-msgstr ""
+msgstr "gebruik door gebruiker gedefinieerde commandos op opgegeven bestand"
 
 #: hugin1/executor/hugin_executor.cpp:217
-#, fuzzy
 msgid "only print commands"
-msgstr "Uitvoeren commando \""
+msgstr "Alleen commandos tonen"
 
 #: hugin1/hugin/AboutDialog.cpp:142
 #, c-format
@@ -1193,14 +1193,14 @@ msgid "Architecture: %s"
 msgstr "Architectuur: %s"
 
 #: hugin1/hugin/AboutDialog.cpp:151
-#, fuzzy, c-format
+#, c-format
 msgid "Free memory: %lld kiB"
-msgstr "Free memory: %ld kiB"
+msgstr "Vrij geheugen: %lld kiB"
 
 #: hugin1/hugin/AboutDialog.cpp:154
 #, c-format
 msgid "Active Codepage: %u"
-msgstr "Aktieve tekst codering: %u"
+msgstr "Actieve tekst codering: %u"
 
 #: hugin1/hugin/AboutDialog.cpp:186
 #, c-format
@@ -1218,18 +1218,18 @@ msgid "Path to data: %s"
 msgstr "Pad naar data: %s"
 
 #: hugin1/hugin/AboutDialog.cpp:190
-#, fuzzy, c-format
+#, c-format
 msgid "Hugins camera and lens database: %s"
-msgstr "Camera- en Lensdata"
+msgstr "Hugins Camera- en Lensdatabse: %s"
 
 #: hugin1/hugin/AboutDialog.cpp:191
 msgid "Multi-threading using C++11 std::thread and OpenMP"
-msgstr ""
+msgstr "Multi-threading gebruikmakend van C++11 std::thread en OpenMP"
 
 #: hugin1/hugin/AboutDialog.cpp:194
-#, fuzzy, c-format
+#, c-format
 msgid "Monitor profile: %s"
-msgstr "Kan projectbestand %s niet openen:"
+msgstr "Monitor profiel: %s"
 
 #: hugin1/hugin/AboutDialog.cpp:196
 msgid "Libraries"
@@ -1335,6 +1335,8 @@ msgid ""
 "An internal transformation went wrong.\n"
 "Check that the point is inside the image."
 msgstr ""
+"Fout in interne transformatie.\n"
+"Controleer of het punt binnen de afbeelding ligt."
 
 #: hugin1/hugin/CPEditorPanel.cpp:1164
 #, c-format
@@ -1422,7 +1424,7 @@ msgstr "Selecteer punt in linker afbeelding"
 #: hugin1/hugin/CPEditorPanel.cpp:1950
 #, c-format
 msgid "Create cp (Current setting: %s)"
-msgstr ""
+msgstr "Creëer ijkpunt (huidige instelling: %s)"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2001
 msgid ""
@@ -1458,15 +1460,16 @@ msgid "Cleaning"
 msgstr "Opschonen"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2116
-#, fuzzy
 msgid "Create cp"
-msgstr "Maak"
+msgstr "Maakijkpunt"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2119
 msgid ""
 "Create control points for image pair with currently selected control point "
 "detector on photos tab."
 msgstr ""
+"Maak ijkpunten voor afbeeldings paar o.b.v. geselecteerde ijkpunt detector "
+"uit de fotos tab. "
 
 #: hugin1/hugin/CPEditorPanel.cpp:2127 hugin1/hugin/xrc/cp_editor_panel.xrc:328
 msgid "Celeste"
@@ -1477,9 +1480,8 @@ msgid "Tries to remove control points from clouds"
 msgstr "Probeert ijkpunten in wolken weg te halen"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2138
-#, fuzzy
 msgid "Clean cp"
-msgstr "Bulk leegmaken"
+msgstr "Verwijder ijkpunt"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2141 hugin1/hugin/xrc/pref_dialog.xrc:301
 msgid "Remove outlying control points by statistical method"
@@ -1681,9 +1683,9 @@ msgid "Images are connected by %lu control points.\n"
 msgstr "Afbeeldingen zijn verbonden door %lu ijkpunten.\n"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1119
-#, fuzzy, c-format
+#, c-format
 msgid "%lu unconnected image groups found: %s\n"
-msgstr "%d niet verbonden groepen van afbeeldingen gevonden"
+msgstr "%lu niet verbonden afbeeldings groepen \"%s\" gevonden\n"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1125
 msgid "Images or control points have changed, new alignment is needed."
@@ -1692,9 +1694,9 @@ msgstr ""
 "is noodzakelijk."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1136
-#, fuzzy, c-format
+#, c-format
 msgid "Mean error after optimization: %.1f pixel, max: %.1f"
-msgstr "Gemiddelde fout na optimalisatie: %.1f pixel, max: %.1f\n"
+msgstr "Gemiddelde fout na optimalisatie: %.1f pixel, max: %.1f"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1566 hugin1/hugin/PreviewFrame.cpp:641
 msgid "Rectilinear"
@@ -1910,23 +1912,30 @@ msgid ""
 "\n"
 "Should the panorama now be re-optimized?"
 msgstr ""
+"%lu ijkpunten verwijderd uit panorama.\n"
+"\n"
+"Moet het panorama opnieuw geoptimaliseerd worden?"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3327 hugin1/hugin/GLPreviewFrame.cpp:3624
 #, c-format
 msgid "Current selected optimizer strategy is \"%s\"."
-msgstr ""
+msgstr "Huidige geselecteerde optimalisatie strategie is \"%s\"."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3377
 msgid ""
 "The selected region contains no active image.\n"
 "Please select a region which is covered by at least 2 images."
 msgstr ""
+"Het geselecteerde gebied bevat geen actieve afbeelding.\n"
+"Selecteer een gebied dat afgedekt wordt door minstens 2 afbeeldingen."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3388
 msgid ""
 "The selected region is only covered by a single image.\n"
 "Can't create control points for a single image."
 msgstr ""
+"Het geselecteerde gebied wordt slechts door één afbeeldingen afgedekt.\n"
+"Kan geen ijkpunten genereren voor één afbeelding."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3399
 msgid ""
@@ -1936,30 +1945,31 @@ msgid ""
 "\n"
 "Proceed anyway?"
 msgstr ""
+"De geselecteerde rechthoek is zeer groot.\n"
+"De functie is bedoeld voor kleinere selecties. Ongewenste neven effecten "
+"kunnen ontstaan.\n"
+"\n"
+"Toch doorgaan?"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3424 hugin1/hugin/PapywizardImport.cpp:467
-#, fuzzy
 msgid "Searching control points"
-msgstr "Opschonen ijkpunten"
+msgstr "Zoeken van ijkpunten"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3424
-#, fuzzy
 msgid "Processing"
-msgstr "Verwerken van:"
+msgstr "Verwerken"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3431
 msgid "Remap image to panorama projection..."
-msgstr ""
+msgstr "Herschik afbeelding naar panorama projectie..."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3477
-#, fuzzy
 msgid "Matching interest points..."
 msgstr "Gelijkvormige punten zoeken..."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3596
-#, fuzzy
 msgid "Checking results..."
-msgstr "Controleer paarsgewijs"
+msgstr "Controleren van resultaten..."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3623
 #, c-format
@@ -1968,6 +1978,9 @@ msgid ""
 "\n"
 "Should the panorama now be re-optimized?"
 msgstr ""
+"%lu ijkpunten toegevoegd aan panorama.\n"
+"\n"
+"Panorama opnieuw optimaliseren?"
 
 #: hugin1/hugin/GLViewer.cpp:155
 msgid ""
@@ -2642,14 +2655,12 @@ msgid "Could not read project file %s."
 msgstr "Kan projectbestand %s niet openen:"
 
 #: hugin1/hugin/MainFrame.cpp:1487
-#, fuzzy
 msgid "Open Papywizard xml file"
-msgstr "Open een projectbestand"
+msgstr "Open Papywizard xml bestand"
 
 #: hugin1/hugin/MainFrame.cpp:1488
-#, fuzzy
 msgid "Papywizard xml files (*.xml)|*.xml|All files (*)|*"
-msgstr "Masker bestanden (*.msk)|*.msk|Alle bestanden (*)|*"
+msgstr "Papywizard xml bestanden (*.xml)|*.xml|Alle bestanden (*)|*"
 
 #: hugin1/hugin/MainFrame.cpp:1504
 msgid "Choose template project"
@@ -2786,7 +2797,6 @@ msgid "Warning %d unconnected image groups found:"
 msgstr "Waarschuwing: %d niet verbonden groepen van afbeeldingen gevonden:"
 
 #: hugin1/hugin/MainFrame.cpp:2172
-#, fuzzy
 msgid ""
 "Please create control points between unconnected images using the Control "
 "Points tab in the panorama editor.\n"
@@ -3025,9 +3035,8 @@ msgstr ""
 "afgebroken"
 
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:315
-#, fuzzy
 msgid "Optimize..."
-msgstr "Optimaliseer"
+msgstr "Optimaliseer..."
 
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:361
 msgid "Internal error during photometric optimization:\n"
@@ -3100,9 +3109,8 @@ msgid "Change lens number"
 msgstr "Wijzig lensnummer"
 
 #: hugin1/hugin/PanoOperation.cpp:497
-#, fuzzy
 msgid "Load lens from lens database"
-msgstr "Laad lens uit lensfun database"
+msgstr "Laad lens uit lens database"
 
 #: hugin1/hugin/PanoOperation.cpp:501
 msgid "Load lens from ini file"
@@ -3344,15 +3352,16 @@ msgid ""
 "You have no permissions to write in folder \"%s\".\n"
 "Please select another folder for the final output."
 msgstr ""
+"Je hebt geen toestemming om in folder \"%s\" te schrijven.\n"
+"Selecteer s.v.p. een andere folder voor de uitvoer."
 
 #: hugin1/hugin/PanoPanel.cpp:1298
-#, fuzzy
 msgid "Select user defined output"
-msgstr "Reset gebruiker instellingen.."
+msgstr "Selecteer gebruiker gedefinieerde uitvoer..."
 
 #: hugin1/hugin/PanoPanel.cpp:1299
 msgid "User defined output|*.executor"
-msgstr ""
+msgstr "Gebruiker gedefinieerde uitvoer|*.uitvoerder"
 
 #: hugin1/hugin/PanoPanel.cpp:1611
 #, c-format
@@ -3363,6 +3372,11 @@ msgid ""
 "Decrease the canvas size on the stitch panel or select TIF or PNG as output "
 "format."
 msgstr ""
+"De breedte en hoogte van de jpeg bestanden moet kleiner zijn dan 65500 "
+"pixels. Maar je vraagt om een jpeg bestand met %dx%d pixels.\n"
+"Dit wordt niet ondersteund door het jpeg formaat.\n"
+"Verklein totale formaat op de samenvoeg tab of selecteer TIF of PNG als "
+"uitvoer."
 
 #: hugin1/hugin/PanoPanel.cpp:1625
 #, c-format
@@ -3384,6 +3398,12 @@ msgid ""
 "\n"
 "If this is too big, reduce the panorama Canvas Size or the cropped region."
 msgstr ""
+"De breedte of hoogte van het uiteindelijke panorama is meer dan 32700 "
+"pixels.\n"
+"Sommige programmas hebben problemen dergelijke grote afbeeldingente tonen.\n"
+"\n"
+"Als dit te groot is, verklein dan het totale panorama of het uitgesneden "
+"gebied."
 
 #: hugin1/hugin/PanoPanel.cpp:1641 hugin1/hugin/PanoPanel.cpp:1666
 msgid "Are you sure you want to stitch such a large panorama?"
@@ -3398,14 +3418,13 @@ msgid "Let me fix that"
 msgstr "Laat me dat repareren."
 
 #: hugin1/hugin/PanoPanel.cpp:1702
-#, fuzzy
 msgid ""
 "There are no active images in the output region.\n"
 "Please check your settings, so that at least one image is in the output "
 "region."
 msgstr ""
 "Er zijn geen actieve afbeeldingen in het uitvoer bereik.\n"
-"Controleer svp uw instellingen zodat in ieder geval één afbeelding in het "
+"Controleer s.v.p. uw instellingen zodat in ieder geval één afbeelding in het "
 "uitvoer bereik staat."
 
 #: hugin1/hugin/PanoPanel.cpp:1723 hugin1/hugin/PanoPanel.cpp:1733
@@ -3416,11 +3435,15 @@ msgid ""
 "folder.\n"
 "Are you sure that you still want to stitch it?"
 msgstr ""
+"In de folder \"%s\" is slechts %.1f MiB beschikbaar.  Dat is niet genoeg "
+"voor het huidige panorama. Verminder de panorama grootte of selecteer een "
+"andere folder.\n"
+"Wil je toch doorgaan?"
 
 #: hugin1/hugin/PapywizardImport.cpp:341
-#, fuzzy, c-format
+#, c-format
 msgid "Could not parse file %s as Papywizard XML file."
-msgstr "Kan masker van bestand %s niet uitvoeren:"
+msgstr "Kan %s niet als Papywizard XML file lezen."
 
 #: hugin1/hugin/PapywizardImport.cpp:353
 #, c-format
@@ -3429,11 +3452,13 @@ msgid ""
 "The Papywizard file \"%s\" contains %lu images, but the Hugin project "
 "contains %lu images."
 msgstr ""
+"Het huidige project komt niet overeen met het de Papywizard xml bestand.\n"
+"Het Papywizard bestand \"%s\" bevat %lu afbeeldingen, maar het Hugin project "
+"bevat %lu afbeeldingen."
 
 #: hugin1/hugin/PapywizardImport.cpp:464
-#, fuzzy
 msgid "Connecting overlapping images"
-msgstr "Proberen om alle overlappende afbeeldingen te verbinden."
+msgstr "Verbinden van overlappende afbeeldingen"
 
 #: hugin1/hugin/PluginItems.cpp:71
 msgid "Miscellaneous"
@@ -3525,7 +3550,7 @@ msgstr "Fins"
 
 #: hugin1/hugin/PreferencesDialog.cpp:204
 msgid "Valencian (Southern Catalan)"
-msgstr ""
+msgstr "Valenciaans (Zuid Catalaans)"
 
 #: hugin1/hugin/PreferencesDialog.cpp:305
 msgid "Select Enblend"
@@ -3543,7 +3568,6 @@ msgstr "Selecteer Enfuse"
 #: hugin1/hugin/PreferencesDialog.cpp:351
 #: hugin1/hugin/PreferencesDialog.cpp:428 hugin1/hugin/xrc/pref_dialog.xrc:967
 #: hugin1/hugin/xrc/pref_dialog.xrc:1026
-#, fuzzy
 msgid "Select ExifTool argfile"
 msgstr "Selecteer het ExifTool arg bestand"
 
@@ -3551,18 +3575,17 @@ msgstr "Selecteer het ExifTool arg bestand"
 #: hugin1/hugin/PreferencesDialog.cpp:401
 #: hugin1/hugin/PreferencesDialog.cpp:430
 #: hugin1/hugin/PreferencesDialog.cpp:466
-#, fuzzy
 msgid "ExifTool Argfiles (*.arg)|*.arg|All Files(*)|*"
-msgstr "ExifTool arg bestanden (*.arg)|*.arg|Alle bestanden (*)|*"
+msgstr "ExifTool Arg bestanden (*.arg)|*.arg|Alle bestanden (*)|*"
 
 #: hugin1/hugin/PreferencesDialog.cpp:384
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should the argfile be created with default tags?"
 msgstr ""
 "Bestand %s bestaat niet.\n"
-"Moet het arg bestand met standaard tags gemaakt worden?"
+"Moet het arg bestand met standaard labels gemaakt worden?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:385
 #: hugin1/hugin/PreferencesDialog.cpp:395
@@ -3572,13 +3595,12 @@ msgid "Exiftool argfile"
 msgstr "ExifTool arg bestand"
 
 #: hugin1/hugin/PreferencesDialog.cpp:394
-#, fuzzy
 msgid ""
 "No file selected.\n"
 "Should an argfile be created with default tags?"
 msgstr ""
 "Geen bestand geselecteerd.\n"
-"Moet een arg bestand met standaard tags gemaakt worden?"
+"Moet een arg bestand met standaard labels gemaakt worden?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:399
 #: hugin1/hugin/PreferencesDialog.cpp:464
@@ -3593,22 +3615,21 @@ msgid "Could not save file \"%s\"."
 msgstr "Kan bestand \"%s\" niet opslaan:"
 
 #: hugin1/hugin/PreferencesDialog.cpp:446
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should an empty argfile be created?"
 msgstr ""
 "Bestand %s bestaat niet.\n"
-"Moet het arg bestand met standaard tags gemaakt worden?"
+"Moet een leeg arg bestand gemaakt worden?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:459
-#, fuzzy
 msgid ""
 "No file selected.\n"
 "Should an empty argfile be created?"
 msgstr ""
 "Geen bestand geselecteerd.\n"
-"Moet een arg bestand met standaard tags gemaakt worden?"
+"Moet een leeg arg bestand gemaakt worden?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:780
 msgid "Really reset displayed preferences to default values?"
@@ -3675,17 +3696,18 @@ msgid ""
 "Drag a rectangle and select the desired action for the control points in the "
 "selected rectangle."
 msgstr ""
+"Trek een rechthoek en selecteer een bewerking voor de ijkpunten in de "
+"geselecteerde rechthoek."
 
 #: hugin1/hugin/PreviewEditCPTool.cpp:133
-#, fuzzy
 msgid "Create control points here"
-msgstr "Maak ijkpunten"
+msgstr "Hier ijkpunten maken"
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/hugin/PreviewEditCPTool.cpp:138
-#, fuzzy, c-format
+#, c-format
 msgid "Remove %lu control points"
-msgstr "%lu ijkpunten verwijderd"
+msgstr "Verwijderen van %lu ijkpunten"
 
 #: hugin1/hugin/PreviewFrame.cpp:122
 msgid "Panorama preview"
@@ -3767,9 +3789,8 @@ msgid "Could not set environment variable PYTHONHOME"
 msgstr "Kan omgevings variabele PYTHONHOME niet instellen"
 
 #: hugin1/hugin/huginApp.cpp:357
-#, fuzzy
 msgid "Open Batch Processor"
-msgstr "Bulkprocessor"
+msgstr "Open Bulkprocessor"
 
 #: hugin1/hugin/huginApp.cpp:358 hugin1/hugin/xrc/main_menu.xrc:200
 #: hugin1/hugin/xrc/main_menu.xrc:230 hugin1/hugin/xrc/preview_frame.xrc:1955
@@ -3777,13 +3798,13 @@ msgid "Opens PTBatcher, the batch processor for Hugin's project files"
 msgstr "Opent PTBatcher, de bulkprocessor voor Hugin's projectbestanden"
 
 #: hugin1/hugin/huginApp.cpp:363
-#, fuzzy
 msgid "Open Lens calibrate tool"
-msgstr "Hugin Lens calibratie GUI"
+msgstr "Open Lens calibratie GUI"
 
 #: hugin1/hugin/huginApp.cpp:364
 msgid "Opens Calibrate_lens_gui, a simple GUI for lens calibration"
 msgstr ""
+"Opent lens calibratie gui, een simpele applicatie voor lens calibratie."
 
 #: hugin1/icpfind/AutoCtrlPointCreator.cpp:222
 #, c-format
@@ -3996,26 +4017,23 @@ msgstr "Bezig af te sluiten..."
 
 #: hugin1/ptbatcher/Batch.cpp:609
 msgid "Prepare to hibernate..."
-msgstr ""
+msgstr "Voorbereiden voor slaapstand..."
 
 #: hugin1/ptbatcher/Batch.cpp:610
-#, fuzzy
 msgid "Initializing hibernating..."
-msgstr "Beginnen met afsluiten..."
+msgstr "Beginnen met slaapstand..."
 
 #: hugin1/ptbatcher/Batch.cpp:613
 msgid "Prepare to suspend..."
-msgstr ""
+msgstr "Voorbereiden sluimerstand..."
 
 #: hugin1/ptbatcher/Batch.cpp:614
-#, fuzzy
 msgid "Initializing suspend mode..."
-msgstr "Beginnen met afsluiten..."
+msgstr "Beginnen met sluimerstand..."
 
 #: hugin1/ptbatcher/Batch.cpp:663
-#, fuzzy
 msgid "Specify project file"
-msgstr "Opslaan project bestand"
+msgstr "Specificeer project bestand"
 
 #: hugin1/ptbatcher/Batch.cpp:684
 msgid "No output prefix specified"
@@ -4050,18 +4068,17 @@ msgid "Running batch..."
 msgstr "Bulkproces wordt uitgevoerd..."
 
 #: hugin1/ptbatcher/Batch.cpp:842
-#, fuzzy
 msgid "PTBatcherGUI is stitching"
-msgstr "PTBatcherGUI gestart"
+msgstr "PTBatcherGUI is aan het samenvoegen"
 
 #: hugin1/ptbatcher/Batch.cpp:848
 msgid "Batch already in progress."
 msgstr "Bulkproces loopt al."
 
 #: hugin1/ptbatcher/Batch.cpp:862
-#, fuzzy, c-format
+#, c-format
 msgid "Running command \"%s\""
-msgstr "Uitvoeren commando \""
+msgstr "Uitvoeren commando \"%s\""
 
 #: hugin1/ptbatcher/Batch.cpp:881
 #, c-format
@@ -4096,27 +4113,24 @@ msgid "Should the loading of the batch queue be skipped?"
 msgstr "Moet het laden van de bulk reeks overgeslagen worden?"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:206
-#, fuzzy
 msgid "Do nothing"
-msgstr "Niets"
+msgstr "Niets gebeurt nu"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:207
-#, fuzzy
 msgid "Close PTBatcherGUI"
-msgstr "PTBatcherGUI"
+msgstr "PTBatcherGUI afsluiten"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:210
-#, fuzzy
 msgid "Shutdown computer"
-msgstr "Beeindigen bij gereed"
+msgstr "Computer afsluiten"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:218
 msgid "Suspend computer"
-msgstr ""
+msgstr "Sluimerstand computer"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:222
 msgid "Hibernate computer"
-msgstr ""
+msgstr "Slaapstand computer"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:390
 msgid "Please enter the command-line application to execute:"
@@ -4135,9 +4149,9 @@ msgid "Specify project source file(s)"
 msgstr "Geef bronbestand van project aan."
 
 #: hugin1/ptbatcher/BatchFrame.cpp:498
-#, fuzzy, c-format
+#, c-format
 msgid "Added projects from dir %s"
-msgstr "Voeg projecten toe uit dir"
+msgstr "Voeg projecten toe uit dir %s"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:509
 #, c-format
@@ -4178,7 +4192,7 @@ msgstr "help bestand:"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:698
 msgid "Specify batch file to open"
-msgstr "Kies te openen bulkbestand"
+msgstr "Kies te openen bulkwachtrij bestand"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:700
 msgid "Batch files (*.ptb)|*.ptb;|All files (*)|*"
@@ -4198,7 +4212,7 @@ msgstr "Bulkproces gepauzeerd"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:764 hugin1/ptbatcher/BatchFrame.cpp:1457
 msgid "Pausing processing Hugin's batch queue"
-msgstr ""
+msgstr "Pauzeren van Hugin's bulk wachtrij"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:771
 msgid "Continuing batch..."
@@ -4207,7 +4221,7 @@ msgstr "Verder gaan met het bulkproces"
 #: hugin1/ptbatcher/BatchFrame.cpp:774 hugin1/ptbatcher/BatchFrame.cpp:1226
 #: hugin1/ptbatcher/BatchFrame.cpp:1451
 msgid "Processing Hugin's batch queue"
-msgstr ""
+msgstr "Uitvoeren van Hugin's bulk wachtrij"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:790
 msgid ""
@@ -4226,9 +4240,9 @@ msgstr ""
 "Wilt u het afbreken?"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:836
-#, fuzzy, c-format
+#, c-format
 msgid "Removed project %s"
-msgstr "Verwijderd project"
+msgstr "Verwijderd project %s"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:845
 msgid "Please select a project to remove"
@@ -4243,9 +4257,9 @@ msgstr ""
 "Wilt u het afbreken?"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:872
-#, fuzzy, c-format
+#, c-format
 msgid "Reset project %s"
-msgstr "Reset project "
+msgstr "Reset project %s"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:877
 msgid "Please select a project to reset"
@@ -4261,7 +4275,7 @@ msgstr ""
 
 #: hugin1/ptbatcher/BatchFrame.cpp:925
 msgid "Specify batch file to save"
-msgstr "Geef te bewaren bulkbestand aan "
+msgstr "Geef te bewaren bulk wachtrij bestand aan "
 
 #: hugin1/ptbatcher/BatchFrame.cpp:927
 msgid "Batch file (*.ptb)|*.ptb;|All files (*)|*"
@@ -4273,15 +4287,17 @@ msgid ""
 "This can have negative effects on performance.\n"
 "Should the batch queue be cleared now?"
 msgstr ""
+"De bulk wachtrij bevat vele opdrachten.\n"
+"Dit kan negatieve effecten hebben op de prestaties.\n"
+"Moet de bulk wachtrij nu geleegd worden?"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:1164
-#, fuzzy
 msgid "Clear batch queue now"
-msgstr "Bulk leegmaken"
+msgstr "Bulk wachtrij leegmaken"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:1164
 msgid "Keep batch queue"
-msgstr ""
+msgstr "Bulk wachtrij behouden"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:1223
 msgid "Starting batch"
@@ -4375,14 +4391,12 @@ msgstr ""
 "vol."
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:385
-#, fuzzy
 msgid "Remove image from project"
-msgstr "Verwijder de geselecteerde afbeelding(en) uit dit project"
+msgstr "Verwijder afbeelding uit project"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:391
-#, fuzzy
 msgid "Split here into two panoramas"
-msgstr "Panoramas zoeken"
+msgstr "Hier splitsen in twee panoramas"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:476
 #, c-format
@@ -4409,12 +4423,12 @@ msgstr "%d afbeeldingen: %s"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:922
 msgid "%M:%S min"
-msgstr ""
+msgstr "%M:%S min"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:926
 #, c-format
 msgid "%S s"
-msgstr ""
+msgstr "%S s"
 
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:162
 msgid "stitch_project.pto [output prefix]|assistant_project.pto"
@@ -4553,9 +4567,9 @@ msgid "Log files (*.log)|*.log|All files (*)|*"
 msgstr "Log bestanden (*.log)|*.log|Alle bestanden (*)|*"
 
 #: hugin1/stitch_project/hugin_stitch_project.cpp:371
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find the specified user output file \"%s\"."
-msgstr "Kan projectbestand %s niet openen:"
+msgstr "Kan opgegeven uitvoerbestand \"%s\" niet vinden."
 
 #: hugin1/stitch_project/hugin_stitch_project.cpp:380
 msgid "Specify project source project file"
@@ -4671,7 +4685,7 @@ msgstr ""
 
 #: hugin1/hugin/xrc/batch_frame.xrc:100
 msgid "When done"
-msgstr ""
+msgstr "Wanneer klaar"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:117
 msgid "Verbose output"
@@ -4768,21 +4782,18 @@ msgid "Load distortion data"
 msgstr "Lees lens vervormings data:"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:312
-#, fuzzy
 msgid "Tries to load distortion data from lens database if checked."
 msgstr ""
-"Probeert distortie data te laden uit de lensfun database indien aangevinkt."
+"Probeert vervormings data te laden uit de lens database indien aangevinkt."
 
 #: hugin1/hugin/xrc/batch_frame.xrc:319
 msgid "Load vignetting data"
 msgstr "Lees vignettering data"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:320
-#, fuzzy
 msgid "Tries to load vignetting data from lens database if checked."
 msgstr ""
-"Probeert vignetterings data te laden uit de lensfun database indien "
-"aangevinkt."
+"Probeert vignetterings data te laden uit de lens database indien aangevinkt."
 
 #: hugin1/hugin/xrc/batch_frame.xrc:350 hugin1/hugin/xrc/lenscal_frame.xrc:200
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:204
@@ -4797,9 +4808,8 @@ msgid "Found panoramas"
 msgstr "Gevonden panoramas"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:376
-#, fuzzy
 msgid "Camera:"
-msgstr "Camera"
+msgstr "Camera:"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:384 hugin1/hugin/xrc/lensdb_dialogs.xrc:14
 msgid "Lens:"
@@ -4815,9 +4825,8 @@ msgid "Focal length:"
 msgstr "Brandpuntsafstand:"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:400
-#, fuzzy
 msgid "Start date (duration):"
-msgstr "Start uitvoeren bulkproces"
+msgstr "Start datum (duur):"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:437
 msgid "Send selected panoramas to queue"
@@ -4844,81 +4853,72 @@ msgid "Status report"
 msgstr "Status rapport"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:7
-#, fuzzy
 msgid "Add project to stitching &queue..."
-msgstr "Voeg project toe aan de samenvoegen wachtrij"
+msgstr "Voeg project toe aan de samenvoegen wachtrij..."
 
 #: hugin1/hugin/xrc/batch_menu.xrc:8
 msgid "Adds a project to the stitching queue"
 msgstr "Voegt project toe aan de samenvoegen wachtrij"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:11
-#, fuzzy
 msgid "Add project to &assistant queue..."
-msgstr "Voeg project toe aan Assistent wachtij"
+msgstr "Voeg project toe aan &Assistent wachtrij..."
 
 #: hugin1/hugin/xrc/batch_menu.xrc:12
 msgid "Adds a project to the assistant queue"
 msgstr "Voeg een project toe aan de Assistent wachtij"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:15
-#, fuzzy
 msgid "&Remove project"
-msgstr "Verwijder project"
+msgstr "Verwijde&r project"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:16 hugin1/hugin/xrc/batch_toolbar.xrc:61
 msgid "Removes selected project from the batch list"
 msgstr "Verwijder het geselecteerde project uit het bulkproces"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:20
-#, fuzzy
 msgid "&Project files..."
-msgstr "Project bestanden"
+msgstr "&Project bestanden..."
 
 #: hugin1/hugin/xrc/batch_menu.xrc:21 hugin1/hugin/xrc/batch_toolbar.xrc:67
 msgid "Appends all project files from a directory and subdirectories"
 msgstr "Voeg alle projectbestanden toe uit directory en subdirectories"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:24
-#, fuzzy
 msgid "&Images..."
-msgstr "Afbeeldingen"
+msgstr "Afbeeld&ingen..."
 
 #: hugin1/hugin/xrc/batch_menu.xrc:25
 msgid "Searches in directories for image files suitable for panoramas"
 msgstr "Zoekt in folders naar geschikte afbeeldingen voor een panorama"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:27
-#, fuzzy
 msgid "Search &directory for..."
-msgstr "Zoek in directory naar ..."
+msgstr "Zoek in &directory naar ..."
 
 #: hugin1/hugin/xrc/batch_menu.xrc:28
 msgid "Searches in directories for existing projects or for images"
 msgstr "Zoekt in folders naar bestaande projecten of naar afbeeldingen"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:32
-#, fuzzy
 msgid "&Open batch"
-msgstr "Open bulk"
+msgstr "&Open bulk"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:33 hugin1/hugin/xrc/batch_toolbar.xrc:16
 msgid "Opens a batch file with a list of projects"
 msgstr "Opent een bulkbestand met een lijst van projecten"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:36
-#, fuzzy
 msgid "&Save batch"
-msgstr "Opslaan Bulkproces"
+msgstr "Op&slaan Bulkproces"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:37 hugin1/hugin/xrc/batch_toolbar.xrc:22
 msgid "Saves a batch file with a list of projects"
 msgstr "Bewaar een bulkbestand met een lijst van projecten"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:40
-#, fuzzy
 msgid "&Clear batch"
-msgstr "Bulk leegmaken"
+msgstr "&Bulk leegmaken"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:41 hugin1/hugin/xrc/batch_toolbar.xrc:10
 msgid "Clears the batch list"
@@ -4926,7 +4926,7 @@ msgstr "bulk leegmaken"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:45
 msgid "&Minimize to tray"
-msgstr ""
+msgstr "&Minimaliseer naar tray"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:51 hugin1/hugin/xrc/lenscal_frame.xrc:456
 #: hugin1/hugin/xrc/main_menu.xrc:221 hugin1/hugin/xrc/preview_frame.xrc:1963
@@ -5114,9 +5114,8 @@ msgid "add a new Point"
 msgstr "Voeg nieuw punt toe"
 
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:324
-#, fuzzy
 msgid "Create control points for current image pair"
-msgstr "Maak ijkpunten"
+msgstr "Maak ijkpunten voor huidig paar afbeeldingen"
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:329
@@ -5126,9 +5125,8 @@ msgstr "Verwijder ijkpunten op wolken"
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:336
-#, fuzzy
 msgid "Remove worst control points"
-msgstr "Verwijder ijkpunten"
+msgstr "Verwijder slechtste ijkpunten"
 
 #: hugin1/hugin/xrc/cp_list_frame.xrc:4 hugin1/hugin/xrc/main_frame.xrc:30
 #: hugin1/hugin/xrc/main_menu.xrc:87
@@ -5440,14 +5438,12 @@ msgid "Image variables"
 msgstr "Afbeeldingsvariabelen"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:665
-#, fuzzy
 msgid "Images per stack:"
-msgstr "Afbeeldingen per set"
+msgstr "Afbeeldingen per set:"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:687
-#, fuzzy
 msgid "Link position of images in each stack"
-msgstr "Verbind posities binnen deze set."
+msgstr "Verbind posities binnen deze set"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:689
 msgid ""
@@ -5455,11 +5451,12 @@ msgid ""
 "Uncheck this option if the images in each stack need an alignment to each "
 "other."
 msgstr ""
+"Vink deze optie indien geschoten vanaf statief.\n"
+"Zet optie uit indien de afbeeldingen in elke set gelinkt moeten worden."
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:694
-#, fuzzy
 msgid "Image stack"
-msgstr "Afbeeldingen per set"
+msgstr "Afbeeldingen set"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:719
 msgid "Enter image count per stack"
@@ -5536,10 +5533,9 @@ msgid "Settings:"
 msgstr "Instellingen:"
 
 #: hugin1/hugin/xrc/images_panel.xrc:252
-#, fuzzy
 msgid "Run selected control point detector on the selected images"
 msgstr ""
-"Verwijder ijkpunten die de geselecteerde afbeeldingen met elkaar verbinden"
+"Voer geselecteerde ijkpunten detector uit op de geselecteerde afbeeldingen"
 
 #: hugin1/hugin/xrc/images_panel.xrc:276 hugin1/hugin/xrc/lenscal_frame.xrc:366
 #: hugin1/hugin/xrc/main_tool.xrc:52
@@ -5744,6 +5740,10 @@ msgid ""
 "Consider assigning stacks manually in the panorama editor to help Hugin to "
 "process the panorama."
 msgstr ""
+"Het project beslaat een groot bereik qua helderheid maar Hugin kon niet "
+"automatisch sets detecteren.\n"
+"Overweeg om handmatig sets te bepalen in de panorama bewerker om het proces "
+"te vergemakkelijken voor Hugin."
 
 #: hugin1/hugin/xrc/main_frame.xrc:157 hugin1/hugin/xrc/main_frame.xrc:303
 #: hugin1/hugin/xrc/pano_panel.xrc:1052
@@ -5760,41 +5760,41 @@ msgid ""
 "corresponding stack numbers to the images. Should the position of images in "
 "each stack be linked?"
 msgstr ""
+"Hugin heeft afbeedingen sets gevonden in de toegevoegde afbeeldingen en zal "
+"overeenkomende set nummers toekennen. Moet de positie van afbeeldingenin "
+"elke set verbonden worden?"
 
 #: hugin1/hugin/xrc/main_frame.xrc:317 hugin1/hugin/xrc/main_tool.xrc:51
 msgid "Re-optimize"
 msgstr "Opnieuw optimaliseren"
 
 #: hugin1/hugin/xrc/main_frame.xrc:323
-#, fuzzy
 msgid "Don't optimize now"
-msgstr "Optimaliseer nu!"
+msgstr "Nu niet optimaliseren"
 
 #: hugin1/hugin/xrc/main_frame.xrc:335
 msgid "Edit cp tools"
-msgstr ""
+msgstr "Bewerk ijkpunt geredschap"
 
 #: hugin1/hugin/xrc/main_frame.xrc:345
-#, fuzzy
 msgid "Link positions"
-msgstr "Reset posities"
+msgstr "Verbind posities"
 
 #: hugin1/hugin/xrc/main_frame.xrc:363
 msgid "Generate control points, additional cpfind parameters:"
-msgstr ""
+msgstr "Genereer ijkpunten, additionele cpfind parameters:"
 
 #: hugin1/hugin/xrc/main_frame.xrc:384
 msgid "Connect orphaned images (with geocpset)"
-msgstr ""
+msgstr "Verbind wees afbeeldingen (met geocpset)"
 
 #: hugin1/hugin/xrc/main_frame.xrc:390
-#, fuzzy
 msgid "Control point generation"
-msgstr "IJkpunten detector optie"
+msgstr "IJkpunten maken"
 
 #: hugin1/hugin/xrc/main_frame.xrc:416
 msgid "Import positions from Papywizard XML"
-msgstr ""
+msgstr "Importeer posities van Papywizard XML"
 
 #: hugin1/hugin/xrc/main_menu.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:1838
 msgid "&Undo"
@@ -5831,9 +5831,8 @@ msgid "Send to assistant &queue"
 msgstr "Stuur naar de Assistent wachtij"
 
 #: hugin1/hugin/xrc/main_menu.xrc:28
-#, fuzzy
 msgid "Optimize only active &images"
-msgstr "Aantal ijkpunten per afbeelding:"
+msgstr "Optimaliseer alleen actieve afbeeld&ingen"
 
 #: hugin1/hugin/xrc/main_menu.xrc:29 hugin1/hugin/xrc/optimize_panel.xrc:40
 msgid ""
@@ -5961,32 +5960,29 @@ msgid "Expert"
 msgstr "Expert"
 
 #: hugin1/hugin/xrc/main_menu.xrc:121
-#, fuzzy
 msgid "&Interface"
-msgstr "Interface"
+msgstr "&Interface"
 
 #: hugin1/hugin/xrc/main_menu.xrc:125
-#, fuzzy
 msgid "&Stitch"
-msgstr "Samenvoegen!"
+msgstr "&Samenvoegen"
 
 #: hugin1/hugin/xrc/main_menu.xrc:127
 msgid "Stitch with the settings on the pano tabs"
-msgstr ""
+msgstr "Samenvoegen met instellingen uit de pano tabs"
 
 #: hugin1/hugin/xrc/main_menu.xrc:130
-#, fuzzy
 msgid "Stitch user defined output..."
-msgstr "Reset gebruiker instellingen.."
+msgstr "Samenvoegen met gebruiker instellingen.."
 
 #: hugin1/hugin/xrc/main_menu.xrc:131
 msgid "Stitch with the settings from a user defined output sequence"
 msgstr ""
+"Samenvoegen met gebruiker gedefinieerde instellingen voor uitvoer volgorde"
 
 #: hugin1/hugin/xrc/main_menu.xrc:133
-#, fuzzy
 msgid "&Output"
-msgstr "Te produceren uitvoer:"
+msgstr "Uitv&oer"
 
 #: hugin1/hugin/xrc/main_menu.xrc:140 hugin1/hugin/xrc/preview_frame.xrc:1897
 msgid "Some information on the different buttons and so on."
@@ -6097,9 +6093,8 @@ msgstr ""
 
 #: hugin1/hugin/xrc/main_menu.xrc:194 hugin1/hugin/xrc/preview_frame.xrc:1949
 #: hugin1/hugin/xrc/preview_frame.xrc:1990
-#, fuzzy
 msgid "Most recently &used projects"
-msgstr "Open recente projecten"
+msgstr "Meest recent gebr&uikte projecten"
 
 #: hugin1/hugin/xrc/main_menu.xrc:195 hugin1/hugin/xrc/preview_frame.xrc:1950
 #: hugin1/hugin/xrc/preview_frame.xrc:1991
@@ -6121,11 +6116,11 @@ msgstr "Voeg een bestaand projectie bestand samen met het huidige project."
 
 #: hugin1/hugin/xrc/main_menu.xrc:208
 msgid "Import settings from Papywizard &XML file..."
-msgstr ""
+msgstr "Importeer instellingen uit Papywizard &XML bestand..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:209
 msgid "Read shoot settings from a Papywizard XML file"
-msgstr ""
+msgstr "Lees opname instellingen uit Papywizard XML bestand"
 
 #: hugin1/hugin/xrc/main_menu.xrc:212 hugin1/hugin/xrc/main_menu.xrc:238
 msgid "Apply &Template"
@@ -6304,15 +6299,14 @@ msgid "Show extent of active masks and crop"
 msgstr "Toon extent van aktieve maskers en uitsnijdingen"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:221
-#, fuzzy
 msgid "All images of selected lens"
-msgstr "Te veel afbeeldingen geselecteerd"
+msgstr "Alle afbeeldingen voor de geselecteerde lens"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:222
 msgid ""
 "Applies all changes to all images with the same lens as the selected "
 "image(s)."
-msgstr ""
+msgstr "Pas alle wijzigen toe op alle afbeeldingen met dezelfde lens"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:234
 #: hugin1/hugin/xrc/pano_panel.xrc:364
@@ -6779,18 +6773,16 @@ msgid "Output parameters"
 msgstr "Uitvoer parameters"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1357 hugin1/hugin/xrc/pref_dialog.xrc:827
-#, fuzzy
 msgid "Seam blend mode:"
-msgstr "Blend modus:"
+msgstr "Naand Blend modus:"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1365 hugin1/hugin/xrc/pref_dialog.xrc:835
 msgid "hard seam (faster)"
-msgstr ""
+msgstr "Harde naad (sneller)"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1366 hugin1/hugin/xrc/pref_dialog.xrc:836
-#, fuzzy
 msgid "blend seam"
-msgstr "enblend fout"
+msgstr "blend naad"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:15
 msgid "Resource Usage"
@@ -6886,7 +6878,7 @@ msgid ""
 "%lens - lens (of first image)\n"
 "%projectname - project filename (only for output prefix)"
 msgstr ""
-"De volgende  voorbeelden worden automatisch vervangen:\n"
+"De volgende  panorama labels worden automatisch vervangen:\n"
 "%firstimage - bestandsnaam van eerste afbeelding\n"
 "%lastimage - bestandsnaam van laatste afbeelding\n"
 "%#images - aantal afbeeldingen\n"
@@ -7108,18 +7100,16 @@ msgid "default JPEG compression setting"
 msgstr "standaard JPEG compressie"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:807
-#, fuzzy
 msgid "Blender"
-msgstr "Blender:"
+msgstr "Samenvoeger"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:813
-#, fuzzy
 msgid "Default blender:"
-msgstr "Standaard bestandsnaam"
+msgstr "Standaard samenvoeger:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:820
 msgid "Default blender which is used for new projects."
-msgstr ""
+msgstr "Standaard samenvoeger voor nieuwe projecten."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:852
 msgid "Processor"
@@ -7177,7 +7167,6 @@ msgid "Copy metadata into final files using ExifTool"
 msgstr "Kopieer metadata in uiteindelijke afbeelding m.b.v. ExifTool"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:926
-#, fuzzy
 msgid "ExifTool options"
 msgstr "ExifTool opties"
 
@@ -7187,20 +7176,21 @@ msgid ""
 "intermediate images.\n"
 "Placeholders will not be replaced."
 msgstr ""
+"Het volgende arg bestand wordt gebruikt om de labels uit de eerste "
+"afbeelding te kopiëren naar de tussen afbeeldingen.\n"
+"Panorama labels zullen niet aangepast worden."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:952
-#, fuzzy
 msgid "Intermediate ExifTool argfile:"
-msgstr "Bewerk ExifTool arg bestand"
+msgstr "Exiftool tussen arg bestand:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:958 hugin1/hugin/xrc/pref_dialog.xrc:1017
 msgid "Leave empty for default"
 msgstr "Laat leeg om standaardwaarde te gebruiken"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:975 hugin1/hugin/xrc/pref_dialog.xrc:1034
-#, fuzzy
 msgid "Edit selected ExifTool argfile"
-msgstr "Selecteer het ExifTool arg bestand"
+msgstr "Bewerk geselecteerde ExifTool arg bestand"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:994
 msgid ""
@@ -7209,11 +7199,15 @@ msgid ""
 "It is applied additional to the above argfile for the intermediate images.\n"
 "Placeholders in this argfile will replaced before running exiftool."
 msgstr ""
+"Het volgende arg bestand wordt gebruikt om labels uit de eerste afbeelding "
+"naar het uiteindelijke panorama te kopiëren.\n"
+"Het wordt bovenop het arg bestand voor de tussen afbeeldingen toegepast.\n"
+"Panorama labels in het arg bestand worden vervangen voor uitvoering van "
+"exiftool."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1011
-#, fuzzy
 msgid "Final ExifTool argfile:"
-msgstr "ExifTool arg bestand:"
+msgstr "Uiteindelijk ExifTool arg bestand:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1051
 msgid "Create Photo Sphere XMP data"
@@ -7248,9 +7242,8 @@ msgid "0 for automatic detection"
 msgstr "0 voor automatische detectie"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1105
-#, fuzzy
 msgid "Stitching (2)"
-msgstr "Samenvoegen"
+msgstr "Samenvoegen (2)"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1121
 msgid "Default Interpolator (i):"
@@ -7368,40 +7361,38 @@ msgid "Photometric optimizer"
 msgstr "Fotometrische optimalisator"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1435
-#, fuzzy
 msgid "Warnings"
-msgstr "Attentie"
+msgstr "Waarschuwingen"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1439
 msgid "Show message about saving project file and output prefix"
-msgstr ""
+msgstr "Toon melding over opslaan project bestand en voorloopnaam uitvoer"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1446
 msgid "Show warning about big exposure difference when adding images"
 msgstr ""
+"Toon waarschuwing by grote belichtings verschillen tijdens toevoegen van "
+"afbeeldingen"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1459
 msgid "After \"edit cp\" tool"
-msgstr ""
+msgstr "Na \"bewerk ijkpunten\" gereedschap"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1467
 msgid "Ask user"
-msgstr ""
+msgstr "Vraag gebruiker"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1468
-#, fuzzy
 msgid "Re-optimize panorama"
-msgstr "Optimaliseren Panorama"
+msgstr "Opnieuw Panorama optimaliseren"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1469
-#, fuzzy
 msgid "Don't optimize panorama"
-msgstr "Optimaliseer nu!"
+msgstr "Panorama niet optimaliseren"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1475
-#, fuzzy
 msgid "Edit cp tool (on fast preview window)"
-msgstr "De tips worden alleen in het \"snelle voorbeeld\"  venster getoond"
+msgstr "Bewerk ijkpunten gereedschap (alleen in het \"snelle voorbeeld\")"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1483
 msgid "Misc"
@@ -7412,7 +7403,6 @@ msgid "Preferences - hugin"
 msgstr "Instellingen - Hugin"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1564 hugin1/hugin/xrc/pref_dialog.xrc:1623
-#, fuzzy
 msgid "Edit ExifTool argfile"
 msgstr "Bewerk ExifTool arg bestand"
 
@@ -7435,6 +7425,23 @@ msgid ""
 "\n"
 "The placeholders are case sensitive."
 msgstr ""
+"De volgende panorama labels worden vervangen voordat ExifTool aangeroepen "
+"wordt:\n"
+"%projection - projectie naam (Engels)\n"
+"%projectionNumber - nummer van de projectie\n"
+"%hfov - horizontale beeldhoek van het panorama\n"
+"%vfov - verticale beeldhoekvan het panorama\n"
+"%ev - belichtingswaarde van het panorama\n"
+"%nrImages - aantal actieve afbeeldingen\n"
+"%nrAllImages - totaal aantal afbeeldingen in project (inclusief inactieve "
+"afbeeldingen)\n"
+"%fullwidth - breedte van uitvoer canvas\n"
+"%fullheight - hoogte van uitvoer canvas\n"
+"%width - breedte van uitvoer gebied\n"
+"%height - hoogte van uitvoer gebied\n"
+"%projectname - naam van pto project bestand\n"
+"\n"
+"De panorama labels zijn hoofdletter gevoelig."
 
 #: hugin1/hugin/xrc/preview_frame.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:632
 #: hugin1/hugin/xrc/preview_frame.xrc:1494
@@ -7575,17 +7582,15 @@ msgstr "Grijs selectie werktuig"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:416
 #: hugin1/hugin/xrc/preview_frame.xrc:1270
-#, fuzzy
 msgid "Create or delete control points in selected rectangle."
-msgstr "Verwijder IJkpunten detector instelling"
+msgstr "Vind of verwijder ijkpunten in de geselecteerde rechthoek"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:417
 #: hugin1/hugin/xrc/preview_frame.xrc:426
 #: hugin1/hugin/xrc/preview_frame.xrc:1271
 #: hugin1/hugin/xrc/preview_frame.xrc:1280
-#, fuzzy
 msgid "Edit CP"
-msgstr "&Bewerk"
+msgstr "B&ewerk ijkpunt(en)"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:453
 #: hugin1/hugin/xrc/preview_frame.xrc:1307
@@ -7784,33 +7789,28 @@ msgid "Interface"
 msgstr "Interface"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2001
-#, fuzzy
 msgid "All images"
-msgstr "Voeg afbeeldingen toe"
+msgstr "Alle afbeeldingen"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2006
 msgid "Image with median exposure of each stack"
-msgstr ""
+msgstr "Afbeelding met de gemiddelde belichting voor elke set"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2010
-#, fuzzy
 msgid "Brightest image of each stack"
-msgstr "Geef aantal afbeeldingen per set"
+msgstr "Lichtste afbeelding van elke set"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2014
-#, fuzzy
 msgid "Darkest image of each stack"
-msgstr "Verbind posities binnen deze set."
+msgstr "Donkerste afbeelding van elke set"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2019
-#, fuzzy
 msgid "Keep currently selected images"
-msgstr "Wijzig lens van geselecteerde afbeeldingen"
+msgstr "Behoud huidige geselecteerde afbeeldingen"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2024
-#, fuzzy
 msgid "Reset selection"
-msgstr "Reset posities"
+msgstr "Reset selectie"
 
 #: hugin1/hugin/xrc/reset_dialog.xrc:20
 msgid "Translation parameters"
