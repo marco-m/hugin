@@ -431,7 +431,7 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     wxString showAllLabel(_("All"));
     showAllLabel.Append(wxT("\u25bc"));
 #if wxCHECK_VERSION(2,9,2)
-    m_selectAllButton = new wxButton(panel, ID_SHOW_ALL, showAllLabel);
+    m_selectAllButton = new wxButton(panel, ID_SHOW_ALL, showAllLabel, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     m_selectAllButton->SetBitmap(bitmap, wxLEFT);
     m_selectAllButton->SetBitmapMargins(0, 0);
 #else
@@ -469,7 +469,7 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     };
     bitmap.LoadFile(huginApp::Get()->GetXRCPath()+wxT("data/preview_show_none.png"),wxBITMAP_TYPE_PNG);
 #if wxCHECK_VERSION(2,9,2)
-    wxButton* select_none=new wxButton(panel,ID_SHOW_NONE,_("None"));
+    wxButton* select_none=new wxButton(panel,ID_SHOW_NONE,_("None"),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
     select_none->SetBitmap(bitmap,wxLEFT);
     select_none->SetBitmapMargins(0,0);
 #else
