@@ -28,14 +28,14 @@ msgstr ""
 "Project-Id-Version: cs_CZ\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2016-05-29 09:14+0200\n"
-"PO-Revision-Date: 2015-06-09 15:08+0100\n"
+"PO-Revision-Date: 2016-06-25 09:50+0100\n"
 "Last-Translator: Václav Černý <vatoz@seznam.cz>\n"
 "Language-Team: Čeština\n"
 "Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.5.5\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:69
@@ -351,7 +351,7 @@ msgstr "chyba při parsování panotools skriptu: %s"
 #: hugin1/base_wx/RunStitchPanel.cpp:146
 #, c-format
 msgid "Can't open user defined output sequence \"%s\"."
-msgstr ""
+msgstr "Nepodařilo se otevřít uživatelem definovanou sekvenci \"%s\"."
 
 #: hugin1/base_wx/RunStitchPanel.cpp:182
 msgid "Could not create temporary file"
@@ -645,9 +645,9 @@ msgstr "Aktualizuji metadata..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:1036
 #: hugin1/base_wx/StitchingExecutor.cpp:1040
-#, fuzzy, c-format
+#, c-format
 msgid "Stitching using \"%s\""
-msgstr "Slepuji %s"
+msgstr "Slepuji pomocí \"%s\""
 
 #: hugin1/base_wx/huginConfig.cpp:37
 msgid "first image"
@@ -828,24 +828,23 @@ msgstr ""
 msgid ""
 "Hugin supports only grayscale or RGB images (without and with alpha channel)."
 msgstr ""
+"Hugin podporuje obrázky jen v úrovních šedi či barevné (s průhledností či "
+"bez)."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:311
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File \"%s\" is a grayscale image, but other images in project are color "
 "images."
 msgstr ""
-"Soubor \"%s\" obsahuje profil \"%s\", ostatní obrázky jsou však s profilem "
-"\"%s\"."
+"Soubor \"%s\"  je v úrovních šedi, ostatní v projektu jsou plnobarevné."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:315
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File \"%s\" is a color image, but other images in project are grayscale "
 "images."
-msgstr ""
-"Soubor \"%s\" nemá vložený  icc profil, ale ostatní v projektu mají profil "
-"\"%s\" obsažený."
+msgstr "Soubor \"%s\"  je barevný, ale ostatní jsou jen v úrovních šedi."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:318
 #, fuzzy
@@ -853,9 +852,8 @@ msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image and try loading again."
 msgstr ""
-"Soubor  \"%s\" je černobílý obrázek.\n"
-"Hugin tento typ obrázků nepodporuje. Přeskakuji obrázek.\n"
-"Převeďte obrázek do stupňů šedi  a zkuste to znovu. "
+"Hugin nepodporuje takovéto míchání. Přeskakuji obrázek.\n"
+"Převeďte obrázek do stupňů šedi či RGB  a zkuste to znovu. "
 
 #: hugin1/base_wx/wxPanoCommand.cpp:335
 #, c-format
@@ -1170,7 +1168,7 @@ msgstr "prefix pro slepování"
 
 #: hugin1/executor/hugin_executor.cpp:216
 msgid "use user defined commands in given file"
-msgstr ""
+msgstr "použít uživatelem definované příkazy v zadaném souboru"
 
 #: hugin1/executor/hugin_executor.cpp:217
 msgid "only print commands"
@@ -1422,7 +1420,7 @@ msgstr "Vybrat bod v levém obrázku"
 #: hugin1/hugin/CPEditorPanel.cpp:1950
 #, c-format
 msgid "Create cp (Current setting: %s)"
-msgstr ""
+msgstr "Vytvoří kontrolní body (Současné nastavení: %s)"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2001
 msgid ""
@@ -1457,15 +1455,16 @@ msgid "Cleaning"
 msgstr "Čištění"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2116
-#, fuzzy
 msgid "Create cp"
-msgstr "Vytvořit"
+msgstr "Vytvořit bodyVytvořit"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2119
 msgid ""
 "Create control points for image pair with currently selected control point "
 "detector on photos tab."
 msgstr ""
+"Detektorem zvoleným na záložce fotografie vytvoří kontrolní body pro "
+"vybranou dvojici obrázků."
 
 #: hugin1/hugin/CPEditorPanel.cpp:2127 hugin1/hugin/xrc/cp_editor_panel.xrc:328
 msgid "Celeste"
@@ -1476,9 +1475,8 @@ msgid "Tries to remove control points from clouds"
 msgstr "Pokusí se odebrat kontrolní body z mraků"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2138
-#, fuzzy
 msgid "Clean cp"
-msgstr "Vyčistit dávku"
+msgstr "Promazat body"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2141 hugin1/hugin/xrc/pref_dialog.xrc:301
 msgid "Remove outlying control points by statistical method"
@@ -1681,18 +1679,18 @@ msgid "Images are connected by %lu control points.\n"
 msgstr "Obrázky propojuje %lu kontrolních bodů.\n"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1119
-#, fuzzy, c-format
+#, c-format
 msgid "%lu unconnected image groups found: %s\n"
-msgstr "Nalezeno %d nepropojených skupin obrázků: "
+msgstr "nalezeno %lu nepropojených skupin obrázků: %s\n"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1125
 msgid "Images or control points have changed, new alignment is needed."
 msgstr "Obrázky či kontrolní body se změnily. Je nutné nové zarovnání."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1136
-#, fuzzy, c-format
+#, c-format
 msgid "Mean error after optimization: %.1f pixel, max: %.1f"
-msgstr "Střední chyba po optimalizaci: %.1f pixelů, maximální: %.1f\n"
+msgstr "Střední chyba po optimalizaci: %.1f pixelů, maximální: %.1f"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1566 hugin1/hugin/PreviewFrame.cpp:641
 msgid "Rectilinear"
@@ -2638,14 +2636,12 @@ msgid "Could not read project file %s."
 msgstr "Nelze otevřít projektový soubor %s."
 
 #: hugin1/hugin/MainFrame.cpp:1487
-#, fuzzy
 msgid "Open Papywizard xml file"
-msgstr "Otevřít soubor projektu"
+msgstr "Otevřít soubor Papywizard xml"
 
 #: hugin1/hugin/MainFrame.cpp:1488
-#, fuzzy
 msgid "Papywizard xml files (*.xml)|*.xml|All files (*)|*"
-msgstr "Masky (*.msk)|*.msk|Všechny soubory (*)|*"
+msgstr "Papywizard xml (*.xml)|*.xml|Všechyn soubory (*)|*"
 
 #: hugin1/hugin/MainFrame.cpp:1504
 msgid "Choose template project"
@@ -2778,7 +2774,6 @@ msgid "Warning %d unconnected image groups found:"
 msgstr "Pozor.  Nalezeno %d nepropojených skupin obrázků:"
 
 #: hugin1/hugin/MainFrame.cpp:2172
-#, fuzzy
 msgid ""
 "Please create control points between unconnected images using the Control "
 "Points tab in the panorama editor.\n"
@@ -3333,13 +3328,12 @@ msgstr ""
 "Pro výsledný výstup vyberte jinou složku."
 
 #: hugin1/hugin/PanoPanel.cpp:1298
-#, fuzzy
 msgid "Select user defined output"
-msgstr "Obnovit dle nastavení uživatelem..."
+msgstr "Vyberte uživatelem definovaný výstup"
 
 #: hugin1/hugin/PanoPanel.cpp:1299
 msgid "User defined output|*.executor"
-msgstr ""
+msgstr "Uživatelem definovaný výstup|*.executor"
 
 #: hugin1/hugin/PanoPanel.cpp:1611
 #, c-format
@@ -3415,9 +3409,9 @@ msgstr ""
 "Opravdu chcete  panorama složit?"
 
 #: hugin1/hugin/PapywizardImport.cpp:341
-#, fuzzy, c-format
+#, c-format
 msgid "Could not parse file %s as Papywizard XML file."
-msgstr "Nelze rozpoznat masku ze souboru %s."
+msgstr "Nelze přečíst %s jako Papywizard xml."
 
 #: hugin1/hugin/PapywizardImport.cpp:353
 #, c-format
@@ -3426,11 +3420,13 @@ msgid ""
 "The Papywizard file \"%s\" contains %lu images, but the Hugin project "
 "contains %lu images."
 msgstr ""
+"Projekt neodpovídá  Papywizard xml souboru.\n"
+"Papywizard soubore \"%s\" obsahuje %lu obrázků, avšak projekt jich má v "
+"sobě  %lu."
 
 #: hugin1/hugin/PapywizardImport.cpp:464
-#, fuzzy
 msgid "Connecting overlapping images"
-msgstr "Pokouším se propojit všechny překrývající obrázky."
+msgstr "Propojuji překrývající se obrázky"
 
 #: hugin1/hugin/PluginItems.cpp:71
 msgid "Miscellaneous"
@@ -3992,9 +3988,8 @@ msgid "Initializing suspend mode..."
 msgstr "Započínám s uspáním..."
 
 #: hugin1/ptbatcher/Batch.cpp:663
-#, fuzzy
 msgid "Specify project file"
-msgstr "Uložit projekt"
+msgstr "Vybrat soubor projektu"
 
 #: hugin1/ptbatcher/Batch.cpp:684
 msgid "No output prefix specified"
@@ -4029,9 +4024,8 @@ msgid "Running batch..."
 msgstr "Spouštím dávku..."
 
 #: hugin1/ptbatcher/Batch.cpp:842
-#, fuzzy
 msgid "PTBatcherGUI is stitching"
-msgstr "PTBatcherGUI spuštěn"
+msgstr "PTBatcherGUI slepuje"
 
 #: hugin1/ptbatcher/Batch.cpp:848
 msgid "Batch already in progress."
@@ -4173,7 +4167,7 @@ msgstr "Dávka pozastavena"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:764 hugin1/ptbatcher/BatchFrame.cpp:1457
 msgid "Pausing processing Hugin's batch queue"
-msgstr ""
+msgstr "Pozastavuji zpracování Hugin dávkové fronty"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:771
 msgid "Continuing batch..."
@@ -4182,7 +4176,7 @@ msgstr "Běžící dávka..."
 #: hugin1/ptbatcher/BatchFrame.cpp:774 hugin1/ptbatcher/BatchFrame.cpp:1226
 #: hugin1/ptbatcher/BatchFrame.cpp:1451
 msgid "Processing Hugin's batch queue"
-msgstr ""
+msgstr "Dávková fronta Hugin s ezpracovává"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:790
 msgid ""
@@ -4248,15 +4242,17 @@ msgid ""
 "This can have negative effects on performance.\n"
 "Should the batch queue be cleared now?"
 msgstr ""
+"Dávková fronta obsahuje mnoho položek.\n"
+"Díky tomu může dojít ke zpomalení.\n"
+"Mám dávkovou frontu promazat?"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:1164
-#, fuzzy
 msgid "Clear batch queue now"
-msgstr "Vyčistit dávku"
+msgstr "Vyčistit frontu"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:1164
 msgid "Keep batch queue"
-msgstr ""
+msgstr "Pokračovat v dávkovém zpracování"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:1223
 msgid "Starting batch"
@@ -4349,14 +4345,12 @@ msgstr ""
 "Možná nemáte oprávnění pro zápis do těchto adresářů nebo je disk plný."
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:385
-#, fuzzy
 msgid "Remove image from project"
-msgstr "Odebrat vybrané obrázky z projektu"
+msgstr "Odebrat vybraný obrázek z projektu"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:391
-#, fuzzy
 msgid "Split here into two panoramas"
-msgstr "Hledám panoramata"
+msgstr "Rozdělit zde na dvě panoramata"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:476
 #, c-format
@@ -4525,9 +4519,9 @@ msgid "Log files (*.log)|*.log|All files (*)|*"
 msgstr "Soubory výpisu (*.log)|*.log|Všechny soubory (*)|*"
 
 #: hugin1/stitch_project/hugin_stitch_project.cpp:371
-#, fuzzy, c-format
+#, c-format
 msgid "Could not find the specified user output file \"%s\"."
-msgstr "Nelze otevřít projektový soubor %s."
+msgstr "Nelze najít uživatelem zadaný výstupní soubor \"%s\"."
 
 #: hugin1/stitch_project/hugin_stitch_project.cpp:380
 msgid "Specify project source project file"
@@ -4825,18 +4819,16 @@ msgid "Adds a project to the assistant queue"
 msgstr "Přidá projekt  do fronty asistenta"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:15
-#, fuzzy
 msgid "&Remove project"
-msgstr "Odebrat projekt"
+msgstr "Odeb&rat projekt"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:16 hugin1/hugin/xrc/batch_toolbar.xrc:61
 msgid "Removes selected project from the batch list"
 msgstr "Odebere vybrané projekty z dávky"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:20
-#, fuzzy
 msgid "&Project files..."
-msgstr "Soubory projektu"
+msgstr "Soubory &projektu"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:21 hugin1/hugin/xrc/batch_toolbar.xrc:67
 msgid "Appends all project files from a directory and subdirectories"
@@ -4845,25 +4837,23 @@ msgstr "Přidá všechny projekty z adresáře i podadresářů"
 #: hugin1/hugin/xrc/batch_menu.xrc:24
 #, fuzzy
 msgid "&Images..."
-msgstr "Obrázky"
+msgstr "Obrázky..."
 
 #: hugin1/hugin/xrc/batch_menu.xrc:25
 msgid "Searches in directories for image files suitable for panoramas"
 msgstr "Vyhledává v adresáři obrázky vhodné pro panorama"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:27
-#, fuzzy
 msgid "Search &directory for..."
-msgstr "Hledat v adresáři..."
+msgstr "Hledat v a&dresáři..."
 
 #: hugin1/hugin/xrc/batch_menu.xrc:28
 msgid "Searches in directories for existing projects or for images"
 msgstr "Vyhledává v adresáři existující projekty či obrázky"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:32
-#, fuzzy
 msgid "&Open batch"
-msgstr "Otevřít dávku"
+msgstr "&Otevřít dávku"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:33 hugin1/hugin/xrc/batch_toolbar.xrc:16
 msgid "Opens a batch file with a list of projects"
@@ -4889,7 +4879,7 @@ msgstr "Vymazat seznam dávek"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:45
 msgid "&Minimize to tray"
-msgstr ""
+msgstr "&Minimalizovat do lišty"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:51 hugin1/hugin/xrc/lenscal_frame.xrc:456
 #: hugin1/hugin/xrc/main_menu.xrc:221 hugin1/hugin/xrc/preview_frame.xrc:1963
@@ -5077,19 +5067,16 @@ msgid "add a new Point"
 msgstr "přidat nový bod"
 
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:324
-#, fuzzy
 msgid "Create control points for current image pair"
-msgstr "Vytvořit zde kontrolní body"
+msgstr "Vytvořit  kontrolní body pro vybraný pár"
 
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:329
-#, fuzzy
 msgid "Remove control points in clouds"
 msgstr "Odebere kontrolní body v mracích"
 
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:336
-#, fuzzy
 msgid "Remove worst control points"
-msgstr "Odebrat kontrolní body"
+msgstr "Odebrat nejhorší kontrolní body"
 
 #: hugin1/hugin/xrc/cp_list_frame.xrc:4 hugin1/hugin/xrc/main_frame.xrc:30
 #: hugin1/hugin/xrc/main_menu.xrc:87
@@ -5735,26 +5722,24 @@ msgid "Edit cp tools"
 msgstr "Editor kontrolních bodů"
 
 #: hugin1/hugin/xrc/main_frame.xrc:345
-#, fuzzy
 msgid "Link positions"
 msgstr "Propojit pozice"
 
 #: hugin1/hugin/xrc/main_frame.xrc:363
 msgid "Generate control points, additional cpfind parameters:"
-msgstr ""
+msgstr "Generování kontrolních bodů, doplňující parametry pro cpfind:"
 
 #: hugin1/hugin/xrc/main_frame.xrc:384
 msgid "Connect orphaned images (with geocpset)"
-msgstr ""
+msgstr "Propojit sirotčí obrázky (pomocí geocpset)"
 
 #: hugin1/hugin/xrc/main_frame.xrc:390
-#, fuzzy
 msgid "Control point generation"
-msgstr "Nastavení detektoru kontrolních bodů"
+msgstr "Vytváření kontrolních bodů"
 
 #: hugin1/hugin/xrc/main_frame.xrc:416
 msgid "Import positions from Papywizard XML"
-msgstr ""
+msgstr "Importovat pozice z  Papywizard XML"
 
 #: hugin1/hugin/xrc/main_menu.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:1838
 msgid "&Undo"
@@ -5924,22 +5909,20 @@ msgid "&Interface"
 msgstr "Rozhraní"
 
 #: hugin1/hugin/xrc/main_menu.xrc:125
-#, fuzzy
 msgid "&Stitch"
-msgstr "Slepit!"
+msgstr "&Slepit"
 
 #: hugin1/hugin/xrc/main_menu.xrc:127
 msgid "Stitch with the settings on the pano tabs"
-msgstr ""
+msgstr "Slepit s nastavením ze záložky panorama"
 
 #: hugin1/hugin/xrc/main_menu.xrc:130
-#, fuzzy
 msgid "Stitch user defined output..."
-msgstr "Obnovit dle nastavení uživatelem..."
+msgstr "Slepí uživatelem vybraný výstup..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:131
 msgid "Stitch with the settings from a user defined output sequence"
-msgstr ""
+msgstr "Slepit s nastavením z uživatelsky definované sekvence"
 
 #: hugin1/hugin/xrc/main_menu.xrc:133
 #, fuzzy
@@ -6079,11 +6062,11 @@ msgstr "Sloučí tento projekt s dalším projektem."
 
 #: hugin1/hugin/xrc/main_menu.xrc:208
 msgid "Import settings from Papywizard &XML file..."
-msgstr ""
+msgstr "Import nastavení z  Papywizard &XML souboru..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:209
 msgid "Read shoot settings from a Papywizard XML file"
-msgstr ""
+msgstr "Přečte nastavení z Papywizard XML souboru..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:212 hugin1/hugin/xrc/main_menu.xrc:238
 msgid "Apply &Template"
@@ -6260,15 +6243,16 @@ msgid "Show extent of active masks and crop"
 msgstr "Zobrazí přesah aktivních masek a ořez"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:221
-#, fuzzy
 msgid "All images of selected lens"
-msgstr "Vybráno příliš mnoha obrázků"
+msgstr "Všechny obrázky od vybraných objektivů"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:222
 msgid ""
 "Applies all changes to all images with the same lens as the selected "
 "image(s)."
 msgstr ""
+"Použije všechny změny na všechny obrázky ze stejným objektivem, jako je "
+"vybraný obrázek."
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:234
 #: hugin1/hugin/xrc/pano_panel.xrc:364
@@ -6732,18 +6716,16 @@ msgid "Output parameters"
 msgstr "Parametry výstupu"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1357 hugin1/hugin/xrc/pref_dialog.xrc:827
-#, fuzzy
 msgid "Seam blend mode:"
-msgstr "Mód prolnutí:"
+msgstr "Mód prolnutí :"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1365 hugin1/hugin/xrc/pref_dialog.xrc:835
 msgid "hard seam (faster)"
-msgstr ""
+msgstr "hrubý překryv (rychlé)"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1366 hugin1/hugin/xrc/pref_dialog.xrc:836
-#, fuzzy
 msgid "blend seam"
-msgstr "enblend chyba"
+msgstr "pozvolný překryv"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:15
 msgid "Resource Usage"
@@ -6823,7 +6805,7 @@ msgid "Default output prefix:"
 msgstr "Výchozí výstupní prefix:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:230
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "The following placeholder are replaced automatically:\n"
 "%firstimage - filename of first image file\n"
@@ -7388,6 +7370,7 @@ msgstr ""
 "%fullheight - výška výstupu\n"
 "%width - šířka výstupní oblasti\n"
 "%height - výška výstupní oblasti\n"
+"%projectname - jméno souboru projektu pto\n"
 "\n"
 "U vzorů záleží na velikosti písmen."
 
@@ -7726,33 +7709,28 @@ msgid "Interface"
 msgstr "Rozhraní"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2001
-#, fuzzy
 msgid "All images"
-msgstr "Přidat obrázky"
+msgstr "Všechny obrázky"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2006
 msgid "Image with median exposure of each stack"
-msgstr ""
+msgstr "Obrázek s mediánovou expozicí každého štosu"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2010
-#, fuzzy
 msgid "Brightest image of each stack"
-msgstr "Zadejte počet obrázků na štos"
+msgstr "Nejsvětlejší obrázek každého štosu"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2014
-#, fuzzy
 msgid "Darkest image of each stack"
-msgstr "Propojí rozmístění v každém štosu."
+msgstr "Nejtmavší obrázek každého štosu"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2019
-#, fuzzy
 msgid "Keep currently selected images"
-msgstr "Změnit objektiv zvolených obrázků"
+msgstr "Ponechat nyní vybrané obrázky"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:2024
-#, fuzzy
 msgid "Reset selection"
-msgstr "Obnovit pozice"
+msgstr "Obnovit výběr"
 
 #: hugin1/hugin/xrc/reset_dialog.xrc:20
 msgid "Translation parameters"
@@ -8440,11 +8418,9 @@ msgstr ""
 #~ msgid "Remember log messages."
 #~ msgstr "Zapamatovat si výpisy"
 
-#, fuzzy
 #~ msgid "* r^2 +"
 #~ msgstr "*r^2 + "
 
-#, fuzzy
 #~ msgid "* r^4 +"
 #~ msgstr "*r^4 + "
 
@@ -9876,3 +9852,12 @@ msgstr ""
 
 #~ msgid "Color (d)"
 #~ msgstr "Barva (d)"
+
+#~ msgid "s"
+#~ msgstr "s"
+
+#~ msgid "m"
+#~ msgstr "m"
+
+#~ msgid "Runs fine-tune on all control points."
+#~ msgstr "Spustí doladění všech kontrolních bodů."
