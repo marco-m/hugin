@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: Hugin 2012-0.0\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2016-05-29 09:14+0200\n"
-"PO-Revision-Date: 2016-03-16 20:36+0100\n"
-"Last-Translator: Jean-Luc Coulon <jean-luc.coulon@wanadoo.fr>\n"
+"PO-Revision-Date: 2016-06-24 21:46+0200\n"
+"Last-Translator: pmllc <pmllc@yahoo.fr>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:69
 #: hugin1/hugin/PapywizardImport.cpp:460
@@ -822,35 +822,36 @@ msgstr ""
 msgid ""
 "Hugin supports only grayscale or RGB images (without and with alpha channel)."
 msgstr ""
+"Hugin ne prend en charge que les images en nuances de gris ou RVB (avec ou "
+"sans un canal alpha)."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:311
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File \"%s\" is a grayscale image, but other images in project are color "
 "images."
 msgstr ""
-"Le fichier « %s » a le profil intégré « %s », mais les autres images de ce "
-"projet on le profil intégré « %s »."
+"Le fichier « %s » est une image en niveau de gris, mais les autres images de "
+"ce projet sont en couleurs."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:315
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File \"%s\" is a color image, but other images in project are grayscale "
 "images."
 msgstr ""
-"Le fichier « %s » n’a pas de profil icc intégré, mais d’autres images de ce "
-"projet on le profil « %s » intégré."
+"Le fichier « %s » est une image couleur, mais les autres images de ce "
+"projets sont en niveau de gris."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:318
-#, fuzzy
 msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image and try loading again."
 msgstr ""
-"Le fichier « %s » est une image noir et blanc.\n"
-"Hugin ne prend pas en charge ce type d’image. Image sautée.\n"
-"Convertir l’image en une image en nuances de gris et essayer de la charger "
-"de nouveau."
+"Hugin ne supporte pas le mélange de mode de couleur. Cette image sera "
+"ignorée.\n"
+"Veuillez convertir cette image en niveau de gris ou en couleur et essayez de "
+"la recharger."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:335
 #, c-format
@@ -1708,9 +1709,9 @@ msgstr ""
 "l’alignement."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1136
-#, fuzzy, c-format
+#, c-format
 msgid "Mean error after optimization: %.1f pixel, max: %.1f"
-msgstr "Erreur moyenne après optimisation : %.1f pixels, max : %.1f\n"
+msgstr "Erreur moyenne après optimisation : %.1f pixels, max : %.1f"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1566 hugin1/hugin/PreviewFrame.cpp:641
 msgid "Rectilinear"
@@ -4071,9 +4072,8 @@ msgid "Initializing suspend mode..."
 msgstr "Initialisation de la mise en veille…"
 
 #: hugin1/ptbatcher/Batch.cpp:663
-#, fuzzy
 msgid "Specify project file"
-msgstr "Enregistrer le fichier de projet"
+msgstr "Définit le fichier projet"
 
 #: hugin1/ptbatcher/Batch.cpp:684
 msgid "No output prefix specified"
@@ -4109,9 +4109,8 @@ msgid "Running batch..."
 msgstr "Lancement du lot…"
 
 #: hugin1/ptbatcher/Batch.cpp:842
-#, fuzzy
 msgid "PTBatcherGUI is stitching"
-msgstr "PTBatcherGUI lancé"
+msgstr "PTBatcherGUI est en train d'assembler un jeu d'image"
 
 #: hugin1/ptbatcher/Batch.cpp:848
 msgid "Batch already in progress."
@@ -4434,14 +4433,12 @@ msgstr ""
 "votre disque dur est plein."
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:385
-#, fuzzy
 msgid "Remove image from project"
-msgstr "Supprimer la ou les images sélectionnées"
+msgstr "Supprimer l'image du projet"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:391
-#, fuzzy
 msgid "Split here into two panoramas"
-msgstr "Recherche des panoramas"
+msgstr "Sépare ici en deux panoramas"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:476
 #, c-format
@@ -5889,9 +5886,8 @@ msgid "Send to assistant &queue"
 msgstr "Envoyer à la &file d’attente de l’assistant"
 
 #: hugin1/hugin/xrc/main_menu.xrc:28
-#, fuzzy
 msgid "Optimize only active &images"
-msgstr "Nombre d’images actives :"
+msgstr "Optimise uniquement les &images actives"
 
 #: hugin1/hugin/xrc/main_menu.xrc:29 hugin1/hugin/xrc/optimize_panel.xrc:40
 msgid ""
@@ -6359,15 +6355,16 @@ msgid "Show extent of active masks and crop"
 msgstr "Afficher l’étendue des marques actives et découper"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:221
-#, fuzzy
 msgid "All images of selected lens"
-msgstr "Trop d’images ont été sélectionnées"
+msgstr "Toutes les images de l'objectif sélectionné"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:222
 msgid ""
 "Applies all changes to all images with the same lens as the selected "
 "image(s)."
 msgstr ""
+"Applique toutes les modifications à toutes les images utilisant le même "
+"objectif que l'image sélectionnée."
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:234
 #: hugin1/hugin/xrc/pano_panel.xrc:364
@@ -7488,7 +7485,6 @@ msgid "Edit ExifTool argfile"
 msgstr "Modifier le fichier de paramètres d’ExifTool"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1581
-#, fuzzy
 msgid ""
 "The following placeholders will replaced before invoking ExifTool:\n"
 "%projection - projection name (in English)\n"
@@ -7508,7 +7504,7 @@ msgid ""
 "The placeholders are case sensitive."
 msgstr ""
 "Les marques substitutives suivantes seront remplacées avant d’appeler "
-"ExifTool :\n"
+"ExifTool :\n"
 "%projection - nom de la projection (en anglais)\n"
 "%projectionNumber - numéro de projection\n"
 "%hfov - champ de vue horizontal du panorama\n"
