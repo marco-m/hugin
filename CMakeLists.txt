@@ -86,6 +86,7 @@ ELSE()
     MESSAGE(FATAL_ERROR "Hugin subversion repository is not up to date. The development happens now in mercurial repository. Please switch to mercurial. Sorry for the inconsistency")
   ENDIF()
 
+  SET(CPACK_PACKAGE_VERSION_PATCH ${V_PATCH})
   SET(HUGIN_PACKAGE_VERSION ${V_MAJOR}.${V_MINOR}.${V_PATCH})
   SET(HUGIN_WC_REVISION 0)
   FILE(READ "${PROJECT_SOURCE_DIR}/rev.txt" HUGIN_WC_REVISION)
