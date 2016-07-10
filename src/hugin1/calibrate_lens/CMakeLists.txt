@@ -34,6 +34,12 @@ ELSEIF(APPLE)
               GENERATED TRUE)
     ENDFOREACH(_file_po)
 
+    SET(EN_US_HACK "${CMAKE_BINARY_DIR}/src/translations/mac/en_US.lproj")
+    LIST(APPEND TRANSLATION_FILES ${EN_US_HACK})
+    SET_SOURCE_FILES_PROPERTIES( ${EN_US_HACK} PROPERTIES 
+              MACOSX_PACKAGE_LOCATION "Resources" 
+              GENERATED TRUE)
+
 
     #xrc files
     FILE(GLOB_RECURSE XRC_FILES ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/*.html 

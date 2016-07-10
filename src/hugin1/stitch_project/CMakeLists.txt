@@ -14,7 +14,7 @@ ELSEIF(APPLE)
   set( MACOSX_BUNDLE_VERSION ${V_MAJOR}.${V_MINOR}.${V_PATCH} )
   set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${MACOSX_BUNDLE_VERSION})
   set( MACOSX_BUNDLE_LONG_VERSION_STRING "Version ${MACOSX_BUNDLE_VERSION}" )
-  set( MACOSX_BUNDLE_GUI_IDENTIFIER net.sourceforge.hugin)
+  set( MACOSX_BUNDLE_GUI_IDENTIFIER net.sourceforge.HuginStitchProject)
   set( MACOSX_BUNDLE_INFO_STRING "HuginStitchProject ${MACOSX_BUNDLE_VERSION}" )
   set( MACOSX_BUNDLE_BUNDLE_NAME "HuginStitchProject" )
   set( MACOSX_BUNDLE_COPYRIGHT "Copyright 2007 Pablo d'Angelo" )
@@ -54,6 +54,12 @@ ELSEIF(APPLE)
               MACOSX_PACKAGE_LOCATION "Resources/${LANG}.lproj" 
               GENERATED TRUE)
     ENDFOREACH(_file_po)
+
+    SET(EN_US_HACK "${CMAKE_BINARY_DIR}/src/translations/mac/en_US.lproj")
+    LIST(APPEND TRANSLATION_FILES ${EN_US_HACK})
+    SET_SOURCE_FILES_PROPERTIES( ${EN_US_HACK} PROPERTIES 
+              MACOSX_PACKAGE_LOCATION "Resources" 
+              GENERATED TRUE)
 
     # Icons
     set( ICON_FILES "../hugin/${MACOSX_BUNDLE_ICON_FILE}" "../hugin/${MACOSX_BUNDLE_TYPE_ICON_FILE}" )
