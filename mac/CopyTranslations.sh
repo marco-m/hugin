@@ -6,3 +6,4 @@ for file in *.gmo; do
 	mkdir -p "mac/${ext}.lproj"
 	cp -p "$file" "mac/${ext}.lproj/hugin.mo"
 done
+mkdir -p "mac/en_US.lproj"
