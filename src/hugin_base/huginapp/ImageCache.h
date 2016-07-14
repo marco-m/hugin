@@ -153,7 +153,7 @@ class IMPEX ImageCache
     private:
         // ctor. private, nobody execpt us can create an instance.
         ImageCache()
-            : asyncLoadCompleteSignal(0), upperBound(100*1024*1024l),
+            : asyncLoadCompleteSignal(0), upperBound(100*1024*1024ull),
               m_progress(NULL), m_accessCounter(0)
         {};
         
@@ -253,7 +253,7 @@ class IMPEX ImageCache
         void softFlush();
 		/** sets the upper limit, which is used by softFlush() 
 		 */
-		void SetUpperLimit(long newUpperLimit) { upperBound=newUpperLimit; };
+		void SetUpperLimit(const unsigned long long newUpperLimit) { upperBound=newUpperLimit; };
         
         /** Signal for when a asynchronous load completes.
          *  If you use the requestAsync functions, ensure there is something
@@ -277,7 +277,7 @@ class IMPEX ImageCache
         void postEvent(RequestPtr request, EntryPtr entry);
 
     private:
-        long upperBound;
+        unsigned long long upperBound;
 
         template <class SrcPixelType,
                   class DestIterator, class DestAccessor>
