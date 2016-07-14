@@ -173,12 +173,14 @@ void ImageCache::flush()
 
 void ImageCache::softFlush()
 {
-    if(upperBound==0l)
-        upperBound = 100 * 1024 * 1024l;
-    long purgeToSize = long(0.75 * upperBound);
+    if (upperBound == 0ull)
+    {
+        upperBound = 100 * 1024 * 1024ull;
+    };
+    const unsigned long long purgeToSize = static_cast<unsigned long long>(0.75 * upperBound);
 
     // calculate used memory
-    long imgMem = 0;
+    unsigned long long imgMem = 0;
 
     std::map<std::string, EntryPtr>::iterator imgIt;
     for(imgIt=images.begin(); imgIt != images.end(); ++imgIt) {
@@ -212,20 +214,20 @@ void ImageCache::softFlush()
         }
     }
 
-    long pyrMem = 0;
+    unsigned long long pyrMem = 0;
     std::map<std::string, vigra::BImage*>::iterator pyrIt;
     for(pyrIt=pyrImages.begin(); pyrIt != pyrImages.end(); ++pyrIt) {
         pyrMem += pyrIt->second->width() * pyrIt->second->height();
     }
 
-    long usedMem = imgMem + pyrMem;
+    const unsigned long long usedMem = imgMem + pyrMem;
 
     DEBUG_DEBUG("total: " << (usedMem>>20) << " MB upper bound: " << (purgeToSize>>20) << " MB");
     if (usedMem > upperBound) 
     {
         // we need to remove images.
-        long purgeAmount = usedMem - purgeToSize;
-        long purgedMem = 0;
+        const unsigned long long purgeAmount = usedMem - purgeToSize;
+        unsigned long long purgedMem = 0;
         // remove images from cache, first the grey level image,
         // then the full size images
 
