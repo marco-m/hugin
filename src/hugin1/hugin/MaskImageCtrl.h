@@ -35,7 +35,13 @@
 // this approach is already used for the polygon editor also on wxMSW and wxGTK
 #undef SUPPORTS_WXINVERT
 #else
+#ifdef __WXGTK3__
+// wxINVERT is currently also not supported on GTK+3
+// see ticket http://trac.wxwidgets.org/ticket/16890
+#undef SUPPORTS_WXINVERT
+#else
 #define SUPPORTS_WXINVERT 1
+#endif
 #endif
 
 class MaskEditorPanel;
