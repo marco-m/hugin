@@ -1,6 +1,4 @@
 
-# ADD_SUBDIRECTORY(droplets)
-
 SET(HUGIN_BUILDER "" CACHE STRING "set Builder Name." )
 IF(NOT HUGIN_BUILDER) 
   MESSAGE(FATAL_ERROR "Need to set builder (HUGIN_BUILDER) manually")
