@@ -441,8 +441,13 @@ void FindPanoDialog::OnSplitPanos(wxCommandEvent &e)
                     m_panos.insert(m_panos.begin() + selectedPano + 1, newSubPano);
                     // update pano list
                     m_list_pano->SetString(selectedPano, m_panos[selectedPano]->GetItemString(m_start_dir));
+#if wxCHECK_VERSION(3,0,0)
                     int newItem = m_list_pano->Insert(m_panos[selectedPano + 1]->GetItemString(m_start_dir), selectedPano + 1);
                     m_list_pano->Check(newItem, true);
+#else
+                    m_list_pano->Insert(m_panos[selectedPano + 1]->GetItemString(m_start_dir), selectedPano + 1);
+                    m_list_pano->Check(selectedPano + 1, true);
+#endif
                     // update display
                     wxCommandEvent dummy;
                     OnSelectPossiblePano(dummy);
