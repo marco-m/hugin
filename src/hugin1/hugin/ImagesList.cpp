@@ -504,7 +504,7 @@ void ImagesListMask::SetSingleSelect(bool isSingleSelect)
     };
     m_singleSelect=(GetWindowStyle() & wxLC_SINGLE_SEL)!=0;
 
-#ifdef __WXGTK__
+#if defined __WXGTK__ && !wxCHECK_VERSION(3,0,0)
     // wxGTK shows a bad behaviour, if we change the style
     // all items and columns are deleted, we need to create it again
     Freeze();
