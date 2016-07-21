@@ -494,41 +494,6 @@ void ImagesListMask::SetSingleSelect(bool isSingleSelect)
     };
     m_singleSelect=(GetWindowStyle() & wxLC_SINGLE_SEL)!=0;
 
-#ifdef __WXGTK__
-    // wxGTK shows a bad behaviour, if we change the style
-    // all items and columns are deleted, we need to create it again
-    Freeze();
-    InsertColumn(0, wxT("#"), wxLIST_FORMAT_RIGHT, 35 );
-    InsertColumn(1, _("Filename"), wxLIST_FORMAT_LEFT, 200 );
-    InsertColumn(2, _("Number of masks"), wxLIST_FORMAT_RIGHT,120);
-    InsertColumn(3, _("Crop"), wxLIST_FORMAT_RIGHT,120);
-
-    //get saved width
-    for ( int j=0; j < GetColumnCount() ; j++ )
-    {
-        // -1 is auto
-        int width = wxConfigBase::Get()->Read(wxString::Format(m_configClassName+wxT("/ColumnWidth%d"), j ), -1);
-        if(width != -1)
-            SetColumnWidth(j, width);
-    }
-
-    for(size_t i=0; i<pano->getNrOfImages(); i++)
-    {
-        CreateItem(i);
-    };
-    //restore selection
-    if(selectedItems.size()>0)
-    {
-        if(m_singleSelect)
-        {
-            size_t imgNr=*selectedItems.begin();
-            selectedItems.clear();
-            selectedItems.insert(imgNr);
-        }
-        SelectImages(selectedItems);
-    };
-    Thaw();
-#endif
 };
 
 IMPLEMENT_DYNAMIC_CLASS(ImagesListMask, ImagesList)
