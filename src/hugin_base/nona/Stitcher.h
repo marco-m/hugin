@@ -512,7 +512,7 @@ public:
         }
         else
         {
-            images = HuginBase::getEstimatedBlendingOrder(Base::m_pano, imgSet, opts.colorReferenceImage);;
+            images = HuginBase::getEstimatedBlendingOrder(Base::m_pano, imgSet, opts.colorReferenceImage);
         };
         for (UIntVector::const_iterator it = images.begin(); it != images.end(); ++it)
         {
