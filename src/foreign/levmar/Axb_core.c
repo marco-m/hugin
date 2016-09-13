@@ -623,7 +623,7 @@ void levmar_PLASMA_setnbcores(int cores)
  *
  * A is mxm, b is mx1
  *
- * The function returns 0 in case of error, 1 if successfull
+ * The function returns 0 in case of error, 1 if successful
  *
  * This function is often called repetitively to solve problems of identical
  * dimensions. To avoid repetitive malloc's and free's, allocated memory is
@@ -991,7 +991,7 @@ int info, rank, worksz, *iwork, iworksz;
  *
  * A is mxm, b is mx1.
  *
- * The function returns 0 in case of error, 1 if successfull
+ * The function returns 0 in case of error, 1 if successful
  *
  * This function is often called repetitively to solve problems of identical
  * dimensions. To avoid repetitive malloc's and free's, allocated memory is

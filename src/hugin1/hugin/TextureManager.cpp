@@ -1012,7 +1012,7 @@ void TextureManager::TextureInfo::DefineLevels(int min,
     error = glGetError();
     if (error != GL_NO_ERROR)
     {
-        DEBUG_ERROR("GL Error when bulding mipmap levels: "
+        DEBUG_ERROR("GL Error when building mipmap levels: "
                   << gluErrorString(error) << ".");
     }
     SetParameters();

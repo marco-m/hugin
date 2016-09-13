@@ -50,7 +50,7 @@ public:
     void setMessage(const std::string& message, const std::string& filename="");
     /** call when a task has finished and the status message should be cleared */
     void taskFinished();
-    /** updates the display, return true, if update was successfull, false if cancel was pressed */
+    /** updates the display, return true, if update was successful, false if cancel was pressed */
     bool updateDisplay();
     bool updateDisplay(const std::string& message);
     bool updateDisplayValue();
