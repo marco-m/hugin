@@ -25,7 +25,7 @@ gpl = r"""
 # @category Control Points
 # @name     Warped Overlap Analysis
 # @api-min  2014.0
-# @api-max  2015.1
+# @api-max  2016.3
 
 # note that if you want to read the script, it's written bottom-up, so the
 # higher-level routines are towards the end.
