@@ -111,9 +111,16 @@ hugin_utils::FDiff2D CalculateFOV::calcFOV(const PanoramaData& panorama)
     lr.x = lr.x - 180;
     lr.y = lr.y - 90;
     hugin_utils::FDiff2D fov(2 * std::max(fabs(ul.x), fabs(lr.x)), 2 * std::max(fabs(ul.y), fabs(lr.y)));
+    // the calculation above is done with a resolution of 0.5 deg
+    // for small fov the calculated fov can be a little bit too small
+    // so in this case add a small offset
     if(fov.x<40)
     {
         fov.x+=1;
+    };
+    if (fov.y < 40)
+    {
+        fov.y += 1;
     };
     return fov;
 }
