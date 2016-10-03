@@ -755,10 +755,19 @@ void TextureManager::TextureInfo::DefineLevels(int min,
         }
         if (hasPreview)
         {
-            image->readMetadata();
-            // read all thumbnails
-            Exiv2::PreviewManager previews(*image);
-            Exiv2::PreviewPropertiesList lists = previews.getPreviewProperties();
+            std::shared_ptr<Exiv2::PreviewManager> previews;
+            Exiv2::PreviewPropertiesList lists;
+            try
+            {
+                // read all thumbnails
+                image->readMetadata();
+                previews = std::make_shared<Exiv2::PreviewManager>(*image);
+                lists = previews->getPreviewProperties();
+            }
+            catch (const Exiv2::Error&)
+            {
+                hasPreview = false;
+            };
             if (lists.empty())
             {
                 // no preview found
@@ -774,7 +783,7 @@ void TextureManager::TextureInfo::DefineLevels(int min,
                 };
                 // load preview image to wxImage
                 wxImage rawImage;
-                Exiv2::PreviewImage previewImage = previews.getPreviewImage(lists[previewIndex]);
+                Exiv2::PreviewImage previewImage = previews->getPreviewImage(lists[previewIndex]);
                 wxMemoryInputStream stream(previewImage.pData(), previewImage.size());
                 rawImage.LoadFile(stream, wxString(previewImage.mimeType().c_str(), wxConvLocal), -1);
                 placeholderWidth = rawImage.GetWidth();

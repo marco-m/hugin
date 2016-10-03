@@ -351,7 +351,15 @@ bool SrcPanoImage::readEXIF()
         return false;
     }
 
-    image->readMetadata();
+    try
+    {
+        image->readMetadata();
+    }
+    catch (const Exiv2::Error& e)
+    {
+        std::cerr << "Caught Exiv2 exception '" << e.what() << "' for file " << filename << std::endl;
+        return false;
+    }
 
     // look into XMP metadata
     Exiv2::XmpData& xmpData = image->xmpData();
