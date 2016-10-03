@@ -245,13 +245,6 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
     HuginBase::ImageVariableGroup & lenses = variable_groups.getLenses();
     const size_t oldImgCount = pano.getNrOfImages();
 
-    // read number of bands of first image
-    int panoBandCount = 0;
-    if (pano.getNrOfImages() > 0)
-    {
-        vigra::ImageImportInfo info(pano.getImage(0).getFilename().c_str());
-        panoBandCount = info.numBands() - info.numExtraBands();
-    };
     // load additional images...
     for (it = files.begin(); it != files.end(); ++it) {
         const std::string &filename = *it;
@@ -286,15 +279,15 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
                     _("Warning"), wxOK | wxICON_EXCLAMATION);
                 continue;
             };
-            if (panoBandCount == 0)
+            if (pano.getNrOfImages() == 0)
             {
-                panoBandCount = bands - extraBands;
+                pano.setNrOfBands(bands - extraBands);
             };
-            if (panoBandCount != bands - extraBands)
+            if (pano.getNrOfBands() != bands - extraBands)
             {
                 wxString s(_("Hugin supports only grayscale or RGB images (without and with alpha channel)."));
                 s.Append(wxT("\n"));
-                if (panoBandCount == 3)
+                if (pano.getNrOfBands() == 3)
                 {
                     s.Append(wxString::Format(_("File \"%s\" is a grayscale image, but other images in project are color images."), fname.c_str()));
                 }
@@ -710,6 +703,7 @@ bool wxLoadPTProjectCmd::processPanorama(HuginBase::Panorama& pano)
             // remember icc profile, only from first image
             if (i == 0)
             {
+                pano.setNrOfBands(imginfo.numBands() - imginfo.numExtraBands());
                 pano.setICCProfileDesc(hugin_utils::GetICCDesc(imginfo.getICCProfile()));
             }
             pano.setSrcImage(i, srcImg);

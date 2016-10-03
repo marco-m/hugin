@@ -1740,6 +1740,16 @@ void Panorama::setICCProfileDesc(const std::string& newDesc)
     state.iccProfileDesc = newDesc;
 };
 
+const int Panorama::getNrOfBands() const
+{
+    return state.bands;
+};
+
+void Panorama::setNrOfBands(const int nrBands)
+{
+    state.bands = nrBands;
+};
+
 //==== internal function for variable management
 
 SrcPanoImage Panorama::getSrcImage(unsigned imgNr) const
@@ -2283,6 +2293,7 @@ PanoramaMemento & PanoramaMemento::operator=(const PanoramaMemento & data)
     
     ctrlPoints = data.ctrlPoints;
     iccProfileDesc = data.iccProfileDesc;
+    bands = data.bands;
     
     options = data.options;
     

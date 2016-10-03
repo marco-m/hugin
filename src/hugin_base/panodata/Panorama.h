@@ -90,6 +90,9 @@ class IMPEX PanoramaMemento : public PanoramaDataMemento
         std::vector<SrcPanoImage *> images;
         /** description of the icc profile */
         std::string iccProfileDesc;
+        /** number of bands of first image (without alpha channel),
+          * currently we can't mix grayscale and RGB images */
+        int bands = 0;
         
         CPVector ctrlPoints;
         
@@ -371,6 +374,11 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         const std::string getICCProfileDesc() const;
         /** sets the icc profile description for check of same profile */
         void setICCProfileDesc(const std::string& newDesc);
+        /** return number of bands of first image (without alpha channel)
+         *  so it can be 1 for grayscale or 3 for rgb images */
+        const int getNrOfBands() const;
+        /** sets the number of bands */
+        void setNrOfBands(const int nrBands);
 
     // = Variables =    
         
