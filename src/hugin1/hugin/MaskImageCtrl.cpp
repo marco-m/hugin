@@ -1128,7 +1128,7 @@ void MaskImageCtrl::DrawCrop(wxDC & dc)
 
 void MaskImageCtrl::OnDraw(wxDC & dc)
 {
-    if(m_maskEditState!=NO_IMAGE)
+    if(m_maskEditState!=NO_IMAGE && m_bitmap.IsOk())
     {
         int offset=scale(HuginBase::maskOffset);
         //draw border around image to allow drawing mask over boudaries of image
