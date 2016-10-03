@@ -373,8 +373,17 @@ void MaskEditorPanel::panoramaImagesChanged(HuginBase::Panorama &pano, const Hug
     else
     {
         // select some other image if we deleted the current image
-        if ((GetImgNr()<UINT_MAX) && (GetImgNr() >= nrImages))
-            setImage(nrImages-1);
+        if ((GetImgNr() < UINT_MAX) && (GetImgNr() >= nrImages))
+        {
+            for (auto i : m_selectedImages)
+            {
+                if (i >= nrImages)
+                {
+                    m_selectedImages.erase(i);
+                };
+            };
+            setImage(nrImages - 1);
+        }
         else
             // update changed images
             if(set_contains(changed,GetImgNr()))
