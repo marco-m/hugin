@@ -130,7 +130,7 @@ void ImageCache::removeImage(const std::string & filename)
         images.erase(it);
     }
 
-    std::string sfilename = filename + std::string("_small");
+    std::string sfilename = filename + std::string(":small");
     it = images.find(sfilename);
     if (it != images.end()) {
         images.erase(it);
