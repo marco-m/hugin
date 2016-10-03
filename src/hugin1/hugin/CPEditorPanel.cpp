@@ -440,6 +440,14 @@ void CPEditorPanel::OnCPEvent( CPEvent&  ev)
             }
             break;
         }
+    case CPEvent::CANCELED:
+        {
+            if (cpCreationState != NO_POINT)
+            {
+                changeState(NO_POINT);
+            };
+            break;
+        };
     case CPEvent::SCROLLED:
         {
             wxPoint d(hugin_utils::roundi(point.x), hugin_utils::roundi(point.y));

@@ -63,6 +63,13 @@ CPEvent::CPEvent( )
     mode = NONE;
 }
 
+CPEvent::CPEvent(wxWindow * win, CPEventMode evt_mode)
+{
+    SetEventType(EVT_CPEVENT);
+    SetEventObject(win);
+    mode = evt_mode;
+}
+
 CPEvent::CPEvent(wxWindow* win, hugin_utils::FDiff2D & p)
 {
     SetEventType( EVT_CPEVENT );
@@ -1564,11 +1571,16 @@ void CPImageCtrl::OnKey(wxKeyEvent & e)
             update();
         }
 
-    } else if (e.m_keyCode == 'a') {
+    }
+    else if (e.m_keyCode == 'a') {
         DEBUG_DEBUG("adding point with a key, faking right click");
         // faking right mouse button with "a"
         // set right up event
-        CPEvent ev(this, CPEvent::RIGHT_CLICK, hugin_utils::FDiff2D(0,0));
+        CPEvent ev(this, CPEvent::RIGHT_CLICK, hugin_utils::FDiff2D(0, 0));
+        emit(ev);
+    }
+    else if (e.m_keyCode==WXK_ESCAPE) {
+        CPEvent ev(this, CPEvent::CANCELED);
         emit(ev);
     } else {
         // forward some keys...
