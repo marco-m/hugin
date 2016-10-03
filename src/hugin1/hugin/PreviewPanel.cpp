@@ -401,7 +401,13 @@ void PreviewPanel::updatePreview()
     } catch (std::exception & e) {
         m_state_rendering = false;
         DEBUG_ERROR("error during stitching: " << e.what());
-        wxMessageBox(wxString(e.what(), wxConvLocal), _("Error during Stitching"));
+        wxMessageBox(wxString::Format(_("Could not stitch preview.\nError: %s\nOne cause could be an invalid or missing image file."), wxString(e.what(), wxConvLocal)),
+#ifdef __WXMSW__
+            wxT("Hugin"),
+#else
+            wxT(""),
+#endif
+            wxOK | wxICON_INFORMATION);
     }
 
 
