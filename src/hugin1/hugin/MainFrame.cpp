@@ -194,6 +194,11 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
 }
 
 
+#if defined _WIN32 && defined Hugin_shared
+DEFINE_LOCAL_EVENT_TYPE(EVT_LOADING_FAILED)
+#else
+DEFINE_EVENT_TYPE(EVT_LOADING_FAILED)
+#endif
 
 // event table. this frame will recieve mostly global commands.
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -255,6 +260,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_BUTTON(XRCID("action_add_time_images"),  MainFrame::OnAddTimeImages)
     EVT_CLOSE(  MainFrame::OnExit)
     EVT_SIZE(MainFrame::OnSize)
+    EVT_COMMAND(wxID_ANY, EVT_LOADING_FAILED, MainFrame::OnLoadingFailed)
 END_EVENT_TABLE()
 
 // change this variable definition
@@ -1128,6 +1134,47 @@ void MainFrame::OnShowPanel(wxCommandEvent & e)
                     }
                     else
                         m_notebook->SetSelection(0);
+}
+
+void MainFrame::OnLoadingFailed(wxCommandEvent & e)
+{
+    // check if file exists
+    if (wxFileExists(e.GetString()))
+    {
+        // file exists, but could not loaded
+        wxMessageBox(wxString::Format(_("Could not load image \"%s\".\nThis file is not a valid image.\nThis file will be removed from the project."), e.GetString()),
+#ifdef _WIN32
+            _("Hugin"),
+#else
+            wxT(""),
+#endif
+            wxOK | wxICON_ERROR);
+    }
+    else
+    {
+        // file does not exists
+        wxMessageBox(wxString::Format(_("Could not load image \"%s\".\nThis file was renamed, deleted or is on a non-accessbile drive.\nThis file will be removed from the project."), e.GetString()),
+#ifdef _WIN32
+            _("Hugin"),
+#else
+            wxT(""),
+#endif
+            wxOK | wxICON_ERROR);
+    };
+    // now remove the file from the pano
+    std::string filename = e.GetString().mb_str(HUGIN_CONV_FILENAME);
+    HuginBase::UIntSet imagesToRemove;
+    for (size_t i = 0; i < pano.getNrOfImages(); ++i)
+    {
+        if (pano.getImage(i).getFilename() == filename)
+        {
+            imagesToRemove.insert(i);
+        };
+    };
+    if (!imagesToRemove.empty())
+    {
+        PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::RemoveImagesCmd(pano, imagesToRemove));
+    };
 }
 
 

@@ -111,11 +111,35 @@ void MaskImageCtrl::SetMaskMode(bool newMaskMode)
 void MaskImageCtrl::setImage(const std::string & file, HuginBase::MaskPolygonVector newMask, HuginBase::MaskPolygonVector masksToDraw, ImageRotation rot)
 {
     DEBUG_TRACE("setting Image " << file);
-    m_imageFilename = file;
-    wxString fn(m_imageFilename.c_str(),HUGIN_CONV_FILENAME);
-    if (wxFileName::FileExists(fn))
+    if(!file.empty())
     {
-        m_img = ImageCache::getInstance().getImage(m_imageFilename);
+        try
+        {
+            m_img = ImageCache::getInstance().getImage(file);
+        }
+        catch (...)
+        {
+            // loading of image failed, set all to empty values
+            m_imageFilename = "";
+            m_maskEditState = NO_IMAGE;
+            m_bitmap = wxBitmap();
+            // delete the image (release shared_ptr)
+            // create an empty image.
+            m_img = ImageCache::EntryPtr(new ImageCache::Entry);
+            HuginBase::MaskPolygonVector mask;
+            m_imageMask = mask;
+            m_masksToDraw = mask;
+            m_imgRotation = ROT0;
+            setActiveMask(UINT_MAX, false);
+            SetVirtualSize(100, 100);
+            Refresh(true);
+            // now notify main frame to remove the image from project
+            wxCommandEvent e(EVT_LOADING_FAILED);
+            e.SetString(wxString(file.c_str(), HUGIN_CONV_FILENAME));
+            MainFrame::Get()->GetEventHandler()->AddPendingEvent(e);
+            return;
+        }
+        m_imageFilename = file;
         if(m_maskMode)
         {
             m_maskEditState = NO_MASK;

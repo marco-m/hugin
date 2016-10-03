@@ -275,6 +275,13 @@ class IMPEX ImageCache
          *  @param entry the EntryPtr from the ImageLoadedEvent.
          */
         void postEvent(RequestPtr request, EntryPtr entry);
+        
+        /** Removes the given RequestPtr from queue, 
+         *  Call from main GUI thread when an image could not loaded 
+         *
+         *  @param request The RequestPtr from the ImageLoadedEvent.
+         */
+        void removeRequest(RequestPtr request);
 
     private:
         unsigned long long upperBound;

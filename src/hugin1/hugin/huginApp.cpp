@@ -580,7 +580,19 @@ MainFrame* huginApp::getMainFrame()
 
 void huginApp::relayImageLoaded(ImageReadyEvent & event)
 {
-    ImageCache::getInstance().postEvent(event.request, event.entry);
+    if (event.entry.get())
+    {
+        ImageCache::getInstance().postEvent(event.request, event.entry);
+    }
+    else
+    {
+        // loading failed, first remove request from image cache list
+        ImageCache::getInstance().removeRequest(event.request);
+        // now notify main frame to remove the failed image from project
+        wxCommandEvent e(EVT_LOADING_FAILED);
+        e.SetString(wxString(event.request->getFilename().c_str(), HUGIN_CONV_FILENAME));
+        frame->GetEventHandler()->AddPendingEvent(e);
+    };
 }
 
 void huginApp::imageLoadedAsync(ImageCache::RequestPtr request, ImageCache::EntryPtr entry)

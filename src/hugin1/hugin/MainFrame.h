@@ -236,6 +236,8 @@ private:
 
     void OnShowDonate(wxCommandEvent &e);
     void OnShowPanel(wxCommandEvent &e);
+    /** event handler called when loading of image file failed */
+    void OnLoadingFailed(wxCommandEvent& e);
 
     wxFileHistory m_mruFiles;
     wxNotebook * m_notebook;
@@ -291,5 +293,12 @@ private:
 
     DECLARE_EVENT_TABLE()
 };
+
+// event used to signal invalid or missing image files
+#if defined _WIN32 && defined Hugin_shared
+DECLARE_LOCAL_EVENT_TYPE(EVT_LOADING_FAILED, -1)
+#else
+DECLARE_EVENT_TYPE(EVT_LOADING_FAILED, -1)
+#endif
 
 #endif // _MAINFRAME_H

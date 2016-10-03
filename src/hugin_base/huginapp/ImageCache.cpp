@@ -854,6 +854,68 @@ void ImageCache::postEvent(RequestPtr request, EntryPtr entry)
     }
 }
 
+void ImageCache::removeRequest(RequestPtr request)
+{
+    // Remove the no longer wanted requests from the queues.
+    // We need to check everything, as images can be loaded synchronously after
+    // an asynchronous request for it was made, and also something could have
+    // given up waiting (e.g. when the user switches images faster than they
+    // load).
+    // Take this opportunity to give out the signals, for the image just loaded
+    // and anything else we spot.
+    for (std::map<std::string, RequestPtr>::iterator it = m_smallRequests.begin();
+        it != m_smallRequests.end();)
+    {
+        std::map<std::string, RequestPtr>::iterator next_it = it;
+        ++next_it;
+        if (it->second.unique())
+        {
+            // Last copy of the request is in the list.
+            // Anything requesting it must have given up waiting.
+            m_smallRequests.erase(it);
+        }
+        else 
+        {
+            // remove all copies from request list
+            while (!it->second->ready.empty())
+            {
+                it->second->ready.erase(it->second->ready.begin());
+            };
+            m_smallRequests.erase(it);
+        }
+        it = next_it;
+    }
+    for (std::map<std::string, RequestPtr>::iterator it = m_requests.begin();
+        it != m_requests.end();)
+    {
+        std::map<std::string, RequestPtr>::iterator next_it = it;
+        ++next_it;
+        if (it->second.unique())
+        {
+            // The last copy of the request is in the list of requests.
+            // Anything that requested it must have given up waiting.
+            // Forget about it without loading.
+            m_requests.erase(it);
+        }
+        else 
+        {
+            // remove all parallel requests
+            while (!it->second->ready.empty())
+            {
+                it->second->ready.erase(it->second->ready.begin());
+            };
+            m_requests.erase(it);
+        }
+        it = next_it;
+    }
+    // If there are more images to load, start the thread again.
+    if (!(m_requests.empty() && m_smallRequests.empty()))
+    {
+        // Start a background thread to load another image.
+        spawnAsyncThread();
+    }
+}
+
 void ImageCache::spawnAsyncThread()
 {
     // Pick an image to load.
