@@ -1162,7 +1162,7 @@ void MainFrame::OnLoadingFailed(wxCommandEvent & e)
             wxOK | wxICON_ERROR);
     };
     // now remove the file from the pano
-    std::string filename = e.GetString().mb_str(HUGIN_CONV_FILENAME);
+    const std::string filename(e.GetString().mb_str(HUGIN_CONV_FILENAME));
     HuginBase::UIntSet imagesToRemove;
     for (size_t i = 0; i < pano.getNrOfImages(); ++i)
     {
