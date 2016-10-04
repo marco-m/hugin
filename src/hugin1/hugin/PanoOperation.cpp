@@ -811,7 +811,7 @@ ResetOperation::ResetOperation(ResetMode newResetMode)
     m_resetExposure=0;
     if(m_resetMode==RESET_PHOTOMETRICS)
     {
-        m_resetExposure=1;
+        m_resetExposure=3;
     };
     m_resetVignetting=(m_resetMode==RESET_PHOTOMETRICS);
     if(m_resetMode==RESET_PHOTOMETRICS)
@@ -935,7 +935,7 @@ PanoCommand::PanoCommand* ResetOperation::GetInternalCommand(wxWindow* parent, H
         };
         if(m_resetExposure>0)
         {
-            if(m_resetExposure==1)
+            if(m_resetExposure==1 || m_resetExposure==3)
             {
                 if (pano.getImage(imgNr).ExposureValueisLinked())
                 {
@@ -945,7 +945,7 @@ PanoCommand::PanoCommand* ResetOperation::GetInternalCommand(wxWindow* parent, H
                 }
                 //reset to exif value
                 double eV=srcImg.calcExifExposureValue();
-                if(eV!=0)
+                if ((m_resetExposure == 1 && eV != 0) || m_resetExposure == 3)
                 {
                     map_get(ImgVars,"Eev").setValue(eV);
                 }
