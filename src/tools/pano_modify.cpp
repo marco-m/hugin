@@ -30,9 +30,6 @@
 #include <sstream>
 #include <cmath>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 #include <algorithms/nona/CenterHorizontally.h>
 #include <algorithms/basic/StraightenPanorama.h>
@@ -164,7 +161,6 @@ int main(int argc, char* argv[])
     bool doAutocrop=false;
     bool autocropHDR=false;
     int c;
-    int optionIndex = 0;
     double yaw = 0;
     double pitch = 0;
     double roll = 0;
@@ -181,7 +177,7 @@ int main(int argc, char* argv[])
     std::string output;
     std::string param;
     std::string blender;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -196,12 +192,12 @@ int main(int argc, char* argv[])
                 projection=atoi(optarg);
                 if((projection==0) && (strcmp(optarg,"0")!=0))
                 {
-                    std::cerr << "Could not parse projection number.";
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse projection number." << std::endl;
                     return 1;
                 };
                 if(projection>=panoProjectionFormatCount())
                 {
-                    std::cerr << "projection " << projection << " is an invalid projection number.";
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": projection " << projection << " is an invalid projection number." << std::endl;
                     return 1;
                 };
                 break;
@@ -225,7 +221,7 @@ int main(int argc, char* argv[])
                         }
                         else
                         {
-                            std::cerr << "Invalid field of view" << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid field of view" << std::endl;
                             return 1;
                         };
                     }
@@ -240,13 +236,13 @@ int main(int argc, char* argv[])
                             }
                             else
                             {
-                                std::cerr << "Invalid field of view" << std::endl;
+                                std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid field of view" << std::endl;
                                 return 1;
                             };
                         }
                         else
                         {
-                            std::cerr << "Could not parse field of view" << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse field of view" << std::endl;
                             return 1;
                         };
                     };
@@ -275,7 +271,7 @@ int main(int argc, char* argv[])
                         scale=atoi(param.c_str());
                         if(scale==0)
                         {
-                            std::cerr << "No valid scale factor given." << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": No valid scale factor given." << std::endl;
                             return 1;
                         };
                         doOptimalSize=true;
@@ -293,13 +289,13 @@ int main(int argc, char* argv[])
                             }
                             else
                             {
-                                std::cerr << "Invalid canvas size" << std::endl;
+                                std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid canvas size" << std::endl;
                                 return 1;
                             };
                         }
                         else
                         {
-                            std::cerr << "Could not parse canvas size" << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse canvas size" << std::endl;
                             return 1;
                         };
                     };
@@ -330,13 +326,13 @@ int main(int argc, char* argv[])
                         }
                         else
                         {
-                            std::cerr << "Invalid crop area" << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid crop area" << std::endl;
                             return 1;
                         };
                     }
                     else
                     {
-                        std::cerr << "Could not parse crop values" << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse crop values" << std::endl;
                         return 1;
                     };
                 };
@@ -359,7 +355,7 @@ int main(int argc, char* argv[])
                     int n = sscanf(optarg, "%lf", &outputExposure);
                     if (n != 1)
                     {
-                        std::cerr << "Could not parse output exposure value.";
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse output exposure value." << std::endl;
                         return 1;
                     };
                 };
@@ -391,7 +387,7 @@ int main(int argc, char* argv[])
                     int n=sscanf(optarg, "%lf,%lf,%lf", &yaw, &pitch, &roll);
                     if(n!=3)
                     {
-                        std::cerr << "Could not parse rotate angles values. Given: \"" << optarg << "\"" << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse rotate angles values. Given: \"" << optarg << "\"" << std::endl;
                         return 1;
                     };
                 };
@@ -401,26 +397,33 @@ int main(int argc, char* argv[])
                     int n=sscanf(optarg, "%lf,%lf,%lf", &x, &y, &z);
                     if(n!=3)
                     {
-                        std::cerr << "Could not parse translation values. Given: \"" << optarg << "\"" << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse translation values. Given: \"" << optarg << "\"" << std::endl;
                         return 1;
                     };
                 };
                 break;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a number" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
-                abort ();
+                // this should not happen
+                abort();
+
         }
     }
 
     if (argc - optind != 1)
     {
-        std::cout << "Warning: pano_modify can only work on one project file at one time" << std::endl << std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
 

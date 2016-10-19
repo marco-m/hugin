@@ -27,11 +27,7 @@
 #include <panodata/Panorama.h>
 #include <hugin_utils/utils.h>
 
-#ifdef _WIN32
 #include <getopt.h>
-#else
- #include <unistd.h>
-#endif
 
 static void usage(){
 
@@ -56,7 +52,7 @@ static void usage(){
 	std::cout << "                  Default: PNG" << std::endl;
 	std::cout << "  -r <1|0>        Filter radius. 0 = large (more accurate), 1 = small (higher" << std::endl;
 	std::cout << "                  resolution mask, slower, less accurate). Default: 0" << std::endl;
-	std::cout << "  -h              Print usage." << std::endl; 
+	std::cout << "  -h|--help       Print usage." << std::endl; 
 	std::cout << "  image1 image2.. Image files to be masked." << std::endl << std::endl;
 	exit(1);
 
@@ -170,13 +166,6 @@ std::string generateMaskName(std::string imagefile,std::string mask_format)
 
 int main(int argc, char* argv[])
 {
-
-    // Exit with usage unless filename given as argument
-    if (argc < 2)
-    {
-            usage();
-    }
-
     int mask = 0;
     double threshold = 0.5;
     std::vector<std::string> images_to_mask;
@@ -190,8 +179,14 @@ int main(int argc, char* argv[])
     // parse arguments
     int c;
     const char * optstring = "i:o:d:s:t:m:f:r:h";
+    static struct option longOptions[] =
+    {
+        { "output", required_argument, NULL, 'o' },
+        { "help", no_argument, NULL, 'h' },
+        0
+    };
 
-    while ((c = getopt (argc, argv, optstring)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch(c)
         {
@@ -208,7 +203,7 @@ int main(int argc, char* argv[])
                 threshold = atof(optarg);
                 if(threshold<=0 || threshold>1)
                 {
-                    std::cerr << "Invalid parameter: threshold (-t) should be between 0 and 1" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: threshold (-t) should be between 0 and 1" << std::endl;
                     return 1;
                 };
                 break;
@@ -216,7 +211,7 @@ int main(int argc, char* argv[])
                 mask = atoi(optarg);
                 if(mask<0 || mask>1)
                 {
-                    std::cerr << "Invalid parameter: mask parameter (-m) can only be 0 or 1" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: mask parameter (-m) can only be 0 or 1" << std::endl;
                     return 1;
                 };
                 break;
@@ -233,19 +228,18 @@ int main(int argc, char* argv[])
                 resize_dimension = atoi(optarg);
                 if(resize_dimension<100)
                 {
-                    std::cerr << "Invalid parameter: maximum dimension (-s) should be bigger than 100" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: maximum dimension (-s) should be bigger than 100" << std::endl;
                     return 1;
                 };
                 break;
             case ':':
-                std::cerr <<"Missing parameter for parameter " << argv[optind] << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?': /* invalid parameter */
-                return 1;
-                break;
-            default: /* unknown */
-                usage();
+            default:
+                // this should not happen
+                abort();
         };
     };
 
@@ -255,9 +249,9 @@ int main(int argc, char* argv[])
         optind++;
     };
     
-    if(images_to_mask.size()==0 && pto_file.empty())
+    if(images_to_mask.empty() && pto_file.empty())
     {
-        std::cout << "No project file or image files given."<< std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file or image files given." << std::endl;
         return 1;
     };
 
@@ -268,16 +262,15 @@ int main(int argc, char* argv[])
         std::string install_path_model=hugin_utils::GetDataDir();
 		install_path_model.append(model_file);
 		
-		if (!hugin_utils::FileExists(install_path_model)){
-		
-    			std::cout << std::endl << "Couldn't open SVM model file " << model_file << std::endl;
-			std::cout << "Also tried " << install_path_model << std::endl << std::endl; 
-    			exit(1);
-
-		}else{
-		
-			model_file = install_path_model;
-		
+		if (!hugin_utils::FileExists(install_path_model))
+        {		
+            std::cerr << std::endl << "Couldn't open SVM model file " << model_file << std::endl
+                << "Also tried " << install_path_model << std::endl << std::endl;
+    		exit(1);
+		}
+        else
+        {
+    		model_file = install_path_model;
 		}
   	}
 

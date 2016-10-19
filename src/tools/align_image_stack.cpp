@@ -48,9 +48,6 @@
 #include <lensdb/LensDB.h>
 
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 
 #include <hugin_utils/openmp_lock.h>
 #include <tiff.h>
@@ -951,8 +948,6 @@ int main(int argc, char* argv[])
     const char* optstring = "a:ef:g:hlmdiSAPCp:vo:s:t:c:xyz";
     int c;
 
-    opterr = 0;
-
     g_verbose = 0;
 
     Parameters param;
@@ -975,8 +970,8 @@ int main(int argc, char* argv[])
         {"help", no_argument, NULL, 'h' },
         0
     };
-    int optionIndex = 0;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
+    {
         switch (c)
         {
             case 'a':
@@ -984,9 +979,9 @@ int main(int argc, char* argv[])
                 break;
             case 'c':
                 param.nPoints = atoi(optarg);
-                if (param.nPoints<1)
+                if (param.nPoints < 1)
                 {
-                    std::cerr << "Invalid parameter: Number of points/grid (-c) must be at least 1" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: Number of points/grid (-c) must be at least 1" << std::endl;
                     return 1;
                 }
                 break;
@@ -995,17 +990,17 @@ int main(int argc, char* argv[])
                 break;
             case 'f':
                 param.hfov = atof(optarg);
-                if (param.hfov<=0)
+                if (param.hfov <= 0)
                 {
-                    std::cerr << "Invalid parameter: HFOV (-f) must be greater than 0" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: HFOV (-f) must be greater than 0" << std::endl;
                     return 1;
                 }
                 break;
             case 'g':
                 param.grid = atoi(optarg);
-                if (param.grid <1 || param.grid>50)
+                if (param.grid < 1 || param.grid>50)
                 {
-                    std::cerr << "Invalid parameter: number of grid cells (-g) should be between 1 and 50" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: number of grid cells (-g) should be between 1 and 50" << std::endl;
                     return 1;
                 }
                 break;
@@ -1049,7 +1044,7 @@ int main(int argc, char* argv[])
                 param.cpErrorThreshold = atof(optarg);
                 if (param.cpErrorThreshold <= 0)
                 {
-                    std::cerr << "Invalid parameter: control point error threshold (-t) must be greater than 0" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: control point error threshold (-t) must be greater than 0" << std::endl;
                     return 1;
                 }
                 break;
@@ -1067,17 +1062,17 @@ int main(int argc, char* argv[])
                 return 0;
             case 's':
                 param.pyrLevel = atoi(optarg);
-                if (param.pyrLevel<0 || param.pyrLevel >8)
+                if (param.pyrLevel < 0 || param.pyrLevel >8)
                 {
-                    std::cerr << "Invalid parameter: scaling (-s) should be between 0 and 8" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: scaling (-s) should be between 0 and 8" << std::endl;
                     return 1;
                 }
                 break;
             case CORRTHRESH:
                 param.corrThresh = atof(optarg);
-                if(param.corrThresh<=0 || param.corrThresh>1.0)
+                if (param.corrThresh <= 0 || param.corrThresh > 1.0)
                 {
-                    std::cerr << "Invalid correlation value. Should be between 0 and 1" << endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: correlation should be between 0 and 1" << endl;
                     return 1;
                 };
                 break;
@@ -1093,11 +1088,16 @@ int main(int argc, char* argv[])
             case USEGIVENORDER:
                 param.sortImagesByEv = false;
                 break;
-            default:
-                std::cerr << "Invalid parameter: " << optarg << std::endl;
-                usage(hugin_utils::stripPath(argv[0]).c_str());
+            case ':':
+            case '?':
+                // missing argument or invalid switch
                 return 1;
+                break;
+            default:
+                // this should not happen
+                abort();
         }
+    }
 
     // use always given image order for stereo options
     if (param.stereo)
@@ -1107,17 +1107,13 @@ int main(int argc, char* argv[])
     unsigned nFiles = argc - optind;
     if (nFiles < 2)
     {
-        std::cerr << std::endl << "Error: at least two files need to be specified" << std::endl <<std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": At least two files need to be specified" << std::endl;
         return 1;
     }
 
-    if (param.hdrFile.size() == 0 && param.ptoFile.size() == 0 && param.alignedPrefix.size() == 0)
+    if (param.hdrFile.empty() && param.ptoFile.empty() && param.alignedPrefix.empty())
     {
-        std::cerr << std::endl
-                  << "ERROR: Please specify at least one of the -p, -o or -a options." << std::endl
-                  << std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": Please specify at least one of the -p, -o or -a options." << std::endl;
         return 1;
     }
 

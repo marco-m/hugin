@@ -99,8 +99,7 @@ int main(int argc, char* argv[])
     bool includeLineCp = false;
     bool verbose = false;
     double n = 2.0;
-    int optionIndex = 0;
-    while ((c = getopt_long(argc, argv, optstring, longOptions, &optionIndex)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
         {
@@ -114,12 +113,12 @@ int main(int argc, char* argv[])
                 n = atof(optarg);
                 if(n==0)
                 {
-                    std::cerr <<"Invalid parameter: " << optarg << " is not valid real number" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: " << optarg << " is not valid real number" << std::endl;
                     return 1;
                 };
                 if (n<1.0)
                 {
-                    std::cerr << "Invalid parameter: n must be at least 1" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: n must be at least 1" << std::endl;
                     return 1;
                 };
                 break;
@@ -139,25 +138,32 @@ int main(int argc, char* argv[])
                 verbose = true;
                 break;
             case ':':
-                std::cerr <<"Option -n requires a number" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
+                // this should not happen
                 abort ();
         }
     }
 
     if (argc - optind != 1)
     {
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
 
     if (onlyPair && wholePano)
     {
-        std::cerr << "Options -p and -w can't used together" << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": Options -p and -w can't used together" << std::endl;
         return 1;
     };
 

@@ -389,8 +389,7 @@ int main(int argc, char* argv[])
     bool recursive=false;
     bool forceOverwrite=false;
     int c;
-    int optionIndex = 0;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -406,16 +405,20 @@ int main(int argc, char* argv[])
             case 'o':
                 forceOverwrite=true;
                 break;
+            case ':':
             case '?':
+                // missing argument or invalid switch
+                return 1;
                 break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
     if(argc-optind<2)
     {
-        std::cout << "PTO_MOVE: You need to give at least a source and a destination project file or directory." << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": You need to give at least a source and a destination project file or directory." << std::endl;
         return 1;
     };
 

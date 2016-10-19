@@ -35,11 +35,7 @@
 
 #include <fstream>
 #include <sstream>
-#ifdef _WIN32
 #include <getopt.h>
-#else
-#include <unistd.h>
-#endif
 
 #include <panodata/Panorama.h>
 #include <panotools/PanoToolsInterface.h>
@@ -59,8 +55,8 @@ static void usage(const char* name)
          << "of the form <image number> <x coordinate> <y coordinate>" << std::endl
          << "and output the transformed coordinates." << std::endl
          << std::endl
-         << "     -r       Transform from panorama to image coordinates" << std::endl
-         << "     -h       shows help" << std::endl
+         << "     -r|--recursive  Transform from panorama to image coordinates" << std::endl
+         << "     -h|--help       Shows help" << std::endl
          << std::endl;
 }
 
@@ -117,10 +113,16 @@ int main(int argc, char* argv[])
 {
     // parse arguments
     const char* optstring = "hr";
-
+    static struct option longOptions[] =
+    {
+        { "recursive", no_argument, NULL, 'r' },
+        { "help", no_argument, NULL, 'h' },
+        0
+    };
     int c;
+
     bool reverse = false;
-    while ((c = getopt (argc, argv, optstring)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
         {
@@ -130,16 +132,20 @@ int main(int argc, char* argv[])
             case 'r':
                 reverse = true;
                 break;
+            case ':':
             case '?':
+                // missing argument or invalid switch
+                return 1;
                 break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
     if (argc - optind < 1 || argc - optind > 2)
     {
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": Expected one project file and optional one image number" << std::endl;
         return 1;
     }
 

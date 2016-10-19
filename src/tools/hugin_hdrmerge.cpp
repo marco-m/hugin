@@ -42,11 +42,7 @@
 #include <vigra_ext/HDRUtils.h>
 #include <vigra_ext/ReduceOpenEXR.h>
 
-#ifdef _WIN32
 #include <getopt.h>
-#else
-#include <unistd.h>
-#endif
 
 #include "../deghosting/deghosting.h"
 #include "../deghosting/khan.h"
@@ -186,7 +182,7 @@ static void usage(const char* name)
          << std::endl
          << "Usage: " << name  << " [options] -o output.exr <input-files>" << std::endl
          << "Valid options are:" << std::endl
-         << "  -o prefix output file" << std::endl
+         << "  -o|--output prefix output file" << std::endl
          << "  -m mode   merge mode, can be one of: avg (default), avg_slow, khan, if avg, no" << std::endl
          << "            -i and -s options apply" << std::endl
          << "  -i iter   number of iterations to execute (default is 4). Khan only" << std::endl
@@ -198,9 +194,9 @@ static void usage(const char* name)
          << "              g   use gamma 2.2 correction instead of logarithm" << std::endl
          << "              m   do not scale image, NOTE: slows down process" << std::endl
          << "  -c        Only consider pixels that are defined in all images (avg mode only)" << std::endl
-         << "  -v        Verbose, print progress messages, repeat for" << std::endl
-         << "            even more verbose output" << std::endl
-         << "  -h        Display help (this text)" << std::endl
+         << "  -v|--verbose   Verbose, print progress messages, repeat for" << std::endl
+         << "                 even more verbose output" << std::endl
+         << "  -h|help   Display help (this text)" << std::endl
          << std::endl;
 }
 
@@ -210,9 +206,14 @@ int main(int argc, char* argv[])
 
     // parse arguments
     const char* optstring = "chvo:m:i:s:a:el";
+    static struct option longOptions[] =
+    {
+        { "output", required_argument, NULL, 'o' },
+        { "verbose", no_argument, NULL, 'v' },
+        { "help", no_argument, NULL, 'h' },
+        0
+    };
     int c;
-
-    opterr = 0;
 
     g_verbose = 0;
     std::string outputFile = "merged.exr";
@@ -223,7 +224,7 @@ int main(int argc, char* argv[])
     uint16_t flags = 0;
     uint16_t otherFlags = 0;
 
-    while ((c = getopt (argc, argv, optstring)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
         {
@@ -251,7 +252,7 @@ int main(int argc, char* argv[])
                             flags -= deghosting::ADV_MULTIRES;
                             break;
                         default:
-                            std::cerr<< "Error: unknown option" << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": unknown option" << std::endl;
                             exit(1);
                     }
                 }
@@ -267,18 +268,21 @@ int main(int argc, char* argv[])
             case 'h':
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
-            default:
-                std::cerr << "Invalid parameter: " << optarg << std::endl;
-                usage(hugin_utils::stripPath(argv[0]).c_str());
+            case ':':
+            case '?':
+                // missing argument or invalid switch
                 return 1;
+                break;
+            default:
+                // this should not happen
+                abort();
         }
     }//end while
 
     unsigned nFiles = argc - optind;
     if (nFiles == 0)
     {
-        std::cerr << std::endl << "Error: at least one input image needed" << std::endl <<std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": at least one input image needed" << std::endl;
         return 1;
     }
     else if (nFiles == 1)

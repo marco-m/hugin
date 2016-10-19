@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
     {
         { "compress", no_argument, NULL, 'c' },
         { "recursive", no_argument, NULL, 'r' },
-        { "populate", no_argument, NULL, 'p' },
+        { "populate", required_argument, NULL, 'p' },
         { "remove-lens", required_argument, NULL, REMOVE_LENS },
         { "remove-camera", required_argument, NULL, REMOVE_CAM },
         { "export-database", required_argument, NULL, EXPORT_DB },
@@ -197,8 +197,7 @@ int main(int argc, char* argv[])
     std::string exportDatabase;
     std::string importDatabase;
     int c;
-    int optionIndex = 0;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -213,6 +212,7 @@ int main(int argc, char* argv[])
                 break;
             case 'p':
                 populate = true;
+                basepath = hugin_utils::StrTrim(std::string(optarg));
                 break;
             case REMOVE_LENS:
                 lensToRemove = hugin_utils::StrTrim(std::string(optarg));
@@ -226,28 +226,21 @@ int main(int argc, char* argv[])
             case IMPORT_DB:
                 importDatabase = hugin_utils::StrTrim(std::string(optarg));
                 break;
+            case ':':
             case '?':
+                // missing argument or invalid switch
+                return 1;
                 break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
     if (!exportDatabase.empty() && !importDatabase.empty())
     {
-        std::cerr << "ERROR: Export and import can not be done at the same time. " << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": Export and import can not be done at the same time. " << std::endl;
         return -1;
-    };
-
-    if (populate)
-    {
-        if (argc - optind != 1)
-        {
-            usage(hugin_utils::stripPath(argv[0]).c_str());
-            return -1;
-        };
-
-        basepath = argv[optind];
     };
 
     if (!populate && !compress && lensToRemove.empty() && camToRemove.empty() && exportDatabase.empty() && importDatabase.empty())
@@ -256,7 +249,7 @@ int main(int argc, char* argv[])
         std::cout << "Nothing to do." << std::endl;
     };
 
-    if (!basepath.empty())
+    if (populate)
     {
         fs::path p(basepath);
         if (fs::exists(p))

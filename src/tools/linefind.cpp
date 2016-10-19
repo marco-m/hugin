@@ -27,9 +27,6 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 #include <panodata/StandardImageVariableGroups.h>
 #include <lines/FindLines.h>
@@ -299,10 +296,9 @@ int main(int argc, char* argv[])
 
     HuginBase::UIntSet cmdlineImages;
     int c;
-    int optionIndex = 0;
     int nrLines = 5;
     std::string output;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -317,7 +313,7 @@ int main(int argc, char* argv[])
                     int imgNr=atoi(optarg);
                     if((imgNr==0) && (strcmp(optarg,"0")!=0))
                     {
-                        std::cerr << "Could not parse image number.";
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse image number." << std::endl;
                         return 1;
                     };
                     cmdlineImages.insert(imgNr);
@@ -327,27 +323,34 @@ int main(int argc, char* argv[])
                 nrLines=atoi(optarg);
                 if(nrLines<1)
                 {
-                    std::cerr << "Could not parse number of lines.";
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse number of lines." << std::endl;
                     return 1;
                 };
                 break;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a number" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
     if (argc - optind != 1)
     {
-        std::cout << "Warning: " << argv[0] << " can only work on one project file at one time" << std::endl << std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
+
 
     std::string input=argv[optind];
     // read panorama

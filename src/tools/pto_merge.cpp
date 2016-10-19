@@ -29,9 +29,6 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 
 static void usage(const char* name)
@@ -61,9 +58,8 @@ int main(int argc, char* argv[])
     };
 
     int c;
-    int optionIndex = 0;
     std::string output;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -73,17 +69,20 @@ int main(int argc, char* argv[])
             case 'h':
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
+            case ':':
             case '?':
+                // missing argument or invalid switch
+                return 1;
                 break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
     if (argc - optind < 2)
     {
-        std::cout << "Warning: pto_merge requires at least 2 project files" << std::endl << std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": at least 2 project files needed" << std::endl << std::endl;
         return 1;
     };
 

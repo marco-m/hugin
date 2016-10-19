@@ -89,7 +89,6 @@ int main(int argc, char* argv[])
     };
 
     int c;
-    int optionIndex = 0;
     std::string output;
     int projection=-1;
     float fov=-1;
@@ -98,7 +97,7 @@ int main(int argc, char* argv[])
     vigra::Rect2D cropRect(0,0,0,0);
     bool loadDistortion=false;
     bool loadVignetting=false;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -113,12 +112,12 @@ int main(int argc, char* argv[])
                     projection=atoi(optarg);
                     if((projection==0) && (strcmp(optarg,"0")!=0))
                     {
-                        std::cerr << "Could not parse image number.";
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse image number." << std::endl;
                         return 1;
                     };
                     if(projection<0)
                     {
-                        std::cerr << "Invalid projection number." << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid projection number." << std::endl;
                         return 1;
                     };
                 };
@@ -127,7 +126,7 @@ int main(int argc, char* argv[])
                 fov=atof(optarg);
                 if(fov<1 || fov>360)
                 {
-                    std::cerr << "Invalid field of view";
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid field of view" << std::endl;
                     return 1;
                 };
                 break;
@@ -144,13 +143,13 @@ int main(int argc, char* argv[])
                         }
                         else
                         {
-                            std::cerr << "Invalid crop area" << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid crop area" << std::endl;
                             return 1;
                         };
                     }
                     else
                     {
-                        std::cerr << "Could not parse crop values" << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse crop values" << std::endl;
                         return 1;
                     };
                 };
@@ -159,7 +158,7 @@ int main(int argc, char* argv[])
                 stackLength=atoi(optarg);
                 if ((stackLength == 0) && (strcmp(optarg, "0") != 0))
                 {
-                    std::cerr << "Could not parse stack length.";
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse stack length." << std::endl;
                     return 1;
                 };
                 break;
@@ -173,19 +172,19 @@ int main(int argc, char* argv[])
                 loadVignetting=true;
                 break;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a number" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
+                // this should not happen
                 abort ();
         }
     }
 
     if (argc - optind < 1)
     {
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No image files given." << std::endl;
         return 1;
     };
 
@@ -240,9 +239,9 @@ int main(int argc, char* argv[])
         optind++;
     };
 
-    if(filelist.size()==0)
+    if(filelist.empty())
     {
-        std::cerr << "No valid image files given." << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No valid image files given." << std::endl;
         return 1;
     };
 

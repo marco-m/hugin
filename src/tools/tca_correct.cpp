@@ -924,10 +924,8 @@ int main(int argc, char* argv[])
     };
     int c;
     bool parameter_request_seen=false;
-    int optionIndex = 0;
-    opterr = 0;
 
-    while ((c = getopt_long(argc, argv, optstring, longOptions, &optionIndex)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
         {
@@ -963,7 +961,7 @@ int main(int argc, char* argv[])
                 g_param.cpErrorThreshold = atof(optarg);
                 if (g_param.cpErrorThreshold <= 0)
                 {
-                    std::cerr << "Invalid parameter: control point error threshold (-t) must be greater than 0" << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid parameter: control point error threshold (-t) must be greater than 0" << std::endl;
                     return 1;
                 }
                 break;
@@ -994,18 +992,29 @@ int main(int argc, char* argv[])
             case SAVEDATABASE:
                 g_param.saveDB = true;
                 break;
-            default:
-                std::cerr << "Invalid parameter: '" << argv[optind-1] << " " << optarg << "'" << std::endl;
-                usage(hugin_utils::stripPath(argv[0]).c_str());
+            case ':':
+            case '?':
+                // missing argument or invalid switch
                 return 1;
+                break;
+            default:
+                // this should not happen
+                abort();
         }
     };
 
-    if ((argc - optind) != 1)
+    if (argc - optind != 1)
     {
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No input file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one input file expected." << std::endl;
+        };
         return 1;
-    }
+    };
 
     // If no parameters were requested to be optimised, we optimize the
     // default parameters.
@@ -1021,8 +1030,7 @@ int main(int argc, char* argv[])
     // Program will crash if nothing is to be optimised.
     if ( g_param.optvars.empty())
     {
-        std::cerr << "No parameters to optimize." << std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No parameters to optimize." << std::endl;
         return 1;
     }
 

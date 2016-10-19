@@ -27,9 +27,6 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 #include <panodata/StandardImageVariableGroups.h>
 #include "hugin_utils/utils.h"
@@ -166,9 +163,8 @@ int main(int argc, char* argv[])
     ParseImgVec changeLensImgs;
     ParseImgVec changeStackImgs;
     int c;
-    int optionIndex = 0;
     std::string output;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -191,30 +187,32 @@ int main(int argc, char* argv[])
                 ParseImageLensStackString(changeStackImgs, std::string(optarg));
                 break;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a parameter" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
-    if (argc - optind == 0)
-    {
-        std::cout << "Error: " << argv[0] << " needs at least one project file." << std::endl;
-        return 1;
-    };
     if (argc - optind != 1)
     {
-        std::cout << "Error: " << argv[0] << " can only work on one project file at one time" << std::endl;
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
 
     if(newLensImgs.size() + newStackImgs.size() + changeLensImgs.size() + changeStackImgs.size()==0)
     {
-        std::cerr << "Error: no images/lens/stacks to modify given" << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": no images/lens/stacks to modify given" << std::endl;
         return 1;
     };
 

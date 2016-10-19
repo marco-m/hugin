@@ -27,9 +27,6 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 #include <panodata/ImageVariableTranslate.h>
 #include <panodata/ImageVariableGroup.h>
@@ -390,9 +387,8 @@ int main(int argc, char* argv[])
     ParseVarVec setVars;
     bool modifyOptVec=false;
     int c;
-    int optionIndex = 0;
     std::string output;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -428,7 +424,8 @@ int main(int argc, char* argv[])
                     }
                     else
                     {
-                        std::cerr << "Could not open file " << optarg << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not open file " << optarg << std::endl;
+                        return 1;
                     };
                 };
                 break;
@@ -436,30 +433,33 @@ int main(int argc, char* argv[])
                 modifyOptVec=true;
                 break;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a parameter." << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
-                abort ();
+                // this should not happen
+                abort();
+
         }
     }
 
-    if (argc - optind == 0)
-    {
-        std::cerr << "Error: " << argv[0] << " needs at least one project file." << std::endl;
-        return 1;
-    };
     if (argc - optind != 1)
     {
-        std::cout << "Error: " << argv[0] << " can only work on one project file at one time" << std::endl;
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
 
     if(optVars.size() + linkVars.size() + unlinkVars.size() + setVars.size()==0)
     {
-        std::cerr << "Error: no variables to modify given" << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": no variables to modify given" << std::endl;
         return 1;
     };
 

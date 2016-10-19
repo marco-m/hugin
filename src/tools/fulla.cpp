@@ -33,9 +33,6 @@
 #include <vigra/codec.hxx>
 #include <vigra_ext/impexalpha.hxx>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 
 #include <appbase/ProgressDisplay.h>
 #include <nona/SpaceTransform.h>
@@ -146,8 +143,6 @@ int main(int argc, char* argv[])
         { "help", no_argument, NULL, 'h' },
         0
     };
-    int optionIndex = 0;
-    opterr = 0;
 
     std::vector<double> vec4(4);
     bool doFlatfield = false;
@@ -172,7 +167,7 @@ int main(int argc, char* argv[])
     std::string argument;
 
     HuginBase::SrcPanoImage srcImg;
-    while ((o = getopt_long(argc, argv, optstring, longOptions, &optionIndex)) != -1)
+    while ((o = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
         switch (o)
         {
             case 'e':
@@ -189,8 +184,7 @@ int main(int argc, char* argv[])
                 {
                     if (sscanf(optarg, "%lf:%lf:%lf:%lf", &vec4[0], &vec4[1], &vec4[2], &vec4[3]) != 4)
                     {
-                        std::cerr << std::endl << "Error: invalid -r argument" << std::endl << std::endl;
-                        usage(hugin_utils::stripPath(argv[0]).c_str());
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": invalid -r argument" << std::endl;
                         return 1;
                     }
                     srcImg.setRadialDistortionRed(vec4);
@@ -207,8 +201,7 @@ int main(int argc, char* argv[])
                 {
                     if (sscanf(optarg, "%lf:%lf:%lf:%lf", &vec4[0], &vec4[1], &vec4[2], &vec4[3]) != 4)
                     {
-                        std::cerr << std::endl << "Error: invalid -g argument" << std::endl << std::endl;
-                        usage(hugin_utils::stripPath(argv[0]).c_str());
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": invalid -g argument" << std::endl;
                         return 1;
                     }
                     srcImg.setRadialDistortion(vec4);
@@ -225,8 +218,7 @@ int main(int argc, char* argv[])
                 {
                     if (sscanf(optarg, "%lf:%lf:%lf:%lf", &vec4[0], &vec4[1], &vec4[2], &vec4[3]) != 4)
                     {
-                        std::cerr << std::endl << "Error: invalid -b argument" << std::endl << std::endl;
-                        usage(hugin_utils::stripPath(argv[0]).c_str());
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": invalid -b argument" << std::endl;
                         return 1;
                     }
                     srcImg.setRadialDistortionBlue(vec4);
@@ -269,15 +261,13 @@ int main(int argc, char* argv[])
                 {
                     if (sscanf(optarg, "%lf:%lf:%lf:%lf", &vec4[0], &vec4[1], &vec4[2], &vec4[3]) != 4)
                     {
-                        std::cerr << std::endl << "Error: invalid -c argument" << std::endl << std::endl;
-                        usage(hugin_utils::stripPath(argv[0]).c_str());
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": invalid -c argument" << std::endl;
                         return 1;
                     }
                     srcImg.setRadialVigCorrCoeff(vec4);
                 };
                 doVigRadial = true;
                 break;
-            case '?':
             case 'h':
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
@@ -290,8 +280,7 @@ int main(int argc, char* argv[])
             case 'x':
                 if (sscanf(optarg, "%lf:%lf", &shiftX, &shiftY) != 2)
                 {
-                    std::cerr << std::endl << "Error: invalid -x argument" << std::endl <<std::endl;
-                    usage(hugin_utils::stripPath(argv[0]).c_str());
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": invalid -x argument" << std::endl;
                     return 1;
                 }
                 srcImg.setRadialDistortionCenterShift(hugin_utils::FDiff2D(shiftX, shiftY));
@@ -302,14 +291,19 @@ int main(int argc, char* argv[])
             case LINEAR_RESPONSE:
                 srcImg.setResponseType(HuginBase::BaseSrcPanoImage::RESPONSE_LINEAR);
                 break;
+            case ':':
+            case '?':
+                // missing argument or invalid switch
+                return 1;
+                break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
 
     if (doVigRadial && doFlatfield)
     {
-        std::cerr << std::endl << "Error: cannot use -f and -c at the same time" << std::endl <<std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": cannot use -f and -c at the same time" << std::endl;
         return 1;
     }
 
@@ -330,8 +324,7 @@ int main(int argc, char* argv[])
     unsigned nFiles = argc - optind;
     if (nFiles == 0)
     {
-        std::cerr << std::endl << "Error: No input file(s) specified" << std::endl <<std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No input file(s) specified" << std::endl;
         return 1;
     }
 

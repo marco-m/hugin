@@ -27,9 +27,6 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 
 static void usage(const char* name)
@@ -65,10 +62,9 @@ int main(int argc, char* argv[])
     };
 
     int c;
-    int optionIndex = 0;
     std::string output;
     std::string templateFile;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -79,7 +75,7 @@ int main(int argc, char* argv[])
                 templateFile = optarg;
                 if(!hugin_utils::FileExists(templateFile))
                 {
-                    std::cerr << "Error: Template \"" << templateFile << "\" not found." << std::endl;
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Template \"" << templateFile << "\" not found." << std::endl;
                     return 1;
                 };
                 break;
@@ -87,29 +83,31 @@ int main(int argc, char* argv[])
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a parameter" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
-    if (argc - optind == 0)
-    {
-        std::cout << "Error: No project file given." << std::endl;
-        return 1;
-    };
     if (argc - optind != 1)
     {
-        std::cout << "Error: pto_template can only work on one project file at one time" << std::endl;
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
-    if (templateFile.length()==0)
+    if (templateFile.empty())
     {
-        std::cerr << "Error: No template given." << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No template given." << std::endl;
         return 1;
     };
 

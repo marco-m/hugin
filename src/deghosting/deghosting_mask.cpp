@@ -138,7 +138,6 @@ int main(int argc, char *argv[]) {
     try
     {
         const char * optstring = "o:i:s:r:t:c:a:w:hv";
-        opterr = 0;
         int c;
 
         std::string outputPrefix = "weight";
@@ -295,26 +294,25 @@ int main(int argc, char *argv[]) {
                 case 'v':
                     verbosity++;
                     break;
+                case ':':
+                case '?':
+                    // missing argument or invalid switch
+                    return 1;
+                    break;
+                default:
+                    // this should not happen
+                    abort();
             }
         }
 
         std::cout << std::endl;
 
         unsigned nFiles = argc - optind;
-        if (nFiles == 0)
+        if (nFiles < 3)
         {
-            std::cerr << std::endl << "Error: at least three input images needed" << std::endl << std::endl;
-            usage();
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": at least three input images needed" << std::endl;
             return 1;
-        }
-        else
-        {
-            if (nFiles < 3)
-            {
-                std::cout << std::endl << "Error: You have to specify at least three images." << std::endl;
-                return 1;
-            }
-        }
+        };
 
         // load all images
         std::vector<std::string> inputFiles;

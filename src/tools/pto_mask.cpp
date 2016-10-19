@@ -27,9 +27,6 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 
 struct MaskFiles
@@ -82,12 +79,11 @@ int main(int argc, char* argv[])
     };
 
     int c;
-    int optionIndex = 0;
     std::vector<MaskFiles> maskFiles;
     size_t rotate=0;
     size_t process=0;
     std::string output;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -105,19 +101,19 @@ int main(int argc, char* argv[])
                         mf.imageNr=atoi(s2.c_str());
                         if(mf.imageNr==0 && s2!="0")
                         {
-                            std::cerr << "Error: Could not parse image number: \"" << s2 << "\"." << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse image number: \"" << s2 << "\"." << std::endl;
                             return 1;
                         };
                     }
                     else
                     {
-                        std::cerr << "Error: No image number found in \"" << s << "\"." << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": No image number found in \"" << s << "\"." << std::endl;
                         return 1;
                     };
                     mf.maskFile=s.substr(0, found);
                     if(!hugin_utils::FileExists(mf.maskFile))
                     {
-                        std::cerr << "Error: File \"" << mf.maskFile << "\" does not exists." << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": File \"" << mf.maskFile << "\" does not exists." << std::endl;
                         return 1;
                     };
                     maskFiles.push_back(mf);
@@ -139,7 +135,7 @@ int main(int argc, char* argv[])
                         }
                         else
                         {
-                            std::cerr << "Error:  Unknown rotate command (" << optarg << ") found." << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Unknown rotate command (" << optarg << ") found." << std::endl;
                             return 1;
                         };
                     };
@@ -167,7 +163,7 @@ int main(int argc, char* argv[])
                             }
                             else
                             {
-                                std::cerr << "Error: Unknown process command (" << optarg << ") found." << std::endl;
+                                std::cerr << hugin_utils::stripPath(argv[0]) << ": Unknown process command (" << optarg << ") found." << std::endl;
                                 return 1;
                             };
                         };
@@ -178,30 +174,33 @@ int main(int argc, char* argv[])
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a parameter" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
-    if (argc - optind == 0)
-    {
-        std::cout << "Error: No project file given." << std::endl << std::endl;
-        return 1;
-    };
     if (argc - optind != 1)
     {
-        std::cout << "Error: pto_mask can only work on one project file at one time" << std::endl << std::endl;
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
 
-    if(maskFiles.size()==0)
+
+    if(maskFiles.empty())
     {
-        std::cerr << "Error: No mask files given." << std::endl << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No mask files given." << std::endl << std::endl;
         return 1;
     };
 

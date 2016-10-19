@@ -154,7 +154,6 @@ bool parseOptions(int argc, char** argv, PanoDetector& ioPanoDetector)
     };
 
     int c;
-    int optionIndex = 0;
     int number;
     double floatNumber;
     std::string ransacMode;
@@ -162,7 +161,7 @@ bool parseOptions(int argc, char** argv, PanoDetector& ioPanoDetector)
     int doLinearMatch=0;
     int doMultirow=0;
     int doPrealign=0;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -372,25 +371,33 @@ bool parseOptions(int argc, char** argv, PanoDetector& ioPanoDetector)
                 return false;
                 break;
             case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires an argument" << std::endl;
+            case '?':
+                // missing argument or invalid switch
                 return false;
                 break;
-            case '?':
             default:
-                break;
+                // this should not happen
+                abort();
         };
     };
     
     if (argc - optind != 1)
     {
-        std::cout << "Error: cpfind requires at least an input project file." << std::endl;
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return false;
     };
     ioPanoDetector.setInputFile(argv[optind]);
     if(doLinearMatch + doMultirow + doPrealign>1)
     {
-        std::cout << "Error: The arguments --linearmatch, --multirow and --prealigned are" << std::endl
-             << "       mutually exclusive. Use only one of them." << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": The arguments --linearmatch, --multirow and --prealigned are" << std::endl
+             << "  mutually exclusive. Use only one of them." << std::endl;
         return false;
     };
     if(doLinearMatch)

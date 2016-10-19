@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
     bool printLensInfo = false;
     bool printStackInfo = false;
     int optionIndex = 0;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -127,17 +127,29 @@ int main(int argc, char* argv[])
                 printStackInfo = true;
                 break;
             case '?':
+            case ':':
+                // missing argument or invalid switch
+                return 1;
                 break;
             default:
+                // this should not happen
                 abort ();
         }
     }
 
     if (argc - optind != 1)
     {
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return -1;
-    };
+    }
+
 
     std::string input=argv[optind];
 

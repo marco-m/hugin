@@ -27,9 +27,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <vigra_ext/impexalpha.hxx>
 #include <vigra_ext/StitchWatershed.h>
 #include <vigra_ext/utils.h>
@@ -235,12 +232,11 @@ int main(int argc, char* argv[])
     };
 
     int c;
-    int optionIndex = 0;
     std::string output;
     std::string compression;
     bool wraparound = false;
     bool hardSeam = true;
-    while ((c = getopt_long(argc, argv, optstring, longOptions, &optionIndex)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
         {
@@ -270,7 +266,8 @@ int main(int argc, char* argv[])
                     }
                     else
                     {
-                        std::cerr << "String \"" << text << "\" is not a recognized seam blend mode. Ignoring." << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": String \"" << text << "\" is not a recognized seam blend mode." << std::endl;
+                        return 1;
                     };
                 };
             };
@@ -279,12 +276,12 @@ int main(int argc, char* argv[])
             wraparound = true;
             break;
         case ':':
-            std::cerr << "Option " << longOptions[optionIndex].name << " requires a parameter." << std::endl;
+        case '?':
+            // missing argument or invalid switch
             return 1;
             break;
-        case '?':
-            break;
         default:
+            // this should not happen
             abort();
         }
     };
@@ -292,7 +289,7 @@ int main(int argc, char* argv[])
     unsigned nFiles = argc - optind;
     if (nFiles < 1)
     {
-        std::cerr << std::endl << "Error: at least one image need to be specified" << std::endl << std::endl;
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": at least one image need to be specified" << std::endl;
         return 1;
     }
 

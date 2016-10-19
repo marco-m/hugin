@@ -29,11 +29,7 @@
 
 #include <fstream>
 #include <sstream>
-#ifdef _WIN32
 #include <getopt.h>
-#else
-#include <unistd.h>
-#endif
 
 #include <hugin_basic.h>
 #include <hugin_utils/stl_utils.h>
@@ -87,6 +83,11 @@ int main(int argc, char* argv[])
     // parse arguments
     const char* optstring = "alho:npqsv:m";
     int c;
+    static struct option longOptions[] =
+    {
+        { "help", no_argument, NULL, 'h' },
+        0
+    };
     std::string output;
     bool doPairwise = false;
     bool doAutoOpt = false;
@@ -96,7 +97,7 @@ int main(int argc, char* argv[])
     bool quiet = false;
     bool doPhotometric = false;
     double hfov = 0.0;
-    while ((c = getopt (argc, argv, optstring)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
         {
@@ -130,14 +131,27 @@ int main(int argc, char* argv[])
             case 'm':
                 doPhotometric = true;
                 break;
+            case ':':
+            case '?':
+                // missing argument or invalid switch
+                return 1;
+                break;
             default:
+                // this should not happen
                 abort ();
         }
     }
 
     if (argc - optind != 1)
     {
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     }
 

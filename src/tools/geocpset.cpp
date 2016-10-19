@@ -27,9 +27,6 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 #include <panodata/Panorama.h>
 #include <algorithms/basic/CalculateOverlap.h>
 #include <algorithms/nona/ComputeImageROI.h>
@@ -321,11 +318,10 @@ int main(int argc, char* argv[])
     };
 
     int c;
-    int optionIndex = 0;
     bool eachOverlap=false;
     int minOverlap=10;
     std::string output;
-    while ((c = getopt_long (argc, argv, optstring, longOptions,&optionIndex)) != -1)
+    while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
         {
@@ -339,7 +335,7 @@ int main(int argc, char* argv[])
                 minOverlap=atoi(optarg);
                 if(minOverlap<1 || minOverlap>99)
                 {
-                    std::cerr << "Invalid minimum overlap: " << optarg << std::endl
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid minimum overlap: " << optarg << std::endl
                          << "Minimum overlap have to be between 1 and 99." << std::endl;
                     return 1;
                 };
@@ -347,25 +343,27 @@ int main(int argc, char* argv[])
             case 'h':
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
-            case ':':
-                std::cerr <<"Option " << longOptions[optionIndex].name << " requires a parameter" << std::endl;
+            case ':': 
+            case '?':
+                // missing argument or invalid switch
                 return 1;
                 break;
-            case '?':
-                break;
             default:
+                // this should not happen
                 abort ();
         }
     }
 
-    if (argc - optind == 0)
-    {
-        std::cout << "Error: No project file given." << std::endl << std::endl;
-        return 1;
-    };
     if (argc - optind != 1)
     {
-        std::cout << "Error: geocpset can only work on one project file at one time" << std::endl << std::endl;
+        if (argc - optind < 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
     };
 

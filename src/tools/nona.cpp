@@ -34,9 +34,6 @@
 #include <vigra/error.hxx>
 
 #include <getopt.h>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 
 #include <hugin_basic.h>
 #include "hugin_base/algorithms/basic/LayerStacks.h"
@@ -118,8 +115,6 @@ int main(int argc, char* argv[])
     const char* optstring = "z:cho:i:t:m:p:r:e:vgd";
     int c;
 
-    opterr = 0;
-
     bool doCoord = false;
     HuginBase::UIntSet outputImages;
     std::string basename;
@@ -156,8 +151,7 @@ int main(int argc, char* argv[])
         0
     };
     
-    int optionIndex = 0;
-    while ((c = getopt_long(argc, argv, optstring, longOptions, &optionIndex)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
         {
@@ -189,7 +183,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    usage(hugin_utils::stripPath(argv[0]).c_str());
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": \"" << optarg << "\" is not a valid parameter for output mode (-r)." << std::endl;
                     return 1;
                 }
                 break;
@@ -223,21 +217,18 @@ int main(int argc, char* argv[])
                         {
                             if (lowerCutoff < 0 || lowerCutoff>1)
                             {
-                                std::cerr << "nona: Argument \"" << tokens[0] << "\" is not a valid number for lower cutoff." << std::endl
-                                    << "      Aborting." << std::endl;
+                                std::cerr << hugin_utils::stripPath(argv[0]) << ": Argument \"" << tokens[0] << "\" is not a valid number for lower cutoff." << std::endl;
                                 return 1;
                             };
                             if (upperCutoff < 0 || upperCutoff>1)
                             {
-                                std::cerr << "nona: Argument \"" << tokens[1] << "\" is not a valid number for upper cutoff." << std::endl
-                                    << "      Aborting." << std::endl;
+                                std::cerr << hugin_utils::stripPath(argv[0]) << ": Argument \"" << tokens[1] << "\" is not a valid number for upper cutoff." << std::endl;
                                 return 1;
                             };
                             if (lowerCutoff >= upperCutoff)
                             {
-                                std::cerr << "nona: Lower cutoff \"" << tokens[0] << "\" is higher than upper cutoff" << std::endl
-                                    << "     \"" << tokens[1] << "\". This is no valid input." << std::endl
-                                    << "      Aborting." << std::endl;
+                                std::cerr << hugin_utils::stripPath(argv[0]) << ": Lower cutoff \"" << tokens[0] << "\" is higher than upper cutoff" << std::endl
+                                    << "     \"" << tokens[1] << "\". This is no valid input." << std::endl;
                                 return 1;
                             };
                             HuginBase::Nona::SetAdvancedOption(advOptions, "maskClipExposureLowerCutoff", static_cast<float>(lowerCutoff));
@@ -245,18 +236,16 @@ int main(int argc, char* argv[])
                         }
                         else
                         {
-                            std::cerr << "nona: Argument \"" << optarg << "\" is not valid number for --clip-exposure" << std::endl
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Argument \"" << optarg << "\" is not valid number for --clip-exposure" << std::endl
                                 << "      Expected --clip-exposure=lower cutoff:upper cutoff" << std::endl
-                                << "      Both should be numbers between 0 and 1."
-                                << "      Aborting." << std::endl;
+                                << "      Both should be numbers between 0 and 1." << std::endl;
                             return 1;
                         }
                     }
                     else
                     {
-                        std::cerr << "nona: Argument \"" << optarg << "\" is not valid for --clip-exposure" << std::endl
-                            << "      Expected --clip-exposure=lower cutoff:upper cutoff" << std::endl
-                            << "      Aborting." << std::endl;
+                        std::cerr << hugin_utils::stripPath(argv[0]) << ": Argument \"" << optarg << "\" is not valid for --clip-exposure" << std::endl
+                            << "      Expected --clip-exposure=lower cutoff:upper cutoff" << std::endl;
                         return 1;
                     };
                 }
@@ -277,12 +266,12 @@ int main(int argc, char* argv[])
                         }
                         else
                         {
-                            std::cerr << "String \"" << text << "\" is not a recognized seam blend mode. Ignoring." << std::endl;
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": String \"" << text << "\" is not a recognized seam blend mode." << std::endl;
+                            return 1;
                         };
                     };
                 };
                 break;
-            case '?':
             case 'h':
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
@@ -302,15 +291,25 @@ int main(int argc, char* argv[])
             case 'd':
                 vigra_ext::SetGPUDebugMessages(true);
                 break;
+            case ':':
+            case '?':
+                // missing argument or invalid switch
+                return 1;
+                break;
             default:
-                usage(hugin_utils::stripPath(argv[0]).c_str());
-                abort ();
+                // this should not happen
+                abort();
         }
     }
 
-    if (basename == "" || argc - optind <1)
+    if (basename.empty())
     {
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No output prefix given." << std::endl;
+        return 1;
+    };
+    if(argc - optind < 1)
+    {
+        std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
         return 1;
     }
     unsigned nCmdLineImgs = argc -optind -1;

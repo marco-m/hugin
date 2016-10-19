@@ -30,13 +30,7 @@
 
 #include <algorithms/optimizer/PhotometricOptimizer.h>
 #include "ExtractPoints.h"
-
-#ifdef _WIN32
 #include <getopt.h>
-#else
-#include <unistd.h>
-#endif
-
 #include <hugin_basic.h>
 #include <nona/Stitcher.h>
 
@@ -49,11 +43,11 @@ static void usage(const char* name)
          << std::endl
          << "Usage: " << name  << " [options] -o output.pto input.pto" << std::endl
          << "Valid options are:" << std::endl
-         << "  -o file   write results to output project" << std::endl
-         << "  -v        Verbose, print progress messages" << std::endl
-         << "  -p n      Number of points to extract" << std::endl
-         << "  -s level  Work on downscaled images, every step halves width and height" << std::endl
-         << "  -h        Display help (this text)" << std::endl
+         << "  -o|--output file   write results to output project" << std::endl
+         << "  -v|--verbose       Verbose, print progress messages" << std::endl
+         << "  -p n               Number of points to extract" << std::endl
+         << "  -s level           Work on downscaled images, every step halves width and height" << std::endl
+         << "  -h|--help          Display help (this text)" << std::endl
          << std::endl
          << " Expert and debugging options:" << std::endl
          << "  -i file   Read corresponding points from file" << std::endl
@@ -154,9 +148,14 @@ int main(int argc, char* argv[])
 
     // parse arguments
     const char* optstring = "hi:o:p:s:vw:";
+    static struct option longOptions[] =
+    {
+        { "output", required_argument, NULL, 'o' },
+        { "verbose", no_argument, NULL, 'v' },
+        { "help", no_argument, NULL, 'h' },
+        0
+    };
     int c;
-
-    opterr = 0;
 
     int pyrLevel=3;
     int verbose = 0;
@@ -164,7 +163,8 @@ int main(int argc, char* argv[])
     std::string outputFile;
     std::string outputPointsFile;
     std::string inputPointsFile;
-    while ((c = getopt (argc, argv, optstring)) != -1)
+    while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
+    {
         switch (c)
         {
             case 'i':
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
                 nPoints = atoi(optarg);
                 break;
             case 's':
-                pyrLevel=atoi(optarg);
+                pyrLevel = atoi(optarg);
                 break;
             case 'v':
                 verbose++;
@@ -188,19 +188,30 @@ int main(int argc, char* argv[])
             case 'w':
                 outputPointsFile = optarg;
                 break;
-            default:
-                std::cerr << "Invalid parameter: " << optarg << std::endl;
-                usage(hugin_utils::stripPath(argv[0]).c_str());
+            case ':':
+            case '?':
+                // missing argument or invalid switch
                 return 1;
+                break;
+            default:
+                // this should not happen
+                abort();
         }
+    };
 
     unsigned nFiles = argc - optind;
     if (nFiles != 1)
     {
-        std::cerr << std::endl << "Error: one pto file needs to be specified" << std::endl <<std::endl;
-        usage(hugin_utils::stripPath(argv[0]).c_str());
+        if (nFiles< 1)
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": No project file given." << std::endl;
+        }
+        else
+        {
+            std::cerr << hugin_utils::stripPath(argv[0]) << ": Only one project file expected." << std::endl;
+        };
         return 1;
-    }
+    };
 
     const char* scriptFile = argv[optind];
     HuginBase::Panorama pano;
