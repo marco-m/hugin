@@ -84,7 +84,6 @@ void convertTo8Bit(SrcIMG & src, const std::string & origType, vigra::BRGBImage 
     
     double min=0;
     double max=vigra_ext::getMaxValForPixelType(origType);
-    ;
     
     int mapping = HUGIN_IMGCACHE_MAPPING_INTEGER;
     
