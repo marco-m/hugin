@@ -301,7 +301,7 @@ void PreviewPanel::updatePreview()
                 double min = std::max(minmax.min, 1e-6f);
                 double max = minmax.max;
 
-                int mapping = wxConfigBase::Get()->Read(wxT("/ImageCache/MappingFloat"), HUGIN_IMGCACHE_MAPPING_FLOAT);
+                int mapping = wxConfigBase::Get()->Read(wxT("/ImageCache/Mapping"), HUGIN_IMGCACHE_MAPPING_FLOAT);
                 vigra_ext::applyMapping(vigra::srcImageRange(panoImg), vigra::destImage(panoImg8), min, max, mapping);
 
             } else {
