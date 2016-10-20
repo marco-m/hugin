@@ -25,19 +25,38 @@
  */
 
 #include "wxImageCache.h"
+#include "vigra_ext/utils.h"
 
 wxImage imageCacheEntry2wxImage(ImageCache::EntryPtr e)
 {
-    ImageCacheRGB8Ptr img = e->get8BitImage();
-    if (img) {
-        return wxImage(img->width(),
-                       img->height(),
-                       (unsigned char *) img->data(),
-                       true);
-    } else {
-        // invalid wxImage
-        return wxImage();
+    if (e->imageFloat->size().area() > 0)
+    {
+        // for float images we need to apply the mapping as selected by the user
+        // in the preferences
+        const int mapping = wxConfigBase::Get()->Read(wxT("/ImageCache/Mapping"), HUGIN_IMGCACHE_MAPPING_FLOAT);
+        // find min/max
+        vigra::RGBToGrayAccessor<vigra::RGBValue<float> > ga;
+        vigra::FindMinMax<float> minmax;   // init functor
+        vigra::inspectImage(srcImageRange(*(e->imageFloat), ga), minmax);
+        // create temporary image with remapped tone scale
+        vigra::BRGBImage mappedImg(e->imageFloat->size());
+        vigra_ext::applyMapping(srcImageRange(*(e->imageFloat)), destImage(mappedImg), std::max(minmax.min, 1e-6f), minmax.max, mapping);
+        // convert to wxImage
+        wxImage mappedwxImg(mappedImg.width(), mappedImg.height(), (unsigned char *)mappedImg.data(), true);
+        return mappedwxImg.Copy();
     }
-
+    else
+    {
+        ImageCacheRGB8Ptr img = e->get8BitImage();
+        if (img)
+        {
+            return wxImage(img->width(), img->height(), (unsigned char *)img->data(), true);
+        }
+        else
+        {
+            // invalid wxImage
+            return wxImage();
+        };
+    };
 }
 
