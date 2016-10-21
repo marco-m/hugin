@@ -152,11 +152,11 @@ void PanoOutputDialog::EnableOutputOptions()
     // check, if hdr images
     wxFileName file1(wxString(m_pano.getImage(0).getFilename().c_str(), HUGIN_CONV_FILENAME));
     wxString ext1=file1.GetExt().Lower();
-    if(ext1==wxT(".hdr") || ext1==wxT(".exr"))
+    if(ext1 == wxT(".hdr") || ext1 == wxT(".exr") || ext1==wxT("hdr") || ext1==wxT("exr"))
     {
-        XRCCTRL(*this, "output_hdr", wxCheckBox)->SetValue(true);
-        XRCCTRL(*this, "output_hdr", wxCheckBox)->Enable(true);
-        XRCCTRL(*this, "output_hdr_bitmap", wxStaticBitmap)->Enable(true);
+        XRCCTRL(*this, "output_normal", wxCheckBox)->SetValue(true);
+        XRCCTRL(*this, "output_normal", wxCheckBox)->Enable(true);
+        XRCCTRL(*this, "output_normal_bitmap", wxStaticBitmap)->Enable(true);
         return;
     }
     //hide hdr controls for simple interface
