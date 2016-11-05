@@ -299,7 +299,7 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
                 return;
             };
         }   
-        HuginBase::PointSampler::extractPoints(optPano, srcImgs, nPoints, true, &progress, points);
+        points= HuginBase::RandomPointSampler(optPano, &progress, srcImgs, nPoints).execute().getResultPoints();
 
         if (!progress.updateDisplayValue())
         {

@@ -143,29 +143,5 @@ void PointSampler::sampleAndExtractPoints(AppBase::ProgressDisplay* progress)
     delete &pano; // deleting the NewCopy
 }
 
-
-
-/// for compatibility deprecated
-void PointSampler::extractPoints(PanoramaData& pano, std::vector<vigra::FRGBImage*> images, int nPoints,
-                                 bool randomPoints, AppBase::ProgressDisplay* progress,
-                                 std::vector<vigra_ext::PointPairRGB>& points)
-{
-    PointSampler* sampler;
-    if (randomPoints)
-    {
-        sampler = new RandomPointSampler(pano, NULL, images, nPoints);
-    }
-    else
-    {
-        sampler = new AllPointSampler(pano, NULL, images, nPoints);
-    };
-    
-    sampler->sampleAndExtractPoints(progress);
-    points = sampler->getResultPoints();
-    
-    delete sampler;
-}
-
-
 }; // namespace
 
