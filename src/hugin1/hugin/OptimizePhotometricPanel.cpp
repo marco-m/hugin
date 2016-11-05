@@ -273,24 +273,24 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
                 return;
             }
             vigra::FRGBImage * img = new vigra::FRGBImage;
-            if (e->image8 && e->image8->width() > 0)
+            if (e->imageFloat && e->imageFloat->size().area() > 0)
             {
-                vigra_ext::reduceToNextLevel(*(e->image8), *img);
-                vigra::omp::transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
-                                vigra::functor::Arg1()/vigra::functor::Param(255.0));
+                vigra_ext::reduceToNextLevel(*(e->imageFloat), *img);
             }
             else
             {
-                if (e->image16 && e->image16->width() > 0)
+                if (e->image16 && e->image16->size().area() > 0)
                 {
                     vigra_ext::reduceToNextLevel(*(e->image16), *img);
                     vigra::omp::transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
-                                   vigra::functor::Arg1()/vigra::functor::Param(65535.0));
+                        vigra::functor::Arg1() / vigra::functor::Param(65535.0));
                 }
                 else
                 {
-                    vigra_ext::reduceToNextLevel(*(e->imageFloat), *img);
-                }
+                    vigra_ext::reduceToNextLevel(*(e->get8BitImage()), *img);
+                    vigra::omp::transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
+                        vigra::functor::Arg1() / vigra::functor::Param(255.0));
+                };
             };
             srcImgs.push_back(img);
             if (!progress.updateDisplayValue())
