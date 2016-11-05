@@ -264,6 +264,7 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
         nPoints = nPoints * optPano.getNrOfImages();
         // get the small images
         std::vector<vigra::FRGBImage *> srcImgs;
+        HuginBase::LimitIntensityVector limits;
         for (size_t i=0; i < optPano.getNrOfImages(); i++)
         {
             ImageCache::EntryPtr e = ImageCache::getInstance().getSmallImage(optPano.getImage(i).getFilename());
@@ -272,10 +273,12 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
                 wxMessageBox(_("Error: could not load all images"), _("Error"));
                 return;
             }
+            HuginBase::LimitIntensity limit;
             vigra::FRGBImage * img = new vigra::FRGBImage;
             if (e->imageFloat && e->imageFloat->size().area() > 0)
             {
                 vigra_ext::reduceToNextLevel(*(e->imageFloat), *img);
+                limit = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_FLOAT);
             }
             else
             {
@@ -284,22 +287,25 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
                     vigra_ext::reduceToNextLevel(*(e->image16), *img);
                     vigra::omp::transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
                         vigra::functor::Arg1() / vigra::functor::Param(65535.0));
+                    limit = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT16);
                 }
                 else
                 {
                     vigra_ext::reduceToNextLevel(*(e->get8BitImage()), *img);
                     vigra::omp::transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
                         vigra::functor::Arg1() / vigra::functor::Param(255.0));
+                    limit = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT8);
                 };
             };
             srcImgs.push_back(img);
+            limits.push_back(limit);
             if (!progress.updateDisplayValue())
             {
                 // check if user pressed cancel
                 return;
             };
         }   
-        points= HuginBase::RandomPointSampler(optPano, &progress, srcImgs, nPoints).execute().getResultPoints();
+        points= HuginBase::RandomPointSampler(optPano, &progress, srcImgs, limits, nPoints).execute().getResultPoints();
 
         if (!progress.updateDisplayValue())
         {

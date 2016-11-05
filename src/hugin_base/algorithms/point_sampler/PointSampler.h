@@ -39,16 +39,40 @@
 
 namespace HuginBase
 {
+    /** class for storing the limits of an image
+     *   used by the sampler to exclude too dark or too bright pixel */
+    class IMPEX LimitIntensity
+    {
+        public:
+            /** some pre-defined limits */
+            enum LimitType{LIMIT_UINT8, LIMIT_UINT16, LIMIT_FLOAT};
+            /** default constructor, is identical to LimitIntensity(LIMIT_FLOAT) */
+            LimitIntensity();
+            /** constructor, populuate with values matching the image type */
+            LimitIntensity(LimitType limit);
+            /** return the lower limit */
+            const float GetMinI() const {
+                return m_minI;
+            };
+            /** return the upper limit */
+            const float GetMaxI() const {
+                return m_maxI;
+            }
+        private:
+            /** internal stored limits */
+            float m_minI, m_maxI;
+    };
+    typedef std::vector<LimitIntensity> LimitIntensityVector;
 
     class IMPEX PointSampler : public TimeConsumingPanoramaAlgorithm
     {
         protected:
             ///
             PointSampler(PanoramaData& panorama, AppBase::ProgressDisplay* progressDisplay,
-                         std::vector<vigra::FRGBImage*> images,
+                         std::vector<vigra::FRGBImage*> images, LimitIntensityVector limits,
                          int nPoints)
                 : TimeConsumingPanoramaAlgorithm(panorama, progressDisplay),
-                  o_images(images), o_numPoints(nPoints)
+                  o_images(images), o_numPoints(nPoints), m_limits(limits)
             {};
         
         public:        
@@ -68,8 +92,7 @@ namespace HuginBase
             virtual void samplePoints(const std::vector<InterpolImg>& imgs,
                                       const std::vector<vigra::FImage*>& voteImgs,
                                       const PanoramaData& pano,
-                                      float minI,
-                                      float maxI,
+                                      const LimitIntensityVector limitI,
                                       std::vector<std::multimap<double,vigra_ext::PointPairRGB> >& radiusHist,
                                       unsigned& nGoodPoints,
                                       unsigned& nBadPoints,
@@ -116,6 +139,7 @@ namespace HuginBase
             std::vector<vigra::FRGBImage*> o_images;
             int o_numPoints;
             PointPairs o_resultPoints;
+            LimitIntensityVector m_limits;
     };
 
 
@@ -127,9 +151,9 @@ namespace HuginBase
         public:
             ///
             AllPointSampler(PanoramaData& panorama, AppBase::ProgressDisplay* progressDisplay,
-                               std::vector<vigra::FRGBImage*> images,
+                               std::vector<vigra::FRGBImage*> images, LimitIntensityVector limits,
                                int nPoints)
-             : PointSampler(panorama, progressDisplay, images, nPoints)
+             : PointSampler(panorama, progressDisplay, images, limits, nPoints)
             {};
 
             ///
@@ -145,8 +169,7 @@ namespace HuginBase
                                      const std::vector<VoteImg *> &voteImgs,
                                      const PanoramaData& pano,
                                      int nPoints,
-                                     float minI,
-                                     float maxI,
+                                     const LimitIntensityVector limitI,
                                      std::vector<std::multimap<double, PP > > & radiusHist,
                                      unsigned & nGoodPoints,
                                      unsigned & nBadPoints,
@@ -157,8 +180,7 @@ namespace HuginBase
             virtual void samplePoints(const std::vector<InterpolImg>& imgs,
                                       const std::vector<vigra::FImage*>& voteImgs,
                                       const PanoramaData& pano,
-                                      float minI,
-                                      float maxI,
+                                      const LimitIntensityVector limitI,
                                       std::vector<std::multimap<double,vigra_ext::PointPairRGB> >& radiusHist,
                                       unsigned& nGoodPoints,
                                       unsigned& nBadPoints,
@@ -168,8 +190,7 @@ namespace HuginBase
                                     voteImgs,
                                     pano,
                                     o_numPoints,
-                                    minI,
-                                    maxI,
+                                    limitI,
                                     radiusHist,
                                     nGoodPoints,
                                     nBadPoints,
@@ -187,9 +208,9 @@ namespace HuginBase
         public:
             ///
             RandomPointSampler(PanoramaData& panorama, AppBase::ProgressDisplay* progressDisplay,
-                               std::vector<vigra::FRGBImage*> images,
+                               std::vector<vigra::FRGBImage*> images, LimitIntensityVector limits,
                                int nPoints)
-             : PointSampler(panorama, progressDisplay, images, nPoints)
+             : PointSampler(panorama, progressDisplay, images, limits, nPoints)
             {};
 
             ///
@@ -202,8 +223,7 @@ namespace HuginBase
                                                const std::vector<VoteImg *> &voteImgs,
                                                const PanoramaData& pano,
                                                int nPoints,
-                                               float minI,
-                                               float maxI,
+                                               const LimitIntensityVector limitI,
                                                std::vector<std::multimap<double, PP > > & radiusHist,
                                                unsigned & nBadPoints,
                                                AppBase::ProgressDisplay* progress);
@@ -213,8 +233,7 @@ namespace HuginBase
             virtual void samplePoints(const std::vector<InterpolImg>& imgs,
                                       const std::vector<vigra::FImage*>& voteImgs,
                                       const PanoramaData& pano,
-                                      float minI,
-                                      float maxI,
+                                      const LimitIntensityVector limitI,
                                       std::vector<std::multimap<double,vigra_ext::PointPairRGB> >& radiusHist,
                                       unsigned& nGoodPoints,
                                       unsigned& nBadPoints,
@@ -224,8 +243,7 @@ namespace HuginBase
                                         voteImgs,
                                         pano,
                                         5*o_numPoints,
-                                        minI,
-                                        maxI,
+                                        limitI,
                                         radiusHist,
                                         nBadPoints,
                                         progress);
@@ -284,8 +302,7 @@ void AllPointSampler::sampleAllPanoPoints(const std::vector<Img> &imgs,
                                           const std::vector<VoteImg *> &voteImgs,
                                           const PanoramaData& pano,
                                           int nPoints,
-                                          float minI,
-                                          float maxI,
+                                          const LimitIntensityVector limitI,
                                           //std::vector<vigra_ext::PointPair> &points,
                                           std::vector<std::multimap<double, PP > > & radiusHist,
                                           unsigned & nGoodPoints,
@@ -337,7 +354,7 @@ void AllPointSampler::sampleAllPanoPoints(const std::vector<Img> &imgs,
                 vigra::UInt8 maskI;
                 if (imgs[i](p1.x,p1.y, i1, maskI)){
                     float im1 = vigra_ext::getMaxComponent(i1);
-                    if (minI > im1 || maxI < im1 || maskI == 0) {
+                    if (limitI[i].GetMinI() > im1 || limitI[i].GetMaxI() < im1 || maskI == 0) {
                         // ignore pixels that are too dark or bright
                         continue;
                     }
@@ -357,7 +374,7 @@ void AllPointSampler::sampleAllPanoPoints(const std::vector<Img> &imgs,
                         vigra::UInt8 maskI2;
                         if (imgs[j](p2.x, p2.y, i2, maskI2)){
                             float im2 = vigra_ext::getMaxComponent(i2);
-                            if (minI > im2 || maxI < im2 || maskI2 == 0) {
+                            if (limitI[j].GetMinI() > im2 || limitI[j].GetMaxI() < im2 || maskI2 == 0) {
                                 // ignore pixels that are too dark or bright
                                 continue;
                             }
@@ -425,8 +442,7 @@ void RandomPointSampler::sampleRandomPanoPoints(const std::vector<Img>& imgs,
                                                 const std::vector<VoteImg *> &voteImgs,
                                                 const PanoramaData& pano,
                                                 int nPoints,
-                                                float minI,
-                                                float maxI,
+                                                const LimitIntensityVector limitI,
                                                 //std::vector<PP> &points,
                                                 std::vector<std::multimap<double, PP > > & radiusHist,
                                                 unsigned & nBadPoints,
@@ -482,7 +498,7 @@ void RandomPointSampler::sampleRandomPanoPoints(const std::vector<Img>& imgs,
             vigra::UInt8 maskI;
             if ( imgs[i](p1.x,p1.y, i1, maskI)){
                 float im1 = vigra_ext::getMaxComponent(i1);
-                if (minI > im1 || maxI < im1) {
+                if (limitI[i].GetMinI() > im1 || limitI[i].GetMaxI() < im1) {
                     // ignore pixels that are too dark or bright
                     continue;
                 }
@@ -501,7 +517,7 @@ void RandomPointSampler::sampleRandomPanoPoints(const std::vector<Img>& imgs,
                     vigra::UInt8 maskI2;
                     if (imgs[j](p2.x, p2.y, i2, maskI2)){
                         float im2 = vigra_ext::getMaxComponent(i2);
-                        if (minI > im2 || maxI < im2) {
+                        if (limitI[j].GetMinI() > im2 || limitI[j].GetMaxI() < im2) {
                             // ignore pixels that are too dark or bright
                             continue;
                         }

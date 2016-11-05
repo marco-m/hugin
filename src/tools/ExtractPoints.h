@@ -37,9 +37,10 @@
 #include <algorithms/point_sampler/PointSampler.h>
 
 template<class ImageType>
-std::vector<ImageType *> loadImagesPyr(std::vector<std::string> files, int pyrLevel, int verbose)
+std::vector<ImageType *> loadImagesPyr(std::vector<std::string> files, int pyrLevel, int verbose, HuginBase::LimitIntensityVector& limits)
 {
     std::vector<ImageType *> srcImgs(files.size());
+    limits.resize(srcImgs.size());
 #ifdef _WIN32
     // init vigra codec manager before threaded section
     // otherwise there could be sometimes race conditions
@@ -64,10 +65,13 @@ std::vector<ImageType *> loadImagesPyr(std::vector<std::string> files, int pyrLe
             vigra::importImage(info, vigra::destImage(*tImg));
         }
         float div = 1;
+        limits[i] = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_FLOAT);
         if (strcmp(info.getPixelType(), "UINT8") == 0) {
             div = 255;
+            limits[i] = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT8);
         } else if (strcmp(info.getPixelType(), "UINT16") == 0) {
             div = (1<<16)-1;
+            limits[i] = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT16);
         }
         
         if (pyrLevel) {
@@ -113,14 +117,15 @@ void loadImgsAndExtractPoints(HuginBase::Panorama pano, int nPoints, int pyrLeve
         files.push_back(pano.getImage(i).getFilename());
     
     std::vector<vigra::FRGBImage*> images;
+    HuginBase::LimitIntensityVector limits;
     
     // try to load the images.
-    images = loadImagesPyr<vigra::FRGBImage>(files, pyrLevel, verbose);
+    images = loadImagesPyr<vigra::FRGBImage>(files, pyrLevel, verbose, limits);
     
     progress.setMessage("Sampling points");
     if(randomPoints)
-        points = HuginBase::RandomPointSampler(pano, &progress, images, nPoints).execute().getResultPoints();
+        points = HuginBase::RandomPointSampler(pano, &progress, images, limits, nPoints).execute().getResultPoints();
     else
-        points = HuginBase::AllPointSampler(pano, &progress, images, nPoints).execute().getResultPoints();
+        points = HuginBase::AllPointSampler(pano, &progress, images, limits, nPoints).execute().getResultPoints();
     progress.taskFinished();
 }

@@ -31,6 +31,33 @@
 namespace HuginBase
 {
 
+/** default constructor with float limits */
+LimitIntensity::LimitIntensity()
+{
+    m_minI = -FLT_MAX;
+    m_maxI = FLT_MAX;
+};
+
+/** constructor with limits for some usual image type */
+LimitIntensity::LimitIntensity(LimitIntensity::LimitType limit)
+{
+    switch (limit)
+    {
+        case LIMIT_UINT8:
+            m_minI = 1 / 255.0f;
+            m_maxI = 250 / 255.0f;
+            break;
+        case LIMIT_UINT16:
+            m_minI = 1 / 65535.0f;
+            m_maxI = 65000 / 65535.0f;
+            break;
+        case LIMIT_FLOAT:
+            m_minI = -FLT_MAX;
+            m_maxI = FLT_MAX;
+            break;
+    };
+};
+
 bool PointSampler::runAlgorithm()
 {
     // is this correct? how much progress requierd?
@@ -43,8 +70,6 @@ bool PointSampler::runAlgorithm()
 
     return wasCancelled();
 }
-
-
 
 void PointSampler::sampleAndExtractPoints(AppBase::ProgressDisplay* progress)
 {
@@ -114,8 +139,7 @@ void PointSampler::sampleAndExtractPoints(AppBase::ProgressDisplay* progress)
     samplePoints(interpolImages,
                  lapImgs,
                  pano,
-                 1/255.0f,
-                 250/255.0f,
+                 m_limits,
                  radiusHist,
                  nGoodPoints,
                  nBadPoints,
