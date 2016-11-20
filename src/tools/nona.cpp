@@ -148,6 +148,7 @@ int main(int argc, char* argv[])
         { "create-exposure-layers", no_argument, NULL, EXPOSURELAYERS },
         { "clip-exposure", optional_argument, NULL, MASKCLIPEXPOSURE },
         { "seam", required_argument, NULL, SEAMMODE},
+        { "help", no_argument, NULL, 'h'},
         0
     };
     
