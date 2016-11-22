@@ -23,7 +23,6 @@ IF(WIN32)
   # Install Files
   INSTALL(FILES HuginSetup_common.nsh
     DESTINATION ${CMAKE_INSTALL_PREFIX}/../)
-  add_subdirectory(CPGenerators)
   add_subdirectory(Functions)
   add_subdirectory(Graphics)
   add_subdirectory(Languages)

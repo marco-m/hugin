@@ -69,13 +69,6 @@
   !insertmacro MUI_PAGE_LICENSE "Licenses\GPLv2.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   
-  ; Additional license agreement
-  ;!define MUI_PAGE_HEADER_TEXT $(TEXT_ControlPointDisclaimerTitle)
-  ;!define MUI_PAGE_HEADER_SUBTEXT $(TEXT_ControlPointDisclaimerText)
-  ;!define MUI_LICENSEPAGE_TEXT_BOTTOM  $(TEXT_ControlPointDisclaimerBottom)
-  ;!define MUI_PAGE_CUSTOMFUNCTION_PRE skipControlPointsDisclaimer
-  ;!insertmacro MUI_PAGE_LICENSE ${CP_LICENSE_DISCLAIMER}
-  
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
@@ -163,13 +156,6 @@ SectionGroup /e $(TEXT_SecShortcuts) SecShortcuts
     CreateShortCut "$SMPROGRAMS\${APP_NAME}\Hugin.lnk" "$INSTDIR\bin\hugin.exe"
     CreateShortCut "$SMPROGRAMS\${APP_NAME}\Calibrate Lens GUI.lnk" "$INSTDIR\bin\calibrate_lens_gui.exe"
     CreateShortCut "$SMPROGRAMS\${APP_NAME}\Batch Processor.lnk" "$INSTDIR\bin\PTBatcherGUI.exe"
-	CreateShortCut "$SMPROGRAMS\${APP_NAME}\Enblend Droplet.lnk" "$INSTDIR\bin\enblend_droplet.bat"
-	CreateShortCut "$SMPROGRAMS\${APP_NAME}\Enblend Droplet 360.lnk" "$INSTDIR\bin\enblend_droplet_360.bat"
-	CreateShortCut "$SMPROGRAMS\${APP_NAME}\Enfuse Droplet.lnk" "$INSTDIR\bin\enfuse_droplet.bat"
-	CreateShortCut "$SMPROGRAMS\${APP_NAME}\Enfuse Droplet 360.lnk" "$INSTDIR\bin\enfuse_droplet_360.bat"
-	CreateShortCut "$SMPROGRAMS\${APP_NAME}\Enfuse Align Droplet.lnk" "$INSTDIR\bin\enfuse_align_droplet.bat"
-	CreateShortCut "$SMPROGRAMS\${APP_NAME}\Enfuse Auto Align Droplet.lnk" "$INSTDIR\bin\enfuse_auto_align_droplet.bat"
-	CreateShortCut "$SMPROGRAMS\${APP_NAME}\Enfuse Auto Droplet.lnk" "$INSTDIR\bin\enfuse_auto_droplet.bat"
   SectionEnd
   
   Section $(TEXT_SecShortcutDesktop) SecShortcutDesktop
@@ -179,34 +165,12 @@ SectionGroup /e $(TEXT_SecShortcuts) SecShortcuts
   SectionEnd
 SectionGroupEnd
 
-; Grouping ControlPoint Generators
-;SectionGroup /e $(TEXT_SecCPGenerators) SecCPGenerators
-
-  ; External upgradable CP generators download and setup  
-;  !include "CPGenerators\Match-n-shift.nsh"
-;  !include "CPGenerators\Autopano-sift-c.nsh"
-;  !include "CPGenerators\Autopano-sift-c-lemur.nsh"
-;  !include "CPGenerators\Autopano-sift-jenny.nsh"
-  ; !include "CPGenerators\Autopano-sift-nowozin.nsh"
-;  !include "CPGenerators\Panomatic.nsh"  
-  
-;SectionGroupEnd
-
 ;--------------------------------
 ;Descriptions  
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${SecHugin} $(DESC_SecHugin)
     !insertmacro MUI_DESCRIPTION_TEXT ${SecHuginDoc} $(DESC_SecHuginDoc)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecCPGenerators} $(DESC_SecCPGenerators)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecPanomatic} $(DESC_SecPanomatic)
-    
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecAutopano_Jenny} $(DESC_SecAutopano_Jenny)
-    ; !insertmacro MUI_DESCRIPTION_TEXT ${SecAutopano_Nowozin} $(DESC_SecAutopano_Nowozin)    
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecAutopano_SIFTC} $(DESC_SecAutopano_SIFTC)
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecAutopano_SIFTC_Lemur} $(DESC_SecAutopano_SIFTC_Lemur)
-    
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecMatchNShift} $(DESC_SecMatchNShift)
     !insertmacro MUI_DESCRIPTION_TEXT ${SecCleanRegistrySettings} $(DESC_SecCleanRegistrySettings)
     !insertmacro MUI_DESCRIPTION_TEXT ${SecShortcuts} $(DESC_SecShortcuts)
     !insertmacro MUI_DESCRIPTION_TEXT ${SecShortcutPrograms} $(DESC_SecShortcutPrograms)
@@ -223,13 +187,6 @@ Section "un.Uninstall Hugin"
   ; SetShellVarContext all  
   Delete "$SMPROGRAMS\${APP_NAME}\Hugin.lnk"
   Delete "$SMPROGRAMS\${APP_NAME}\Uninstall.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Enblend Droplet.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Enblend Droplet 360.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Enfuse Droplet.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Enfuse Droplet 360.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Enfuse Align Droplet.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Enfuse Auto Align Droplet.lnk"
-  Delete "$SMPROGRAMS\${APP_NAME}\Enfuse Auto Droplet.lnk"
   RMDir "$SMPROGRAMS\${APP_NAME}"
 
   !insertmacro UNINSTALL.LOG_END_UNINSTALL
@@ -289,19 +246,6 @@ Function .onInstSuccess
   !insertmacro UNINSTALL.LOG_UPDATE_INSTALL
 
 FunctionEnd
-
-; License skipping functions
-Function skipControlPointsDisclaimer
-  SectionGetFlags ${SecCPGenerators} $R0 
-  IntOp $R1 $R0 & ${SF_PSELECTED}
-  IntCmp $R1 ${SF_PSELECTED} show
-  
-  IntOp $R1 $R0 & ${SF_SELECTED}
-  IntCmp $R1 ${SF_SELECTED} show
-  Abort
-  show:
-FunctionEnd
-
 
 ;Clean registry on install if selected
 Function CleanRegistryOnInstallIfSelected

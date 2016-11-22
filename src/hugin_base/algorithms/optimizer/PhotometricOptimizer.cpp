@@ -325,7 +325,7 @@ void PhotometricOptimizer::optimizePhotometric(PanoramaData & pano, const Optimi
 #endif
 
     // TODO: setup optimisation options with some good defaults.
-    double optimOpts[5];
+    /* double optimOpts[5];
     
     optimOpts[0] = 1E-03;  // init mu
     // stop thresholds
@@ -336,6 +336,8 @@ void PhotometricOptimizer::optimizePhotometric(PanoramaData & pano, const Optimi
     optimOpts[4] = LM_DIFF_DELTA;
     
     dlevmar_dif(&photometricError, &photometricVis, &(p[0]), &(x[0]), m, n, nMaxIter, optimOpts, info, NULL,NULL, &data);  // no jacobian
+    */
+    dlevmar_dif(&photometricError, &photometricVis, &(p[0]), &(x[0]), m, n, nMaxIter, NULL, info, NULL,NULL, &data);  // no jacobian
     // copy to source images (data.m_imgs)
     data.FromX(p.begin());
     // calculate error at solution
