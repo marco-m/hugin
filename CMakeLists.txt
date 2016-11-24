@@ -12,7 +12,7 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 if(APPLE)
-  set(CMAKE_OSX_SYSROOT macosx10.11)
+  set(CMAKE_OSX_SYSROOT macosx10.12)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9")
   if (MAC_SELF_CONTAINED_BUNDLE)
       set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/mac/ExternalPrograms/repository/lib)
@@ -549,8 +549,10 @@ SET(INSTALL_XRC_DIR ${CMAKE_INSTALL_PREFIX}/share/hugin/xrc)
 SET(INSTALL_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/hugin/data)
 SET(INSTALL_LOCALE_DIR ${CMAKE_INSTALL_PREFIX}/${LOCALEDIR})
 
-# setup bundle install prefix
 IF (APPLE)
+  SET(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++ -lc++")
+  # setup bundle install prefix
   IF (NOT MAC_SELF_CONTAINED_BUNDLE)
     IF (CMAKE_INSTALL_PREFIX STREQUAL "/opt/local")
       # MacPorts

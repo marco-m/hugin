@@ -27,7 +27,7 @@ mkdir -p "${PLUGINS_PATH}"
 mkdir -p "${FRAMEWORKS_PATH}"
 
 get_libraries() {
-  local LIBRARIES=$(echo $(otool -X -L $1 | grep -v ${RPATH_PLUGIN_PATH} | grep -v \/System\/Library | grep -v \/usr\/lib | sed -e 's/(.*)//' | sort -u))
+  local LIBRARIES=$(echo $(otool -L $1 | grep -v ${RPATH_PLUGIN_PATH} - | grep -v \/System\/Library - | grep -v \/usr\/lib - | sed -ne '1!p' | sed -e 's/(.*)//' | sort -u))
   if [ -n "$LIBRARIES" ]; then
     for library in $LIBRARIES
     do
@@ -62,9 +62,9 @@ for _exe in ${BASE_DIR}/${APPLICATION_BINDIR}/*; do
 done
 
 
-  # -----------------------------------------------------------------------------
-  # Copy ExifTool into the stitchers
-  # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Copy ExifTool into the stitchers
+# -----------------------------------------------------------------------------
 if [ "${APPLICATION_APP_BUNDLE}" == "PTBatcherGUI.app" ] || [ "${APPLICATION_APP_BUNDLE}" == "HuginStitchProject.app" ]; then
 
   if [ ! -x "${APPLICATION_APP_BUNDLE}/Contents/Resources/ExifTool/exiftool" ]; then
