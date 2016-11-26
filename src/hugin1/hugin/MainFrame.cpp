@@ -1223,83 +1223,32 @@ void MainFrame::OnHelp(wxCommandEvent & e)
 
 void MainFrame::OnKeyboardHelp(wxCommandEvent & e)
 {
-    DisplayHelp(wxT("/Hugin_Keyboard_shortcuts.html"));
+    DisplayHelp(wxT("Hugin_Keyboard_shortcuts.html"));
 }
 
 void MainFrame::OnFAQ(wxCommandEvent & e)
 {
-    DisplayHelp(wxT("/Hugin_FAQ.html"));
+    DisplayHelp(wxT("Hugin_FAQ.html"));
 }
 
 
 void MainFrame::DisplayHelp(wxString section)
 {
-    // TODO:
-    // structure a frame with navigation on the left and content on the right
-    // always load the same navigation on the left and the section into the frame
-    // find a way to target always the same window rather than opening new window / tabs in the browser every time
-    // make it look nicer with some CSS styling
-
-    // section is the HTML document to be displayed, from inside the data folder
-
-    DEBUG_TRACE("");
-
-#ifdef __WXMSW__
     if (section.IsEmpty())
     {
-        // wxWidgets 3.x has a bug, that prevents DisplaySection to work on Win8/10 64 bit
-        // see: http://trac.wxwidgets.org/ticket/14888
-        // so using DisplayContents() and our own implementation of HuginCHMHelpController
         GetHelpController().DisplayContents();
     }
     else
     {
-#if wxCHECK_VERSION(3,1,1)
-        GetHelpController().DisplaySection(section);
-#else
+#if defined __wxMSW__ && !(wxCHECK_VERSION(3,1,1))
+        // wxWidgets 3.x has a bug, that prevents DisplaySection to work on Win8/10 64 bit
+        // see: http://trac.wxwidgets.org/ticket/14888
+        // so using DisplayContents() and our own implementation of HuginCHMHelpController
         GetHelpController().DisplayHelpPage(section);
+#else
+        GetHelpController().DisplaySection(section);
 #endif
     };
-#else
-    if (section.IsEmpty())
-    {
-        section = wxT("/Hugin.html");
-    }
-#if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
-    // On Mac, xrc/data/help_LOCALE should be in the bundle as LOCALE.lproj/help
-    // which we can rely on the operating sytem to pick the right locale's.
-    wxString strFile = MacGetPathToBundledResourceFile(CFSTR("help"));
-    if(strFile!=wxT(""))
-    {
-        strFile += section;
-    } else {
-        wxLogError(wxString::Format(wxT("Could not find help directory in the bundle"), strFile.c_str()));
-        return;
-    }
-#else
-    // find base filename
-    wxString helpFile = wxT("help_") + huginApp::Get()->GetLocale().GetCanonicalName() + section;
-    DEBUG_INFO("help file candidate: " << helpFile.mb_str(wxConvLocal));
-    //if the language is not default, load custom About file (if exists)
-    wxString strFile = GetXRCPath() + wxT("data/") + helpFile;
-    if(wxFile::Exists(strFile))
-    {
-        DEBUG_TRACE("Using About: " << strFile.mb_str(wxConvLocal));
-    } else {
-        strFile = GetXRCPath() + wxT("data/help_en_EN") + section;
-    }
-#endif
-    if(!wxFile::Exists(strFile))
-    {
-        wxLogError(wxString::Format(wxT("Could not open help file: %s"), strFile.c_str()));
-        return;
-    }
-    DEBUG_INFO("help file: " << strFile.mb_str(wxConvLocal));
-    if(!wxLaunchDefaultBrowser(strFile))
-    {
-        wxLogError(_("Can't start system's web browser"));
-    }
-#endif
 }
 
 void MainFrame::OnTipOfDay(wxCommandEvent& WXUNUSED(e))

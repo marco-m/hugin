@@ -31,9 +31,13 @@
 #include "Batch.h"
 #include "ProjectListBox.h"
 #include "DirTraverser.h"
-#ifdef __WXMSW__
-#include "wx/msw/helpchm.h"
+#include "wx/help.h"
+#if !wxUSE_HELP
+#error wxWidgets needs to be compiled with help support (wxUSE_HELP not set)
+#endif
+#if defined __WXMSW__ && !(wxCHECK_VERSION(3,1,1))
 #include "base_wx/wxPlatform.h"
+#define wxHelpController HuginCHMHelpController
 #endif
 #include "BatchTrayIcon.h"
 //#include <wx/app.h>
@@ -151,20 +155,8 @@ public:
     /** update the progress bar in the task bar */
     void UpdateTaskBarProgressBar();
 
-#ifdef __WXMSW__
     /** return help controller for open help */
-#if wxCHECK_VERSION(3,1,1)
-    wxCHMHelpController& GetHelpController()
-    {
-        return m_msHtmlHelp;
-    }
-#else
-    HuginCHMHelpController& GetHelpController()
-    {
-        return m_msHtmlHelp;
-    }
-#endif
-#endif
+    wxHelpController& GetHelpController() { return m_HelpController; }
 
     //wxMutex* projListMutex;
     ProjectListBox* projListBox;
@@ -179,15 +171,8 @@ private:
     wxChoice* m_endChoice;
     //TO-DO: include a batch or project progress gauge? Test initialization commented out in constructor
     //wxGauge* m_gauge;
-#ifdef __WXMSW__
-#if wxCHECK_VERSION(3,1,1)
-    wxCHMHelpController m_msHtmlHelp;
-#else
-    HuginCHMHelpController m_msHtmlHelp;
-#endif
-#else
-    wxHtmlHelpController* m_help;
-#endif
+    // help controller
+    wxHelpController m_HelpController;
     BatchTaskBarIcon* m_tray;
     ProgressStatusBar* m_progStatusBar;
     wxIcon m_iconNormal;

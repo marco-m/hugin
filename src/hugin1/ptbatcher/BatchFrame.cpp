@@ -133,9 +133,6 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     this->SetLocaleAndXRC(locale,xrc);
     m_cancelled = false;
     m_closeThread = false;
-#ifndef __WXMSW__
-    m_help=0;
-#endif
 
     //load xrc resources
     wxXmlResource::Get()->LoadFrame(this, (wxWindow* )NULL, wxT("batch_frame"));
@@ -596,56 +593,13 @@ void BatchFrame::OnButtonClear(wxCommandEvent& event)
 void BatchFrame::OnButtonHelp(wxCommandEvent& event)
 {
     DEBUG_TRACE("");
-#ifdef __WXMSW__
-#if wxCHECK_VERSION(3,1,1)
-    GetHelpController().DisplaySection(wxT("Hugin_Batch_Processor.html"));
-#else
+#if defined __wxMSW__ && !(wxCHECK_VERSION(3,1,1))
+    // wxWidgets 3.x has a bug, that prevents DisplaySection to work on Win8/10 64 bit
+    // see: http://trac.wxwidgets.org/ticket/14888
+    // so using DisplayContents() and our own implementation of HuginCHMHelpController
     GetHelpController().DisplayHelpPage(wxT("Hugin_Batch_Processor.html"));
-#endif
 #else
-    if (m_help == 0)
-    {
-#if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
-        // On Mac, xrc/data/help_LOCALE should be in the bundle as LOCALE.lproj/help
-        // which we can rely on the operating sytem to pick the right locale's.
-        wxString strFile = MacGetPathToBundledResourceFile(CFSTR("help"));
-        if(strFile!=wxT(""))
-        {
-            strFile += wxT("/hugin.hhp");
-        }
-        else
-        {
-            wxLogError(wxString::Format(wxT("Could not find help directory in the bundle"), strFile.c_str()));
-            return;
-        }
-#else
-        // find base filename
-        wxString helpFile = wxT("help_") + m_locale->GetCanonicalName() + wxT("/hugin.hhp");
-        DEBUG_INFO("help file candidate: " << helpFile.mb_str(wxConvLocal));
-        //if the language is not default, load custom About file (if exists)
-        wxString strFile = m_xrcPrefix + wxT("data/") + helpFile;
-        if(wxFile::Exists(strFile))
-        {
-            DEBUG_TRACE("Using About: " << strFile.mb_str(wxConvLocal));
-        }
-        else
-        {
-            // try default
-            strFile = m_xrcPrefix + wxT("data/help_en_EN/hugin.hhp");
-        }
-#endif
-
-        if(!wxFile::Exists(strFile))
-        {
-            wxLogError(wxString::Format(wxT("Could not open help file: %s"), strFile.c_str()));
-            return;
-        }
-        DEBUG_INFO(_("help file: ") << strFile.mb_str(wxConvLocal));
-        m_help = new wxHtmlHelpController();
-        m_help->AddBook(strFile);
-    }
-    m_help->Display(wxT("Hugin_Batch_Processor.html"));
-    //DisplayHelp(wxT("Hugin_Batch_Processor.html"));
+    GetHelpController().DisplaySection(wxT("Hugin_Batch_Processor.html"));
 #endif
 }
 
@@ -1164,9 +1118,6 @@ void BatchFrame::OnClose(wxCloseEvent& event)
     {
         this->GetThread()->Wait();
     };
-#ifndef __WXMSW__
-    delete m_help;
-#endif
     if(m_tray!=NULL)
     {
         delete m_tray;

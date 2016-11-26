@@ -25,8 +25,8 @@
  */
 
 #include "PTBatcherGUI.h"
-#ifdef __WXMSW__
 #include <wx/cshelp.h>
+#ifdef __WXMSW__
 #include <wx/stdpaths.h>
 #endif
 #include "lensdb/LensDB.h"
@@ -53,13 +53,12 @@ bool PTBatcherGUI::OnInit()
 #endif
     int localeID = wxConfigBase::Get()->Read(wxT("language"), (long) wxLANGUAGE_DEFAULT);
     m_locale.Init(localeID);
-    // initialize help provider
-    wxHelpControllerHelpProvider* provider = new wxHelpControllerHelpProvider;
-    wxHelpProvider::Set(provider);
-
 #else
     m_locale.Init(wxLANGUAGE_DEFAULT);
 #endif
+    // initialize help provider
+    wxHelpControllerHelpProvider* provider = new wxHelpControllerHelpProvider;
+    wxHelpProvider::Set(provider);
 
     // setup the environment for the different operating systems
 #if defined __WXMSW__
@@ -163,10 +162,35 @@ bool PTBatcherGUI::OnInit()
     {
         m_frame = new BatchFrame(&m_locale,m_xrcPrefix);
         m_frame->RestoreSize();
-#ifdef __WXMSW__
+        // init help system
         provider->SetHelpController(&m_frame->GetHelpController());
-        m_frame->GetHelpController().Initialize(m_xrcPrefix+wxT("data/hugin_help_en_EN.chm"));
+#ifdef __WXMSW__
+        m_frame->GetHelpController().Initialize(m_xrcPrefix + wxT("data/hugin_help_en_EN.chm"));
+#else
+#if wxUSE_WXHTML_HELP
+        // using wxHtmlHelpController
+#if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
+        // On Mac, xrc/data/help_LOCALE should be in the bundle as LOCALE.lproj/help
+        // which we can rely on the operating sytem to pick the right locale's.
+        wxString strFile = MacGetPathToBundledResourceFile(CFSTR("help"));
+        if (!strFile.IsEmpty())
+        {
+            m_frame->GetHelpController().AddBook(wxFileName(strFile + wxT("/hugin_help_en_EN.hhp")));
+        }
+        else
+        {
+            wxLogError(wxString::Format(wxT("Could not find help directory in the bundle"), strFile.c_str()));
+            return false;
+        }
+#else
+        m_frame->GetHelpController().AddBook(wxFileName(m_xrcPrefix + wxT("data/help_en_EN/hugin_help_en_EN.hhp")));
 #endif
+#else
+        // using wxExtHelpController
+        m_frame->GetHelpController().Initialize(Initialize(m_xrcPrefix + wxT("data/help_en_EN")));
+#endif
+#endif
+
         SetTopWindow(m_frame);
         if(!(m_frame->IsStartedMinimized()))
         {
@@ -376,6 +400,7 @@ int PTBatcherGUI::OnExit()
     HuginBase::LensDB::LensDB::Clean();
     delete m_checker;
     delete m_server;
+    delete wxHelpProvider::Set(NULL);
     return 0;
 }
 

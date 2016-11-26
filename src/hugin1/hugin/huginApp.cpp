@@ -56,9 +56,9 @@
 
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
+#include <wx/cshelp.h>
 #ifdef __WXMSW__
 #include <wx/dir.h>
-#include <wx/cshelp.h>
 #include <wx/stdpaths.h>
 #if wxCHECK_VERSION(3,1,0)
 #include <wx/taskbarbutton.h>
@@ -186,12 +186,11 @@ bool huginApp::OnInit()
     // required by wxHtmlHelpController
     wxFileSystem::AddHandler(new wxZipFSHandler);
 
-
-#if defined __WXMSW__
     // initialize help provider
     wxHelpControllerHelpProvider* provider = new wxHelpControllerHelpProvider;
     wxHelpProvider::Set(provider);
 
+#if defined __WXMSW__
     wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
     m_utilsBinDir = exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     exePath.RemoveLastDir();
@@ -358,8 +357,6 @@ bool huginApp::OnInit()
     RestoreFramePosition(frame, wxT("MainFrame"));
 #endif
 #ifdef __WXMSW__
-    provider->SetHelpController(&frame->GetHelpController());
-    frame->GetHelpController().Initialize(m_xrcPrefix+wxT("data/hugin_help_en_EN.chm"));
     frame->SendSizeEvent();
 #if wxCHECK_VERSION(3,1,0)
     wxTaskBarJumpList jumpList;
@@ -376,6 +373,34 @@ bool huginApp::OnInit()
         _("Opens Calibrate_lens_gui, a simple GUI for lens calibration"),
         exeFile.GetFullPath(), 0);
     jumpList.GetTasks().Append(item2);
+#endif
+#endif
+    // init help system
+    provider->SetHelpController(&frame->GetHelpController());
+#ifdef __WXMSW__
+    frame->GetHelpController().Initialize(m_xrcPrefix + wxT("data/hugin_help_en_EN.chm"));
+#else
+#if wxUSE_WXHTML_HELP
+    // using wxHtmlHelpController
+#if defined __WXMAC__ && defined MAC_SELF_CONTAINED_BUNDLE
+    // On Mac, xrc/data/help_LOCALE should be in the bundle as LOCALE.lproj/help
+    // which we can rely on the operating sytem to pick the right locale's.
+    wxString strFile = MacGetPathToBundledResourceFile(CFSTR("help"));
+    if (!strFile.IsEmpty())
+    {
+        frame->GetHelpController().AddBook(wxFileName(strFile + wxT("/hugin_help_en_EN.hhp")));
+    }
+    else
+    {
+        wxLogError(wxString::Format(wxT("Could not find help directory in the bundle"), strFile.c_str()));
+        return false;
+    }
+#else
+    frame->GetHelpController().AddBook(wxFileName(m_xrcPrefix + wxT("data/help_en_EN/hugin_help_en_EN.hhp")));
+#endif
+#else
+    // using wxExtHelpController
+    frame->GetHelpController().Initialize(Initialize(m_xrcPrefix + wxT("data/help_en_EN")));
 #endif
 #endif
 
@@ -551,10 +576,7 @@ bool huginApp::OnInit()
 int huginApp::OnExit()
 {
     DEBUG_TRACE("");
-#ifdef __WXMSW__    
     delete wxHelpProvider::Set(NULL);
-#endif
-
     return wxApp::OnExit();
 }
 

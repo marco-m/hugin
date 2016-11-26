@@ -32,9 +32,13 @@
 #include "panodata/Panorama.h"
 
 #include "wx/docview.h"
-#ifdef __WXMSW__
-#include "wx/msw/helpchm.h"
+#include "wx/help.h"
+#if !wxUSE_HELP
+#error wxWidgets needs to be compiled with help support (wxUSE_HELP not set)
+#endif
+#if defined __WXMSW__ && !(wxCHECK_VERSION(3,1,1))
 #include "base_wx/wxPlatform.h"
+#define wxHelpController HuginCHMHelpController
 #endif
 
 #include <appbase/ProgressDisplay.h>
@@ -168,13 +172,7 @@ public:
     struct celeste::svm_model* GetSVMModel();
     
     GLPreviewFrame * getGLPreview();
-#ifdef __WXMSW__
-#if wxCHECK_VERSION(3,1,1)
-    wxCHMHelpController& GetHelpController() { return m_msHtmlHelp; }
-#else
-    HuginCHMHelpController& GetHelpController() { return m_msHtmlHelp; }
-#endif
-#endif
+    wxHelpController& GetHelpController() { return m_HelpController; }
     void SetGuiLevel(GuiLevel newLevel);
     const GuiLevel GetGuiLevel() const { return m_guiLevel; };
 
@@ -277,14 +275,8 @@ private:
     wxMenu* m_menu_file_advanced;
     // sticky setting, to prevent reading to often
     bool m_optOnlyActiveImages;
-
-#ifdef __WXMSW__
-#if wxCHECK_VERSION(3,1,1)
-    wxCHMHelpController m_msHtmlHelp;
-#else
-    HuginCHMHelpController     m_msHtmlHelp;
-#endif
-#endif
+    // help controller
+    wxHelpController m_HelpController;
 
 #ifdef HUGIN_HSI
     // list associating the wxID in the menu with a python script

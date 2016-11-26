@@ -99,6 +99,25 @@ ELSEIF(APPLE)
            MACOSX_PACKAGE_LOCATION "Resources" )
     ENDFOREACH(_file)
 
+    #help files
+    FILE(GLOB HELP_FILES ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.css
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.htm
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.html
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.ico
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.gif
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.JPG
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.jpg
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.png
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.xpm
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.hhc
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.hhk
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/*.hhp
+                         ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/xrc/data/help_en_EN/.manual )
+    FOREACH(_file ${HELP_FILES})
+      SET_SOURCE_FILES_PROPERTIES( ${_file} PROPERTIES
+           MACOSX_PACKAGE_LOCATION "Resources/en_US.lproj/help" )
+    ENDFOREACH(_file)
+
 
     ADD_EXECUTABLE( ${PROGNAME} MACOSX_BUNDLE ${PTBATCHERGUI_SOURCE} ${PTBATCHERGUI_HEADER}
           ${ICON_FILES} ${TRANSLATION_FILES} ${XRC_FILES} ${TOOLS} ${OTHER})
