@@ -67,7 +67,7 @@ static void usage(const char* name)
          << "      -c         create coordinate images (only TIFF_m output)" << std::endl
          << "      -v         verbose output" << std::endl
          << "      -d         print detailed output for gpu processing" << std::endl
-         << "      -g         perform image remapping on the GPU" << std::endl
+         << "      -g|--gpu   perform image remapping on the GPU" << std::endl
          << std::endl
          << "  The following options can be used to override settings in the project file:" << std::endl
          << "      -i num     remap only image with number num" << std::endl
@@ -148,6 +148,7 @@ int main(int argc, char* argv[])
         { "create-exposure-layers", no_argument, NULL, EXPOSURELAYERS },
         { "clip-exposure", optional_argument, NULL, MASKCLIPEXPOSURE },
         { "seam", required_argument, NULL, SEAMMODE},
+        { "gpu", no_argument, NULL, 'g'},
         { "help", no_argument, NULL, 'h'},
         0
     };
