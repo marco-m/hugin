@@ -58,24 +58,24 @@
 </ul>
 </div>
 
-<h2><span class="mw-headline" id="Preface">Preface</span></h2>
+<h2><a name="Preface"><span class="mw-headline">Preface</span></a></h2>
 <p>PTStitcher is one of the core applications of <a href="Panorama_tools.html" title="Panorama tools">Panorama tools</a>, together with <a href="PTOptimizer.html" title="PTOptimizer">PTOptimizer</a> and the Panorama Tools Plugins<a class="external" href="http://wiki.panotools.org/Panorama_Tools_Plugins">[*]</a>. 
 </p><p>For stitching panoramas you most probably won't get in contact with PTStitcher frequently, since the scripting is more or less completely done by the various GUI front-ends<a class="external" href="http://wiki.panotools.org/GUI_front-ends">[*]</a> and some tools like PanoCube<a class="external" href="http://wiki.panotools.org/PanoCube">[*]</a>.
 </p><p>However, there are several occasions where you might need to write or at least understand the scripts or call PTStitcher directly (for some batch tasks f.e.).
 </p>
-<h2><span class="mw-headline" id="Updates">Updates</span></h2>
+<h2><a name="Updates"><span class="mw-headline">Updates</span></a></h2>
 <p>The PTStitcher source code was never published, hence there are no changes possible to certain functions. But since a considerable part of its functionality is in <a href="Pano12.html" title="Pano12">pano12</a> library, PTStitcher benefits from every update of this core library. 
 </p><p>You can take PTStitcher from any of the panotools distribution on one of the Mirrors<a class="external" href="http://wiki.panotools.org/Mirrors">[*]</a>. In order to use new functionality you need a recent copy of <a href="Pano12.html" title="Pano12">pano12</a> library.  Note that only <i>win32</i>, <i>i386 Linux</i> and <i>mac classic</i> binary versions were ever made available, so you are out of luck if you use <i>OS X</i> or a 64bit operating system.
 </p><p>There is an open source replacement for PTStitcher called <a href="Nona.html" title="Nona">nona</a> in the <a href="Hugin.html" title="Hugin">hugin</a> project which has much (but not all) of the PTStitcher features.  Another open source replacement is <a href="PTmender.html" title="PTmender">PTmender</a>, part of the <a href="Pano12.html" title="Pano12">pano12</a> project at sourceforge.
 </p>
-<h2><span class="mw-headline" id="Intro">Intro</span></h2>
+<h2><a name="Intro"><span class="mw-headline">Intro</span></a></h2>
 <p>PTStitcher is script driven. The scripts are in pure text format and can be edited with any text or programming editor (on windows notepad will do). 
 </p><p>They are processed on a line by line basis. Each line starts with a special character (case sensitive) that indicates the meaning of the rest of the line. All other first in line characters are ignored and considered comments.
 </p>
-<h2><span class="mw-headline" id="Features">Features</span></h2>
+<h2><a name="Features"><span class="mw-headline">Features</span></a></h2>
 <p>Most features of PTStitcher are conveniently accessible by the usual GUIs (<a href="PTStitcher.html#Preface">see top</a>), but some are not.
 </p>
-<h3><span class="mw-headline" id="Accessible_by_GUI">Accessible by GUI</span></h3>
+<h3><a name="Accessible_by_GUI"><span class="mw-headline">Accessible by GUI</span></a></h3>
 <p>PTStitcher can stitch
 </p>
 <ul>
@@ -106,7 +106,7 @@
 <li> to <a href="Perspective_correction.html" title="Perspective correction">correct perspective distortion</a>.
 </li>
 </ul>
-<h3><span class="mw-headline" id="Accessible_by_Script_or_other_Tool">Accessible by Script or other Tool</span></h3>
+<h3><a name="Accessible_by_Script_or_other_Tool"><span class="mw-headline">Accessible by Script or other Tool</span></a></h3>
 <p>PTStitcher can be used stand alone or with some other (non-GUI) Tool:
 </p>
 <ul>
@@ -115,7 +115,7 @@
 <li> assembling 6 cube faces to an equirectangular panorama can be done by GUI but is more conveniently done by script, <a rel="nofollow" class="external text" href="http://www.pinlady.net/vr/#anchor3">batch file</a> or PanoCube Plus<a class="external" href="http://wiki.panotools.org/PanoCube">[*]</a>.
 </li>
 </ul>
-<h2><span class="mw-headline" id="Example_Script">Example Script</span></h2>
+<h2><a name="Example_Script"><span class="mw-headline">Example Script</span></a></h2>
 <p>The updated original example script with lots of comments is below. Copied from <a rel="nofollow" class="external text" href="http://photocreations.ca/panotools/stitch.txt">Jim Watters' page</a>
 </p>
 <pre>
@@ -135,7 +135,7 @@
 # the 'm'-line is optional and allows you to specify modes for the optimization.
 # the 'C'-line is optional and allows morphing of control points.
 </pre>
-<h3><span class="mw-headline" id="p-line_options">p-line options</span></h3>
+<h3><a name="p-line_options"><span class="mw-headline">p-line options</span></a></h3>
 <pre>
 # 'p'-line options
 # w1000        width in pixels
@@ -191,7 +191,7 @@
 
 p w800 nPSD_mask
 </pre>
-<h3><span class="mw-headline" id="i-line_options">i-line options</span></h3>
+<h3><a name="i-line_options"><span class="mw-headline">i-line options</span></a></h3>
 <pre>
 # The 'i' lines describe input images and is optional
 # nName        file name of the input image.
@@ -199,7 +199,7 @@ p w800 nPSD_mask
 
 i n&quot;photo1.jpg&quot;
 </pre>
-<h3><span class="mw-headline" id="o-line_options">o-line options</span></h3>
+<h3><a name="o-line_options"><span class="mw-headline">o-line options</span></a></h3>
 <pre>
 # The 'o' lines describe input images. One line per image is required
 # The width and height of the image is obtained from image
@@ -257,7 +257,7 @@ i n&quot;photo1.jpg&quot;
 o f2 r0   p0    y0     v183    a0 b-0.1 c0  S100,600,100,800
 o f2 r0   p0    y180   v183    a0 b-0.1 c0  S100,600,100,800
 </pre>
-<h3><span class="mw-headline" id="m-line_options">m-line options</span></h3>
+<h3><a name="m-line_options"><span class="mw-headline">m-line options</span></a></h3>
 <pre>
 # 'm'-line options
 # ----------------
@@ -298,7 +298,7 @@ o f2 r0   p0    y180   v183    a0 b-0.1 c0  S100,600,100,800
 
 m g1.5 i6 f0
 </pre>
-<h3><span class="mw-headline" id="z-line_options">z-line options</span></h3>
+<h3><a name="z-line_options"><span class="mw-headline">z-line options</span></a></h3>
 <pre>
 # 'z'-lines options
 # ----------------
@@ -324,7 +324,7 @@ m g1.5 i6 f0
 
 z m2 f4 s4
 </pre>
-<h3><span class="mw-headline" id="C-line_options">C-line options</span></h3>
+<h3><a name="C-line_options"><span class="mw-headline">C-line options</span></a></h3>
 <pre>
 # 'C' lines
 # ----------------
@@ -343,7 +343,7 @@ C i0  x363.726 y125.738 X363.838 Y125.618
 *
 Every thing after * is ignored.
 </pre>
-<h2><span class="mw-headline" id="Tutorials">Tutorials</span></h2>
+<h2><a name="Tutorials"><span class="mw-headline">Tutorials</span></a></h2>
 <p>Information on how to create and use PTStitcher scripts can be found on the web and on the wiki:
 </p>
 <ul>
@@ -364,7 +364,7 @@ Every thing after * is ignored.
 </ul>
 </li>
 </ul>
-<h2><span class="mw-headline" id="Calling_from_the_command_line">Calling from the command line</span></h2>
+<h2><a name="Calling_from_the_command_line"><span class="mw-headline">Calling from the command line</span></a></h2>
 <p>PTStitcher can be called from the command line (this is what all GUIs do, too). More information in the PTStitcher Readme<a class="external" href="http://wiki.panotools.org/PTStitcher_Readme#Scripting_PTStitcher">[*]</a>
 </p>
 

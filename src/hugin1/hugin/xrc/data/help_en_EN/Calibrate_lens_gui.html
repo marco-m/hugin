@@ -32,19 +32,19 @@
 												
 				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p>calibrate_lens_gui is a tool for lens calibration using the straight line approach.
 </p>
-<h1><span class="mw-headline" id="Workflow">Workflow</span></h1>
+<h1><a name="Workflow"><span class="mw-headline">Workflow</span></a></h1>
 <p>1. Load images
 </p><p>2. Check focal length and crop factor (calibrate_lens_gui tries to read them from the EXIF data)
 </p><p>3. Detect lines
 </p><p>4. Optimize the lens parameters
 </p><p>5. Save optimized lens parameters into file for using inside Hugin
 </p>
-<h1><span class="mw-headline" id="Line_detection">Line detection</span></h1>
+<h1><a name="Line_detection"><span class="mw-headline">Line detection</span></a></h1>
 <p>To speed up the following calculations the image is scaled down, so that the longest dimension of the image is small than maximal image size.
 </p><p>Then an edge detection operator is applied. The <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Canny_edge_detector">Canny edge detector</a> is used for this. This step can be tuned with the scale or radius factor and the threshold for the Canny edge detector. 
 </p><p>Finally the found lines are checked if they are straight in respect to the given focal length. Also lines with are shorter than the minimal line length are rejected. Minimum line length is given as ratio to the image width/height. So a value of 0.3 means that only lines which are longer than 30&#160;% of the image width are used.
 </p>
-<h1><span class="mw-headline" id="Preview">Preview</span></h1>
+<h1><a name="Preview"><span class="mw-headline">Preview</span></a></h1>
 <ul>
 <li> Original: Shows the original image as loaded from the disc.
 </li>

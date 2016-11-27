@@ -41,7 +41,7 @@ A common situation when stitching images together is that most of the output ima
 </pre>
 <p><a href="Enblend.html" title="Enblend">enblend</a> can read these <b>cropped TIFF</b> files since version 2.4, so this technique is useful when working with enblend.  Additionally the gimp<a class="external" href="http://wiki.panotools.org/Gimp">[*]</a> image editor can open multilayer <b>cropped TIFF</b> files directly, though it cannot save them. It can be convenient to edit the alpha masks in multi-layer TIFFs before passing them to enblend with the help of a script; see Multi-Layer TIFF editing with the Gimp<a class="external" href="http://wiki.panotools.org/Multi-Layer_TIFF_editing_with_the_Gimp">[*]</a>.
 </p>
-<h2><span class="mw-headline" id="Preserving_TIFF_offset_when_editing_with_GIMP">Preserving TIFF offset when editing with GIMP</span></h2>
+<h2><a name="Preserving_TIFF_offset_when_editing_with_GIMP"><span class="mw-headline">Preserving TIFF offset when editing with GIMP</span></a></h2>
 <p>Using cropped intermediate images is very useful - they use less diskspace and less resources are needed to generate them. Unfortunately, GIMP does not preserve the TIFF offset - and this is very unfortunate if you want to mask out some passing object in some of the remapped images, and blend them later with enblend. There's a way to preserve TIFF offset, though. First we have to figure out what the original offset of the image we will be editing is (of course, it is suggested to create a backup copy of the image anyway). To find that out, execute:
 </p>
 <pre>tiffdump &lt;remappedd.tiff&gt; | grep Position

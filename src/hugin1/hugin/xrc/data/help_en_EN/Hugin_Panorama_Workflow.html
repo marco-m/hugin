@@ -61,14 +61,14 @@
 </ul>
 </div>
 
-<h2><span class="mw-headline" id="Generating_project_file">Generating project file</span></h2>
-<h3><span class="mw-headline" id="Fully_automatic_generation">Fully automatic generation</span></h3>
+<h2><a name="Generating_project_file"><span class="mw-headline">Generating project file</span></a></h2>
+<h3><a name="Fully_automatic_generation"><span class="mw-headline">Fully automatic generation</span></a></h3>
 <p>PTBatcherGUI<a class="external" href="http://wiki.panotools.org/PTBatcherGUI">[*]</a> provides an option to create a project file and run the assistant on these generated project files.
 Go to <b>File&gt;Search directory for...&gt;Images</b> and select the path to your images. After pressing <b>Start</b> PTBatcherGUI will search for possible projects depending on the <a href="EXIF.html" title="EXIF">EXIF</a> information in the images. When the search is finished, the bottom list box displays all found panoramas. Select the panoramas you want to process and then click <b>Send selected panoramas to queue</b> to send these panoramas to the assistant queue. When you now start the batch processing, the assistant is running on all project files.
 </p><p>If you tick the option <b>Automatic stitch after assistant</b> the panoramas will be stitched after running the assistant. This will give you a full automatic panorama processing from the input images to the final panorama.
 </p><p>Also in <a href="Hugin.html" title="Hugin">Hugin</a> an automatic alignment can be achieved. After adding the images (and checking projections and focal length) run the assistant on this project. You can also send the projects to the assistant queue and process the project files later (e.g. during night).
 </p>
-<h3><span class="mw-headline" id="Manual_generation">Manual generation</span></h3>
+<h3><a name="Manual_generation"><span class="mw-headline">Manual generation</span></a></h3>
 <p>Project file can be generated and aligned in <a href="Hugin.html" title="Hugin">Hugin</a>. A possible work flow would be
 </p>
 <ol>
@@ -87,7 +87,7 @@ Go to <b>File&gt;Search directory for...&gt;Images</b> and select the path to yo
 <li> Select output parameters (projection, canvas size, ...)
 </li>
 </ol>
-<h3><span class="mw-headline" id="Scripting">Scripting</span></h3>
+<h3><a name="Scripting"><span class="mw-headline">Scripting</span></a></h3>
 <p>The project can also be created and aligned with command line tools (see <a href="Panorama_scripting_in_a_nutshell.html#Creating_hugin_projects_on_the_command-line" title="Panorama scripting in a nutshell">here</a> for more details).
 </p><p>A work flow similar to the assistant would be like:
 </p>
@@ -108,17 +108,17 @@ Go to <b>File&gt;Search directory for...&gt;Images</b> and select the path to yo
     autooptimiser -a -m -l -s -o project.pto project.pto
     pano_modify --canvas=AUTO --crop=AUTO -o project.pto project.pto
 </pre>
-<h2><span class="mw-headline" id="Stitching">Stitching</span></h2>
+<h2><a name="Stitching"><span class="mw-headline">Stitching</span></a></h2>
 <p>All stitching engines use the same code base. So there is no preference for one or the other. It is a matter of taste, which one you use.
 </p>
-<h3><span class="mw-headline" id="PTBatcherGUI">PTBatcherGUI</span></h3>
+<h3><a name="PTBatcherGUI"><span class="mw-headline">PTBatcherGUI</span></a></h3>
 <p>The default stitching engine is PTBatcherGUI<a class="external" href="http://wiki.panotools.org/PTBatcherGUI">[*]</a>. You can add different projects to a queue and process the queue later without control. But it can also be configured to start immediately.
 </p><p>You can also stitch all project files in a given directory: After select the directory in <b>File&gt;Search directory for...&gt;Project</b> all project files in the given folder will be added to the queue.
 </p>
-<h3><span class="mw-headline" id="Hugin_stitch_project">Hugin_stitch_project</span></h3>
+<h3><a name="Hugin_stitch_project"><span class="mw-headline">Hugin_stitch_project</span></a></h3>
 <p><a href="Hugin_stitch_project.html" title="Hugin stitch project">Hugin_stitch_project</a> can only stitch a single project. The processing starts immediately.
 </p>
-<h3><span class="mw-headline" id="Scripting_2">Scripting</span></h3>
+<h3><a name="Scripting_2"><span class="mw-headline">Scripting</span></a></h3>
 <p>The stitching can also be started from the command line:
 </p>
 <pre>    hugin_executor --prefix=prefix project.pto

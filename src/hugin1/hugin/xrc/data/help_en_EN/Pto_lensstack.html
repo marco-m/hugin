@@ -35,7 +35,7 @@
 </p>
 <pre>   pto_lensstack --output=output.pto --new-lens|--new-stack|--change-lens|--change-stack images input.pto
 </pre>
-<h2><span class="mw-headline" id="Assigning_new_lenses.2Fstacks">Assigning new lenses/stacks</span></h2>
+<h2><a name="Assigning_new_lenses.2Fstacks"><span class="mw-headline">Assigning new lenses/stacks</span></a></h2>
 <p>You can assign a new lens or stack to an image or a set of images by providing a list of image numbers as parameters to the program. The counting starts with zero. Several images can be given at the same time. Separate them with a comma.
 So
 </p>
@@ -44,14 +44,14 @@ So
 </pre>
 <p>will assign a new lens to image 1 and 3 and a new stack to images 2 and 4.
 </p>
-<h2><span class="mw-headline" id="Changing_lenses.2Fstacks">Changing lenses/stacks</span></h2>
+<h2><a name="Changing_lenses.2Fstacks"><span class="mw-headline">Changing lenses/stacks</span></a></h2>
 <p>For changing the lens or the stack provide a list of image numbers and the new lens/stack number. For both the counting starts with zero and you can supply several images separated by a comma at the same time.
 </p><p>Examples:
 </p>
 <pre>  pto_lensstack --change-lens i1=4,i5=1 input.pto
   pto_lensstack --change-stack i2=0,i4=0 input.pto
 </pre>
-<h2><span class="mw-headline" id="General_options">General options</span></h2>
+<h2><a name="General_options"><span class="mw-headline">General options</span></a></h2>
 <ul>
 <li> <b>-o|--output output.pto</b> Output a pto file with the given filename. If not given it will append "_lens" to the input filename.
 </li>

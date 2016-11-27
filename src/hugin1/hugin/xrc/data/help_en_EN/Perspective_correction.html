@@ -57,24 +57,24 @@
 </ul>
 </div>
 
-<h2><span class="mw-headline" id="Intro">Intro</span></h2>
+<h2><a name="Intro"><span class="mw-headline">Intro</span></a></h2>
 <p>This tutorial has no direct relevance to panorama creation. However, perspective correction is an issue for panorama creation as well, if you shoot your images tilted up or down. But please note that it is not necessary to correct the images prior to stitching - this is done in one go with alignment and stitching.
 </p><p>Falling lines can be annoying not only in architectural photography. In former times photographers used shift lenses (some times called <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Perspective_correction">Perspective Correction</a> lenses) to correct for that. These lenses usually are pretty expensive, not available in all needed focal lengths and limited to a certain amount of correction.
 </p><p>Panotools are able to simulate a shift lens in terms of geometry (obviously they can't simulate it in terms of <a href="Depth_of_Field.html" title="Depth of Field">Depth of Field</a>). There are some easy and straightforward techniques to achieve perspective correction depending on the direction the camera was tilted.
 </p>
-<h2><span class="mw-headline" id="Prerequisites">Prerequisites</span></h2>
+<h2><a name="Prerequisites"><span class="mw-headline">Prerequisites</span></a></h2>
 <p>This tutorial uses PTGui<a class="external" href="http://wiki.panotools.org/PTGui">[*]</a>, but any of the GUI front-ends<a class="external" href="http://wiki.panotools.org/GUI_front-ends">[*]</a> would do. The usage of these programs is more or less identical although names differ sometimes a bit and some fields are in different locations. For hugin see tutorials on <a rel="nofollow" class="external text" href="http://hugin.sourceforge.net/tutorials/architectural/en.shtml">Simulating an architectural projection</a> and <a rel="nofollow" class="external text" href="http://hugin.sourceforge.net/tutorials/perspective/en.shtml">Perspective correction</a>
 </p><p>In all cases you start a new project and add the image you want to correct by pressing the <b>Add</b> button. 
 </p><p>Go to <b>Lens parameters</b> tab and choose your lens type (presumable <b>normal (rectilinear)</b>). Enter the approximate <b>Field of View</b> if not already read from <a href="EXIF.html" title="EXIF">EXIF</a> data (it's not necessary to have it exact). If you already have lens correction parameters enter them in the <b>a</b>, <b>b</b> and <b>c</b> fields else enter 0.0 for each.
 </p><p>In <b>Panorama settings</b> tab choose <b>Rectilinear ('flat')</b> as output.
 </p>
-<h3><span class="mw-headline" id="Warning">Warning</span></h3>
+<h3><a name="Warning"><span class="mw-headline">Warning</span></a></h3>
 <p>Newer PTGui versions require you to allow optimization for Roll and Pitch when using the internal optimizer together with horizontal or vertical control points. Use the <b>Panorama Tools Optimizer</b> in this case.
 </p>
-<h2><span class="mw-headline" id="Camera_tilted_up_or_down">Camera tilted up or down</span></h2>
+<h2><a name="Camera_tilted_up_or_down"><span class="mw-headline">Camera tilted up or down</span></a></h2>
 <p>Using a shift lens this would have been shot with camera level and the lens shifted up or down. The respective parameter to simulate this in panotools is <b>Pitch</b>.
 </p>
-<h3><span class="mw-headline" id="Camera_level_to_the_horizon">Camera level to the horizon</span></h3>
+<h3><a name="Camera_level_to_the_horizon"><span class="mw-headline">Camera level to the horizon</span></a></h3>
 <table border="0" cellpadding="2" cellspacing="0" align="right">
 <tr>
 <td valign="top"><div class="thumb tright"><div class="thumbinner" style="width:102px;"><img alt="" src="100px-PC_img01.jpg" width="100" height="150" class="thumbimage" /><a class="external" href="http://wiki.panotools.org/File:PC_img01.jpg">[*]</a>  <div class="thumbcaption"><div class="magnify"><img src="magnify-clip.png" width="15" height="11" alt="" /><a class="external" href="http://wiki.panotools.org/File:PC_img01.jpg">[*]</a></div>Falling lines example &#169; Daniela Dürbeck</div></div></div>
@@ -87,7 +87,7 @@
 </p><p>In the example image I set one point at the middle light at the top of the tower, another approximately in the middle as far down as possible. Click the thumbs to enlarge.
 <br style="clear:both;" />
 </p>
-<h3><span class="mw-headline" id="Camera_tilted_and_rotated">Camera tilted and rotated</span></h3>
+<h3><a name="Camera_tilted_and_rotated"><span class="mw-headline">Camera tilted and rotated</span></a></h3>
 <table border="0" cellpadding="2" cellspacing="0" align="right">
 <tr>
 <td valign="top"><div class="thumb tright"><div class="thumbinner" style="width:102px;"><img alt="" src="100px-PC_img03.jpg" width="100" height="74" class="thumbimage" /><a class="external" href="http://wiki.panotools.org/File:PC_img03.jpg">[*]</a>  <div class="thumbcaption"><div class="magnify"><img src="magnify-clip.png" width="15" height="11" alt="" /><a class="external" href="http://wiki.panotools.org/File:PC_img03.jpg">[*]</a></div>Falling lines example 2 &#169; Erik Krause</div></div></div>
@@ -105,7 +105,7 @@
 </p><p>In the example image I set one point pair at top and bottom of the leftmost edge of the altar and one point pair at the rightmost edge. Click the thumbs to enlarge.
 <br style="clear:both;" />
 </p>
-<h2><span class="mw-headline" id="Camera_panned_sideways">Camera panned sideways</span></h2>
+<h2><a name="Camera_panned_sideways"><span class="mw-headline">Camera panned sideways</span></a></h2>
 <table border="0" cellpadding="2" cellspacing="0" align="right">
 <tr>
 <td valign="top"><div class="thumb tright"><div class="thumbinner" style="width:102px;"><img alt="" src="100px-PC_img06.jpg" width="100" height="166" class="thumbimage" /><a class="external" href="http://wiki.panotools.org/File:PC_img06.jpg">[*]</a>  <div class="thumbcaption"><div class="magnify"><img src="magnify-clip.png" width="15" height="11" alt="" /><a class="external" href="http://wiki.panotools.org/File:PC_img06.jpg">[*]</a></div>Panned camera example &#169; Tom! Striewisch</div></div></div>
@@ -119,11 +119,11 @@
 </p><p>Once you're done proceed as described under <a href="Perspective_correction.html#Adjust_output">Adjust output</a>.
 </p><p>In the example image I set one point at the top border of the mirror at the left and right end. Click the thumbs to enlarge.
 </p>
-<h3><span class="mw-headline" id="Camera_panned_and_rotated">Camera panned and rotated</span></h3>
+<h3><a name="Camera_panned_and_rotated"><span class="mw-headline">Camera panned and rotated</span></a></h3>
 <p>If the camera was rotated during shooting you need at least two horizontal control point pairs or one horizontal and one vertical. Proceed in an analogous manner as for rotated camera if <a href="Perspective_correction.html#Camera_tilted_and_rotated">tilted upwards</a>
 <br style="clear:both;" />
 </p>
-<h2><span class="mw-headline" id="Camera_panned.2C_tilted_and_rotated">Camera panned, tilted and rotated</span></h2>
+<h2><a name="Camera_panned.2C_tilted_and_rotated"><span class="mw-headline">Camera panned, tilted and rotated</span></a></h2>
 <table border="0" cellpadding="2" cellspacing="0" align="right">
 <tr>
 <td valign="top"><div class="thumb tright"><div class="thumbinner" style="width:102px;"><img alt="" src="100px-PC_img08.jpg" width="100" height="75" class="thumbimage" /><a class="external" href="http://wiki.panotools.org/File:PC_img08.jpg">[*]</a>  <div class="thumbcaption"><div class="magnify"><img src="magnify-clip.png" width="15" height="11" alt="" /><a class="external" href="http://wiki.panotools.org/File:PC_img08.jpg">[*]</a></div>Tight spaces example &#169; Bruno Postle</div></div></div>
@@ -139,7 +139,7 @@
 </p><p>In the example image I set the lines at the vertical and horizontal edges between the slabs. Click the thumbs to enlarge. There is an excellent <a href="Hugin.html" title="Hugin">hugin</a> tutorial available on how to correct this image: <a rel="nofollow" class="external autonumber" href="http://hugin.sourceforge.net/tutorials/perspective/en.shtml">[1]</a>
 <br style="clear:both;" />
 </p>
-<h2><span class="mw-headline" id="Summary">Summary</span></h2>
+<h2><a name="Summary"><span class="mw-headline">Summary</span></a></h2>
 <p>Only few control point pairs are needed to correct for perspective distortion.  
 </p>
 <ul>
@@ -162,15 +162,15 @@
 <li> Camera tilted, panned and rotated - set two pairs to two different vertical structures apart from each other and two pairs to different horizontal structures apart from each other. Optimize for <b>Yaw, Pitch, Roll</b> and eventually <b>Field of View</b>.
 </li>
 </ul>
-<h2><span class="mw-headline" id="Adjust_output">Adjust output</span></h2>
+<h2><a name="Adjust_output"><span class="mw-headline">Adjust output</span></a></h2>
 <p>In any case you should get an average control point distance of almost 0.0. And in any case the image will be shifted in some direction, hence the output image will be larger. The width and height of the output image can be adjusted, but it is not possible to crop either side individually in PTGui. 
 </p><p>Open <b>Panorama Editor</b> (Ctrl+E) and press the <b>Fit panorama</b> (Ctrl+F or menu: Edit -&gt; Fit panorama) button. This will automatically adjust the output area to fit the corrected image. 
 </p><p>You should see the image shifted in some direction with the empty space filled with black. You can adjust the width and heigth of the frame using the small sliders at the bottom and right side of the window (actually you adjust the output <a href="Field_of_View.html" title="Field of View">Field of View</a>). The additional black space must be cropped in some image editor.
 </p>
-<h2><span class="mw-headline" id="Save">Save</span></h2>
+<h2><a name="Save"><span class="mw-headline">Save</span></a></h2>
 <p>As a last step go to <b>Create Panorama</b> tab page and press <b>Set optimum size</b>. Choose either <a href="TIFF.html" title="TIFF">TIFF</a>, <a href="JPEG.html" title="JPEG">JPG</a> (and quality) or <a href="PNG.html" title="PNG">PNG</a> as output and enter an appropriate file name. There should be a checkmark under <b>Include Images</b>. Then press <b>Create Panorama</b>. 
 </p>
-<h2><span class="mw-headline" id="Batch_process">Batch process</span></h2>
+<h2><a name="Batch_process"><span class="mw-headline">Batch process</span></a></h2>
 <p><b>unfortunately this feature has been removed in recent PTGui versions!</b>
 </p><p><strike>
 If you want to batch process some equally sized images with the same correction values (only possible if you shot them all from a tripod without moving the camera) you can simply add them to the project on <b>Source Images</b> tab. 

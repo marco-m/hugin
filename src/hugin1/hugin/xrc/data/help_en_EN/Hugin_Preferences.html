@@ -77,40 +77,40 @@
 </ul>
 </div>
 
-<h1><span class="mw-headline" id="General">General</span></h1>
-<h2><span class="mw-headline" id="Resource_usage">Resource usage</span></h2>
+<h1><a name="General"><span class="mw-headline">General</span></a></h1>
+<h2><a name="Resource_usage"><span class="mw-headline">Resource usage</span></a></h2>
 <p>To speed things up <a href="Hugin.html" title="Hugin">Hugin</a> keeps a copy in memory of as many input photos as possible.  With very large projects, this would use all your system memory, so set <b>Image cache memory</b> to a value below your available free RAM.  The default of 256MB should be ok for a system with 512MB of RAM, however this is very conservative, for large projects you will want to set this to a high proportion of your available system memory.
 </p><p>The <a href="Hugin_Preview_window.html" title="Hugin Preview window">Preview window</a> is multi-threaded so can use more than one CPU/core if required. Set <b>Number of CPUs</b> to how many CPUs you wish to use.
 </p>
-<h2><span class="mw-headline" id="User_interface">User interface</span></h2>
+<h2><a name="User_interface"><span class="mw-headline">User interface</span></a></h2>
 <p>Changing the language of the user interface can be useful e.g. if you want to test your new <a href="Hugin_translation_guide.html" title="Hugin translation guide">translation</a>.
 </p><p>Usually, <a href="Hugin.html" title="Hugin">Hugin</a> will use the current locale to determine the language of buttons, menus etc...
 Set the <b>Language</b> if you need to switch languages temporarily or if you are using a platform such as Windows95 that doesn't support localised software.  Hugin won't change language immediately, you will need to stop and restart it.
 </p><p>The "language" option in the Hugin Preferences doesn't work for the Mac version. On Mac OS X the system's country settings will be used instead: change the language setting there (i.e. drag the preferred language to the top of the list), and Hugin will reflect that when you restart the program. An alternative but more time consuming way to set another language than the current system language is to quit Hugin, reveal it's icon in the Finder, click on it and open the Information window (Cmd.-I). After deselecting all unwanted language options you can start Hugin in your preferred language.
 </p><p>If the option <b>Copy log messages to clipboard</b> is activated, all log messages (from the control point detector or the assistant) are copied at the end to the clipboard.
 </p>
-<h1><span class="mw-headline" id="File_names">File names</span></h1>
-<h2><span class="mw-headline" id="File_options">File options</span></h2>
+<h1><a name="File_names"><span class="mw-headline">File names</span></a></h1>
+<h2><a name="File_options"><span class="mw-headline">File options</span></a></h2>
 <p>Some <a href="Hugin.html" title="Hugin">Hugin</a> actions generate large temporary files, change the <b>Temporary dir</b> to specify an alternative location for writing these files. One reason for setting this independently to the operating system default would be to use a RAM disk to speed up stitching.
 </p><p>Note that intermediate stitching files are created in the output folder and not in this <b>Temporary dir</b>.
 </p>
-<h2><span class="mw-headline" id="Default_file_names">Default file names</span></h2>
+<h2><a name="Default_file_names"><span class="mw-headline">Default file names</span></a></h2>
 <p>Here you can construct a default file name for saving the project and for the output prefix. You can always change the proposal when saving.
 Several place holders can be used to build the file names.
 </p>
-<h1><span class="mw-headline" id="Assistant">Assistant</span></h1>
+<h1><a name="Assistant"><span class="mw-headline">Assistant</span></a></h1>
 <p>The <a href="Hugin_Assistant_tab.html" title="Hugin Assistant tab">Assistant tab</a> automates the entire panorama creation process, these
 settings allow you to customise the assistant.
 </p>
-<h2><span class="mw-headline" id="Image_loading">Image loading</span></h2>
+<h2><a name="Image_loading"><span class="mw-headline">Image loading</span></a></h2>
 <p>Select <b>Automatically align images after loading</b> to run the second <b>Align...</b>
 step immediately after loading the images.
 </p>
-<h2><span class="mw-headline" id="Automatic_control_point_checking_after_detecting_control_points">Automatic control point checking after detecting control points</span></h2>
+<h2><a name="Automatic_control_point_checking_after_detecting_control_points"><span class="mw-headline">Automatic control point checking after detecting control points</span></a></h2>
 <p>Select <b>Remove cloud-like control points (Celeste)</b> to run <a href="Celeste_standalone.html" title="Celeste standalone">celeste</a> after detecting control points. Celeste will remove <a href="Control_points.html" title="Control points">Control points</a> set to clouds, this is useful because clouds will move several pixels between shots and are therefore bad scene objects to use for alignment.
 </p><p>Select <b>Remove outlying control points by statistical method</b> to run <a href="Cpclean.html" title="Cpclean">cpclean</a>, this will try to remove control points with positions that are not credible under pairwise optimisation.
 </p>
-<h2><span class="mw-headline" id="Auto_align">Auto align</span></h2>
+<h2><a name="Auto_align"><span class="mw-headline">Auto align</span></a></h2>
 <p>Auto align uses the <a href="Hugin_Preferences.html#Control_Point_Detectors" title="Hugin Preferences">default control point detector</a> to generate <a href="Control_points.html" title="Control points">control points</a>
 between pairs of images, set <b>Number of Ctrl Points per overlap</b> to control
 the number of control points.  Note that although most pictures can be stitched
@@ -126,8 +126,8 @@ the way a camera <a href="CCD.html" title="CCD">CCD</a> samples data.
 </p><p><br />
 </p><p><br style="clear:both;" />
 </p>
-<h1><span class="mw-headline" id="Control_Points_Editor">Control Points Editor</span></h1>
-<h2><span class="mw-headline" id="HDR_and_16bit_display">HDR and 16bit display</span></h2>
+<h1><a name="Control_Points_Editor"><span class="mw-headline">Control Points Editor</span></a></h1>
+<h2><a name="HDR_and_16bit_display"><span class="mw-headline">HDR and 16bit display</span></a></h2>
 <p><a href="Hugin.html" title="Hugin">Hugin</a> supports both <a href="HDR.html" title="HDR">HDR</a> and <a href="16bit.html" title="16bit">16bit</a> imaging.  These image formats
 contain a lot more brightness and colour information than can be displayed
 on a standard computer monitor, so Hugin only shows a rough representation
@@ -139,7 +139,7 @@ to <b>logarithmic</b>.
 </p><p>Changes to the <b>HDR and 16bit display mode</b> require restarting Hugin to
 take effect.
 </p>
-<h2><span class="mw-headline" id="Fine-tune">Fine-tune</span></h2>
+<h2><a name="Fine-tune"><span class="mw-headline">Fine-tune</span></a></h2>
 <p><a href="Hugin.html" title="Hugin">Hugin</a> helps position <a href="Control_points.html" title="Control points">control points</a> to within a fraction of a pixel distance automatically:
 </p>
 <ul>
@@ -162,7 +162,7 @@ take effect.
 <li> <b>Peak Curvature Threshold</b>, Currently unused.
 </li>
 </ul>
-<h2><span class="mw-headline" id="Rotation_search">Rotation search</span></h2>
+<h2><a name="Rotation_search"><span class="mw-headline">Rotation search</span></a></h2>
 <p>Enable this if your photos:
 </p>
 <ul>
@@ -173,7 +173,7 @@ take effect.
 </ul>
 <p><br style="clear:both;" />
 </p>
-<h1><span class="mw-headline" id="Control_Point_Detectors">Control Point Detectors</span></h1>
+<h1><a name="Control_Point_Detectors"><span class="mw-headline">Control Point Detectors</span></a></h1>
 <p><a href="Hugin.html" title="Hugin">Hugin</a> uses an internal or external tool for automatically creating <a href="Control_points.html" title="Control points">control points</a> for a set of images either when
 </p>
 <ul>
@@ -207,7 +207,7 @@ take effect.
 </p><p>These <a href="Hugin_Parameters_for_Control_Point_Detectors_dialog.html" title="Hugin Parameters for Control Point Detectors dialog">parameters</a> are also helpful if you want to use a similar command line tool that isn't already listed. Click the <b>New...</b> button to configure a new preset to use in the <a href="Hugin_Assistant_tab.html" title="Hugin Assistant tab">Assistant</a> or the <a href="Hugin_Photos_tab.html" title="Hugin Photos tab">Photos tabs</a>.
 </p><p>The <b>Set default</b> button will mark the preset selected in this list box to be used automatically in the <a href="Hugin_Assistant_tab.html" title="Hugin Assistant tab">Assistant tab</a> when clicking the <b>2. Align...</b> button.
 </p>
-<h1><span class="mw-headline" id="Stitching">Stitching</span></h1>
+<h1><a name="Stitching"><span class="mw-headline">Stitching</span></a></h1>
 <p>In the final stitching process <a href="Nona.html" title="Nona">nona</a> reprojects and distorts images to fit, <a href="Enblend.html" title="Enblend">enblend</a> takes these
 images as individual <a href="TIFF.html" title="TIFF">TIFF</a> files and merges them using sophisticated seam positioning and blending and/or Exposure fusion<a class="external" href="http://wiki.panotools.org/index.php?title=Exposure_fusion&amp;action=edit&amp;redlink=1">[*]</a> into
 a single finished image file. These processes can be hold together by PTBatcherGUI<a class="external" href="http://wiki.panotools.org/PTBatcherGUI">[*]</a> or <a href="Hugin_stitch_project.html" title="Hugin stitch project">hugin_stitch_project</a>. Select here processor should be used:
@@ -220,15 +220,15 @@ a single finished image file. These processes can be hold together by PTBatcherG
 </ul>
 <p><b>Important note:</b> The settings here are the defaults for <i>new projects</i>, change settings for the <i>current project</i> in the <a href="Hugin_Stitcher_tab.html" title="Hugin Stitcher tab">Hugin Stitcher tab</a>.
 </p>
-<h1><span class="mw-headline" id="Programs">Programs</span></h1>
+<h1><a name="Programs"><span class="mw-headline">Programs</span></a></h1>
 <p>Here you can define programs for the different stitching steps and set default options for them.
 </p>
-<h2><span class="mw-headline" id="Nona">Nona</span></h2>
+<h2><a name="Nona"><span class="mw-headline">Nona</span></a></h2>
 <p>Here you can set the <b>Default interpolator</b> used during stitching. <a href="Interpolation.html" title="Interpolation">Interpolation</a> is a quality setting, but the default of <b>Poly3 (Bicubic)</b> is good for most purposes. You are unlikely to notice any difference between interpolators other than that <b>Nearest neighbor</b> is fast but very low quality.
 </p><p>You can <b>Create cropped images by default</b>, these <a href="Cropped_TIFF.html" title="Cropped TIFF">Cropped TIFF</a> images will speed up stitching, but some image editors do not process the offsets correctly.
 </p><p><b>Use GPU for remapping</b> will activate experimental <a href="Nona.html" title="Nona">nona</a> code to remap images using the shading language of the <i>Graphics Processing Unit</i> in modern video hardware. However some projections and the translation parameters are not yet supported by this experimental code. In this case Nona will automatically switch back to CPU calculation.
 </p>
-<h2><span class="mw-headline" id="Enblend">Enblend</span></h2>
+<h2><a name="Enblend"><span class="mw-headline">Enblend</span></a></h2>
 <p>The <b>Use alternative Enblend program</b> option allows you to use other tools with a similar interface
 such as smartblend<a class="external" href="http://wiki.panotools.org/Smartblend">[*]</a> or enblend-mask<a class="external" href="http://wiki.panotools.org/index.php?title=Enblend-mask&amp;action=edit&amp;redlink=1">[*]</a>.
 </p><p>enblend supports a range of <b>Additional arguments</b>, for example you may want to set:
@@ -251,17 +251,17 @@ such as smartblend<a class="external" href="http://wiki.panotools.org/Smartblend
 </ul>
 <p>Note that setting <b>Additional arguments</b> here will only effect new projects, to change <a href="Enblend.html" title="Enblend">enblend</a> and <a href="Enfuse.html" title="Enfuse">enfuse</a> settings for the current project use the <a href="Hugin_Stitcher_tab.html" title="Hugin Stitcher tab">Hugin Stitcher tab</a>.
 </p>
-<h2><span class="mw-headline" id="Enfuse">Enfuse</span></h2>
+<h2><a name="Enfuse"><span class="mw-headline">Enfuse</span></a></h2>
 <p>If one of <b>Exposure fusion</b> output options is selected in the <a href="Hugin_Stitcher_tab.html" title="Hugin Stitcher tab">Stitcher tab</a> then <a href="Enfuse.html" title="Enfuse">enfuse</a> will be used to merge bracketed exposures during stitching.
 </p>
-<h1><span class="mw-headline" id="Misc">Misc</span></h1>
-<h2><span class="mw-headline" id="Celeste">Celeste</span></h2>
+<h1><a name="Misc"><span class="mw-headline">Misc</span></a></h1>
+<h2><a name="Celeste"><span class="mw-headline">Celeste</span></a></h2>
 <p>Often a project has many control points attached to clouds in the sky, this is usually unwanted as clouds move between photos. <a href="Using_Celeste_with_hugin.html" title="Using Celeste with hugin">celeste</a> will attempt to identify 'sky' control points and delete them.
 </p>
-<h2><span class="mw-headline" id="Photometric_optimizer">Photometric optimizer</span></h2>
+<h2><a name="Photometric_optimizer"><span class="mw-headline">Photometric optimizer</span></a></h2>
 <p>The photometric optimizer on the <a href="Hugin_Exposure_tab.html" title="Hugin Exposure tab">Exposure tab</a> samples the here given number of points and tries to determine with which <a href="Camera_response_curve.html" title="Camera response curve">camera response curve</a>, <a href="Vignetting.html" title="Vignetting">vignetting</a> and exposure compensation the images need to be stitch to get no changes in colour or luminescence. For difficult projects it can be helpful to increase this number.
 </p>
-<h1><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h1>
+<h1><a name="Troubleshooting"><span class="mw-headline">Troubleshooting</span></a></h1>
 <p>Sometimes when updating a hugin installation new features such as the settings for a new control point editor won't appear where expected. The cause might be a conflict with the preferences file of a previous version of hugin. A good idea before pressing the "Reset do defaults" button might be to back up the old preferences file since it is a plain text file that contains your specific settings in a readable format. Saving this file gives you the chance to recreate these individual settings later on. The name and location of the preferences file is this for the following platforms:
 </p>
 <ul>

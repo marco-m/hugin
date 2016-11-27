@@ -33,7 +33,7 @@
 				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p><b>hugin_executor</b> is a tool for command line stitching or for running the assistant from the command line.
 </p><p>It will be available in Hugin 2015.0 and later. (Hugin versions up to 2014.0 use pto2mk<a class="external" href="http://wiki.panotools.org/Pto2mk">[*]</a> for command line stitching.)
 </p>
-<h2><span class="mw-headline" id="Command_line_stitching">Command line stitching</span></h2>
+<h2><a name="Command_line_stitching"><span class="mw-headline">Command line stitching</span></a></h2>
 <p>To stitch a project file from the command line use
 </p>
 <pre>   hugin_executor --stitching --prefix=prefix project.pto
@@ -41,7 +41,7 @@
 <p>It will use the settings in the project file and also in <a href="Hugin_Preferences.html" title="Hugin Preferences">Hugins preferences dialog</a> (e.g. exiftool settings).
 </p><p>When no prefix is specified it will use the output prefix found in Hugins preferences dialog. The default value for the output prefix is the filename (inclusive path) of the project file.
 </p>
-<h2><span class="mw-headline" id="Command_line_assistant">Command line assistant</span></h2>
+<h2><a name="Command_line_assistant"><span class="mw-headline">Command line assistant</span></a></h2>
 <p>The assistant can run on the command line with
 </p>
 <pre>   hugin_executor --assistant project.pto
@@ -49,7 +49,7 @@
 <p>This will run different other command line tools (like <a href="Cpfind.html" title="Cpfind">cpfind</a>, <a href="Linefind.html" title="Linefind">linefind</a>, <a href="Autooptimiser.html" title="Autooptimiser">autooptimiser</a>) on the project. The project file will be overwritten with the extended project file (e. g. with control point and optimized).
 The settings of the assistant can be changed in <a href="Hugin_Preferences.html" title="Hugin Preferences">Hugins preferences dialog</a>.
 </p>
-<h2><span class="mw-headline" id="Advanced_options">Advanced options</span></h2>
+<h2><a name="Advanced_options"><span class="mw-headline">Advanced options</span></a></h2>
 <ul>
 <li> <tt>--threads=NUM</tt>: Many of the individual tools are using as much threads as possible, e.g. on a 4 core processor it will use 4 threads. This behavior can be changed by setting the environment variable <tt>OMP_NUM_THREADS</tt> or set the switch <tt>--threads</tt> to reduce the CPU load.
 </li>

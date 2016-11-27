@@ -32,7 +32,7 @@
 												
 				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p><b>tca_correct</b> is a command-line tool shipped with <a href="Hugin.html" title="Hugin">hugin</a> that can be used to automatically calculate lens chromatic aberration<a class="external" href="http://wiki.panotools.org/TCA">[*]</a> correction parameters.  Ideal sample photos would have a lot of contrast over the entire image area, little saturated colour and no blown highlights.
 </p>
-<h2><span class="mw-headline" id="Using_with_fulla">Using with fulla</span></h2>
+<h2><a name="Using_with_fulla"><span class="mw-headline">Using with fulla</span></a></h2>
 <p><a href="Fulla.html" title="Fulla">fulla</a> is a command-line tool for correcting <a href="Lens_distortion.html" title="Lens distortion">lens distortion</a>, <a href="Vignetting.html" title="Vignetting">vignetting</a> and TCA<a class="external" href="http://wiki.panotools.org/TCA">[*]</a> (chromatic aberration). It is capable of applying the full panotools polynomial to the red and blue channels, thereby correcting any transverse chromatic aberration.
 </p><p>First calculate some TCA correction parameters for a sample image, notice that I'm only going to bother optimising <i>b</i> and <i>v</i> parameters in the <a href="Lens_correction_model.html" title="Lens correction model">lens correction model</a>, you might get better results with the full <i>abcv</i> set of parameters:
 </p>
@@ -46,7 +46,7 @@
 </p>
 <pre> fulla -r 0.0:0.0001197:0.0:0.9997630 -b 0.0:-0.0001142:0.0:1.0001841 -o corrected.tif DSC_3194.ppm
 </pre>
-<h2><span class="mw-headline" id="Using_with_dcraw">Using with dcraw</span></h2>
+<h2><a name="Using_with_dcraw"><span class="mw-headline">Using with dcraw</span></a></h2>
 <p>dcraw<a class="external" href="http://wiki.panotools.org/Dcraw">[*]</a> is a command-line <a href="RAW.html" title="RAW">RAW</a> converter with the ability to apply scaling of red/blue channels at the Bayer interpolation stage. Simple scaling is not as sophisticated as the panotools polynomial used in <a href="Fulla.html" title="Fulla">fulla</a> but is good enough for nearly all purposes. Start by extracting a test image from a RAW file:
 </p>
 <pre> dcraw DSC_3194.NEF

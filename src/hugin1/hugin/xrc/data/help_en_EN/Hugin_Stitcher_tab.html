@@ -33,7 +33,7 @@
 				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p>The rest of <a href="Hugin.html" title="Hugin">hugin</a> is all about setting up the project and aligning images, the <b>Stitcher</b> tab is where
 the final output file is created.
 </p>
-<h1><span class="mw-headline" id="Projection">Projection</span></h1>
+<h1><a name="Projection"><span class="mw-headline">Projection</span></a></h1>
 <p>Here you can set the output <b><a href="Projections.html" title="Projections">Projection</a></b> of your project, there are lots
 to choose from, each with different advantages and disadvantages:
 </p>
@@ -83,7 +83,7 @@ to choose from, each with different advantages and disadvantages:
 <li> Hammer-Aitoff Equal Area Projection
 </li>
 </ul>
-<h1><span class="mw-headline" id="Field_of_View">Field of View</span></h1>
+<h1><a name="Field_of_View"><span class="mw-headline">Field of View</span></a></h1>
 <p>This is the horizontal and vertical <a href="Field_of_View.html" title="Field of View">angle of view</a> of the output image,
 clicking <b>Calculate Field of View</b> will shrink or enlarge the field of view of the
 output to fit the arrangement of the input images - The <b>Fit</b> button in the
@@ -102,7 +102,7 @@ output to fit the arrangement of the input images - The <b>Fit</b> button in the
 <li> Transverse Mercator has to be less than 180 degrees horizontally.
 </li>
 </ul>
-<h1><span class="mw-headline" id="Canvas_Size">Canvas Size</span></h1>
+<h1><a name="Canvas_Size"><span class="mw-headline">Canvas Size</span></a></h1>
 <p>Set the <b>width</b> and <b>height</b> of your output panorama in pixels.  <b>Calculate Optimal Size</b> will estimate
 a size that has about the same resolution as your input images.
 </p><p>Some examples: a <i>three megapixel</i> image has pixel dimensions of 2048 x 1536, an A4 print at 300 pixels per inch will
@@ -112,7 +112,7 @@ dimensions of 6000 x 3000 or greater and a <i>gigapixel</i> image has a pixel si
 than about half the size of the <i>Optimal Size</i> will show <a href="Aliasing.html" title="Aliasing">aliasing</a> artefacts.  If you want to create high quality
 small images, it is better to create an <i>Optimal Size</i> image in hugin and downsize it later in an image editor such as Gimp<a class="external" href="http://wiki.panotools.org/Gimp">[*]</a>.
 </p>
-<h1><span class="mw-headline" id="Crop">Crop</span></h1>
+<h1><a name="Crop"><span class="mw-headline">Crop</span></a></h1>
 <p>The crop settings allow just a portion of the panorama to be stitched, there are various reasons to do this:
 </p>
 <ul>
@@ -124,15 +124,15 @@ small images, it is better to create an <i>Optimal Size</i> image in hugin and d
 <p>The cropped-out areas are shown darkened in the <a href="Hugin_Preview_window.html" title="Hugin Preview window">Preview window</a>.
 </p><p>The <b>Fit Crop to Images</b> button will automatically determine a crop that has a maximum number of pixels and no empty space.  This is the same function as the <b>Autocrop</b> button in the <a href="Hugin_Fast_Preview_window.html" title="Hugin Fast Preview window">Fast Preview window</a>. 
 </p>
-<h1><span class="mw-headline" id="Panorama_Outputs">Panorama Outputs</span></h1>
+<h1><a name="Panorama_Outputs"><span class="mw-headline">Panorama Outputs</span></a></h1>
 <p>Hugin can output 'normal' stitched images, exposure fused<a class="external" href="http://wiki.panotools.org/index.php?title=Exposure_fusion&amp;action=edit&amp;redlink=1">[*]</a> images or high dynamic range (<a href="HDR.html" title="HDR">HDR</a>) images.
 The following options determine which kind of image is created, and allow keeping the intermediate images created during the process.
 </p>
-<h2><span class="mw-headline" id="Normal">Normal</span></h2>
+<h2><a name="Normal"><span class="mw-headline">Normal</span></a></h2>
 <p>If <b>Exposure corrected, low dynamic range</b> is enabled then <a href="Enblend.html" title="Enblend">enblend</a> is used for blending. In the final stitching process <a href="Nona.html" title="Nona">nona</a> reprojects and distorts images to fit, <b>enblend</b> takes these images as individual <a href="TIFF.html" title="TIFF">TIFF</a> files and merges them using sophisticated seam positioning and blending.  Further <b>enblend</b> settings can be found in the <a href="Hugin_Preferences.html" title="Hugin Preferences">hugin Preferences</a>.
 </p><p>Enable <b>Exposure corrected, low dynamic range</b> under <b>Remapped Images</b> if you want to keep the intermediate images that <b>enblend</b> uses as input - For example modifying the <a href="Alpha_channel.html" title="Alpha channel">alpha channel</a> of these images and then blending manually is one technique for including and excluding people or objects that move between shots.
 </p>
-<h2><span class="mw-headline" id="Exposure_fusion">Exposure fusion</span></h2>
+<h2><a name="Exposure_fusion"><span class="mw-headline">Exposure fusion</span></a></h2>
 <p>If <b>Exposure fused from stacks</b> is enabled then hugin will group the input images into exposure stacks by comparing positions, any images with more than 70&#160;% overlap are grouped like this.  Each of these <a href="Bracketing.html" title="Bracketing">bracketed</a> exposure stacks will be exposure fused<a class="external" href="http://wiki.panotools.org/index.php?title=Exposure_fusion&amp;action=edit&amp;redlink=1">[*]</a> with <a href="Enfuse.html" title="Enfuse">enfuse</a> and the results seam blended together into a panorama with <a href="Enblend.html" title="Enblend">enblend</a>.
 </p><p>Notes:
 </p>
@@ -175,7 +175,7 @@ The following options determine which kind of image is created, and allow keepin
 <li> <b><a href="PNG.html" title="PNG">PNG</a></b>, lossless compression. <a href="16bit.html" title="16bit">16 bit</a> and 8 bit depth supported.
 </li>
 </ul>
-<h2><span class="mw-headline" id="HDR_merging">HDR merging</span></h2>
+<h2><a name="HDR_merging"><span class="mw-headline">HDR merging</span></a></h2>
 <p><i>The option <b>High dynamic range</b> is only available in <b>Advanced</b> and <b>Expert</b> mode.</i>
 </p><p>If <b>High dynamic range</b> is enabled then hugin will identify likely <a href="Bracketing.html" title="Bracketing">bracketed</a> stacks of images, then create remapped <a href="HDR.html" title="HDR">HDR</a> images which are then blended with <a href="Enblend.html" title="Enblend">enblend</a>.
 </p><p>Note that like the Exposure fusion option above, this generally only makes sense if the scene has been photographed multiple times using exposure bracketing. This option works also for creating panorama from HDR input images.
@@ -189,7 +189,7 @@ High dynamic range <b>Format</b> can be either:
 <li> <b><a href="OpenEXR.html" title="OpenEXR">EXR</a></b>, this is a high dynamic range format which is more compact than a high dynamic range TIFF.
 </li>
 </ul>
-<h1><span class="mw-headline" id="Processing">Processing</span></h1>
+<h1><a name="Processing"><span class="mw-headline">Processing</span></a></h1>
 <p><a href="Nona.html" title="Nona">nona</a> is the default <b>Remapper</b> (stitching engine) supplied with <a href="Hugin.html" title="Hugin">hugin</a>, normally there is no need to
 change this or any of the options below.
 </p><p>Set the <b>Interpolator (i)</b> to change the sampling <a href="Interpolation.html" title="Interpolation">interpolation</a>.  You probably won't notice
@@ -202,7 +202,7 @@ always <b>save cropped images</b> unless you need to open them in an image edito
 </p><p><a href="Enblend.html" title="Enblend">enblend</a> is the default <b>Blender</b> for use with <a href="Hugin.html" title="Hugin">hugin</a>, normally there is no need to change this.  Additional command-line <b>Options</b> can be set here or in the <a href="Hugin_Preferences.html" title="Hugin Preferences">hugin Preferences</a> for new projects.
 </p><p><br />
 </p>
-<h1><span class="mw-headline" id="Stitch">Stitch</span></h1>
+<h1><a name="Stitch"><span class="mw-headline">Stitch</span></a></h1>
 <p>Click <b>Stitch!</b> (located in the bottom right corner of the window) to generate output panoramas. With default setting the current project is added to the <a href="Hugin_Batch_Processor.html" title="Hugin Batch Processor">Hugin Batch Processor</a> stitching queue. Note that the queue won't be processed unless this queue manager is running.
 </p>
 

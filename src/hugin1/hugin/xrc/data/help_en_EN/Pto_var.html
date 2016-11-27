@@ -35,7 +35,7 @@
 </p>
 <pre>   pto_var [switches] --output=output.pto --opt|--link|--unlink|--set|--set-from-file images input.pto
 </pre>
-<h2><span class="mw-headline" id="Optimisation_variables">Optimisation variables</span></h2>
+<h2><a name="Optimisation_variables"><span class="mw-headline">Optimisation variables</span></a></h2>
 <p><b>Pto_var</b> can mark image variables for <a href="Optimization.html" title="Optimization">optimisation</a>. (This information is stored in the v lines in the pto file.) This information is  used by <a href="Autooptimiser.html" title="Autooptimiser">autooptimiser</a> and <a href="Vig_optimize.html" title="Vig optimize">vig_optimize</a> to do the actual optimisation.
 </p><p>Running without other switches will only mark the variables given on the command line for optimisation. If you want to modify the marked variables add <b>--modify-opt</b> to the command line.
 </p><p>The usage is:
@@ -70,7 +70,7 @@
 <li> <b>--modify-opt --opt=!v</b> will not optimize field of view.
 </li>
 </ul>
-<h2><span class="mw-headline" id="Link_or_unlink_image_variables">Link or unlink image variables</span></h2>
+<h2><a name="Link_or_unlink_image_variables"><span class="mw-headline">Link or unlink image variables</span></a></h2>
 <p>To modify the link status of an image variable use <b>--link</b> or <b>-unlink</b>. Supply a list of comma separated image variables with corresponding image number.
 </p><p>Examples:
 </p>
@@ -84,7 +84,7 @@
 <li> <b>--unlink=Vb3,Ra3</b> will unlink <a href="Vignetting.html" title="Vignetting">vignetting</a> and <a href="Camera_response_curve.html" title="Camera response curve">response curve</a> for image 3.
 </li>
 </ul>
-<h2><span class="mw-headline" id="Set_image_variables">Set image variables</span></h2>
+<h2><a name="Set_image_variables"><span class="mw-headline">Set image variables</span></a></h2>
 <p>With this switch you can set the image variable to the given value. This applies to all the image variables of that sort or only to a single image, when the image number is given.
 </p><p>Examples:
 </p>
@@ -135,7 +135,7 @@
 </pre>
 <p>In the text file the individual variables can be separated by comma or a line break.
 </p>
-<h2><span class="mw-headline" id="General_options">General options</span></h2>
+<h2><a name="General_options"><span class="mw-headline">General options</span></a></h2>
 <ul>
 <li> <b>-o|--output output.pto</b> Output a pto file with the given filename. If not given it will append "_var" to the input filename.
 </li>

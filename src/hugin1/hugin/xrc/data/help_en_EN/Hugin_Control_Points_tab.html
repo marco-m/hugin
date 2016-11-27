@@ -45,13 +45,13 @@
 </ul>
 </div>
 
-<h2><span class="mw-headline" id="About_Control_points">About Control points</span></h2>
+<h2><a name="About_Control_points"><span class="mw-headline">About Control points</span></a></h2>
 <p><a href="Control_points.html" title="Control points">Control points</a> are central to Panorama Tools<a class="external" href="http://wiki.panotools.org/Panorama_Tools">[*]</a> and <a href="Hugin.html" title="Hugin">hugin</a>, because they are used to estimate the position of image position and lens parameters described above.
 A control point specifies a corresponding point between two images. Using these corresponding points, the <a href="Hugin_Optimiser_tab.html" title="Hugin Optimiser tab">Optimiser tab</a> can estimate the image position and lens parameters.
 It is therefore important that the control points are accurate and usually at least 3 well distributed control points should be used to estimate the image position (<a href="Yaw.html" title="Yaw">yaw</a>, <a href="Roll.html" title="Roll">roll</a> and <a href="Pitch.html" title="Pitch">pitch</a>) and maybe the <a href="Field_of_View.html" title="Field of View">HFOV</a>.
 For accurate estimation of the a,b,c distortion parameters, many well distributed control points, and a large overlap (up to 50%) are required.
 </p>
-<h2><span class="mw-headline" id="Description">Description</span></h2>
+<h2><a name="Description"><span class="mw-headline">Description</span></a></h2>
 <p>The Tab consists of two image displays and associated pull-down lists to switch images to be edited.
 The bottom contains a list view where Points can be selected and some fields to edit a selected point.
 Points can also be selected by clicking or dragging on them in the images.
@@ -90,14 +90,14 @@ Then <a href="Hugin.html" title="Hugin">hugin</a> usually automatically selects 
 </p><p><a href="Hugin.html" title="Hugin">hugin</a> also includes an experimental <a href="Control_points.html" title="Control points">control points</a> creation algorithm.
 It can be invoked by pressing the <b>g</b> key. Corners in the currently selected image are detected, and corresponding control points are set based on the current relative positions of the two images.  The images need to be approximately aligned already for this to be useful. Note that these points then need to be aligned by eye, with the <b>Fine-tune</b> button or with the <b>Fine-tune all Points</b> function in the Edit menu of the <a href="Panorama_Editor_window.html" title="Panorama Editor window" class="mw-redirect">Panorama editor</a>.
 </p>
-<h2><span class="mw-headline" id="Control_point_modes">Control point modes</span></h2>
+<h2><a name="Control_point_modes"><span class="mw-headline">Control point modes</span></a></h2>
 <p>Use the <b>mode</b> pull down menu to change the type of an existing pair of <a href="Control_points.html" title="Control points">control points</a>.
 </p>
-<h3><span class="mw-headline" id="normal_control_points">normal control points</span></h3>
+<h3><a name="normal_control_points"><span class="mw-headline">normal control points</span></a></h3>
 <p>The <b>normal</b> control point mode is used to align pairs of overlapping photos by matching
 identical features in both photos.
 </p>
-<h3><span class="mw-headline" id="vertical_line_and_horizontal_line_control_points">vertical line and horizontal line control points</span></h3>
+<h3><a name="vertical_line_and_horizontal_line_control_points"><span class="mw-headline">vertical line and horizontal line control points</span></a></h3>
 <p>Pairs of <a href="Vertical_control_points.html" title="Vertical control points">vertical control points</a> and <a href="Horizontal_control_points.html" title="Horizontal control points">horizontal control points</a> are different from
 <b>normal</b> control points since they are used to align input images to particular alignments
 in the output panorama rather than simply stitching images together.
@@ -122,7 +122,7 @@ be added by dragging a line with pressed alt key. The line is automatically adde
 </p><p>Typically <i>horizontal</i> and <i>vertical</i> points are used either to level a spherical panorama<a class="external" href="http://wiki.panotools.org/Leveling_a_Finished_Panorama">[*]</a>
 or to <a href="Perspective_correction.html" title="Perspective correction">correct perspective</a>.
 </p>
-<h3><span class="mw-headline" id="Straight_line_control_points">Straight line control points</span></h3>
+<h3><a name="Straight_line_control_points"><span class="mw-headline">Straight line control points</span></a></h3>
 <p>Adding <a href="Straight_line_control_points.html" title="Straight line control points">straight line control points</a> is basically the same as
 creating <b>horizontal control points</b> and <b>vertical control points</b>, except that you
 need more than just one pair to make up a straight line.
@@ -131,7 +131,7 @@ need more than just one pair to make up a straight line.
 <b>Line 3</b>, you can assign more pairs of points to it using the same
 <b>mode</b> pull-down.
 </p>
-<h2><span class="mw-headline" id="Keyboard_shortcuts">Keyboard shortcuts</span></h2>
+<h2><a name="Keyboard_shortcuts"><span class="mw-headline">Keyboard shortcuts</span></a></h2>
 <p>Here is a summary of the keyboard shortcuts available in the Control Point tab:
 </p><p>Key 	Function
 </p>

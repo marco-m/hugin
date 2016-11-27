@@ -81,11 +81,11 @@
 </ul>
 </div>
 
-<h2><span class="mw-headline" id="Introduction">Introduction</span></h2>
+<h2><a name="Introduction"><span class="mw-headline">Introduction</span></a></h2>
 <p>This page intends to provide guidance to translators of the Hugin project. Some terminology is very specific or used in a specific way in hugin, making it hard to find a close translation that fits the context of hugin in another language than English.
 </p><p>If you were instead looking for information about the <i>translation parameters</i> TrX, TrY and TrZ, please have a look at the <a href="Image_positioning_model.html" title="Image positioning model">image positioning model</a>.
 </p>
-<h2><span class="mw-headline" id="Getting_Started_on_translations">Getting Started on translations</span></h2>
+<h2><a name="Getting_Started_on_translations"><span class="mw-headline">Getting Started on translations</span></a></h2>
 <ul>
 <li>1. Get your language file
 </li>
@@ -128,7 +128,7 @@
 </ul>
 </li>
 </ul>
-<h2><span class="mw-headline" id="How_to_check_the_translated_file_for_syntax_errors">How to check the translated file for syntax errors</span></h2>
+<h2><a name="How_to_check_the_translated_file_for_syntax_errors"><span class="mw-headline">How to check the translated file for syntax errors</span></a></h2>
 <p>The best way to check if your newly translated XX.po file hasn't any error, is to run the following command in a terminal (if you are under linux)
 </p>
 <pre>msgfmt -c --statistics XX.po  
@@ -137,7 +137,7 @@
 </p><p>If you get as output the number of translated, unstranslated and fuzzy strings the file is ok. Else you get error messages indicating the line where the errors resides. Open the po file in a text editor, look for the line where the error lives and fix it. Finally run again the above command until you get no errors.
 </p><p>Note: if you use Poedit, it gives you warning when the po file you are trying to save contains errors. In the error message read the line where the error is listed then close poedit and open the file in a text editor and look for errors in the specific line.
 </p>
-<h3><span class="mw-headline" id="Common_mistakes">Common mistakes</span></h3>
+<h3><a name="Common_mistakes"><span class="mw-headline">Common mistakes</span></a></h3>
 <ul>
 <li> Remember that the first line in a po file need to be commented as shown here (note the # sign at the beggining of the line)
 </li>
@@ -177,7 +177,7 @@
 <li> Watch out for quotation marks ". They must be quoted as \"
 </li>
 </ul>
-<h2><span class="mw-headline" id="Use_your_new_translation_file">Use your new translation file</span></h2>
+<h2><a name="Use_your_new_translation_file"><span class="mw-headline">Use your new translation file</span></a></h2>
 <p>poedit updates your PO file and creates a MO file for your language. You can rename your MO file into hugin.mo and replace the hugin.mo file from your current installation (don't forget to make a backup of the original MO file, just in case).
 </p>
 <ul>
@@ -190,12 +190,12 @@
 </ul>
 <p>If you want to you can also rebuild hugin (doesn't have to be a heavy job when you only changed the .po file, the process only updates that part).
 </p>
-<h2><span class="mw-headline" id="Contribute_your_Translation">Contribute your Translation</span></h2>
+<h2><a name="Contribute_your_Translation"><span class="mw-headline">Contribute your Translation</span></a></h2>
 <p>The preferred way is for translations to be contributed via the <a rel="nofollow" class="external text" href="https://bugs.launchpad.net/hugin/">tracker</a>.  If you don't want to use the tracker you can also post it as attachment to the mailing list, but the mailing list has a short memory and your hard work may be forgotten.
 </p><p>To use the tracker, you need a <a rel="nofollow" class="external text" href="Hugin_Trackers.html#Launchpad_Account">Launchpad Account</a>.
 </p><p>You can submit our translation via the web or via email.
 </p>
-<h3><span class="mw-headline" id="Web">Web</span></h3>
+<h3><a name="Web"><span class="mw-headline">Web</span></a></h3>
 <ul>
 <li> Log on with your Launchpad account.
 </li>
@@ -212,7 +212,7 @@
 <li> Click the "Submit Bug Report" button.
 </li>
 </ul>
-<h3><span class="mw-headline" id="eMail">eMail</span></h3>
+<h3><a name="eMail"><span class="mw-headline">eMail</span></a></h3>
 <p>Reporting a new ticket by email works too, but there are some critical conditions:
 </p>
 <ul>
@@ -245,11 +245,11 @@
 <li> Send.  It takes about five minutes to process and you get an email back with the result.
 </li>
 </ul>
-<h2><span class="mw-headline" id="Become_a_Power_Translator">Become a Power Translator</span></h2>
+<h2><a name="Become_a_Power_Translator"><span class="mw-headline">Become a Power Translator</span></a></h2>
 <p>After adding your po file to Hugin's <a rel="nofollow" class="external text" href="https://bugs.launchpad.net/hugin/">tracker</a>, the developers still need to integrate it, which is not easy as it means dealing with conflicting version (but how should a developer know which one of two conflicting sentences in a foreign language is the right one?). Thus using the same Mercurial approach to translation reduces considerably the burden on the rest of the team and is very much appreciated. Translation is a development too!
 </p><p>So <b>instead of adding your po file to the tracker</b>, you can integrate it yourself. You'll first need a <b>Sourceforge user account</b> (<a rel="nofollow" class="external text" href="http://sourceforge.net/account/registration/">register here</a> if you don't have one yet. Then tell the developers on the <a rel="nofollow" class="external text" href="http://groups.google.com/group/hugin-ptx/">mailing list</a> what your user account is, so that they can <b>grant you access to Mercurial</b>, the revision control system (you'll need this before following the next steps).
 </p>
-<h3><span class="mw-headline" id="The_first_time">The first time</span></h3>
+<h3><a name="The_first_time"><span class="mw-headline">The first time</span></a></h3>
 <p><b>For Windows users</b>
 </p><p><br />
 </p>
@@ -289,7 +289,7 @@ hg push
 </pre>
 <p><b>Important:</b> committed changes are only on your local disk.  You must push them to SourceForge to make them available to the project.
 </p>
-<h3><span class="mw-headline" id="The_following_times">The following times</span></h3>
+<h3><a name="The_following_times"><span class="mw-headline">The following times</span></a></h3>
 <p>The next time you want to work on the translations, you'll have first to <b>retrieve the latest version of the files</b> (as someone else might have modified something in the meantime) before working on it and then commiting it again.
 </p>
 <dl>
@@ -310,7 +310,7 @@ hg up -c
 </pre> 
 <p>and then you can continue from step 3 above.
 </p>
-<h3><span class="mw-headline" id="Changing_branches">Changing branches</span></h3>
+<h3><a name="Changing_branches"><span class="mw-headline">Changing branches</span></a></h3>
 <p>Prior to a release, you probably want to focus your translation work on getting everything ready for that release. Every release has its own branch, so if you work on the default branch (like above), your work will not make it into the immediately following release.
 </p><p>To change between different branches use "hg update":
 </p>
@@ -322,14 +322,14 @@ hg up -c
 </dl>
 <p>The current branch can be displayed with "hg branch". When you commit, the changeset goes into the currently selected branch.
 </p>
-<h3><span class="mw-headline" id="Extra_perk_-_Build_the_latest_Hugin">Extra perk - Build the latest Hugin</span></h3>
+<h3><a name="Extra_perk_-_Build_the_latest_Hugin"><span class="mw-headline">Extra perk - Build the latest Hugin</span></a></h3>
 <dl>
 <dd>If you're already here, you may want to also build and enjoy the latest Hugin. Some of the current contributors to the build, distribution and code of Hugin have learned this way. You are just a few clicks away from building your own bleeding edge Hugin. Find your platform in <a rel="nofollow" class="external text" href="http://wiki.panotools.org/Development_of_Open_Source_tools#Build_your_Own_Test_Builds">Build your Own Test Builds</a> section of the wiki and follow the instructions.
 </dd>
 <dd>Welcome to the club!
 </dd>
 </dl>
-<h2><span class="mw-headline" id="Translation_guide_for_specific_terms">Translation guide for specific terms</span></h2>
+<h2><a name="Translation_guide_for_specific_terms"><span class="mw-headline">Translation guide for specific terms</span></a></h2>
 <p><b>Note to translators, please add your language variant to the term on a new line in the same format as NL=<br /> Also add your own difficult terms that are not mentioned here.</b>
 </p><p><b>Note to developers, please check and enhance the meanings of these terms if they are unclear or incorrect.</b>
 </p>
@@ -571,7 +571,7 @@ hg up -c
 <dd> NL=h/v hulp (suggestie: ijklijnen)?
 </dd>
 </dl>
-<h3><span class="mw-headline" id="Do_not_translate:">Do not translate:</span></h3>
+<h3><a name="Do_not_translate:"><span class="mw-headline">Do not translate:</span></a></h3>
 <ul>
 <li> Autopano (program name)
 </li>
@@ -594,12 +594,12 @@ hg up -c
 <li> PTStitcher (program name)
 </li>
 </ul>
-<h2><span class="mw-headline" id="Technical_translation_issues">Technical translation issues</span></h2>
+<h2><a name="Technical_translation_issues"><span class="mw-headline">Technical translation issues</span></a></h2>
 <p>Some strings don't appear to be translated, they are apparently generated by the GUI toolkit or the operating system. Most likely they will be in the same language as hugin, because very few people, other than translators, start a program with a specific language other than that of the environment.
 </p><p>The file <tt>src/translations/ignored-entries.txt</tt> contains a list of ignored entries from the xrc files (which are used to declare most of the hugin UI). If you need to translate a sentence which is there, remove the line from the file and run the extract-messages.sh script to update the .po files.
 </p><p>If you find a source term that isn't correct, spelling or meaning, probably best to bring it up with Pablo d'Angelo or on the hugin mailinglist: <a rel="nofollow" class="external autonumber" href="http://groups.google.com/group/hugin-ptx">[1]</a>
 </p>
-<h3><span class="mw-headline" id="List_of_source_string_problems">List of source string problems</span></h3>
+<h3><a name="List_of_source_string_problems"><span class="mw-headline">List of source string problems</span></a></h3>
 <ul>
 <li> calculate highest sensible width. (uses every image pixel)
 </li>
@@ -610,16 +610,16 @@ hg up -c
 </dl>
 <p><br />
 </p>
-<h2><span class="mw-headline" id="Tips_and_Tricks">Tips and Tricks</span></h2>
-<h3><span class="mw-headline" id="Running_hugin_in_a_specific_language">Running hugin in a specific language</span></h3>
+<h2><a name="Tips_and_Tricks"><span class="mw-headline">Tips and Tricks</span></a></h2>
+<h3><a name="Running_hugin_in_a_specific_language"><span class="mw-headline">Running hugin in a specific language</span></a></h3>
 <p>If you want to run hugin in another language than the default, use the following command (Linux with UTF8):
 </p>
 <pre>$ LANG=nl_NL.utf8 hugin
 </pre>
 <p>This will start hugin in dutch. Other languages have different names of course, try looking in <tt>/usr/share/i18n/locales/</tt>.
 </p>
-<h2><span class="mw-headline" id="Developer_info">Developer info</span></h2>
-<h3><span class="mw-headline" id="Adding_new_strings">Adding new strings</span></h3>
+<h2><a name="Developer_info"><span class="mw-headline">Developer info</span></a></h2>
+<h3><a name="Adding_new_strings"><span class="mw-headline">Adding new strings</span></a></h3>
 <p>After adding new strings, translators need to find them in the .pot and .po files otherwise they won't get translated.
 </p><p>Hugin has a script to extract the messages from both the .xrc files and the .cpp source code and insert them into the hugin.pot and .po files.  New strings are added and unused strings are marked as obsolete.
 </p><p>Before running the script, make sure you have wxrc installed. On older Ubuntu, run <code>sudo apt-get install wxrc</code>.  On Ubuntu 10.4 it is <code>sudo apt-get install wx-common</code>.
@@ -633,7 +633,7 @@ cd src/translations
 hg ci
 hg push 
 </pre>
-<h3><span class="mw-headline" id="Applying_a_contributed_.po_file">Applying a contributed .po file</span></h3>
+<h3><a name="Applying_a_contributed_.po_file"><span class="mw-headline">Applying a contributed .po file</span></a></h3>
 <p>You could just overwrite the original and commit, but this assumes the file is correctly formatted and hasn't lost any strings. Better to use <b>msgmerge</b> to merge the contributed .po file with the existing.  Hugin has a script to test what will happen.  Use <b>msgfmt</b> for a quick sanity check too:
 </p>
 <pre> src/translations/diff_po.pl src/translations/zh_CN.po /tmp/zh_CN.contributed.po
@@ -644,17 +644,17 @@ hg push
  hg ci zh_CN.po -m 'Edited chinese translation'
  hg push
 </pre>
-<h3><span class="mw-headline" id="Statistics">Statistics</span></h3>
+<h3><a name="Statistics"><span class="mw-headline">Statistics</span></a></h3>
 <p>msgfmt --statistics eo_XX.po
 </p>
-<h3><span class="mw-headline" id="Issues_That_Need_Work">Issues That Need Work</span></h3>
+<h3><a name="Issues_That_Need_Work"><span class="mw-headline">Issues That Need Work</span></a></h3>
 <ul>
 <li> There are more than 1000 strings in the hugin.pot file.  The main translation problem we have now is that many of these strings are in the sourcecode, but not in bits that are used - i.e. there are strings that are being translated unnecessarily (the panodruid for example).
 </li>
 <li> The .po files headers are inconsistent. Ideally they would all feature the same license and copyright notice; and they would list all contributors.
 </li>
 </ul>
-<h2><span class="mw-headline" id="Website_.2F_Release_Notes">Website / Release Notes</span></h2>
+<h2><a name="Website_.2F_Release_Notes"><span class="mw-headline">Website / Release Notes</span></a></h2>
 <p>Some translators contribute also translated release notes.  These are published on the web at <a rel="nofollow" class="external free" href="http://hugin.sourceforge.net/releases/">http://hugin.sourceforge.net/releases/</a> . Usually the release manager will draft the release notes in English early on in the release process.  Even if they are not linked, you can find them in the repository at <a rel="nofollow" class="external free" href="http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/">http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/</a>
 </p><p><b>Important</b>: make sure you translate the file from the <a rel="nofollow" class="external text" href="http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/">repository</a> and not the resulting file displayed on the web, e.g. for 2015.0.0 translate the <i>raw</i> version of
 <a rel="nofollow" class="external free" href="http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/2015.0.0/en.shtml">http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/2015.0.0/en.shtml</a> and not the current one from <a rel="nofollow" class="external free" href="http://hugin.sourceforge.net/releases/">http://hugin.sourceforge.net/releases/</a> - the former is the source for the page while the latter is the resulting page after server side includes and other server side transformations.
