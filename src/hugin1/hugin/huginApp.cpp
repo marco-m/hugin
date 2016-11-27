@@ -64,9 +64,6 @@
 #include <wx/taskbarbutton.h>
 #endif
 #endif
-#ifdef __WXGTK3__
-#include <wx/platinfo.h>
-#endif
 
 #include <tiffio.h>
 
@@ -334,28 +331,7 @@ bool huginApp::OnInit()
     SetTopWindow(frame);
 
     // setup main frame size, after it has been created.
-#ifdef __WXGTK3__
-    if(wxPlatformInfo::Get().CheckToolkitVersion(3,20))
-    {
-        // workaround for wxWidgets bug http://trac.wxwidgets.org/ticket/17585
-        // with GTK3+ 3.20 the initial position/size of the sizer is not
-        // correctly calculated, if works when manually resizing the window
-        // so we need manually call the resizing function, but the sizes are
-        // only refreshed when before outstanding calculations are done in
-        // wxYield()
-        wxYield();
-        RestoreFramePosition(frame, wxT("MainFrame"));
-        wxYield();
-        frame->PostSizeEvent();
-        wxYield();
-    }
-    else
-    {
-        RestoreFramePosition(frame, wxT("MainFrame"));
-    }
-#else
     RestoreFramePosition(frame, wxT("MainFrame"));
-#endif
 #ifdef __WXMSW__
     frame->SendSizeEvent();
 #if wxCHECK_VERSION(3,1,0)
