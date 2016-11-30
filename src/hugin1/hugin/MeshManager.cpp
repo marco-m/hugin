@@ -114,6 +114,11 @@ void MeshManager::SetLayoutMode(bool state)
     meshes.clear();
 }
 
+bool MeshManager::GetLayoutMode() const
+{
+    return layout_mode_on;
+}
+
 void MeshManager::SetLayoutScale(double scale)
 {
     for(unsigned int i=0;i<meshes.size();i++)

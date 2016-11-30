@@ -189,30 +189,33 @@ void GLPreviewRenderer::Redraw()
     m_tool_helper->AfterDrawImages();
     m_tex_man->DisableTexture();
     glPopMatrix();
-    // darken the cropped out range
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-    glColor4f(0.0, 0.0, 0.0, 0.5);
-    // construct a strip of quads, with each pair being one of the corners.
-    const vigra::Rect2D roi = m_visualization_state->getViewState()->GetOptions()->getROI();
-    glBegin(GL_QUAD_STRIP);
-        glVertex2f(0.0,     0.0);      glVertex2i(roi.left(),  roi.top());
-        glVertex2f(width_o, 0.0);      glVertex2i(roi.right(), roi.top());
-        glVertex2f(width_o, height_o); glVertex2i(roi.right(), roi.bottom());
-        glVertex2f(0.0,     height_o); glVertex2i(roi.left(),  roi.bottom());
-        glVertex2f(0.0,     0.0);      glVertex2i(roi.left(),  roi.top());
-    glEnd();
-    // draw lines around cropped area.
-    // we want to invert the color to make it stand out.
-    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_LINE_LOOP);
-        glVertex2i(roi.left(),  roi.top());
-        glVertex2i(roi.right(), roi.top());
-        glVertex2i(roi.right(), roi.bottom());
-        glVertex2i(roi.left(),  roi.bottom());
-    glEnd();
-    glDisable(GL_BLEND);
+    // darken the cropped out range, except in layout mode
+    if (!m_visualization_state->GetMeshManager()->GetLayoutMode())
+    {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glColor4f(0.0, 0.0, 0.0, 0.5);
+        // construct a strip of quads, with each pair being one of the corners.
+        const vigra::Rect2D roi = m_visualization_state->getViewState()->GetOptions()->getROI();
+        glBegin(GL_QUAD_STRIP);
+            glVertex2f(0.0, 0.0);          glVertex2i(roi.left(), roi.top());
+            glVertex2f(width_o, 0.0);      glVertex2i(roi.right(), roi.top());
+            glVertex2f(width_o, height_o); glVertex2i(roi.right(), roi.bottom());
+            glVertex2f(0.0, height_o);     glVertex2i(roi.left(), roi.bottom());
+            glVertex2f(0.0, 0.0);          glVertex2i(roi.left(), roi.top());
+        glEnd();
+        // draw lines around cropped area.
+        // we want to invert the color to make it stand out.
+        glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+        glColor3f(1.0, 1.0, 1.0);
+        glBegin(GL_LINE_LOOP);
+            glVertex2i(roi.left(), roi.top());
+            glVertex2i(roi.right(), roi.top());
+            glVertex2i(roi.right(), roi.bottom());
+            glVertex2i(roi.left(), roi.bottom());
+        glEnd();
+        glDisable(GL_BLEND);
+    };
     glEnable(GL_TEXTURE_2D);
     
     glDisable(GL_SCISSOR_TEST);

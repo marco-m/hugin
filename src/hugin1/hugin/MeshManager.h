@@ -55,6 +55,8 @@ public:
      * @param state true to turn on layout mode, false to turn it off.
      */
     void SetLayoutMode(bool state);
+    /** return if layout mode is active */
+    bool GetLayoutMode() const;
     void SetLayoutScale(double scale);
 
     /** Handles the remapper and a display list for a specific image.
