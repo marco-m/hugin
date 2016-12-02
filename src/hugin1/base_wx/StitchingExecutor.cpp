@@ -806,8 +806,8 @@ namespace HuginQueue
                 };
                 if (opts.outputHDRBlended)
                 {
-                    const wxString mergedStacksFilename(wxEscapeFilename(prefix + wxT("_hdr.") + opts.outputImageTypeHDR));
-                    wxString finalBlendArgs(wxT(" -o ") + mergedStacksFilename + wxT(" -- "));
+                    const wxString mergedStacksFilename(prefix + wxT("_hdr.") + opts.outputImageTypeHDR);
+                    wxString finalBlendArgs(wxT(" -o ") + wxEscapeFilename(mergedStacksFilename) + wxT(" -- "));
                     switch (opts.blendMode)
                     {
                         case HuginBase::PanoramaOptions::ENBLEND_BLEND:
