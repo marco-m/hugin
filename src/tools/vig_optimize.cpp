@@ -246,6 +246,7 @@ int main(int argc, char* argv[])
     {
         std::vector<vigra_ext::PointPairRGB> points;
 
+        float imageStepSize = 1 / 255.0f;
         if (inputPointsFile != "" )
         {
             //ifstream ifs(inputPointsFile.c_str());
@@ -261,7 +262,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            loadImgsAndExtractPoints(pano, nPoints, pyrLevel, true, progressDisplay, points, verbose);
+            loadImgsAndExtractPoints(pano, nPoints, pyrLevel, true, progressDisplay, points, verbose, imageStepSize);
         }
         if (verbose)
         {
@@ -293,7 +294,7 @@ int main(int argc, char* argv[])
 
 
         progressDisplay.setMessage("Vignetting Optimization");
-        HuginBase::PhotometricOptimizer photoopt(pano, &progressDisplay, pano.getOptimizeVector(), points);
+        HuginBase::PhotometricOptimizer photoopt(pano, &progressDisplay, pano.getOptimizeVector(), points, imageStepSize);
         photoopt.run();
         //		double error = photoopt.getResultError();
 

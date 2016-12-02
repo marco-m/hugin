@@ -46,9 +46,9 @@ namespace HuginBase
             ///
             PhotometricOptimizer(PanoramaData& panorama, AppBase::ProgressDisplay* progressDisplay,
                                  const OptimizeVector& vars,
-                                 const PointPairs& correspondences)
+                                 const PointPairs& correspondences, const float imageStepSize)
                 : TimeConsumingPanoramaAlgorithm(panorama, progressDisplay),
-                  o_vars(vars), o_correspondences(correspondences), o_resultError(0.0)
+                  o_vars(vars), o_correspondences(correspondences), o_resultError(0.0), o_imageStepSize(imageStepSize)
             {};
         
             ///
@@ -59,6 +59,7 @@ namespace HuginBase
             ///
             static void optimizePhotometric(PanoramaData& pano, const OptimizeVector& vars,
                                             const PointPairs& correspondences,
+                                            const float imageStepSize,
                                             AppBase::ProgressDisplay* progress,
                                             double& error);
         
@@ -125,6 +126,7 @@ namespace HuginBase
         protected:
             const OptimizeVector& o_vars;
             const PointPairs& o_correspondences;
+            const float o_imageStepSize;
             double o_resultError;
     };
 
@@ -146,8 +148,9 @@ namespace HuginBase
             SmartPhotometricOptimizer(PanoramaData& panorama, AppBase::ProgressDisplay* progressDisplay,
                                        const OptimizeVector& vars,
                                        const PointPairs& correspondences,
+                                       const float imageStepSize,
                                        PhotometricOptimizeMode optMode)
-                : PhotometricOptimizer(panorama, progressDisplay, vars, correspondences), o_optMode(optMode)
+                : PhotometricOptimizer(panorama, progressDisplay, vars, correspondences, imageStepSize), o_optMode(optMode)
             {};
             
             ///
@@ -159,6 +162,7 @@ namespace HuginBase
              */
             static void smartOptimizePhotometric(PanoramaData & pano, PhotometricOptimizeMode mode,
                                                  const std::vector<vigra_ext::PointPairRGB> & correspondences,
+                                                 const float imageStepSize,
                                                  AppBase::ProgressDisplay* progress,
                                                  double & error);
             

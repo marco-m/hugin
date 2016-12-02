@@ -265,6 +265,7 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
         // get the small images
         std::vector<vigra::FRGBImage *> srcImgs;
         HuginBase::LimitIntensityVector limits;
+        float imageStepSize = 1 / 255.0f;
         for (size_t i=0; i < optPano.getNrOfImages(); i++)
         {
             ImageCache::EntryPtr e = ImageCache::getInstance().getSmallImage(optPano.getImage(i).getFilename());
@@ -277,7 +278,21 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
             vigra::FRGBImage * img = new vigra::FRGBImage;
             if (e->imageFloat && e->imageFloat->size().area() > 0)
             {
-                vigra_ext::reduceToNextLevel(*(e->imageFloat), *img);
+                if (e->mask->size().area() > 0)
+                {
+                    vigra::BImage maskSmall;
+                    vigra_ext::reduceToNextLevel(*(e->imageFloat), *(e->mask), *img, maskSmall);
+                    vigra_ext::FindComponentsMinMax<float> minmax;
+                    vigra::inspectImageIf(srcImageRange(*img), srcImage(maskSmall), minmax);
+                    imageStepSize = std::min(imageStepSize, (minmax.max - minmax.min) / 16384.0f);
+                }
+                else
+                {
+                    vigra_ext::reduceToNextLevel(*(e->imageFloat), *img);
+                    vigra_ext::FindComponentsMinMax<float> minmax;
+                    vigra::inspectImage(srcImageRange(*img), minmax);
+                    imageStepSize = std::min(imageStepSize, (minmax.max - minmax.min) / 16384.0f);
+                };
                 limit = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_FLOAT);
             }
             else
@@ -288,6 +303,7 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
                     vigra::omp::transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
                         vigra::functor::Arg1() / vigra::functor::Param(65535.0));
                     limit = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT16);
+                    imageStepSize = std::min(imageStepSize, 1 / 65536.0f);
                 }
                 else
                 {
@@ -295,6 +311,7 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
                     vigra::omp::transformImage(vigra::srcImageRange(*img), vigra::destImage(*img),
                         vigra::functor::Arg1() / vigra::functor::Param(255.0));
                     limit = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT8);
+                    imageStepSize = std::min(imageStepSize, 1 / 255.0f);
                 };
             };
             srcImgs.push_back(img);
@@ -350,12 +367,12 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
                         //invalid combination
                         return;
                 };
-                HuginBase::SmartPhotometricOptimizer::smartOptimizePhotometric(optPano, optMode, points, &progress, error);
+                HuginBase::SmartPhotometricOptimizer::smartOptimizePhotometric(optPano, optMode, points, imageStepSize, &progress, error);
             }
             else
             {
                 // optimize selected parameters
-                HuginBase::PhotometricOptimizer::optimizePhotometric(optPano, optvars, points, &progress, error);
+                HuginBase::PhotometricOptimizer::optimizePhotometric(optPano, optvars, points, imageStepSize, &progress, error);
             }
             if (progress.wasCancelled())
             {

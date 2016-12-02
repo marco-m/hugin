@@ -277,6 +277,7 @@ int PhotometricOptimizer::photometricVis(double *p, double *x, int m, int n, int
 
 void PhotometricOptimizer::optimizePhotometric(PanoramaData & pano, const OptimizeVector & vars,
                                                const std::vector<vigra_ext::PointPairRGB> & correspondences,
+                                               const float imageStepSize,
                                                AppBase::ProgressDisplay* progress,
                                                double & error)
 {
@@ -304,7 +305,7 @@ void PhotometricOptimizer::optimizePhotometric(PanoramaData & pano, const Optimi
     };
 
     int nMaxIter = 250;
-    OptimData data(pano, photometricVars, correspondences, 5/255.0, false, nMaxIter, progress);
+    OptimData data(pano, photometricVars, correspondences, 5 * imageStepSize, false, nMaxIter, progress);
 
     double info[LM_INFO_SZ];
 
@@ -325,19 +326,18 @@ void PhotometricOptimizer::optimizePhotometric(PanoramaData & pano, const Optimi
 #endif
 
     // TODO: setup optimisation options with some good defaults.
-    /* double optimOpts[5];
+    double optimOpts[5];
     
-    optimOpts[0] = 1E-03;  // init mu
+    optimOpts[0] = LM_INIT_MU;  // init mu
     // stop thresholds
-    optimOpts[1] = 1e-5;   // ||J^T e||_inf
-    optimOpts[2] = 1e-5;   // ||Dp||_2
-    optimOpts[3] = 1e-1;   // ||e||_2
+    optimOpts[1] = LM_STOP_THRESH;   // ||J^T e||_inf
+    optimOpts[2] = LM_STOP_THRESH;   // ||Dp||_2
+    optimOpts[3] = std::pow(imageStepSize*0.1f, 2);   // ||e||_2
     // difference mode
     optimOpts[4] = LM_DIFF_DELTA;
     
     dlevmar_dif(&photometricError, &photometricVis, &(p[0]), &(x[0]), m, n, nMaxIter, optimOpts, info, NULL,NULL, &data);  // no jacobian
-    */
-    dlevmar_dif(&photometricError, &photometricVis, &(p[0]), &(x[0]), m, n, nMaxIter, NULL, info, NULL,NULL, &data);  // no jacobian
+
     // copy to source images (data.m_imgs)
     data.FromX(p.begin());
     // calculate error at solution
@@ -393,6 +393,7 @@ bool CheckStrangeWB(PanoramaData & pano)
 
 void SmartPhotometricOptimizer::smartOptimizePhotometric(PanoramaData & pano, PhotometricOptimizeMode mode,
                                                           const std::vector<vigra_ext::PointPairRGB> & correspondences,
+                                                          const float imageStepSize, 
                                                           AppBase::ProgressDisplay* progress,
                                                           double & error)
 {
@@ -409,7 +410,7 @@ void SmartPhotometricOptimizer::smartOptimizePhotometric(PanoramaData & pano, Ph
         vars = OPT_EXP;
         optimizePhotometric(pano, 
                             createOptVars(pano, vars, opts.colorReferenceImage),
-                            correspondences, progress, error);
+                            correspondences, imageStepSize, progress, error);
     };
 
     if(!singleStack)
@@ -420,7 +421,7 @@ void SmartPhotometricOptimizer::smartOptimizePhotometric(PanoramaData & pano, Ph
         VariableMapVector oldVars = pano.getVariables();
         optimizePhotometric(pano, 
                             createOptVars(pano, vars, opts.colorReferenceImage),
-                            correspondences, progress, error);
+                            correspondences, imageStepSize, progress, error);
         // check if vignetting is plausible
         if(IsHighVignetting(pano.getImage(0).getRadialVigCorrCoeff()))
         {
@@ -439,7 +440,7 @@ void SmartPhotometricOptimizer::smartOptimizePhotometric(PanoramaData & pano, Ph
     VariableMapVector oldVars = pano.getVariables();
     optimizePhotometric(pano, 
                         createOptVars(pano, vars, opts.colorReferenceImage),
-                        correspondences, progress, error);
+                        correspondences, imageStepSize, progress, error);
     // now check the results
     const bool hasHighVignetting = IsHighVignetting(pano.getImage(0).getRadialVigCorrCoeff());
     // @TODO check also response curve, what parameters are considered invalid?
@@ -460,7 +461,7 @@ void SmartPhotometricOptimizer::smartOptimizePhotometric(PanoramaData & pano, Ph
         {
             optimizePhotometric(pano, 
                                 createOptVars(pano, vars, opts.colorReferenceImage),
-                                correspondences, progress, error);
+                                correspondences, imageStepSize, progress, error);
         };
     };
 }
@@ -469,7 +470,7 @@ void SmartPhotometricOptimizer::smartOptimizePhotometric(PanoramaData & pano, Ph
 bool PhotometricOptimizer::runAlgorithm()
 {
     optimizePhotometric(o_panorama, 
-                        o_vars, o_correspondences,
+                        o_vars, o_correspondences, o_imageStepSize,
                         getProgressDisplay(), o_resultError);
     
     // optimizePhotometric does not tell us if it's cancelled
@@ -485,7 +486,7 @@ bool SmartPhotometricOptimizer::runAlgorithm()
 {
     smartOptimizePhotometric(o_panorama,
                              o_optMode,
-                             o_correspondences,
+                             o_correspondences, o_imageStepSize,
                              getProgressDisplay(), o_resultError);
     
     // smartOptimizePhotometric does not tell us if it's cancelled

@@ -297,6 +297,75 @@ getMinComponent(V v)
     return v;
 }
 
+template <class VALUETYPE>
+class FindComponentsMinMax
+{
+public:
+    /** the functor's argument type */
+    typedef VALUETYPE argument_type;
+    /** the functor's result type */
+    typedef VALUETYPE result_type;
+    /** \deprecated use argument_type */
+    typedef VALUETYPE value_type;
+
+    /** init min and max */
+    FindComponentsMinMax() : min(vigra::NumericTraits<value_type>::max()), max(vigra::NumericTraits<value_type>::min()), count(0)
+    {}
+
+    /** (re-)init functor (clear min, max)  */
+    void reset()
+    {
+        count = 0;
+    }
+
+    /** update min and max */
+    void operator()(argument_type const & v)
+    {
+        if (count)
+        {
+            if (v < min) min = v;
+            if (max < v) max = v;
+        }
+        else
+        {
+            min = v;
+            max = v;
+        }
+        ++count;
+    }
+
+    /** update min and max with components of RGBValue<VALUETYPE> */
+    void operator()(vigra::RGBValue<VALUETYPE> const & v)
+    {
+        const VALUETYPE vMax = vigra_ext::getMaxComponent(v);
+        const VALUETYPE vMin = vigra_ext::getMinComponent(v);
+        if (count)
+        {
+            if (vMin < min)
+            {
+                min = vMin;
+            };
+            if (vMax > max)
+            {
+                max = vMax;
+            };
+        }
+        else
+        {
+            min = vMin;
+            max = vMax;
+        }
+        ++count;
+    }
+
+    /** the current min */
+    VALUETYPE min;
+    /** the current max */
+    VALUETYPE max;
+    /** the number of values processed so far */
+    unsigned int count;
+};
+
 template<class ImgIter, class ImgAccessor, class AlphaIter, class AlphaAccessor>
 void applyExposureClipMask(vigra::triple<ImgIter, ImgIter, ImgAccessor> image, vigra::triple<AlphaIter, AlphaIter, AlphaAccessor> mask, double lowerLimit, double upperLimit)
 {

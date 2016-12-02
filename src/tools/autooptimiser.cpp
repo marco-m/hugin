@@ -350,9 +350,10 @@ int main(int argc, char* argv[])
         {
             progressDisplay=new AppBase::DummyProgressDisplay();
         }
+        float imageStepSize;
         try
         {
-            loadImgsAndExtractPoints(pano, nPoints, 3, true, *progressDisplay, points, !quiet);
+            loadImgsAndExtractPoints(pano, nPoints, 3, true, *progressDisplay, points, !quiet, imageStepSize);
         }
         catch (std::exception& e)
         {
@@ -409,7 +410,7 @@ int main(int argc, char* argv[])
         {
             optmode = HuginBase::SmartPhotometricOptimizer::OPT_PHOTOMETRIC_HDR;
         }
-        HuginBase::SmartPhotometricOptimizer photoOpt(pano, progressDisplay, pano.getOptimizeVector(), points, optmode);
+        HuginBase::SmartPhotometricOptimizer photoOpt(pano, progressDisplay, pano.getOptimizeVector(), points, imageStepSize, optmode);
         photoOpt.run();
 
         // calculate the mean exposure.

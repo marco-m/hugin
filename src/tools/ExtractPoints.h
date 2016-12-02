@@ -37,7 +37,7 @@
 #include <algorithms/point_sampler/PointSampler.h>
 
 template<class ImageType>
-std::vector<ImageType *> loadImagesPyr(std::vector<std::string> files, int pyrLevel, int verbose, HuginBase::LimitIntensityVector& limits)
+std::vector<ImageType *> loadImagesPyr(std::vector<std::string> files, int pyrLevel, int verbose, HuginBase::LimitIntensityVector& limits, float& imageStepSize)
 {
     std::vector<ImageType *> srcImgs(files.size());
     limits.resize(srcImgs.size());
@@ -57,21 +57,37 @@ std::vector<ImageType *> loadImagesPyr(std::vector<std::string> files, int pyrLe
         if (verbose)
             buf << "loading: " << files[i] << std::endl;
         
+        const std::string pixelType(info.getPixelType());
         if (info.numExtraBands() == 1) {
             // dummy mask
             vigra::BImage mask(info.size());
             vigra::importImageAlpha(info, vigra::destImage(*tImg), vigra::destImage(mask));
+            if (pixelType == "FLOAT" || pixelType == "DOUBLE")
+            {
+                vigra_ext::FindComponentsMinMax<float> minmax;
+                vigra::inspectImageIf(vigra::srcImageRange(*tImg), vigra::srcImage(mask), minmax);
+                imageStepSize = std::min(imageStepSize, (minmax.max - minmax.min) / 16384.0f);
+            };
         } else {
             vigra::importImage(info, vigra::destImage(*tImg));
+            if (pixelType == "FLOAT" || pixelType == "DOUBLE")
+            {
+                vigra_ext::FindComponentsMinMax<float> minmax;
+                vigra::inspectImage(vigra::srcImageRange(*tImg), minmax);
+                imageStepSize = std::min(imageStepSize, (minmax.max - minmax.min) / 16384.0f);
+            };
         }
         float div = 1;
         limits[i] = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_FLOAT);
-        if (strcmp(info.getPixelType(), "UINT8") == 0) {
+        if (pixelType== "UINT8") {
             div = 255;
             limits[i] = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT8);
-        } else if (strcmp(info.getPixelType(), "UINT16") == 0) {
+            imageStepSize = std::min(imageStepSize, 1 / 255.0f);
+
+        } else if (pixelType=="UINT16") {
             div = (1<<16)-1;
             limits[i] = HuginBase::LimitIntensity(HuginBase::LimitIntensity::LIMIT_UINT16);
+            imageStepSize = std::min(imageStepSize, 1 / 65536.0f);
         }
         
         if (pyrLevel) {
@@ -109,7 +125,7 @@ std::vector<ImageType *> loadImagesPyr(std::vector<std::string> files, int pyrLe
 
 
 // needs 2.0 progress steps
-void loadImgsAndExtractPoints(HuginBase::Panorama pano, int nPoints, int pyrLevel, bool randomPoints, AppBase::ProgressDisplay& progress, std::vector<vigra_ext::PointPairRGB> & points, int verbose)
+void loadImgsAndExtractPoints(HuginBase::Panorama pano, int nPoints, int pyrLevel, bool randomPoints, AppBase::ProgressDisplay& progress, std::vector<vigra_ext::PointPairRGB> & points, int verbose, float& imageStepSize)
 {
     // extract file names
     std::vector<std::string> files;
@@ -118,9 +134,10 @@ void loadImgsAndExtractPoints(HuginBase::Panorama pano, int nPoints, int pyrLeve
     
     std::vector<vigra::FRGBImage*> images;
     HuginBase::LimitIntensityVector limits;
+    imageStepSize = 1 / 255.0f;
     
     // try to load the images.
-    images = loadImagesPyr<vigra::FRGBImage>(files, pyrLevel, verbose, limits);
+    images = loadImagesPyr<vigra::FRGBImage>(files, pyrLevel, verbose, limits, imageStepSize);
     
     progress.setMessage("Sampling points");
     if(randomPoints)
