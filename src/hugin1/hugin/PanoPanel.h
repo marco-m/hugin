@@ -71,11 +71,6 @@ public:
     virtual void panoramaChanged(HuginBase::Panorama &pano);
     virtual void panoramaImagesChanged(HuginBase::Panorama &pano, const HuginBase::UIntSet & imgNr) {};
 
-    /** set the image */
-// TODO remove
-//    void previewSingleChanged(wxCommandEvent & e);
-
-
     /** stitching using hugin_stitch_project */
     void DoStitch();
     /** stitching with PTBatcherGUI */
