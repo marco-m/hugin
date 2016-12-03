@@ -386,6 +386,8 @@ private:
 public:
     struct ImgData
     {
+        /** enumeration of different detection modes */
+        enum SizeMode { DOWNSCALED, REMAPPED, FULLSIZE};
         std::string			_name;
 
         int					_number;
@@ -395,7 +397,6 @@ public:
         lfeat::Image		_ii;
         vigra::BImage		_distancemap;
 
-        bool				_needsremap;
         HuginBase::PanoramaOptions 	_projOpts;
 
         bool 					_hasakeyfile;
@@ -415,7 +416,7 @@ public:
             _number = 0;
             _detectWidth = 0;
             _detectHeight = 0;
-            _needsremap = false;
+            m_sizeMode = FULLSIZE;
             _hasakeyfile = false;
             _descLength = 0;
             _flann_index = NULL;
@@ -432,6 +433,12 @@ public:
                 delete[]_flann_descriptors.ptr();
             };
         }
+        void SetSizeMode(const SizeMode newSizeMode) { m_sizeMode = newSizeMode; };
+        SizeMode GetSizeMode() const { return m_sizeMode; };
+        bool IsDownscale() const { return m_sizeMode == DOWNSCALED; };
+        bool NeedsRemapping() const { return m_sizeMode == REMAPPED; };
+    private:
+        SizeMode m_sizeMode;
     };
 
     typedef std::map<int, ImgData>					ImgData_t;

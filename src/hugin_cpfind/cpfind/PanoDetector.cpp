@@ -275,7 +275,7 @@ void PanoDetector::printFilenames()
                 std::cout << (_filesData[i]._hasakeyfile?" (will be loaded)":" (will be generated)") << std::endl;
             };
         };
-        std::cout << "  Remapped : " << (_filesData[i]._needsremap?"yes":"no") << std::endl;
+        std::cout << "  Remapped : " << (_filesData[i].NeedsRemapping()?"yes":"no") << std::endl;
     };
 };
 
@@ -454,7 +454,7 @@ void PanoDetector::run()
         if(!aB->second._hasakeyfile)
         {
             maxImageSize=std::max<unsigned long>(aB->second._detectWidth*aB->second._detectHeight,maxImageSize);
-            if(aB->second._needsremap)
+            if(aB->second.NeedsRemapping())
             {
                 withRemap=true;
             };
@@ -801,12 +801,13 @@ bool PanoDetector::loadProject()
         // Number pointing to image info in _panoramaInfo
         aImgData._number = imgNr;
 
-        aImgData._needsremap=(img.getHFOV()>=65 && img.getProjection() != HuginBase::SrcPanoImage::FISHEYE_STEREOGRAPHIC);
+        bool needsremap=(img.getHFOV()>=65 && img.getProjection() != HuginBase::SrcPanoImage::FISHEYE_STEREOGRAPHIC);
         // set image detection size
-        if(aImgData._needsremap)
+        if(needsremap)
         {
             _filesData[imgNr]._detectWidth = std::max(img.getSize().width(),img.getSize().height());
             _filesData[imgNr]._detectHeight = std::max(img.getSize().width(),img.getSize().height());
+            _filesData[imgNr].SetSizeMode(ImgData::REMAPPED);
         }
         else
         {
@@ -814,14 +815,16 @@ bool PanoDetector::loadProject()
             _filesData[imgNr]._detectHeight = img.getSize().height();
         };
 
-        if (_downscale)
+        // don't downscale if downscale image is smaller than 1000 pixel
+        if (_downscale && std::min(img.getSize().width(), img.getSize().height()) > 2000)
         {
             _filesData[imgNr]._detectWidth >>= 1;
             _filesData[imgNr]._detectHeight >>= 1;
+            _filesData[imgNr].SetSizeMode(ImgData::DOWNSCALED);
         }
 
         // set image remapping options
-        if(aImgData._needsremap)
+        if (aImgData.GetSizeMode() == ImgData::REMAPPED)
         {
             aImgData._projOpts.setProjection(HuginBase::PanoramaOptions::STEREOGRAPHIC);
             aImgData._projOpts.setHFOV(250);

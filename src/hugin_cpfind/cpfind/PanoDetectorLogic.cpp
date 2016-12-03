@@ -101,7 +101,7 @@ bool PanoDetector::LoadKeypoints(ImgData& ioImgInfo, const PanoDetector& iPanoDe
     ioImgInfo._loadFail = (info.filename.size() == 0);
 
     // update ImgData
-    if(ioImgInfo._needsremap)
+    if(ioImgInfo.NeedsRemapping())
     {
         ioImgInfo._detectWidth = std::max(info.width,info.height);
         ioImgInfo._detectHeight = std::max(info.width,info.height);
@@ -320,7 +320,7 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                 range255 = false;
                 HuginBase::Color::ApplyICCProfile(*image, aImageInfo.getICCProfile(), TYPE_GRAY_DBL);
             };
-            if (ioImgInfo._needsremap)
+            if (ioImgInfo.NeedsRemapping())
             {
                 // remap image
                 TRACE_IMG("Remapping image...");
@@ -344,14 +344,14 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                 {
                     TRACE_IMG("Downscale and transform to suitable grayscale...");
                     HandleDownscaleImage(iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number), image, mask,
-                        ioImgInfo._detectWidth, ioImgInfo._detectHeight, iPanoDetector._downscale, 
+                        ioImgInfo._detectWidth, ioImgInfo._detectHeight, ioImgInfo.IsDownscale(),
                         final_img, final_mask);
                 }
                 else
                 {
                     TRACE_IMG("Transform to suitable grayscale...");
                     HandleDownscaleImage(iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number), image, mask,
-                        ioImgInfo._detectWidth, ioImgInfo._detectHeight, iPanoDetector._downscale,
+                        ioImgInfo._detectWidth, ioImgInfo._detectHeight, ioImgInfo.IsDownscale(),
                         final_img, final_mask);
                     vigra::transformImage(vigra::srcImageRange(*final_img), vigra::destImage(*final_img), vigra::linearRangeMapping(0, 1, 0, 255));
                 };
@@ -404,7 +404,7 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                                 HuginBase::Color::ApplyICCProfile(*rgbImage, aImageInfo.getICCProfile(), TYPE_RGB_8);
                             };
                             vigra::BRGBImage* scaled = NULL;
-                            if (ioImgInfo._needsremap)
+                            if (ioImgInfo.NeedsRemapping())
                             {
                                 // remap image
                                 TRACE_IMG("Remapping image...");
@@ -415,12 +415,12 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                             }
                             else
                             {
-                                if (iPanoDetector._downscale)
+                                if (ioImgInfo.IsDownscale())
                                 {
                                     TRACE_IMG("Downscale image...");
                                 };
                                 HandleDownscaleImage(iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number), rgbImage, mask,
-                                    ioImgInfo._detectWidth, ioImgInfo._detectHeight, iPanoDetector._downscale, 
+                                    ioImgInfo._detectWidth, ioImgInfo._detectHeight, ioImgInfo.IsDownscale(),
                                     scaled, final_mask);
                             };
                             if (iPanoDetector.getCeleste())
@@ -477,7 +477,7 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                                 HuginBase::Color::ApplyICCProfile(*rgbImage, aImageInfo.getICCProfile(), TYPE_RGB_16);
                             };
                             vigra::UInt16RGBImage* scaled = NULL;
-                            if (ioImgInfo._needsremap)
+                            if (ioImgInfo.NeedsRemapping())
                             {
                                 // remap image
                                 TRACE_IMG("Remapping image...");
@@ -488,12 +488,12 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                             }
                             else
                             {
-                                if (iPanoDetector._downscale)
+                                if (ioImgInfo.IsDownscale())
                                 {
                                     TRACE_IMG("Downscale image...");
                                 };
                                 HandleDownscaleImage(iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number), rgbImage, mask,
-                                    ioImgInfo._detectWidth, ioImgInfo._detectHeight, iPanoDetector._downscale,
+                                    ioImgInfo._detectWidth, ioImgInfo._detectHeight, ioImgInfo.IsDownscale(),
                                     scaled, final_mask);
                             };
                             if (iPanoDetector.getCeleste())
@@ -583,7 +583,7 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                                 HuginBase::Color::ApplyICCProfile(*rgbImage, aImageInfo.getICCProfile(), TYPE_RGB_DBL);
                             };
                             vigra::DRGBImage* scaled;
-                            if (ioImgInfo._needsremap)
+                            if (ioImgInfo.NeedsRemapping())
                             {
                                 // remap image
                                 TRACE_IMG("Remapping image...");
@@ -595,7 +595,7 @@ bool PanoDetector::AnalyzeImage(ImgData& ioImgInfo, const PanoDetector& iPanoDet
                             {
                                 TRACE_IMG("Transform to suitable grayscale...");
                                 HandleDownscaleImage(iPanoDetector._panoramaInfoCopy.getImage(ioImgInfo._number), rgbImage, mask,
-                                    ioImgInfo._detectWidth, ioImgInfo._detectHeight, iPanoDetector._downscale,
+                                    ioImgInfo._detectWidth, ioImgInfo._detectHeight, ioImgInfo.IsDownscale(),
                                     scaled, final_mask);
                             };
                             if (iPanoDetector.getCeleste())
@@ -797,46 +797,42 @@ bool PanoDetector::MakeKeyPointDescriptorsInImage(ImgData& ioImgInfo, const Pano
 
 bool PanoDetector::RemapBackKeypoints(ImgData& ioImgInfo, const PanoDetector& iPanoDetector)
 {
-
-    double scale=iPanoDetector._downscale ? 2.0:1.0;
-
-    if (!ioImgInfo._needsremap)
+    if (ioImgInfo.IsDownscale())
     {
-        if(scale != 1.0)
+        for (size_t i = 0; i < ioImgInfo._kp.size(); ++i)
         {
-            for (size_t i = 0; i < ioImgInfo._kp.size(); ++i)
-            {
-                lfeat::KeyPointPtr& aK = ioImgInfo._kp[i];
-                aK->_x *= scale;
-                aK->_y *= scale;
-                aK->_scale *= scale;
-            }
+            lfeat::KeyPointPtr& aK = ioImgInfo._kp[i];
+            aK->_x *= 2.0;
+            aK->_y *= 2.0;
+            aK->_scale *= 2.0;
         };
     }
     else
     {
-        TRACE_IMG("Remapping back keypoints...");
-        HuginBase::PTools::Transform trafo1;
-        trafo1.createTransform(iPanoDetector._panoramaInfoCopy.getSrcImage(ioImgInfo._number),
-                               ioImgInfo._projOpts);
-
-        int dx1 = ioImgInfo._projOpts.getROI().left();
-        int dy1 = ioImgInfo._projOpts.getROI().top();
-
-        for (size_t i = 0; i < ioImgInfo._kp.size(); ++i)
+        if (ioImgInfo.NeedsRemapping())
         {
-            lfeat::KeyPointPtr& aK = ioImgInfo._kp[i];
-            double xout, yout;
-            if(trafo1.transformImgCoord(xout, yout, aK->_x + dx1, aK->_y+ dy1))
+            TRACE_IMG("Remapping back keypoints...");
+            HuginBase::PTools::Transform trafo1;
+            trafo1.createTransform(iPanoDetector._panoramaInfoCopy.getSrcImage(ioImgInfo._number),
+                ioImgInfo._projOpts);
+
+            int dx1 = ioImgInfo._projOpts.getROI().left();
+            int dy1 = ioImgInfo._projOpts.getROI().top();
+
+            for (size_t i = 0; i < ioImgInfo._kp.size(); ++i)
             {
-                // downscaling is take care of by the remapping transform
-                // no need for multiplying the scale factor...
-                aK->_x=xout;
-                aK->_y=yout;
-                aK->_scale *= scale;
-            }
-        }
-    }
+                lfeat::KeyPointPtr& aK = ioImgInfo._kp[i];
+                double xout, yout;
+                if (trafo1.transformImgCoord(xout, yout, aK->_x + dx1, aK->_y + dy1))
+                {
+                    // downscaling is take care of by the remapping transform
+                    // no need for multiplying the scale factor...
+                    aK->_x = xout;
+                    aK->_y = yout;
+                };
+            };
+        };
+    };
     return true;
 }
 
@@ -1099,7 +1095,7 @@ bool PanoDetector::RansacMatchesInPairHomography(MatchData& ioMatchData, const P
     int thresholdDistance=iPanoDetector.getRansacDistanceThreshold();
     //increase RANSAC distance if the image were remapped to not exclude
     //too much points in this case
-    if(ioMatchData._i1->_needsremap || ioMatchData._i2->_needsremap)
+    if(ioMatchData._i1->NeedsRemapping() || ioMatchData._i2->NeedsRemapping())
     {
         thresholdDistance*=5;
     }
