@@ -139,6 +139,7 @@ public:
     void OnPhotometricOptimize(wxCommandEvent & e);
     void OnDoStitch(wxCommandEvent & e);
     void OnUserDefinedStitch(wxCommandEvent & e);
+    void OnUserDefinedStitchSaved(wxCommandEvent & e);
     void OnTogglePreviewFrame(wxCommandEvent & e);
     void OnToggleGLPreviewFrame(wxCommandEvent & e);
     void OnAddImages(wxCommandEvent & e);
@@ -282,6 +283,8 @@ private:
     // list associating the wxID in the menu with a python script
     std::map<int, wxFileName> m_plugins;
 #endif
+    // list for user-defined output sequences
+    std::map<int, wxString> m_userOutput;
 
     DECLARE_EVENT_TABLE()
 };

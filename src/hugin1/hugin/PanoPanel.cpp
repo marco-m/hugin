@@ -1271,7 +1271,7 @@ void PanoPanel::DoSendToBatch()
     }
 };
 
-void PanoPanel::DoUserDefinedStitch()
+void PanoPanel::DoUserDefinedStitch(const wxString& settings)
 {
     if (pano->getNrOfImages() == 0)
     {
@@ -1288,19 +1288,35 @@ void PanoPanel::DoUserDefinedStitch()
         // output ROI contains no images
         return;
     };
-    // create a copy, if we need to update the crop setting
-    wxConfigBase* config = wxConfigBase::Get();
-    wxString path = config->Read(wxT("/userDefinedOutputPath"), MainFrame::Get()->GetDataPath());
-    wxFileDialog userOutputDlg(this, _("Select user defined output"),
-        path, wxT(""), _("User defined output|*.executor"),
-        wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST, wxDefaultPosition);
-    if (userOutputDlg.ShowModal() != wxID_OK)
+    wxFileName userOutputSequence;
+    if (settings.IsEmpty())
     {
-        return;
+        // no filename given, ask user
+        wxConfigBase* config = wxConfigBase::Get();
+        wxString path = config->Read(wxT("/userDefinedOutputPath"), MainFrame::Get()->GetDataPath());
+        wxFileDialog userOutputDlg(this, _("Select user defined output"),
+            path, wxT(""), _("User defined output|*.executor"),
+            wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST, wxDefaultPosition);
+        if (userOutputDlg.ShowModal() != wxID_OK)
+        {
+            return;
+        };
+        // remember path for later
+        config->Write(wxT("/userDefinedOutputPath"), userOutputDlg.GetDirectory());
+        userOutputSequence = userOutputDlg.GetPath();
+    }
+    else
+    {
+        //filename given, check existance
+        userOutputSequence = settings;
+        if (!userOutputSequence.Exists())
+        {
+            wxMessageBox(wxString::Format(wxT("User defined output %s not found.\nStopping processing."), userOutputSequence.GetFullPath()), _("Warning"), wxOK | wxICON_INFORMATION);
+            return;
+        };
     };
-    // remember path for later
-    config->Write(wxT("/userDefinedOutputPath"), userOutputDlg.GetDirectory());
 
+    // create a copy, if we need to update the crop setting
     // save project
     // copy pto file to temporary file
     wxString tempDir = wxConfigBase::Get()->Read(wxT("tempDir"), wxT(""));
@@ -1394,7 +1410,7 @@ void PanoPanel::DoUserDefinedStitch()
         return;
     };
 
-    wxString switches(wxT(" --user-defined-output=") + hugin_utils::wxQuoteFilename(userOutputDlg.GetPath()) + wxT(" --delete -o "));
+    wxString switches(wxT(" --user-defined-output=") + hugin_utils::wxQuoteFilename(userOutputSequence.GetFullPath()) + wxT(" --delete -o "));
     if (wxConfigBase::Get()->Read(wxT("/Processor/overwrite"), HUGIN_PROCESSOR_OVERWRITE) == 1)
         switches = wxT(" --overwrite") + switches;
     wxString command = hugin_stitch_project + switches + hugin_utils::wxQuoteFilename(dlg.GetPath()) + wxT(" ") + hugin_utils::wxQuoteFilename(currentPTOfn);

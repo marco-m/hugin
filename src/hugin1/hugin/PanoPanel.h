@@ -81,7 +81,7 @@ public:
     /** stitching with PTBatcherGUI */
     void DoSendToBatch();
     /** stitching with user defined file */
-    void DoUserDefinedStitch();
+    void DoUserDefinedStitch(const wxString& settings = wxString());
 
     void SetGuiLevel(GuiLevel newGuiLevel);
 

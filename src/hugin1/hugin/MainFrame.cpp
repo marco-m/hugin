@@ -30,6 +30,7 @@
 
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
+#include <wx/wfstream.h>
 #include "panoinc_WX.h"
 #include "panoinc.h"
 
@@ -269,6 +270,12 @@ END_EVENT_TABLE()
 //wxBitmap *p_img = (wxBitmap *) NULL;
 //WX_DEFINE_ARRAY()
 
+enum
+{
+    wxIDPYTHONSCRIPTS = wxID_HIGHEST + 2000,
+    wxIDUSEROUTPUTSEQUENCE = wxID_HIGHEST + 2500
+};
+
 MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     : cp_frame(0), pano(pano)
 {
@@ -390,7 +397,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
         };
         items.sort(comparePluginItem);
 
-        int pluginID = wxID_HIGHEST + 2000;
+        int pluginID = wxIDPYTHONSCRIPTS;
         for (PluginItems::const_iterator it = items.begin(); it != items.end(); ++it)
         {
             PluginItem item = *it;
@@ -420,6 +427,55 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     GetMenuBar()->Enable(XRCID("action_python_script"), false);
 #endif
 
+    // add saved user defined output sequences
+    {
+        wxArrayString files;
+        // search all .executor files, do not follow links
+        wxDir::GetAllFiles(GetDataPath(), &files, wxT("*.executor"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
+        if (!files.IsEmpty())
+        {
+            // we found some files
+            long outputId = wxIDUSEROUTPUTSEQUENCE;
+            int outputMenuId=mainMenu->FindMenu(_("Output"));
+            if (outputMenuId != wxNOT_FOUND)
+            {
+                wxMenu* outputSequencesMenu = new wxMenu;
+                for (auto file : files)
+                {
+                    wxFileInputStream inputStream(file);
+                    if (inputStream.IsOk())
+                    {
+                        // read descriptions from file
+                        wxFileConfig executorFile(inputStream);
+                        wxString desc = executorFile.Read(wxT("/General/Description"), wxEmptyString);
+                        desc = desc.Trim(true).Trim(false);
+                        wxString help = executorFile.Read(wxT("/General/Help"), wxEmptyString);
+                        help = help.Trim(true).Trim(false);
+                        if (help.IsEmpty())
+                        {
+                            help = wxString::Format(_("User defined sequence: %s"), file);
+                        };
+                        // add menu
+                        if (!desc.IsEmpty())
+                        {
+                            outputSequencesMenu->Append(outputId, desc, help);
+                            Bind(wxEVT_MENU, &MainFrame::OnUserDefinedStitchSaved, this, outputId);
+                            m_userOutput[outputId] = file;
+                            ++outputId;
+                        };
+                    };
+                };
+                if (outputSequencesMenu->GetMenuItemCount() > 0)
+                {
+                    mainMenu->GetMenu(outputMenuId)->AppendSubMenu(outputSequencesMenu, _("User defined output sequences"));
+                }
+                else
+                {
+                    delete outputSequencesMenu;
+                };
+            };
+        };
+    };
     // create tool bar
     SetToolBar(wxXmlResource::Get()->LoadToolBar(this, wxT("main_toolbar")));
 
@@ -1425,6 +1481,19 @@ void MainFrame::OnUserDefinedStitch(wxCommandEvent & e)
     pano_panel->DoUserDefinedStitch();
 }
 
+void MainFrame::OnUserDefinedStitchSaved(wxCommandEvent & e)
+{
+    auto filename = m_userOutput.find(e.GetId());
+    if (filename != m_userOutput.end())
+    {
+        pano_panel->DoUserDefinedStitch(filename->second);
+    }
+    else
+    {
+        wxBell();
+    };
+}
+
 void MainFrame::OnMergeProject(wxCommandEvent & e)
 {
     // get the global config object
@@ -1807,6 +1876,7 @@ void MainFrame::enableTools(bool option)
     theMenuBar->Enable(XRCID("ID_SHOW_PREVIEW_FRAME"), option);
     theMenuBar->Enable(XRCID("action_stitch"), option);
     theMenuBar->Enable(XRCID("action_stitch_userdefined"), option);
+    theMenuBar->Enable(theMenuBar->FindMenuItem(_("Output"), _("User defined output sequences")), option);
     m_menu_file_advanced->Enable(XRCID("action_import_papywizard"), option);
     //theMenuBar->Enable(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), option);
 }
