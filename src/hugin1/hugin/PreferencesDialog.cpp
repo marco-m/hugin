@@ -281,7 +281,7 @@ void PreferencesDialog::OnCancel(wxCommandEvent& e)
 
 void PreferencesDialog::OnHelp(wxCommandEvent& e)
 {
-    MainFrame::Get()->DisplayHelp(wxT("/Hugin_Preferences.html"));
+    MainFrame::Get()->DisplayHelp(wxT("Hugin_Preferences.html"));
 };
 
 void PreferencesDialog::OnRotationCheckBox(wxCommandEvent& e)

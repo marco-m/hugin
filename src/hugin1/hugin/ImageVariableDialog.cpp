@@ -271,16 +271,16 @@ void ImageVariableDialog::OnHelp(wxCommandEvent & e)
     {
         //lens parameters
         case 1:
-            MainFrame::Get()->DisplayHelp(wxT("/Lens_correction_model.html"));
+            MainFrame::Get()->DisplayHelp(wxT("Lens_correction_model.html"));
             break;
         case 2:
-            MainFrame::Get()->DisplayHelp(wxT("/Vignetting.html"));
+            MainFrame::Get()->DisplayHelp(wxT("Vignetting.html"));
             break;
         case 3:
-            MainFrame::Get()->DisplayHelp(wxT("/Camera_response_curve.html"));
+            MainFrame::Get()->DisplayHelp(wxT("Camera_response_curve.html"));
             break;
         default:
-            MainFrame::Get()->DisplayHelp(wxT("/Image_positioning_model.html"));
+            MainFrame::Get()->DisplayHelp(wxT("Image_positioning_model.html"));
             break;
     };
 };
