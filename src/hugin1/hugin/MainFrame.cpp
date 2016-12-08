@@ -1209,7 +1209,7 @@ void MainFrame::OnLoadingFailed(wxCommandEvent & e)
     else
     {
         // file does not exists
-        wxMessageBox(wxString::Format(_("Could not load image \"%s\".\nThis file was renamed, deleted or is on a non-accessbile drive.\nThis file will be removed from the project."), e.GetString()),
+        wxMessageBox(wxString::Format(_("Could not load image \"%s\".\nThis file was renamed, deleted or is on a non-accessible drive.\nThis file will be removed from the project."), e.GetString()),
 #ifdef _WIN32
             _("Hugin"),
 #else
