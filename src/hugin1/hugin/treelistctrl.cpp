@@ -2138,10 +2138,16 @@ void wxTreeListMainWindow::SetItemHasChildren (const wxTreeItemId& item, bool ha
 void wxTreeListMainWindow::SetItemImage (const wxTreeItemId& item, int column, int image, wxTreeItemIcon which) {
     wxCHECK_RET (item.IsOk(), _T("invalid tree item"));
     wxTreeListItem *pItem = (wxTreeListItem*) item.m_pItem;
-    pItem->SetImage (column, image, which);
-    wxClientDC dc (this);
-    CalculateSize (pItem, dc);
-    RefreshLine (pItem);
+    if(pItem->GetImage(column, which) != image)
+    {
+      pItem->SetImage (column, image, which);
+      if(!IsFrozen())
+      {
+        wxClientDC dc (this);
+        CalculateSize (pItem, dc);
+        RefreshLine (pItem);
+      };
+    };
 }
 
 void wxTreeListMainWindow::SetItemData (const wxTreeItemId& item,             wxTreeItemData *data) {
