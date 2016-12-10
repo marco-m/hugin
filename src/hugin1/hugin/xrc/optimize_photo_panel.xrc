@@ -26,7 +26,10 @@
                   <object class="sizeritem">
                     <object class="wxBoxSizer">
                       <object class="sizeritem">
-                        <object class="wxStaticText" name="optimize_photo_panel_information_text"/>
+                        <object class="wxStaticText" name="optimize_photo_panel_information_text">
+                          <label>Any variables below which are marked [x] will be optimized.
+Variables which are cleared [ ] will act as references or anchors.</label>
+                        </object>
                         <option>1</option>
                         <flag>wxEXPAND</flag>
                       </object>

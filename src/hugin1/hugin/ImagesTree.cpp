@@ -40,6 +40,7 @@
 #include <hugin_utils/stl_utils.h>
 #include "hugin/ImageVariableDialog.h"
 #include "hugin/huginApp.h"
+#include <wx/renderer.h>
 
 enum
 {
@@ -66,8 +67,7 @@ BEGIN_EVENT_TABLE(ImagesTreeCtrl, wxTreeListCtrl)
     EVT_MENU(ID_UNSELECT_LENS_STACK, ImagesTreeCtrl::OnUnselectLensStack)
     EVT_MENU_RANGE(ID_OPERATION_START, ID_OPERATION_START+50, ImagesTreeCtrl::OnExecuteOperation)
     EVT_TREE_BEGIN_DRAG(-1, ImagesTreeCtrl::OnBeginDrag)
-    EVT_LEFT_UP(ImagesTreeCtrl::OnEndDrag)
-    EVT_LEFT_DOWN(ImagesTreeCtrl::OnLeftDown)
+    EVT_LEFT_UP(ImagesTreeCtrl::OnLeftUp)
     EVT_LEFT_DCLICK(ImagesTreeCtrl::OnLeftDblClick)
     EVT_TREE_KEY_DOWN(-1, ImagesTreeCtrl::OnChar)
     EVT_TREE_BEGIN_LABEL_EDIT(-1, ImagesTreeCtrl::OnBeginEdit)
@@ -154,40 +154,40 @@ void ImagesTreeCtrl::CreateColumns()
     ADDCOLUMN(_("Shutter Speed"), "time", 50, wxALIGN_LEFT, false, HuginBase::ImageVariableGroup::IVE_Filename, _("Shutter speed"))
     ADDCOLUMN(_("ISO"), "iso", 50, wxALIGN_LEFT, false, HuginBase::ImageVariableGroup::IVE_Filename, _("ISO speed"))
 
-    ADDCOLUMN(_("Yaw (y)"), "y", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Yaw"))
-    ADDCOLUMN(_("Pitch (p)"), "p", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Pitch"))
-    ADDCOLUMN(_("Roll (r)"), "r", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Roll"))
-    ADDCOLUMN(wxT("X (TrX)"), "TrX", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Camera translation X"))
-    ADDCOLUMN(wxT("Y (TrY)"), "TrY", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Camera translation Y"))
-    ADDCOLUMN(wxT("Z (TrZ)"), "TrZ", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Camera translation Z"))
-    ADDCOLUMN(_("Plane yaw"), "Tpy", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Translation remap plane yaw"))
-    ADDCOLUMN(_("Plane pitch"), "Tpp", 60, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Translation remap plane pitch"))
+    ADDCOLUMN(_("Yaw (y)"), "y", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Yaw"))
+    ADDCOLUMN(_("Pitch (p)"), "p", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Pitch"))
+    ADDCOLUMN(_("Roll (r)"), "r", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Roll"))
+    ADDCOLUMN(wxT("X (TrX)"), "TrX", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Camera translation X"))
+    ADDCOLUMN(wxT("Y (TrY)"), "TrY", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Camera translation Y"))
+    ADDCOLUMN(wxT("Z (TrZ)"), "TrZ", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Camera translation Z"))
+    ADDCOLUMN(_("Plane yaw"), "Tpy", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Translation remap plane yaw"))
+    ADDCOLUMN(_("Plane pitch"), "Tpp", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Translation remap plane pitch"))
     ADDCOLUMN(_("Camera translation"), "cam_trans", 60, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Yaw, _("Camera translation"))
 
     ADDCOLUMN(_("Lens type (f)"), "projection", 100, wxALIGN_LEFT, false, HuginBase::ImageVariableGroup::IVE_Filename, _("Lens type (rectilinear, fisheye, equirectangular, ...)"))
-    ADDCOLUMN(_("Hfov (v)"), "v", 80, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_HFOV, _("Horizontal field of view (v)"))
-    ADDCOLUMN(wxT("a"), "a", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortion, _("Radial distortion (a)"))
-    ADDCOLUMN(wxT("b"), "b", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortion, _("Radial distortion (b, barrel)"))
-    ADDCOLUMN(wxT("c"), "c", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortion, _("Radial distortion (c)"))
-    ADDCOLUMN(wxT("d"), "d", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortionCenterShift, _("Horizontal image center shift (d)"))
-    ADDCOLUMN(wxT("e"), "e", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortionCenterShift, _("Vertical image center shift (e)"))
-    ADDCOLUMN(wxT("g"), "g", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Shear, _("Horizontal image shearing (g)"))
-    ADDCOLUMN(wxT("t"), "t", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_Shear, _("Vertical image shearing (t)"))
+    ADDCOLUMN(_("Hfov (v)"), "v", 80, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_HFOV, _("Horizontal field of view (v)"))
+    ADDCOLUMN(wxT("a"), "a", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortion, _("Radial distortion (a)"))
+    ADDCOLUMN(wxT("b"), "b", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortion, _("Radial distortion (b, barrel)"))
+    ADDCOLUMN(wxT("c"), "c", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortion, _("Radial distortion (c)"))
+    ADDCOLUMN(wxT("d"), "d", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortionCenterShift, _("Horizontal image center shift (d)"))
+    ADDCOLUMN(wxT("e"), "e", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialDistortionCenterShift, _("Vertical image center shift (e)"))
+    ADDCOLUMN(wxT("g"), "g", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Shear, _("Horizontal image shearing (g)"))
+    ADDCOLUMN(wxT("t"), "t", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_Shear, _("Vertical image shearing (t)"))
 
-    ADDCOLUMN(wxT("EV"), "Eev", 50, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_ExposureValue, _("Exposure value (Eev)"))
-    ADDCOLUMN(wxT("Er"), "Er", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed, _("Red multiplier (Er)"))
-    ADDCOLUMN(wxT("Eb"), "Eb", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue, _("Blue multiplier (Eb)"))
-    ADDCOLUMN(wxT("Vb"), "Vb", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCoeff, _("Vignetting (Vb, Vc, Vd)"))
-    ADDCOLUMN(wxT("Vc"), "Vc", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCoeff, _("Vignetting (Vb, Vc, Vd)"))
-    ADDCOLUMN(wxT("Vd"), "Vd", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCoeff, _("Vignetting (Vb, Vc, Vd)"))
-    ADDCOLUMN(wxT("Vx"), "Vx", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCenterShift, _("Horizontal vignetting center shift (Vx)"))
-    ADDCOLUMN(wxT("Vy"), "Vy", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCenterShift, _("Vertical vignetting center shift (Vy)"))
-    ADDCOLUMN(_("Response type"), "response", 80, wxALIGN_RIGHT, false, HuginBase::ImageVariableGroup::IVE_Filename, _("Camera response type"))
-    ADDCOLUMN(wxT("Ra"), "Ra", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
-    ADDCOLUMN(wxT("Rb"), "Rb", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
-    ADDCOLUMN(wxT("Rc"), "Rc", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
-    ADDCOLUMN(wxT("Rd"), "Rd", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
-    ADDCOLUMN(wxT("Re"), "Re", 40, wxALIGN_RIGHT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
+    ADDCOLUMN(wxT("EV"), "Eev", 50, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_ExposureValue, _("Exposure value (Eev)"))
+    ADDCOLUMN(wxT("Er"), "Er", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed, _("Red multiplier (Er)"))
+    ADDCOLUMN(wxT("Eb"), "Eb", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue, _("Blue multiplier (Eb)"))
+    ADDCOLUMN(wxT("Vb"), "Vb", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCoeff, _("Vignetting (Vb, Vc, Vd)"))
+    ADDCOLUMN(wxT("Vc"), "Vc", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCoeff, _("Vignetting (Vb, Vc, Vd)"))
+    ADDCOLUMN(wxT("Vd"), "Vd", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCoeff, _("Vignetting (Vb, Vc, Vd)"))
+    ADDCOLUMN(wxT("Vx"), "Vx", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCenterShift, _("Horizontal vignetting center shift (Vx)"))
+    ADDCOLUMN(wxT("Vy"), "Vy", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_RadialVigCorrCenterShift, _("Vertical vignetting center shift (Vy)"))
+    ADDCOLUMN(_("Response type"), "response", 80, wxALIGN_LEFT, false, HuginBase::ImageVariableGroup::IVE_Filename, _("Camera response type"))
+    ADDCOLUMN(wxT("Ra"), "Ra", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
+    ADDCOLUMN(wxT("Rb"), "Rb", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
+    ADDCOLUMN(wxT("Rc"), "Rc", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
+    ADDCOLUMN(wxT("Rd"), "Rd", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
+    ADDCOLUMN(wxT("Re"), "Re", 40, wxALIGN_LEFT, true, HuginBase::ImageVariableGroup::IVE_EMoRParams, _("Camera response parameter"))
 
     //empty column to have enough space on the right side
     AddColumn(wxEmptyString,10);
@@ -230,6 +230,9 @@ void ImagesTreeCtrl::panoramaChanged(HuginBase::Panorama & pano)
         Freeze();
         UpdateOptimizerVariables();
         Thaw();
+#ifdef __WXGTK__
+        Refresh();
+#endif
     };
     if(m_needsUpdate && (m_groupMode==GROUP_OUTPUTLAYERS || m_groupMode==GROUP_OUTPUTSTACK))
     {
@@ -331,6 +334,11 @@ void ImagesTreeCtrl::panoramaImagesChanged(HuginBase::Panorama &pano, const Hugi
             UpdateGroupText(item);
             item=GetNextChild(m_root, cookie);
         };
+    };
+    // updates checkboxes images for optimizer variables
+    if(m_optimizerMode)
+    {
+        UpdateOptimizerVariables();
     };
 
     Thaw();
@@ -887,10 +895,6 @@ void ImagesTreeCtrl::UpdateGroup(wxTreeItemId parent, const HuginBase::UIntSet i
 void ImagesTreeCtrl::UpdateOptimizerVariables()
 {
     HuginBase::OptimizeVector optVec=m_pano->getOptimizeVector();
-    wxFont font1=GetItemFont(m_root);
-    wxFont font2(font1);
-    font2.SetUnderlined(true);
-    font2.SetWeight(wxFONTWEIGHT_BOLD);
     wxTreeItemIdValue cookie;
     wxTreeItemId item=GetFirstChild(m_root, cookie);
     while(item.IsOk())
@@ -918,29 +922,31 @@ void ImagesTreeCtrl::UpdateOptimizerVariables()
             {
                 if(set_contains(m_editableColumns,i))
                 {
-                    bool opt=false;
-                    for(HuginBase::UIntSet::const_iterator it=imgNrs.begin(); it!=imgNrs.end() && !opt;++it)
+                    if (GetItemText(item, i).IsEmpty())
                     {
-                        if(m_columnVector[i]=="cam_trans")
-                        {
-                            opt=set_contains(optVec[*it], "TrX") &&
-                                set_contains(optVec[*it], "TrY") &&
-                                set_contains(optVec[*it], "TrZ") &&
-                                set_contains(optVec[*it], "Tpy") &&
-                                set_contains(optVec[*it], "Tpp");
-                        }
-                        else
-                        {
-                            opt=set_contains(optVec[*it], m_columnVector[i]);
-                        };
-                    };
-                    if(opt)
-                    {
-                        SetItemFont(item,i,font2);
+                        // item with no text can have no checkbox
+                        // this can happen with linked variables
+                        SetItemImage(item, i, -1);
                     }
                     else
                     {
-                        SetItemFont(item,i,font1);
+                        bool opt=false;
+                        for(HuginBase::UIntSet::const_iterator it=imgNrs.begin(); it!=imgNrs.end() && !opt;++it)
+                        {
+                            if(m_columnVector[i]=="cam_trans")
+                            {
+                                opt=set_contains(optVec[*it], "TrX") &&
+                                    set_contains(optVec[*it], "TrY") &&
+                                    set_contains(optVec[*it], "TrZ") &&
+                                    set_contains(optVec[*it], "Tpy") &&
+                                    set_contains(optVec[*it], "Tpp");
+                            }
+                            else
+                            {
+                                opt=set_contains(optVec[*it], m_columnVector[i]);
+                            };
+                        };
+                        SetItemImage(item, i, opt ? 1 : 0);
                     };
                 };
             };
@@ -997,6 +1003,41 @@ void ImagesTreeCtrl::SetGuiLevel(GuiLevel newSetting)
 void ImagesTreeCtrl::SetOptimizerMode()
 {
     m_optimizerMode=true;
+    // connnect events with handlers
+    Bind(wxEVT_MOTION, &ImagesTreeCtrl::OnMouseMove, this);
+    Bind(wxEVT_LEFT_DOWN, &ImagesTreeCtrl::OnLeftDown, this);
+    //create bitmaps for different checkboxes state
+    wxRendererNative& renderer = wxRendererNative::Get();
+    const wxSize checkBoxSize = renderer.GetCheckBoxSize(this);
+    wxImageList* checkboxImageList = new wxImageList(checkBoxSize.GetWidth(), checkBoxSize.GetHeight(), true, 0);
+    wxBitmap checkBoxImage(checkBoxSize, 32);
+    wxMemoryDC dc(checkBoxImage);
+    // unchecked checkbox
+    dc.Clear();
+    renderer.DrawCheckBox(this, dc, wxRect(checkBoxSize));
+    dc.SelectObject(wxNullBitmap);
+    checkboxImageList->Add(checkBoxImage);
+    // checked checkbox
+    dc.Clear();
+    dc.SelectObject(checkBoxImage);
+    renderer.DrawCheckBox(this, dc, wxRect(checkBoxSize), wxCONTROL_CHECKED);
+    dc.SelectObject(wxNullBitmap);
+    checkboxImageList->Add(checkBoxImage);
+    // mouse over unchecked checkbox
+    dc.Clear();
+    dc.SelectObject(checkBoxImage);
+    renderer.DrawCheckBox(this, dc, wxRect(checkBoxSize), wxCONTROL_CURRENT);
+    dc.SelectObject(wxNullBitmap);
+    checkboxImageList->Add(checkBoxImage);
+    // mouse over checked checkbox
+    dc.Clear();
+    dc.SelectObject(checkBoxImage);
+    renderer.DrawCheckBox(this, dc, wxRect(checkBoxSize), wxCONTROL_CHECKED | wxCONTROL_CURRENT);
+    dc.SelectObject(wxNullBitmap);
+    checkboxImageList->Add(checkBoxImage);
+
+    AssignImageList(checkboxImageList);
+    // activate edit mode
     for(HuginBase::UIntSet::const_iterator it=m_editableColumns.begin(); it!=m_editableColumns.end(); ++it)
     {
         if(m_columnVector[*it]!="cam_trans")
@@ -1348,7 +1389,7 @@ void ImagesTreeCtrl::OnBeginDrag(wxTreeEvent &e)
     };
 };
 
-void ImagesTreeCtrl::OnEndDrag(wxMouseEvent &e)
+void ImagesTreeCtrl::OnLeftUp(wxMouseEvent &e)
 {
     //we can't use wxEVT_TREE_END_DRAG because this event is fire several times, e.g. when
     // the mouse leaves the area of the tree
@@ -1451,121 +1492,176 @@ void ImagesTreeCtrl::OnEndDrag(wxMouseEvent &e)
     }
     else
     {
+        if (m_optimizerMode && m_leftDownItem.IsOk())
+        {
+            int flags;
+            int col;
+            wxTreeItemId item = HitTest(e.GetPosition(), flags, col);
+            // check if left up is on the same item as left down
+            if (item.IsOk() && item == m_leftDownItem && col == m_leftDownColumn && (flags & wxTREE_HITTEST_ONITEMICON))
+            {
+                HuginBase::UIntSet imgs;
+                ImagesTreeData* data = static_cast<ImagesTreeData*>(GetItemData(m_leftDownItem));
+                if (data->IsGroup())
+                {
+                    wxTreeItemIdValue cookie;
+                    wxTreeItemId childItem = GetFirstChild(m_leftDownItem, cookie);
+                    while (childItem.IsOk())
+                    {
+                        data = static_cast<ImagesTreeData*>(GetItemData(childItem));
+                        imgs.insert(data->GetImgNr());
+                        childItem = GetNextChild(m_leftDownItem, cookie);
+                    };
+                }
+                else
+                {
+                    imgs.insert(data->GetImgNr());
+                };
+                HuginBase::OptimizeVector optVec = m_pano->getOptimizeVector();
+                std::set<std::string> var;
+                if (m_columnVector[m_leftDownColumn] == "cam_trans")
+                {
+                    var.insert("TrX");
+                    var.insert("TrY");
+                    var.insert("TrZ");
+                    var.insert("Tpy");
+                    var.insert("Tpp");
+                }
+                else
+                {
+                    var.insert(m_columnVector[m_leftDownColumn]);
+                    if (m_columnVector[m_leftDownColumn] == "Tpy" || m_columnVector[m_leftDownColumn] == "Tpp")
+                    {
+                        var.insert("Tpy");
+                        var.insert("Tpp");
+                    };
+                    if (m_columnVector[m_leftDownColumn] == "Vb" || m_columnVector[m_leftDownColumn] == "Vc" || m_columnVector[m_leftDownColumn] == "Vd")
+                    {
+                        var.insert("Vb");
+                        var.insert("Vc");
+                        var.insert("Vd");
+                    };
+                    if (m_columnVector[m_leftDownColumn] == "Vx" || m_columnVector[m_leftDownColumn] == "Vy")
+                    {
+                        var.insert("Vx");
+                        var.insert("Vy");
+                    };
+                    if (m_columnVector[m_leftDownColumn] == "Ra" || m_columnVector[m_leftDownColumn] == "Rb" || m_columnVector[m_leftDownColumn] == "Rc" ||
+                        m_columnVector[m_leftDownColumn] == "Rd" || m_columnVector[m_leftDownColumn] == "Re")
+                    {
+                        var.insert("Ra");
+                        var.insert("Rb");
+                        var.insert("Rc");
+                        var.insert("Rd");
+                        var.insert("Re");
+                    };
+                };
+                bool deactivate = false;
+                for (std::set<std::string>::const_iterator varIt = var.begin(); varIt != var.end(); ++varIt)
+                {
+                    //search, if image variable is marked for optimise for at least one image of group
+                    for (HuginBase::UIntSet::const_iterator imgIt = imgs.begin(); imgIt != imgs.end() && !deactivate; ++imgIt)
+                    {
+                        if (set_contains(optVec[*imgIt], *varIt))
+                        {
+                            deactivate = true;
+                        };
+                    };
+                };
+                // now deactivate or activate the image variable for optimisation
+                if (deactivate)
+                {
+                    for (std::set<std::string>::const_iterator varIt = var.begin(); varIt != var.end(); ++varIt)
+                    {
+                        for (HuginBase::UIntSet::const_iterator imgIt = imgs.begin(); imgIt != imgs.end(); ++imgIt)
+                        {
+                            optVec[*imgIt].erase(*varIt);
+                        };
+                    }
+                }
+                else
+                {
+                    for (std::set<std::string>::const_iterator varIt = var.begin(); varIt != var.end(); ++varIt)
+                    {
+                        for (HuginBase::UIntSet::const_iterator imgIt = imgs.begin(); imgIt != imgs.end(); ++imgIt)
+                        {
+                            optVec[*imgIt].insert(*varIt);
+                        };
+                    };
+                };
+                PanoCommand::GlobalCmdHist::getInstance().addCommand(
+                    new PanoCommand::UpdateOptimizeVectorCmd(*m_pano, optVec)
+                );
+                m_leftDownItem.Unset();
+                return;
+            };
+        };
+        if (m_leftDownItem.IsOk())
+        {
+            m_leftDownItem.Unset();
+        };
         e.Skip();
     };
 };
 
 void ImagesTreeCtrl::OnLeftDown(wxMouseEvent &e)
 {
-    if(!m_dragging && m_optimizerMode)
+    if (!m_dragging)
     {
-        if(e.LeftDown() && e.CmdDown())
+        if (e.LeftDown())
         {
+            // force end editing
+            EndEdit(false);
+            // find where user clicked
             int flags;
             int col;
-            wxTreeItemId item=HitTest(e.GetPosition(),flags,col);
-            if(item.IsOk())
+            wxTreeItemId item = HitTest(e.GetPosition(), flags, col);
+            if (item.IsOk() && (flags & wxTREE_HITTEST_ONITEMICON))
             {
-                if(set_contains(m_editableColumns, col))
+                if (set_contains(m_editableColumns, col))
                 {
-                    if(!GetItemText(item, col).IsEmpty())
+                    if (!GetItemText(item, col).IsEmpty())
                     {
-                        HuginBase::UIntSet imgs;
-                        ImagesTreeData* data=static_cast<ImagesTreeData*>(GetItemData(item));
-                        if(data->IsGroup())
-                        {
-                            wxTreeItemIdValue cookie;
-                            wxTreeItemId childItem=GetFirstChild(item,cookie);
-                            while(childItem.IsOk())
-                            {
-                                data=static_cast<ImagesTreeData*>(GetItemData(childItem));
-                                imgs.insert(data->GetImgNr());
-                                childItem=GetNextChild(item, cookie);
-                            };
-                        }
-                        else
-                        {
-                            imgs.insert(data->GetImgNr());
-                        };
-                        HuginBase::OptimizeVector optVec=m_pano->getOptimizeVector();
-                        std::set<std::string> var;
-                        if(m_columnVector[col]=="cam_trans")
-                        {
-                            var.insert("TrX");
-                            var.insert("TrY");
-                            var.insert("TrZ");
-                            var.insert("Tpy");
-                            var.insert("Tpp");
-                        }
-                        else
-                        {
-                            var.insert(m_columnVector[col]);
-                            if(m_columnVector[col]=="Tpy" || m_columnVector[col]=="Tpp")
-                            {
-                                var.insert("Tpy");
-                                var.insert("Tpp");
-                            };
-                            if(m_columnVector[col]=="Vb" || m_columnVector[col]=="Vc" || m_columnVector[col]=="Vd")
-                            {
-                                var.insert("Vb");
-                                var.insert("Vc");
-                                var.insert("Vd");
-                            };
-                            if(m_columnVector[col]=="Vx" || m_columnVector[col]=="Vy")
-                            {
-                                var.insert("Vx");
-                                var.insert("Vy");
-                            };
-                            if(m_columnVector[col]=="Ra" || m_columnVector[col]=="Rb" || m_columnVector[col]=="Rc" || 
-                               m_columnVector[col]=="Rd" || m_columnVector[col]=="Re")
-                            {
-                                var.insert("Ra");
-                                var.insert("Rb");
-                                var.insert("Rc");
-                                var.insert("Rd");
-                                var.insert("Re");
-                            };
-                        };
-                        bool deactivate=false;
-                        for(std::set<std::string>::const_iterator varIt=var.begin(); varIt!=var.end(); ++varIt)
-                        {
-                            //search, if image variable is marked for optimise for at least one image of group
-                            for(HuginBase::UIntSet::const_iterator imgIt=imgs.begin(); imgIt!=imgs.end() && !deactivate; ++imgIt)
-                            {
-                                if(set_contains(optVec[*imgIt], *varIt))
-                                {
-                                    deactivate=true;
-                                };
-                            };
-                        };
-                        // now deactivate or activate the image variable for optimisation
-                        if(deactivate)
-                        {
-                            for(std::set<std::string>::const_iterator varIt=var.begin(); varIt!=var.end(); ++varIt)
-                            {
-                                for(HuginBase::UIntSet::const_iterator imgIt=imgs.begin(); imgIt!=imgs.end(); ++imgIt)
-                                {
-                                    optVec[*imgIt].erase(*varIt);
-                                };
-                            }
-                        }
-                        else
-                        {
-                            for(std::set<std::string>::const_iterator varIt=var.begin(); varIt!=var.end(); ++varIt)
-                            {
-                                for(HuginBase::UIntSet::const_iterator imgIt=imgs.begin(); imgIt!=imgs.end(); ++imgIt)
-                                {
-                                    optVec[*imgIt].insert(*varIt);
-                                };
-                            };
-                        };
-                        PanoCommand::GlobalCmdHist::getInstance().addCommand(
-                            new PanoCommand::UpdateOptimizeVectorCmd(*m_pano, optVec)
-                        );
+                        // store for later and stop processing this event further
+                        m_leftDownItem = item;
+                        m_leftDownColumn = col;
                         return;
                     };
                 };
             };
+        };
+    };
+    e.Skip();
+};
+
+void ImagesTreeCtrl::OnMouseMove(wxMouseEvent &e)
+{
+    int flags;
+    int col;
+    wxTreeItemId item = HitTest(e.GetPosition(), flags, col);
+    if (item.IsOk() && (flags & wxTREE_HITTEST_ONITEMICON))
+    {
+        // mouse moved over optimizer checkbox
+        int imgNr = GetItemImage(item, col);
+        if (imgNr >= 0 && imgNr < 2)
+        {
+            // update checkbox image and store position for later
+            SetItemImage(item, col, imgNr + 2);
+            m_lastCurrentItem = item;
+            m_lastCurrentCol = col;
+        };
+    }
+    else
+    {
+        // mouse moved from checkbox away, so update images
+        if (m_lastCurrentItem.IsOk())
+        {
+            int imgNr = GetItemImage(m_lastCurrentItem, m_lastCurrentCol);
+            if (imgNr > 1)
+            {
+                SetItemImage(m_lastCurrentItem, m_lastCurrentCol, imgNr - 2);
+            };
+            m_lastCurrentItem.Unset();
         };
     };
     e.Skip();

@@ -107,10 +107,12 @@ protected:
     void OnEditImageVariables(wxCommandEvent &e);
     /** event handler when dragging begins, veto if dragging is not possible */
     void OnBeginDrag(wxTreeEvent &e);
-    /** event handler when dragging ends, updates the Panorama */
-    void OnEndDrag(wxMouseEvent &e);
+    /** event handler for left up, handles end of dragging and updates of optimizer variables states */
+    void OnLeftUp(wxMouseEvent &e);
     /** event handler for left mouse down, handles toggle of optimizer variables */
     void OnLeftDown(wxMouseEvent &e);
+    /** event handler for mouse motion, handles focussing of check boxes */
+    void OnMouseMove(wxMouseEvent &e);
     /** event handler for left double click */
     void OnLeftDblClick(wxMouseEvent &e);
     /** event handler for select all optimizer variables */
@@ -192,6 +194,13 @@ private:
 
     /** pointer to root item, not shown */
     wxTreeItemId m_root;
+
+    /** stores last item on which the mouse was hovering */
+    wxTreeItemId m_lastCurrentItem;
+    long m_lastCurrentCol;
+    /** stores where left mouse click happend */
+    wxTreeItemId m_leftDownItem;
+    long m_leftDownColumn;
 
     //for saving column width
     wxString m_configClassName;
