@@ -884,7 +884,11 @@ public:
             m_text[column] = text;
         } else if (column < m_owner->GetColumnCount()) {
             int howmany = m_owner->GetColumnCount();
-            for (int i = (int)m_text.GetCount(); i < howmany; ++i) m_text.Add (wxEmptyString);
+            for (int i = (int)m_text.GetCount(); i < howmany; ++i)
+            {
+                m_text.Add(wxEmptyString);
+                m_text_x.Add(0);
+            };
             m_text[column] = text;
         }
     };
@@ -968,8 +972,15 @@ public:
     void SetHeight (int height) { m_height = height; }
     void SetWidth (int width) { m_width = width; }
 
-    int GetTextX() const { return m_text_x; }
-    void SetTextX (int text_x) { m_text_x = text_x; }
+    int GetTextX(int column) const
+    { 
+        if (column >=0 && column < (signed)m_text_x.GetCount())
+        {
+            return m_text_x[column];
+        };
+        return 0;
+    }
+    void SetTextX (int column, int text_x) { if (column >=0 && column < (signed)m_text_x.GetCount()) m_text_x[column] = text_x; }
 
     wxTreeListItem *GetItemParent() const { return m_parent; }
     void SetItemParent(wxTreeListItem *parent) { m_parent = parent; }
@@ -1060,7 +1071,6 @@ private:
     // main column item positions
     wxCoord                     m_x;            // (virtual) offset from left (vertical line)
     wxCoord                     m_y;            // (virtual) offset from top
-    wxCoord                     m_text_x;       // item offset from left
     short                       m_width;        // width of this item
     unsigned char               m_height;       // height of this item
 
@@ -1077,6 +1087,7 @@ private:
 
     // here are all the properties which can be set per column
     wxArrayString               m_text;        // labels to be rendered for item
+    wxArrayLong                 m_text_x;
     wxTreeListItemCellAttr      m_props_row;   // default at row/item level for: data, attr
     wxTreeListItemCellAttrHash  m_props_cell;
 };
@@ -1632,7 +1643,7 @@ wxTreeListItem::wxTreeListItem (wxTreeListMainWindow *owner,
     m_toolTip = NULL;
     m_x = 0;
     m_y = 0;
-    m_text_x = 0;
+    m_text_x.resize(m_text.GetCount(), 0);
 
     m_isCollapsed = true;
     m_hasHilight = false;
@@ -1738,7 +1749,7 @@ wxTreeListItem *wxTreeListItem::HitTest (const wxPoint& point,
 
             // check for image hit
             if (theCtrl->m_imgWidth > 0) {
-                int imgX = m_text_x - theCtrl->m_imgWidth - MARGIN;
+                int imgX = GetTextX(column) - theCtrl->m_imgWidth - MARGIN;
                 int imgY = y_mid - theCtrl->m_imgHeight2;
                 if ((point.x >= imgX) && (point.x <= (imgX + theCtrl->m_imgWidth)) &&
                     (point.y >= imgY) && (point.y <= (imgY + theCtrl->m_imgHeight))) {
@@ -1748,7 +1759,7 @@ wxTreeListItem *wxTreeListItem::HitTest (const wxPoint& point,
             }
 
             // check for label hit
-            if ((point.x >= m_text_x) && (point.x <= (m_text_x + GetWidth()))) {
+            if ((point.x >= GetTextX(column)) && (point.x <= (GetTextX(column) + GetWidth()))) {
                 flags |= wxTREE_HITTEST_ONITEMLABEL;
                 return this;
             }
@@ -1762,7 +1773,7 @@ wxTreeListItem *wxTreeListItem::HitTest (const wxPoint& point,
             // check for right of label
             int end = 0;
             for (int i = 0; i <= theCtrl->GetMainColumn(); ++i) end += header_win->GetColumnWidth (i);
-            if ((point.x > (m_text_x + GetWidth())) && (point.x <= end)) {
+            if ((point.x > (GetTextX(column) + GetWidth())) && (point.x <= end)) {
                 flags |= wxTREE_HITTEST_ONITEMRIGHT;
                 return this;
             }
@@ -3283,7 +3294,7 @@ void wxTreeListMainWindow::PaintItem (wxTreeListItem *item, wxDC& dc) {
             break;
         }
         int text_x = x + image_w;
-        if (i == GetMainColumn()) item->SetTextX (text_x);
+        item->SetTextX (i, text_x);
 
         // draw background (in non wxTR_FULL_ROW_HIGHLIGHT mode)
         // cell-specific settings are used --excepted for selection:
@@ -3896,7 +3907,7 @@ void wxTreeListMainWindow::EditLabel (const wxTreeItemId& item, int column) {
     int h = m_editItem->GetHeight() - 1;  // consequence from above
     long style = 0;
     if (column == GetMainColumn()) {
-        x += m_editItem->GetTextX() - 2;  // wrong by 2, don't know why
+        x += m_editItem->GetTextX(column) - 2;  // wrong by 2, don't know why
         w += m_editItem->GetWidth();
     } else {
         for (int i = 0; i < column; ++i) {
