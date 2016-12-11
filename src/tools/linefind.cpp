@@ -378,7 +378,7 @@ int main(int argc, char* argv[])
     };
 
     std::vector<size_t> imagesToProcess;
-    if(cmdlineImages.size()==0)
+    if(cmdlineImages.empty())
     {
         //no image given, process one image of each stack
         HuginBase::ConstStandardImageVariableGroups variable_groups(pano);
@@ -417,7 +417,7 @@ int main(int argc, char* argv[])
         };
     };
 
-    if(imagesToProcess.size()==0)
+    if(imagesToProcess.empty())
     {
         std::cerr << "No image to process found" << std::endl << "Stopping processing" << std::endl;
         return 1;
@@ -464,7 +464,7 @@ int main(int argc, char* argv[])
                           << "Skipping image." << std::endl;
             };
         };
-        if(foundLines.size()>0)
+        if(!foundLines.empty())
         {
             for (HuginBase::CPVector::const_iterator cpIt = foundLines.begin(); cpIt != foundLines.end(); ++cpIt)
             {
