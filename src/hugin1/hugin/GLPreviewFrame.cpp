@@ -960,7 +960,7 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
     m_lensTypeChoice->Enable(pano.getNrOfImages()>0);
     m_focalLengthText->Enable(pano.getNrOfImages()>0);
     m_cropFactorText->Enable(pano.getNrOfImages()>0);
-    m_alignButton->Enable(pano.getNrOfImages()>1);
+    m_alignButton->Enable(pano.getNrOfImages()>0);
 
     if(pano.getNrOfImages()==0)
     {
@@ -969,31 +969,29 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
     }
     else
     {
-        int images = pano.getNrOfImages();
-        bool enableCreate = false;;
-        if (images > 1)
+        bool enableCreate = false;
+        // check if images are at position 0
+        for (size_t i = 0; i < pano.getNrOfImages(); ++i)
         {
-            while (images)
+            const HuginBase::SrcPanoImage& img = pano.getImage(i);
+            if (img.getYaw() != 0.0 || img.getPitch() != 0.0 || img.getRoll() != 0.0)
             {
-                --images;
-                const HuginBase::VariableMap & vars = pano.getImageVariables(images);
-                if (const_map_get(vars,"y").getValue() != 0.0)
-                {
-                    enableCreate = true;
-                    break;
-                }
-                if (const_map_get(vars,"p").getValue() != 0.0)
-                {
-                    enableCreate = true;
-                    break;
-                }
-                if (const_map_get(vars,"r").getValue() != 0.0)
-                {
-                    enableCreate = true;
-                    break;
-                }
-            }
-        }
+                enableCreate = true;
+                break;
+            };
+        };
+        if (!enableCreate && pano.getNrOfImages() == 1)
+        {
+            // some more checks for single image projects
+            if (pano.getOptions().getProjection() != HuginBase::PanoramaOptions::EQUIRECTANGULAR)
+            {
+                enableCreate = true;
+            };
+            if (pano.getOptions().getROI() != vigra::Rect2D(pano.getOptions().getSize()))
+            {
+                enableCreate = true;
+            };
+        };
 
         m_createButton->Enable(enableCreate);
 
@@ -3086,8 +3084,6 @@ void GLPreviewFrame::OnLoadImages( wxCommandEvent & e )
 void GLPreviewFrame::OnAlign( wxCommandEvent & e )
 {
     MainFrame::Get()->RunAssistant(this);
-    // enable stitch button
-    m_createButton->Enable();
 }
 
 void GLPreviewFrame::OnCreate( wxCommandEvent & e )

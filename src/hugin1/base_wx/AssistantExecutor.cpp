@@ -58,7 +58,7 @@ namespace HuginQueue
             runicp = !graph.IsConnected();
         };
         //build commandline for icpfind
-        if (runicp)
+        if (runicp && pano.getNrOfImages() > 1)
         {
             //create cp find
             commands->push_back(new NormalCommand(GetInternalProgram(ExePath, wxT("icpfind")),
@@ -103,8 +103,16 @@ namespace HuginQueue
         };
         //now optimise all
         commands->push_back(new NormalCommand(GetInternalProgram(ExePath, wxT("checkpto")), quotedProject));
-        commands->push_back(new NormalCommand(GetInternalProgram(ExePath, wxT("autooptimiser")),
-            wxT("-a -m -l -s -o ") + quotedProject + wxT(" ") + quotedProject, _("Optimizing...")));
+        if (pano.getNrOfImages() == 1)
+        {
+            commands->push_back(new NormalCommand(GetInternalProgram(ExePath, wxT("autooptimiser")),
+                wxT("-a -s -o ") + quotedProject + wxT(" ") + quotedProject, _("Optimizing...")));
+        }
+        else
+        {
+            commands->push_back(new NormalCommand(GetInternalProgram(ExePath, wxT("autooptimiser")),
+                wxT("-a -m -l -s -o ") + quotedProject + wxT(" ") + quotedProject, _("Optimizing...")));
+        };
         wxString panoModifyArgs;
         // if necessary scale down final pano
         if (scale <= 1.0)

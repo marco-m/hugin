@@ -2178,12 +2178,6 @@ void MainFrame::DisableOpenGLTools()
 
 void MainFrame::RunAssistant(wxWindow* mainWin)
 {
-    if (pano.getNrOfImages() < 2)
-    {
-        wxMessageBox(_("At least two images are required.\nPlease add more images."),_("Error"), wxOK, mainWin);
-        return;
-    }
-
     //save project into temp directory
     wxString tempDir= wxConfig::Get()->Read(wxT("tempDir"),wxT(""));
     if(!tempDir.IsEmpty())
@@ -2218,22 +2212,30 @@ void MainFrame::RunAssistant(wxWindow* mainWin)
     //if return value is non-zero, an error occurred in the assistant
     if(ret!=0)
     {
-        //check for unconnected images
-        HuginGraph::ImageGraph graph(pano);
-        const HuginGraph::ImageGraph::Components comps = graph.GetComponents();
-        if(comps.size() > 1)
+        if (pano.getNrOfImages())
         {
-            // switch to images panel.
-            unsigned i1 = *(comps[0].rbegin());
-            unsigned i2 = *(comps[1].begin());
-            ShowCtrlPointEditor( i1, i2);
-            // display message box with 
-            wxMessageBox(wxString::Format(_("Warning %d unconnected image groups found:"), static_cast<int>(comps.size())) + Components2Str(comps) + wxT("\n")
-                + _("Please create control points between unconnected images using the Control Points tab in the panorama editor.\n\nAfter adding the points, press the \"Align\" button again"),_("Error"), wxOK , mainWin);
-            return;
+            wxMessageBox(_("The assistant could not find vertical lines. Please add vertical lines in the panorama editor and optimize project manually."),
+                _("Warning"), wxOK | wxICON_INFORMATION, mainWin);
+        }
+        else
+        {
+            //check for unconnected images
+            HuginGraph::ImageGraph graph(pano);
+            const HuginGraph::ImageGraph::Components comps = graph.GetComponents();
+            if (comps.size() > 1)
+            {
+                // switch to images panel.
+                unsigned i1 = *(comps[0].rbegin());
+                unsigned i2 = *(comps[1].begin());
+                ShowCtrlPointEditor(i1, i2);
+                // display message box with 
+                wxMessageBox(wxString::Format(_("Warning %d unconnected image groups found:"), static_cast<int>(comps.size())) + Components2Str(comps) + wxT("\n")
+                    + _("Please create control points between unconnected images using the Control Points tab in the panorama editor.\n\nAfter adding the points, press the \"Align\" button again"), _("Error"), wxOK, mainWin);
+                return;
+            };
+            wxMessageBox(_("The assistant did not complete successfully. Please check the resulting project file."),
+                _("Warning"), wxOK | wxICON_INFORMATION, mainWin);
         };
-        wxMessageBox(_("The assistant did not complete successfully. Please check the resulting project file."),
-                     _("Warning"),wxOK | wxICON_INFORMATION, mainWin); 
     };
 };
 
