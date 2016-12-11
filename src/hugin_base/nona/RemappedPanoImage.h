@@ -432,14 +432,15 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
     vigra::Diff2D srcImgSize = srcImg.second - srcImg.first;
 
     vigra::Size2D expectedSize = m_srcImg.getSize();
-    DEBUG_DEBUG("srcImgSize: " << srcImgSize << " m_srcImgSize: " << m_srcImg.getSize());
-    vigra_precondition(srcImgSize == expectedSize, 
-                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): image unexpectedly changed dimensions.");
     if (useGPU)
     {
         const int r = expectedSize.width() % 8;
         if (r != 0) expectedSize += vigra::Diff2D(8 - r, 0);
     }
+
+    DEBUG_DEBUG("srcImgSize: " << srcImgSize << " m_srcImgSize: " << m_srcImg.getSize());
+    vigra_precondition(srcImgSize == expectedSize, 
+                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): image unexpectedly changed dimensions.");
 
     typedef typename ImgAccessor::value_type input_value_type;
     typedef typename vigra_ext::ValueTypeTraits<input_value_type>::value_type input_component_type;
@@ -618,13 +619,13 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
     vigra::Diff2D srcImgSize = srcImg.second - srcImg.first;
 
     vigra::Size2D expectedSize = m_srcImg.getSize();
-    vigra_precondition(srcImgSize == expectedSize, 
-                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): image unexpectedly changed dimensions.");
     if (useGPU)
     {
         const int r = expectedSize.width() % 8;
         if (r != 0) expectedSize += vigra::Diff2D(8 - r, 0);
     }
+    vigra_precondition(srcImgSize == expectedSize,
+                       "RemappedPanoImage<RemapImage,AlphaImage>::remapImage(): image unexpectedly changed dimensions.");
 
     typedef typename ImgAccessor::value_type input_value_type;
     typedef typename vigra_ext::ValueTypeTraits<input_value_type>::value_type input_component_type;
