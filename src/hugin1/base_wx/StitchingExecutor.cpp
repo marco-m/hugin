@@ -895,6 +895,79 @@ namespace HuginQueue
             s = s.Trim(true).Trim(false);
             return s;
         };
+    
+        // replace the %prefix% placeholder, with optional postfix
+        // the string is modified in place
+        // return true on success, false if there are errors
+        bool ReplacePrefixPlaceholder(wxString& args, const wxString prefix)
+        {
+            int prefixPos = args.Find("%prefix");
+            while (prefixPos != wxNOT_FOUND)
+            {
+                const wxString nextChar = args.Mid(prefixPos + 7, 1);
+                if (nextChar == "%")
+                {
+                    args.Replace("%prefix%", wxEscapeFilename(prefix), true);
+                }
+                else
+                {
+                    if (nextChar == ",")
+                    {
+                        const int closingPercent = args.Mid(prefixPos + 8).Find("%");
+                        if (closingPercent < 2)
+                        {
+                            return false;
+                        };
+                        wxString postfix = args.Mid(prefixPos + 8, closingPercent);
+                        args.Replace("%prefix," + postfix + "%", wxEscapeFilename(prefix + postfix), true);
+                    }
+                    else
+                    {
+                        return false;
+                    };
+                };
+                prefixPos = args.Find("%prefix");
+            };
+            return true;
+        };
+
+        // replace the %with% or %height% placeholder
+        bool ReplaceWidthHeightPlaceHolder(wxString& args, const wxString name, int value)
+        {
+            int pos = args.Find("%" + name);
+            while (pos != wxNOT_FOUND)
+            {
+                const wxString nextChar = args.Mid(pos + 1 + name.Len(), 1);
+                if (nextChar == "%")
+                {
+                    args.Replace("%" + name + "%", wxString::Format("%d", value), true);
+                }
+                else
+                {
+                    if (nextChar == "*")
+                    {
+                        const int closingPercent = args.Mid(pos + 2 + name.Len()).Find("%");
+                        if (closingPercent < 2)
+                        {
+                            return false;
+                        };
+                        wxString factorString = args.Mid(pos + 2 + name.Len(), closingPercent);
+                        double factor;
+                        if (!factorString.ToCDouble(&factor))
+                        {
+                            return false;
+                        };
+                        args.Replace("%" + name + "*" + factorString + "%", wxString::Format("%d", hugin_utils::roundi(factor*value)), true);
+                    }
+                    else
+                    {
+                        return false;
+                    };
+                };
+                pos = args.Find("%" + name);
+            };
+            return true;
+        };
     }
 
     CommandQueue* GetStitchingCommandQueueUserOutput(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& prefix, const wxString& outputSettings, wxString& statusText, wxArrayString& outputFiles, wxArrayString& tempFilesDelete)
@@ -1228,6 +1301,24 @@ namespace HuginQueue
                                     return commands;
                                 };
                                 args.Replace(wxT("%project%"), wxEscapeFilename(project), true);
+                                if (!detail::ReplacePrefixPlaceholder(args, prefix))
+                                {
+                                    std::cerr << "ERROR: Step " << i << " has invalid %prefix% placeholder in arguments." << std::endl;
+                                    CleanQueue(commands);
+                                    return commands;
+                                };
+                                if (!detail::ReplaceWidthHeightPlaceHolder(args, "width", opts.getWidth()))
+                                {
+                                    std::cerr << "ERROR: Step " << i << " has invalid %width% placeholder in arguments." << std::endl;
+                                    CleanQueue(commands);
+                                    return commands;
+                                }
+                                if (!detail::ReplaceWidthHeightPlaceHolder(args, "height", opts.getHeight()))
+                                {
+                                    std::cerr << "ERROR: Step " << i << " has invalid %height% placeholder in arguments." << std::endl;
+                                    CleanQueue(commands);
+                                    return commands;
+                                }
                                 const wxString prog = detail::GetSettingString(settings, wxT("Program"));
                                 if (prog.IsEmpty())
                                 {

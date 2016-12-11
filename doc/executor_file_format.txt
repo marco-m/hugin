@@ -124,6 +124,10 @@ Program=mogrify
 # the following placeholders will be replaced:
 # %file% - filename (required)
 # %project% - project filename (optional)
+# %prefix% - prefix as given (optional)
+# %prefix,postfix% - prefix with given postfix (optional)
+# %width%, %height% - width and height of final image (optional)
+# %width*0.5% - both can be multiplied by a fixed factor
 Arguments=-posterize 8 %file%
 
 [Step4]
