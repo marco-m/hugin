@@ -24,7 +24,7 @@
  *
  */
 
-#include <config.h>
+#include "hugin_config.h"
 
 // often necessary before panoinc.h
 #ifdef __APPLE__

@@ -24,7 +24,7 @@
  *
  */
 
-#include <config.h>
+#include "hugin_config.h"
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
 

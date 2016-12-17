@@ -24,7 +24,7 @@
 #ifndef _HUGINAPP_H
 #define _HUGINAPP_H
 
-#include "config.h"
+#include "hugin_config.h"
 #include <huginapp/ImageCache.h>
 #include <lcms2.h>
 #include <algorithms/optimizer/ImageGraph.h>

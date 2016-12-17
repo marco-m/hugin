@@ -27,7 +27,7 @@
 #include "base_wx/wxutils.h"
 
 #include "panoinc.h"
-#include <config.h>
+#include "hugin_config.h"
 #include <GL/glew.h>
 #include <base_wx/platform.h>
 #include <wx/settings.h>

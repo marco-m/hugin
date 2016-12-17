@@ -20,7 +20,7 @@
  */
 
 #include "PreviewDifferenceTool.h"
-#include <config.h>
+#include "hugin_config.h"
 #include <GL/glew.h>
 #include <wx/platform.h>
 #ifdef __WXMAC__

@@ -23,7 +23,7 @@
 #include "panoinc.h"
 
 #include "PreviewLayoutLinesTool.h"
-#include <config.h>
+#include "hugin_config.h"
 
 #include "base_wx/platform.h"
 #include "MainFrame.h"

@@ -31,7 +31,7 @@
 //#endif
 //wxMac now has toggle buttons.
 
-#include <config.h>
+#include "hugin_config.h"
 
 #include "panoinc_WX.h"
 

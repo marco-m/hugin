@@ -35,7 +35,7 @@
 
 #endif
 
-#include <config.h>
+#include "hugin_config.h"
 
 #include "panoinc.h"
 

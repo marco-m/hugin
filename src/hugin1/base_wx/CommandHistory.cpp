@@ -25,7 +25,7 @@
  */
 
 // standard include
-#include <config.h>
+#include "hugin_config.h"
 #include "panoinc_WX.h"
 #include "panoinc.h"
 #include "CommandHistory.h"

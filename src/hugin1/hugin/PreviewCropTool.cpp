@@ -23,7 +23,7 @@
 #include "panoinc_WX.h"
 #include "panoinc.h"
 #include "PreviewCropTool.h"
-#include <config.h>
+#include "hugin_config.h"
 #include "base_wx/platform.h"
 #include "hugin/config_defaults.h"
 #include "base_wx/CommandHistory.h"

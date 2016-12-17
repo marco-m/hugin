@@ -26,7 +26,7 @@
  */
 
 #include "icpfind/CPDetectorConfig.h"
-#include <config.h>
+#include "hugin_config.h"
 #include <wx/fileconf.h>
 
 /** description of default cp generator, for fall back procedure */

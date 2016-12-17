@@ -29,7 +29,7 @@
 
 #include <hugin_shared.h>
 #include "panoinc_WX.h"
-#include <config.h>
+#include "hugin_config.h"
 #if wxUSE_ON_FATAL_EXCEPTION
 #include <wx/debugrpt.h>
 #endif

@@ -26,7 +26,7 @@
  */
 
 #include "hugin/CPDetectorDialog.h"
-#include <config.h>
+#include "hugin_config.h"
 #include "base_wx/huginConfig.h"
 #include "hugin/config_defaults.h"
 #include "hugin/huginApp.h"

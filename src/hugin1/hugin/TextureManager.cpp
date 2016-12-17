@@ -23,7 +23,7 @@
 #include <math.h>
 #include <iostream>
 
-#include <config.h>
+#include "hugin_config.h"
 
 #ifdef __APPLE__
 #include "panoinc.h"

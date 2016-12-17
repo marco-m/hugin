@@ -29,7 +29,6 @@
 #define _HTMLWINDOW_H
 
 // standard wx include
-//#include <config.h>
 #include "panoinc.h"
 #include "panoinc_WX.h"
 #include "wx/xrc/xh_html.h"

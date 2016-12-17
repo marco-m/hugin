@@ -24,7 +24,7 @@
  *
  */
 
-#include <config.h>
+#include "hugin_config.h"
 #include "panoinc.h"
 #include "panoinc_WX.h"
 #include "PTWXDlg.h"

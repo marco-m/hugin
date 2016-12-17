@@ -25,7 +25,7 @@
  *
  */
 
-#include <config.h>
+#include "hugin_config.h"
 #include <wx/stdpaths.h>
 
 #include "panoinc_WX.h"

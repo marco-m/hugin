@@ -29,7 +29,6 @@
 #define _CPIMAGESCOMBOBOX_H
 
 // standard wx include
-//#include <config.h>
 #include "panoinc.h"
 #include "panoinc_WX.h"
 #include "wx/odcombo.h"
