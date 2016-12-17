@@ -81,8 +81,16 @@ void stitchPanorama(const PanoramaData & pano,
             opts.outputPixelType = "FLOAT";
         }
     } else {
-        // get the emor parameters.
-        opts.outputEMoRParams = pano.getSrcImage(0).getEMoRParams();
+        if (pano.getImage(0).getResponseType() == HuginBase::BaseSrcPanoImage::RESPONSE_EMOR)
+        {
+            // get the emor parameters.
+            opts.outputEMoRParams = pano.getSrcImage(0).getEMoRParams();
+        }
+        else
+        {
+            // clear the parameters to indicatate these should not be used
+            opts.outputEMoRParams.clear();
+        };
         if (opts.outputPixelType.size() == 0) {
             opts.outputPixelType = pixelType;
         } else {

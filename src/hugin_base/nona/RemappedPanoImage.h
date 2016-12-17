@@ -453,7 +453,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
     if (m_destImg.outputMode == PanoramaOptions::OUTPUT_LDR) {
         // select exposure and response curve for LDR output
         std::vector<double> outLut;
-        if (m_srcImg.getResponseType() == HuginBase::BaseSrcPanoImage::RESPONSE_EMOR)
+        if (!m_destImg.outputEMoRParams.empty())
         {
             vigra_ext::EMoR::createEMoRLUT(m_destImg.outputEMoRParams, outLut);
         };
@@ -645,7 +645,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
         if (m_destImg.outputPixelType.size() > 0) {
             maxVal = vigra_ext::getMaxValForPixelType(m_destImg.outputPixelType);
         }
-        if (m_srcImg.getResponseType() == HuginBase::BaseSrcPanoImage::RESPONSE_EMOR)
+        if (!m_destImg.outputEMoRParams.empty())
         {
             vigra_ext::EMoR::createEMoRLUT(m_destImg.outputEMoRParams, outLut);
             vigra_ext::enforceMonotonicity(outLut);
