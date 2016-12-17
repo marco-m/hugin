@@ -27,7 +27,7 @@ endif(MSVC)
 
 
 add_executable(linefind linefind.cpp)
-target_link_libraries(linefind ${common_libs} ${image_libs} huginlines)
+target_link_libraries(linefind ${common_libs} ${image_libs})
 
 add_executable(geocpset geocpset.cpp)
 target_link_libraries(geocpset ${common_libs})

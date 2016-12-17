@@ -31,6 +31,8 @@ hugin_utils/alphanum.cpp
 hugin_utils/utils.cpp
 hugin_utils/platform.cpp
 lensdb/LensDB.cpp
+lines/FindLines.cpp 
+lines/FindN8Lines.cpp
 nona/SpaceTransform.cpp
 nona/Stitcher1.cpp
 nona/Stitcher2.cpp
@@ -90,6 +92,9 @@ hugin_utils/alphanum.h
 hugin_utils/utils.h
 hugin_utils/platform.h
 lensdb/LensDB.h
+lines/FindLines.h
+lines/FindN8Lines.h
+lines/LinesTypes.h
 nona/ImageRemapper.h
 nona/RemappedPanoImage.h
 nona/SpaceTransform.h
@@ -146,5 +151,3 @@ TARGET_LINK_LIBRARIES(huginbase huginlevmar ${VIGRA_LIBRARIES}
         ${TIFF_LIBRARIES} ${LAPACK_LIBRARIES}
         ${OPENGL_GLEW_LIBRARIES} Threads::Threads
         ${SQLITE3_LIBRARIES} ${LCMS2_LIBRARIES})
-
-add_subdirectory(lines)

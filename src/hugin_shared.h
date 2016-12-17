@@ -37,12 +37,6 @@
 #define LFIMPEX __declspec(dllimport)
 #endif
 
-#if defined huginlines_EXPORTS
-#define LINESIMPEX __declspec(dllexport)
-#else
-#define LINESIMPEX __declspec(dllimport)
-#endif
-
 #ifdef _MSC_VER
 #pragma warning( disable: 4251 )
 #endif

@@ -85,7 +85,7 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 
-target_link_libraries(calibrate_lens_gui huginbasewx ${common_libs} ${image_libs} ${wxWidgets_LIBRARIES} huginlines)
+target_link_libraries(calibrate_lens_gui huginbasewx ${common_libs} ${image_libs} ${wxWidgets_LIBRARIES})
 
 IF (APPLE)
   IF (NOT MAC_SELF_CONTAINED_BUNDLE)
