@@ -60,9 +60,9 @@ vigra_ext/ImageTransformsGPU.cpp
 )
 
 SET(HUGIN_BASE_HEADER
+hugin_basic.h
 algorithms/PanoramaAlgorithm.h
 algorithms/StitcherAlgorithm.h
-algorithms/nona/NonaFileStitcher.h
 algorithms/basic/CalculateCPStatistics.h
 algorithms/basic/CalculateMeanExposure.h
 algorithms/basic/CalculateOptimalScale.h
@@ -72,6 +72,8 @@ algorithms/basic/TranslatePanorama.h
 algorithms/basic/StraightenPanorama.h
 algorithms/basic/CalculateOverlap.h
 algorithms/basic/LayerStacks.h
+algorithms/control_points/CleanCP.h
+algorithms/nona/NonaFileStitcher.h
 algorithms/nona/CalculateFOV.h
 algorithms/nona/CenterHorizontally.h
 algorithms/nona/FitPanorama.h
@@ -80,17 +82,19 @@ algorithms/optimizer/ImageGraph.h
 algorithms/optimizer/PhotometricOptimizer.h
 algorithms/optimizer/PTOptimizer.h
 algorithms/point_sampler/PointSampler.h
-algorithms/control_points/CleanCP.h
 appbase/DocumentData.h
 appbase/ProgressDisplay.h
 huginapp/CachedImageRemapper.h
 huginapp/ImageCache.h
 hugin_math/eig_jacobi.h
+hugin_math/hugin_math.h
 hugin_math/Matrix3.h
 hugin_math/Vector3.h
 hugin_utils/alphanum.h
-hugin_utils/utils.h
+hugin_utils/openmp_lock.h
 hugin_utils/platform.h
+hugin_utils/stl_utils.h
+hugin_utils/utils.h
 lensdb/LensDB.h
 lines/FindLines.h
 lines/FindN8Lines.h
@@ -101,34 +105,48 @@ nona/SpaceTransform.h
 nona/Stitcher.h
 nona/StitcherOptions.h
 panodata/ControlPoint.h
+panodata/Exiv2Helper.h
+panodata/ImageVariable.h
+panodata/ImageVariableGroup.h
+panodata/ImageVariableTranslate.h
+panodata/image_variables.h
 panodata/Lens.h
 panodata/Mask.h
 panodata/OptimizerSwitches.h
-panodata/PanoramaData.h
 panodata/Panorama.h
+panodata/PanoramaData.h
 panodata/PanoramaOptions.h
 panodata/PanoramaVariable.h
 panodata/PTScriptParsing.h
 panodata/SrcPanoImage.h
-panodata/image_variables.h
-panodata/ImageVariable.h
-panodata/ImageVariableGroup.h
-panodata/ImageVariableTranslate.h
 panodata/StandardImageVariableGroups.h
-panodata/Exiv2Helper.h
 panotools/PanoToolsInterface.h
 panotools/PanoToolsOptimizerWrapper.h
 panotools/PanoToolsUtils.h
+photometric/ResponseTransform.h
+vigra_ext/BlendPoisson.h
 vigra_ext/Correlation.h
 vigra_ext/cms.h
 vigra_ext/emor.h
 vigra_ext/FileRAII.h
+vigra_ext/FitPolynom.h
+vigra_ext/FunctorAccessor.h
 vigra_ext/HDRUtils.h
 vigra_ext/ImageTransforms.h
 vigra_ext/ImageTransformsGPU.h
+vigra_ext/InterestPoints.h
+vigra_ext/Interpolators.h
+vigra_ext/lut.h
+vigra_ext/openmp_vigra.h
+vigra_ext/Pyramid.h
+vigra_ext/pyramid2.h
+vigra_ext/ransac.h
 vigra_ext/ReduceOpenEXR.h
+vigra_ext/ROIImage.h
 vigra_ext/StitchWatershed.h
-vigra_ext/BlendPoisson.h
+vigra_ext/tiffUtils.h
+vigra_ext/utils.h
+vigra_ext/VignettingCorrection.h
 )
 
 IF (${HUGIN_SHARED_LIBS})
@@ -151,3 +169,14 @@ TARGET_LINK_LIBRARIES(huginbase huginlevmar ${VIGRA_LIBRARIES}
         ${TIFF_LIBRARIES} ${LAPACK_LIBRARIES}
         ${OPENGL_GLEW_LIBRARIES} Threads::Threads
         ${SQLITE3_LIBRARIES} ${LCMS2_LIBRARIES})
+
+source_group(Lines REGULAR_EXPRESSION lines/*)
+source_group(Vigra_ext REGULAR_EXPRESSION vigra_ext/*)
+source_group(Algorithm REGULAR_EXPRESSION algorithm/*)
+source_group(Panodata REGULAR_EXPRESSION panodata/*)
+source_group(Panotools REGULAR_EXPRESSION panotools/*)
+source_group(Nona REGULAR_EXPRESSION nona/*)
+source_group(LensDB REGULAR_EXPRESSION lensdb/*)
+source_group(Hugin_utils REGULAR_EXPRESSION hugin_utils/*)
+source_group(Hugin_math REGULAR_EXPRESSION hugin_math/*)
+source_group(AppBase REGULAR_EXPRESSION "(appbase/*|huginapp/*)")
