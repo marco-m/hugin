@@ -25,8 +25,6 @@
  */
 
 #include "hugin_config.h"
-#include <exiv2/exif.hpp>
-#include <exiv2/image.hpp>
 
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
