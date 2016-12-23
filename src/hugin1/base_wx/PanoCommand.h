@@ -44,10 +44,9 @@ namespace PanoCommand
         *  beginning to end. CombinedPanoCommand deletes the commands when it is itself deleted.
         */
         CombinedPanoCommand(HuginBase::Panorama & pano, std::vector<PanoCommand*> & commands)
-            : PanoCommand(pano), commands(commands) {};
+            : PanoCommand(pano), commands(commands) { setName("multiple commands");};
         ~CombinedPanoCommand();
         virtual bool processPanorama(HuginBase::Panorama & pano);
-        virtual std::string getName() const { return "multiple commands"; };
     private:
         std::vector<PanoCommand*> commands;
     };

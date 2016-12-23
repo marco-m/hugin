@@ -77,10 +77,13 @@ namespace PanoCommand
         virtual void redo();
 
         /// Return true iff there is a command to undo.
-        bool canUndo();
+        bool canUndo() const;
 
         /// Return true iff there is a command to redo.
-        bool canRedo();
+        bool canRedo() const;
+
+        /** returns the name of the last command */
+        std::string getLastCommandName() const;
     private:
         // our commands
         std::vector<PanoCommand*> commands;

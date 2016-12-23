@@ -992,7 +992,12 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
                 enableCreate = true;
             };
         };
-
+        // disable create button after loading images
+        const std::string lastCmd=PanoCommand::GlobalCmdHist::getInstance().getLastCommandName();
+        if (lastCmd == "add images" || lastCmd== "add and distribute images")
+        {
+            enableCreate = false;
+        }
         m_createButton->Enable(enableCreate);
 
         // in wxWidgets 2.9, format must have types that exactly match.
@@ -3077,7 +3082,9 @@ void GLPreviewFrame::OnLoadImages( wxCommandEvent & e )
             cmds.push_back(new PanoCommand::DistributeImagesCmd(m_pano));
             cmds.push_back(new PanoCommand::CenterPanoCmd(m_pano));
         };
-        PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::CombinedPanoCommand(m_pano, cmds));
+        PanoCommand::CombinedPanoCommand* combinedCmd = new PanoCommand::CombinedPanoCommand(m_pano, cmds);
+        combinedCmd->setName("add and distribute images");
+        PanoCommand::GlobalCmdHist::getInstance().addCommand(combinedCmd);
     };
 }
 

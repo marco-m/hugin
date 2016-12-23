@@ -146,14 +146,23 @@ namespace PanoCommand
         }
     }
 
-    bool CommandHistory::canUndo()
+    bool CommandHistory::canUndo() const
     {
         return nextCmd > 0;
     }
 
-    bool CommandHistory::canRedo()
+    bool CommandHistory::canRedo() const
     {
         return nextCmd < commands.size();
+    }
+
+    std::string CommandHistory::getLastCommandName() const
+    {
+        if (canUndo())
+        {
+            return commands[nextCmd-1]->getName();
+        }
+        return std::string();
     }
 
     // ======================================================================
