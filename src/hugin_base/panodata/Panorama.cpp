@@ -602,9 +602,7 @@ void Panorama::printPanoramaScript(std::ostream & o,
                                 (vit->first == "c" && set_contains(optvars[imgNr], "c") )|| \
                                 (vit->first == "TrX" && set_contains(optvars[imgNr], "TrX") )|| \
                                 (vit->first == "TrY" && set_contains(optvars[imgNr], "TrY") )|| \
-                                (vit->first == "TrZ" && set_contains(optvars[imgNr], "TrZ") )|| \
-                                (vit->first == "Tpy" && set_contains(optvars[imgNr], "Tpy") )|| \
-                                (vit->first == "Tpp" && set_contains(optvars[imgNr], "Tpp") )\
+                                (vit->first == "TrZ" && set_contains(optvars[imgNr], "TrZ") )\
                                )\
                                && forPTOptimizer && vit->second.getValue() == 0.0) \
                     {\
