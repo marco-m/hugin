@@ -48,7 +48,7 @@ UIntSet getCPoutsideLimit_pair(Panorama pano, AppBase::ProgressDisplay& progress
     // after it remove cp with errors > median/mean + n*sigma
     for (unsigned int image1=0; image1<nrImg-1; image1++)
     {
-        SrcPanoImage img=pano.getImage(image1);
+        const SrcPanoImage& img=pano.getImage(image1);
         for (unsigned int image2=image1+1; image2<nrImg; image2++)
         {
             //do not check linked image pairs
@@ -70,7 +70,8 @@ UIntSet getCPoutsideLimit_pair(Panorama pano, AppBase::ProgressDisplay& progress
                         newCP.push_back(*it);
                 clean.setCtrlPoints(newCP);
 
-                if(clean.getNrOfCtrlPoints()>1)
+                // we need at least 3 cp to optimize 3 variables: yaw, pitch and roll
+                if(clean.getNrOfCtrlPoints()>3)
                 {
                     //optimize position and hfov
                     OptimizeVector optvec;
