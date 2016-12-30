@@ -61,7 +61,7 @@ static void usage(const char* name)
         << "                              whole panorama" << std::endl
         << "     --check-line-cp|-l       also include line control points for calculation" << std::endl
         << "                              and filtering in step 2" << std::endl
-        << "     --verbose|-v             verbose output during optimizsation"<<std::endl
+        << "     --verbose|-v             verbose output during optimisation"<<std::endl
         << "     --help|-h                shows help" << std::endl
         << std::endl;
 }
