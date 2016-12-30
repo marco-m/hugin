@@ -61,7 +61,8 @@ static void usage(const char* name)
         << "                              whole panorama" << std::endl
         << "     --check-line-cp|-l       also include line control points for calculation" << std::endl
         << "                              and filtering in step 2" << std::endl
-        << "     --help|-h                 shows help" << std::endl
+        << "     --verbose|-v             verbose output during optimizsation"<<std::endl
+        << "     --help|-h                shows help" << std::endl
         << std::endl;
 }
 
@@ -88,6 +89,7 @@ int main(int argc, char* argv[])
         { "whole-pano-checking", no_argument, NULL, 'w'},
         { "dont-optimize", no_argument, NULL, 's'},
         { "check-line-cp", no_argument, NULL, 'l' },
+        { "verbose", no_argument, NULL, 'v'},
         { "help", no_argument, NULL, 'h' },
         0
     };
