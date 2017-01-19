@@ -44,7 +44,7 @@ namespace HuginQueue
         double celesteThreshold;
         config->Read(wxT("/Celeste/Threshold"), &celesteThreshold, HUGIN_CELESTE_THRESHOLD);
         const bool celesteSmallRadius = config->Read(wxT("/Celeste/Filter"), HUGIN_CELESTE_FILTER) == 0;
-        const bool runLinefind = config->Read(wxT("/Assistant/Linefind"), HUGIN_ASS_LINEFIND) != 0;
+        const bool runLinefind = (pano.getNrOfImages()==1) ? true : (config->Read(wxT("/Assistant/Linefind"), HUGIN_ASS_LINEFIND) != 0);
         const bool runCPClean = config->Read(wxT("/Assistant/AutoCPClean"), HUGIN_ASS_AUTO_CPCLEAN) != 0;
         double scale;
         config->Read(wxT("/Assistant/panoDownsizeFactor"), &scale, HUGIN_ASS_PANO_DOWNSIZE_FACTOR);
