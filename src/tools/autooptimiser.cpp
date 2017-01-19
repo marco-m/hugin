@@ -295,26 +295,73 @@ int main(int argc, char* argv[])
         // avoid perspective projection if field of view > 100 deg
         const double mf = 100;
         bool changedProjection=false;
-        if (vfov < mf)
+        if (pano.getNrOfImages() == 1)
         {
-            // cylindrical or rectilinear
-            if (hfov < mf)
+            // special case for single image projects
+            switch (pano.getImage(0).getProjection())
             {
-                if (opts.getProjection() != HuginBase::PanoramaOptions::RECTILINEAR)
+                case HuginBase::SrcPanoImage::RECTILINEAR:
+                    // single rectilinear image, keep rectilinear projection
+                    if (opts.getProjection() != HuginBase::PanoramaOptions::RECTILINEAR)
+                    {
+                        opts.setProjection(HuginBase::PanoramaOptions::RECTILINEAR);
+                        changedProjection = true;
+                    };
+                    break;
+                default:
+                    if (vfov < mf)
+                    {
+                        // small vfov, use cylindrical
+                        if (opts.getProjection() != HuginBase::PanoramaOptions::CYLINDRICAL)
+                        {
+                            opts.setProjection(HuginBase::PanoramaOptions::CYLINDRICAL);
+                            changedProjection = true;
+                        };
+                    }
+                    else
+                    {
+                        // otherwise go to equirectangular
+                        if (opts.getProjection() != HuginBase::PanoramaOptions::EQUIRECTANGULAR)
+                        {
+                            opts.setProjection(HuginBase::PanoramaOptions::EQUIRECTANGULAR);
+                            changedProjection = true;
+                        };
+                    };
+                    break;
+            };
+        }
+        else
+        {
+            if (vfov < mf)
+            {
+                // cylindrical or rectilinear
+                if (hfov < mf)
                 {
-                    opts.setProjection(HuginBase::PanoramaOptions::RECTILINEAR);
-                    changedProjection = true;
+                    if (opts.getProjection() != HuginBase::PanoramaOptions::RECTILINEAR)
+                    {
+                        opts.setProjection(HuginBase::PanoramaOptions::RECTILINEAR);
+                        changedProjection = true;
+                    };
+                }
+                else
+                {
+                    if (opts.getProjection() != HuginBase::PanoramaOptions::CYLINDRICAL)
+                    {
+                        opts.setProjection(HuginBase::PanoramaOptions::CYLINDRICAL);
+                        changedProjection = true;
+                    };
                 };
             }
             else
             {
-                if (opts.getProjection() != HuginBase::PanoramaOptions::CYLINDRICAL)
+                // vfov > 100, use equirectangular projection
+                if (opts.getProjection() != HuginBase::PanoramaOptions::EQUIRECTANGULAR)
                 {
-                    opts.setProjection(HuginBase::PanoramaOptions::CYLINDRICAL);
+                    opts.setProjection(HuginBase::PanoramaOptions::EQUIRECTANGULAR);
                     changedProjection = true;
                 };
-            }
-        }
+            };
+        };
         pano.setOptions(opts);
         // the projection could be changed, calculate fit again
         if(changedProjection)
