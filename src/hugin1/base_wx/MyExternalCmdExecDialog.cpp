@@ -250,6 +250,9 @@ int MyExecPanel::ExecQueue(HuginQueue::CommandQueue* queue)
 {
     wxConfigBase* config = wxConfigBase::Get();
     const long threads = config->Read(wxT("/output/NumberOfThreads"), 0l);
+    // read all current environment variables
+    wxGetEnvMap(&m_executeEnv.env);
+    // now modify some variables before passing them to wxExecute
     if (threads > 0)
     {
         wxString s;
