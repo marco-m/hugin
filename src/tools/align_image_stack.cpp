@@ -631,6 +631,8 @@ int main2(std::vector<std::string> files, Parameters param)
         {
             // add next image.
             srcImg.setFilename(files[i]);
+            // reset size to force new detection of image size
+            srcImg.setSize(vigra::Size2D());
             srcImg.readEXIF();
             srcImg.applyEXIFValues();
             if (srcImg.getSize().x == 0 || srcImg.getSize().y == 0)
