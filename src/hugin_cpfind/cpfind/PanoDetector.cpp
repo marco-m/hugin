@@ -820,7 +820,10 @@ bool PanoDetector::loadProject()
         {
             _filesData[imgNr]._detectWidth >>= 1;
             _filesData[imgNr]._detectHeight >>= 1;
-            _filesData[imgNr].SetSizeMode(ImgData::DOWNSCALED);
+            if (!_filesData[imgNr].NeedsRemapping())
+            {
+                _filesData[imgNr].SetSizeMode(ImgData::DOWNSCALED);
+            };
         }
 
         // set image remapping options
