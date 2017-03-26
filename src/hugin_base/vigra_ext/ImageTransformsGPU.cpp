@@ -371,7 +371,7 @@ bool transformImageGPUIntern(const std::string& coordXformGLSL,
     {
         cout << "Retrieving GL_MAX_RECTANGLE_TEXTURE_SIZE: " << maxTextureSize << std::endl;
     };
-    if (maxTextureSize < 1024)
+    if (glGetError() != GL_NO_ERROR || maxTextureSize < 1024)
     {
         // fall back to GL_MAX_TEXTURE_SIZE
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
