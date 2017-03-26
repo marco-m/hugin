@@ -143,4 +143,4 @@ Result=%prefix%.tif
 # the following placeholders will be replaced:
 # %result% - filename (required)
 # %image0% - filename of first image (optional)
-Arguments=-overwrite_original_in_place -TagsFromFile %image0% -ImageDescription -Make -Model -Artist -WhitePoint -Copyright -GPS:all -DateTimeOriginal -CreateDate -UserComment -ColorSpace -OwnerName -SerialNumber %result%
+Arguments=-overwrite_original -TagsFromFile %image0% -ImageDescription -Make -Model -Artist -WhitePoint -Copyright -GPS:all -DateTimeOriginal -CreateDate -UserComment -ColorSpace -OwnerName -SerialNumber %result%

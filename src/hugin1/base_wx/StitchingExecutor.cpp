@@ -498,7 +498,7 @@ namespace HuginQueue
         wxString exiftoolArgsFinal;
         if (copyMetadata)
         {
-            exiftoolArgs = wxT("-overwrite_original_in_place -TagsFromFile ");
+            exiftoolArgs = wxT("-overwrite_original -TagsFromFile ");
             exiftoolArgs.Append(wxEscapeFilename(wxString(pano.getImage(0).getFilename().c_str(), HUGIN_CONV_FILENAME)));
             // required tags, can not be overwritten
             exiftoolArgs.Append(wxT(" -WhitePoint -ColorSpace"));
