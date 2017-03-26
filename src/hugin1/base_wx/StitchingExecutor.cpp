@@ -1022,6 +1022,11 @@ namespace HuginQueue
             sizeString << roi.width() << wxT("x") << roi.height();
         };
         const wxArrayString remappedImages(detail::GetNumberedFilename(prefix, intermediateImageType, allActiveImages));
+        wxArrayString inputImages;
+        for (auto& i : allActiveImages)
+        {
+            inputImages.Add(wxString(pano.getImage(i).getFilename().c_str(), HUGIN_CONV_FILENAME));
+        };
 
         std::vector<HuginBase::UIntSet> exposureLayers;
         wxArrayString exposureLayersFiles;
@@ -1332,6 +1337,7 @@ namespace HuginQueue
                                     {
                                         wxString finalArgs(args);
                                         finalArgs.Replace(wxT("%file%"), wxEscapeFilename(remappedImages[imgNr]), true);
+                                        finalArgs.Replace(wxT("%sourceimage%"), wxEscapeFilename(inputImages[imgNr]), true);
                                         commands->push_back(new NormalCommand(prog, finalArgs, description));
                                     };
                                 }

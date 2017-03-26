@@ -128,6 +128,7 @@ Program=mogrify
 # %prefix,postfix% - prefix with given postfix (optional)
 # %width%, %height% - width and height of final image (optional)
 # %width*0.5% - both can be multiplied by a fixed factor
+# %sourceimage% - filename of source image (optional, only valid when File=all)
 Arguments=-posterize 8 %file%
 
 [Step4]
