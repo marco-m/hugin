@@ -365,7 +365,44 @@ bool transformImageGPUIntern(const std::string& coordXformGLSL,
         cout << "needsAtanWorkaround=" << needsAtanWorkaround << endl;
 
     GLint maxTextureSize;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+    // check maximum possible texture size, GL_MAX_RECTANGLE_TEXTURE_SIZE is only available in OpenGL 3.1 and later
+    glGetIntegerv(GL_MAX_RECTANGLE_TEXTURE_SIZE, &maxTextureSize);
+    if (printDebug)
+    {
+        cout << "Retrieving GL_MAX_RECTANGLE_TEXTURE_SIZE: " << maxTextureSize << std::endl;
+    };
+    if (maxTextureSize < 1024)
+    {
+        // fall back to GL_MAX_TEXTURE_SIZE
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+        if (printDebug)
+        {
+            cout << "Retrieving GL_MAX_TEXTURE_SIZE: " << maxTextureSize << std::endl;
+        };
+    };
+    // both functions can return only a rough estimate, so do some more test
+    // if graphic card can handle this size of textures
+    {
+        GLint textureWidth=0;
+        while (textureWidth < maxTextureSize)
+        {
+            glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA32F_ARB, maxTextureSize, maxTextureSize, 0, GL_RGBA, GL_FLOAT, NULL);
+            glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &textureWidth);
+            if (printDebug)
+            {
+                cout << "Testing texture size " << maxTextureSize << ", result=" << textureWidth << std::endl;
+            };
+            if (textureWidth != maxTextureSize)
+            {
+                maxTextureSize /= 2;
+            };
+            if (maxTextureSize < 1024)
+            {
+                cerr << "nona: Can't allocate texture with a size of at least 1024 pixels." << std::endl;;
+                exit(1);
+            };
+        };
+    };
     if(printDebug)
         cout << "maxTextureSize=" << maxTextureSize << endl;
 
