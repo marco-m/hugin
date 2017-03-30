@@ -430,6 +430,8 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
         wxArrayString files;
         // search all .executor files, do not follow links
         wxDir::GetAllFiles(GetDataPath(), &files, wxT("*.executor"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
+        const size_t nrAllUserSequences = files.size();
+        wxDir::GetAllFiles(hugin_utils::GetUserAppDataDir(), &files, wxT("*executor"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
         if (!files.IsEmpty())
         {
             // we found some files
@@ -438,8 +440,13 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
             if (outputMenuId != wxNOT_FOUND)
             {
                 wxMenu* outputSequencesMenu = new wxMenu;
+                size_t i = 0;
                 for (auto file : files)
                 {
+                    if (i > 0 && i == nrAllUserSequences && outputSequencesMenu->GetMenuItemCount() > 0)
+                    {
+                        outputSequencesMenu->AppendSeparator();
+                    };
                     wxFileInputStream inputStream(file);
                     if (inputStream.IsOk())
                     {
@@ -462,8 +469,10 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
                             ++outputId;
                         };
                     };
+                    i++;
                 };
-                if (outputSequencesMenu->GetMenuItemCount() > 0)
+                if ((outputSequencesMenu->GetMenuItemCount() == 1 && !(outputSequencesMenu->FindItemByPosition(0)->IsSeparator())) ||
+                    outputSequencesMenu->GetMenuItemCount() > 1)
                 {
                     mainMenu->GetMenu(outputMenuId)->AppendSubMenu(outputSequencesMenu, _("User defined output sequences"));
                 }
