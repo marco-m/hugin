@@ -366,7 +366,7 @@ bool transformImageGPUIntern(const std::string& coordXformGLSL,
 
     GLint maxTextureSize;
     // check maximum possible texture size, GL_MAX_RECTANGLE_TEXTURE_SIZE is only available in OpenGL 3.1 and later
-    glGetIntegerv(GL_MAX_RECTANGLE_TEXTURE_SIZE, &maxTextureSize);
+    glGetIntegerv(GL_MAX_RECTANGLE_TEXTURE_SIZE_ARB, &maxTextureSize);
     if (printDebug)
     {
         cout << "Retrieving GL_MAX_RECTANGLE_TEXTURE_SIZE: " << maxTextureSize << std::endl;
