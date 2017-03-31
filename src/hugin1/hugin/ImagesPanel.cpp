@@ -254,8 +254,8 @@ void ImagesPanel::panoramaChanged(HuginBase::Panorama & pano)
         m_optPhotoChoice->SetSelection(found);
     };
     const HuginBase::PanoramaOptions opts = m_pano->getOptions();
-    m_overlap->SetValue(hugin_utils::doubleTowxString(opts.outputStacksMinOverlap,3));
-    m_maxEv->SetValue(hugin_utils::doubleTowxString(opts.outputLayersExposureDiff,2));
+    m_overlap->ChangeValue(hugin_utils::doubleTowxString(opts.outputStacksMinOverlap,3));
+    m_maxEv->ChangeValue(hugin_utils::doubleTowxString(opts.outputLayersExposureDiff,2));
 }
 
 void ImagesPanel::panoramaImagesChanged(HuginBase::Panorama &pano, const HuginBase::UIntSet & _imgNr)
@@ -395,7 +395,8 @@ void ImagesPanel::OnSelectionChanged(wxTreeEvent & e)
         };
         if(focallength>0)
         {
-            m_focallength->SetValue(hugin_utils::doubleTowxString(focallength,m_degDigits));
+            // use ChangeValue explicit, SetValue would create EVT_TEXT event which collides with our TextKillFocusHandler
+            m_focallength->ChangeValue(hugin_utils::doubleTowxString(focallength,m_degDigits));
         }
         else
         {
@@ -403,7 +404,7 @@ void ImagesPanel::OnSelectionChanged(wxTreeEvent & e)
         };
         if(cropFactor>0)
         {
-            m_cropfactor->SetValue(hugin_utils::doubleTowxString(cropFactor,m_degDigits));
+            m_cropfactor->ChangeValue(hugin_utils::doubleTowxString(cropFactor,m_degDigits));
         }
         else
         {

@@ -366,9 +366,9 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
 
     std::string val;
     val = hugin_utils::doubleToString(opt.getHFOV(),1);
-    m_HFOVText->SetValue(wxString(val.c_str(), wxConvLocal));
+    m_HFOVText->ChangeValue(wxString(val.c_str(), wxConvLocal));
     val = hugin_utils::doubleToString(opt.getVFOV(), 1);
-    m_VFOVText->SetValue(wxString(val.c_str(), wxConvLocal));
+    m_VFOVText->ChangeValue(wxString(val.c_str(), wxConvLocal));
 
     // disable VFOV edit field, due to bugs in setHeight(), setWidth()
     bool hasImages = pano->getActiveImages().size() > 0;
@@ -377,13 +377,13 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
     m_CalcHFOVButton->Enable(m_keepViewOnResize && hasImages);
     m_CalcOptROIButton->Enable(hasImages);
 
-    m_WidthTxt->SetValue(wxString::Format(wxT("%d"), opt.getWidth()));
-    m_HeightTxt->SetValue(wxString::Format(wxT("%d"), opt.getHeight()));
+    m_WidthTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getWidth()));
+    m_HeightTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getHeight()));
 
-    m_ROILeftTxt->SetValue(wxString::Format(wxT("%d"), opt.getROI().left() ));
-    m_ROIRightTxt->SetValue(wxString::Format(wxT("%d"), opt.getROI().right() ));
-    m_ROITopTxt->SetValue(wxString::Format(wxT("%d"), opt.getROI().top() ));
-    m_ROIBottomTxt->SetValue(wxString::Format(wxT("%d"), opt.getROI().bottom() ));
+    m_ROILeftTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getROI().left() ));
+    m_ROIRightTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getROI().right() ));
+    m_ROITopTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getROI().top() ));
+    m_ROIBottomTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getROI().bottom() ));
 
     // output types
     XRCCTRL(*this, "pano_cb_ldr_output_blended", wxCheckBox)->SetValue(opt.outputLDRBlended);
@@ -525,7 +525,7 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
         m_FileFormatOptionsLabel->SetLabel(_("Quality:"));
         m_FileFormatJPEGQualityText->Show();
         m_FileFormatTIFFCompChoice->Hide();
-        m_FileFormatJPEGQualityText->SetValue(wxString::Format(wxT("%d"), opt.quality));
+        m_FileFormatJPEGQualityText->ChangeValue(wxString::Format(wxT("%d"), opt.quality));
     } else if (opt.outputImageType == "png") {
         m_FileFormatOptionsLabel->Hide();
         m_FileFormatJPEGQualityText->Hide();
@@ -835,7 +835,7 @@ void PanoPanel::OnBlenderOptions(wxCommandEvent & e)
         wxDialog dlg;
         wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("enblend_options_dialog"));
         wxTextCtrl * enblend_opts_text = XRCCTRL(dlg, "blender_arguments_text", wxTextCtrl);
-        enblend_opts_text->SetValue(wxString(opt.enblendOptions.c_str(), wxConvLocal));
+        enblend_opts_text->ChangeValue(wxString(opt.enblendOptions.c_str(), wxConvLocal));
         dlg.CentreOnParent();
 
         if (dlg.ShowModal() == wxID_OK) {
@@ -900,7 +900,7 @@ void PanoPanel::OnFusionOptions(wxCommandEvent & e)
     wxDialog dlg;
     wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("enfuse_options_dialog"));
     wxTextCtrl * enfuse_opts_text = XRCCTRL(dlg, "enfuse_arguments_text", wxTextCtrl);
-    enfuse_opts_text->SetValue(wxString(opt.enfuseOptions.c_str(), wxConvLocal));
+    enfuse_opts_text->ChangeValue(wxString(opt.enfuseOptions.c_str(), wxConvLocal));
     dlg.CentreOnParent();
 
     if (dlg.ShowModal() == wxID_OK) {

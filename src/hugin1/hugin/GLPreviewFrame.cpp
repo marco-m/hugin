@@ -949,10 +949,10 @@ void GLPreviewFrame::updateBlendMode()
 
 void GLPreviewFrame::UpdateRoiDisplay(const HuginBase::PanoramaOptions opts)
 {
-    m_ROILeftTxt->SetValue(wxString::Format(wxT("%d"), opts.getROI().left() ));
-    m_ROIRightTxt->SetValue(wxString::Format(wxT("%d"), opts.getROI().right() ));
-    m_ROITopTxt->SetValue(wxString::Format(wxT("%d"), opts.getROI().top() ));
-    m_ROIBottomTxt->SetValue(wxString::Format(wxT("%d"), opts.getROI().bottom() ));
+    m_ROILeftTxt->ChangeValue(wxString::Format(wxT("%d"), opts.getROI().left() ));
+    m_ROIRightTxt->ChangeValue(wxString::Format(wxT("%d"), opts.getROI().right() ));
+    m_ROITopTxt->ChangeValue(wxString::Format(wxT("%d"), opts.getROI().top() ));
+    m_ROIBottomTxt->ChangeValue(wxString::Format(wxT("%d"), opts.getROI().bottom() ));
 };
 
 void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
@@ -1010,8 +1010,9 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
         const HuginBase::SrcPanoImage& img = pano.getImage(0);
         SelectListValue(m_lensTypeChoice, img.getProjection());
         double focal_length = HuginBase::SrcPanoImage::calcFocalLength(img.getProjection(), img.getHFOV(), img.getCropFactor(), img.getSize());
-        m_focalLengthText->SetValue(hugin_utils::doubleTowxString(focal_length,m_degDigits));
-        m_cropFactorText->SetValue(hugin_utils::doubleTowxString(img.getCropFactor(),m_degDigits));
+        // use ChangeValue explicit, SetValue would create EVT_TEXT event which collides with our TextKillFocusHandler
+        m_focalLengthText->ChangeValue(hugin_utils::doubleTowxString(focal_length,m_degDigits));
+        m_cropFactorText->ChangeValue(hugin_utils::doubleTowxString(img.getCropFactor(),m_degDigits));
     }
 
     if (pano.getNrOfImages() > 1)
@@ -1084,7 +1085,7 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
         m_decExposureBut->Show();
         m_incExposureBut->Show();
     }*/
-    m_exposureTextCtrl->SetValue(wxString(hugin_utils::doubleToString(opts.outputExposureValue,2).c_str(), wxConvLocal));
+    m_exposureTextCtrl->ChangeValue(wxString(hugin_utils::doubleToString(opts.outputExposureValue,2).c_str(), wxConvLocal));
 
     bool activeImgs = pano.getActiveImages().size() > 0;
 
@@ -1123,7 +1124,7 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
         assert((int) params.size() == nParam);
         for (int i=0; i < nParam; i++) {
             wxString val = wxString(hugin_utils::doubleToString(params[i],1).c_str(), wxConvLocal);
-            m_projParamTextCtrl[i]->SetValue(wxString(val.wc_str(), wxConvLocal));
+            m_projParamTextCtrl[i]->ChangeValue(wxString(val.wc_str(), wxConvLocal));
             m_projParamSlider[i]->SetValue(hugin_utils::roundi(params[i]));
         }
     }
@@ -1136,9 +1137,9 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
     m_VFOVSlider->SetValue(hugin_utils::roundi(opts.getVFOV()));
     std::string val;
     val = hugin_utils::doubleToString(opts.getHFOV(),1);
-    m_HFOVText->SetValue(wxString(val.c_str(), wxConvLocal));
+    m_HFOVText->ChangeValue(wxString(val.c_str(), wxConvLocal));
     val = hugin_utils::doubleToString(opts.getVFOV(),1);
-    m_VFOVText->SetValue(wxString(val.c_str(), wxConvLocal));
+    m_VFOVText->ChangeValue(wxString(val.c_str(), wxConvLocal));
     m_VFOVText->Enable(opts.fovCalcSupported(opts.getProjection()));
 
     m_oldProjFormat = opts.getProjection();
