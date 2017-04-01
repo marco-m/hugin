@@ -174,13 +174,20 @@ void Batch::AppendBatchFile(wxString file)
             const bool skip = textStream.ReadLine().StartsWith(_T("T"));
 
             //we add project to internal list
-            if (line.IsEmpty())
+            if (id == -1)
             {
-                AddProjectToBatch(projectName,wxT(""),Project::DETECTING);
+                AddAppToBatch(projectName);
             }
             else
             {
-                AddProjectToBatch(projectName,line);
+                if (line.IsEmpty())
+                {
+                    AddProjectToBatch(projectName, wxT(""), Project::DETECTING);
+                }
+                else
+                {
+                    AddProjectToBatch(projectName, line);
+                };
             };
             //if status was RUNNING or PAUSED, we set it to FAILED
             if(status==(long)Project::RUNNING || status==(long)Project::PAUSED)
