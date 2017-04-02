@@ -30,7 +30,7 @@ for my $file (@ARGV)
     $data =~ s/<a href="(https?:[^"]*).*?>(.*?)<\/a>/$2<a class="external" href="$1">[*]<\/a>/gs;
     $data =~ s/<!--[^>]*NewPP limit report[^>]*-->//gs;
     $data =~ s/<div[^>]*>[[:space:]]*<\/div>//gs;
-    $data =~ s/<meta name="ResourceLoaderDynamicStyles".*? \/>/<style media="screen" type="text\/css" title="Screen style sheet"> \@import url(manual.css); <\/style>/s;
+    $data =~ s/<meta name="ResourceLoaderDynamicStyles".*?\/>/<style media="screen" type="text\/css" title="Screen style sheet"> \@import url(manual.css); <\/style>/s;
     # wxHtml does only understand the <a name=".."> style anchors, so reformat all headings to this style
     $data =~ s/<span class="mw-headline".*?id="([^"]*)">(.*?)<\/span>/<a name="$1"><span class="mw-headline">$2<\/span><\/a>/gs;
     
