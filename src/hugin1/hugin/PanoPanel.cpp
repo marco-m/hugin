@@ -836,6 +836,7 @@ void PanoPanel::OnBlenderOptions(wxCommandEvent & e)
         wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("enblend_options_dialog"));
         wxTextCtrl * enblend_opts_text = XRCCTRL(dlg, "blender_arguments_text", wxTextCtrl);
         enblend_opts_text->ChangeValue(wxString(opt.enblendOptions.c_str(), wxConvLocal));
+        dlg.Bind(wxEVT_COMMAND_BUTTON_CLICKED, [](wxCommandEvent &) {MainFrame::Get()->DisplayHelp(wxT("Enblend.html")); }, wxID_HELP);
         dlg.CentreOnParent();
 
         if (dlg.ShowModal() == wxID_OK) {
@@ -901,6 +902,7 @@ void PanoPanel::OnFusionOptions(wxCommandEvent & e)
     wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("enfuse_options_dialog"));
     wxTextCtrl * enfuse_opts_text = XRCCTRL(dlg, "enfuse_arguments_text", wxTextCtrl);
     enfuse_opts_text->ChangeValue(wxString(opt.enfuseOptions.c_str(), wxConvLocal));
+    dlg.Bind(wxEVT_COMMAND_BUTTON_CLICKED, [](wxCommandEvent &) {MainFrame::Get()->DisplayHelp(wxT("Enfuse.html")); }, wxID_HELP);
     dlg.CentreOnParent();
 
     if (dlg.ShowModal() == wxID_OK) {
