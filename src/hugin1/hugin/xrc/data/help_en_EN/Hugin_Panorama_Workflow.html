@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" class="client-nojs">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <title>Hugin Panorama Workflow - PanoTools.org Wiki</title>
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-<meta name="generator" content="MediaWiki 1.23.6" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
+<meta name="generator" content="MediaWiki 1.23.15"/>
 
 
 
@@ -98,6 +98,11 @@ Go to <b>File&gt;Search directory for...&gt;Images</b> and select the path to yo
     autooptimiser -a -m -l -s -o project.pto project.pto
     pano_modify --canvas=AUTO --crop=AUTO -o project.pto project.pto
 </pre>
+<p>If the normal assistant works okay, this can be shortened to
+</p>
+<pre>   pto_gen -o project.pto *.jpg
+   hugin_executor --assistant project.pto
+</pre>
 <p>An other approach for multi-row panoramas with featureless images could look like:
 </p>
 <pre>    pto_gen -o project.pto *.jpg
@@ -121,11 +126,17 @@ Go to <b>File&gt;Search directory for...&gt;Images</b> and select the path to yo
 <h3><a name="Scripting_2"><span class="mw-headline">Scripting</span></a></h3>
 <p>The stitching can also be started from the command line:
 </p>
-<pre>    hugin_executor --prefix=prefix project.pto
+<pre>    hugin_executor --stitching --prefix=prefix project.pto
 </pre>
+<p>Or you can send the project to the batch queue:
+</p>
+<pre>    PTBatcherGUI --batch project.pto
+</pre>
+<p>The switch <tt>--batch</tt> starts the processing immediately.
+</p>
 
 
 
 </div>								<div class="printfooter">
-				Retrieved from "http://wiki.panotools.org/index.php?title=Hugin_Panorama_Workflow&amp;oldid=15697<a class="external" href="http://wiki.panotools.org/index.php?title=Hugin_Panorama_Workflow&amp;oldid=15697">[*]</a>"				</div>
+				Retrieved from "http://wiki.panotools.org/index.php?title=Hugin_Panorama_Workflow&amp;oldid=15868<a class="external" href="http://wiki.panotools.org/index.php?title=Hugin_Panorama_Workflow&amp;oldid=15868">[*]</a>"				</div>
 												</div></div></body></html>

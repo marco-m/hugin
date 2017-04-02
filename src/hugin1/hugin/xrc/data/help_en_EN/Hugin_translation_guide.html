@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" class="client-nojs">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <title>Hugin translation guide - PanoTools.org Wiki</title>
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-<meta name="generator" content="MediaWiki 1.23.13" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
+<meta name="generator" content="MediaWiki 1.23.15"/>
 
 
 
@@ -105,9 +105,13 @@
 <dl>
 <dd>To edit the *.po or *.pot files, use <a rel="nofollow" class="external text" href="http://sourceforge.net/projects/poedit/">poedit</a> (it is a cross-platform PO files editor which runs on Mac OS X, Unix and Windows) or <a rel="nofollow" class="external text" href="http://kbabel.kde.org/">kbabel</a> (it runs on any KDE platform). Note that you don't have to translate everything if you don't have time or knowledge to do it all. Also <a href="Hugin_translation_guide.html#Do_not_translate:" title="Hugin translation guide">check below</a> for things that shouldn't be translated (like software names) or for some explanations on specific words.
 </dd>
-<dd>Note: When using a version of Poedit before 1.4.3, editing comments directly in the right pane doesn't work, the text isn't saved into the .po file. To edit comments, use the "edit comment" dialogue from the menu. With Poedit 1.4.3 and later, please note that to see the comment window you have to check "View / Show comment window", and to be able to modify the comment you must go to "File / Preferences..." and check "Comment window is editable" in the "Editor" tab.
+<dd>Sort by translation to see untranslated entries first and start translating.
 </dd>
-<dd>Messages <b>marked as <i>fuzzy</i></b> are actually not used in the GUI, so the user will see the original English string instead. These automagic suggestions naturally fail often, so please compare a fuzzy translation thoroughly with the original phrase. Remove the fuzzy tag when the translation is correct(ed).
+<dd>Watch out for <b>variables</b>, <b>keyboard shortcuts</b> and <b>line breaks</b>: be careful to include terms starting with a percent symbol ("%") unaltered since those are placeholders for values (see <a rel="nofollow" class="external text" href="https://www.autoitscript.com/autoit3/docs/functions/StringFormat.htm">overview</a>). Also watch for combinations of an ampersand symbol ("&amp;") plus the following character (a-x or A-X) since those represent keyboard shortcuts. You can use a translated character for these, but keep in mind that these shortcuts have to be unique in each (sub-)menu. A "\n" depicts a line break.
+</dd>
+<dd>Items <b>marked as <i>fuzzy</i></b> actually don't use their "translation" in the GUI, so the user will see the original English string instead. These automagic suggestions naturally fail often, so please compare a fuzzy translation thoroughly with the original phrase. Remove the fuzzy tag when the translation is correct(ed).
+</dd>
+<dd>Note on <b>comments</b>: When using a version of <b>Poedit before 1.4.3</b>, editing comments directly in the right pane doesn't work, the text isn't saved into the .po file. To edit comments, use the "edit comment" dialogue from the menu. With <b>Poedit 1.4.3 and later</b>, please note that to see the comment window you have to check "View / Show comment window", and to be able to modify the comment you must go to "File / Preferences..." and check "Comment window is editable" in the "Editor" tab. <b>Current versions</b> diplay comment icons in the left column by default, the comment itself is shown in the sidebar.
 </dd>
 </dl>
 <ul>
@@ -284,7 +288,7 @@ hg clone ssh://YOUR-SOURCEFORGE-USERNAME@hg.code.sf.net/p/hugin/hugin  hugin
 </ul>
 <pre>
 hg pull
-hg commit TRANSLATEDFILE.po -m &quot;updated LANGUAGE translation&quot;
+hg commit TRANSLATEDFILE.po -m "updated LANGUAGE translation"
 hg push  
 </pre>
 <p><b>Important:</b> committed changes are only on your local disk.  You must push them to SourceForge to make them available to the project.
@@ -656,8 +660,8 @@ hg push
 </ul>
 <h2><a name="Website_.2F_Release_Notes"><span class="mw-headline">Website / Release Notes</span></a></h2>
 <p>Some translators contribute also translated release notes.  These are published on the web at <a rel="nofollow" class="external free" href="http://hugin.sourceforge.net/releases/">http://hugin.sourceforge.net/releases/</a> . Usually the release manager will draft the release notes in English early on in the release process.  Even if they are not linked, you can find them in the repository at <a rel="nofollow" class="external free" href="http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/">http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/</a>
-</p><p><b>Important</b>: make sure you translate the file from the <a rel="nofollow" class="external text" href="http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/">repository</a> and not the resulting file displayed on the web, e.g. for 2015.0.0 translate the <i>raw</i> version of
-<a rel="nofollow" class="external free" href="http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/2015.0.0/en.shtml">http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/2015.0.0/en.shtml</a> and not the current one from <a rel="nofollow" class="external free" href="http://hugin.sourceforge.net/releases/">http://hugin.sourceforge.net/releases/</a> - the former is the source for the page while the latter is the resulting page after server side includes and other server side transformations.
+</p><p><b>Important</b>: make sure you translate the file from the <a rel="nofollow" class="external text" href="http://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/">repository</a> and not the resulting file displayed on the web, e.g. for 2016.2.0 translate the <i>raw</i> version of
+<a rel="nofollow" class="external free" href="https://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/2016.2.0/en.shtml">https://sourceforge.net/p/hugin/hugin-web/ci/default/tree/releases/2016.2.0/en.shtml</a> and not the current one from <a rel="nofollow" class="external free" href="http://hugin.sourceforge.net/releases/">http://hugin.sourceforge.net/releases/</a> - the former is the source for the page while the latter is the resulting page after server side includes and other server side transformations.
 </p><p>Use the <a href="Hugin_translation_guide.html#Contribute_your_Translation" title="Hugin translation guide">bug tracker</a> to upload your translated html file.
 </p><p>Thanks for your contributions!
 </p>
@@ -665,5 +669,5 @@ hg push
 
 
 </div>								<div class="printfooter">
-				Retrieved from "http://wiki.panotools.org/index.php?title=Hugin_translation_guide&amp;oldid=15767<a class="external" href="http://wiki.panotools.org/index.php?title=Hugin_translation_guide&amp;oldid=15767">[*]</a>"				</div>
+				Retrieved from "http://wiki.panotools.org/index.php?title=Hugin_translation_guide&amp;oldid=15837<a class="external" href="http://wiki.panotools.org/index.php?title=Hugin_translation_guide&amp;oldid=15837">[*]</a>"				</div>
 												</div></div></body></html>

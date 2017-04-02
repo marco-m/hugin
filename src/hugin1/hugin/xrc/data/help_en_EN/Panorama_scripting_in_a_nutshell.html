@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" class="client-nojs">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <title>Panorama scripting in a nutshell - PanoTools.org Wiki</title>
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-<meta name="generator" content="MediaWiki 1.23.6" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
+<meta name="generator" content="MediaWiki 1.23.15"/>
 
 
 
@@ -173,7 +173,15 @@
 <p>This command will straighten the pano, center it on the canvas, calculates the optimal size and calculates the optimal output region.
 </p>
 <h2><a name="Example_work_flow_similar_to_assistant_in_Hugin_GUI"><span class="mw-headline">Example work flow similar to assistant in Hugin GUI</span></a></h2>
-<p>We will use the same project file for all single steps. We always overwrite the same project file. You can also use another filename for every step.
+<p>Hugins assistant can also be used from the command line
+</p>
+<pre>   hugin_executor --assistant project.pto
+</pre>
+<p>Or you can also put the task into PTBatcherGUI queue
+</p>
+<pre>   PTBatcherGUI --assistant project.pto
+</pre>
+<p>In the following the single steps of the assistant are described. We will use the same project file for all single steps. We always overwrite the same project file. You can also use another filename for every step.
 </p><p>1) Generate pto file
 </p>
 <pre>    pto_gen -o project.pto *.jpg
@@ -200,7 +208,7 @@
 </pre>
 <p>7) Now create output
 </p>
-<pre>    hugin_executor --prefix=prefix project.pto
+<pre>    hugin_executor --stitching --prefix=prefix project.pto
 </pre>
 <h1><a name="Stitching_hugin_projects_on_the_command-line"><span class="mw-headline">Stitching hugin projects on the command-line</span></a></h1>
 <h2><a name="Rendering_images"><span class="mw-headline">Rendering images</span></a></h2>
@@ -484,5 +492,5 @@
 
 
 </div>								<div class="printfooter">
-				Retrieved from "http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15702<a class="external" href="http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15702">[*]</a>"				</div>
+				Retrieved from "http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15869<a class="external" href="http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15869">[*]</a>"				</div>
 												</div></div></body></html>
