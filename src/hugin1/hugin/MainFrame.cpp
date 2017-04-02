@@ -966,7 +966,6 @@ void MainFrame::OnSavePTStitcherAs(wxCommandEvent & e)
 void MainFrame::LoadProjectFile(const wxString & filename)
 {
     DEBUG_TRACE("");
-    m_filename = filename;
 
     // remove old images from cache
     // hmm probably not a good idea, if the project is reloaded..
@@ -976,7 +975,9 @@ void MainFrame::LoadProjectFile(const wxString & filename)
 
     wxFileName fname(filename);
     wxString path = fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    if (fname.IsOk() && fname.FileExists()) {
+    if (fname.IsOk() && fname.FileExists())
+    {
+        m_filename = filename;
         wxBusyCursor wait;
         deregisterPTWXDlgFcn();
         PanoCommand::GlobalCmdHist::getInstance().addCommand(
