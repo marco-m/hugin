@@ -128,7 +128,8 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
             file.GetExt().CmpNoCase(wxT("pts")) == 0 )
         {
             // load project
-            if (mf->CloseProject(true)) {
+            if (mf->CloseProject(true, MainFrame::LOAD_NEW_PROJECT))
+            {
                 mf->LoadProjectFile(file.GetFullPath());
                 // remove old images from cache
                 ImageCache::getInstance().flush();
@@ -756,18 +757,43 @@ void MainFrame::OnUserQuit(wxCommandEvent & e)
     Close();
 }
 
-bool MainFrame::CloseProject(bool cancelable)
+bool MainFrame::CloseProject(bool cancelable, CloseReason reason)
 {
     if (pano.isDirty()) {
-        wxMessageDialog message(wxGetActiveWindow(),
-                                _("Save changes to the panorama before closing?"),
+        wxString messageString;
+        switch (reason)
+        {
+            case LOAD_NEW_PROJECT:
+                messageString = _("Save changes to the panorama before opening an other project?");
+                break;
+            case NEW_PROJECT:
+                messageString = _("Save changes to the panorama before starting a new project?");
+                break;
+            case CLOSE_PROGRAM:
+            default:
+                messageString = _("Save changes to the panorama before closing?");
+                break;
+        };
+                wxMessageDialog message(wxGetActiveWindow(), messageString,
 #ifdef _WIN32
                                 _("Hugin"),
 #else
                                 wxT(""),
 #endif
                                 wxICON_EXCLAMATION | wxYES_NO | (cancelable? (wxCANCEL):0));
-    message.SetExtendedMessage(_("If you close without saving, changes since your last save will be discarded"));
+        switch(reason)
+        {
+            case LOAD_NEW_PROJECT:
+                message.SetExtendedMessage(_("If you load an other project without saving, your changes since your last save will be discarded."));
+                break;
+            case NEW_PROJECT:
+                message.SetExtendedMessage(_("If you start a new project without saving, your changes since your last save will be discarded."));
+                break;
+            case CLOSE_PROGRAM:
+            default:
+                message.SetExtendedMessage(_("If you close without saving, your changes since your last save will be discarded."));
+                break;
+        };
     #if defined __WXMAC__ || defined __WXMSW__
         // Apple human interface guidelines and Windows user experience interaction guidelines
         message.SetYesNoLabels(wxID_SAVE, _("Don't Save"));
@@ -797,7 +823,7 @@ void MainFrame::OnExit(wxCloseEvent & e)
     DEBUG_TRACE("");
     if(m_guiLevel!=GUI_SIMPLE)
     {
-        if(!CloseProject(e.CanVeto()))
+        if(!CloseProject(e.CanVeto(), CLOSE_PROGRAM))
         {
            if (e.CanVeto())
            {
@@ -1002,7 +1028,7 @@ void MainFrame::LoadProjectFile(const wxString & filename)
 #ifdef __WXMAC__
 void MainFrame::MacOnOpenFile(const wxString & filename)
 {
-    if(!CloseProject(true)) return; //if closing old project is canceled do nothing.
+    if(!CloseProject(true, LOAD_NEW_PROJECT)) return; //if closing old project is canceled do nothing.
 
     ImageCache::getInstance().flush();
     LoadProjectFile(filename);
@@ -1013,7 +1039,7 @@ void MainFrame::OnLoadProject(wxCommandEvent & e)
 {
     DEBUG_TRACE("");
 
-    if(CloseProject(true)) //if closing old project is canceled do nothing.
+    if(CloseProject(true, LOAD_NEW_PROJECT)) //if closing old project is canceled do nothing.
     {
         // get the global config object
         wxConfigBase* config = wxConfigBase::Get();
@@ -1061,7 +1087,7 @@ void MainFrame::OnLoadProject(wxCommandEvent & e)
 
 void MainFrame::OnNewProject(wxCommandEvent & e)
 {
-    if(!CloseProject(true)) return; //if closing current project is canceled
+    if(!CloseProject(true, NEW_PROJECT)) return; //if closing current project is canceled
 
     m_filename = wxT("");
     PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::wxNewProjectCmd(pano));
@@ -1958,8 +1984,17 @@ void MainFrame::OnMRUFiles(wxCommandEvent &e)
     if (!f.empty())
     {
         wxFileName fn(f);
-        if(fn.FileExists())
-            LoadProjectFile(f);
+        if (fn.FileExists())
+        {
+            // if closing old project was canceled do nothing
+            if (CloseProject(true, LOAD_NEW_PROJECT))
+            {
+                // remove old images from cache
+                ImageCache::getInstance().flush();
+                // finally load project
+                LoadProjectFile(f);
+            };
+        }
         else
         {
             m_mruFiles.RemoveFileFromHistory(index);

@@ -1429,7 +1429,7 @@ void GLPreviewFrame::OnClose(wxCloseEvent& event)
     // do not close, just hide if we're not forced
     if(m_guiLevel==GUI_SIMPLE)
     {
-        if(!MainFrame::Get()->CloseProject(event.CanVeto()))
+        if(!MainFrame::Get()->CloseProject(event.CanVeto(), MainFrame::CLOSE_PROGRAM))
         {
            if (event.CanVeto())
            {

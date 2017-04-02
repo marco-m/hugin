@@ -130,7 +130,13 @@ public:
 #ifdef __WXMAC__
     void MacOnOpenFile(const wxString & filename);
 #endif
-    bool CloseProject(bool cancelable);
+    enum CloseReason
+    {
+        CLOSE_PROGRAM,
+        LOAD_NEW_PROJECT,
+        NEW_PROJECT
+    };
+    bool CloseProject(bool cancelable, CloseReason reason);
 
     // TODO: create a nice generic optimisation & stitching function
     // instead of these gateway functions to the optimizer and pano panels.
