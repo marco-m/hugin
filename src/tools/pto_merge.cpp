@@ -123,6 +123,13 @@ int main(int argc, char* argv[])
             std::cerr << "AppBase::DocumentData::ReadWriteError code: " << err << std::endl;
             return 1;
         }
+        // read EXIF data, needed for lens detection in merged pano
+        for (size_t i = 0; i < pano.getNrOfImages(); ++i)
+        {
+            HuginBase::SrcPanoImage srcImg(pano.getImage(i));
+            srcImg.readEXIF();
+            pano.setSrcImage(i, srcImg);
+        };
         pano.mergePanorama(pano2);
         optind++;
     };

@@ -1959,6 +1959,9 @@ void Panorama::mergePanorama(const Panorama &newPano)
         std::vector<unsigned int> new_image_nr(newPano.getNrOfImages());
         HuginBase::OptimizeVector optVec=getOptimizeVector();
         HuginBase::OptimizeVector optVecNew=newPano.getOptimizeVector();
+        const size_t oldImgNumber = getNrOfImages();
+        HuginBase::UIntSet imgsAlreadyInPano;
+        HuginBase::UIntSet imgsCheckLens;
         //add only new images
         for(unsigned int i=0;i<newPano.getNrOfImages();i++)
         {
@@ -1971,6 +1974,7 @@ void Panorama::mergePanorama(const Panorama &newPano)
                     //image is already in panorama, we remember the image nr
                     found=true;
                     new_image_nr[i]=j;
+                    imgsAlreadyInPano.insert(i);
                     // now check if we have to update the masks
                     HuginBase::MaskPolygonVector masksOld=getImage(j).getMasks();
                     HuginBase::MaskPolygonVector masksNew=newPano.getImage(i).getMasks();
@@ -1995,13 +1999,75 @@ void Panorama::mergePanorama(const Panorama &newPano)
             };
             if(!found)
             {
-                //new image found, add it
-                new_image_nr[i]=addImage(newPano.getImage(i));
+                //new image found, read EXIF data and add it
+                SrcPanoImage newImg(newPano.getImage(i));
+                newImg.readEXIF();
+                new_image_nr[i]=addImage(newImg);
+                imgsCheckLens.insert(i);
                 //copy also optimise vector
                 optVec.push_back(optVecNew[i]);
             };
         };
         setOptimizeVector(optVec);
+        // check and create lens for new added images
+        HuginBase::ConstImageVariableGroup newLenses(HuginBase::StandardImageVariableGroups::getLensVariables(), newPano);
+        HuginBase::ImageVariableGroup oldLenses(HuginBase::StandardImageVariableGroups::getLensVariables(), *this);
+        HuginBase::UIntSetVector lensImgs = newLenses.getPartsSet();
+        if (!imgsAlreadyInPano.empty())
+        {
+            for (auto img : imgsAlreadyInPano)
+            {
+                const size_t initialLensNumber = newLenses.getPartNumber(img);
+                const size_t newLensNumber = oldLenses.getPartNumber(new_image_nr[img]);
+                // create copy of UIntSet, because we can modifying the set in the for loop
+                // and this invalidates the iterators
+                const HuginBase::UIntSet imgs(imgsCheckLens);
+                for (auto j : imgs)
+                {
+                    if (set_contains(lensImgs[initialLensNumber], j))
+                    {
+                        oldLenses.switchParts(new_image_nr[j], newLensNumber);
+                        imgsCheckLens.erase(j);
+                        lensImgs[initialLensNumber].erase(j);
+                    };
+                };
+                lensImgs[initialLensNumber].erase(img);
+            };
+        };
+        if (!imgsCheckLens.empty())
+        {
+            // find first lens not already handled
+            size_t i = 0;
+            while (i < lensImgs.size() && lensImgs[i].empty())
+            {
+                i++;
+            };
+            if (i < lensImgs.size())
+            {
+                const HuginBase::SrcPanoImage& srcImage = getImage(new_image_nr[*lensImgs[i].begin()]);
+                size_t matchingLensNumber = -1;
+                for (size_t j = 0; j < oldImgNumber; ++j)
+                {
+                    const HuginBase::SrcPanoImage& compareImage = getImage(j);
+                    if (compareImage.getSize() == srcImage.getSize() &&
+                        compareImage.getExifModel() == srcImage.getExifModel() &&
+                        compareImage.getExifMake() == srcImage.getExifMake() &&
+                        compareImage.getExifFocalLength() == srcImage.getExifFocalLength())
+                    {
+                        matchingLensNumber = oldLenses.getPartNumber(j);
+                        break;
+                    };
+                };
+                // we found a matching lens
+                if (matchingLensNumber >= 0)
+                {
+                    for (size_t j : lensImgs[i])
+                    {
+                        oldLenses.switchParts(new_image_nr[j], matchingLensNumber);
+                    };
+                };
+            };
+        };
         // recreate links between image variables.
         for (unsigned int i=0; i<newPano.getNrOfImages(); i++)
         {
