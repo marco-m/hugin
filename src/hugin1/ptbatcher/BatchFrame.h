@@ -117,7 +117,7 @@ public:
     //Sets locale and XRC prefix pointers from main app
     void SetLocaleAndXRC(wxLocale* locale, wxString xrc);
     //Swaps the project entry at index in the list with the next (at index+1).
-    void SwapProject(int index);
+    void SwapProject(int index, bool down);
     //PanoramaOptions readOptions(wxString projectFile);
     /** return which task should be executed at end*/
     Batch::EndTask GetEndTask();

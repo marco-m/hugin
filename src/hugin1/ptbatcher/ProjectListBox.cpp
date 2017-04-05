@@ -35,8 +35,6 @@ enum
 };
 
 BEGIN_EVENT_TABLE(ProjectListBox, wxListCtrl)
-    EVT_LIST_ITEM_SELECTED(wxID_ANY, ProjectListBox::OnSelect)
-    EVT_LIST_ITEM_DESELECTED(wxID_ANY, ProjectListBox::OnDeselect)
     EVT_LIST_COL_END_DRAG(wxID_ANY, ProjectListBox::OnColumnWidthChange)
     EVT_CONTEXT_MENU(ProjectListBox::OnContextMenu)
     EVT_MENU(ID_CHANGE_PREFIX, ProjectListBox::OnChangePrefix)
@@ -60,7 +58,6 @@ bool ProjectListBox::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos,
     columns.Add(PROJECTION);
     columns.Add(SIZE);
 
-    m_selected = -1;
     this->InsertColumn(0,_("ID"));
     this->InsertColumn(1,_("Project"));
     this->InsertColumn(2,_("Output prefix"));
@@ -137,7 +134,6 @@ void ProjectListBox::ChangePrefix(int index, wxString newPrefix)
 void ProjectListBox::Deselect(int index)
 {
     SetItemState(index, 0, wxLIST_STATE_SELECTED|wxLIST_STATE_FOCUSED);
-    m_selected=-1;
 }
 
 void ProjectListBox::Fill(Batch* batch)
@@ -186,24 +182,17 @@ int ProjectListBox::GetProjectId(int index)
     return (int)id;
 }
 
-int ProjectListBox::GetSelectedIndex()
+HuginBase::UIntSet ProjectListBox::GetSelectedProjects()
 {
-    return m_selected;
-}
-
-wxString ProjectListBox::GetSelectedProject()
-{
-    return GetText(m_selected,1);
-}
-
-Project::Target ProjectListBox::GetSelectedProjectTarget()
-{
-    return m_batch->GetProject(m_selected)->target;
-};
-
-wxString ProjectListBox::GetSelectedProjectPrefix()
-{
-    return GetText(m_selected,2);
+    HuginBase::UIntSet selected;
+    for (int i = 0; i<GetItemCount(); i++)
+    {
+        if (GetItemState(i, wxLIST_STATE_SELECTED) & wxLIST_STATE_SELECTED)
+        {
+            selected.insert(i);
+        };
+    };
+    return selected;
 }
 
 wxString ProjectListBox::GetText(int row, int column)
@@ -229,7 +218,6 @@ void ProjectListBox::Select(int index)
     if(index>=0 && index<this->GetItemCount())
     {
         SetItemState(index,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);
-        m_selected=index;
     };
 }
 
@@ -375,26 +363,17 @@ wxString ProjectListBox::GetLongerFormatName(std::string str)
     }
 }
 
-void ProjectListBox::OnDeselect(wxListEvent& event)
-{
-    m_selected = -1;
-}
-
 void ProjectListBox::OnColumnWidthChange(wxListEvent& event)
 {
     int col = event.GetColumn();
     wxConfigBase::Get()->Write(wxString::Format(wxT("/BatchList/ColumnWidth%d"),columns[col]), GetColumnWidth(col));
 }
 
-void ProjectListBox::OnSelect(wxListEvent& event)
-{
-    m_selected = ((wxListEvent)event).GetIndex();
-}
-
 // functions for context menu
 void ProjectListBox::OnContextMenu(wxContextMenuEvent& e)
 {
-    if(m_selected!=-1)
+    const HuginBase::UIntSet selected(GetSelectedProjects());
+    if (selected.size() == 1)
     {
         wxPoint point = e.GetPosition();
         // if from keyboard

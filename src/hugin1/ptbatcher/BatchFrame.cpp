@@ -499,13 +499,14 @@ void BatchFrame::OnButtonCancel(wxCommandEvent& event)
 
 void BatchFrame::OnButtonChangePrefix(wxCommandEvent& event)
 {
-    int selIndex = projListBox->GetSelectedIndex();
-    if(selIndex != -1)
+    const HuginBase::UIntSet selected(projListBox->GetSelectedProjects());
+    if(selected.size()== 1)
     {
-        if(projListBox->GetSelectedProjectTarget()==Project::STITCHING)
+        Project* project = m_batch->GetProject(*selected.begin());
+        if (project->target == Project::STITCHING)
         {
-            wxFileName prefix(projListBox->GetSelectedProjectPrefix());
-            wxFileDialog dlg(0,_("Specify output prefix for project ")+projListBox->GetSelectedProject(),
+            wxFileName prefix(project->prefix);
+            wxFileDialog dlg(0,_("Specify output prefix for project ")+project->path,
                              prefix.GetPath(),
                              prefix.GetFullName(), wxT(""),
                              wxFD_SAVE, wxDefaultPosition);
@@ -539,7 +540,7 @@ void BatchFrame::OnButtonChangePrefix(wxCommandEvent& event)
                 };
 
                 wxString outname(dlg.GetPath());
-                ChangePrefix(selIndex,outname);
+                ChangePrefix(*selected.begin(), outname);
                 //SetStatusText(_T("Changed prefix for "+projListBox->GetSelectedProject()));
                 m_batch->SaveTemp();
             }
@@ -552,8 +553,16 @@ void BatchFrame::OnButtonChangePrefix(wxCommandEvent& event)
     }
     else
     {
-        SetStatusText(_("Please select a project"));
-    }
+        if (selected.empty())
+        {
+            SetStatusText(_("Please select a project"));
+        }
+        else
+        {
+            wxBell();
+            SetStatusText(_("Please select only one project"));
+        };
+    };
 }
 
 void BatchFrame::ChangePrefix(int index,wxString newPrefix)
@@ -605,14 +614,30 @@ void BatchFrame::OnButtonHelp(wxCommandEvent& event)
 
 void BatchFrame::OnButtonMoveDown(wxCommandEvent& event)
 {
-    SwapProject(projListBox->GetSelectedIndex());
-    m_batch->SaveTemp();
+    const HuginBase::UIntSet selected(projListBox->GetSelectedProjects());
+    if (selected.size() == 1)
+    {
+        SwapProject(*selected.begin(), true);
+        m_batch->SaveTemp();
+    }
+    else
+    {
+        wxBell();
+    };
 }
 
 void BatchFrame::OnButtonMoveUp(wxCommandEvent& event)
 {
-    SwapProject(projListBox->GetSelectedIndex()-1);
-    m_batch->SaveTemp();
+    const HuginBase::UIntSet selected(projListBox->GetSelectedProjects());
+    if (selected.size() == 1)
+    {
+        SwapProject(*selected.begin() - 1, false);
+        m_batch->SaveTemp();
+    }
+    else
+    {
+        wxBell();
+    };
 }
 
 void BatchFrame::OnButtonOpenBatch(wxCommandEvent& event)
@@ -642,36 +667,47 @@ void BatchFrame::OnButtonOpenBatch(wxCommandEvent& event)
 void BatchFrame::OnButtonOpenWithHugin(wxCommandEvent& event)
 {
     const wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
-    if(projListBox->GetSelectedIndex()!=-1)
-        if(projListBox->GetText(projListBox->GetSelectedIndex(),0).Cmp(_T(""))!=0)
+    const HuginBase::UIntSet selected(projListBox->GetSelectedProjects());
+    if (selected.size() == 1)
+    {
+        if (projListBox->GetText(*selected.begin(), 0).Cmp(_T("")) != 0)
 #ifdef __WXMAC__
-            wxExecute(_T("open -b net.sourceforge.hugin.hugin \"" + projListBox->GetSelectedProject()+_T("\"")));
+            wxExecute(_T("open -b net.sourceforge.hugin.hugin \"" + projListBox->GetSelectedProject() + _T("\"")));
 #else
-            wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)+_T("hugin \"" + projListBox->GetSelectedProject()+_T("\" -notips")));
+            wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + _T("hugin \"" + m_batch->GetProject(*selected.begin())->path + _T("\" -notips")));
 #endif
         else
         {
             SetStatusText(_("Cannot open app in Hugin."));
-        }
+        };
+    }
     else
     {
-        //ask user if he/she wants to load an empty project
-        wxMessageDialog message(this,_("No project selected. Open Hugin without project?"),
-#ifdef _WIN32
-                                _("PTBatcherGUI"),
-#else
-                                wxT(""),
-#endif
-                                wxYES_NO | wxICON_INFORMATION );
-        if(message.ShowModal() == wxID_YES)
+        if (selected.empty())
         {
-#ifdef __WXMAC__
-            wxExecute(_T("open -b net.sourceforge.hugin.hugin"));
+            //ask user if he/she wants to load an empty project
+            wxMessageDialog message(this, _("No project selected. Open Hugin without project?"),
+#ifdef _WIN32
+                _("PTBatcherGUI"),
 #else
-            wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR)+_T("hugin"));
+                wxT(""),
 #endif
+                wxYES_NO | wxICON_INFORMATION);
+            if (message.ShowModal() == wxID_YES)
+            {
+#ifdef __WXMAC__
+                wxExecute(_T("open -b net.sourceforge.hugin.hugin"));
+#else
+                wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + _T("hugin"));
+#endif
+            }
         }
-    }
+        else
+        {
+            wxBell();
+            SetStatusText(_("Please select only one project"));
+        };
+    };
 }
 
 void BatchFrame::OnButtonPause(wxCommandEvent& event)
@@ -738,31 +774,36 @@ void BatchFrame::OnButtonRemoveComplete(wxCommandEvent& event)
 
 void BatchFrame::OnButtonRemoveFromList(wxCommandEvent& event)
 {
-    int selIndex = projListBox->GetSelectedIndex();
-    if(selIndex != -1)
+    
+    const HuginBase::UIntSet selected = projListBox->GetSelectedProjects();
+    if(!selected.empty())
     {
-        if(m_batch->GetStatus(selIndex)==Project::RUNNING || m_batch->GetStatus(selIndex)==Project::PAUSED)
+        for (auto i = selected.rbegin(); i != selected.rend(); ++i)
         {
-            wxMessageDialog message(this, _("Cannot remove project in progress.\nDo you want to cancel it?"),
-#ifdef _WIN32
-                                    _("PTBatcherGUI"),
-#else
-                                    wxT(""),
-#endif
-                                    wxYES_NO | wxICON_INFORMATION);
-            if(message.ShowModal()==wxID_YES)
+            const int selIndex = *i;
+            if (m_batch->GetStatus(selIndex) == Project::RUNNING || m_batch->GetStatus(selIndex) == Project::PAUSED)
             {
-                OnButtonSkip(event);
+                wxMessageDialog message(this, _("Cannot remove project in progress.\nDo you want to cancel it?"),
+#ifdef _WIN32
+                    _("PTBatcherGUI"),
+#else
+                    wxT(""),
+#endif
+                    wxYES_NO | wxICON_INFORMATION);
+                if (message.ShowModal() == wxID_YES)
+                {
+                    OnButtonSkip(event);
+                };
             }
-        }
-        else
-        {
-            SetStatusText(wxString::Format(_("Removed project %s"), projListBox->GetSelectedProject().c_str()));
-            projListBox->Deselect(selIndex);
-            projListBox->DeleteItem(selIndex);
-            m_batch->RemoveProjectAtIndex(selIndex);
-            m_batch->SaveTemp();
-        }
+            else
+            {
+                SetStatusText(wxString::Format(_("Removed project %s"), m_batch->GetProject(selIndex)->path.c_str()));
+                projListBox->Deselect(selIndex);
+                projListBox->DeleteItem(selIndex);
+                m_batch->RemoveProjectAtIndex(selIndex);
+                m_batch->SaveTemp();
+            };
+        };
     }
     else
     {
@@ -773,28 +814,31 @@ void BatchFrame::OnButtonRemoveFromList(wxCommandEvent& event)
 
 void BatchFrame::OnButtonReset(wxCommandEvent& event)
 {
-    int selIndex = projListBox->GetSelectedIndex();
-    if(selIndex != -1)
+    const HuginBase::UIntSet selected(projListBox->GetSelectedProjects());
+    if(!selected.empty())
     {
-        if(m_batch->GetStatus(selIndex)==Project::RUNNING || m_batch->GetStatus(selIndex)==Project::PAUSED)
+        for (auto selIndex : selected)
         {
-            wxMessageDialog message(this, _("Cannot reset project in progress.\nDo you want to cancel it?"),
-#ifdef _WIN32
-                                    _("PTBatcherGUI"),
-#else
-                                    wxT(""),
-#endif
-                                    wxYES_NO | wxICON_INFORMATION);
-            if(message.ShowModal()==wxID_YES)
+            if (m_batch->GetStatus(selIndex) == Project::RUNNING || m_batch->GetStatus(selIndex) == Project::PAUSED)
             {
-                OnButtonSkip(event);
+                wxMessageDialog message(this, _("Cannot reset project in progress.\nDo you want to cancel it?"),
+#ifdef _WIN32
+                    _("PTBatcherGUI"),
+#else
+                    wxT(""),
+#endif
+                    wxYES_NO | wxICON_INFORMATION);
+                if (message.ShowModal() == wxID_YES)
+                {
+                    OnButtonSkip(event);
+                }
             }
-        }
-        else
-        {
-            m_batch->SetStatus(selIndex,Project::WAITING);
-            SetStatusText(wxString::Format(_("Reset project %s"), projListBox->GetSelectedProject().c_str()));
-        }
+            else
+            {
+                m_batch->SetStatus(selIndex, Project::WAITING);
+                SetStatusText(wxString::Format(_("Reset project %s"), m_batch->GetProject(selIndex)->path.c_str()));
+            };
+        };
     }
     else
     {
@@ -859,44 +903,47 @@ void BatchFrame::OnButtonSaveBatch(wxCommandEvent& event)
 
 void BatchFrame::OnButtonSkip(wxCommandEvent& event)
 {
-    int selIndex = projListBox->GetSelectedIndex();
-    if(selIndex != -1)
+    const HuginBase::UIntSet selected(projListBox->GetSelectedProjects());
+    if(!selected.empty())
     {
-        if(m_batch->GetStatus(selIndex)==Project::RUNNING
-                ||m_batch->GetStatus(selIndex)==Project::PAUSED)
+        for (auto selIndex : selected)
         {
-            if(m_batch->GetStatus(selIndex)==Project::PAUSED)
+            if (m_batch->GetStatus(selIndex) == Project::RUNNING
+                || m_batch->GetStatus(selIndex) == Project::PAUSED)
             {
-                if(m_batch->GetRunningCount()==1)
+                if (m_batch->GetStatus(selIndex) == Project::PAUSED)
                 {
-                    GetToolBar()->ToggleTool(XRCID("tool_pause"),false);
-                }
-                for(int i=0; i<m_batch->GetRunningCount(); i++)
-                {
-                    if(m_batch->GetStatus(selIndex)==Project::PAUSED
-                            && m_batch->CompareProjectsInLists(i,selIndex))
+                    if (m_batch->GetRunningCount() == 1)
                     {
-                        m_batch->CancelProject(i);
+                        GetToolBar()->ToggleTool(XRCID("tool_pause"), false);
+                    }
+                    for (int i = 0; i < m_batch->GetRunningCount(); i++)
+                    {
+                        if (m_batch->GetStatus(selIndex) == Project::PAUSED
+                            && m_batch->CompareProjectsInLists(i, selIndex))
+                        {
+                            m_batch->CancelProject(i);
+                        }
+                    }
+                }
+                else
+                {
+                    //we go through all running projects to find the one with the same id as chosen one
+                    for (int i = 0; i < m_batch->GetRunningCount(); i++)
+                    {
+                        if (m_batch->GetStatus(selIndex) == Project::RUNNING
+                            && m_batch->CompareProjectsInLists(i, selIndex))
+                        {
+                            m_batch->CancelProject(i);
+                        }
                     }
                 }
             }
             else
             {
-                //we go through all running projects to find the one with the same id as chosen one
-                for(int i=0; i<m_batch->GetRunningCount(); i++)
-                {
-                    if(m_batch->GetStatus(selIndex)==Project::RUNNING
-                            && m_batch->CompareProjectsInLists(i,selIndex))
-                    {
-                        m_batch->CancelProject(i);
-                    }
-                }
-            }
-        }
-        else
-        {
-            m_batch->SetStatus(selIndex,Project::FAILED);
-        }
+                m_batch->SetStatus(selIndex, Project::FAILED);
+            };
+        };
     }
 }
 
@@ -1154,20 +1201,22 @@ void BatchFrame::SetLocaleAndXRC(wxLocale* locale, wxString xrc)
     m_xrcPrefix = xrc;
 }
 
-void BatchFrame::SwapProject(int index)
+void BatchFrame::SwapProject(int index, bool down)
 {
     if(index>=0 && index<(projListBox->GetItemCount()-1))
     {
         projListBox->SwapProject(index);
         m_batch->SwapProject(index);
-        if(projListBox->GetSelectedIndex()==index)
+        if(down)
         {
-            projListBox->Select(index+1);
+            projListBox->Deselect(index);
+            projListBox->Select(index + 1);
         }
         else
         {
             projListBox->Select(index);
-        }
+            projListBox->Deselect(index + 1);
+        };
     }
 }
 
@@ -1320,17 +1369,17 @@ void BatchFrame::UpdateBatchVerboseStatus()
 
 void BatchFrame::OnRefillListBox(wxCommandEvent& event)
 {
-    int index=projListBox->GetSelectedIndex();
-    int id=-1;
-    if(index!=-1)
+    const HuginBase::UIntSet selected = projListBox->GetSelectedProjects();
+    std::set<long> selectedID;
+    for (auto index : selected)
     {
-        id=projListBox->GetProjectId(index);
+        selectedID.insert(m_batch->GetProject(index)->id);
     };
     projListBox->DeleteAllItems();
     projListBox->Fill(m_batch);
-    if(id!=-1)
+    for(auto id:selectedID)
     {
-        index=projListBox->GetIndex(id);
+        int index=projListBox->GetIndex(id);
         if(index!=-1)
         {
             projListBox->Select(index);

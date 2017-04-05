@@ -43,12 +43,7 @@ public:
     int GetIndex(int id);
     int GetProjectCountByPath(wxString path);
     int GetProjectId(int index);
-    int GetSelectedIndex();
-    wxString GetSelectedProject();
-    /** gets the prefix of the currently selected project */
-    wxString GetSelectedProjectPrefix();
-    /** return the target of the currently selected project */
-    Project::Target GetSelectedProjectTarget();
+    HuginBase::UIntSet GetSelectedProjects();
     wxString GetText(int row, int column);
     void ReloadProject(int index, Project* project);
     void Select(int index);
@@ -64,15 +59,12 @@ protected:
     void OnRemoveProject(wxCommandEvent& e);
 
 private:
-    int m_selected;
     Batch* m_batch;
     IntArray columns;
 
     wxString GetAttributeString(int i, Project* project);
     wxString GetLongerFormatName(std::string str);
     void OnColumnWidthChange(wxListEvent& event);
-    void OnDeselect(wxListEvent& event);
-    void OnSelect(wxListEvent& event);
 
     enum ColumnName
     {
