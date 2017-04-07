@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2016-12-15 16:31+0100\n"
-"PO-Revision-Date: 2016-12-15 15:39+0000\n"
+"POT-Creation-Date: 2017-04-07 22:06+0200\n"
+"PO-Revision-Date: 2017-04-07 20:25+0000\n"
 "Last-Translator: Kornel Benko <kornel@lyx.org>\n"
 "Language-Team: Slovak <kornel@lyx.org>\n"
 "Language: sk\n"
@@ -2492,16 +2492,41 @@ msgstr "Optimalizátor"
 msgid "Exposure"
 msgstr "Expozícia"
 
+#: hugin1/hugin/MainFrame.cpp:767
+msgid "Save changes to the panorama before opening an other project?"
+msgstr "Uložiť zmeny panorámy pred otvorením iného projektu?"
+
+#: hugin1/hugin/MainFrame.cpp:770
+msgid "Save changes to the panorama before starting a new project?"
+msgstr "Uložiť zmeny tejto panorámy pred štartom nového projektu?"
+
 #: hugin1/hugin/MainFrame.cpp:756
 msgid "Save changes to the panorama before closing?"
 msgstr "Uložiť zmeny panorámy pred uzatvorením?"
 
-#: hugin1/hugin/MainFrame.cpp:763
+#: hugin1/hugin/MainFrame.cpp:787
 msgid ""
-"If you close without saving, changes since your last save will be discarded"
+"If you load an other project without saving, your changes since your last "
+"save will be discarded."
 msgstr ""
-"Ak uzatvoríte projekt bez uloženia, zmeny ktoré ste urobili od posledného "
-"uloženia budú stratené"
+"Ak naložíte iný projekt bez uloženia, zmeny ktoré ste urobili od posledného "
+"uloženia budú stratené."
+
+#: hugin1/hugin/MainFrame.cpp:790
+msgid ""
+"If you start a new project without saving, your changes since your last save "
+"will be discarded."
+msgstr ""
+"Ak štartujete iný projekt bez uloženia, zmeny ktoré ste urobili od "
+"posledného uloženia budú stratené."
+
+#: hugin1/hugin/MainFrame.cpp:794
+msgid ""
+"If you close without saving, your changes since your last save will be "
+"discarded."
+msgstr ""
+"Ak zavriete bez uloženia, zmeny ktoré ste urobili od posledného uloženia "
+"budú stratené."
 
 #: hugin1/hugin/MainFrame.cpp:766
 msgid "Don't Save"
@@ -4109,6 +4134,10 @@ msgstr "Predpona pre cieľ asistenta nemôže byť zmenený."
 #: hugin1/ptbatcher/BatchFrame.cpp:555
 msgid "Please select a project"
 msgstr "Vyberte, prosím, projekt"
+
+#: hugin1/ptbatcher/BatchFrame.cpp:563 hugin1/ptbatcher/BatchFrame.cpp:708
+msgid "Please select only one project"
+msgstr "Vyberte len jeden projekt prosím"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:622
 msgid "Specify batch file to open"
@@ -9996,3 +10025,9 @@ msgstr ""
 #~ "%projectname - meno projektovho pto súboru\n"
 #~ "\n"
 #~ "Veľkosť písmen je v zástupných značkách významná."
+
+#~ msgid ""
+#~ "If you close without saving, changes since your last save will be discarded"
+#~ msgstr ""
+#~ "Ak uzatvoríte projekt bez uloženia, zmeny ktoré ste urobili od posledného "
+#~ "uloženia budú stratené"
