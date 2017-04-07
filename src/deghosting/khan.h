@@ -509,12 +509,15 @@ namespace deghosting
                             std::cout << "computing new weight" << std::endl;
                         // compute probability and set weight
                         //std::cout << "P=" << (float) wpqsKhsum/wpqssum << std::endl;
-                        if (flags & ADV_ONLYP)
-                            *wx = (float) wpqsKhsum/wpqssum;
-                        else
-                            *wx *= (float) wpqsKhsum/wpqssum;
-                        if (maxWeight < *wx)
-                            maxWeight = *wx;
+                        if (wpqssum > 0)
+                        {
+                            if (flags & ADV_ONLYP)
+                                *wx = (float)wpqsKhsum / wpqssum;
+                            else
+                                *wx *= (float)wpqsKhsum / wpqssum;
+                            if (maxWeight < *wx)
+                                maxWeight = *wx;
+                        };
                         wpqsKhsum = wpqssum = 0;
                         
                     }
