@@ -78,10 +78,10 @@ public:
 
         // store minimum and maximum weight and pixel values
         if (nm > maxW) {
-            maxW = w;
+            maxW = nm;
         }
-        if ( w < minW) {
-            minW = w;
+        if ( nm < minW) {
+            minW = nm;
         }
 
         double cmax = getMaxComponent(v);
@@ -104,11 +104,11 @@ public:
         double eps = 1e-7;
         // heuristics to deal with over and underexposed images.
         if (minW > (1.0-eps) && maxW > (1.0-eps)) {
-            // all pixels overexposed, just use smallest value
-            return minValue;
-        } else if (minW < eps && maxW < eps) {
-            // all pixels underexposed. use brightest value
+            // all pixels overexposed, just use brightest value
             return maxValue;
+        } else if (minW < eps && maxW < eps) {
+            // all pixels underexposed. use darkest value
+            return minValue;
         }
         if (weight > 0)
             return result/weight;
