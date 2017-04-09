@@ -1,7 +1,9 @@
 Hugin 2017.0
-* Several fixes for working with HDR images (display in GUI, photometric optimizer).
+* Several fixes for working with HDR images (display in GUI, photometric optimizer,
+  handling of under/over exposured pixels in merging code).
 * Expose shipped user defined output sequences in GUI as own sub-menu.
-* Added some more user defined output sequences (layered TIFF, cube faces).
+* Added some more user defined output sequences (layered TIFF, cube faces) and
+  added new placeholder %sourceimage% to user defined output sequence.
 * Optimizer tabs uses now checkboxes instead of bold underlined font for marking
   of variables to be optimized.
 * Use wxWidgets help windows instead of default browser (Linux&Mac only,
