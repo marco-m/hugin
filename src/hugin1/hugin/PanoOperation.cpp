@@ -814,6 +814,7 @@ ResetOperation::ResetOperation(ResetMode newResetMode)
         m_resetExposure=3;
     };
     m_resetVignetting=(m_resetMode==RESET_PHOTOMETRICS);
+    m_resetColor = 0;
     if(m_resetMode==RESET_PHOTOMETRICS)
     {
         m_resetColor=1;
@@ -1089,6 +1090,7 @@ bool ResetOperation::ShowDialog(wxWindow* parent)
             reset_dlg.LimitToPhotometric();
             checkGeometric=false;
             checkPhotometric=true;
+            break;
         case RESET_DIALOG:
         default:
             checkGeometric=true;
