@@ -185,7 +185,7 @@ void RemapImage(const HuginBase::SrcPanoImage& srcImage, const HuginBase::Panora
     transform.createTransform(srcImage, options);
     finalImage = new ImageType(detectWidth, detectHeight);
     finalMask = new vigra::BImage(detectWidth, detectHeight, vigra::UInt8(0));
-    if (srcImage.hasActiveMasks())
+    if (srcImage.hasActiveMasks() || (srcImage.getCropMode() != HuginBase::SrcPanoImage::NO_CROP && !srcImage.getCropRect().isEmpty()))
     {
         if (!mask)
         {
