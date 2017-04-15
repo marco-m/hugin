@@ -1018,20 +1018,20 @@ void ImagesTreeCtrl::SetOptimizerMode()
     dc.SelectObject(wxNullBitmap);
     checkboxImageList->Add(checkBoxImage);
     // checked checkbox
-    dc.Clear();
     dc.SelectObject(checkBoxImage);
+    dc.Clear();
     renderer.DrawCheckBox(this, dc, wxRect(checkBoxSize), wxCONTROL_CHECKED);
     dc.SelectObject(wxNullBitmap);
     checkboxImageList->Add(checkBoxImage);
     // mouse over unchecked checkbox
-    dc.Clear();
     dc.SelectObject(checkBoxImage);
+    dc.Clear();
     renderer.DrawCheckBox(this, dc, wxRect(checkBoxSize), wxCONTROL_CURRENT);
     dc.SelectObject(wxNullBitmap);
     checkboxImageList->Add(checkBoxImage);
     // mouse over checked checkbox
-    dc.Clear();
     dc.SelectObject(checkBoxImage);
+    dc.Clear();
     renderer.DrawCheckBox(this, dc, wxRect(checkBoxSize), wxCONTROL_CHECKED | wxCONTROL_CURRENT);
     dc.SelectObject(wxNullBitmap);
     checkboxImageList->Add(checkBoxImage);
