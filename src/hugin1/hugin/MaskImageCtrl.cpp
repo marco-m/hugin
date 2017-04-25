@@ -1375,7 +1375,7 @@ void MaskImageCtrl::rescaleImage()
     {
         SetVirtualSize(m_imageSize.GetWidth(), m_imageSize.GetHeight());
     };
-    SetScrollRate(1,1);
+    SetScrollRate(std::max<int>(1, m_bitmap.GetWidth() / 75), std::max<int>(1, m_bitmap.GetHeight() / 75));
     Refresh(true);
 };
 
