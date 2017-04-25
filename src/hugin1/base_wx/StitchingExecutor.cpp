@@ -83,6 +83,11 @@ namespace HuginQueue
         wxString GenerateFinalArgfile(const HuginBase::Panorama & pano, const wxString& projectName, const wxConfigBase* config, const HuginBase::UIntSet& images, const double exifToolVersion)
         {
             wxString argfileInput = config->Read(wxT("/output/FinalArgfile"), wxEmptyString);
+            if (argfileInput.IsEmpty())
+            {
+                // fallback to default arg file
+                argfileInput = wxString(std::string(hugin_utils::GetDataDir() + "hugin_exiftool_copy.arg").c_str(), HUGIN_CONV_FILENAME);
+            }
             const bool generateGPanoTags = (config->Read(wxT("/output/writeGPano"), HUGIN_EXIFTOOL_CREATE_GPANO) == 1l) && (exifToolVersion >= 9.09);
             pano_projection_features proj;
             const HuginBase::PanoramaOptions &opts = pano.getOptions();
@@ -162,23 +167,20 @@ namespace HuginQueue
                 };
             };
             // now open the input file and append it
-            if (!argfileInput.IsEmpty())
+            if (wxFileExists(argfileInput))
             {
-                if (wxFileExists(argfileInput))
+                wxFileInputStream inputFileStream(argfileInput);
+                wxTextInputStream input(inputFileStream);
+                while (inputFileStream.IsOk() && !inputFileStream.Eof())
                 {
-                    wxFileInputStream inputFileStream(argfileInput);
-                    wxTextInputStream input(inputFileStream);
-                    while (inputFileStream.IsOk() && !inputFileStream.Eof())
+                    wxString line = input.ReadLine();
+                    // replace all placeholders
+                    for (std::map<wxString, wxString>::const_iterator it = placeholders.begin(); it != placeholders.end(); ++it)
                     {
-                        wxString line = input.ReadLine();
-                        // replace all placeholders
-                        for (std::map<wxString, wxString>::const_iterator it = placeholders.begin(); it != placeholders.end(); ++it)
-                        {
-                            line.Replace(it->first, it->second, true);
-                        };
-                        // now append to existing argfile
-                        outputFile << line << endl;
+                        line.Replace(it->first, it->second, true);
                     };
+                    // now append to existing argfile
+                    outputFile << line << endl;
                 };
             };
             return tempArgfileFinal.GetFullPath();
