@@ -672,7 +672,7 @@ void BatchFrame::OnButtonOpenWithHugin(wxCommandEvent& event)
     {
         if (projListBox->GetText(*selected.begin(), 0).Cmp(_T("")) != 0)
 #ifdef __WXMAC__
-            wxExecute(_T("open -b net.sourceforge.Hugin \"" + m_batch->GetProject(*selected.begin()) + _T("\"")));
+            wxExecute(_T("open -b net.sourceforge.Hugin \"" + m_batch->GetProject(*selected.begin())->path + _T("\"")));
 #else
             wxExecute(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + _T("hugin \"" + m_batch->GetProject(*selected.begin())->path + _T("\" -notips")));
 #endif
