@@ -23,6 +23,7 @@
 
 #include "StitchingExecutor.h"
 
+#include <list>
 #include <wx/config.h>
 #include <wx/translation.h>
 #include <wx/arrstr.h>
@@ -93,7 +94,17 @@ namespace HuginQueue
             const HuginBase::PanoramaOptions &opts = pano.getOptions();
             const bool readProjectionName = panoProjectionFeaturesQuery(opts.getProjection(), &proj) != 0;
             // build placeholder map
-            std::map<wxString, wxString> placeholders;
+            struct Placeholder
+            {
+                wxString placeholder;
+                wxString value;
+                Placeholder(const wxString& holder, const wxString& newValue)
+                {
+                    placeholder = holder;
+                    value = newValue;
+                };
+            };
+            std::list<Placeholder> placeholders;
 #ifdef _WIN32
             const wxString linebreak(wxT("&#xd;&#xa;"));
 #else
@@ -101,21 +112,22 @@ namespace HuginQueue
 #endif
             if (readProjectionName)
             {
-                placeholders.insert(std::make_pair(wxT("%projection"), wxString(proj.name, wxConvLocal)));
-                placeholders.insert(std::make_pair(wxT("%projectionNumber"), wxString::Format(wxT("%d"), opts.getProjection())));
+                // %projectionNumber have to be processed before %projection, otherwise it does not work
+                placeholders.push_back(Placeholder(wxT("%projectionNumber"), wxString::Format(wxT("%d"), opts.getProjection())));
+                placeholders.push_back(Placeholder(wxT("%projection"), wxString(proj.name, wxConvLocal)));
             };
             // fill in some placeholders
-            placeholders.insert(std::make_pair(wxT("%hfov"), wxString::Format(wxT("%.0f"), opts.getHFOV())));
-            placeholders.insert(std::make_pair(wxT("%vfov"), wxString::Format(wxT("%.0f"), opts.getVFOV())));
-            placeholders.insert(std::make_pair(wxT("%ev"), wxString::Format(wxT("%.2f"), opts.outputExposureValue)));
-            placeholders.insert(std::make_pair(wxT("%nrImages"), wxString::Format(wxT("%lu"), (unsigned long)images.size())));
-            placeholders.insert(std::make_pair(wxT("%nrAllImages"), wxString::Format(wxT("%lu"), (unsigned long)pano.getNrOfImages())));
-            placeholders.insert(std::make_pair(wxT("%fullwidth"), wxString::Format(wxT("%u"), opts.getWidth())));
-            placeholders.insert(std::make_pair(wxT("%fullheight"), wxString::Format(wxT("%u"), opts.getHeight())));
-            placeholders.insert(std::make_pair(wxT("%width"), wxString::Format(wxT("%d"), opts.getROI().width())));
-            placeholders.insert(std::make_pair(wxT("%height"), wxString::Format(wxT("%d"), opts.getROI().height())));
+            placeholders.push_back(Placeholder(wxT("%hfov"), wxString::Format(wxT("%.0f"), opts.getHFOV())));
+            placeholders.push_back(Placeholder(wxT("%vfov"), wxString::Format(wxT("%.0f"), opts.getVFOV())));
+            placeholders.push_back(Placeholder(wxT("%ev"), wxString::Format(wxT("%.2f"), opts.outputExposureValue)));
+            placeholders.push_back(Placeholder(wxT("%nrImages"), wxString::Format(wxT("%lu"), (unsigned long)images.size())));
+            placeholders.push_back(Placeholder(wxT("%nrAllImages"), wxString::Format(wxT("%lu"), (unsigned long)pano.getNrOfImages())));
+            placeholders.push_back(Placeholder(wxT("%fullwidth"), wxString::Format(wxT("%u"), opts.getWidth())));
+            placeholders.push_back(Placeholder(wxT("%fullheight"), wxString::Format(wxT("%u"), opts.getHeight())));
+            placeholders.push_back(Placeholder(wxT("%width"), wxString::Format(wxT("%d"), opts.getROI().width())));
+            placeholders.push_back(Placeholder(wxT("%height"), wxString::Format(wxT("%d"), opts.getROI().height())));
             wxFileName projectFilename(projectName);
-            placeholders.insert(std::make_pair(wxT("%projectname"), projectFilename.GetFullName()));
+            placeholders.push_back(Placeholder(wxT("%projectname"), projectFilename.GetFullName()));
             // now open the final argfile
             wxFileName tempArgfileFinal(wxFileName::CreateTempFileName(GetConfigTempDir(config) + wxT("he")));
             wxFFileOutputStream outputStream(tempArgfileFinal.GetFullPath());
@@ -126,10 +138,10 @@ namespace HuginQueue
             outputFile << wxT("-UserComment<${UserComment}") << linebreak;
             if (readProjectionName)
             {
-                outputFile << wxT("Projection: ") << placeholders[wxT("%projection")] << wxT(" (") << placeholders[wxT("%projectionNumber")] << wxT(")") << linebreak;
+                outputFile << wxT("Projection: ") << wxString(proj.name, wxConvLocal) << wxT(" (") << opts.getProjection() << wxT(")") << linebreak;
             };
-            outputFile << wxT("FOV: ") << placeholders[wxT("%hfov")] << wxT(" x ") << placeholders[wxT("%vfov")] << linebreak;
-            outputFile << wxT("Ev: ") << placeholders[wxT("%ev")] << endl;
+            outputFile << wxT("FOV: ") << wxString::Format(wxT("%.0f"), opts.getHFOV()) << wxT(" x ") << wxString::Format(wxT("%.0f"), opts.getVFOV()) << linebreak;
+            outputFile << wxT("Ev: ") << wxString::Format(wxT("%.2f"), opts.outputExposureValue) << endl;
             outputFile << wxT("-f") << endl;
             if (generateGPanoTags)
             {
@@ -175,9 +187,9 @@ namespace HuginQueue
                 {
                     wxString line = input.ReadLine();
                     // replace all placeholders
-                    for (std::map<wxString, wxString>::const_iterator it = placeholders.begin(); it != placeholders.end(); ++it)
+                    for (auto variable:placeholders)
                     {
-                        line.Replace(it->first, it->second, true);
+                        line.Replace(variable.placeholder, variable.value, true);
                     };
                     // now append to existing argfile
                     outputFile << line << endl;
