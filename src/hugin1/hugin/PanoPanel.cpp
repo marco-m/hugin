@@ -384,6 +384,55 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
     m_ROIRightTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getROI().right() ));
     m_ROITopTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getROI().top() ));
     m_ROIBottomTxt->ChangeValue(wxString::Format(wxT("%d"), opt.getROI().bottom() ));
+    {
+        // format text for display of canvas dimension
+        wxString label = wxString::Format(wxT("%d x %d"), opt.getROI().width(), opt.getROI().height());
+        if (opt.getROI().area() >= 20000000)
+        {
+            label.Append(wxString::Format(wxT("=%.0f MP"), opt.getROI().area() / 1000000.0));
+        }
+        else
+        {
+            label.Append(wxString::Format(wxT("=%.1f MP"), opt.getROI().area() / 1000000.0));
+        };
+        float ratio = 1.0f*opt.getROI().width() / opt.getROI().height();
+        if (ratio > 1.0f)
+        {
+            bool handled = false;
+            for (unsigned int i = 1; i < 10; ++i)
+            {
+                if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
+                {
+                    label.Append(wxString::Format(wxT(", %d:%d"), hugin_utils::roundi(i*ratio), i));
+                    handled = true;
+                    break;
+                }
+            };
+            if (!handled)
+            {
+                label.Append(wxString::Format(wxT(", %.2f:1"), ratio));
+            };
+        }
+        else
+        {
+            ratio = 1.0f / ratio;
+            bool handled = false;
+            for (unsigned int i = 1; i < 10; ++i)
+            {
+                if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
+                {
+                    label.Append(wxString::Format(wxT(", %d:%d"), i, hugin_utils::roundi(i*ratio)));
+                    handled = true;
+                    break;
+                }
+            };
+            if (!handled)
+            {
+                label.Append(wxString::Format(wxT(", 1:%.2f"), ratio));
+            };
+        };
+        XRCCTRL(*this, "pano_size_label", wxStaticText)->SetLabel(label);
+    };
 
     // output types
     XRCCTRL(*this, "pano_cb_ldr_output_blended", wxCheckBox)->SetValue(opt.outputLDRBlended);

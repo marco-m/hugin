@@ -451,6 +451,14 @@
                   <cellpos>3,5</cellpos>
                   <cellspan>2,1</cellspan>
                 </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="pano_size_label">
+                  </object>
+                  <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTRE</flag>
+                  <border>6</border>
+                  <cellpos>5,1</cellpos>
+                  <cellspan>1,4</cellspan>
+                </object>
                 <!--Panorama output section -->
                 <object class="sizeritem">
                   <object class="wxStaticText">
@@ -464,7 +472,7 @@
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL|wxTOP</flag>
                   <border>12</border>
-                  <cellpos>5,0</cellpos>
+                  <cellpos>6,0</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -476,7 +484,7 @@
                   <!-- don't use expand on wxCheckbox on Windows, this makes also the big empty space right the checkbox to react to mouse clicks -->
                   <flag platform="win">wxTOP</flag>
                   <border>12</border>
-                  <cellpos>5,1</cellpos>
+                  <cellpos>6,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -485,7 +493,7 @@
                     <tooltip>Images will be remapped, stacks exposure fused, then blended into a seamless panorama</tooltip>
                   </object>
                   <flag platform="unix|mac">wxEXPAND</flag>
-                  <cellpos>6,1</cellpos>
+                  <cellpos>7,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -494,7 +502,7 @@
                     <tooltip>Images will be remapped, blended into seamless layers, then layers exposure fused into a panorama</tooltip>
                   </object>
                   <flag platform="unix|mac">wxEXPAND</flag>
-                  <cellpos>7,1</cellpos>
+                  <cellpos>8,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <!-- LDR image format -->
@@ -503,7 +511,7 @@
                     <label>Format:</label>
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>8,1</cellpos>
+                  <cellpos>9,1</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -516,7 +524,7 @@
                     <selection>0</selection>
                   </object>
                   <flag>wxALIGN_CENTRE_VERTICAL|wxEXPAND</flag>
-                  <cellpos>8,2</cellpos>
+                  <cellpos>9,2</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -524,7 +532,7 @@
                     <label>Compression:</label>
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>8,3</cellpos>
+                  <cellpos>9,3</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -553,7 +561,7 @@
                     </object>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>8,4</cellpos>
+                  <cellpos>9,4</cellpos>
                   <cellspan>1,2</cellspan>
                 </object>
                 <!-- HDR pano -->
@@ -565,7 +573,7 @@
                   <flag platform="unix|mac">wxEXPAND|wxTOP|wxBOTTOM</flag>
                   <flag platform="win">wxTOP|wxBOTTOM</flag>
                   <border>2</border>
-                  <cellpos>9,1</cellpos>
+                  <cellpos>10,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <!-- HDR image format options -->
@@ -574,7 +582,7 @@
                     <label>Format:</label>
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>10,1</cellpos>
+                  <cellpos>11,1</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -586,7 +594,7 @@
                     <selection>0</selection>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>10,2</cellpos>
+                  <cellpos>11,2</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -594,7 +602,7 @@
                     <label>Compression:</label>
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>10,3</cellpos>
+                  <cellpos>11,3</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -607,7 +615,7 @@
                     </content>
                   </object>
                   <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>10,4</cellpos>
+                  <cellpos>11,4</cellpos>
                   <cellspan>1,2</cellspan>
                 </object>
                 <!-- I really think the widgets below this should be hidden by default, since it is a lot of visual clutter.
@@ -627,7 +635,7 @@
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL|wxTOP</flag>
                   <border>6</border>
-                  <cellpos>11,0</cellpos>
+                  <cellpos>12,0</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -638,7 +646,7 @@
                   <flag platform="unix|mac">wxEXPAND|wxTOP</flag>
                   <flag platform="win">wxTOP</flag>
                   <border>6</border>
-                  <cellpos>11,1</cellpos>
+                  <cellpos>12,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -647,7 +655,7 @@
                     <tooltip>Output remapped images with unmodified exposure. Useful for manual exposure fusing.</tooltip>
                   </object>
                   <flag platform="unix|mac">wxEXPAND</flag>
-                  <cellpos>12,1</cellpos>
+                  <cellpos>13,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -656,7 +664,7 @@
                     <tooltip>Produce remapped, but not merged, linear color space images</tooltip>
                   </object>
                   <flag platform="unix|mac">wxEXPAND</flag>
-                  <cellpos>13,1</cellpos>
+                  <cellpos>14,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <!-- Others -->
@@ -672,7 +680,7 @@
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL|wxTOP</flag>
                   <border>6</border>
-                  <cellpos>14,0</cellpos>
+                  <cellpos>15,0</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -683,7 +691,7 @@
                   <flag platform="unix|mac">wxEXPAND|wxTOP</flag>
                   <flag platform="win">wxTOP</flag>
                   <border>6</border>
-                  <cellpos>14,1</cellpos>
+                  <cellpos>15,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -692,7 +700,7 @@
                     <tooltip>Output remapped, high dynamic range merged stacks from highly overlapping images</tooltip>
                   </object>
                   <flag platform="unix|mac">wxEXPAND</flag>
-                  <cellpos>15,1</cellpos>
+                  <cellpos>16,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -707,7 +715,7 @@
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL|wxTOP|wxBOTTOM</flag>
                   <border>6</border>
-                  <cellpos>16,0</cellpos>
+                  <cellpos>17,0</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -718,7 +726,7 @@
                   <flag platform="unix|mac">wxEXPAND|wxTOP|wxBOTTOM</flag>
                   <flag platform="win">wxTOP</flag>
                   <border>6</border>
-                  <cellpos>16,1</cellpos>
+                  <cellpos>17,1</cellpos>
                   <cellspan>1,5</cellspan>
                 </object>
                 <!-- Processing section -->
@@ -733,7 +741,7 @@
                     </font>
                   </object>
                   <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>17,0</cellpos>
+                  <cellpos>18,0</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -741,7 +749,7 @@
                     <label>Remapper:</label>
                   </object>
                   <flag>wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>17,1</cellpos>
+                  <cellpos>18,1</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -752,7 +760,7 @@
                     <selection>0</selection>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>17,2</cellpos>
+                  <cellpos>18,2</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -760,7 +768,7 @@
                     <label>Options</label>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>17,3</cellpos>
+                  <cellpos>18,3</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -768,7 +776,7 @@
                     <label>Image fusion:</label>
                   </object>
                   <flag>wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>18,1</cellpos>
+                  <cellpos>19,1</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -779,7 +787,7 @@
                     <selection>0</selection>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>18,2</cellpos>
+                  <cellpos>19,2</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -787,7 +795,7 @@
                     <label>Options</label>
                   </object>
                   <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>18,3</cellpos>
+                  <cellpos>19,3</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -795,7 +803,7 @@
                     <label>HDR merger:</label>
                   </object>
                   <flag>wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>19,1</cellpos>
+                  <cellpos>20,1</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -806,7 +814,7 @@
                     <selection>0</selection>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>19,2</cellpos>
+                  <cellpos>20,2</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -814,7 +822,7 @@
                     <label>Options</label>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>19,3</cellpos>
+                  <cellpos>20,3</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -822,7 +830,7 @@
                     <label>Blender:</label>
                   </object>
                   <flag>wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL</flag>
-                  <cellpos>20,1</cellpos>
+                  <cellpos>21,1</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -833,7 +841,7 @@
                     <selection>0</selection>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>20,2</cellpos>
+                  <cellpos>21,2</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <object class="sizeritem">
@@ -841,7 +849,7 @@
                     <label>Options</label>
                   </object>
                   <flag>wxEXPAND</flag>
-                  <cellpos>20,3</cellpos>
+                  <cellpos>21,3</cellpos>
                   <cellspan>1,1</cellspan>
                 </object>
                 <vgap>4</vgap>
