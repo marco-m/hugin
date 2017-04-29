@@ -64,10 +64,10 @@ BEGIN_EVENT_TABLE(PreferencesDialog, wxDialog)
     EVT_BUTTON(XRCID("prefs_defaults"), PreferencesDialog::OnRestoreDefaults)
     EVT_BUTTON(XRCID("prefs_enblend_select"), PreferencesDialog::OnEnblendExe)
     EVT_BUTTON(XRCID("prefs_enblend_enfuse_select"), PreferencesDialog::OnEnfuseExe)
-    EVT_BUTTON(XRCID("pref_exiftool_argfile_choose"), PreferencesDialog::OnExifArgfile)
+    EVT_BUTTON(XRCID("pref_exiftool_argfile_choose"), PreferencesDialog::OnExifArgfileChoose)
     EVT_BUTTON(XRCID("pref_exiftool_argfile_edit"), PreferencesDialog::OnExifArgfileEdit)
-    EVT_BUTTON(XRCID("pref_exiftool_argfile2_choose"), PreferencesDialog::OnExifArgfile2)
-    EVT_BUTTON(XRCID("pref_exiftool_argfile2_edit"), PreferencesDialog::OnExifArgfileEdit2)
+    EVT_BUTTON(XRCID("pref_exiftool_argfile2_choose"), PreferencesDialog::OnExifArgfile2Choose)
+    EVT_BUTTON(XRCID("pref_exiftool_argfile2_edit"), PreferencesDialog::OnExifArgfile2Edit)
     EVT_CHECKBOX(XRCID("pref_exiftool_metadata"), PreferencesDialog::OnExifTool)
     EVT_CHECKBOX(XRCID("prefs_ft_RotationSearch"), PreferencesDialog::OnRotationCheckBox)
     EVT_CHECKBOX(XRCID("prefs_enblend_Custom"), PreferencesDialog::OnCustomEnblend)
@@ -335,7 +335,7 @@ void PreferencesDialog::OnCustomEnfuse(wxCommandEvent& e)
     XRCCTRL(*this, "prefs_enblend_enfuse_select", wxButton)->Enable(e.IsChecked());
 }
 
-void PreferencesDialog::OnExifArgfile(wxCommandEvent & e)
+void PreferencesDialog::OnExifArgfileChoose(wxCommandEvent & e)
 {
     wxFileDialog dlg(this,_("Select ExifTool argfile"),
                      wxT(""), XRCCTRL(*this, "pref_exiftool_argfile", wxTextCtrl)->GetValue(), 
@@ -348,15 +348,18 @@ void PreferencesDialog::OnExifArgfile(wxCommandEvent & e)
     }
 }
 
-void CreateNewArgFile(const wxString& newFilename)
+void CreateNewArgFile(const wxString& newFilename, const wxString& sourceFile)
 {
-    wxTextFile defaultFile(MainFrame::Get()->GetDataPath()+wxT("hugin_exiftool_copy.arg"));
+    wxTextFile defaultFile(sourceFile);
     defaultFile.Open();
     wxTextFile newFile(newFilename);
     newFile.Create();
-    for(size_t i=0; i<defaultFile.GetLineCount(); ++i)
+    if (defaultFile.IsOpened())
     {
-        newFile.AddLine(defaultFile[i]);
+        for (size_t i = 0; i < defaultFile.GetLineCount(); ++i)
+        {
+            newFile.AddLine(defaultFile[i]);
+        };
     };
     newFile.Write();
     defaultFile.Close();
@@ -368,14 +371,21 @@ void PreferencesDialog::OnExifArgfileEdit(wxCommandEvent & e)
     wxString filename=XRCCTRL(*this, "pref_exiftool_argfile", wxTextCtrl)->GetValue();
     if(!filename.empty())
     {
-        if(!wxFileName::FileExists(filename))
+        wxFileName file(filename);
+        file.Normalize();
+        if(!file.Exists())
         {
             if( wxMessageBox(wxString::Format(_("File %s does not exist.\nShould the argfile be created with default tags?"),filename.c_str()),
                   _("Exiftool argfile"), wxYES_NO  | wxICON_EXCLAMATION,this)!=wxYES)
             {
                 return;
             };
-            CreateNewArgFile(filename);
+            filename = file.GetFullPath();
+            CreateNewArgFile(filename, MainFrame::Get()->GetDataPath() + wxT("hugin_exiftool_copy.arg"));
+        }
+        else
+        {
+            filename = file.GetFullPath();
         };
     }
     else
@@ -394,7 +404,7 @@ void PreferencesDialog::OnExifArgfileEdit(wxCommandEvent & e)
             return;
         };
         filename=dlg.GetPath();
-        CreateNewArgFile(filename);
+        CreateNewArgFile(filename, MainFrame::Get()->GetDataPath() + wxT("hugin_exiftool_copy.arg"));
     };
     XRCCTRL(*this, "pref_exiftool_argfile", wxTextCtrl)->SetValue(filename);
     wxDialog * edit_dlg = wxXmlResource::Get()->LoadDialog(this, wxT("pref_edit_argfile"));
@@ -412,7 +422,7 @@ void PreferencesDialog::OnExifArgfileEdit(wxCommandEvent & e)
     };
 };
 
-void PreferencesDialog::OnExifArgfile2(wxCommandEvent & e)
+void PreferencesDialog::OnExifArgfile2Choose(wxCommandEvent & e)
 {
     wxFileDialog dlg(this, _("Select ExifTool argfile"),
         wxT(""), XRCCTRL(*this, "pref_exiftool_argfile2", wxTextCtrl)->GetValue(),
@@ -425,27 +435,31 @@ void PreferencesDialog::OnExifArgfile2(wxCommandEvent & e)
     }
 }
 
-void PreferencesDialog::OnExifArgfileEdit2(wxCommandEvent & e)
+void PreferencesDialog::OnExifArgfile2Edit(wxCommandEvent & e)
 {
     wxString filename = XRCCTRL(*this, "pref_exiftool_argfile2", wxTextCtrl)->GetValue();
     if (!filename.empty())
     {
-        if (!wxFileName::FileExists(filename))
+        wxFileName file(filename);
+        file.Normalize();
+        if (!file.Exists())
         {
-            if (wxMessageBox(wxString::Format(_("File %s does not exist.\nShould an empty argfile be created?"), filename.c_str()),
+            if (wxMessageBox(wxString::Format(_("File %s does not exist.\nShould an example argfile be created?"), filename.c_str()),
                 _("Exiftool argfile"), wxYES_NO | wxICON_EXCLAMATION, this) != wxYES)
             {
                 return;
             };
-            wxTextFile newFile(filename);
-            newFile.Create();
-            newFile.Write();
-            newFile.Close();
+            filename = file.GetFullPath();
+            CreateNewArgFile(filename, MainFrame::Get()->GetDataPath() + wxT("hugin_exiftool_final_example.arg"));
+        }
+        else
+        {
+            filename = file.GetFullPath();
         };
     }
     else
     {
-        if (wxMessageBox(_("No file selected.\nShould an empty argfile be created?"),
+        if (wxMessageBox(_("No file selected.\nShould an example argfile be created?"),
             _("Exiftool argfile"), wxYES_NO | wxICON_EXCLAMATION, this) != wxYES)
         {
             return;
@@ -459,10 +473,7 @@ void PreferencesDialog::OnExifArgfileEdit2(wxCommandEvent & e)
             return;
         };
         filename = dlg.GetPath();
-        wxTextFile newFile(filename);
-        newFile.Create();
-        newFile.Write();
-        newFile.Close();
+        CreateNewArgFile(filename, MainFrame::Get()->GetDataPath() + wxT("hugin_exiftool_final_example.arg"));
     };
     XRCCTRL(*this, "pref_exiftool_argfile2", wxTextCtrl)->SetValue(filename);
     wxDialog * edit_dlg = wxXmlResource::Get()->LoadDialog(this, wxT("pref_edit_argfile_placeholders"));
@@ -483,6 +494,7 @@ void PreferencesDialog::OnExifArgfileEdit2(wxCommandEvent & e)
 void PreferencesDialog::OnExifTool(wxCommandEvent & e)
 {
     bool copyMetadata=XRCCTRL(*this, "pref_exiftool_metadata", wxCheckBox)->GetValue();
+    XRCCTRL(*this, "pref_exiftool_argfile_general_label", wxStaticText)->Enable(copyMetadata);
     XRCCTRL(*this, "pref_exiftool_argfile_intermediate_label", wxStaticText)->Enable(copyMetadata);
     XRCCTRL(*this, "pref_exiftool_argfile_label", wxStaticText)->Enable(copyMetadata);
     XRCCTRL(*this, "pref_exiftool_argfile", wxTextCtrl)->Enable(copyMetadata);

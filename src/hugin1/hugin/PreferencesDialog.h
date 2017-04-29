@@ -63,10 +63,10 @@ protected:
     void OnEnblendExe(wxCommandEvent & e);
     void OnEnfuseExe(wxCommandEvent & e);
     void OnExifTool(wxCommandEvent & e);
-    void OnExifArgfile(wxCommandEvent & e);
+    void OnExifArgfileChoose(wxCommandEvent & e);
     void OnExifArgfileEdit(wxCommandEvent & e);
-    void OnExifArgfile2(wxCommandEvent & e);
-    void OnExifArgfileEdit2(wxCommandEvent & e);
+    void OnExifArgfile2Choose(wxCommandEvent & e);
+    void OnExifArgfile2Edit(wxCommandEvent & e);
     void OnRestoreDefaults(wxCommandEvent & e);
     void OnCustomEnblend(wxCommandEvent & e);
     void OnCustomEnfuse(wxCommandEvent & e);

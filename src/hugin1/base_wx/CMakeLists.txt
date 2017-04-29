@@ -31,5 +31,5 @@ IF(BUILD_HSI)
 target_link_libraries(huginbasewx hugin_python_interface)
 ENDIF()
 
-INSTALL(FILES hugin_exiftool_copy.arg DESTINATION ${HUGINDATADIR}/data)
+INSTALL(FILES hugin_exiftool_copy.arg hugin_exiftool_final_example.arg DESTINATION ${HUGINDATADIR}/data)
 
