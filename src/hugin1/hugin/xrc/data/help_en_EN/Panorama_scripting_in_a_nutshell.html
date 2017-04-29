@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <title>Panorama scripting in a nutshell - PanoTools.org Wiki</title>
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
-<meta name="generator" content="MediaWiki 1.23.15"/>
+<meta name="generator" content="MediaWiki 1.23.16"/>
 
 
 
@@ -51,7 +51,7 @@
 </li>
 <li class="toclevel-1 tocsection-12"><a href="Panorama_scripting_in_a_nutshell.html#Stitching_hugin_projects_on_the_command-line"><span class="tocnumber">5</span> <span class="toctext">Stitching hugin projects on the command-line</span></a>
 <ul>
-<li class="toclevel-2 tocsection-13"><a href="Panorama_scripting_in_a_nutshell.html#Rendering_images"><span class="tocnumber">5.1</span> <span class="toctext">Rendering images</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="Panorama_scripting_in_a_nutshell.html#Remapping_.28Rendering.29_images"><span class="tocnumber">5.1</span> <span class="toctext">Remapping (Rendering) images</span></a></li>
 <li class="toclevel-2 tocsection-14"><a href="Panorama_scripting_in_a_nutshell.html#Blending"><span class="tocnumber">5.2</span> <span class="toctext">Blending</span></a></li>
 </ul>
 </li>
@@ -123,16 +123,20 @@
 </p>
 <h2><a name="Pruning_control_points"><span class="mw-headline">Pruning control points</span></a></h2>
 <p>This still isn't a finished panorama, at the very least this involves <a href="Optimization.html" title="Optimization">optimising</a> the camera positions and then rendering the output.
-</p><p>You could go ahead and <a href="Optimization.html" title="Optimization">optimise</a> this project file straight away, but this can be a bit hit and miss. First it is a good idea to clean up the <a href="Control_points.html" title="Control points">control points</a>. There are currently two useful tools for cleaning control points: <a href="Using_Celeste_with_hugin.html" title="Using Celeste with hugin">celeste</a> removes points from areas of sky and ptoclean<a class="external" href="http://wiki.panotools.org/index.php?title=Ptoclean&amp;action=edit&amp;redlink=1">[*]</a> removes points with large error distances, first <a href="Celeste_standalone.html" title="Celeste standalone">celeste_standalone</a>:
+</p><p>You could go ahead and <a href="Optimization.html" title="Optimization">optimise</a> this project file straight away, but this can be a bit hit and miss. First it is a good idea to clean up the <a href="Control_points.html" title="Control points">control points</a>. There are currently two useful tools for cleaning control points: <a href="Using_Celeste_with_hugin.html" title="Using Celeste with hugin">celeste</a> removes points from areas of sky and <a href="Cpclean.html" title="Cpclean">cpclean</a> removes points with large error distances, first <a href="Celeste_standalone.html" title="Celeste standalone">celeste_standalone</a>:
 </p>
 <pre> celeste_standalone -i project.pto -o project.pto
 </pre>
-<p>Then ptoclean<a class="external" href="http://wiki.panotools.org/index.php?title=Ptoclean&amp;action=edit&amp;redlink=1">[*]</a>:
+<p>Then <a href="Cpclean.html" title="Cpclean">cpclean</a>:
+</p>
+<pre> cpclean -o project.pto project.pto
+</pre>
+<p>Note that in both cases we are overwriting the input project.pto file with the cleaned output. If you want you can create intermediate temporary files and keep each step in case you need to backtrack.
+</p><p>Other control point cleaners are ptscluster<a class="external" href="http://wiki.panotools.org/index.php?title=Ptscluster&amp;action=edit&amp;redlink=1">[*]</a> and ptoclean. <a href="Cpclean.html" title="Cpclean">cpclean</a> has largely replaced ptoclean, but you could still run it like this:
 </p>
 <pre> ptoclean -v --output project.pto project.pto
 </pre>
-<p>Note that in both cases we are overwriting the input project.pto file with the cleaned output. If you want you can create intermediate temporary files and keep each step in case you need to backtrack.
-</p><p>(Other control point cleaners are ptscluster<a class="external" href="http://wiki.panotools.org/index.php?title=Ptscluster&amp;action=edit&amp;redlink=1">[*]</a> and the new <a href="Cpclean.html" title="Cpclean">cpclean</a>)
+<p><br />
 </p>
 <h2><a name="Optimising_positions_and_geometry"><span class="mw-headline">Optimising positions and geometry</span></a></h2>
 <p>Up to now, the project file simply contains an image list and <a href="Control_points.html" title="Control points">control points</a>, the images are not yet aligned, you can do this by <a href="Optimization.html" title="Optimization">optimising</a> geometric parameters with the <a href="Autooptimiser.html" title="Autooptimiser">autooptimiser</a> tool:
@@ -211,7 +215,10 @@
 <pre>    hugin_executor --stitching --prefix=prefix project.pto
 </pre>
 <h1><a name="Stitching_hugin_projects_on_the_command-line"><span class="mw-headline">Stitching hugin projects on the command-line</span></a></h1>
-<h2><a name="Rendering_images"><span class="mw-headline">Rendering images</span></a></h2>
+<p>The stitching option of <a href="Hugin_executor.html" title="Hugin executor">hugin_executor</a> can be broken apart into separate command lines.
+</p><p>The simplest case is remapping and blending.
+</p>
+<h2><a name="Remapping_.28Rendering.29_images"><span class="mw-headline">Remapping (Rendering) images</span></a></h2>
 <p>The <a href="Hugin.html" title="Hugin">hugin</a> tool for remapping and distorting the photos into the final panorama frame is <a href="Nona.html" title="Nona">nona</a>, it uses the .pto project file as a set of instructions:
 </p>
 <pre> nona -m TIFF_m -o project project.pto
@@ -492,5 +499,5 @@
 
 
 </div>								<div class="printfooter">
-				Retrieved from "http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15869<a class="external" href="http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15869">[*]</a>"				</div>
+				Retrieved from "http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15909<a class="external" href="http://wiki.panotools.org/index.php?title=Panorama_scripting_in_a_nutshell&amp;oldid=15909">[*]</a>"				</div>
 												</div></div></body></html>
