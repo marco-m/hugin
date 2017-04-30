@@ -40,6 +40,8 @@
 #include <hugin_utils/stl_utils.h>
 #include "hugin/ImageVariableDialog.h"
 #include "hugin/huginApp.h"
+#include "hugin/MainFrame.h"
+#include "hugin/GLPreviewFrame.h"
 #include <wx/renderer.h>
 
 enum
@@ -1433,6 +1435,32 @@ void ImagesTreeCtrl::OnLeftUp(wxMouseEvent &e)
                     PanoCommand::GlobalCmdHist::getInstance().addCommand(
                         new PanoCommand::MoveImageCmd(*m_pano, img1, img2)
                     );
+                    // now update drag images groups in fast preview window, this information is not stored in Panorama class
+                    HuginBase::UIntSet images = MainFrame::Get()->getGLPreview()->GetDragGroupImages();
+                    std::vector<bool> imgList(m_pano->getNrOfImages(), false);
+                    for (auto& i : images)
+                    {
+                        imgList[i] = true;
+                    };
+                    const bool moveImageChecked = imgList[img1];
+                    imgList.erase(imgList.begin() + img1);
+                    if (img2<imgList.size())
+                    {
+                        imgList.insert(imgList.begin() + img2, moveImageChecked);
+                    }
+                    else
+                    {
+                        imgList.push_back(moveImageChecked);
+                    };
+                    images.clear();
+                    for (size_t i = 0; i < imgList.size(); ++i)
+                    {
+                        if (imgList[i])
+                        {
+                            images.insert(i);
+                        };
+                    };
+                    MainFrame::Get()->getGLPreview()->SetDragGroupImages(images, true);
                 };
             };
         }
