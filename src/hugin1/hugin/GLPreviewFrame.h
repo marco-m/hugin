@@ -304,8 +304,6 @@ protected:
     // void OnOutputChoice(wxCommandEvent & e);
     // update tools according to blend mode choice
     void updateBlendMode();
-    // update the panorama display
-    void updatePano();
     /** event handler for full screen */
     void OnFullScreen(wxCommandEvent &e);
     /** event handler for selection of new mode */
