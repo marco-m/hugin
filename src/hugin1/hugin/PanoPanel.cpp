@@ -395,40 +395,43 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
         {
             label.Append(wxString::Format(wxT("=%.1f MP"), opt.getROI().area() / 1000000.0));
         };
-        float ratio = 1.0f*opt.getROI().width() / opt.getROI().height();
-        if (ratio > 1.0f)
+        if (opt.getROI().area() > 0)
         {
-            bool handled = false;
-            for (unsigned int i = 1; i < 10; ++i)
+            float ratio = 1.0f*opt.getROI().width() / opt.getROI().height();
+            if (ratio > 1.0f)
             {
-                if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
+                bool handled = false;
+                for (unsigned int i = 1; i < 10; ++i)
                 {
-                    label.Append(wxString::Format(wxT(", %d:%d"), hugin_utils::roundi(i*ratio), i));
-                    handled = true;
-                    break;
-                }
-            };
-            if (!handled)
-            {
-                label.Append(wxString::Format(wxT(", %.2f:1"), ratio));
-            };
-        }
-        else
-        {
-            ratio = 1.0f / ratio;
-            bool handled = false;
-            for (unsigned int i = 1; i < 10; ++i)
-            {
-                if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
+                    if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
+                    {
+                        label.Append(wxString::Format(wxT(", %d:%d"), hugin_utils::roundi(i*ratio), i));
+                        handled = true;
+                        break;
+                    }
+                };
+                if (!handled)
                 {
-                    label.Append(wxString::Format(wxT(", %d:%d"), i, hugin_utils::roundi(i*ratio)));
-                    handled = true;
-                    break;
-                }
-            };
-            if (!handled)
+                    label.Append(wxString::Format(wxT(", %.2f:1"), ratio));
+                };
+            }
+            else
             {
-                label.Append(wxString::Format(wxT(", 1:%.2f"), ratio));
+                ratio = 1.0f / ratio;
+                bool handled = false;
+                for (unsigned int i = 1; i < 10; ++i)
+                {
+                    if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
+                    {
+                        label.Append(wxString::Format(wxT(", %d:%d"), i, hugin_utils::roundi(i*ratio)));
+                        handled = true;
+                        break;
+                    }
+                };
+                if (!handled)
+                {
+                    label.Append(wxString::Format(wxT(", 1:%.2f"), ratio));
+                };
             };
         };
         XRCCTRL(*this, "pano_size_label", wxStaticText)->SetLabel(label);
