@@ -1437,30 +1437,33 @@ void ImagesTreeCtrl::OnLeftUp(wxMouseEvent &e)
                     );
                     // now update drag images groups in fast preview window, this information is not stored in Panorama class
                     HuginBase::UIntSet images = MainFrame::Get()->getGLPreview()->GetDragGroupImages();
-                    std::vector<bool> imgList(m_pano->getNrOfImages(), false);
-                    for (auto& i : images)
+                    if (!images.empty() && images.size() < m_pano->getNrOfImages())
                     {
-                        imgList[i] = true;
-                    };
-                    const bool moveImageChecked = imgList[img1];
-                    imgList.erase(imgList.begin() + img1);
-                    if (img2<imgList.size())
-                    {
-                        imgList.insert(imgList.begin() + img2, moveImageChecked);
-                    }
-                    else
-                    {
-                        imgList.push_back(moveImageChecked);
-                    };
-                    images.clear();
-                    for (size_t i = 0; i < imgList.size(); ++i)
-                    {
-                        if (imgList[i])
+                        std::vector<bool> imgList(m_pano->getNrOfImages(), false);
+                        for (auto& i : images)
                         {
-                            images.insert(i);
+                            imgList[i] = true;
                         };
+                        const bool moveImageChecked = imgList[img1];
+                        imgList.erase(imgList.begin() + img1);
+                        if (img2 < imgList.size())
+                        {
+                            imgList.insert(imgList.begin() + img2, moveImageChecked);
+                        }
+                        else
+                        {
+                            imgList.push_back(moveImageChecked);
+                        };
+                        images.clear();
+                        for (size_t i = 0; i < imgList.size(); ++i)
+                        {
+                            if (imgList[i])
+                            {
+                                images.insert(i);
+                            };
+                        };
+                        MainFrame::Get()->getGLPreview()->SetDragGroupImages(images, true);
                     };
-                    MainFrame::Get()->getGLPreview()->SetDragGroupImages(images, true);
                 };
             };
         }
