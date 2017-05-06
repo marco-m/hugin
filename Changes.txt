@@ -11,6 +11,10 @@ Hugin 2017.0
 * Added special assistant variant for single image projects.
 * Cpfind does not downscale images smaller than 2000 pixels.
 * Fixes handling of masks in cpfind when images needs remapping for cp finding.
+* Display of final panorama dimensions on stitcher tab.
+* Sometimes unsaved changes were disregarded without asking the user (e.g. when loading 
+  a project via the recently used projects list). Unsaved changes should now always 
+  require user confirmation).
 
 ============================================================================================
 Hugin 2016.2
