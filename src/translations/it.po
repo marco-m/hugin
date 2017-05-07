@@ -36,7 +36,7 @@ msgstr ""
 "Project-Id-Version: hugin 0.8\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2017-04-29 10:16+0200\n"
-"PO-Revision-Date: 2016-12-03 16:19+0100\n"
+"PO-Revision-Date: 2017-05-07 10:22+0200\n"
 "Last-Translator: Cristian Marchi <cri.penta@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -826,7 +826,7 @@ msgid ""
 "Convert image to grayscale image and try loading again."
 msgstr ""
 "Il file \"%s\" è un'immagine in bianco e nero.\n"
-"Hugin non supporta questo tipo di immagine, pertanto verrà saltata.\n"
+"Hugin non supporta questo tipo di immagine, pertanto verrà scartata.\n"
 "Convertire l'immagine in scala di grigi e ricaricarla di nuovo."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:278
@@ -842,7 +842,7 @@ msgstr ""
 "Hugin supporta solo le immagini RGB o in scala di grigi (con o senza canale "
 "alfa).\n"
 "Il file \"%s\" ha %d canali e %d canali extra (probabilmente canali alfa).\n"
-"Hugin non supporta questo tipo di immagini e pertanto verranno saltate.\n"
+"Hugin non supporta questo tipo di immagini e pertanto verranno scartate.\n"
 "Convertire l'immagine in scala di grigi o in RGB e caricarla di nuovo."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:288
@@ -871,13 +871,13 @@ msgstr ""
 "in scala di grigi."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:299
-#, fuzzy
 msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image respectively and try loading "
 "again."
 msgstr ""
-"Hugin non supporta questo tipo di immagine, pertanto verrà saltata.\n"
+"Hugin non supporta questo tipo di associazione, pertanto questa immagine "
+"verrà scartata.\n"
 "Convertire l'immagine in scala di grigi o RGB e ricaricarla di nuovo."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:316
@@ -2546,14 +2546,13 @@ msgid "Output"
 msgstr "Output"
 
 #: hugin1/hugin/MainFrame.cpp:462
-#, fuzzy, c-format
+#, c-format
 msgid "User defined sequence: %s"
-msgstr "Impossibile aprire la sequenza di output \"%s\" definita dall'utente"
+msgstr "Sequenza definita dall'utente: %s"
 
 #: hugin1/hugin/MainFrame.cpp:478 hugin1/hugin/MainFrame.cpp:1913
-#, fuzzy
 msgid "User defined output sequences"
-msgstr "Impossibile aprire la sequenza di output \"%s\" definita dall'utente"
+msgstr "Sequenze di output definite dall'utente"
 
 #: hugin1/hugin/MainFrame.cpp:572
 msgid "Started"
@@ -2571,39 +2570,34 @@ msgid "Exposure"
 msgstr "Esposizione"
 
 #: hugin1/hugin/MainFrame.cpp:767
-#, fuzzy
 msgid "Save changes to the panorama before opening an other project?"
-msgstr "Salvare le modifiche al panorama prima di chiudere?"
+msgstr "Salvare le modifiche al panorama prima di aprire un altro progetto?"
 
 #: hugin1/hugin/MainFrame.cpp:770
-#, fuzzy
 msgid "Save changes to the panorama before starting a new project?"
-msgstr "Salvare le modifiche al panorama prima di chiudere?"
+msgstr "Salvare le modifiche al panorama prima di iniziare un nuovo progetto?"
 
 #: hugin1/hugin/MainFrame.cpp:774
 msgid "Save changes to the panorama before closing?"
 msgstr "Salvare le modifiche al panorama prima di chiudere?"
 
 #: hugin1/hugin/MainFrame.cpp:787
-#, fuzzy
 msgid ""
 "If you load an other project without saving, your changes since your last "
 "save will be discarded."
 msgstr ""
-"Se si chiude senza salvare, i cambiamenti dall'ultimo salvataggio saranno "
-"perduti"
+"Se si carica un altro progetto senza salvare, i cambiamenti dall'ultimo "
+"salvataggio saranno perduti"
 
 #: hugin1/hugin/MainFrame.cpp:790
-#, fuzzy
 msgid ""
 "If you start a new project without saving, your changes since your last save "
 "will be discarded."
 msgstr ""
-"Se si chiude senza salvare, i cambiamenti dall'ultimo salvataggio saranno "
-"perduti"
+"Se si inizia un nuovo progetto senza salvare, i cambiamenti dall'ultimo "
+"salvataggio saranno perduti"
 
 #: hugin1/hugin/MainFrame.cpp:794
-#, fuzzy
 msgid ""
 "If you close without saving, your changes since your last save will be "
 "discarded."
@@ -2703,6 +2697,9 @@ msgid ""
 "This file is not a valid image.\n"
 "This file will be removed from the project."
 msgstr ""
+"Impossibile caricare l'immagine «%s».\n"
+"Il file non è un'immagine valida.\n"
+"Questo file verrà rimosso dal progetto."
 
 #: hugin1/hugin/MainFrame.cpp:1246
 #, c-format
@@ -2711,6 +2708,10 @@ msgid ""
 "This file was renamed, deleted or is on a non-accessible drive.\n"
 "This file will be removed from the project."
 msgstr ""
+"Impossibile caricare l'immagine «%s».\n"
+"Il file è stato rinominato, cancellato o è su un dispositivo non "
+"accessibile.\n"
+"Questo file verrà rimosso dal progetto."
 
 #: hugin1/hugin/MainFrame.cpp:1571
 #, c-format
@@ -2850,6 +2851,8 @@ msgid ""
 "The assistant could not find vertical lines. Please add vertical lines in "
 "the panorama editor and optimize project manually."
 msgstr ""
+"L'assistente non ha individuato linee verticali. Aggiungere le linee "
+"verticaleìi nell'editor del panorama e ottimizzare il progetto manualmente."
 
 #: hugin1/hugin/MainFrame.cpp:2275
 #, c-format
@@ -3667,22 +3670,21 @@ msgid "Could not save file \"%s\"."
 msgstr "Impossibile salvare il file «%s»."
 
 #: hugin1/hugin/PreferencesDialog.cpp:447
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should an example argfile be created?"
 msgstr ""
 "Il file «%s» non esiste.\n"
-"Creare un argfile vuoto?"
+"Creare un argfile di esempio?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:462
-#, fuzzy
 msgid ""
 "No file selected.\n"
 "Should an example argfile be created?"
 msgstr ""
 "Nessun file selezionato.\n"
-"Creare un argfile vuoto?"
+"Creare un argfile di esempio?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:781
 msgid "Really reset displayed preferences to default values?"
@@ -3841,6 +3843,9 @@ msgid ""
 "Error: %s\n"
 "One cause could be an invalid or missing image file."
 msgstr ""
+"Impossibile unire l'anteprima.\n"
+"Errore: %s\n"
+"Un apossibile causa potrebbe essere una immagine mancante o non valida."
 
 #: hugin1/hugin/huginApp.cpp:218
 #, c-format
@@ -4258,9 +4263,8 @@ msgid "Please select a project"
 msgstr "Selezionare un progetto"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:563 hugin1/ptbatcher/BatchFrame.cpp:708
-#, fuzzy
 msgid "Please select only one project"
-msgstr "Selezionare un progetto"
+msgstr "Selezionare un solo progetto"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:647
 msgid "Specify batch file to open"
@@ -5928,9 +5932,8 @@ msgid "Fine-&tune all Points"
 msgstr "&Regolazione precisa di tutti i punti"
 
 #: hugin1/hugin/xrc/main_menu.xrc:40
-#, fuzzy
 msgid "Runs fine-tune on all control points."
-msgstr "&Regolazione precisa dei punti di controllo"
+msgstr "Esegue la regolazione precisa su tutti i punti di controllo"
 
 #: hugin1/hugin/xrc/main_menu.xrc:43
 msgid "Remove control points in masks"
@@ -6958,7 +6961,7 @@ msgid "Default output prefix:"
 msgstr "Prefisso predefinito dell'output:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:230
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The following placeholders are replaced automatically:\n"
 "%firstimage - filename of first image file\n"
@@ -6974,12 +6977,12 @@ msgid ""
 "%lens - lens (of first image)\n"
 "%projectname - project filename (only for output prefix)"
 msgstr ""
-"I seguenti simboli sono sostituiti automaticamente:\n"
+"I seguenti segnaposto sono sostituiti automaticamente:\n"
 "%firstimage - nome del file della prima immagine\n"
 "%lastimage - nome del file dell'ultima immagine\n"
 "%#images - numero di immagini\n"
 "%directory  - nome cartella (basato sul primo file immagine)\n"
-"%projection - nome progetto\n"
+"%projection - nome proiezione\n"
 "%focallength - lunghezza focale\n"
 "%date - data (della prima immagine)\n"
 "%time - ora (della prima immagine)\n"
@@ -7280,16 +7283,19 @@ msgid ""
 "To create an example argfile leave the text boxes empty and press \"Edit..."
 "\"."
 msgstr ""
+"Questi argfile sono utilizzati per copiare i metadati dal file di immagine "
+"al panorama finale.\n"
+"Lasciare vuoti i campi per usare i valori predefiniti.\n"
+"Per creare un argfile di esempio lasciare vuoti i campi e selezionare "
+"«Modifica...»."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:955
-#, fuzzy
 msgid ""
 "The following argfile will be used to copy tags from the first image to all "
 "intermediate images."
 msgstr ""
 "Il seguente argfile verrà utilizzato per copiare i tag dalla prima immagine "
-"alle immagini intermedie.\n"
-"I segnaposto non verranno sostituiti"
+"alle immagini intermedie."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:971
 msgid "Intermediate ExifTool argfile:"
@@ -7304,7 +7310,6 @@ msgid "Edit selected ExifTool argfile"
 msgstr "Modifica l'argfile ExifTool selezionato"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1013
-#, fuzzy
 msgid ""
 "The following argfile will be used to copy tags from the first image to the "
 "final panorama.\n"
@@ -7312,9 +7317,7 @@ msgid ""
 msgstr ""
 "Il seguente argfile verrà utilizzato per copiare i tag dalla prima immagine "
 "al panorama finale.\n"
-"É aggiunto al precedente argfile per le immagini intermedie.\n"
-"I segnaposto in questo argfile saranno sostituiti prima dell'esecuzione di "
-"exiftool."
+"É aggiunto al precedente argfile per le immagini intermedie."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1030
 msgid "Final ExifTool argfile:"
@@ -7523,6 +7526,8 @@ msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite&original -tagsfromfile image -@ argfile panorama\"."
 msgstr ""
+"L'argfile è richiamato con la riga di comando\n"
+"\"exiftool -overwrite&original -tagsfromfile immagine -@ argfile panorama\"."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1591 hugin1/hugin/xrc/pref_dialog.xrc:1658
 msgid "Edit ExifTool argfile"
@@ -7533,9 +7538,11 @@ msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite&original -tagsfromfile image -E -@ argfile panorama\"."
 msgstr ""
+"L'argfile è richiamato con la riga di comando\n"
+"\"exiftool -overwrite&original -tagsfromfile immagine -E -@ argfile panorama"
+"\"."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1616
-#, fuzzy
 msgid ""
 "The following placeholders will be replaced before invoking ExifTool:\n"
 "%projection - projection name (in English)\n"
