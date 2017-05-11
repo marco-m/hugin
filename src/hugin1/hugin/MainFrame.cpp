@@ -437,7 +437,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
         {
             // we found some files
             long outputId = wxIDUSEROUTPUTSEQUENCE;
-            int outputMenuId=mainMenu->FindMenu(_("Output"));
+            int outputMenuId=mainMenu->FindMenu(_("&Output"));
             if (outputMenuId != wxNOT_FOUND)
             {
                 wxMenu* outputSequencesMenu = new wxMenu;
@@ -1910,7 +1910,11 @@ void MainFrame::enableTools(bool option)
     theMenuBar->Enable(XRCID("ID_SHOW_PREVIEW_FRAME"), option);
     theMenuBar->Enable(XRCID("action_stitch"), option);
     theMenuBar->Enable(XRCID("action_stitch_userdefined"), option);
-    theMenuBar->Enable(theMenuBar->FindMenuItem(_("Output"), _("User defined output sequences")), option);
+    const int userOutputMenuId = theMenuBar->FindMenuItem(_("&Output"), _("User defined output sequences"));
+    if (userOutputMenuId != wxNOT_FOUND)
+    {
+        theMenuBar->Enable(userOutputMenuId, option);
+    };
     m_menu_file_advanced->Enable(XRCID("action_import_papywizard"), option);
     //theMenuBar->Enable(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), option);
 }
