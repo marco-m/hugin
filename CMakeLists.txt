@@ -491,6 +491,12 @@ IF(ENABLE_LAPACK)
   ENDIF(LAPACK_FOUND)
 ENDIF(ENABLE_LAPACK)
 
+OPTION(USE_GDKBACKEND_X11 "Enforce GDK_BACKEND=x11 for Hugin as workaround for wxWidgets bug (not supporting wxGLCanvas on Wayland)" OFF)
+IF(USE_GDKBACKEND_X11)
+  ADD_DEFINITIONS(-DUSE_GDKBACKEND_X11)
+  MESSAGE(STATUS "Compiling Hugin with hard coded GDK_BACKEND=x11")
+ENDIF()
+
 # vips is not used right now
 #IF (WIN32)
 #  # todo: check for vips (not needed right now)
