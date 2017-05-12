@@ -32,7 +32,24 @@
 #include "lensdb/LensDB.h"
 
 // make wxwindows use this class as the main application
-IMPLEMENT_APP(PTBatcherGUI)
+#if defined USE_GDKBACKEND_X11
+// wxWidgets does not support wxTaskBarIcon::IsAvailable on Wayland
+// so until it is fixed upstream enforce using x11 backendj
+// see ticket http://trac.wxwidgets.org/ticket/17779
+#warning Using Hugin with hard coded GDK_BACKEND=x11
+wxIMPLEMENT_WX_THEME_SUPPORT
+wxIMPLEMENT_APP_NO_MAIN(PTBatcherGUI);
+#include <stdlib.h>
+int main(int argc, char **argv)
+{   
+    wxDISABLE_DEBUG_SUPPORT();
+    char backend[]="GDK_BACKEND=x11";
+    putenv(backend);
+    return wxEntry(argc, argv);
+};
+#else
+wxIMPLEMENT_APP(PTBatcherGUI);
+#endif
 
 BEGIN_EVENT_TABLE(PTBatcherGUI, wxApp)
     EVT_LIST_ITEM_ACTIVATED(XRCID("project_listbox"),PTBatcherGUI::OnItemActivated)

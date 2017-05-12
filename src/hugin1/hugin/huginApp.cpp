@@ -132,7 +132,24 @@ BEGIN_EVENT_TABLE(huginApp, wxApp)
 END_EVENT_TABLE()
 
 // make wxwindows use this class as the main application
-IMPLEMENT_APP(huginApp)
+#if defined USE_GDKBACKEND_X11
+// wxWidgets does not support wxGLCanvas on Wayland
+// so until it is fixed upstream enforce using x11 backend
+// see ticket http://trac.wxwidgets.org/ticket/17702
+#warning Using Hugin with hard coded GDK_BACKEND=x11
+wxIMPLEMENT_WX_THEME_SUPPORT
+wxIMPLEMENT_APP_NO_MAIN(huginApp);
+#include <stdlib.h>
+int main(int argc, char **argv)
+{   
+    wxDISABLE_DEBUG_SUPPORT();
+    char backend[]="GDK_BACKEND=x11";
+    putenv(backend);
+    return wxEntry(argc, argv);
+};
+#else
+wxIMPLEMENT_APP(huginApp);
+#endif
 
 huginApp::huginApp()
 {
