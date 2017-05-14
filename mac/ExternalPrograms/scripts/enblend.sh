@@ -1,10 +1,9 @@
+#!/usr/bin/env bash
 # ------------------
-# enblend 4.0   
+# enblend 4.0
 # ------------------
 # $Id: enblend3.sh 1908 2007-02-05 14:59:45Z ippei $
 # Copyright (c) 2007, Ippei Ukai
-
-# prepare
 
 # -------------------------------
 # 20091206.0 sg Script tested and used to build 2009.4.0-RC3
@@ -17,167 +16,13 @@
 # 20121010.0 hvdw simplify script to make this the default non openmp one
 # -------------------------------
 
-# init
-
-fail()
-{
-        echo "** Failed at $1 **"
-        exit 1
-}
-
-# Patch the far too old vigra version inside enblend for libpng >= 1.4
-#patch -Np0 < ../scripts/libpng14_for_enblendvigra.diff
+CC="$CC" CXX="$CXX" \
+PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
+LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS" \
+cmake . -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DENABLE_OPENMP=ON \
+	-DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" -DCMAKE_OSX_SYSROOT="$MACSDKDIR"
 
 
-ORGPATH=$PATH
-
-# Fancy doc builds on Enblend 3.2 are doomed to failure, so don't even try...
-AC_INIT=$(grep AC_INIT Configure.in)
-TEX=$(which tex)
-
-# If NOT 3.2 and if tex is installed, and if FreeSans.ttf is in the right place...
-if [ -z "$(echo $AC_INIT|grep 3.2,)" ] && \
-	 [ -n "$TEX" ]  && [ -f "/Users/$LOGNAME/Library/Fonts/FreeSans.ttf" ]; then 
-	buildDOC="yes"
-	extraConfig="--with-ttf-path=/Users/$LOGNAME/Library/Fonts --enable-split-doc=no"
-	extraBuild="ps pdf xhtml"
-	extraInstall="install-ps install-pdf install-xhtml"
-else
-  buildDOC="no"
-  extraConfig=""
-  extraBuild=""
-  extraInstall=""
-fi 
-
-let NUMARCH="0"
-
-for i in $ARCHS
-do
-  NUMARCH=$(($NUMARCH + 1))
-done
-
-mkdir -p "$REPOSITORYDIR/bin";
-mkdir -p "$REPOSITORYDIR/lib";
-mkdir -p "$REPOSITORYDIR/include";
-
-# compile
-
-for ARCH in $ARCHS
-do
-
- mkdir -p "$REPOSITORYDIR/arch/$ARCH/bin";
- mkdir -p "$REPOSITORYDIR/arch/$ARCH/lib";
- mkdir -p "$REPOSITORYDIR/arch/$ARCH/include";
-
- ARCHARGs=""
- MACSDKDIR=""
-
- if [ $ARCH = "i386" -o $ARCH = "i686" ] ; then
-   TARGET=$i386TARGET
-   MACSDKDIR=$i386MACSDKDIR
-   ARCHARGs="$i386ONLYARG"
-   OSVERSION="$i386OSVERSION"
-   CC=$i386CC
-   CXX=$i386CXX
-   ARCHFLAG="-m32"
- else [ $ARCH = "x86_64" ] ;
-   TARGET=$x64TARGET
-   MACSDKDIR=$x64MACSDKDIR
-   ARCHARGs="$x64ONLYARG"
-   OSVERSION="$x64OSVERSION"
-   CC=$x64CC
-   CXX=$x64CXX
-   ARCHFLAG="-m64"
- fi
-
-# To build documentation, you will need to install the following (port) packages:
-#   freefont-ttf
-#   gnuplot
-#   ghostscript
-#   texi2html
-#   transfig
-#   tidy
-#  *teTeX
-# This script presumes you have installed the fonts in ~/Library/Fonts. 
-# See <http://trac.macports.org/ticket/16938> for how to do this.
-# (Port installs the fonts here: /opt/local/share/fonts/freefont-ttf/)
-# The port version of teTeX did not install cleanly for me. Instead, I downloaded a pre-built distro
-# called MacTeX <http://www.tug.org/mactex/2009/>. After installing, you will need to add this
-# directory to your PATH, as shown on the next line: 
-# export PATH=/usr/local/texlive/2009/bin/universal-darwin:$PATH
-# To make the change permanent, edit ~/.profile.
-
-  if [ ! -x ./configure ]; then
-    make --makefile=Makefile.scm
-  fi
-
- env \
-   CC=clang-omp CXX=clang-omp++ \
-   CFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include -I$REPOSITORYDIR/include/OpenEXR -I$REPOSITORYDIR/include/boost $ARCHFLAG $ARCHARGs $OTHERARGs -dead_strip" \
-   CXXFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include -I$REPOSITORYDIR/include/OpenEXR -I$REPOSITORYDIR/include/boost $ARCHFLAG $ARCHARGs $OTHERARGs -dead_strip" \
-   CPPFLAGS="-I$REPOSITORYDIR/include -I$REPOSITORYDIR/include/OpenEXR -I/usr/include" \
-   LIBS="-lGLEW -framework GLUT -lobjc -framework OpenGL -framework AGL" \
-   LDFLAGS="-L$REPOSITORYDIR/lib -L/usr/lib -mmacosx-version-min=$OSVERSION -dead_strip" \
-   NEXT_ROOT="$MACSDKDIR" \
-   PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
-   OPENEXR_CFLAGS="-I$REPOSITORYDIR/include/OpenEXR" OPENEXR_LIBS="-L$REPOSITORYDIR/lib -lIlmImf"\
-   ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
-   --enable-image-cache=no --enable-openmp=yes \
-   --host="$TARGET" --exec-prefix=$REPOSITORYDIR/arch/$ARCH \
-   $extraConfig --with-openexr || fail "configure step for $ARCH";
- # hack; AC_FUNC_MALLOC sucks!!
-
- mv ./config.h ./config.h-copy; 
- sed -e 's/HAVE_MALLOC\ 0/HAVE_MALLOC\ 1/' \
-     -e 's/rpl_malloc/malloc/' \
-     "./config.h-copy" > "./config.h";
-
-
- # Default to standard -O3 optimization as this improves performance
- # and shrinks the binary
- # If you prefer -O2, change -O3 to -O2 in the 3rd line (containing the sed command).
- [ -f src/Makefile.bak ] && rm src/Makefile.bak
- mv src/Makefile src/Makefile.bak
- sed -e "s/-O[0-9]/-O3/g" "src/Makefile.bak" > src/Makefile
-
- make clean;
- make $extraBuild || fail "failed at make step of $ARCH";
- make install $extraInstall || fail "make install step of $ARCH";
- 
-done
-
-
-# merge execs
-
-for program in bin/enblend bin/enfuse
-do
-
- if [ $NUMARCH -eq 1 ] ; then
-   if [ -f $REPOSITORYDIR/arch/$ARCHS/$program ] ; then
-		 echo "Moving arch/$ARCHS/$program to $program"
-  	 mv "$REPOSITORYDIR/arch/$ARCHS/$program" "$REPOSITORYDIR/$program";
-  	 strip -x "$REPOSITORYDIR/$program";
-  	 continue
-	 else
-		 echo "Program arch/$ARCHS/$program not found. Aborting build";
-		 exit 1;
-	 fi
- fi
-
- LIPOARGs=""
-
- for ARCH in $ARCHS
- do
- 	if [ -f $REPOSITORYDIR/arch/$ARCH/$program ] ; then
-		echo "Adding arch/$ARCH/$program to bundle"
- 		LIPOARGs="$LIPOARGs $REPOSITORYDIR/arch/$ARCH/$program"
-	else
-		echo "File arch/$ARCH/$program was not found. Aborting build";
-		exit 1;
-	fi
- done
-
- lipo $LIPOARGs -create -output "$REPOSITORYDIR/$program";
- strip -x "$REPOSITORYDIR/$program";
-
-done
+make clean || fail "make clean step"
+make $MAKEARGS || fail "make step";
+make install || fail "make install step";

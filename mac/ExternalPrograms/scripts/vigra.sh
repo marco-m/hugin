@@ -1,54 +1,16 @@
-let NUMARCH="0"
+#!/usr/bin/env bash
 
-for i in $ARCHS
-do
-  NUMARCH=$(($NUMARCH + 1))
-done
-
-mkdir -p "$REPOSITORYDIR/bin";
-mkdir -p "$REPOSITORYDIR/lib";
-mkdir -p "$REPOSITORYDIR/include";
-
-# compile
-
-for ARCH in $ARCHS
-do
-
- ARCHARGs=""
- MACSDKDIR=""
-
- if [ $ARCH = "i386" -o $ARCH = "i686" ] ; then
-   TARGET=$i386TARGET
-   MACSDKDIR=$i386MACSDKDIR
-   ARCHARGs="$i386ONLYARG"
-   OSVERSION="$i386OSVERSION"
-   CC=$i386CC
-   CXX=$i386CXX
-   ARCHFLAG="-m32"
- else [ $ARCH = "x86_64" ] ;
-   TARGET=$x64TARGET
-   MACSDKDIR=$x64MACSDKDIR
-   ARCHARGs="$x64ONLYARG"
-   OSVERSION="$x64OSVERSION"
-   CC=$x64CC
-   CXX=$x64CXX
-   ARCHFLAG="-m64"
- fi
-
-  env \
-  CC=$CC CXX=$CXX \
-  CFLAGS="-isysroot $MACSDKDIR -arch $ARCH $ARCHARGs $OTHERARGs -O2 -dead_strip" \
-  CXXFLAGS="-isysroot $MACSDKDIR -arch $ARCH $ARCHARGs $OTHERARGs -O2 -dead_strip" \
-  CPPFLAGS="-isysroot $MACSDKDIR -arch $ARCH $ARCHARGs $OTHERARGs -O2 -dead_strip -I$REPOSITORYDIR/include" \
-  OBJCFLAGS="-arch $ARCH" \
-  OBJCXXFLAGS="-arch $ARCH" \
-  LDFLAGS="-L$REPOSITORYDIR/lib -arch $ARCH -mmacosx-version-min=$OSVERSION -dead_strip -prebind" \
+env \
+  CC="$CC" CXX="$CXX" \
+  CFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
+  CXXFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
+  CPPFLAGS="-I$REPOSITORYDIR/include -isysroot $MACSDKDIR" \
+  LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS -prebind -stdlib=libc++ -lc++" \
   cmake -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DDEPENDENCY_SEARCH_PREFIX="$REPOSITORYDIR" \
-  -DCMAKE_OSX_SYSROOT="macosx10.11" -DCMAKE_OSX_DEPLOYMENT_TARGET=$OSVERSION \
+  -DCMAKE_OSX_SYSROOT="macosx${SDKVERSION}" -DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" \
   -DWITH_OPENEXR=1 \
-  -DFFTW3F_LIBRARY="$REPOSITORYDIR/lib" -DFFTW3F_INCLUDE_DIR="$REPOSITORYDIR/include"
+  -DFFTW3F_LIBRARY="$REPOSITORYDIR/lib" -DFFTW3F_INCLUDE_DIR="$REPOSITORYDIR/include" || fail "configure step"
 
-done
-
-make
-make install
+make clean || fail "make clean step"
+make $MAKEARGS || fail "make step"
+make install || fail "make install step"

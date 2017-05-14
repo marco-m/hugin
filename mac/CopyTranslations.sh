@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cd $1
 
 mkdir -p mac

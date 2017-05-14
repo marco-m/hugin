@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env bash
 # -------------------------------
 # 20091206.0 sg Script tested and used to build 2009.4.0-RC3
 # 20100110.0 sg Make libGLEW and libexiv2 dynamic
@@ -14,37 +14,58 @@
 # -------------------------------
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-cd $DIR || exit 1
-source SetEnv.txt
-pre="<<<<<<<<<<<<<<<<<<<< building"
+cd "$DIR" || exit 1
+source SetEnv.sh
+pre="<<<<<<<<<<<<<<<<<<<<"
 pst=">>>>>>>>>>>>>>>>>>>>"
 
-cd $REPOSITORYDIR/
-cd $(ls -d */|head -n 1) # cd into first folder
-# To start this script in the middle, move the "fi" line down as needed
-if [ -z "check for zero length string fails" ] ; then echo;
-fi
-# exit 0
-echo "$pre libomp $pst"          && cd ../libomp_oss*   || exit 1   && sh ../../scripts/libomp.sh   || exit 1
-echo "$pre boost $pst"           && cd ../boost*        || exit 1   && sh ../../scripts/boost.sh    || exit 1
-echo "$pre gettext $pst"         && cd ../gettext*      || exit 1   && sh ../../scripts/gettext.sh  || exit 1
-echo "$pre libffi $pst"          && cd ../libffi*       || exit 1   && sh ../../scripts/libffi.sh   || exit 1
-echo "$pre glib2 $pst"           && cd ../glib*         || exit 1   && sh ../../scripts/libglib2.sh || exit 1
-echo "$pre fftw $pst"            && cd ../fftw*         || exit 1   && sh ../../scripts/fftw.sh     || exit 1
-echo "$pre libglew $pst"         && cd ../glew*         || exit 1   && sh ../../scripts/libglew.sh  || exit 1
-echo "$pre gsl $pst"             && cd ../gsl*          || exit 1   && sh ../../scripts/gsl.sh      || exit 1
-echo "$pre libjpeg-8d $pst"      && cd ../jpeg*         || exit 1   && sh ../../scripts/libjpeg.sh  || exit 1
-echo "$pre libpng $pst"          && cd ../libpng*       || exit 1   && sh ../../scripts/libpng.sh   || exit 1
-echo "$pre libtiff $pst"         && cd ../tiff*         || exit 1   && sh ../../scripts/libtiff.sh  || exit 1
-echo "$pre ilmbase $pst"         && cd ../ilmbase*      || exit 1   && sh ../../scripts/ilmbase.sh  || exit 1
-echo "$pre openexr $pst"         && cd ../openexr*      || exit 1   && sh ../../scripts/openexr.sh	|| exit 1
-echo "$pre libpano13 $pst"       && cd ../libpano13*    || exit 1   && sh ../../scripts/pano13.sh   || exit 1
-echo "$pre libexiv2 $pst"        && cd ../exiv2*        || exit 1   && sh ../../scripts/libexiv2.sh || exit 1
-echo "$pre liblcms-2 $pst"       && cd ../lcms2*        || exit 1   && sh ../../scripts/lcms2.sh    || exit 1
-echo "$pre vigra $pst"           && cd ../vigra*        || exit 1   && sh ../../scripts/vigra.sh    || exit 1
-echo "$pre wxmac $pst"           && cd ../wxWidgets*    || exit 1   && patch -p1 -N < ../../patches/wxmac-webkit.patch; sh ../../scripts/wxmac.sh || exit 1
-echo "$pre enblend-enfuse $pst"  && cd ../enblend-en*   || exit 1   && sh ../../scripts/enblend.sh  || exit 1
+FORCE_BUILD=$1
 
-cd $REPOSITORYDIR
+build(){
+    cd "$REPOSITORYDIR"
+    
+    local name=$1
+    local dir=$2
+    if [[ -n "$4" ]]; then
+        local patch=$3
+        local script=$4
+    else
+        local script=$3
+    fi
+    if [[ ! -f "_built/$name" ]] || [[ $FORCE_BUILD = "$name" ]]; then
+        echo "$pre $name:   building    $pst"
+        cd "$dir" || exit 1
+        sh -c "$patch"
+        { $BASH "$script" || exit 1; } && touch "../_built/$name"
+        cd ..
+    else
+        echo "$pre $name:   already built   $pst"
+    fi
+}
 
-echo "That's all, folks!!"
+cd "$REPOSITORYDIR"
+mkdir -p _built
+
+build "libomp"    libomp*       ../../scripts/libomp.sh
+build "boost"     boost*        ../../scripts/boost.sh
+build "gettext"   gettext*      ../../scripts/gettext.sh
+build "libffi"    libffi*       ../../scripts/libffi.sh
+build "glib2"     glib*         ../../scripts/libglib2.sh
+build "fftw"      fftw*         ../../scripts/fftw.sh
+build "libglew"   glew*         ../../scripts/libglew.sh
+build "gsl"       gsl*          ../../scripts/gsl.sh
+build "libjpeg"   jpeg*         ../../scripts/libjpeg.sh
+build "libpng"    libpng*       ../../scripts/libpng.sh
+build "libtiff"   tiff*         ../../scripts/libtiff.sh
+build "ilmbase"   ilmbase*      ../../scripts/ilmbase.sh
+build "openexr"   openexr*      ../../scripts/openexr.sh
+build "libpano"   libpano13*    ../../scripts/pano13.sh
+build "libexiv2"  exiv2*        ../../scripts/libexiv2.sh
+build "liblcms2"  lcms2*        ../../scripts/lcms2.sh
+build "vigra"     vigra*        "patch -p1 -N < ../../patches/vigra-patch-include-vigra-hdf5impex.hxx.diff;" ../../scripts/vigra.sh
+build "wxmac"     wxWidgets*    "patch -p1 -N < ../../patches/wx-patch-quicktime-removal.diff; patch -p1 -N < ../../patches/wx-patch-yosemite.diff" ../../scripts/wxmac.sh
+build "enblend"   enblend*      ../../scripts/enblend.sh
+
+echo "$pre Finished! $pst"
+
+cd "$REPOSITORYDIR"
