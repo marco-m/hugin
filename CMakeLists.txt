@@ -12,7 +12,6 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 if(APPLE)
-  set(CMAKE_OSX_SYSROOT macosx10.12)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9")
   if (MAC_SELF_CONTAINED_BUNDLE)
       set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/mac/ExternalPrograms/repository/lib)
@@ -674,10 +673,6 @@ IF(APPLE)
   IF(MAC_SELF_CONTAINED_BUNDLE)
     SET(CMAKE_MACOSX_RPATH FALSE) 
 
-    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/CMakeModules/PackageMacAppBundleLibs.sh.in
-             ${hugin_BINARY_DIR}/${BINDIR}/PackageMacAppBundleLibs.sh @ONLY IMMEDIATE)
-
-
     ADD_CUSTOM_TARGET(Mac ALL)
     SET(APPS Hugin PTBatcherGUI calibrate_lens_gui HuginStitchProject)
     SET(APPS_DIR ${CMAKE_BINARY_DIR}/src/hugin1/hugin
@@ -691,8 +686,8 @@ IF(APPLE)
       ADD_DEPENDENCIES(Mac ${_target})
       ADD_CUSTOM_COMMAND(
         TARGET Mac
-        COMMAND bash ${hugin_BINARY_DIR}/${BINDIR}/PackageMacAppBundleLibs.sh
-        ARGS ${_target} ${_target_dir}
+        COMMAND bash ${CMAKE_SOURCE_DIR}/mac/PackageMacAppBundleLibs.sh
+        ARGS ${_target} ${_target_dir} ${CMAKE_SOURCE_DIR}
       )
     ENDFOREACH(_var)
 
@@ -702,7 +697,7 @@ IF(APPLE)
       COMMAND ${CMAKE_SOURCE_DIR}/mac/PackageCreateToolsLibs.sh
       ARGS ${CMAKE_CURRENT_BINARY_DIR}/tools_mac
       fulla tca_correct vig_optimize hugin_lensdb hugin_executor pano_trafo pto_gen 
-        pto_lensstack pto_mask pto_merge pto_move pto_template pto_var deghosting_mask)
+        pto_lensstack pto_mask pto_merge pto_move pto_template pto_var deghosting_mask :enblend :enfuse)
 
     INSTALL( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tools_mac
              DESTINATION Hugin 
@@ -889,8 +884,8 @@ IF(APPLE)
   #has to be 72dpi
   SET(CPACK_DMG_BACKGROUND_IMAGE "${CMAKE_SOURCE_DIR}/mac/DmgBackground.jpg")
 
-  # SET(CPACK_DMG_DS_STORE_SETUP_SCRIPT "${CMAKE_SOURCE_DIR}/mac/DmgScript.scpt")
-  SET(CPACK_DMG_DS_STORE "${CMAKE_SOURCE_DIR}/mac/DmgDS_Store.in")
+  SET(CPACK_DMG_DS_STORE_SETUP_SCRIPT "${CMAKE_SOURCE_DIR}/mac/DmgScript.scpt")
+  # SET(CPACK_DMG_DS_STORE "${CMAKE_SOURCE_DIR}/mac/DmgDS_Store.in")
 
 ENDIF(APPLE)
 
