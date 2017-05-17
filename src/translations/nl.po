@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2017-04-29 10:16+0200\n"
-"PO-Revision-Date: 2016-06-22 21:45+0200\n"
+"PO-Revision-Date: 2017-05-17 14:48+0200\n"
 "Last-Translator: Harry van der Wolf <hvdwolf@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@lists.kde.org>\n"
 "Language: nl_NL\n"
@@ -27,7 +27,7 @@ msgstr "Zoeken naar ijkpunten..."
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/base_wx/AssistantExecutor.cpp:77
 msgid "Removing control points in clouds..."
-msgstr "Verwijder ijkpunten in wolken..."
+msgstr "Verwijderen ijkpunten in wolken..."
 
 #: hugin1/base_wx/AssistantExecutor.cpp:83
 msgid "Statistically cleaning of control points..."
@@ -839,13 +839,12 @@ msgstr ""
 "project zijn grijstinten afbeeldingen."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:299
-#, fuzzy
 msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image respectively and try loading "
 "again."
 msgstr ""
-"Hugin ondersteunt dit vermengen niet. Afbeelding wordt overgeslagen.\n"
+"Hugin ondersteunt dit samenvoegen niet. Afbeelding wordt overgeslagen.\n"
 "Converteer afbeelding naar grijstinten of RGB en open opnieuw."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:316
@@ -2489,14 +2488,13 @@ msgid "Output"
 msgstr "Te produceren uitvoer:"
 
 #: hugin1/hugin/MainFrame.cpp:462
-#, fuzzy, c-format
+#, c-format
 msgid "User defined sequence: %s"
-msgstr "Kan gebruikers gedefinieerde uitvoer sequentie \"%s\" niet openen."
+msgstr "Gebruiker gedefinieerde volgorde:  %s"
 
 #: hugin1/hugin/MainFrame.cpp:478 hugin1/hugin/MainFrame.cpp:1913
-#, fuzzy
 msgid "User defined output sequences"
-msgstr "Kan gebruikers gedefinieerde uitvoer sequentie \"%s\" niet openen."
+msgstr "Gebruiker gedefinieerde volgordes"
 
 #: hugin1/hugin/MainFrame.cpp:572
 msgid "Started"
@@ -2514,42 +2512,39 @@ msgid "Exposure"
 msgstr "Belichting"
 
 #: hugin1/hugin/MainFrame.cpp:767
-#, fuzzy
 msgid "Save changes to the panorama before opening an other project?"
-msgstr "Panorama wijzigingen bewaren voor afsluiten?"
+msgstr "Panorama wijzigingen bewaren voor openen van volgend project?"
 
 #: hugin1/hugin/MainFrame.cpp:770
-#, fuzzy
 msgid "Save changes to the panorama before starting a new project?"
-msgstr "Panorama wijzigingen bewaren voor afsluiten?"
+msgstr "Panorama wijzigingen bewaren voor starten van nieuw project?"
 
 #: hugin1/hugin/MainFrame.cpp:774
 msgid "Save changes to the panorama before closing?"
 msgstr "Panorama wijzigingen bewaren voor afsluiten?"
 
 #: hugin1/hugin/MainFrame.cpp:787
-#, fuzzy
 msgid ""
 "If you load an other project without saving, your changes since your last "
 "save will be discarded."
 msgstr ""
-"Als u afsluit zonder opslaan worden uw laatste wijzigingen niet bewaard"
+"Als u een ander project laadt zonder nu eerst op te slaan, worden uw laatste "
+"wijzigingen niet bewaard"
 
 #: hugin1/hugin/MainFrame.cpp:790
-#, fuzzy
 msgid ""
 "If you start a new project without saving, your changes since your last save "
 "will be discarded."
 msgstr ""
-"Als u afsluit zonder opslaan worden uw laatste wijzigingen niet bewaard"
+"Als u een nieuw project start zonder eerst op te slaan, worden uw laatste "
+"wijzigingen niet bewaard"
 
 #: hugin1/hugin/MainFrame.cpp:794
-#, fuzzy
 msgid ""
 "If you close without saving, your changes since your last save will be "
 "discarded."
 msgstr ""
-"Als u afsluit zonder opslaan worden uw laatste wijzigingen niet bewaard"
+"Als u afsluit zonder opslaan, worden uw laatste wijzigingen niet bewaard"
 
 #: hugin1/hugin/MainFrame.cpp:799
 msgid "Don't Save"
@@ -2642,6 +2637,9 @@ msgid ""
 "This file is not a valid image.\n"
 "This file will be removed from the project."
 msgstr ""
+"Kan afbeelding \"%s\" niet laden.\n"
+"Dit bestand is geen correcte afbeelding.\n"
+"Het bestand wordt verwijderd uit het project."
 
 #: hugin1/hugin/MainFrame.cpp:1246
 #, c-format
@@ -2650,6 +2648,9 @@ msgid ""
 "This file was renamed, deleted or is on a non-accessible drive.\n"
 "This file will be removed from the project."
 msgstr ""
+"Kan afbeelidng \"%s\" niet laden.\n"
+"Het bestand is hernoemd, verwijderd of op een niet toegankelijke locatie.\n"
+"Het bestandwordt verwijderd uit het project."
 
 #: hugin1/hugin/MainFrame.cpp:1571
 #, c-format
@@ -2790,6 +2791,8 @@ msgid ""
 "The assistant could not find vertical lines. Please add vertical lines in "
 "the panorama editor and optimize project manually."
 msgstr ""
+"De Assistent kon geen verticale lijnen vinden. Voeg aub verticale lijnen toe "
+"in de panorama editor en optimaliseer het project handmatig."
 
 #: hugin1/hugin/MainFrame.cpp:2275
 #, c-format
@@ -3758,6 +3761,9 @@ msgid ""
 "Error: %s\n"
 "One cause could be an invalid or missing image file."
 msgstr ""
+"Samenvoegen tot voorbeeld mislukt.\n"
+"Fout: %s\n"
+"Een incorrecte of missende afbeelding kan een oorzaak zijn."
 
 #: hugin1/hugin/huginApp.cpp:218
 #, c-format
@@ -4167,9 +4173,8 @@ msgid "Please select a project"
 msgstr "Kies een project"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:563 hugin1/ptbatcher/BatchFrame.cpp:708
-#, fuzzy
 msgid "Please select only one project"
-msgstr "Kies een project"
+msgstr "Selecteer slechts één project"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:647
 msgid "Specify batch file to open"
@@ -5819,9 +5824,8 @@ msgstr "Alle punten fijn-afs&temmen"
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/hugin/xrc/main_menu.xrc:40
-#, fuzzy
 msgid "Runs fine-tune on all control points."
-msgstr "Verwijderen van %lu ijkpunten"
+msgstr "Voert een fine-tuning uit op alle controle puntent"
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/hugin/xrc/main_menu.xrc:43
@@ -7142,16 +7146,19 @@ msgid ""
 "To create an example argfile leave the text boxes empty and press \"Edit..."
 "\"."
 msgstr ""
+"Deze arg bestanden worden gebruikt om metadata van de afbeelding naar het "
+"uiteindelijke panorama te kopieren.\n"
+"Laat de invulvelden leeg om standaard waarden te gebruiken.\n"
+"Laat de invulvelden leeg en druk op \"Edit\" om een voorbeeld arg bestand te "
+"maken."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:955
-#, fuzzy
 msgid ""
 "The following argfile will be used to copy tags from the first image to all "
 "intermediate images."
 msgstr ""
 "Het volgende arg bestand wordt gebruikt om de labels uit de eerste "
-"afbeelding te kopiëren naar de tussen afbeeldingen.\n"
-"Panorama labels zullen niet aangepast worden."
+"afbeelding te kopiëren naar de tussen afbeeldingen."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:971
 msgid "Intermediate ExifTool argfile:"
@@ -7166,7 +7173,6 @@ msgid "Edit selected ExifTool argfile"
 msgstr "Bewerk geselecteerde ExifTool arg bestand"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1013
-#, fuzzy
 msgid ""
 "The following argfile will be used to copy tags from the first image to the "
 "final panorama.\n"
@@ -7174,9 +7180,8 @@ msgid ""
 msgstr ""
 "Het volgende arg bestand wordt gebruikt om labels uit de eerste afbeelding "
 "naar het uiteindelijke panorama te kopiëren.\n"
-"Het wordt bovenop het arg bestand voor de tussen afbeeldingen toegepast.\n"
-"Panorama labels in het arg bestand worden vervangen voor uitvoering van "
-"exiftool."
+"Het wordt toegepast bovenop het arg bestand voor de tussen afbeeldingen "
+"toegepast."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1030
 msgid "Final ExifTool argfile:"
@@ -7380,6 +7385,9 @@ msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite&original -tagsfromfile image -@ argfile panorama\"."
 msgstr ""
+"Het arg bestand wordt op de commando regel aangeroepen met\n"
+"\"exiftool -overwrite&original -tagsfromfile afbeelding -@ arg-bestand "
+"panorama\"."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1591 hugin1/hugin/xrc/pref_dialog.xrc:1658
 msgid "Edit ExifTool argfile"
@@ -7390,6 +7398,9 @@ msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite&original -tagsfromfile image -E -@ argfile panorama\"."
 msgstr ""
+"Dit arg bestand wordt op de commando regel aangeroepen met\n"
+"\"exiftool -overwrite&original -tagsfromfile afbeelding -E -@ arg-bestand "
+"panorama\"."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1616
 #, fuzzy
