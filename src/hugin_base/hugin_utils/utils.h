@@ -208,6 +208,12 @@ namespace hugin_utils
     /** returns the full absolute filename */
     IMPEX std::string GetAbsoluteFilename(const std::string& filename);
 
+    /** return true, if file type by extension is supported by vigra */
+    IMPEX bool IsFileTypeSupported(const std::string& filename);
+
+    /** check if filename contains extension, if not add default extension */
+    IMPEX void EnforceExtension(std::string& filename, const std::string& defaultExtension);
+
     /** returns the full path to the data directory */
     IMPEX std::string GetDataDir();
 

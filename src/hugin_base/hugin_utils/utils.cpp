@@ -393,6 +393,21 @@ std::string GetAbsoluteFilename(const std::string& filename)
 #endif
 };
 
+bool IsFileTypeSupported(const std::string& filename)
+{
+    const std::string extension = getExtension(filename);
+    return (vigra::impexListExtensions().find(extension) != std::string::npos);
+};
+
+void EnforceExtension(std::string& filename, const std::string& defaultExtension)
+{
+    const std::string extension = getExtension(filename);
+    if (extension.empty())
+    {
+        filename = stripExtension(filename) + "." + defaultExtension;
+    };
+};
+
 std::string GetDataDir()
 {
 #ifdef _WIN32
