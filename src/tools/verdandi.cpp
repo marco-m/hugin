@@ -40,7 +40,16 @@ bool SaveImage(ImageType& image, MaskType& mask, vigra::ImageExportInfo& exportI
     exportImageInfo.setPixelType(pixelType.c_str());
     if (vigra::isBandNumberSupported(filetype, inputNumberBands))
     {
-        vigra::exportImageAlpha(vigra::srcImageRange(image, roi), vigra::srcImage(mask, roi.upperLeft()), exportImageInfo);
+        try
+        {
+            vigra::exportImageAlpha(vigra::srcImageRange(image, roi), vigra::srcImage(mask, roi.upperLeft()), exportImageInfo);
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << "ERROR: Could not save " << exportImageInfo.getFileName() << std::endl
+                << "Cause: " << e.what() << std::endl;
+            return false;
+        };
         return true;
     }
     else
@@ -49,12 +58,21 @@ bool SaveImage(ImageType& image, MaskType& mask, vigra::ImageExportInfo& exportI
         {
             std::cout << "Warning: Filetype " << filetype << " does not support alpha channels." << std::endl
                 << "Saving image without alpha channel." << std::endl;
-            vigra::exportImage(vigra::srcImageRange(image, roi), exportImageInfo);
+            try
+            {
+                vigra::exportImage(vigra::srcImageRange(image, roi), exportImageInfo);
+            }
+            catch (std::exception& e)
+            {
+                std::cerr << "ERROR: Could not save " << exportImageInfo.getFileName() << std::endl
+                    << "Cause: " << e.what() << std::endl;
+                return false;
+            };
             return true;
         }
         else
         {
-            std::cerr << "Error: Output filetype " << filetype << " does not support " << inputNumberBands << " channels." << std::endl
+            std::cerr << "ERROR: Output filetype " << filetype << " does not support " << inputNumberBands << " channels." << std::endl
                 << "Can't save image." << std::endl;
         };
     };
@@ -307,7 +325,7 @@ int main(int argc, char* argv[])
 
     if (files.empty())
     {
-        std::cerr << "Error: " << hugin_utils::stripPath(argv[0]) << " needs at least one image." << std::endl;
+        std::cerr << "ERROR: " << hugin_utils::stripPath(argv[0]) << " needs at least one image." << std::endl;
         return 1;
     };
 
@@ -315,6 +333,13 @@ int main(int argc, char* argv[])
     {
         output = "final.tif";
     };
+    hugin_utils::EnforceExtension(output, "tif");
+    if (!hugin_utils::IsFileTypeSupported(output))
+    {
+        std::cerr << "ERROR: Extension \"" << hugin_utils::getExtension(output) << "\" is unknown." << std::endl;
+        return 1;
+    };
+
 
     bool success = false;
     if (files.size() == 1)
