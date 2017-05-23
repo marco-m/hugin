@@ -3608,6 +3608,8 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
     wxTreeEvent nevent (wxEVT_COMMAND_TREE_KEY_DOWN, 0 );
     nevent.SetInt(m_curColumn);
     nevent.SetKeyEvent (event);
+    // store modifiers in extra long for Mac
+    nevent.SetExtraLong(event.GetModifiers());
     if (SendEvent(0, NULL, &nevent)) return; // char event handled in user code
 
     // if no item current, select root

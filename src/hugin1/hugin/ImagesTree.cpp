@@ -1841,6 +1841,16 @@ void ImagesTreeCtrl::OnChar(wxTreeEvent &e)
                 };
                 break;
             };
+#if defined __WXMAC__
+        case 'A':
+        case 'a':
+            // check for cmd+A -> select all
+            if (e.GetExtraLong() == wxMOD_CMD)
+            {
+                SelectAll();
+            };
+            break;
+#endif
         case 1: //Ctrl+A
             {
                 SelectAll();
