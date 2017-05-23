@@ -505,19 +505,14 @@ wxString LoadLensOperation::GetLabel()
 PanoCommand::PanoCommand* LoadLensOperation::GetInternalCommand(wxWindow* parent, HuginBase::Panorama& pano, HuginBase::UIntSet images)
 {
     HuginBase::StandardImageVariableGroups variable_groups(pano);
-    if(images.size()==1)
+    HuginBase::UIntSet lensImages = variable_groups.getLenses().getPartsSet()[variable_groups.getLenses().getPartNumber(*images.begin())];
+    if (!m_fromDatabase && images.size() == 1 && lensImages.size() > 1)
     {
+        // database is always linking the parameters, so no need to ask user
         if(wxMessageBox(_("You selected only one image.\nShould the loaded parameters be applied to all images with the same lens?"),_("Question"), wxICON_QUESTION | wxYES_NO)==wxYES)
         {
-            unsigned int lensNr = variable_groups.getLenses().getPartNumber(*images.begin());
             // get all images with the current lens.
-            for (size_t i = 0; i < pano.getNrOfImages(); i++)
-            {
-                if (variable_groups.getLenses().getPartNumber(i) == lensNr)
-                {
-                    images.insert(i);
-                };
-            };
+            std::copy(lensImages.begin(), lensImages.end(), std::inserter(images, images.end()));
         };
     };
     vigra::Size2D sizeImg0=pano.getImage(*(images.begin())).getSize();
