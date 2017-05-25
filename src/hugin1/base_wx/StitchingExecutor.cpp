@@ -980,6 +980,40 @@ namespace HuginQueue
             };
             return true;
         };
+
+#ifdef __WXMSW__
+        // search for executable in program folder and in PATH
+        // add exe extension if no one is given
+        wxString GetProgname(const wxString& bindir, const wxString& name)
+        {
+            wxFileName prog(name);
+            if (prog.IsAbsolute())
+            {
+                if (prog.FileExists())
+                {
+                    return prog.GetFullPath();
+                };
+            }
+            else
+            {
+                // search in program folder and in PATH
+                const bool hasExt = prog.HasExt();
+                if(!prog.HasExt())
+                {
+                    prog.SetExt("exe");
+                };
+                wxPathList pathlist;
+                pathlist.Add(bindir);
+                pathlist.AddEnvList(wxT("PATH"));
+                const wxString fullName = pathlist.FindAbsoluteValidPath(prog.GetFullName());
+                if (!fullName.IsEmpty())
+                {
+                    return fullName;
+                };
+            };
+            return name;
+        };
+#endif
     }
 
     CommandQueue* GetStitchingCommandQueueUserOutput(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& prefix, const wxString& outputSettings, wxString& statusText, wxArrayString& outputFiles, wxArrayString& tempFilesDelete)
@@ -1336,13 +1370,22 @@ namespace HuginQueue
                                     CleanQueue(commands);
                                     return commands;
                                 }
-                                const wxString prog = detail::GetSettingString(settings, wxT("Program"));
-                                if (prog.IsEmpty())
+                                const wxString progName = detail::GetSettingString(settings, wxT("Program"));
+                                if (progName.IsEmpty())
                                 {
                                     std::cerr << "ERROR: Step " << i << " has no program name specified." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
+#ifdef __WXMAC__
+                                // check if program can be found in bundle
+                                const wxString prog = GetExternalProgram(wxConfig::Get(), ExePath, progName);
+#elif defined __WXMSW__
+
+                                const wxString prog = detail::GetProgname(ExePath, progName);
+#else
+                                const wxString prog = progName;
+#endif
                                 if (inputFiles.CmpNoCase(wxT("all")) == 0)
                                 {
                                     for (size_t imgNr = 0; imgNr < remappedImages.size(); ++imgNr)
