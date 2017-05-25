@@ -216,7 +216,7 @@ public:
     };
     ~InputImage()
     {
-        m_decoder->close();
+        m_decoder->abort();
     };
     const std::string getPixelType() const { return m_info.getPixelType(); };
     const bool isColor() const { return m_info.isColor(); };
