@@ -86,10 +86,19 @@ if(MSVC)
   set_target_properties(verdandi PROPERTIES LINK_FLAGS "setargv.obj")
 endif(MSVC)
 
+add_executable(hugin_stacker stacker.cpp)
+target_link_libraries(hugin_stacker ${common_libs} ${image_libs})
+
+# for expanding wildcard with MSVC
+if(MSVC)
+  set_target_properties(hugin_stacker PROPERTIES LINK_FLAGS "setargv.obj")
+endif(MSVC)
+
 
 install(TARGETS nona vig_optimize autooptimiser fulla align_image_stack linefind geocpset
         tca_correct cpclean checkpto hugin_hdrmerge pano_trafo pano_modify pto_merge 
         pto_gen pto_var pto_lensstack pto_template pto_mask pto_move hugin_lensdb verdandi
+        hugin_stacker
         DESTINATION ${BINDIR})
 
 IF(UNIX)
