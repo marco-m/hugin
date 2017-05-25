@@ -1163,6 +1163,13 @@ int main(int argc, char* argv[])
         std::cerr << "ERROR: Extension \"" << hugin_utils::getExtension(Parameters.outputFilename) << "\" is unknown." << std::endl;
         return 1;
     };
+    const std::string extension = hugin_utils::tolower(hugin_utils::getExtension(Parameters.outputFilename));
+    if (Parameters.multiLayer && extension != "tif" && extension != "tiff")
+    {
+        std::cerr << "ERROR: Multi layer output expects a tiff file as output." << std::endl
+            << "       Other image formates are not compatible with this option." << std::endl;
+        return 1;
+    };
     bool success = false;
     std::vector<InputImage*> images;
     for (size_t i = 0; i < files.size(); ++i)
