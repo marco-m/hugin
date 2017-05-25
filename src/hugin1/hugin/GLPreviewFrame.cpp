@@ -132,9 +132,9 @@ BEGIN_EVENT_TABLE(GLPreviewFrame, wxFrame)
     EVT_BUTTON(ID_SHOW_ALL, GLPreviewFrame::OnShowAll)
     EVT_BUTTON(ID_SHOW_NONE, GLPreviewFrame::OnShowNone)
     EVT_CHECKBOX(XRCID("preview_photometric_tool"), GLPreviewFrame::OnPhotometric)
-    EVT_TOOL(XRCID("preview_identify_tool"), GLPreviewFrame::OnIdentify)
-    EVT_TOOL(XRCID("preview_color_picker_tool"), GLPreviewFrame::OnColorPicker)
-    EVT_TOOL(XRCID("preview_edit_cp_tool"), GLPreviewFrame::OnEditCPTool)
+    EVT_TOGGLEBUTTON(XRCID("preview_identify_toggle_button"), GLPreviewFrame::OnIdentify)
+    EVT_TOGGLEBUTTON(XRCID("preview_color_picker_toggle_button"), GLPreviewFrame::OnColorPicker)
+    EVT_TOGGLEBUTTON(XRCID("preview_edit_cp_toggle_button"), GLPreviewFrame::OnEditCPTool)
     EVT_CHECKBOX(XRCID("preview_control_point_tool"), GLPreviewFrame::OnControlPoint)
     EVT_BUTTON(XRCID("preview_autocrop_tool"), GLPreviewFrame::OnAutocrop)
     EVT_BUTTON(XRCID("preview_stack_autocrop_tool"), GLPreviewFrame::OnStackAutocrop)
@@ -298,10 +298,17 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     XRCCTRL(*this,"preview_fit_pano_tool2",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_autocrop_tool",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_stack_autocrop_tool",wxButton)->SetBitmapMargins(0,0);
+    wxBitmap bitmap;
+    bitmap.LoadFile(huginApp::Get()->GetXRCPath() + wxT("data/identify_tool.png"), wxBITMAP_TYPE_PNG);
+    m_identify_togglebutton= XRCCTRL(*this, "preview_identify_toggle_button", wxToggleButton);
+    m_identify_togglebutton->SetBitmap(bitmap, wxTOP);
     m_tool_notebook = XRCCTRL(*this,"mode_toolbar_notebook",wxNotebook);
-    m_ToolBar_Identify = XRCCTRL(*this,"preview_mode_toolbar",wxToolBar);
-    m_ToolBar_ColorPicker = XRCCTRL(*this, "preview_color_picker_toolbar", wxToolBar);
-    m_ToolBar_editCP = XRCCTRL(*this, "preview_cp_edit_toolbar", wxToolBar);
+    m_colorpicker_togglebutton = XRCCTRL(*this, "preview_color_picker_toggle_button", wxToggleButton);
+    bitmap.LoadFile(huginApp::Get()->GetXRCPath() + wxT("data/preview_white_balance.png"), wxBITMAP_TYPE_PNG);
+    m_colorpicker_togglebutton->SetBitmap(bitmap, wxTOP);
+    m_editCP_togglebutton = XRCCTRL(*this, "preview_edit_cp_toggle_button", wxToggleButton);
+    bitmap.LoadFile(huginApp::Get()->GetXRCPath() + wxT("data/preview_control_point_tool.png"), wxBITMAP_TYPE_PNG);
+    m_editCP_togglebutton->SetBitmap(bitmap, wxTOP);
 
     //build menu bar
 #ifdef __WXMAC__
@@ -344,7 +351,6 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
 	m_ButtonPanel->SetSizer(m_ButtonSizer);
 
     wxPanel *panel = new wxPanel(toggle_panel);
-    wxBitmap bitmap;
     bitmap.LoadFile(huginApp::Get()->GetXRCPath()+wxT("data/preview_show_all.png"),wxBITMAP_TYPE_PNG);
     wxString showAllLabel(_("All"));
     showAllLabel.Append(wxT("\u25bc"));
@@ -897,12 +903,11 @@ void GLPreviewFrame::updateBlendMode()
                 // difference mode
                 if (preview_helper != NULL 
                     && identify_tool != NULL 
-                    && difference_tool != NULL
-                    && m_ToolBar_Identify != NULL )
+                    && difference_tool != NULL )
                 {
                     identify_tool->setConstantOn(false);
 //                    preview_helper->DeactivateTool(identify_tool);
-                    m_ToolBar_Identify->ToggleTool(XRCID("preview_identify_tool"), false);
+                    m_identify_togglebutton->SetValue(false);
                     preview_helper->ActivateTool(difference_tool);
                     CleanButtonColours();
                 };
@@ -1232,10 +1237,7 @@ void GLPreviewFrame::panoramaImagesChanged(HuginBase::Panorama &pano, const Hugi
                 // for the identification tool to work, we need to find when the
                 // mouse enters and exits the button. We use a custom event
                 // handler, which will also toggle the images:
-                ImageToogleButtonEventHandler * event_handler = new
-                    ImageToogleButtonEventHandler(*it,
-                        m_ToolBar_Identify->FindById(XRCID("preview_identify_tool")),
-                        &m_pano);
+                ImageToogleButtonEventHandler * event_handler = new ImageToogleButtonEventHandler(*it, m_identify_togglebutton, &m_pano);
                 event_handler->AddIdentifyTool(&identify_tool);
                 event_handler->AddIdentifyTool(&panosphere_overview_identify_tool);
                 event_handler->AddIdentifyTool(&plane_overview_identify_tool);
@@ -2116,7 +2118,7 @@ void GLPreviewFrame::OnIdentify(wxCommandEvent & e)
 
 void GLPreviewFrame::OnControlPoint(wxCommandEvent & e)
 {
-    if (!m_ToolBar_editCP->GetToolState(XRCID("preview_edit_cp_tool")))
+    if (!m_editCP_togglebutton->GetValue())
     {
         //process event only if edit cp tool is disabled
         SetStatusText(wxT(""), 0); // blank status text as it refers to an old tool.
@@ -2152,7 +2154,7 @@ void GLPreviewFrame::TurnOffTools(std::set<Tool*> tools)
         } else if (*i == identify_tool)
         {
             // disabled the identify tool, toggle its button off.
-            m_ToolBar_Identify->ToggleTool(XRCID("preview_identify_tool"), false);
+            m_identify_togglebutton->SetValue(false);
             // cover up its indicators and restore normal button colours.
             m_GLPreview->Refresh();
             m_GLOverview->Refresh();
@@ -2237,7 +2239,7 @@ void GLPreviewFrame::OnColorPicker(wxCommandEvent &e)
     {
         // deactivate delete cp tool if active
         preview_helper->DeactivateTool(edit_cp_tool);
-        m_ToolBar_editCP->ToggleTool(XRCID("preview_edit_cp_tool"), false);
+        m_editCP_togglebutton->SetValue(false);
         preview_helper->ActivateTool(color_picker_tool);
     }
     else
@@ -2253,7 +2255,7 @@ void GLPreviewFrame::UpdateGlobalWhiteBalance(double redFactor, double blueFacto
         new PanoCommand::UpdateWhiteBalance(m_pano, redFactor, blueFactor)
         );
     //now toggle button and deactivate tool
-    m_ToolBar_ColorPicker->ToggleTool(XRCID("preview_color_picker_tool"),false);
+    m_colorpicker_togglebutton->SetValue(false);
     //direct deactivation of tool does not work because this function is called by the tool itself
     //so we are send an event to deactivate the tool
     wxCommandEvent e(wxEVT_COMMAND_TOOL_CLICKED, XRCID("preview_color_picker_tool"));
@@ -2269,7 +2271,7 @@ void GLPreviewFrame::OnEditCPTool(wxCommandEvent &e)
     {
         // deactivate color picker tool
         preview_helper->DeactivateTool(color_picker_tool);
-        m_ToolBar_ColorPicker->ToggleTool(XRCID("preview_color_picker_tool"), false);
+        m_colorpicker_togglebutton->SetValue(false);
         // show automatically all cp
         preview_helper->ActivateTool(preview_control_point_tool);
         preview_helper->ActivateTool(edit_cp_tool);
@@ -2287,11 +2289,11 @@ void GLPreviewFrame::OnEditCPTool(wxCommandEvent &e)
 
 ImageToogleButtonEventHandler::ImageToogleButtonEventHandler(
                                   unsigned int image_number_in,
-                                  wxToolBarToolBase* identify_toolbutton_in,
+                                  wxToggleButton* identify_button_in,
                                   HuginBase::Panorama * m_pano_in)
 {
     image_number = image_number_in;
-    identify_toolbutton = identify_toolbutton_in;
+    m_identify_button = identify_button_in;
     m_pano = m_pano_in;
 }
 
@@ -2301,7 +2303,7 @@ void ImageToogleButtonEventHandler::OnEnter(wxMouseEvent & e)
     // the user moves the mouse over the image buttons, but only if the image
     // is being shown.
     if ( 
-        identify_toolbutton->IsToggled() && 
+        m_identify_button->GetValue() && 
         m_pano->getActiveImages().count(image_number))
     {
         std::vector<PreviewIdentifyTool**>::iterator it;
@@ -2317,7 +2319,7 @@ void ImageToogleButtonEventHandler::OnLeave(wxMouseEvent & e)
     // if the mouse left one of the image toggle buttons with the identification
     // tool active, we should stop showing the image indicator for that button.
     if ( 
-        identify_toolbutton->IsToggled() && 
+        m_identify_button->GetValue() && 
         m_pano->getActiveImages().count(image_number))
     {
         std::vector<PreviewIdentifyTool**>::iterator it;
@@ -2566,15 +2568,15 @@ void GLPreviewFrame::SetMode(int newMode)
             panosphere_overview_identify_tool->setConstantOn(false);
             plane_overview_identify_tool->setConstantOn(false);
             preview_helper->DeactivateTool(color_picker_tool);
-            m_ToolBar_ColorPicker->ToggleTool(XRCID("preview_color_picker_tool"),false);
+            m_colorpicker_togglebutton->SetValue(false);
 //            preview_helper->DeactivateTool(identify_tool);
 //            panosphere_overview_helper->DeactivateTool(panosphere_overview_identify_tool);
 //            plane_overview_helper->DeactivateTool(plane_overview_identify_tool);
             preview_helper->DeactivateTool(edit_cp_tool);
-            m_ToolBar_editCP->ToggleTool(XRCID("preview_edit_cp_tool"), false);
+            m_editCP_togglebutton->SetValue(false);
 
             CleanButtonColours();
-            m_ToolBar_Identify->ToggleTool(XRCID("preview_identify_tool"),false);
+            m_identify_togglebutton->SetValue(false);
             preview_helper->DeactivateTool(preview_control_point_tool);
             panosphere_overview_helper->DeactivateTool(panosphere_control_point_tool);
             plane_overview_helper->DeactivateTool(plane_control_point_tool);

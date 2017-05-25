@@ -96,7 +96,7 @@ class ImageToogleButtonEventHandler : public wxEvtHandler
 {
 public:
     ImageToogleButtonEventHandler(unsigned int image_number,
-                                  wxToolBarToolBase* identify_toolbutton_in,
+                                  wxToggleButton* identify_button_in,
                                   HuginBase::Panorama * m_pano);
     void OnChange(wxCommandEvent &e);
     void AddIdentifyTool(PreviewIdentifyTool** identify_tool_in);
@@ -107,7 +107,7 @@ private:
     DECLARE_EVENT_TABLE()
     unsigned int image_number;
     std::vector<PreviewIdentifyTool**> identify_tools;
-    wxToolBarToolBase *identify_toolbutton;
+    wxToggleButton* m_identify_button;
     HuginBase::Panorama * m_pano;
 };
 
@@ -372,9 +372,9 @@ private:
 
     int m_mode;
     int non_layout_blend_mode;
-    wxToolBar* m_ToolBar_Identify;
-    wxToolBar* m_ToolBar_ColorPicker;
-    wxToolBar* m_ToolBar_editCP;
+    wxToggleButton* m_identify_togglebutton;
+    wxToggleButton* m_colorpicker_togglebutton;
+    wxToggleButton* m_editCP_togglebutton;
     wxNotebook* m_tool_notebook;
     wxPanel* m_projection_panel;
     wxSlider * m_HFOVSlider;

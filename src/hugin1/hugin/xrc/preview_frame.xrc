@@ -291,24 +291,11 @@
                 <object class="sizeritem">
                   <object class="wxBoxSizer">
                     <object class="sizeritem">
-                      <object class="wxToolBar" name="preview_mode_toolbar">
-                        <object class="tool" name="preview_identify_tool">
-                          <toggle>1</toggle>
-                          <bitmap platform="unix|win">data/identify_tool.png</bitmap>
-                          <bitmap platform="mac">data/identify_tool_small.png</bitmap>
-                          <tooltip>Match images to their numbers</tooltip>
-                          <label>Identify</label>
-                        </object>
-                        <bitmapsize>22,22</bitmapsize>
-                        <style>wxTB_TEXT|wxTB_NODIVIDER</style>
-                      </object>
-                      <flag>wxALIGN_CENTRE_HORIZONTAL|wxADJUST_MINSIZE</flag>
-                    </object>
-                    <object class="sizeritem" platform="mac">
-                      <object class="wxStaticText">
+                      <object class="wxToggleButton" name="preview_identify_toggle_button">
+                        <style>wxBU_EXACTFIT</style>
                         <label>Identify</label>
+                        <tooltip>Match images to their numbers</tooltip>
                       </object>
-                      <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
                     </object>
                     <orient>wxVERTICAL</orient>
                   </object>
@@ -404,58 +391,20 @@
                           <flag>wxALIGN_CENTRE_VERTICAL</flag>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxBoxSizer">
-                            <object class="sizeritem">
-                              <object class="wxToolBar" name="preview_color_picker_toolbar">
-                                <object class="tool" name="preview_color_picker_tool">
-                                  <toggle>1</toggle>
-                                  <bitmap platform="unix|win">data/preview_white_balance.png</bitmap>
-                                  <bitmap platform="mac">data/preview_white_balance_small.png</bitmap>
-                                  <tooltip>Correct global white balance by selecting a neutral gray area.</tooltip>
-                                  <label>Gray picker</label>
-                                </object>
-                                <bitmapsize>22,22</bitmapsize>
-                                <style>wxTB_TEXT|wxTB_NODIVIDER</style>
-                              </object>
-                              <flag>wxALIGN_CENTRE_HORIZONTAL|wxADJUST_MINSIZE</flag>
-                            </object>
-                            <object class="sizeritem" platform="mac">
-                              <object class="wxStaticText">
-                                <label>Gray picker</label>
-                              </object>
-                              <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
-                            </object>
-                            <orient>wxVERTICAL</orient>
+                          <object class="wxToggleButton" name="preview_color_picker_toggle_button">
+                            <style>wxBU_EXACTFIT</style>
+                            <label>Gray picker</label>
+                            <tooltip>Correct global white balance by selecting a neutral gray area.</tooltip>
                           </object>
-                          <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>5</border>
+                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxBoxSizer">
-                            <object class="sizeritem">
-                              <object class="wxToolBar" name="preview_cp_edit_toolbar">
-                                <object class="tool" name="preview_edit_cp_tool">
-                                  <toggle>1</toggle>
-                                  <bitmap platform="unix|win">data/preview_control_point_tool.png</bitmap>
-                                  <bitmap platform="mac">data/preview_control_point_tool_small.png</bitmap>
-                                  <tooltip>Create or delete control points in selected rectangle.</tooltip>
-                                  <label>Edit CP</label>
-                                </object>
-                                <bitmapsize>22,22</bitmapsize>
-                                <style>wxTB_TEXT|wxTB_NODIVIDER</style>
-                              </object>
-                              <flag>wxALIGN_CENTRE_HORIZONTAL|wxADJUST_MINSIZE</flag>
-                            </object>
-                            <object class="sizeritem" platform="mac">
-                              <object class="wxStaticText">
-                                <label>Edit CP</label>
-                              </object>
-                              <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
-                            </object>
-                            <orient>wxVERTICAL</orient>
+                          <object class="wxToggleButton" name="preview_edit_cp_toggle_button">
+                            <style>wxBU_EXACTFIT</style>
+                            <label>Edit CP</label>
+                            <tooltip>Create or delete control points in selected rectangle.</tooltip>
                           </object>
-                          <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
-                          <border>5</border>
+                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
                         </object>
                       </object>
                       <flag>wxALIGN_CENTRE_VERTICAL</flag>
