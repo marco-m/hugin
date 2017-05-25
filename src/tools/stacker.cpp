@@ -800,7 +800,8 @@ bool StackImagesAndMask(std::vector<InputImage*>& images, Functor& stacker)
     if (Parameters.multiLayer)
     {
         tiffImage = TIFFOpen(Parameters.outputFilename.c_str(), "w");
-        vigra_ext::createTiffDirectory(tiffImage, stacker.getName(), stacker.getName(), Parameters.compression, 0, images.size() + 1,
+        vigra_ext::createTiffDirectory(tiffImage, stacker.getName(), stacker.getName(), 
+            Parameters.compression.empty() ? "LZW" : Parameters.compression, 0, images.size() + 1,
             outputROI.upperLeft(), canvasSize, images[0]->getICCProfile());
         vigra_ext::createAlphaTiffImage(vigra::srcImageRange(output), vigra::maskImage(mask), tiffImage);
         TIFFFlush(tiffImage);
@@ -855,7 +856,8 @@ bool StackImagesAndMask(std::vector<InputImage*>& images, Functor& stacker)
         }
         if (Parameters.multiLayer)
         {
-            vigra_ext::createTiffDirectory(tiffImage, images[i]->getFilename(), images[i]->getFilename(), Parameters.compression, i+1, images.size() + 1,
+            vigra_ext::createTiffDirectory(tiffImage, images[i]->getFilename(), images[i]->getFilename(), 
+                Parameters.compression.empty() ? "LZW" : Parameters.compression, i+1, images.size() + 1,
                 images[i]->getROI().upperLeft(), images[i]->getCanvasSize(), images[i]->getICCProfile());
             vigra_ext::createAlphaTiffImage(vigra::srcImageRange(image), vigra::maskImage(mask), tiffImage);
             TIFFFlush(tiffImage);
