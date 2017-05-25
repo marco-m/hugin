@@ -23,13 +23,6 @@
  *
  */
 
-// use toggle buttons or uncomment check boxes
-
-#ifndef __WXMAC__
-#define USE_TOGGLE_BUTTON 1
-#endif
-//wxMac now has toggle buttons, but you can't overide their colours.
-
 #include <bitset>
 #include <limits>
 #include <iostream>
@@ -207,11 +200,7 @@ END_EVENT_TABLE()
 BEGIN_EVENT_TABLE(ImageToogleButtonEventHandler, wxEvtHandler)
     EVT_ENTER_WINDOW(ImageToogleButtonEventHandler::OnEnter)
     EVT_LEAVE_WINDOW(ImageToogleButtonEventHandler::OnLeave)
-#ifdef USE_TOGGLE_BUTTON
     EVT_TOGGLEBUTTON(-1, ImageToogleButtonEventHandler::OnChange)
-#else
-    EVT_CHECKBOX(-1, ImageToogleButtonEventHandler::OnChange)
-#endif    
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(ImageGroupButtonEventHandler, wxEvtHandler)
@@ -1222,21 +1211,15 @@ void GLPreviewFrame::panoramaImagesChanged(HuginBase::Panorama &pano, const Hugi
                 wxPanel *pan = new wxPanel(m_ButtonPanel);
                 wxBoxSizer * siz = new wxBoxSizer(wxVERTICAL);
                 pan->SetSizer(siz);
-#ifdef USE_TOGGLE_BUTTON
                 wxToggleButton * but = new wxToggleButton(pan,
                                                           ID_TOGGLE_BUT + *it,
                                                           wxString::Format(wxT("%d"),*it),
                                                           wxDefaultPosition, wxDefaultSize,
                                                           wxBU_EXACTFIT);
-#else
-                wxCheckBox * but = new wxCheckBox(pan,
-                                                  ID_TOGGLE_BUT + *it,
-                                                  wxString::Format(wxT("%d"),*it));
-#endif
                 
                 wxCheckBox *butcheck = new wxCheckBox(pan, wxID_ANY, wxT(""));
 
-#ifdef __WXMSW__
+#if defined __WXMSW__ || defined __WXMAC__
                 //we need a border around the button to see the colored panel
                 //because changing backgroundcolor of wxToggleButton does not work in wxMSW
                 siz->AddSpacer(5);
@@ -2192,36 +2175,36 @@ void GLPreviewFrame::SetImageButtonColour(unsigned int image_nr,
 {
     // 0, 0, 0 indicates we want to go back to the system colour.
     // TODO: Maybe we should test this better on different themes.
-    // On OS X, the background colour is ignored on toggle buttons, but not
-    // checkboxes.
+#if defined __WXMSW__ || defined __WXMAC__
     if (red || green || blue)
     {
         // the identify tool wants us to highlight an image button in the given
         // colour, to match up with the display in the preview.
-#if defined __WXMSW__
         // on windows change the color of the surhugin_utils::rounding wxPanel
         m_ToggleButtonPanel[image_nr]->SetBackgroundColour(wxColour(red, green, blue));
+    }
+    else
+    {
+        // return to the normal colour
+        m_ToggleButtonPanel[image_nr]->SetBackgroundColour(m_ToggleButtonPanel[image_nr]->GetParent()->GetBackgroundColour());
+    }
+    m_ToggleButtonPanel[image_nr]->Refresh();
 #else
+    if (red || green || blue)
+    {
         // change the color of the wxToggleButton 
         m_ToggleButtons[image_nr]->SetBackgroundStyle(wxBG_STYLE_COLOUR);
-        m_ToggleButtons[image_nr]->SetBackgroundColour(
-                                                    wxColour(red, green, blue));
+        m_ToggleButtons[image_nr]->SetBackgroundColour(wxColour(red, green, blue));
         // black should be visible on the button's vibrant colours.
         m_ToggleButtons[image_nr]->SetForegroundColour(wxColour(0, 0, 0));
-#endif
-    } else {
+    }
+    else
+    {
         // return to the normal colour
-#if defined __WXMSW__
-        m_ToggleButtonPanel[image_nr]->SetBackgroundColour(this->GetBackgroundColour());
-#else
         m_ToggleButtons[image_nr]->SetBackgroundStyle(wxBG_STYLE_SYSTEM);
         m_ToggleButtons[image_nr]->SetBackgroundColour(wxNullColour);
         m_ToggleButtons[image_nr]->SetForegroundColour(wxNullColour);
-#endif
-    }
-#if defined __WXMSW__
-    m_ToggleButtonPanel[image_nr]->Refresh();
-#else
+    };
     m_ToggleButtons[image_nr]->Refresh();
 #endif
 }
@@ -2234,8 +2217,8 @@ void GLPreviewFrame::CleanButtonColours()
     unsigned int nr_images = m_pano.getNrOfImages();
     for (unsigned image = 0; image < nr_images; image++)
     {
-#if defined __WXMSW__
-        m_ToggleButtonPanel[image]->SetBackgroundColour(this->GetBackgroundColour());
+#if defined __WXMSW__ || defined __WXMAC__
+        m_ToggleButtonPanel[image]->SetBackgroundColour(m_ToggleButtonPanel[image]->GetParent()->GetBackgroundColour());
         m_ToggleButtonPanel[image]->Refresh();
 #else
         m_ToggleButtons[image]->SetBackgroundStyle(wxBG_STYLE_SYSTEM);

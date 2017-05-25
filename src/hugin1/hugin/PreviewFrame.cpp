@@ -24,13 +24,6 @@
  *
  */
 
-// use toggle buttons or uncomment check boxes
-
-//#ifndef __WXMAC__
-#define USE_TOGGLE_BUTTON 1
-//#endif
-//wxMac now has toggle buttons.
-
 #include "hugin_config.h"
 
 #include "panoinc_WX.h"
@@ -94,11 +87,7 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
     EVT_CHOICE(ID_BLEND_CHOICE, PreviewFrame::OnBlendChoice)
     EVT_CHOICE(ID_PROJECTION_CHOICE, PreviewFrame::OnProjectionChoice)
     EVT_CHOICE(ID_OUTPUTMODE_CHOICE, PreviewFrame::OnOutputChoice)
-#ifdef USE_TOGGLE_BUTTON
     EVT_TOGGLEBUTTON(-1, PreviewFrame::OnChangeDisplayedImgs)
-#else
-    EVT_CHECKBOX(-1, PreviewFrame::OnChangeDisplayedImgs)
-#endif
 	EVT_SCROLL_CHANGED(PreviewFrame::OnChangeFOV)
 	EVT_TOOL(ID_FULL_SCREEN, PreviewFrame::OnFullScreen)
     EVT_TOOL(ID_UNDO, PreviewFrame::OnUndo)
@@ -540,17 +529,11 @@ void PreviewFrame::panoramaImagesChanged(HuginBase::Panorama &pano, const HuginB
             if (*it >= nrButtons) {
                 // create new item.
 //                wxImage * bmp = new wxImage(sz.GetWidth(), sz.GetHeight());
-#ifdef USE_TOGGLE_BUTTON
                 wxToggleButton * but = new wxToggleButton(m_ButtonPanel,
                                                           ID_TOGGLE_BUT + *it,
                                                           wxString::Format(wxT("%d"),*it),
                                                           wxDefaultPosition, wxDefaultSize,
                                                           wxBU_EXACTFIT);
-#else
-                wxCheckBox * but = new wxCheckBox(m_ButtonPanel,
-                                                  ID_TOGGLE_BUT + *it,
-                                                  wxString::Format(wxT("%d"),*it));
-#endif
                 wxSize sz = but->GetSize();
 //                but->SetSize(res.GetWidth(),sz.GetHeight());
                 // HACK.. set fixed width. that should work

@@ -116,12 +116,7 @@ private:
     std::vector<wxStaticText *> m_projParamNamesLabel;
     std::vector<wxTextCtrl *>   m_projParamTextCtrl;
     std::vector<wxSlider *>     m_projParamSlider;
-
-#ifdef USE_TOGGLE_BUTTON
     std::vector<wxToggleButton *> m_ToggleButtons;
-#else
-    std::vector<wxCheckBox *> m_ToggleButtons;
-#endif
 
     DECLARE_EVENT_TABLE()
 };

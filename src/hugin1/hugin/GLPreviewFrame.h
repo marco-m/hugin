@@ -441,11 +441,7 @@ private:
     std::vector<wxTextCtrl *>   m_projParamTextCtrl;
     std::vector<wxSlider *>     m_projParamSlider;
 
-#ifdef USE_TOGGLE_BUTTON
     std::vector<wxToggleButton *> m_ToggleButtons;
-#else
-    std::vector<wxCheckBox *> m_ToggleButtons;
-#endif
     std::vector<wxCheckBox *> m_GroupToggleButtons;
     std::vector<wxPanel *> m_ToggleButtonPanel;
     std::vector<ImageToogleButtonEventHandler *> toogle_button_event_handlers;
