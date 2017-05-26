@@ -29,7 +29,7 @@
                       <object class="sizeritem">
                         <object class="wxStaticText" name="optimizer_panel_information_text">
                           <label>Any variables below which are marked [x] will be optimized.
-Variables which are cleared [ ] will act as references or anchors.</label>
+Unmarked variables [ ] will act as references or anchors.</label>
                         </object>
                         <option>1</option>
                         <flag>wxEXPAND</flag>
@@ -39,7 +39,7 @@ Variables which are cleared [ ] will act as references or anchors.</label>
                       </object>
                       <object class="sizeritem">
                         <object class="wxCheckBox" name="optimizer_panel_only_active_images">
-                          <label>Only use control points between image selected in preview window.</label>
+                          <label>Only use control points between images activated in preview window.</label>
                           <tooltip>Only use control points between images selected in preview window. Useful to avoid errors due to badly fitting images, such as the nadir image in most fisheye panoramas</tooltip>
                         </object>
                       </object>

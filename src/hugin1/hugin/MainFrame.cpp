@@ -764,14 +764,14 @@ bool MainFrame::CloseProject(bool cancelable, CloseReason reason)
         switch (reason)
         {
             case LOAD_NEW_PROJECT:
-                messageString = _("Save changes to the panorama before opening an other project?");
+                messageString = _("Save changes to the project file before opening an other project?");
                 break;
             case NEW_PROJECT:
-                messageString = _("Save changes to the panorama before starting a new project?");
+                messageString = _("Save changes to the project file before starting a new project?");
                 break;
             case CLOSE_PROGRAM:
             default:
-                messageString = _("Save changes to the panorama before closing?");
+                messageString = _("Save changes to the project file before closing?");
                 break;
         };
                 wxMessageDialog message(wxGetActiveWindow(), messageString,
@@ -784,10 +784,10 @@ bool MainFrame::CloseProject(bool cancelable, CloseReason reason)
         switch(reason)
         {
             case LOAD_NEW_PROJECT:
-                message.SetExtendedMessage(_("If you load an other project without saving, your changes since your last save will be discarded."));
+                message.SetExtendedMessage(_("If you load an other project without saving, your changes since last save will be discarded."));
                 break;
             case NEW_PROJECT:
-                message.SetExtendedMessage(_("If you start a new project without saving, your changes since your last save will be discarded."));
+                message.SetExtendedMessage(_("If you start a new project without saving, your changes since last save will be discarded."));
                 break;
             case CLOSE_PROGRAM:
             default:
