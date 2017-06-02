@@ -238,6 +238,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(XRCID("action_optimize"),  MainFrame::OnOptimize)
     EVT_MENU(XRCID("action_optimize_only_active"), MainFrame::OnOnlyActiveImages)
+    EVT_MENU(XRCID("action_optimize_ignore_line_cp"), MainFrame::OnIgnoreLineCp)
     EVT_BUTTON(XRCID("action_optimize"),  MainFrame::OnOptimize)
     EVT_MENU(XRCID("action_finetune_all_cp"), MainFrame::OnFineTuneAll)
 //    EVT_BUTTON(XRCID("action_finetune_all_cp"), MainFrame::OnFineTuneAll)
@@ -371,6 +372,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     mainMenu->Insert(0, m_menu_file_simple, _("&File"));
     SetMenuBar(mainMenu);
     SetOptimizeOnlyActiveImages(m_optOnlyActiveImages);
+    m_optIgnoreLineCp = false;
 
 #ifdef HUGIN_HSI
     wxMenuBar* menubar=GetMenuBar();
@@ -1495,6 +1497,31 @@ void MainFrame::SetOptimizeOnlyActiveImages(const bool onlyActive)
 const bool MainFrame::GetOptimizeOnlyActiveImages() const
 {
     return m_optOnlyActiveImages;
+};
+
+void MainFrame::OnIgnoreLineCp(wxCommandEvent &e)
+{
+    m_optIgnoreLineCp = GetMenuBar()->IsChecked(XRCID("action_optimize_ignore_line_cp"));
+    opt_panel->SetIgnoreLineCP(m_optIgnoreLineCp);
+    // notify all observer so they can update their display
+    pano.changeFinished();
+};
+
+void MainFrame::SetOptimizeIgnoreLineCp(const bool ignoreLineCP)
+{
+    m_optIgnoreLineCp = ignoreLineCP;
+    wxMenuBar* menubar = GetMenuBar();
+    if (menubar)
+    {
+        menubar->Check(XRCID("action_optimize_ignore_line_cp"), ignoreLineCP);
+        // notify all observer so they can update their display
+        pano.changeFinished();
+    };
+};
+
+const bool MainFrame::GetOptimizeIgnoreLineCp() const
+{
+    return m_optIgnoreLineCp;
 };
 
 void MainFrame::OnPhotometricOptimize(wxCommandEvent & e)

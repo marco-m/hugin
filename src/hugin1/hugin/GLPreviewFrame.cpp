@@ -1033,7 +1033,7 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
                 }
                 else
                 {
-                    HuginBase::CalculateCPStatisticsError calcStats(m_pano, MainFrame::Get()->GetOptimizeOnlyActiveImages());
+                    HuginBase::CalculateCPStatisticsError calcStats(m_pano, MainFrame::Get()->GetOptimizeOnlyActiveImages(), MainFrame::Get()->GetOptimizeIgnoreLineCp());
                     calcStats.run();
                     const double max = calcStats.getResultMax();
                     const double mean = calcStats.getResultMean();

@@ -42,6 +42,16 @@ Unmarked variables [ ] will act as references or anchors.</label>
                           <label>Only use control points between images activated in preview window.</label>
                           <tooltip>Only use control points between images selected in preview window. Useful to avoid errors due to badly fitting images, such as the nadir image in most fisheye panoramas</tooltip>
                         </object>
+                        <flag>wxALL</flag>
+                        <border>3</border>
+                      </object>
+                      <object class="sizeritem">
+                        <object class="wxCheckBox" name="optimizer_panel_ignore_line_cp">
+                          <label>Ignore line control points</label>
+                          <tooltip>Use only normal control points in optimization.</tooltip>
+                        </object>
+                        <flag>wxALL</flag>
+                        <border>3</border>
                       </object>
                       <orient>wxVERTICAL</orient>
                     </object>

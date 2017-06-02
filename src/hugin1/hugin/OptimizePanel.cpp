@@ -30,6 +30,7 @@
 #include "panoinc.h"
 
 #include <panotools/PanoToolsOptimizerWrapper.h>
+#include "hugin_base/panotools/PanoToolsUtils.h"
 #include <algorithms/optimizer/PTOptimizer.h>
 #include <algorithms/basic/CalculateCPStatistics.h>
 
@@ -53,6 +54,7 @@ BEGIN_EVENT_TABLE(OptimizePanel, wxPanel)
     EVT_BUTTON(XRCID("optimize_panel_optimize"), OptimizePanel::OnOptimizeButton)
     EVT_BUTTON(XRCID("optimize_panel_reset"), OptimizePanel::OnReset)
     EVT_CHECKBOX(XRCID("optimizer_panel_only_active_images"), OptimizePanel::OnCheckOnlyActiveImages)
+    EVT_CHECKBOX(XRCID("optimizer_panel_ignore_line_cp"), OptimizePanel::OnCheckIgnoreLineCP)
 END_EVENT_TABLE()
 
 
@@ -83,6 +85,9 @@ bool OptimizePanel::Create(wxWindow* parent, wxWindowID id , const wxPoint& pos,
     DEBUG_ASSERT(m_only_active_images_cb);
     m_only_active_images_cb->SetValue(wxConfigBase::Get()->Read(wxT("/OptimizePanel/OnlyActiveImages"),1l) != 0);
     MainFrame::Get()->SetOptimizeOnlyActiveImages(m_only_active_images_cb->GetValue());
+    m_ignore_line_cp = XRCCTRL(*this, "optimizer_panel_ignore_line_cp", wxCheckBox);
+    DEBUG_ASSERT(m_ignore_line_cp);
+    m_ignore_line_cp->SetValue(false);
 
     m_images_tree_list = XRCCTRL(*this, "optimize_panel_images", ImagesTreeCtrl);
     DEBUG_ASSERT(m_images_tree_list);
@@ -172,11 +177,11 @@ void OptimizePanel::OnOptimizeButton(wxCommandEvent & e)
     }
     if (CheckLensStacks(m_pano, true))
     {
-        runOptimizer(imgs);
+        runOptimizer(imgs, m_ignore_line_cp->IsChecked());
     };
 }
 
-void OptimizePanel::runOptimizer(const HuginBase::UIntSet & imgs)
+void OptimizePanel::runOptimizer(const HuginBase::UIntSet & imgs, const bool ignoreLineCp)
 {
     DEBUG_TRACE("");
     // open window that shows a status dialog, and allows to
@@ -186,6 +191,17 @@ void OptimizePanel::runOptimizer(const HuginBase::UIntSet & imgs)
     wxWindow* activeWindow = wxGetActiveWindow();
 
     HuginBase::Panorama optPano = m_pano->getSubset(imgs);
+    if (optPano.getNrOfCtrlPoints() == 0)
+    {
+        wxMessageBox(_("There are no control points in the current configuration for the optimizer.\nPlease add control points before running the optimizer.\nOptimization canceled."),
+#ifdef __WXMSW__
+            _("Hugin"),
+#else
+            wxT(""),
+#endif
+            wxICON_ERROR | wxOK);
+        return;
+    };
     HuginBase::PanoramaOptions opts = optPano.getOptions();
     switch(opts.getProjection())
     {
@@ -205,6 +221,7 @@ void OptimizePanel::runOptimizer(const HuginBase::UIntSet & imgs)
     char *p = setlocale(LC_ALL,NULL);
     char *oldlocale = strdup(p);
     setlocale(LC_ALL,"C");
+    HuginBase::CPVector originalCps;
 
     if (mode & HuginBase::OPT_PAIR )
     {
@@ -233,6 +250,32 @@ void OptimizePanel::runOptimizer(const HuginBase::UIntSet & imgs)
     }
     else
     {
+        HuginBase::CPVector optCps;
+        if (ignoreLineCp)
+        {
+            // store for later
+            originalCps = optPano.getCtrlPoints();
+            // remove all line cp
+            for (auto& cp : originalCps)
+            {
+                if (cp.mode == HuginBase::ControlPoint::X_Y)
+                {
+                    optCps.push_back(cp);
+                };
+            };
+            if (optCps.empty())
+            {
+                wxMessageBox(_("There are no control points in the current configuration for the optimizer.\nPlease add control points before running the optimizer.\nOptimization canceled."),
+#ifdef __WXMSW__
+                    _("Hugin"),
+#else
+                    wxT(""),
+#endif
+                    wxICON_ERROR | wxOK);
+                return;
+            }
+            optPano.setCtrlPoints(optCps);
+        };
         if (m_edit_cb->IsChecked() && mode==0)
         {
             // show and edit script..
@@ -279,6 +322,13 @@ void OptimizePanel::runOptimizer(const HuginBase::UIntSet & imgs)
     // calculate control point errors and display text.
     if (AskApplyResult(activeWindow, optPano))
     {
+        if (!originalCps.empty())
+        {
+            // restore all control points
+            optPano.setCtrlPoints(originalCps);
+            // because the line cp were removed we need to calculate the cp error again
+            HuginBase::PTools::calcCtrlPointErrors(optPano);
+        };
         PanoCommand::GlobalCmdHist::getInstance().addCommand(
             new PanoCommand::UpdateVariablesCPSetCmd(*m_pano, imgs, optPano.getVariables(), optPano.getCtrlPoints())
         );
@@ -291,7 +341,7 @@ bool OptimizePanel::AskApplyResult(wxWindow* activeWindow, const HuginBase::Pano
     double max;
     double mean;
     double var;
-    HuginBase::CalculateCPStatisticsError::calcCtrlPntsErrorStats(pano, min, max, mean, var, -1, m_only_active_images_cb->IsChecked());
+    HuginBase::CalculateCPStatisticsError::calcCtrlPntsErrorStats(pano, min, max, mean, var, -1);
 
     // check for HFOV lines. if smaller than 1 report a warning;
     // also check for high distortion coefficients.
@@ -370,6 +420,16 @@ void OptimizePanel::OnCheckOnlyActiveImages(wxCommandEvent &e)
 void OptimizePanel::SetOnlyActiveImages(const bool onlyActive)
 {
     m_only_active_images_cb->SetValue(onlyActive);
+};
+
+void OptimizePanel::OnCheckIgnoreLineCP(wxCommandEvent &e)
+{
+    MainFrame::Get()->SetOptimizeIgnoreLineCp(m_ignore_line_cp->IsChecked());
+};
+
+void OptimizePanel::SetIgnoreLineCP(const bool noLineCp)
+{
+    m_ignore_line_cp->SetValue(noLineCp);
 };
 
 IMPLEMENT_DYNAMIC_CLASS(OptimizePanel, wxPanel)

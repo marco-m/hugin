@@ -103,8 +103,8 @@ class IMPEX CalculateCPStatisticsError : public CalculateCPStatistics
         CalculateCPStatisticsError(PanoramaData& panorama, const int& imgNr=-1)
          : CalculateCPStatistics(panorama, imgNr)
         {};
-        CalculateCPStatisticsError(PanoramaData& panorama, const bool onlyActive)
-            :CalculateCPStatistics(panorama, -1), m_onlyActiveImages(onlyActive)
+        CalculateCPStatisticsError(PanoramaData& panorama, const bool onlyActive, const bool ignoreLineCps=false)
+            :CalculateCPStatistics(panorama, -1), m_onlyActiveImages(onlyActive), m_ignoreLineCps(ignoreLineCps)
         {};
         
         ///
@@ -117,7 +117,8 @@ class IMPEX CalculateCPStatisticsError : public CalculateCPStatistics
                                            double & min, double & max, double & mean,
                                            double & var,
                                            const int& imgNr=-1, 
-                                           const bool onlyActive=false);
+                                           const bool onlyActive=false,
+                                           const bool ignoreLineCp=false);
         
         
     public:
@@ -127,11 +128,12 @@ class IMPEX CalculateCPStatisticsError : public CalculateCPStatistics
             calcCtrlPntsErrorStats(o_panorama, 
                                    o_resultMin, o_resultMax, o_resultMean,
                                    o_resultVar,
-                                   o_imageNumber, m_onlyActiveImages);
+                                   o_imageNumber, m_onlyActiveImages, m_ignoreLineCps);
             return true; // let's hope so.
         }
     private:
         bool m_onlyActiveImages = false;
+        bool m_ignoreLineCps = false;
 };
 
 

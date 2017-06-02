@@ -60,6 +60,10 @@ public:
     void OnCheckOnlyActiveImages(wxCommandEvent &e);
     /** for external setting of "only active image" checkbox */
     void SetOnlyActiveImages(const bool onlyActive);
+    /** handle "ignore line cp" checkbox */
+    void OnCheckIgnoreLineCP(wxCommandEvent &e);
+    /** for external setting of "ignore line cp" checkbox */
+    void SetIgnoreLineCP(const bool noLineCp);
     void SetGuiLevel(GuiLevel newGuiLevel);
 
 protected:
@@ -67,7 +71,7 @@ protected:
     void OnClose(wxCloseEvent& e);
     void OnReset(wxCommandEvent& e);
 
-    void runOptimizer(const HuginBase::UIntSet & img);
+    void runOptimizer(const HuginBase::UIntSet & img, const bool ignoreLineCp);
 
     bool AskApplyResult(wxWindow* activeWindow, const HuginBase::Panorama & pano);
 
@@ -75,6 +79,7 @@ protected:
     ImagesTreeCtrl* m_lens_tree_list;
 
     wxCheckBox * m_only_active_images_cb;
+    wxCheckBox * m_ignore_line_cp;
     wxCheckBox * m_edit_cb;
 
     HuginBase::Panorama * m_pano;

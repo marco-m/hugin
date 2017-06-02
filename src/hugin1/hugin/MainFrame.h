@@ -114,6 +114,9 @@ public:
     /** sets the status of the "optimize only active images" menu item */
     void SetOptimizeOnlyActiveImages(const bool onlyActive);
     const bool GetOptimizeOnlyActiveImages() const;
+    /** sets the status of the "ignore line cp" menu item */
+    void SetOptimizeIgnoreLineCp(const bool ignoreLineCP);
+    const bool GetOptimizeIgnoreLineCp() const;
 
     /// hack.. kind of a pseudo singleton...
     static MainFrame * Get();
@@ -142,6 +145,7 @@ public:
     // instead of these gateway functions to the optimizer and pano panels.
     void OnOptimize(wxCommandEvent & e);
     void OnOnlyActiveImages(wxCommandEvent &e);
+    void OnIgnoreLineCp(wxCommandEvent &e);
     void OnPhotometricOptimize(wxCommandEvent & e);
     void OnDoStitch(wxCommandEvent & e);
     void OnUserDefinedStitch(wxCommandEvent & e);
@@ -282,6 +286,7 @@ private:
     wxMenu* m_menu_file_advanced;
     // sticky setting, to prevent reading to often
     bool m_optOnlyActiveImages;
+    bool m_optIgnoreLineCp;
     // help controller
     wxHelpController m_HelpController;
 

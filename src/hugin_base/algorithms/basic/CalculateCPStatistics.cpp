@@ -39,7 +39,8 @@ void CalculateCPStatisticsError::calcCtrlPntsErrorStats(const PanoramaData& pano
                                                         double & min, double & max, double & mean,
                                                         double & var,
                                                         const int& imgNr,
-                                                        const bool onlyActive)
+                                                        const bool onlyActive,
+                                                        const bool ignoreLineCp)
 {
     const CPVector& cps = pano.getCtrlPoints();
     const UIntSet activeImgs(pano.getActiveImages());
@@ -56,6 +57,10 @@ void CalculateCPStatisticsError::calcCtrlPntsErrorStats(const PanoramaData& pano
             continue;
         }
         if (onlyActive && (!set_contains(activeImgs, it->image1Nr) || !set_contains(activeImgs, it->image2Nr)))
+        {
+            continue;
+        };
+        if (ignoreLineCp && it->mode != ControlPoint::X_Y)
         {
             continue;
         };
