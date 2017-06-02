@@ -292,6 +292,8 @@
                   <object class="wxBoxSizer">
                     <object class="sizeritem">
                       <object class="wxToggleButton" name="preview_identify_toggle_button">
+                        <bitmap>data/identify_tool.png</bitmap>
+                        <bitmapposition>wxTOP</bitmapposition>
                         <style>wxBU_EXACTFIT</style>
                         <label>Identify</label>
                         <tooltip>Match images to their numbers</tooltip>
@@ -393,6 +395,8 @@
                         <object class="sizeritem">
                           <object class="wxToggleButton" name="preview_color_picker_toggle_button">
                             <style>wxBU_EXACTFIT</style>
+                            <bitmap>data/preview_white_balance.png</bitmap>
+                            <bitmapposition>wxTOP</bitmapposition>
                             <label>Gray picker</label>
                             <tooltip>Correct global white balance by selecting a neutral gray area.</tooltip>
                           </object>
@@ -401,6 +405,8 @@
                         <object class="sizeritem">
                           <object class="wxToggleButton" name="preview_edit_cp_toggle_button">
                             <style>wxBU_EXACTFIT</style>
+                            <bitmap>data/preview_control_point_tool.png</bitmap>
+                            <bitmapposition>wxTOP</bitmapposition>
                             <label>Edit CP</label>
                             <tooltip>Create or delete control points in selected rectangle.</tooltip>
                           </object>

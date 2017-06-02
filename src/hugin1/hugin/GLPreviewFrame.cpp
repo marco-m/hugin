@@ -304,17 +304,20 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     XRCCTRL(*this,"preview_fit_pano_tool2",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_autocrop_tool",wxButton)->SetBitmapMargins(0,0);
     XRCCTRL(*this,"preview_stack_autocrop_tool",wxButton)->SetBitmapMargins(0,0);
-    wxBitmap bitmap;
-    bitmap.LoadFile(huginApp::Get()->GetXRCPath() + wxT("data/identify_tool.png"), wxBITMAP_TYPE_PNG);
-    m_identify_togglebutton= XRCCTRL(*this, "preview_identify_toggle_button", wxToggleButton);
-    m_identify_togglebutton->SetBitmap(bitmap, wxTOP);
-    m_tool_notebook = XRCCTRL(*this,"mode_toolbar_notebook",wxNotebook);
+
+    m_tool_notebook = XRCCTRL(*this, "mode_toolbar_notebook", wxNotebook);
+    m_identify_togglebutton = XRCCTRL(*this, "preview_identify_toggle_button", wxToggleButton);
     m_colorpicker_togglebutton = XRCCTRL(*this, "preview_color_picker_toggle_button", wxToggleButton);
+    m_editCP_togglebutton = XRCCTRL(*this, "preview_edit_cp_toggle_button", wxToggleButton);
+    wxBitmap bitmap;
+#if !wxCHECK_VERSION(3,1,1)
+    bitmap.LoadFile(huginApp::Get()->GetXRCPath() + wxT("data/identify_tool.png"), wxBITMAP_TYPE_PNG);
+    m_identify_togglebutton->SetBitmap(bitmap, wxTOP);
     bitmap.LoadFile(huginApp::Get()->GetXRCPath() + wxT("data/preview_white_balance.png"), wxBITMAP_TYPE_PNG);
     m_colorpicker_togglebutton->SetBitmap(bitmap, wxTOP);
-    m_editCP_togglebutton = XRCCTRL(*this, "preview_edit_cp_toggle_button", wxToggleButton);
     bitmap.LoadFile(huginApp::Get()->GetXRCPath() + wxT("data/preview_control_point_tool.png"), wxBITMAP_TYPE_PNG);
     m_editCP_togglebutton->SetBitmap(bitmap, wxTOP);
+#endif
 
     //build menu bar
 #ifdef __WXMAC__
