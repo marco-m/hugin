@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2017-05-06 16:48+0200\n"
-"PO-Revision-Date: 2017-05-06 16:09+0000\n"
+"POT-Creation-Date: 2017-06-02 17:26+0200\n"
+"PO-Revision-Date: 2017-06-02 16:11+0000\n"
 "Last-Translator: Kornel Benko <kornel@lyx.org>\n"
 "Language-Team: Slovak <kornel@lyx.org>\n"
 "Language: sk\n"
@@ -928,17 +928,20 @@ msgstr "Držať existujúce štósy"
 #: hugin1/base_wx/wxPanoCommand.cpp:645
 #, c-format
 msgid ""
-"Image file not found:\n"
-"%s\n"
-"Please select correct image"
+"The project file \"%s\" refers to image \"%s\" which was not found.\n"
+"Please manually select the correct image."
 msgstr ""
-"Obrázok nenájdený:\n"
-"%s\n"
-"Vyberte prosím správny obrázok"
+"Projektový súbor \"%s\" referuje obrázok \"%s\"  ktorý tu nie je.\n"
+"Prosím vyberte manuálne správny obrázok."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:645
 msgid "Image file not found"
 msgstr "Obrázok nenájdený"
+
+#: hugin1/base_wx/wxPanoCommand.cpp:652
+#, c-format
+msgid "Select image %s"
+msgstr "Vyberte obrázok %s"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:652 hugin1/base_wx/wxPanoCommand.cpp:845
 #: hugin1/calibrate_lens/LensCalFrame.cpp:372 hugin1/hugin/PanoOperation.cpp:91
@@ -2403,6 +2406,22 @@ msgstr "Zrušiť výber"
 msgid "Edit image variables..."
 msgstr "Upraviť premenné obrázku..."
 
+#: hugin1/hugin/ImagesTree.cpp:1219
+msgid "Deactivate image"
+msgstr "Dezaktivujte obrázok"
+
+#: hugin1/hugin/ImagesTree.cpp:1223
+msgid "Activate image"
+msgstr "Aktivujte obrázok"
+
+#: hugin1/hugin/ImagesTree.cpp:1228
+msgid "Activate images"
+msgstr "Aktivujte obrázky"
+
+#: hugin1/hugin/ImagesTree.cpp:1229
+msgid "Deactivate images"
+msgstr "Dezaktivujte obrázky"
+
 #: hugin1/hugin/ImagesTree.cpp:1244
 msgid "Control points"
 msgstr "Kontrolné body"
@@ -2493,41 +2512,41 @@ msgstr "Optimalizátor"
 msgid "Exposure"
 msgstr "Expozícia"
 
-#: hugin1/hugin/MainFrame.cpp:767
-msgid "Save changes to the panorama before opening an other project?"
-msgstr "Uložiť zmeny panorámy pred otvorením iného projektu?"
+#: hugin1/hugin/MainFrame.cpp:773
+msgid "Save changes to the project file before opening an other project?"
+msgstr "Uložiť zmeny do projektového súboru pred otvorením iného projektu?"
 
-#: hugin1/hugin/MainFrame.cpp:770
-msgid "Save changes to the panorama before starting a new project?"
-msgstr "Uložiť zmeny tejto panorámy pred štartom nového projektu?"
+#: hugin1/hugin/MainFrame.cpp:776
+msgid "Save changes to the project file before starting a new project?"
+msgstr "Uložiť zmeny do projektového súboru pred štartom nového projektu?"
 
-#: hugin1/hugin/MainFrame.cpp:774
-msgid "Save changes to the panorama before closing?"
-msgstr "Uložiť zmeny panorámy pred uzatvorením?"
+#: hugin1/hugin/MainFrame.cpp:780
+msgid "Save changes to the project file before closing?"
+msgstr "Uložiť zmeny do projektového súboru pred uzatvorením?"
 
-#: hugin1/hugin/MainFrame.cpp:787
+#: hugin1/hugin/MainFrame.cpp:793
 msgid ""
-"If you load an other project without saving, your changes since your last "
-"save will be discarded."
-msgstr ""
-"Ak naložíte iný projekt bez uloženia, zmeny ktoré ste urobili od posledného "
-"uloženia budú stratené."
-
-#: hugin1/hugin/MainFrame.cpp:790
-msgid ""
-"If you start a new project without saving, your changes since your last save "
+"If you load an other project without saving, your changes since last save "
 "will be discarded."
 msgstr ""
-"Ak štartujete iný projekt bez uloženia, zmeny ktoré ste urobili od "
-"posledného uloženia budú stratené."
+"Ak naložíte iný projekt bez uloženia, zmeny ktoré ste urobili od posledného "
+"uloženia budú zahodené."
 
-#: hugin1/hugin/MainFrame.cpp:794
+#: hugin1/hugin/MainFrame.cpp:796
+msgid ""
+"If you start a new project without saving, your changes since last save will "
+"be discarded."
+msgstr ""
+"Ak štartujete iný projekt bez uloženia, zmeny ktoré ste urobili od "
+"posledného uloženia budú zahodené."
+
+#: hugin1/hugin/MainFrame.cpp:800
 msgid ""
 "If you close without saving, your changes since your last save will be "
 "discarded."
 msgstr ""
 "Ak zavriete bez uloženia, zmeny ktoré ste urobili od posledného uloženia "
-"budú stratené."
+"budú zahodené."
 
 #: hugin1/hugin/MainFrame.cpp:799
 msgid "Don't Save"
@@ -2856,6 +2875,16 @@ msgid ""
 msgstr ""
 "Projekt neobsahuje žiadne aktívne obrázky.\n"
 "Vyberte aspoň jeden v okne (rýchleho) náhľadu.\n"
+"Optimalizácia zrušená."
+
+#: hugin1/hugin/OptimizePanel.cpp:193 hugin1/hugin/OptimizePanel.cpp:265
+msgid ""
+"There are no control points in the current configuration for the optimizer.\n"
+"Please add control points before running the optimizer.\n"
+"Optimization canceled."
+msgstr ""
+"Optimalizátor nemá definované kontrolné body v aktuálnej konfigurácii.\n"
+"Prosím pridajte kontrolné body pred spustením optimalizátora.\n"
 "Optimalizácia zrušená."
 
 #: hugin1/hugin/OptimizePanel.cpp:313
@@ -5770,6 +5799,14 @@ msgstr ""
 "Užitočné, ak sa chcete vyhnúť chybám spôsobenými zlým lícovaním obrázkov, "
 "ako je napríklad obrázok nadiru vo väčšine panorám fotených rybím okom"
 
+#: hugin1/hugin/xrc/main_menu.xrc:34 hugin1/hugin/xrc/optimize_panel.xrc:50
+msgid "Ignore line control points"
+msgstr "Ignorovať kontrolné body pre čiary"
+
+#: hugin1/hugin/xrc/main_menu.xrc:35 hugin1/hugin/xrc/optimize_panel.xrc:51
+msgid "Use only normal control points in optimization."
+msgstr "Použiť len normálne kontrolné body pri optimalizácii."
+
 #: hugin1/hugin/xrc/main_menu.xrc:33 hugin1/hugin/xrc/preview_frame.xrc:1020
 msgid "&Optimize"
 msgstr "Op&timalizovať"
@@ -6205,10 +6242,6 @@ msgstr "Vybrané"
 msgid "Unselected"
 msgstr "Nevybrané"
 
-#: hugin1/hugin/xrc/mask_editor_panel.xrc:188
-msgid "Colour"
-msgstr "Farba"
-
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:197
 msgid "Show extent of active masks and crop"
 msgstr "Zobraz presah aktívnych masiek a orez"
@@ -6296,20 +6329,18 @@ msgstr "Nahrávam masku"
 msgid "Geometric optimizer"
 msgstr "Geometrická optimalizácia"
 
-#: hugin1/hugin/xrc/optimize_panel.xrc:31
-#: hugin1/hugin/xrc/optimize_photo_panel.xrc:30
+#: hugin1/hugin/xrc/optimize_panel.xrc:32
+#: hugin1/hugin/xrc/optimize_photo_panel.xrc:31
 msgid ""
 "Any variables below which are marked [x] will be optimized.\n"
-"Variables which are cleared [ ] will act as references or anchors."
+"Unmarked variables [ ] will act as references or anchors."
 msgstr ""
 "Všetky premenné označené [x] budú optimalizované.\n"
-"Premenné, ktoré sú vynulované - [ ], budú hrať úlohu referencií alebo kotiev."
+"Neoznačené premenné [ ], budú hrať úlohu referencií alebo kotiev."
 
 #: hugin1/hugin/xrc/optimize_panel.xrc:42
-msgid "Only use control points between image selected in preview window."
-msgstr ""
-"Použiť iba kontrolné body medzi obrázkami, ktoré sú vybrané v okne s "
-"náhľadom."
+msgid "Only use control points between activated images."
+msgstr "Použiť iba kontrolné body medzi obrázkami, ktoré sú aktivované."
 
 #: hugin1/hugin/xrc/optimize_panel.xrc:55
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:55
@@ -6342,8 +6373,8 @@ msgid "Photometric Optimization"
 msgstr "Fotometrická optimalizácia"
 
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:41
-msgid "Only use images selected in preview."
-msgstr "Použiť iba obrázky vybrané v okne s náhľadom."
+msgid "Only use activated images."
+msgstr "Použiť len aktivované obrázky."
 
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:42
 msgid ""
@@ -6784,14 +6815,13 @@ msgstr "Štandardné meno súboru projektu:"
 msgid "Default output prefix:"
 msgstr "Štandardný prefix pre výstup:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:230
-#, c-format
+#: hugin1/hugin/xrc/pref_dialog.xrc:231
 msgid ""
 "The following placeholders are replaced automatically:\n"
 "%firstimage - filename of first image file\n"
 "%lastimage - filename of last image file\n"
 "%#images - number of images\n"
-"%directory  - folder name (based on first image file)\n"
+"%directory  - folder name (path of the first image file)\n"
 "%projection - projection name\n"
 "%focallength - focal length\n"
 "%date - date (of first image)\n"
@@ -7803,11 +7833,11 @@ msgstr ""
 msgid ""
 "Sometimes the control point detector can not find connections between all "
 "images. In this case, control points have to be created manually, using the "
-"control points tab."
+"control points tab in the panorama editor."
 msgstr ""
-"Niekedy Autopano nemôže nájsť spojenia medzi všetkými obrázkami. V takom "
-"prípade musia byť kontrolné body vytvorené manuálne, použitím panelu "
-"kontrolných bodov."
+"Niekedy detektor kontrolných bodov nemôže nájsť spojenia medzi všetkými "
+"obrázkami. V takom prípade musia byť kontrolné body vytvorené manuálne, "
+"použitím panelu kontrolných bodov."
 
 #: hugin1/hugin/xrc/data/tips.txt:12
 msgid ""
@@ -7828,11 +7858,14 @@ msgstr ""
 #: hugin1/hugin/xrc/data/tips.txt:14
 msgid ""
 "Rotating the camera around the entrance pupil (sometimes also called \"nodal "
-"point\") avoids parallax errors and makes panorama creation a lot easier."
+"point\") avoids parallax errors and makes panorama creation a lot easier. "
+"The Panotools wiki <http://wiki.panotools.org/NPP> helps you to find the "
+"correct point for your lens."
 msgstr ""
 "Rotácia kamery okolo vstupnej bábiky (niekedy známa ako \"uzlový bod\") "
 "pomôže predísť chybám paralaxy a umožňuje oveľa jednoduchšie vytvorenie "
-"panorámy."
+"panorámy. Panotools wiki <http://wiki.panotools.org/NPP> vám pomôže nájsť "
+"správny bod pre vašu šošovku."
 
 #: hugin1/hugin/xrc/data/tips.txt:15
 msgid "Tutorials on hugin are available on http://hugin.sf.net/tutorials"
@@ -7980,11 +8013,11 @@ msgstr ""
 
 #: hugin1/hugin/xrc/data/tips.txt:36
 msgid ""
-"Multiple images can be selected in the image and lens tabs. Commands will "
-"act on all selected images."
+"Multiple images can be selected in the photo tabs in the panorama editor. "
+"Commands will act on all selected images."
 msgstr ""
 "V paneli obrázku a šošovky môže byť vybraných viacero obrázkov naraz. "
-"Príkazy sa budú spúšťať na zvolených obrázkoch."
+"Príkazy sa budú spúšťať na všetkých zvolených obrázkoch."
 
 #: hugin1/hugin/xrc/data/tips.txt:37
 msgid ""
@@ -8003,6 +8036,21 @@ msgstr ""
 "Optimalizácia všetkých parametrov skreslenia \"všetko\" má zmysel iba vtedy, "
 "ak sa obrázky veľmi prekrývajú a použili ste tiež mnoho dobre rozprestrených "
 "kontrolných bodov."
+
+#~ msgid ""
+#~ "Image file not found:\n"
+#~ "%s\n"
+#~ "Please select correct image"
+#~ msgstr ""
+#~ "Obrázok nenájdený:\n"
+#~ "%s\n"
+#~ "Vyberte prosím správny obrázok"
+
+#~ msgid "Colour"
+#~ msgstr "Farba"
+
+#~ msgid "Only use images selected in preview."
+#~ msgstr "Použiť iba obrázky vybrané v okne s náhľadom."
 
 #~ msgid ""
 #~ "If you close without saving, changes since your last save will be "
@@ -10060,3 +10108,91 @@ msgstr ""
 #~ "%projectname - meno projektovho pto súboru\n"
 #~ "\n"
 #~ "Veľkosť písmen je v zástupných značkách významná."
+
+#~ msgid "Save changes to the panorama before opening an other project?"
+#~ msgstr "Uložiť zmeny panorámy pred otvorením iného projektu?"
+
+#~ msgid "Save changes to the panorama before starting a new project?"
+#~ msgstr "Uložiť zmeny tejto panorámy pred štartom nového projektu?"
+
+#~ msgid "Save changes to the panorama before closing?"
+#~ msgstr "Uložiť zmeny panorámy pred uzatvorením?"
+
+#~ msgid ""
+#~ "If you load an other project without saving, your changes since your last "
+#~ "save will be discarded."
+#~ msgstr ""
+#~ "Ak naložíte iný projekt bez uloženia, zmeny ktoré ste urobili od posledného "
+#~ "uloženia budú stratené."
+
+#~ msgid ""
+#~ "If you start a new project without saving, your changes since your last save "
+#~ "will be discarded."
+#~ msgstr ""
+#~ "Ak štartujete iný projekt bez uloženia, zmeny ktoré ste urobili od "
+#~ "posledného uloženia budú stratené."
+
+#~ msgid ""
+#~ "Any variables below which are marked [x] will be optimized.\n"
+#~ "Variables which are cleared [ ] will act as references or anchors."
+#~ msgstr ""
+#~ "Všetky premenné označené [x] budú optimalizované.\n"
+#~ "Premenné, ktoré sú vynulované - [ ], budú hrať úlohu referencií alebo kotiev."
+
+#~ msgid "Only use control points between image selected in preview window."
+#~ msgstr ""
+#~ "Použiť iba kontrolné body medzi obrázkami, ktoré sú vybrané v okne s "
+#~ "náhľadom."
+
+#~ msgid ""
+#~ "The following placeholders are replaced automatically:\n"
+#~ "%firstimage - filename of first image file\n"
+#~ "%lastimage - filename of last image file\n"
+#~ "%#images - number of images\n"
+#~ "%directory  - folder name (based on first image file)\n"
+#~ "%projection - projection name\n"
+#~ "%focallength - focal length\n"
+#~ "%date - date (of first image)\n"
+#~ "%time - time (of first image)\n"
+#~ "%maker - camera maker (of first image)\n"
+#~ "%model - camera model (of first image)\n"
+#~ "%lens - lens (of first image)\n"
+#~ "%projectname - project filename (only for output prefix)"
+#~ msgstr ""
+#~ "Nasledujúce zástupné termíny sú automaticky nahradzované:\n"
+#~ "%firstimage - meno súboru prvého obrázku\n"
+#~ "%lastimage - meno súboru posledného obrázku\n"
+#~ "%#images - počet obrázkov\n"
+#~ "%directory  - adresár (na základe súboru prvého obrázku)\n"
+#~ "%projection - názov projekcie\n"
+#~ "%focallength - ohnisková vzdialenosť\n"
+#~ "%date - dátum (prvého obrázku)\n"
+#~ "%time - čas (prvého obrázku)\n"
+#~ "%maker - výrobca kamery (prvého obrázku)\n"
+#~ "%model - model kamery (prvého obrázku)\n"
+#~ "%lens - šošovka (prvého obrázku)\n"
+#~ "%projectname - názov súboru projektu (len pre výstupný prefix)"
+
+#~ msgid ""
+#~ "Sometimes the control point detector can not find connections between all "
+#~ "images. In this case, control points have to be created manually, using the "
+#~ "control points tab."
+#~ msgstr ""
+#~ "Niekedy Autopano nemôže nájsť spojenia medzi všetkými obrázkami. V takom "
+#~ "prípade musia byť kontrolné body vytvorené manuálne, použitím panelu "
+#~ "kontrolných bodov."
+
+#~ msgid ""
+#~ "Rotating the camera around the entrance pupil (sometimes also called \"nodal "
+#~ "point\") avoids parallax errors and makes panorama creation a lot easier."
+#~ msgstr ""
+#~ "Rotácia kamery okolo vstupnej bábiky (niekedy známa ako \"uzlový bod\") "
+#~ "pomôže predísť chybám paralaxy a umožňuje oveľa jednoduchšie vytvorenie "
+#~ "panorámy."
+
+#~ msgid ""
+#~ "Multiple images can be selected in the image and lens tabs. Commands will "
+#~ "act on all selected images."
+#~ msgstr ""
+#~ "V paneli obrázku a šošovky môže byť vybraných viacero obrázkov naraz. "
+#~ "Príkazy sa budú spúšťať na zvolených obrázkoch."
