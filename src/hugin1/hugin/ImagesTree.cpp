@@ -53,6 +53,8 @@ enum
     ID_UNSELECT_ALL,
     ID_SELECT_LENS_STACK,
     ID_UNSELECT_LENS_STACK,
+    ID_ACTIVATE_IMAGE,
+    ID_DEACTIVATE_IMAGE,
     ID_OPERATION_START=wxID_HIGHEST+300
 };
 
@@ -67,6 +69,8 @@ BEGIN_EVENT_TABLE(ImagesTreeCtrl, wxTreeListCtrl)
     EVT_MENU(ID_UNSELECT_ALL, ImagesTreeCtrl::OnUnselectAll)
     EVT_MENU(ID_SELECT_LENS_STACK, ImagesTreeCtrl::OnSelectLensStack)
     EVT_MENU(ID_UNSELECT_LENS_STACK, ImagesTreeCtrl::OnUnselectLensStack)
+    EVT_MENU(ID_ACTIVATE_IMAGE, ImagesTreeCtrl::OnActivateImage)
+    EVT_MENU(ID_DEACTIVATE_IMAGE, ImagesTreeCtrl::OnDeactivateImage)
     EVT_MENU_RANGE(ID_OPERATION_START, ID_OPERATION_START+50, ImagesTreeCtrl::OnExecuteOperation)
     EVT_TREE_BEGIN_DRAG(-1, ImagesTreeCtrl::OnBeginDrag)
     EVT_LEFT_UP(ImagesTreeCtrl::OnLeftUp)
@@ -99,6 +103,7 @@ ImagesTreeCtrl::ImagesTreeCtrl()
     m_displayMode=DISPLAY_GENERAL;
     m_optimizerMode=false;
     m_needsUpdate=true;
+    m_markDisabledImages = false;
 }
 
 bool ImagesTreeCtrl::Create(wxWindow* parent, wxWindowID id,
@@ -341,6 +346,10 @@ void ImagesTreeCtrl::panoramaImagesChanged(HuginBase::Panorama &pano, const Hugi
     if(m_optimizerMode)
     {
         UpdateOptimizerVariables();
+    };
+    if (m_markDisabledImages)
+    {
+        UpdateItemFont();
     };
 
     Thaw();
@@ -984,6 +993,12 @@ HuginBase::UIntSet ImagesTreeCtrl::GetSelectedImages()
         };
     }
     return imgs;
+}
+
+void ImagesTreeCtrl::MarkActiveImages(const bool markActive)
+{
+    m_markDisabledImages = markActive;
+    UpdateItemFont();
 };
 
 void ImagesTreeCtrl::OnColumnWidthChange( wxListEvent & e )
@@ -1194,6 +1209,26 @@ void ImagesTreeCtrl::OnContextMenu(wxTreeEvent & e)
             }
         };
         menu.Append(ID_EDIT, _("Edit image variables..."));
+        if (m_markDisabledImages)
+        {
+            const HuginBase::UIntSet selectedImages = GetSelectedImages();
+            if (selectedImages.size() == 1)
+            {
+                if (m_pano->getImage(*selectedImages.begin()).getActive())
+                {
+                    menu.Append(ID_DEACTIVATE_IMAGE, _("Deactivate image"));
+                }
+                else
+                {
+                    menu.Append(ID_ACTIVATE_IMAGE, _("Activate image"));
+                };
+            }
+            else
+            {
+                menu.Append(ID_ACTIVATE_IMAGE, _("Activate images"));
+                menu.Append(ID_DEACTIVATE_IMAGE, _("Deactivate images"));
+            };
+        };
     }
     else
     {
@@ -1279,6 +1314,89 @@ void ImagesTreeCtrl::GenerateSubMenu(wxMenu* menu, PanoOperation::PanoOperationV
             id++;
         }
     };
+}
+
+void ImagesTreeCtrl::UpdateItemFont()
+{
+    const wxColour normalColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    const wxColour disabledColour = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
+    if (m_markDisabledImages)
+    {
+        wxTreeItemIdValue cookie;
+        wxTreeItemId item = GetFirstChild(m_root, cookie);
+        while (item.IsOk())
+        {
+            ImagesTreeData* itemData = static_cast<ImagesTreeData*>(GetItemData(item));
+            bool isActive = true;
+            if (itemData->IsGroup())
+            {
+                wxTreeItemIdValue childCookie;
+                wxTreeItemId child = GetFirstChild(item, childCookie);
+                while (child.IsOk())
+                {
+                    ImagesTreeData* childItemData = static_cast<ImagesTreeData*>(GetItemData(child));
+                    isActive = m_pano->getImage(childItemData->GetImgNr()).getActive();
+                    if (isActive)
+                    {
+                        break;
+                    };
+                    child = GetNextChild(item, childCookie);
+                };
+            }
+            else
+            {
+                isActive = m_pano->getImage(itemData->GetImgNr()).getActive();
+            };
+            if (isActive)
+            {
+                SetItemTextColour(item, normalColour);
+            }
+            else
+            {
+                SetItemTextColour(item, disabledColour);
+            };
+            if(itemData->IsGroup())
+            {
+                wxTreeItemIdValue childCookie;
+                wxTreeItemId child = GetFirstChild(item, childCookie);
+                while (child.IsOk())
+                {
+                    ImagesTreeData* childItemData = static_cast<ImagesTreeData*>(GetItemData(child));
+                    if (m_pano->getImage(childItemData->GetImgNr()).getActive())
+                    {
+                        SetItemTextColour(child, normalColour);
+                    }
+                    else
+                    {
+                        SetItemTextColour(child, disabledColour);
+                    };
+                    child = GetNextChild(item, childCookie);
+                };
+            };
+            item = GetNextChild(m_root, cookie);
+        };
+    }
+    else
+    {
+        wxTreeItemIdValue cookie;
+        wxTreeItemId item = GetFirstChild(m_root, cookie);
+        while (item.IsOk())
+        {
+            ImagesTreeData* itemData=static_cast<ImagesTreeData*>(GetItemData(item));
+            SetItemTextColour(item, normalColour);
+            if (itemData->IsGroup())
+            {
+                wxTreeItemIdValue childCookie;
+                wxTreeItemId child = GetFirstChild(item, childCookie);
+                while (child.IsOk())
+                {
+                    SetItemTextColour(child, normalColour);
+                    child = GetNextChild(item, childCookie);
+                };
+            };
+            item = GetNextChild(m_root, cookie);
+        };
+    };
 };
 
 void ImagesTreeCtrl::OnHeaderContextMenu(wxListEvent & e)
@@ -1292,6 +1410,26 @@ void ImagesTreeCtrl::OnHeaderContextMenu(wxListEvent & e)
         PopupMenu(&menu);
     };
     e.Skip();
+}
+void ImagesTreeCtrl::OnActivateImage(wxCommandEvent & e)
+{
+    HuginBase::UIntSet activeImages = m_pano->getActiveImages();
+    const HuginBase::UIntSet selectedImages = GetSelectedImages();
+    std::copy(selectedImages.begin(), selectedImages.end(), std::inserter(activeImages, activeImages.end()));
+    PanoCommand::GlobalCmdHist::getInstance().addCommand(
+        new PanoCommand::SetActiveImagesCmd(*m_pano, activeImages)
+    );
+};
+
+void ImagesTreeCtrl::OnDeactivateImage(wxCommandEvent & e)
+{
+    HuginBase::UIntSet activeImages = m_pano->getActiveImages();
+    const HuginBase::UIntSet selectedImages = GetSelectedImages();
+    HuginBase::UIntSet newActiveImages;
+    std::set_difference(activeImages.begin(), activeImages.end(), selectedImages.begin(), selectedImages.end(), std::inserter(newActiveImages, newActiveImages.end()));
+    PanoCommand::GlobalCmdHist::getInstance().addCommand(
+        new PanoCommand::SetActiveImagesCmd(*m_pano, newActiveImages)
+    );
 };
 
 void ImagesTreeCtrl::UnLinkImageVariables(bool linked)

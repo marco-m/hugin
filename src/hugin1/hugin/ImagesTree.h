@@ -89,6 +89,8 @@ public:
      *
      *  if a lens or stack is selected it returns all images of the selected lens/stack */
     HuginBase::UIntSet GetSelectedImages();
+    /** sets the flag, if active/disabled image should be marked with different colour */
+    void MarkActiveImages(const bool markActive);
 
 protected:
     /** updates the information for the given image in tree */
@@ -135,6 +137,10 @@ protected:
     void OnContextMenu(wxTreeEvent & e);
     /** event handler for context menu on header */
     void OnHeaderContextMenu(wxListEvent & e);
+    /** event handler for activate image */
+    void OnActivateImage(wxCommandEvent& e);
+    /** event handler for deactivate image */
+    void OnDeactivateImage(wxCommandEvent& e);
 
 private:
     /** creates all columns and stores information in m_columnMap, m_columnVector, m_editableColumns and m_variableVector */
@@ -150,6 +156,8 @@ private:
     void UpdateOptimizerVariables();
     /** generates submenu for given PanoOperationVector */
     void GenerateSubMenu(wxMenu* menu, PanoOperation::PanoOperationVector* operations, int& id);
+    /** update the font colour for all items */
+    void UpdateItemFont();
 
     // the model
     HuginBase::Panorama * m_pano;
@@ -167,6 +175,8 @@ private:
     GuiLevel m_guiLevel;
     /** true, if in optimizer mode */
     bool m_optimizerMode;
+    /** true, if disabled images should be marked with other font color */
+    bool m_markDisabledImages;
     /** the active display mode */
     DisplayMode m_displayMode;
     /** map for easier access to column information */

@@ -371,7 +371,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     m_menu_file_advanced=wxXmlResource::Get()->LoadMenu(wxT("file_menu_advanced"));
     mainMenu->Insert(0, m_menu_file_simple, _("&File"));
     SetMenuBar(mainMenu);
-    SetOptimizeOnlyActiveImages(m_optOnlyActiveImages);
+    m_optOnlyActiveImages = (wxConfigBase::Get()->Read(wxT("/OptimizePanel/OnlyActiveImages"), 1l) != 0);
     m_optIgnoreLineCp = false;
 
 #ifdef HUGIN_HSI
@@ -613,6 +613,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
 
     // disable automatic Layout() calls, to it by hand
     SetAutoLayout(false);
+    SetOptimizeOnlyActiveImages(m_optOnlyActiveImages);
 
 
 #ifdef __WXMSW__
@@ -680,6 +681,9 @@ MainFrame::~MainFrame()
     m_mruFiles.Save(*config);
     //store gui level
     config->Write(wxT("/GuiLevel"),(long)m_guiLevel);
+    // store optimize only active images
+    config->Write("/OptimizePanel/OnlyActiveImages", m_optOnlyActiveImages ? 1l : 0l);
+
     config->Flush();
     if(svmModel!=NULL)
     {
@@ -1476,10 +1480,7 @@ void MainFrame::OnOptimize(wxCommandEvent & e)
 
 void MainFrame::OnOnlyActiveImages(wxCommandEvent &e)
 {
-    m_optOnlyActiveImages = GetMenuBar()->IsChecked(XRCID("action_optimize_only_active"));
-    opt_panel->SetOnlyActiveImages(m_optOnlyActiveImages);
-    // notify all observer so they can update their display
-    pano.changeFinished();
+    SetOptimizeOnlyActiveImages(GetMenuBar()->IsChecked(XRCID("action_optimize_only_active")));
 };
 
 void MainFrame::SetOptimizeOnlyActiveImages(const bool onlyActive)
@@ -1489,9 +1490,11 @@ void MainFrame::SetOptimizeOnlyActiveImages(const bool onlyActive)
     if (menubar)
     {
         menubar->Check(XRCID("action_optimize_only_active"), onlyActive);
-        // notify all observer so they can update their display
-        pano.changeFinished();
     };
+    opt_panel->SetOnlyActiveImages(m_optOnlyActiveImages);
+    opt_photo_panel->SetOnlyActiveImages(m_optOnlyActiveImages);
+    // notify all observer so they can update their display
+    pano.changeFinished();
 };
 
 const bool MainFrame::GetOptimizeOnlyActiveImages() const

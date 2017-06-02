@@ -54,6 +54,7 @@ BEGIN_EVENT_TABLE(OptimizePhotometricPanel, wxPanel)
     EVT_CLOSE(OptimizePhotometricPanel::OnClose)
     EVT_BUTTON(XRCID("optimize_photo_panel_optimize"), OptimizePhotometricPanel::OnOptimizeButton)
     EVT_BUTTON(XRCID("optimize_photo_panel_reset"), OptimizePhotometricPanel::OnReset)
+    EVT_CHECKBOX(XRCID("optimize_photo_panel_only_active_images"), OptimizePhotometricPanel::OnCheckOnlyActiveImages)
 END_EVENT_TABLE()
 
 OptimizePhotometricPanel::OptimizePhotometricPanel() : m_pano(0)
@@ -78,7 +79,6 @@ bool OptimizePhotometricPanel::Create(wxWindow *parent, wxWindowID id, const wxP
 
     m_only_active_images_cb = XRCCTRL(*this, "optimize_photo_panel_only_active_images", wxCheckBox);
     DEBUG_ASSERT(m_only_active_images_cb);
-    m_only_active_images_cb->SetValue(wxConfigBase::Get()->Read(wxT("/OptimizeOptimizePhotometricPanelPanel/OnlyActiveImages"),1l) != 0);
 
     m_images_tree = XRCCTRL(*this, "optimize_photo_panel_images", ImagesTreeCtrl);
     DEBUG_ASSERT(m_images_tree);
@@ -115,11 +115,22 @@ void OptimizePhotometricPanel::SetGuiLevel(GuiLevel newGuiLevel)
 OptimizePhotometricPanel::~OptimizePhotometricPanel()
 {
     DEBUG_TRACE("dtor, writing config");
-    wxConfigBase::Get()->Write(wxT("/OptimizePhotometricPanel/OnlyActiveImages"),m_only_active_images_cb->IsChecked() ? 1l : 0l);
 
     m_pano->removeObserver(this);
     DEBUG_TRACE("dtor end");
 }
+
+void OptimizePhotometricPanel::OnCheckOnlyActiveImages(wxCommandEvent & e)
+{
+    MainFrame::Get()->SetOptimizeOnlyActiveImages(e.IsChecked());
+};
+
+void OptimizePhotometricPanel::SetOnlyActiveImages(const bool onlyActive)
+{
+    m_only_active_images_cb->SetValue(onlyActive);
+    m_images_tree->MarkActiveImages(onlyActive);
+    m_lens_tree->MarkActiveImages(onlyActive);
+};
 
 void OptimizePhotometricPanel::OnOptimizeButton(wxCommandEvent & e)
 {

@@ -55,11 +55,15 @@ public:
     /** run the optimizer */
     void OnOptimizeButton(wxCommandEvent & e);
     void SetGuiLevel(GuiLevel newGuiLevel);
+    /** for external setting of "only active image" checkbox */
+    void SetOnlyActiveImages(const bool onlyActive);
 
 protected:
 
     void OnClose(wxCloseEvent& e);
     void OnReset(wxCommandEvent& e);
+    /** handle "only active images" checkbox */
+    void OnCheckOnlyActiveImages(wxCommandEvent &e);
 
     void runOptimizer(const HuginBase::UIntSet & img);
 

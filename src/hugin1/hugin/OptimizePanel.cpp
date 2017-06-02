@@ -83,8 +83,7 @@ bool OptimizePanel::Create(wxWindow* parent, wxWindowID id , const wxPoint& pos,
 
     m_only_active_images_cb = XRCCTRL(*this, "optimizer_panel_only_active_images", wxCheckBox);
     DEBUG_ASSERT(m_only_active_images_cb);
-    m_only_active_images_cb->SetValue(wxConfigBase::Get()->Read(wxT("/OptimizePanel/OnlyActiveImages"),1l) != 0);
-    MainFrame::Get()->SetOptimizeOnlyActiveImages(m_only_active_images_cb->GetValue());
+    m_only_active_images_cb->SetValue(false);
     m_ignore_line_cp = XRCCTRL(*this, "optimizer_panel_ignore_line_cp", wxCheckBox);
     DEBUG_ASSERT(m_ignore_line_cp);
     m_ignore_line_cp->SetValue(false);
@@ -93,6 +92,7 @@ bool OptimizePanel::Create(wxWindow* parent, wxWindowID id , const wxPoint& pos,
     DEBUG_ASSERT(m_images_tree_list);
     m_lens_tree_list = XRCCTRL(*this, "optimize_panel_lenses", ImagesTreeCtrl);
     DEBUG_ASSERT(m_lens_tree_list);
+    SetOnlyActiveImages(wxConfigBase::Get()->Read(wxT("/OptimizePanel/OnlyActiveImages"), 1l) != 0);
 
     m_edit_cb = XRCCTRL(*this, "optimizer_panel_edit_script", wxCheckBox);
     DEBUG_ASSERT(m_edit_cb);
@@ -127,9 +127,6 @@ void OptimizePanel::SetGuiLevel(GuiLevel newGuiLevel)
 
 OptimizePanel::~OptimizePanel()
 {
-    DEBUG_TRACE("dtor, writing config");
-    wxConfigBase::Get()->Write(wxT("/OptimizePanel/OnlyActiveImages"),m_only_active_images_cb->IsChecked() ? 1l : 0l);
-
     m_pano->removeObserver(this);
     DEBUG_TRACE("dtor end");
 }
@@ -420,6 +417,8 @@ void OptimizePanel::OnCheckOnlyActiveImages(wxCommandEvent &e)
 void OptimizePanel::SetOnlyActiveImages(const bool onlyActive)
 {
     m_only_active_images_cb->SetValue(onlyActive);
+    m_images_tree_list->MarkActiveImages(onlyActive);
+    m_lens_tree_list->MarkActiveImages(onlyActive);
 };
 
 void OptimizePanel::OnCheckIgnoreLineCP(wxCommandEvent &e)
