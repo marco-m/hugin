@@ -642,14 +642,14 @@ bool wxLoadPTProjectCmd::processPanorama(HuginBase::Panorama& pano)
                     }
                 }
 
-                wxMessageBox(wxString::Format(_("Image file not found:\n%s\nPlease select correct image"), fname.GetFullPath().c_str()), _("Image file not found"));
+                wxMessageBox(wxString::Format(_("The project file \"%s\" refers to image \"%s\" which was not found.\nPlease manually select the correct image."), filename, fname.GetFullPath()), _("Image file not found"));
 
                 if (basedir == wxT("")) {
                     basedir = fname.GetPath();
                 }
 
                 // open file dialog
-                wxFileDialog dlg(wxGetActiveWindow(), _("Add images"),
+                wxFileDialog dlg(wxGetActiveWindow(), wxString::Format(_("Select image %s"), fname.GetFullName()),
                                  basedir, fname.GetFullName(),
                                  HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN  | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition);
                 dlg.SetDirectory(basedir);
