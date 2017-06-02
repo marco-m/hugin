@@ -1670,21 +1670,32 @@ void ImagesTreeCtrl::OnLeftUp(wxMouseEvent &e)
             if (item.IsOk() && item == m_leftDownItem && col == m_leftDownColumn && (flags & wxTREE_HITTEST_ONITEMICON))
             {
                 HuginBase::UIntSet imgs;
-                ImagesTreeData* data = static_cast<ImagesTreeData*>(GetItemData(m_leftDownItem));
-                if (data->IsGroup())
+                const bool markSelected = IsSelected(m_leftDownItem);
+                if (markSelected)
                 {
-                    wxTreeItemIdValue cookie;
-                    wxTreeItemId childItem = GetFirstChild(m_leftDownItem, cookie);
-                    while (childItem.IsOk())
-                    {
-                        data = static_cast<ImagesTreeData*>(GetItemData(childItem));
-                        imgs.insert(data->GetImgNr());
-                        childItem = GetNextChild(m_leftDownItem, cookie);
-                    };
+                    // if the user clicked on one of the selected pass the selection to all selected images
+                    imgs = GetSelectedImages();
                 }
                 else
                 {
-                    imgs.insert(data->GetImgNr());
+                    // the user clicked on a non-selected images, work only on this image
+                    // or all images of the clicked lens/stack
+                    ImagesTreeData* data = static_cast<ImagesTreeData*>(GetItemData(m_leftDownItem));
+                    if (data->IsGroup())
+                    {
+                        wxTreeItemIdValue cookie;
+                        wxTreeItemId childItem = GetFirstChild(m_leftDownItem, cookie);
+                        while (childItem.IsOk())
+                        {
+                            data = static_cast<ImagesTreeData*>(GetItemData(childItem));
+                            imgs.insert(data->GetImgNr());
+                            childItem = GetNextChild(m_leftDownItem, cookie);
+                        };
+                    }
+                    else
+                    {
+                        imgs.insert(data->GetImgNr());
+                    };
                 };
                 HuginBase::OptimizeVector optVec = m_pano->getOptimizeVector();
                 std::set<std::string> var;
@@ -1726,14 +1737,22 @@ void ImagesTreeCtrl::OnLeftUp(wxMouseEvent &e)
                     };
                 };
                 bool deactivate = false;
-                for (std::set<std::string>::const_iterator varIt = var.begin(); varIt != var.end(); ++varIt)
+                if (markSelected)
                 {
-                    //search, if image variable is marked for optimise for at least one image of group
-                    for (HuginBase::UIntSet::const_iterator imgIt = imgs.begin(); imgIt != imgs.end() && !deactivate; ++imgIt)
+                    // check which state the clicked image have
+                    deactivate = GetItemImage(m_leftDownItem, m_leftDownColumn) & 1;
+                }
+                else
+                {
+                    for (std::set<std::string>::const_iterator varIt = var.begin(); varIt != var.end(); ++varIt)
                     {
-                        if (set_contains(optVec[*imgIt], *varIt))
+                        //search, if image variable is marked for optimise for at least one image of group
+                        for (HuginBase::UIntSet::const_iterator imgIt = imgs.begin(); imgIt != imgs.end() && !deactivate; ++imgIt)
                         {
-                            deactivate = true;
+                            if (set_contains(optVec[*imgIt], *varIt))
+                            {
+                                deactivate = true;
+                            };
                         };
                     };
                 };
