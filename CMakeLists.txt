@@ -417,11 +417,8 @@ ENDIF(WIN32)
 FIND_PACKAGE(SQLite3 REQUIRED)
 INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
 
-IF(UNIX)
-  OPTION(BUILD_HSI "Python Scripting Interface" ON)
-ELSE(UNIX)
-  OPTION(BUILD_HSI "Python Scripting Interface" OFF)
-ENDIF(UNIX)
+OPTION(BUILD_HSI "Python Scripting Interface" OFF)
+
 IF(BUILD_HSI)
   # find Python first because the version of SWIG required depends on the
   # version of Python available
