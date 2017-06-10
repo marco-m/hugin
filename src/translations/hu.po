@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Hugin 2016.2.0\n"
+"Project-Id-Version: Hugin 2017.0.0\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2017-04-29 10:16+0200\n"
-"PO-Revision-Date: 2016-06-12 20:56+0100\n"
+"PO-Revision-Date: 2017-06-02 08:11+0100\n"
 "Last-Translator: Höss Lajos <pgc1682@freemail.hu>\n"
 "Language-Team: Balló György <ballogy@freestart.hu>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Poedit 2.0.2\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,891,-1,-1,-1,-1,-1\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:65
@@ -829,15 +829,14 @@ msgstr ""
 "kép."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:299
-#, fuzzy
 msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image respectively and try loading "
 "again."
 msgstr ""
-"A Hugin nem támogatja ezt a keverést. Kihagyom ezt a képet.\n"
-"Konvertálja a képet szürkeárnyalatos vagy RGB képpé és próbálja újra "
-"betölteni."
+"A Hugin nem támogatja ezt a keverést. Kihagyja ezt a képet.\n"
+"Konvertálja a képet szürkeárnyalatos vagy RGB képpé egyenként és próbálja "
+"újra betölteni."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:316
 #, c-format
@@ -2476,16 +2475,13 @@ msgid "Output"
 msgstr "Kimenet"
 
 #: hugin1/hugin/MainFrame.cpp:462
-#, fuzzy, c-format
+#, c-format
 msgid "User defined sequence: %s"
-msgstr ""
-"Nem lehet megnyitni a felhasználó által megadott kimeneti sorrendet \"%s\"."
+msgstr "Felhasználó által meghatározott sorrend: %s"
 
 #: hugin1/hugin/MainFrame.cpp:478 hugin1/hugin/MainFrame.cpp:1913
-#, fuzzy
 msgid "User defined output sequences"
-msgstr ""
-"Nem lehet megnyitni a felhasználó által megadott kimeneti sorrendet \"%s\"."
+msgstr "Felhasználó által meghatározott kimeneti sorrendek"
 
 #: hugin1/hugin/MainFrame.cpp:572
 msgid "Started"
@@ -2503,42 +2499,40 @@ msgid "Exposure"
 msgstr "Expozíció"
 
 #: hugin1/hugin/MainFrame.cpp:767
-#, fuzzy
 msgid "Save changes to the panorama before opening an other project?"
-msgstr "Mentse a panoráma változásait bezárás előtt?"
+msgstr "Mentse a változásokat a panorámába egy másik projekt megnyitása előtt?"
 
 #: hugin1/hugin/MainFrame.cpp:770
-#, fuzzy
 msgid "Save changes to the panorama before starting a new project?"
-msgstr "Mentse a panoráma változásait bezárás előtt?"
+msgstr "Mentse a változásokat a panorámába az új projekt megkezdése előtt?"
 
 #: hugin1/hugin/MainFrame.cpp:774
 msgid "Save changes to the panorama before closing?"
 msgstr "Mentse a panoráma változásait bezárás előtt?"
 
 #: hugin1/hugin/MainFrame.cpp:787
-#, fuzzy
 msgid ""
 "If you load an other project without saving, your changes since your last "
 "save will be discarded."
 msgstr ""
-"Ha bezárja mentés nélkül, az utolsó mentés utáni módosítások el fognak veszni"
+"Ha egy másik projektet megnyit mentés nélkül, az utolsó mentés utáni "
+"módosítások el fognak veszni."
 
 #: hugin1/hugin/MainFrame.cpp:790
-#, fuzzy
 msgid ""
 "If you start a new project without saving, your changes since your last save "
 "will be discarded."
 msgstr ""
-"Ha bezárja mentés nélkül, az utolsó mentés utáni módosítások el fognak veszni"
+"Ha új projektet kezd mentés nélkül, az utolsó mentés utáni módosítások el "
+"fognak veszni."
 
 #: hugin1/hugin/MainFrame.cpp:794
-#, fuzzy
 msgid ""
 "If you close without saving, your changes since your last save will be "
 "discarded."
 msgstr ""
-"Ha bezárja mentés nélkül, az utolsó mentés utáni módosítások el fognak veszni"
+"Ha bezárja mentés nélkül, az utolsó mentés utáni módosítások el fognak "
+"veszni."
 
 #: hugin1/hugin/MainFrame.cpp:799
 msgid "Don't Save"
@@ -2587,7 +2581,7 @@ msgstr ""
 
 #: hugin1/hugin/MainFrame.cpp:947
 msgid "Save PTmender script file"
-msgstr " PTmender szkriptfájl mentése"
+msgstr "PTmender szkriptfájl mentése"
 
 #: hugin1/hugin/MainFrame.cpp:949
 msgid "PTmender files (*.txt)|*.txt"
@@ -2631,6 +2625,9 @@ msgid ""
 "This file is not a valid image.\n"
 "This file will be removed from the project."
 msgstr ""
+"Nem sikerült betölteni a(z) \"%s\" képet.\n"
+"Ez a fájl nem érvényes kép.\n"
+"Ez a fájl törölve lesz a projektbõl."
 
 #: hugin1/hugin/MainFrame.cpp:1246
 #, c-format
@@ -2639,6 +2636,10 @@ msgid ""
 "This file was renamed, deleted or is on a non-accessible drive.\n"
 "This file will be removed from the project."
 msgstr ""
+"Nem sikerült betölteni a(z) \"%s\" képet.\n"
+"Ezt a fájlt átnevezték, törölték vagy egy nem hozzáférhető meghajtón "
+"található.\n"
+"Ez a fájl törölve lesz a projektbõl."
 
 #: hugin1/hugin/MainFrame.cpp:1571
 #, c-format
@@ -2778,6 +2779,8 @@ msgid ""
 "The assistant could not find vertical lines. Please add vertical lines in "
 "the panorama editor and optimize project manually."
 msgstr ""
+"A segéd nem talált függőleges vonalakat. Kérjük, adjon hozzá a függõleges "
+"vonalakat a panoráma szerkesztõben, és manuálisan optimalizálja a projektet."
 
 #: hugin1/hugin/MainFrame.cpp:2275
 #, c-format
@@ -3575,22 +3578,21 @@ msgid "Could not save file \"%s\"."
 msgstr "Nem lehet menteni a fájlt \"%s\"."
 
 #: hugin1/hugin/PreferencesDialog.cpp:447
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should an example argfile be created?"
 msgstr ""
 "%s fájl nem létezik.\n"
-"Hozzon létre üres arg. fájlt?"
+"Hozzon létre egy minta arg fájlt?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:462
-#, fuzzy
 msgid ""
 "No file selected.\n"
 "Should an example argfile be created?"
 msgstr ""
 "Nincs fájl kiválasztva.\n"
-"Hozzon létre üres arg. fájlt?"
+"Hozzon létre egy minta arg fájlt?"
 
 #: hugin1/hugin/PreferencesDialog.cpp:781
 msgid "Really reset displayed preferences to default values?"
@@ -3737,6 +3739,9 @@ msgid ""
 "Error: %s\n"
 "One cause could be an invalid or missing image file."
 msgstr ""
+"Nem lehet összefűzni az elõnézetet.\n"
+"Hiba: %s\n"
+"Az egyik lehetséges ok egy érvénytelen vagy hiányzó képfájl lehet."
 
 #: hugin1/hugin/huginApp.cpp:218
 #, c-format
@@ -4148,9 +4153,8 @@ msgid "Please select a project"
 msgstr "Válasszon ki egy projektet"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:563 hugin1/ptbatcher/BatchFrame.cpp:708
-#, fuzzy
 msgid "Please select only one project"
-msgstr "Válasszon ki egy projektet"
+msgstr "Csak egy projektet jelöljön ki."
 
 #: hugin1/ptbatcher/BatchFrame.cpp:647
 msgid "Specify batch file to open"
@@ -5802,9 +5806,8 @@ msgid "Fine-&tune all Points"
 msgstr "&Minden pont finomhangolása"
 
 #: hugin1/hugin/xrc/main_menu.xrc:40
-#, fuzzy
 msgid "Runs fine-tune on all control points."
-msgstr "%lu kontroll pontok eltávolítása"
+msgstr "Minden kontrol ponton finomhangolást futtat."
 
 #: hugin1/hugin/xrc/main_menu.xrc:43
 msgid "Remove control points in masks"
@@ -6809,7 +6812,7 @@ msgid "Default output prefix:"
 msgstr "Alapértelmezett kimeneti előtag:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:230
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The following placeholders are replaced automatically:\n"
 "%firstimage - filename of first image file\n"
@@ -6832,12 +6835,12 @@ msgstr ""
 "%directory - mappa neve (az első kép fájl alapján)\n"
 "%projection - vetület neve\n"
 "%focallength - fókusztávolság\n"
-"%date - dátum (az első kép alapján)\n"
-"%time - idő (az első kép alapján)\n"
-"%maker - kamera gyártó (az első kép alapján)\n"
-"%model - kamera modell (az első kép alapján)\n"
-"%lens - objektív (az első kép alapján)\n"
-"%projectname - projekt fájlnév (csak kimeneti előtag)"
+"%date - dátum (az első kép dátuma)\n"
+"%time - idő (az első kép ideje)\n"
+"%maker - kamera márkája (az első képre vonatkozóan)\n"
+"%model - kamera modell (az első képre vonatkozóan)\n"
+"%lens - objektív (az első képre vonatkozóan)\n"
+"%projectname - projekt fájlnév (csak a kimeneti előtaghoz)"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:252
 msgid "Default filenames"
@@ -7124,16 +7127,19 @@ msgid ""
 "To create an example argfile leave the text boxes empty and press \"Edit..."
 "\"."
 msgstr ""
+"Ezeket az arg fájlokat használja a képfájlban lévő metaadatok végső "
+"panorámába másolásához.\n"
+"Az alapértelmezett értékek használatához hagyja üresen a szövegdobozokat.\n"
+"Minta arg fájl létrehozásához hagyja üresen a szövegdobozokat, és nyomja meg "
+"a \"Szerkesztés...\" gombot."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:955
-#, fuzzy
 msgid ""
 "The following argfile will be used to copy tags from the first image to all "
 "intermediate images."
 msgstr ""
-"A következő argfájlt fogja használni hogy az első képből a címkéket "
-"átmásolja minden köztes képhez.\n"
-"A mezők nem lesznek cserélve."
+"A következő arg fájlt fogja használni hogy az első képből a címkéket "
+"átmásolja minden köztes képhez."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:971
 msgid "Intermediate ExifTool argfile:"
@@ -7141,23 +7147,21 @@ msgstr "Köztes ExifTool arg. fájl:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:977 hugin1/hugin/xrc/pref_dialog.xrc:1036
 msgid "Leave empty for default"
-msgstr "üresen hagyva az alapértelmezett"
+msgstr "Üresen hagyva az alapértelmezett"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:994 hugin1/hugin/xrc/pref_dialog.xrc:1053
 msgid "Edit selected ExifTool argfile"
 msgstr "Kiválasztott ExifTool arg. fájl szerkesztése"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1013
-#, fuzzy
 msgid ""
 "The following argfile will be used to copy tags from the first image to the "
 "final panorama.\n"
 "It is applied additional to the above argfile for the intermediate images."
 msgstr ""
-"A következő argfájlt fogja használni hogy az első képből a címkéket "
+"A következő arg fájlt fogja használni hogy az első képből a címkéket "
 "átmásolja a végleges panorámába.\n"
-"Ez a fenti argfájlon felül lesz felhasználva a köztes képekhez.\n"
-"A mezők ebben az argfájlban cserélve lesznek az exiftool futtatása előtt."
+"Ezekkel lesz kiegészítve a fenti arg fájl a köztes képekre."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1030
 msgid "Final ExifTool argfile:"
@@ -7307,7 +7311,7 @@ msgstr ""
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1431
 msgid "Number of points per image: "
-msgstr "Pontok száma képenként:"
+msgstr "Pontok száma képenként: "
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1446
 msgid "Photometric optimizer"
@@ -7358,6 +7362,8 @@ msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite&original -tagsfromfile image -@ argfile panorama\"."
 msgstr ""
+"Ezt az arg fájl parancssorral van meghívva\n"
+"\"exiftool -overwrite&original -tagsfromfile image -@ argfile panorama\"."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1591 hugin1/hugin/xrc/pref_dialog.xrc:1658
 msgid "Edit ExifTool argfile"
@@ -7368,9 +7374,10 @@ msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite&original -tagsfromfile image -E -@ argfile panorama\"."
 msgstr ""
+"Ezt az arg fájl parancssorral van meghívva\n"
+"\"exiftool -overwrite&original -tagsfromfile image -E -@ argfile panorama\"."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1616
-#, fuzzy
 msgid ""
 "The following placeholders will be replaced before invoking ExifTool:\n"
 "%projection - projection name (in English)\n"
@@ -7401,7 +7408,7 @@ msgstr ""
 "%fullheight - a kimeneti rajzvászon magassága\n"
 "%width - a kimeneti terület szélessége\n"
 "%height - a kimeneti terület magassága\n"
-"%projectname  - pto projekt fájl neve\n"
+"%projectname - pto projekt fájl neve\n"
 "\n"
 "A mezők kis/nagybetű érzékenyek."
 
