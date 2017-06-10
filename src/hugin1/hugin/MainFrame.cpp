@@ -2289,7 +2289,7 @@ void MainFrame::RunAssistant(wxWindow* mainWin)
     //if return value is non-zero, an error occurred in the assistant
     if(ret!=0)
     {
-        if (pano.getNrOfImages())
+        if (pano.getNrOfImages() == 1)
         {
             wxMessageBox(_("The assistant could not find vertical lines. Please add vertical lines in the panorama editor and optimize project manually."),
                 _("Warning"), wxOK | wxICON_INFORMATION, mainWin);
