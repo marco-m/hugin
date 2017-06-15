@@ -2561,6 +2561,11 @@ bool SaveLensDataFromPano(const HuginBase::Panorama& pano)
     if (lenses.getLenses().getNumberOfParts() == 1)
     {
         const SrcPanoImage& img0 = pano.getImage(0);
+        // if the HFOV for a rectilinear lens is too big, ignore this settings
+        if (img0.getProjection() == BaseSrcPanoImage::RECTILINEAR && img0.getHFOV() > 110)
+        {
+            return false;
+        };
         LensDB& lensDB = LensDB::GetSingleton();
         const std::string camMaker = img0.getExifMake();
         const std::string camModel = img0.getExifModel();
