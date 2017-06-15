@@ -680,10 +680,15 @@ bool SrcPanoImage::readProjectionFromDB()
             double fov;
             if (lensDB.GetFov(lensname, focal, fov))
             {
-                // calculate FOV for given image, take different aspect ratios into account
-                const double newFocal = calcFocalLength(getProjection(), fov, getCropFactor(), vigra::Size2D(3000,2000));
-                const double newFov = calcHFOV(getProjection(), newFocal, getCropFactor(), getSize());
-                setHFOV(newFov);
+                // ignore values if fov is bigger than 120 deg
+                // then probably an invalid value was written earlier
+                if (getProjection() == RECTILINEAR && fov < 120)
+                {
+                    // calculate FOV for given image, take different aspect ratios into account
+                    const double newFocal = calcFocalLength(getProjection(), fov, getCropFactor(), vigra::Size2D(3000, 2000));
+                    const double newFov = calcHFOV(getProjection(), newFocal, getCropFactor(), getSize());
+                    setHFOV(newFov);
+                };
             };
             vigra::Rect2D dbCropRect;
             if (lensDB.GetCrop(lensname, focal, getSize(), dbCropRect))
