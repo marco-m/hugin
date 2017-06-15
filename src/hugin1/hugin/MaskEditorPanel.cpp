@@ -285,7 +285,7 @@ void MaskEditorPanel::setImage(unsigned int imgNr, bool updateListSelection)
         m_editImg->setImage(m_File,m_currentMasks,masksToDraw,GetRot(imgNr));
     else
         m_editImg->setNewMasks(m_currentMasks,masksToDraw);
-    if(m_currentMasks.size()==0)
+    if (m_currentMasks.empty() || m_MaskNr >= m_currentMasks.size())
         setMask(UINT_MAX);
     // enables or disables controls
     bool enableCtrl=(imgNr<UINT_MAX);
