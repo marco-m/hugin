@@ -172,7 +172,7 @@ class InvResponseTransform : public ResponseTransform<VTIn>
         
 		void enforceMonotonicity()
 		{
-		    if (Base::m_lutR.size()) {
+		    if (!Base::m_lutR.empty()) {
 				vigra_ext::enforceMonotonicity(Base::m_lutR);
 		        // todo: invert lut, instead of using this functor?
 		        m_lutRInvFunc = vigra_ext::InvLUTFunctor<VT1, LUT>(Base::m_lutR);
@@ -358,7 +358,7 @@ ResponseTransform<VTIn>::apply(typename ResponseTransform<VTIn>::VT1 v, const hu
     // first, apply vignetting
 
     ret = ret*calcVigFactor(pos)*m_srcExposure;
-    if (m_lutR.size()) {
+    if (!m_lutR.empty()) {
         return m_lutRFunc(ret);
     } else {
         return ret;
@@ -377,7 +377,7 @@ ResponseTransform<VTIn>::apply(vigra::RGBValue<typename ResponseTransform<VTIn>:
     ret.red() = ret.red() * m_WhiteBalanceRed;
     ret.blue() = ret.blue() * m_WhiteBalanceBlue;
     // apply response curve
-    if (m_lutR.size()) {
+    if (!m_lutR.empty()) {
         return m_lutRFunc(ret);
     } else {
         return ret;
@@ -414,7 +414,7 @@ InvResponseTransform<VTIn,VTOut>::InvResponseTransform(const HuginBase::SrcPanoI
 {
     m_destExposure = 1.0;
     m_intScale = 1;
-    if (Base::m_lutR.size()) {
+    if (!Base::m_lutR.empty()) {
         // todo: invert lut, instead of using this functor?
         m_lutRInvFunc = vigra_ext::InvLUTFunctor<VT1, LUT>(Base::m_lutR);
     }
@@ -426,7 +426,7 @@ void InvResponseTransform<VTIn,VTOut>::init(const HuginBase::SrcPanoImage & src)
     m_destExposure = 1.0;
     m_intScale = 1;
     Base::init(src);
-    if (Base::m_lutR.size()) {
+    if (!Base::m_lutR.empty()) {
         // todo: invert lut, instead of using this functor?
         m_lutRInvFunc = vigra_ext::InvLUTFunctor<VT1, LUT>(Base::m_lutR);
     }
@@ -446,7 +446,7 @@ void InvResponseTransform<VTIn,VTOut>::setOutput(double destExposure, const LUTD
 {
     m_hdrMode = false;
     m_destLut = destLut;
-    if (m_destLut.size() > 0) {
+    if (!m_destLut.empty()) {
         m_destLutFunc = vigra_ext::LUTFunctor<VTInCompReal, LUTD>(m_destLut);
     }
     m_destExposure = destExposure;
@@ -480,7 +480,7 @@ InvResponseTransform<VTIn,VTOut>::apply(VT1 v, const hugin_utils::FDiff2D & pos,
 {
     // inverse response
     typename vigra::NumericTraits<VT1>::RealPromote ret(v);
-    if (Base::m_lutR.size()) {
+    if (!Base::m_lutR.empty()) {
         ret = m_lutRInvFunc(v);
     } else {
         ret /= vigra_ext::LUTTraits<VT1>::max();
@@ -488,7 +488,7 @@ InvResponseTransform<VTIn,VTOut>::apply(VT1 v, const hugin_utils::FDiff2D & pos,
     // inverse vignetting and exposure
     ret *= m_destExposure / (Base::calcVigFactor(pos) * Base::m_srcExposure);
     // apply output transform if required
-    if (m_destLut.size() > 0) {
+    if (!m_destLut.empty()) {
         ret = m_destLutFunc(ret);
     }
     // dither all integer images
@@ -504,7 +504,7 @@ typename vigra::NumericTraits<vigra::RGBValue<typename InvResponseTransform<VTIn
 InvResponseTransform<VTIn,VTOut>::apply(vigra::RGBValue<VT1> v, const hugin_utils::FDiff2D & pos, vigra::VigraFalseType) const
 {
     typename vigra::NumericTraits<vigra::RGBValue<VT1> >::RealPromote ret(v);
-    if (Base::m_lutR.size()) {
+    if (!Base::m_lutR.empty()) {
         ret = m_lutRInvFunc(v);
     } else {
         ret /= vigra_ext::LUTTraits<VT1>::max();
@@ -515,7 +515,7 @@ InvResponseTransform<VTIn,VTOut>::apply(vigra::RGBValue<VT1> v, const hugin_util
     ret.red() /= Base::m_WhiteBalanceRed;
     ret.blue() /= Base::m_WhiteBalanceBlue;
     // apply output transform if required
-    if (m_destLut.size() > 0) {
+    if (!m_destLut.empty()) {
         ret = m_destLutFunc(ret);
     }
     // dither 8 bit images.
@@ -577,7 +577,7 @@ InvResponseTransform<VTIn,VTOut>::emitGLSL(std::ostringstream& oss, std::vector<
         << "    // whiteBalanceRed = " << Base::m_src.getWhiteBalanceRed() << endl
         << "    // whiteBalanceBlue = " << Base::m_src.getWhiteBalanceBlue() << endl;
 
-    if (Base::m_lutR.size() > 0) {
+    if (!Base::m_lutR.empty()) {
         oss << "    p.rgb = p.rgb * " << (invLutSize - 1.0) << ";" << endl
             << "    vec2 invR = texture2DRect(InvLutTexture, vec2(p.r, 0.0)).sq;" << endl
             << "    vec2 invG = texture2DRect(InvLutTexture, vec2(p.g, 0.0)).sq;" << endl
@@ -625,7 +625,7 @@ InvResponseTransform<VTIn,VTOut>::emitGLSL(std::ostringstream& oss, std::vector<
         << (m_destExposure / (Base::m_srcExposure * Base::m_src.getWhiteBalanceBlue())) << ");" << endl
         << "    p.rgb = (p.rgb * exposure_whitebalance) / vig;" << endl;
 
-    if (m_destLut.size() > 0) {
+    if (!m_destLut.empty()) {
         oss << "    p.rgb = p.rgb * " << (destLutSize - 1.0) << ";" << endl
             << "    vec2 destR = texture2DRect(DestLutTexture, vec2(p.r, 0.0)).sq;" << endl
             << "    vec2 destG = texture2DRect(DestLutTexture, vec2(p.g, 0.0)).sq;" << endl
