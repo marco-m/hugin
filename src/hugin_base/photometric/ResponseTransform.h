@@ -174,8 +174,8 @@ class InvResponseTransform : public ResponseTransform<VTIn>
 		{
 		    if (!Base::m_lutR.empty()) {
 				vigra_ext::enforceMonotonicity(Base::m_lutR);
-		        // todo: invert lut, instead of using this functor?
-		        m_lutRInvFunc = vigra_ext::InvLUTFunctor<VT1, LUT>(Base::m_lutR);
+                invertLUT();
+		        m_lutRInvFunc = vigra_ext::LUTFunctor<VT1, LUT>(m_lutRInv);
 			}
 		}
 
@@ -225,9 +225,24 @@ class InvResponseTransform : public ResponseTransform<VTIn>
         
         void emitGLSL(std::ostringstream& oss, std::vector<double>& invLut, std::vector<double>& destLut) const;
 
+    private:
+        void invertLUT()
+        {
+            m_lutRInv.clear();
+            if (!Base::m_lutR.empty())
+            {
+                m_lutRInv.reserve(Base::m_lutR.size());
+                vigra_ext::InvLUTFunctor<VT1, LUT> slowRInvFunc = vigra_ext::InvLUTFunctor<VT1, LUT>(Base::m_lutR);
+                for (int i = 0; i < Base::m_lutR.size(); i++)
+                {
+                    const double f = static_cast<double>(i) / (Base::m_lutR.size() - 1);
+                    m_lutRInv.push_back(slowRInvFunc(f));
+                };
+            };
+        };
     protected: // needs be public?
-        //LUT m_lutRInv;
-        vigra_ext::InvLUTFunctor<VT1, LUT> m_lutRInvFunc;
+        LUT m_lutRInv;
+        vigra_ext::LUTFunctor<VT1, LUT> m_lutRInvFunc;
         LUTD m_destLut;
         vigra_ext::LUTFunctor<VTInCompReal, LUTD> m_destLutFunc;
         double m_destExposure;
@@ -415,8 +430,8 @@ InvResponseTransform<VTIn,VTOut>::InvResponseTransform(const HuginBase::SrcPanoI
     m_destExposure = 1.0;
     m_intScale = 1;
     if (!Base::m_lutR.empty()) {
-        // todo: invert lut, instead of using this functor?
-        m_lutRInvFunc = vigra_ext::InvLUTFunctor<VT1, LUT>(Base::m_lutR);
+        invertLUT();
+        m_lutRInvFunc = vigra_ext::LUTFunctor<VT1, LUT>(m_lutRInv);
     }
 }
 
@@ -427,8 +442,8 @@ void InvResponseTransform<VTIn,VTOut>::init(const HuginBase::SrcPanoImage & src)
     m_intScale = 1;
     Base::init(src);
     if (!Base::m_lutR.empty()) {
-        // todo: invert lut, instead of using this functor?
-        m_lutRInvFunc = vigra_ext::InvLUTFunctor<VT1, LUT>(Base::m_lutR);
+        invertLUT();
+        m_lutRInvFunc = vigra_ext::LUTFunctor<VT1, LUT>(m_lutRInv);
     }
 }
 
@@ -548,26 +563,12 @@ template <class VTIn, class VTOut>
 void
 InvResponseTransform<VTIn,VTOut>::emitGLSL(std::ostringstream& oss, std::vector<double>& invLut, std::vector<double>& destLut) const
 {
-    invLut.clear();
-    invLut.reserve(Base::m_lutR.size());
+    invLut = m_lutRInv;
+    destLut = m_destLut;
 
-    for (int i = 0; i < Base::m_lutR.size(); i++) {
-        double f = static_cast<double>(i) / (Base::m_lutR.size() - 1);
-        double v = m_lutRInvFunc(f);
-        invLut.push_back(v);
-    }
-        
-    destLut.clear();
-    destLut.reserve(m_destLut.size());
-
-    for (typename LUTD::const_iterator lutI = m_destLut.begin(); lutI != m_destLut.end(); ++lutI) {
-        typename LUTD::value_type entry = *lutI;
-        destLut.push_back(entry);
-    }
-
-    double invLutSize = Base::m_lutR.size();
-    double pixelMax = vigra_ext::LUTTraits<VT1>::max();
-    double destLutSize = m_destLut.size();
+    const double invLutSize = Base::m_lutR.size();
+    const double pixelMax = vigra_ext::LUTTraits<VT1>::max();
+    const double destLutSize = m_destLut.size();
 
     oss << "    // invLutSize = " << invLutSize << endl
         << "    // pixelMax = " << pixelMax << endl
