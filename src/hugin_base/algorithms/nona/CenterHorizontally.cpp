@@ -98,7 +98,7 @@ void CenterHorizontally::centerHorizontically(PanoramaData& panorama)
     bool colOccupied = false;
     for (int h=0; h < 360; h++) {
         bool curColOccupied = false;
-        for (int v=0; v< 180; v++) {
+        for (int v=0; v< 180 && !curColOccupied; v++) {
             if (panoAlpha(h,v)) {
                 // pixel is valid
                 curColOccupied = true;
@@ -114,7 +114,7 @@ void CenterHorizontally::centerHorizontically(PanoramaData& panorama)
     }
     
     
-    int lastidx = borders.size() -1;
+    const int lastidx = borders.size() -1;
     if (lastidx == -1) {
         // empty pano
         return;
@@ -122,6 +122,11 @@ void CenterHorizontally::centerHorizontically(PanoramaData& panorama)
     
     if (colOccupied) {
         // we have reached the right border, and the pano is still valid
+        if (borders.size() == 1 && borders[0] == -180)
+        {
+            // pano covers full range, nothing to do
+            return;
+        };
         // shift right fragments by 360 deg
         // |11    2222|  -> |      222211     |
         std::vector<int> newBorders;
