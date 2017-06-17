@@ -770,7 +770,7 @@ bool MainFrame::CloseProject(bool cancelable, CloseReason reason)
         switch (reason)
         {
             case LOAD_NEW_PROJECT:
-                messageString = _("Save changes to the project file before opening an other project?");
+                messageString = _("Save changes to the project file before opening another project?");
                 break;
             case NEW_PROJECT:
                 messageString = _("Save changes to the project file before starting a new project?");
@@ -790,7 +790,7 @@ bool MainFrame::CloseProject(bool cancelable, CloseReason reason)
         switch(reason)
         {
             case LOAD_NEW_PROJECT:
-                message.SetExtendedMessage(_("If you load an other project without saving, your changes since last save will be discarded."));
+                message.SetExtendedMessage(_("If you load another project without saving, your changes since last save will be discarded."));
                 break;
             case NEW_PROJECT:
                 message.SetExtendedMessage(_("If you start a new project without saving, your changes since last save will be discarded."));

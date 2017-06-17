@@ -454,7 +454,7 @@ bool ChangeLensOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntSe
     }
     else
     {
-        //project must have more than 1 lens before you can assign an other lens number
+        //project must have more than 1 lens before you can assign another lens number
         HuginBase::StandardImageVariableGroups variableGroups(pano);
         return variableGroups.getLenses().getNumberOfParts() > 1;
     };
@@ -1175,7 +1175,7 @@ bool ChangeStackOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntS
     }
     else
     {
-        //project must have more than 1 stack before you can assign an other stack number
+        //project must have more than 1 stack before you can assign another stack number
         HuginBase::StandardImageVariableGroups variableGroups(pano);
         return variableGroups.getStacks().getNumberOfParts() > 1;
     };

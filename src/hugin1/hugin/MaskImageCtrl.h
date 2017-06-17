@@ -292,7 +292,7 @@ protected:
         POINTS_MOVING, // dragging points
         POINTS_DELETING,  // remove points inside rect
         POINTS_ADDING,  // adding new points add mouse position
-        POLYGON_SELECTING, // selecting an region to select an other polygon
+        POLYGON_SELECTING, // selecting an region to select another polygon
         REGION_SELECTING, // currently selecting an region
         NEW_POLYGON_STARTED, // modus is new polygon, but no point setted yet
         NEW_POLYGON_CREATING,  // currently creating new polygon

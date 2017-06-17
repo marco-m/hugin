@@ -103,7 +103,7 @@ void CalculateImageOverlap::calculate(unsigned int steps)
                     double xi,yi;
                     if (m_invTransform[imgNr]->transformImgCoord(xi, yi, xc, yc))
                     {
-                        //now, check if point is inside an other image
+                        //now, check if point is inside another image
                         for(unsigned int j=0;j<m_nrImg;j++)
                         {
                             if (imgNr == j)

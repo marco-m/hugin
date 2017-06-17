@@ -88,9 +88,9 @@ public:
     void panoramaChanged(HuginBase::Panorama &pano);
     void panoramaImagesChanged(HuginBase::Panorama &pano, const HuginBase::UIntSet & imgNr);
 
-    /** called when user selected an other image */
+    /** called when user selected another image */
     void OnImageSelect(wxListEvent &e);
-    /** called when user selected an other mask */
+    /** called when user selected another mask */
     void OnMaskSelect(wxListEvent &e);
     /** handler when mask type was changed */
     void OnMaskTypeChange(wxCommandEvent &e);

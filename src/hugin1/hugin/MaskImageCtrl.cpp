@@ -742,7 +742,7 @@ void MaskImageCtrl::OnLeftMouseUp(wxMouseEvent& mouse)
                     //there were no points selected
                     if(!selectedPoints)
                     {
-                        //if there where no points selected before, we searching for an other polygon
+                        //if there where no points selected before, we searching for another polygon
                         hugin_utils::FDiff2D p;
                         p.x=invtransform(m_dragStartPos.x+(m_currentPos.x-m_dragStartPos.x)/2);
                         p.y=invtransform(m_dragStartPos.y+(m_currentPos.y-m_dragStartPos.y)/2);
