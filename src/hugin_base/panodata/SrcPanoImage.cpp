@@ -538,6 +538,21 @@ bool SrcPanoImage::readEXIF()
             };
         };
     };
+    // check results, if 35 mm focal length is too small reset crop factor to 0
+    if (focalLength > 0 && cropFactor > 0 && focalLength*cropFactor < 8)
+    {
+        cropFactor = 0;
+        // check alternative way to calculate crop factor, e.g. when focal length and focal length in 35 mm are given
+        // and are the same, but not a full frame camera
+        const double newCropFactor = Exiv2Helper::getCropFactor(exifData, getWidth(), getHeight());
+        if (newCropFactor > 0)
+        {
+            if (focalLength*newCropFactor > 8)
+            {
+                cropFactor = newCropFactor;
+            }
+        };
+    };
  
     setExifFocalLength(focalLength);
     setExifFocalLength35(eFocalLength35);
