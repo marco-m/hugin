@@ -218,7 +218,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(XRCID("action_show_tip"),  MainFrame::OnTipOfDay)
     EVT_MENU(XRCID("action_show_shortcuts"),  MainFrame::OnKeyboardHelp)
     EVT_MENU(XRCID("action_show_faq"),  MainFrame::OnFAQ)
-    EVT_MENU(XRCID("action_show_donate"),  MainFrame::OnShowDonate)
     EVT_MENU(XRCID("action_show_prefs"), MainFrame::OnShowPrefs)
     EVT_MENU(XRCID("action_assistant"), MainFrame::OnRunAssistant)
     EVT_MENU(XRCID("action_batch_assistant"), MainFrame::OnSendToAssistantQueue)
@@ -1180,11 +1179,6 @@ void MainFrame::OnAddTimeImages( wxCommandEvent& event )
         PanoCommand::GlobalCmdHist::getInstance().addCommand(cmd);
     };
 };
-
-void MainFrame::OnShowDonate(wxCommandEvent & e)
-{
-    wxLaunchDefaultBrowser(wxT("http://sourceforge.net/project/project_donations.php?group_id=77506"));
-}
 
 
 void MainFrame::OnShowPanel(wxCommandEvent & e)

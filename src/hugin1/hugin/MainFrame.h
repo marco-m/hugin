@@ -243,7 +243,6 @@ private:
     /** adds the given files to the projects, with checking for invalid filenames */
     void AddImages(wxArrayString& filenameArray);
 
-    void OnShowDonate(wxCommandEvent &e);
     void OnShowPanel(wxCommandEvent &e);
     /** event handler called when loading of image file failed */
     void OnLoadingFailed(wxCommandEvent& e);
