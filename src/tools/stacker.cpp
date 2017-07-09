@@ -150,21 +150,23 @@ static void usage(const char* name)
         << "        median                Calculate the median for each position" << std::endl
         << "        winsor                Calculate the Winsor trimmed mean" << std::endl
         << "                              for each position. The parameter can be" << std::endl
-        << "                              set with --winsor-trim=NUMBER" << std::endl
+        << "                              set with --winsor-trim=NUMBER (default: 0.2)" << std::endl
         << "        sigma                 Calculate the sigma clipped mean for" << std::endl
         << "                              each position. Fine-tune with" << std::endl
-        << "                              --max-sigma=NUMBER and" << std::endl
-        << "                              --max-iterations=NUMBER" << std::endl
+        << "                              --max-sigma=NUMBER (default: 2) and" << std::endl
+        << "                              --max-iterations=NUMBER (default: 5)" << std::endl
         << std::endl
         << "     --mask-input             Mask input images" << std::endl
-        << "                              Only pixel which differ more than"<<std::endl
+        << "                              Only pixel which differ more than" << std::endl
         << "                              mask-sigma * standard deviation" << std::endl
         << "                              are visible in output" << std::endl
         << "                              available for modes median|winsor|clip" << std::endl
         << "     --mask-suffix=STRING     Suffix for the masked input images" << std::endl
-        << "     --mask-sigma=NUMBER      Sigma parameter for input images masking" << std::endl
+        << "                              (default: _mask)" << std::endl
+        << "     --mask-sigma=NUMBER      Sigma parameter for input images masking"<<std::endl
+        << "                              (default: 2)" << std::endl
         << "     --multi-layer-output     Output layered TIFF instead of single images" << std::endl
-        << "                              (has only effect with only with --mask-input)" << std::endl
+        << "                              (has only effect with --mask-input)" << std::endl
         << "     -h, --help               Shows this help" << std::endl
         << std::endl;
 };
