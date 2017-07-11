@@ -185,7 +185,7 @@ bool weightedAverageOfImageFiles(const std::vector<std::string>& inputFiles,
 
 static void usage(const char* name)
 {
-    std::cerr << name << ": merge overlapping images" << std::endl
+    std::cout << name << ": merge overlapping images" << std::endl
          << std::endl
          << "hugin_hdrmerge version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl

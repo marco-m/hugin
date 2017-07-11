@@ -105,7 +105,7 @@ void parseOptions_save(char* optarg) {
 
 static void usage()
 {
-    std::cerr << "deghosting_mask: creates mask for removing ghosting in images" << std::endl
+    std::cout << "deghosting_mask: creates mask for removing ghosting in images" << std::endl
          << "deghosting_mask version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl
          << "Usage: deghosting_mask [options] inputfile(s) " << std::endl

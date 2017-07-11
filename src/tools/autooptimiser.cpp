@@ -47,7 +47,7 @@
 
 static void usage(const char* name)
 {
-    std::cerr << name << ": optimize image positions" << std::endl
+    std::cout << name << ": optimize image positions" << std::endl
         << "autooptimiser version " << hugin_utils::GetHuginVersion() << std::endl
         << std::endl
         << "Usage:  " << name << " [options] input.pto" << std::endl

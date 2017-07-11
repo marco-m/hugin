@@ -63,7 +63,7 @@ int g_verbose = 0;
 
 static void usage(const char* name)
 {
-    std::cerr << name << ": align overlapping images for HDR creation" << std::endl
+    std::cout << name << ": align overlapping images for HDR creation" << std::endl
          << "align_image_stack version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl
          << "Usage: " << name  << " [options] input files" << std::endl

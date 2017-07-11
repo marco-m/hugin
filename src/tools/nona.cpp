@@ -47,7 +47,7 @@
 
 static void usage(const char* name)
 {
-    std::cerr << name << ": stitch a panorama image" << std::endl
+    std::cout << name << ": stitch a panorama image" << std::endl
          << std::endl
          << "nona version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl

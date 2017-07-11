@@ -402,7 +402,7 @@ void optimize_new(HuginBase::PanoramaData& pano)
 
 static void usage(const char* name)
 {
-    std::cerr << name << ": Parameter estimation of transverse chromatic abberations" << std::endl
+    std::cout << name << ": Parameter estimation of transverse chromatic abberations" << std::endl
          << name << " version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl
          << "Usage: " << name  << " [options] <inputfile>" << std::endl

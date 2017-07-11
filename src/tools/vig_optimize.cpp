@@ -38,7 +38,7 @@
 
 static void usage(const char* name)
 {
-    std::cerr << name << ": Try to determine the radial vignetting" << std::endl
+    std::cout << name << ": Try to determine the radial vignetting" << std::endl
          << "vig_optimize version " << hugin_utils::GetHuginVersion() << std::endl
          << std::endl
          << "Usage: " << name  << " [options] -o output.pto input.pto" << std::endl

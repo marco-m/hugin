@@ -62,7 +62,7 @@ void correctRGB(HuginBase::SrcPanoImage& src, vigra::ImageImportInfo& info, cons
 
 static void usage(const char* name)
 {
-    std::cerr << name << ": correct lens distortion, vignetting and chromatic abberation" << std::endl
+    std::cout << name << ": correct lens distortion, vignetting and chromatic abberation" << std::endl
          << "fulla version " << hugin_utils::GetHuginVersion() << endl
          << std::endl
          << "Usage: " << name  << " [options] inputfile(s) " << std::endl
