@@ -240,15 +240,19 @@ namespace HuginBase
             cmsHTRANSFORM transform = cmsCreateTransform(inputICC, TYPE_RGB_8,
                 monitorProfile, TYPE_RGB_8,
                 INTENT_PERCEPTUAL, cmsFLAGS_BLACKPOINTCOMPENSATION);
-            unsigned char* imgData = image.GetData();
-            const int imgWidth = image.GetWidth();
-            const int imgHeight = image.GetHeight();
-#pragma omp parallel for
-            for (int y = 0; y < imgHeight; ++y)
+            // check that we could get a valid transform
+            if (transform != NULL)
             {
-                cmsDoTransform(transform, imgData + 3 * y * imgWidth, imgData + 3 * y * imgWidth, imgWidth);
+                unsigned char* imgData = image.GetData();
+                const int imgWidth = image.GetWidth();
+                const int imgHeight = image.GetHeight();
+#pragma omp parallel for
+                for (int y = 0; y < imgHeight; ++y)
+                {
+                    cmsDoTransform(transform, imgData + 3 * y * imgWidth, imgData + 3 * y * imgWidth, imgWidth);
+                };
+                cmsDeleteTransform(transform);
             };
-            cmsDeleteTransform(transform);
             cmsCloseProfile(inputICC);
         };
 
