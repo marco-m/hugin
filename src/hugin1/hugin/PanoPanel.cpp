@@ -1755,7 +1755,7 @@ bool PanoPanel::CheckFreeSpace(const wxString& folder)
         if (pano->getOptions().getROI().area() * 80 > freeSpace)
         {
             wxMessageDialog dialog(this,
-                wxString::Format(_("The folder \"%s\" has only %.1f MiB free. This is not enough for stitching the current panorama. Decrease the output size or select another output folder.\nAre you sure that you still want to stitch it?"), folder.c_str(), freeSpace / 1048576.0f),
+                wxString::Format(_("The folder \"%s\" has only %.1f MiB free. This is not enough for stitching the current panorama. Decrease the output size or select another output folder.\nAre you sure that you still want to stitch it?"), folder.c_str(), freeSpace.ToDouble() / 1048576.0),
 #ifdef _WIN32
                 _("Hugin"),
 #else
