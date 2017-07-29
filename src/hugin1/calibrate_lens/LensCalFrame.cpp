@@ -31,6 +31,7 @@
 #include "base_wx/platform.h"
 #include "base_wx/wxPlatform.h"
 #include "base_wx/LensTools.h"
+#include "base_wx/GraphTools.h"
 #include "huginapp/ImageCache.h"
 #include "LensCalFrame.h"
 #include <wx/app.h>
@@ -107,6 +108,7 @@ BEGIN_EVENT_TABLE(LensCalFrame, wxFrame)
     EVT_BUTTON(XRCID("lenscal_find_lines"), LensCalFrame::OnFindLines)
     EVT_BUTTON(XRCID("lenscal_reset"), LensCalFrame::OnReset)
     EVT_BUTTON(XRCID("lenscal_opt"), LensCalFrame::OnOptimize)
+    EVT_BUTTON(XRCID("lenscal_show_distortion_graph"), LensCalFrame::OnShowDistortionGraph)
     EVT_BUTTON(XRCID("lenscal_save_lens"), LensCalFrame::OnSaveLens)
     EVT_BUTTON(XRCID("lenscal_refresh"), LensCalFrame::OnRefresh)
     EVT_CHOICE(XRCID("lenscal_preview_content"), LensCalFrame::OnSelectPreviewContent)
@@ -491,9 +493,10 @@ void LensCalFrame::OnRemoveImage(wxCommandEvent &e)
 
 void LensCalFrame::EnableButtons()
 {
-    bool enabling=m_images.size()>0;
+    const bool enabling = !m_images.empty();
     XRCCTRL(*this,"lenscal_find_lines",wxButton)->Enable(enabling);
     XRCCTRL(*this,"lenscal_opt",wxButton)->Enable(enabling);
+    XRCCTRL(*this, "lenscal_show_distortion_graph", wxButton)->Enable(enabling);
     XRCCTRL(*this,"lenscal_save_lens",wxButton)->Enable(enabling);
     GetMenuBar()->Enable(XRCID("menu_save"),enabling);
 };
@@ -584,6 +587,36 @@ void LensCalFrame::OnOptimize(wxCommandEvent &e)
         return;
     };
     Optimize();
+};
+
+void LensCalFrame::OnShowDistortionGraph(wxCommandEvent &e)
+{
+    if (m_images.empty())
+    {
+        return;
+    };
+    if (!ReadInputs(true, false, true))
+    {
+        wxMessageBox(_("There are invalid values in the input boxes.\nPlease check your inputs."), _("Warning"), wxOK | wxICON_INFORMATION, this);
+        return;
+    };
+    delete m_popup;
+    HuginBase::SrcPanoImage image(*(m_images[0]->GetPanoImage()));
+    image.setProjection(m_projection);
+    image.setExifFocalLength(m_focallength);
+    image.setCropFactor(m_cropfactor);
+    image.setVar("a", m_a);
+    image.setVar("b", m_b);
+    image.setVar("c", m_c);
+    image.setVar("d", m_d);
+    image.setVar("e", m_e);
+    image.setHFOV(HuginBase::SrcPanoImage::calcHFOV(image.getProjection(), image.getExifFocalLength(), image.getCropFactor(), image.getSize()));
+
+    m_popup=new wxGraphTools::GraphPopupWindow(this, wxGraphTools::GetDistortionGraph(image));
+    wxWindow *button = (wxWindow*)e.GetEventObject();
+    wxPoint pos = button->ClientToScreen(wxPoint(0, 0));
+    m_popup->Position(pos, button->GetSize());
+    m_popup->Popup();
 };
 
 HuginBase::Panorama LensCalFrame::GetPanorama()

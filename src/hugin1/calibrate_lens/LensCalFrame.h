@@ -44,6 +44,12 @@ public:
     bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 };
 
+// forward declaration, to prevent include of class
+namespace wxGraphTools
+{
+class GraphPopupWindow;
+};
+
 /** The main window frame.
  *
  */
@@ -74,6 +80,8 @@ private:
     void OnRemoveImage(wxCommandEvent &e);
     void OnFindLines(wxCommandEvent &e);
     void OnOptimize(wxCommandEvent &e);
+    /** show distortion graph */
+    void OnShowDistortionGraph(wxCommandEvent &e);
     void SaveLensToIni();
     void OnSaveLens(wxCommandEvent &e);
     void OnSaveProject(wxCommandEvent &e);
@@ -119,6 +127,8 @@ private:
     double m_progressMax;
     double m_progress;
     wxString m_progressMsg;
+    // popup window
+    wxGraphTools::GraphPopupWindow* m_popup = nullptr;
 
     DECLARE_EVENT_TABLE()
 };
