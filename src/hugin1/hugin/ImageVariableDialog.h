@@ -29,20 +29,11 @@
 #include "panoinc_WX.h"
 #include "panoinc.h"
 #include "GuiLevel.h"
-#include "wx/popupwin.h"
 
-/** simple popup to show graph */
-class GraphPopupWindow: public wxPopupTransientWindow
+// forward declaration
+namespace wxGraphTools
 {
-public:
-    GraphPopupWindow(wxWindow* parent, wxBitmap bitmap);
-protected:
-    void OnLeftDown(wxMouseEvent &e);
-    void OnRightDown(wxMouseEvent &e);
-private:
-    wxStaticBitmap* m_bitmapControl;
-    DECLARE_CLASS(GraphPopupWindow)
-    DECLARE_EVENT_TABLE()
+class GraphPopupWindow;
 };
 
 /** Dialog for editing image variables */
@@ -74,7 +65,7 @@ private:
     HuginBase::Panorama* m_pano;
     HuginBase::UIntSet m_images;
     static const char *m_varNames[];
-    GraphPopupWindow* m_popup;
+    wxGraphTools::GraphPopupWindow* m_popup;
     /** copy the variables from Panorama to dialog */
     void InitValues();
     /** applies the changed variables to the Panorama class, using CommandHistory */
