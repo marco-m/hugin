@@ -427,7 +427,7 @@ public:
     const bool GetMouseInWindow() const { return m_mouseInWindow; };
     const bool GetForceMagnifier() const { return m_forceMagnifier; };
     /** get pointer to image, for DisplayedControlPoint */
-    const HuginBase::ImageCache::ImageCacheRGB8Ptr GetImg() const { return m_img->image8; };
+    HuginBase::ImageCache::ImageCacheRGB8Ptr GetImg();
     /** draw the magnified view of a selected control point */
     wxBitmap generateMagBitmap(hugin_utils::FDiff2D point, wxPoint canvasPos) const;
     /** return the real size of the image in the control */

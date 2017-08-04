@@ -1745,6 +1745,11 @@ const wxSize CPImageCtrl::GetBitmapSize() const
     return bitmap.GetSize();
 };
 
+HuginBase::ImageCache::ImageCacheRGB8Ptr CPImageCtrl::GetImg()
+{
+    return m_img->get8BitImage();
+};
+
 IMPLEMENT_DYNAMIC_CLASS(CPImageCtrl, wxScrolledWindow)
 
 CPImageCtrlXmlHandler::CPImageCtrlXmlHandler()
