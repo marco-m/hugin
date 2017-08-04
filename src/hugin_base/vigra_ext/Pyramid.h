@@ -161,6 +161,7 @@ void reduceToNextLevel(ImageIn & in, ImageInMask & inMask, ImageOut & out, Image
     w = (w + 1) >> 1;
     h = (h + 1) >> 1;
     out.resize(w,h);
+    outMask.resize(w, h);
     enblend::reduce<SKIPSMType, SKIPSMAlphaType>(false, srcImageRange(in), srcImage(inMask),
                                 destImageRange(out), destImageRange(outMask));
 }
