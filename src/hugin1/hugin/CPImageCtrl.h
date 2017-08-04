@@ -435,10 +435,10 @@ public:
     /** return the size of the drawn bitmap (possible rotate is applied) */
     const wxSize GetBitmapSize() const;
 
+    virtual void OnDraw(wxDC& dc) wxOVERRIDE;
 protected:
     // display the image when loading finishes
     void OnImageLoaded(ImageCache::EntryPtr entry, std::string filename, bool load_small);
-    void OnDraw(wxDC& dc);
     void OnSize(wxSizeEvent & e);
     void OnKey(wxKeyEvent & e);
     void OnKeyDown(wxKeyEvent & e);
