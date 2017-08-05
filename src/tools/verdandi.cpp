@@ -81,34 +81,33 @@ bool SaveImage(ImageType& image, MaskType& mask, vigra::ImageExportInfo& exportI
 
 /** save final image, take care of some supported pixel types and convert when necessary to smaller pixel type */
 template <class ImageType, class MaskType>
-bool SaveFinalImage(ImageType& image, MaskType& mask, const vigra::ImageImportInfo& input, vigra::ImageExportInfo& output, const vigra::Rect2D& roi)
+bool SaveFinalImage(ImageType& image, MaskType& mask, const std::string& inputPixelType, const int inputNumBands, vigra::ImageExportInfo& output, const vigra::Rect2D& roi)
 {
     VIGRA_UNIQUE_PTR<vigra::Encoder> encoder(vigra::encoder(output));
-    if (vigra::isPixelTypeSupported(encoder->getFileType(), input.getPixelType()))
+    if (vigra::isPixelTypeSupported(encoder->getFileType(), inputPixelType))
     {
-        return SaveImage(image, mask, output, encoder->getFileType(), input.getPixelType(), roi, input.numBands());
+        return SaveImage(image, mask, output, encoder->getFileType(), inputPixelType, roi, inputNumBands);
     }
     else
     {
         if (vigra::isPixelTypeSupported(encoder->getFileType(), "UINT16"))
         {
             // transform to UINT16
-            vigra::omp::transformImage(vigra::srcImageRange(image), vigra::destImage(image),
-                vigra::linearIntensityTransform<typename ImageType::PixelType>(65535.0 / vigra::NumericTraits<typename vigra::NumericTraits<typename ImageType::PixelType>::ValueType>::max()));
-            return SaveImage(image, mask, output, encoder->getFileType(), "UINT16", roi, input.numBands());
+            output.setForcedRangeMapping(0, vigra::NumericTraits<typename vigra::NumericTraits<typename ImageType::PixelType>::ValueType>::max(), 0, 65535);
+            return SaveImage(image, mask, output, encoder->getFileType(), "UINT16", roi, inputNumBands);
         }
         else
         {
             if (vigra::isPixelTypeSupported(encoder->getFileType(), "UINT8"))
             {
                 // transform to UINT8
-                vigra_ext::ConvertTo8Bit(image);
-                return SaveImage(image, mask, output, encoder->getFileType(), "UINT8", roi, input.numBands());
+                output.setForcedRangeMapping(0, vigra::NumericTraits<typename vigra::NumericTraits<typename ImageType::PixelType>::ValueType>::max(), 0, 255);
+                return SaveImage(image, mask, output, encoder->getFileType(), "UINT8", roi, inputNumBands);
             }
             else
             {
                 std::cerr << "ERROR: Output file type " << encoder->getFileType() << " does not support" << std::endl
-                    << "requested pixeltype " << input.getPixelType() << "." << std::endl
+                    << "requested pixeltype " << inputPixelType << "." << std::endl
                     << "Save output in other file format." << std::endl;
             };
         };
@@ -176,7 +175,7 @@ bool LoadAndMergeImages(std::vector<vigra::ImageImportInfo> imageInfos, const st
         exportImageInfo.setCanvasSize(mask.size());
         exportImageInfo.setICCProfile(imageInfos[0].getICCProfile());
         SetCompression(exportImageInfo, compression);
-        return SaveFinalImage(image, mask, imageInfos[0], exportImageInfo, roi);
+        return SaveFinalImage(image, mask, imageInfos[0].getPixelType(), imageInfos[0].numBands(), exportImageInfo, roi);
     };
 };
 
@@ -206,11 +205,13 @@ bool ResaveImage(const vigra::ImageImportInfo& importInfo, vigra::ImageExportInf
 {
     ImageType image(importInfo.size());
     MaskType mask(image.size());
+    int numBands = importInfo.numBands();
     if (importInfo.numExtraBands() == 0)
     {
         vigra::importImage(importInfo, vigra::destImage(image));
         // init mask
         vigra::initImage(vigra::destImageRange(mask), vigra_ext::LUTTraits<typename MaskType::value_type>::max());
+        ++numBands;
     }
     else
     {
@@ -226,7 +227,7 @@ bool ResaveImage(const vigra::ImageImportInfo& importInfo, vigra::ImageExportInf
     };
 
     const vigra::Rect2D roi(vigra::Point2D(0, 0), image.size());
-    return SaveFinalImage(image, mask, importInfo, exportInfo, roi);
+    return SaveFinalImage(image, mask, importInfo.getPixelType(), numBands, exportInfo, roi);
 };
 
 int main(int argc, char* argv[])

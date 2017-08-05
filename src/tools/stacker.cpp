@@ -116,7 +116,7 @@ bool SaveFinalImage(ImageType& image, MaskType& mask, const std::string& inputPi
         if (vigra::isPixelTypeSupported(encoder->getFileType(), "UINT8"))
         {
             // transform to UINT8
-            vigra_ext::ConvertTo8Bit(image);
+            output.setForcedRangeMapping(0, vigra::NumericTraits<typename vigra::NumericTraits<typename ImageType::PixelType>::ValueType>::max(), 0, 255);
             return SaveImage(image, mask, output, encoder->getFileType(), "UINT8");
         }
         else
