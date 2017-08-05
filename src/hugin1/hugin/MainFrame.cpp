@@ -996,19 +996,39 @@ void MainFrame::LoadProjectFile(const wxString & filename)
         {
             SetGuiLevel(reqGuiLevel);
         };
-        SetStatusText(_("Project opened"));
-        m_mruFiles.AddFileToHistory(fname.GetFullPath());
-        if(m_guiLevel==GUI_SIMPLE)
+        if (pano.getNrOfImages() > 0)
         {
-            if(gl_preview_frame)
+            SetStatusText(_("Project opened"));
+            m_mruFiles.AddFileToHistory(fname.GetFullPath());
+            if (m_guiLevel == GUI_SIMPLE)
             {
-                gl_preview_frame->SetTitle(fname.GetName() + wxT(".") + fname.GetExt() + wxT(" - ") + _("Hugin - Panorama Stitcher"));
+                if (gl_preview_frame)
+                {
+                    gl_preview_frame->SetTitle(fname.GetName() + wxT(".") + fname.GetExt() + wxT(" - ") + _("Hugin - Panorama Stitcher"));
+                };
+                SetTitle(fname.GetName() + wxT(".") + fname.GetExt() + wxT(" - ") + _("Panorama editor"));
+            }
+            else
+            {
+                SetTitle(fname.GetName() + wxT(".") + fname.GetExt() + wxT(" - ") + _("Hugin - Panorama Stitcher"));
             };
-            SetTitle(fname.GetName() + wxT(".") + fname.GetExt() + wxT(" - ") + _("Panorama editor"));
         }
         else
         {
-            SetTitle(fname.GetName() + wxT(".") + fname.GetExt() + wxT(" - ") + _("Hugin - Panorama Stitcher"));
+            SetStatusText(_("Loading canceled"));
+            m_filename = "";
+            if (m_guiLevel == GUI_SIMPLE)
+            {
+                if (gl_preview_frame)
+                {
+                    gl_preview_frame->SetTitle(_("Hugin - Panorama Stitcher"));
+                };
+                SetTitle(_("Panorama editor"));
+            }
+            else
+            {
+                SetTitle(_("Hugin - Panorama Stitcher"));
+            };
         };
         if (! (fname.GetExt() == wxT("pto"))) {
             // do not remember filename if its not a hugin project
