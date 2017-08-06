@@ -141,7 +141,7 @@ public:
     void SetUserColourPointUnselected(wxColour newColour) { m_colour_point_unselected=newColour; };
 
     /** drawing routine */
-    virtual void OnDraw(wxDC& dc) wxOVERRIDE;
+    virtual void OnDraw(wxDC& dc);
 protected:
     /** handler called when size of control was changed */
     void OnSize(wxSizeEvent & e);
