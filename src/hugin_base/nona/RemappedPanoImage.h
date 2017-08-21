@@ -331,8 +331,8 @@ template<class DistImgType>
 void RemappedPanoImage<RemapImage,AlphaImage>::calcSrcCoordImgs(DistImgType & imgX, DistImgType & imgY)
 {
     if (Base::boundingBox().isEmpty()) return;
-    imgX.resize(Base::boundingBox().size());
-    imgY.resize(Base::boundingBox().size());
+    imgX.resize(Base::boundingBox().size().width(), Base::boundingBox().size().height(), vigra::NumericTraits<typename DistImgType::value_type>::max());
+    imgY.resize(Base::boundingBox().size().width(), Base::boundingBox().size().height(), vigra::NumericTraits<typename DistImgType::value_type>::max());
     // calculate the alpha channel,
     int xstart = Base::boundingBox().left();
     int xend   = Base::boundingBox().right();
@@ -353,9 +353,14 @@ void RemappedPanoImage<RemapImage,AlphaImage>::calcSrcCoordImgs(DistImgType & im
         for(int x=xstart; x < xend; ++x, ++xImgY.x, ++xImgX.x)
         {
             double sx,sy;
-            m_transf.transformImgCoord(sx,sy,x,y);
-            accX.set(sx, xImgX);
-            accY.set(sy, xImgY);
+            if (m_transf.transformImgCoord(sx, sy, x, y))
+            {
+                if (m_srcImg.isInside(vigra::Point2D(hugin_utils::roundi(sx), hugin_utils::roundi(sy))))
+                {
+                    accX.set(sx, xImgX);
+                    accY.set(sy, xImgY);
+                };
+            };
         }
     }
 }
