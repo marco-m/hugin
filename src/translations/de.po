@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2017-07-29 18:06+0200\n"
-"PO-Revision-Date: 2017-04-29 10:19+0200\n"
+"PO-Revision-Date: 2017-07-30 14:44+0200\n"
 "Last-Translator: T. Modes\n"
 "Language-Team: deutsch <de@li.org>\n"
 "Language: de_DE\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.3\n"
 "X-Poedit-Basepath: d:/usr/src/hugin/hugin/src\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:65
@@ -954,15 +954,18 @@ msgid ""
 "The project file \"%s\" refers to image \"%s\" which was not found.\n"
 "Please manually select the correct image."
 msgstr ""
+"Das Projekt \"%s\" verwendet das Bild \"%s\", welches nicht gefunden werden "
+"konnte.\n"
+"Bitte wählen Sie das richtige Bild aus."
 
 #: hugin1/base_wx/wxPanoCommand.cpp:645
 msgid "Image file not found"
 msgstr "Bilddatei nicht gefunden"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:652
-#, fuzzy, c-format
+#, c-format
 msgid "Select image %s"
-msgstr "Bildbearbeitungsprogramm auswählen"
+msgstr "Bild %s wählen"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:759
 #, c-format
@@ -2162,7 +2165,7 @@ msgstr "Kontrollpunkte"
 
 #: hugin1/hugin/ImagesTree.cpp:151
 msgid "Number of control points in this image"
-msgstr "Anzahl der Kontrolpunkte im Bild"
+msgstr "Anzahl der Kontrollpunkte im Bild"
 
 #: hugin1/hugin/ImagesTree.cpp:152
 msgid "Lens no."
@@ -2432,24 +2435,20 @@ msgid "Edit image variables..."
 msgstr "Bildparameter bearbeiten..."
 
 #: hugin1/hugin/ImagesTree.cpp:1219
-#, fuzzy
 msgid "Deactivate image"
-msgstr "Bild speichern"
+msgstr "Bild deaktivieren"
 
 #: hugin1/hugin/ImagesTree.cpp:1223
-#, fuzzy
 msgid "Activate image"
-msgstr "Bild speichern"
+msgstr "Bild aktivieren"
 
 #: hugin1/hugin/ImagesTree.cpp:1228
-#, fuzzy
 msgid "Activate images"
-msgstr "Dargestellte Bilder"
+msgstr "Bilder aktivieren"
 
 #: hugin1/hugin/ImagesTree.cpp:1229
-#, fuzzy
 msgid "Deactivate images"
-msgstr "Anzahl der aktiven Bilder:"
+msgstr "Bilder deaktivieren"
 
 #: hugin1/hugin/ImagesTree.cpp:1281
 msgid "Control points"
@@ -2542,22 +2541,18 @@ msgid "Exposure"
 msgstr "Belichtung"
 
 #: hugin1/hugin/MainFrame.cpp:772
-#, fuzzy
 msgid "Save changes to the project file before opening another project?"
-msgstr "Änderungen am Panorama vor dem Öffnen eines anderen Projektes sichern?"
+msgstr "Änderungen am Projekt vor dem Öffnen eines anderen Projektes sichern?"
 
 #: hugin1/hugin/MainFrame.cpp:775
-#, fuzzy
 msgid "Save changes to the project file before starting a new project?"
-msgstr "Änderungen am Panorama vor dem Beginn eines neuen Projektes sichern?"
+msgstr "Änderungen am Projekt vor dem Beginn eines neuen Projektes sichern?"
 
 #: hugin1/hugin/MainFrame.cpp:779
-#, fuzzy
 msgid "Save changes to the project file before closing?"
-msgstr "Änderungen am Panorama vor dem Schliessen sichern?"
+msgstr "Änderungen am Projekt vor dem Schließen sichern?"
 
 #: hugin1/hugin/MainFrame.cpp:792
-#, fuzzy
 msgid ""
 "If you load another project without saving, your changes since last save "
 "will be discarded."
@@ -2566,7 +2561,6 @@ msgstr ""
 "ein anderes Projekt laden."
 
 #: hugin1/hugin/MainFrame.cpp:795
-#, fuzzy
 msgid ""
 "If you start a new project without saving, your changes since last save will "
 "be discarded."
@@ -2924,6 +2918,11 @@ msgid ""
 "Please add control points before running the optimizer.\n"
 "Optimization canceled."
 msgstr ""
+"Es gibt keine Kontrollpunkte in der aktuellen Konfiguration für den "
+"Optimierer.\n"
+"Bitte fügen Sie Kontrollpunkte hinzu, bevor Sie die Optimierung neu "
+"starten.\n"
+"Optimierung abgebrochen."
 
 #: hugin1/hugin/OptimizePanel.cpp:360
 msgid ""
@@ -5806,12 +5805,12 @@ msgstr "Position verknüpfen"
 
 #: hugin1/hugin/xrc/main_frame.xrc:363
 msgid "Generate control points, additional cpfind parameters:"
-msgstr "Finde Kontrolpunkte, zusätzliche cpfind-Parameter:"
+msgstr "Finde Kontrollpunkte, zusätzliche cpfind-Parameter:"
 
 #: hugin1/hugin/xrc/main_frame.xrc:384
 msgid "Connect orphaned images (with geocpset)"
 msgstr ""
-"Verbinde auch verwaiste Bilder (Bilder ohne Kontrolpunkte, mit geocpset)"
+"Verbinde auch verwaiste Bilder (Bilder ohne Kontrollpunkte, mit geocpset)"
 
 #: hugin1/hugin/xrc/main_frame.xrc:390
 msgid "Control point generation"
@@ -5870,14 +5869,12 @@ msgstr ""
 "Nadir-Bild bei den meisten Fischaugen-Panoramen."
 
 #: hugin1/hugin/xrc/main_menu.xrc:34 hugin1/hugin/xrc/optimize_panel.xrc:50
-#, fuzzy
 msgid "Ignore line control points"
-msgstr "Kontrollpunkte erstellen"
+msgstr "Linienkontrollpunkte ignoren"
 
 #: hugin1/hugin/xrc/main_menu.xrc:35 hugin1/hugin/xrc/optimize_panel.xrc:51
-#, fuzzy
 msgid "Use only normal control points in optimization."
-msgstr "Anzahl der Kontrolpunkte im Bild"
+msgstr "Verwende nur normale Kontrollpunkte beim Optimieren."
 
 #: hugin1/hugin/xrc/main_menu.xrc:39 hugin1/hugin/xrc/preview_frame.xrc:981
 msgid "&Optimize"
@@ -5894,7 +5891,7 @@ msgstr "Alle Kontrollpunkte &feinjustieren"
 
 #: hugin1/hugin/xrc/main_menu.xrc:46
 msgid "Runs fine-tune on all control points."
-msgstr "Feinjustiere alle Kontrolpunkte"
+msgstr "Feinjustiere alle Kontrollpunkte"
 
 #: hugin1/hugin/xrc/main_menu.xrc:49
 msgid "Remove control points in masks"
@@ -6395,18 +6392,16 @@ msgstr "Geometrische Optimierung"
 
 #: hugin1/hugin/xrc/optimize_panel.xrc:31
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:30
-#, fuzzy
 msgid ""
 "Any variables below which are marked [x] will be optimized.\n"
 "Unmarked variables [ ] will act as references or anchors."
 msgstr ""
 "Jede markierte [x] Variable wird optimiert.\n"
-"Alle anderen Variablen werden als Referenz oder Anker benutzt."
+"Alle unmarkierten Variablen [ ] werden als Referenz oder Anker benutzt."
 
 #: hugin1/hugin/xrc/optimize_panel.xrc:42
-#, fuzzy
 msgid "Only use control points between activated images."
-msgstr "Nur in der Vorschau gewählte Bilder berücksichtigen"
+msgstr "Verwende nur Kontrollpunkte in aktiven Bildern."
 
 #: hugin1/hugin/xrc/optimize_panel.xrc:65
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:55
@@ -6439,9 +6434,8 @@ msgid "Photometric Optimization"
 msgstr "Fotometrische Optimierung"
 
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:41
-#, fuzzy
 msgid "Only use activated images."
-msgstr "Optimiere nur &aktive Bilder"
+msgstr "Verwende nur aktive Bilder."
 
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:42
 msgid ""
@@ -6890,7 +6884,7 @@ msgid "Default output prefix:"
 msgstr "Standard Namensanfang der Ausgabedateien:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:230
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The following placeholders are replaced automatically:\n"
 "%firstimage - filename of first image file\n"
@@ -6910,7 +6904,7 @@ msgstr ""
 "%firstimage - Dateiname der ersten Bilddatei\n"
 "%lastimage - Dateiname der letzten Bilddatei\n"
 "%#images - Anzahl an Bildern\n"
-"%directory  - Verzeichnisname (basierend auf der ersten Bilddatei)\n"
+"%directory  - Verzeichnisname (Ordner des ersten Bildes)\n"
 "%projection - Projektionstyp\n"
 "%focallength - Brennweite\n"
 "%date - Datum (des ersten Bildes)\n"
@@ -7915,15 +7909,14 @@ msgstr ""
 "Detektoren von Drittanbietern, u.a. Autopano, Autopano-SIFT-C und Panomatic."
 
 #: hugin1/hugin/xrc/data/tips.txt:11
-#, fuzzy
 msgid ""
 "Sometimes the control point detector can not find connections between all "
 "images. In this case, control points have to be created manually, using the "
 "control points tab in the panorama editor."
 msgstr ""
-"Manchmal kann der Kontrollpunktdetektor keine Kontrollpunkte bei "
-"überlappenden Bildern finden. In diesem Fall müssen die Kontrollpunkte "
-"manuell erzeugt werden."
+"Manchmal kann der Kontrollpunktdetektor keine Kontrollpunkte für alle Bilder "
+"finden. In diesem Fall müssen die Kontrollpunkte manuell erzeugt werden. "
+"Verwenden Sie dazu den Kontrollpunkte-Tab im Panorama-Editor."
 
 #: hugin1/hugin/xrc/data/tips.txt:12
 msgid ""
@@ -7942,7 +7935,6 @@ msgstr ""
 "Sie beim Ziehen der Maus die Strg-Taste."
 
 #: hugin1/hugin/xrc/data/tips.txt:14
-#, fuzzy
 msgid ""
 "Rotating the camera around the entrance pupil (sometimes also called \"nodal "
 "point\") avoids parallax errors and makes panorama creation a lot easier. "
@@ -7952,7 +7944,9 @@ msgstr ""
 "Das Auftreten von Parallaxenfehlern wird vermieden und damit die Erstellung "
 "eines makellosen Panoramas wesentlich vereinfacht, wenn die Kamera bei der "
 "Aufnahme um das Zentrum der Eintrittspupille (\"NPP\", fälschlicherweise "
-"aber auch Nodalpunkt genannt) des verwendeten Objektivs gedreht wird."
+"aber auch Nodalpunkt genannt) des verwendeten Objektivs gedreht wird. Das "
+"Panotools-Wiki <http://wiki.panotools.org/NPP> hilft beim Finden der "
+"richtigen Einstellung."
 
 #: hugin1/hugin/xrc/data/tips.txt:15
 msgid "Tutorials on hugin are available on http://hugin.sf.net/tutorials"
@@ -8100,13 +8094,12 @@ msgstr ""
 "Aufnahmen von Weitwinkel- und Fischaugen-Objektiven."
 
 #: hugin1/hugin/xrc/data/tips.txt:35
-#, fuzzy
 msgid ""
 "Multiple images can be selected in the photo tabs in the panorama editor. "
 "Commands will act on all selected images."
 msgstr ""
-"Innerhalb der Reiter \"Bilder\" sowie \"Kamera und Objektiv\" können mehrere "
-"Bilder gleichzeitig ausgewählt und bearbeitet werden."
+"Im \"Bilder\"-Tab können mehrere Bilder gleichzeitig ausgewählt und "
+"bearbeitet werden."
 
 #: hugin1/hugin/xrc/data/tips.txt:36
 msgid ""
