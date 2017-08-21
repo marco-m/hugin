@@ -1806,6 +1806,41 @@ Panorama Panorama::getSubset(const UIntSet & imgs) const
     subset.m_forceImagesUpdate = m_forceImagesUpdate;
     subset.m_ptoptimizerVarNames = m_ptoptimizerVarNames;
     
+    // check optimizer vector and update if necessary
+    // optvec contains only the variables for the first image, 
+    // but if the first image is not in the subset then the variables is missing also for the next image
+    // which can be in optvec
+    OptimizeVector internalOptvec=state.optvec;
+    UIntSet unusedImgs;
+    {
+        UIntSet allImgs;
+        fill_set(allImgs, 0, getNrOfImages() - 1);
+        std::set_difference(allImgs.begin(), allImgs.end(), imgs.begin(), imgs.end(), std::inserter(unusedImgs, unusedImgs.end()));
+    };
+    if (!unusedImgs.empty())
+    {
+        for (auto& i : unusedImgs)
+        {
+            for (auto& var : state.optvec[i])
+            {
+                for (auto& j : imgs)
+                {
+#define image_variable(name, type, default_value)\
+                    if (PTOVariableConverterFor##name::checkApplicability(var))\
+                    {\
+                        if (state.images[i]->name##isLinkedWith(*state.images[j]))\
+                        {\
+                            internalOptvec[j].insert(var);\
+                            break;\
+                        }\
+                    }
+#include "image_variables.h"
+#undef image_variable
+                };
+            };
+        };
+    };
+
     // create image number map.
     std::map<unsigned int, unsigned int> imageNrMap;
 
@@ -1815,7 +1850,7 @@ Panorama Panorama::getSubset(const UIntSet & imgs) const
          ++imgNrIt)
     {
         subset.state.images.push_back(new SrcPanoImage(*state.images[*imgNrIt]));
-        subset.state.optvec.push_back(state.optvec[*imgNrIt]);
+        subset.state.optvec.push_back(internalOptvec[*imgNrIt]);
         imageNrMap[*imgNrIt] = ic;
         ic++;
     }
