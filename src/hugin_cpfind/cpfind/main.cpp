@@ -66,7 +66,7 @@ void printUsage()
         << std::endl << "Feature matching options" << std::endl
         << "  --ransaciter=<int>     Ransac: iterations (default: 1000)" << std::endl
         << "  --ransacdist=<int>     Ransac: homography estimation distance threshold" << std::endl
-        << "                                 (in pixels) (default: 25)" << std::endl
+        << "                                 (in pixels) (default: 50)" << std::endl
         << "  --ransacmode=<string>  Ransac: Select the mode used in the ransac step." << std::endl
         << "                                 Possible values: auto, hom, rpy, rpyv, rpyb" << std::endl
         << "                                 (default: auto)" << std::endl
