@@ -461,6 +461,10 @@ void PanoDetector::run()
         };
     };
 #ifdef HAVE_OPENMP
+    if (_cores == 0)
+    {
+        setCores(omp_get_max_threads());
+    };
     if (maxImageSize != 0)
     {
         unsigned long long maxCores;
@@ -478,10 +482,6 @@ void PanoDetector::run()
         if(maxCores<1)
         {
             maxCores=1;
-        }
-        if (_cores == 0)
-        {
-            setCores(omp_get_max_threads());
         }
         if(maxCores<_cores)
         {
