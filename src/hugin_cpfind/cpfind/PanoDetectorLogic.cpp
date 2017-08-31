@@ -1036,8 +1036,11 @@ bool PanoDetector::RansacMatchesInPairCam(MatchData& ioMatchData, const PanoDete
         {
             rmode = HuginBase::RANSACOptimizer::RPY;
         }
+        // the RANSAC uses the distance in the image for determination of valid parameter
+        // so make the threshold depending on the image size, use the given pixel distance relative to a 12 MPix image with 4000x3000 pixel
+        const double threshold = iPanoDetector.getRansacDistanceThreshold() / 5000.0 * hypot(panoSubset->getImage(pano_local_i2).getWidth(), panoSubset->getImage(pano_local_i2).getHeight());
         inliers = HuginBase::RANSACOptimizer::findInliers(*panoSubset, pano_local_i1, pano_local_i2,
-                  iPanoDetector.getRansacDistanceThreshold(), rmode);
+                  threshold, rmode);
         PT_setProgressFcn(NULL);
         PT_setInfoDlgFcn(NULL);
         delete panoSubset;
