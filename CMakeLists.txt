@@ -170,20 +170,14 @@ IF (UNIX)
   EXEC_PROGRAM(sh ARGS "${wxWidgets_CONFIG_EXECUTABLE} --version" OUTPUT_VARIABLE wxWidgets_VERSION)
   STRING(REGEX REPLACE "^([0-9]+\\.[0-9]+)\\..*" "\\1"  wxWidgets_VERSION ${wxWidgets_VERSION})
   IF(wxWidgets_VERSION VERSION_LESS "3.0")
-    SET(wxWidgets_FOUND FALSE)
-    MESSAGE("At least wxWidgets 3.0 is required")
+    MESSAGE(FATAL_ERROR "At least wxWidgets 3.0 is required")
   ENDIF()
   # Ubuntu has 2 different devel packages, we need the GUI version
   EXEC_PROGRAM(sh ARGS "${wxWidgets_CONFIG_EXECUTABLE} --query-toolkit" OUTPUT_VARIABLE wxWidgets_TOOLKIT)
   IF(wxWidgets_TOOLKIT STREQUAL "base")
-    SET(wxWidgets_FOUND FALSE)
-    MESSAGE("wxWidgets is as non-GUI package configured. Check you wxWidgets installation (maybe wxgtkXX-devel is missing)")
+    MESSAGE(FATAL_ERROR "wxWidgets is as non-GUI package configured. Check you wxWidgets installation (maybe wxgtkXX-devel is missing)")
   ENDIF()
 ENDIF (UNIX)
-
-IF(NOT wxWidgets_FOUND)
-  MESSAGE("wxWidgets was not found, GUI programs (hugin, nona_gui) disabled")
-ENDIF(NOT wxWidgets_FOUND) 
 
 ##
 ## Graphics libraries

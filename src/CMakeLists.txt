@@ -35,8 +35,4 @@ ENDIF()
 
 add_subdirectory(hugin_cpfind)
 add_subdirectory(translations)
-
-# build gui only if wxWidgets was found
-IF(wxWidgets_FOUND)
-  add_subdirectory(hugin1)
-ENDIF(wxWidgets_FOUND)
+add_subdirectory(hugin1)
