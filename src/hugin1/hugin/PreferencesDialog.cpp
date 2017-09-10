@@ -576,7 +576,10 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         MY_BOOL_VAL("prefs_copy_log", t);
 
         t = cfg->Read(wxT("/GLPreviewFrame/ShowProjectionHints"), HUGIN_SHOW_PROJECTION_HINTS) == 1;
-        MY_BOOL_VAL("pref_show_projection_hints", t)
+        MY_BOOL_VAL("pref_show_projection_hints", t);
+        // auto-rotate
+        t = cfg->Read("/CPEditorPanel/AutoRot", 1l) == 1;
+        MY_BOOL_VAL("pref_autorotate", t);
     };
 
     // filename panel
@@ -802,6 +805,7 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent& e)
             cfg->Write(wxT("CopyLogToClipboard"), 0l);
             // projection hints
             cfg->Write(wxT("/GLPreviewFrame/ShowProjectionHints"), HUGIN_SHOW_PROJECTION_HINTS);
+            cfg->Write("/CPEditorPanel/AutoRot", 1l);
         }
         if(noteb->GetSelection() == 1)
         {
@@ -961,6 +965,8 @@ void PreferencesDialog::UpdateConfigData()
     cfg->Write(wxT("CopyLogToClipboard"), MY_G_BOOL_VAL("prefs_copy_log"));
     // show projections hints
     cfg->Write(wxT("/GLPreviewFrame/ShowProjectionHints"), MY_G_BOOL_VAL("pref_show_projection_hints"));
+    //auto-rotate
+    cfg->Write("/CPEditorPanel/AutoRot", MY_G_BOOL_VAL("pref_autorotate"));
     // tempdir
     cfg->Write(wxT("tempDir"),MY_G_STR_VAL("prefs_misc_tempdir"));
     // filename templates

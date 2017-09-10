@@ -745,26 +745,33 @@ MaskImageCtrl::ImageRotation MaskEditorPanel::GetRot(const unsigned int imgNr)
 
     while (pitch > 180) pitch -= 360;
     while (pitch < -180) pitch += 360;
-    bool headOver = (pitch > 90 || pitch < -90);
+    const bool headOver = (pitch > 90 || pitch < -90);
 
-    if (roll >= 315 || roll < 45) 
+    if (wxConfig::Get()->Read("/CPEditorPanel/AutoRot", 1L))
     {
-        rot = headOver ? MaskImageCtrl::ROT180 : MaskImageCtrl::ROT0;
-    } 
-    else 
-        if (roll >= 45 && roll < 135) 
+        if (roll >= 315 || roll < 45)
         {
-            rot = headOver ? MaskImageCtrl::ROT270 : MaskImageCtrl::ROT90;
+            rot = headOver ? MaskImageCtrl::ROT180 : MaskImageCtrl::ROT0;
         }
-        else 
-            if (roll >= 135 && roll < 225) 
+        else
+        {
+            if (roll >= 45 && roll < 135)
             {
-                rot = headOver ? MaskImageCtrl::ROT0 : MaskImageCtrl::ROT180;
-            } 
-            else 
-            {
-                rot = headOver ? MaskImageCtrl::ROT90 : MaskImageCtrl::ROT270;
+                rot = headOver ? MaskImageCtrl::ROT270 : MaskImageCtrl::ROT90;
             }
+            else
+            {
+                if (roll >= 135 && roll < 225)
+                {
+                    rot = headOver ? MaskImageCtrl::ROT0 : MaskImageCtrl::ROT180;
+                }
+                else
+                {
+                    rot = headOver ? MaskImageCtrl::ROT90 : MaskImageCtrl::ROT270;
+                };
+            };
+        };
+    };
     return rot;
 }
 
