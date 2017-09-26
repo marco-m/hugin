@@ -23,7 +23,7 @@
 #include <sys/sysctl.h>
 #endif
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 #include <algorithm>
 #elif defined __APPLE__
 #include <CoreServices/CoreServices.h>  //for gestalt

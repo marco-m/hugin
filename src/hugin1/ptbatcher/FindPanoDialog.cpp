@@ -35,7 +35,7 @@
 #include "exiv2/exiv2.hpp"
 #include "exiv2/preview.hpp"
 #ifdef _WIN32
-#include <CommCtrl.h>
+#include <commctrl.h>
 #endif
 #include "base_wx/LensTools.h"
 #include "panodata/StandardImageVariableGroups.h"

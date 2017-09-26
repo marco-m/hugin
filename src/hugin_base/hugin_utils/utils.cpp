@@ -29,7 +29,7 @@
 #ifdef _WIN32
     #define NOMINMAX
     #include <sys/utime.h>
-    #include <ShlObj.h>
+    #include <shlobj.h>
 #else
     #include <sys/time.h>
     #include <cstdlib>
