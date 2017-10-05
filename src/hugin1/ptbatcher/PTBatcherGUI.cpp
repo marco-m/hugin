@@ -64,10 +64,9 @@ bool PTBatcherGUI::OnInit()
     // Required to access the preferences of hugin
     SetAppName(wxT("hugin"));
 
+    // need to explicitly initialize locale for C++ library/runtime
+    setlocale(LC_ALL, "");
 #if defined __WXMSW__
-#if defined _MSC_VER && defined Hugin_shared
-    setlocale(LC_NUMERIC, "");
-#endif
     int localeID = wxConfigBase::Get()->Read(wxT("language"), (long) wxLANGUAGE_DEFAULT);
     m_locale.Init(localeID);
 #else

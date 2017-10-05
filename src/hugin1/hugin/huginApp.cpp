@@ -264,10 +264,9 @@ bool huginApp::OnInit()
 
     config->Flush();
 
+    // need to explicitly initialize locale for C++ library/runtime
+    setlocale(LC_ALL, "");
     // initialize i18n
-#if defined _MSC_VER && defined Hugin_shared
-    setlocale(LC_NUMERIC, "");
-#endif
     int localeID = config->Read(wxT("language"), (long) HUGIN_LANGUAGE);
     DEBUG_TRACE("localeID: " << localeID);
     {
