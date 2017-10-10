@@ -170,6 +170,11 @@ TARGET_LINK_LIBRARIES(huginbase huginlevmar ${VIGRA_LIBRARIES}
         ${OPENGL_GLEW_LIBRARIES} Threads::Threads
         ${SQLITE3_LIBRARIES} ${LCMS2_LIBRARIES})
 
+IF (MINGW)
+    # exiv2 needs psapi and ws2_32 when compiling with Mingw
+    TARGET_LINK_LIBRARIES(huginbase psapi ws2_32)
+ENDIF() 
+
 source_group(Lines REGULAR_EXPRESSION lines/*)
 source_group(Vigra_ext REGULAR_EXPRESSION vigra_ext/*)
 source_group(Algorithm REGULAR_EXPRESSION algorithm/*)
