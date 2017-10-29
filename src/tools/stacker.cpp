@@ -163,10 +163,12 @@ static void usage(const char* name)
         << "                              available for modes median|winsor|clip" << std::endl
         << "     --mask-suffix=STRING     Suffix for the masked input images" << std::endl
         << "                              (default: _mask)" << std::endl
-        << "     --mask-sigma=NUMBER      Sigma parameter for input images masking"<<std::endl
+        << "     --mask-sigma=NUMBER      Sigma parameter for input images masking" << std::endl
         << "                              (default: 2)" << std::endl
         << "     --multi-layer-output     Output layered TIFF instead of single images" << std::endl
         << "                              (has only effect with --mask-input)" << std::endl
+        << "     --bigtiff                Write output in BigTIFF format" << std::endl
+        << "                              (only with TIFF output)" << std::endl
         << "     -h, --help               Shows this help" << std::endl
         << std::endl;
 };
@@ -190,6 +192,7 @@ public:
     bool maskInput = false;
     std::string maskSuffix = "_mask";
     bool multiLayer = false;
+    bool useBigTIFF = false;
 } Parameters;
 
 class InputImage
@@ -649,7 +652,7 @@ bool StackImages(std::vector<InputImage*>& images, Functor& stacker)
         return false;
     }
     // prepare output
-    vigra::ImageExportInfo exportImageInfo(Parameters.outputFilename.c_str());
+    vigra::ImageExportInfo exportImageInfo(Parameters.outputFilename.c_str(), Parameters.useBigTIFF ? "w8" : "w");
     exportImageInfo.setXResolution(images[0]->getXResolution());
     exportImageInfo.setYResolution(images[0]->getYResolution());
     exportImageInfo.setPosition(outputROI.upperLeft());
@@ -749,7 +752,7 @@ bool StackImagesAndMask(std::vector<InputImage*>& images, Functor& stacker)
         return false;
     }
     // prepare output
-    vigra::ImageExportInfo exportImageInfo(Parameters.outputFilename.c_str());
+    vigra::ImageExportInfo exportImageInfo(Parameters.outputFilename.c_str(), Parameters.useBigTIFF ? "w8" : "w");
     exportImageInfo.setXResolution(images[0]->getXResolution());
     exportImageInfo.setYResolution(images[0]->getYResolution());
     exportImageInfo.setPosition(outputROI.upperLeft());
@@ -866,7 +869,7 @@ bool StackImagesAndMask(std::vector<InputImage*>& images, Functor& stacker)
         }
         else
         {
-            vigra::ImageExportInfo exportMaskImage(images[i]->getMaskFilename().c_str());
+            vigra::ImageExportInfo exportMaskImage(images[i]->getMaskFilename().c_str(), Parameters.useBigTIFF ? "w8" : "w");
             exportMaskImage.setXResolution(images[i]->getXResolution());
             exportMaskImage.setYResolution(images[i]->getYResolution());
             exportMaskImage.setPosition(images[i]->getROI().upperLeft());
@@ -1000,7 +1003,8 @@ int main(int argc, char* argv[])
         OPT_MASK_INPUT,
         OPT_MASK_SUFFIX,
         OPT_MASK_SIGMA,
-        OPT_MULTILAYER
+        OPT_MULTILAYER,
+        OPT_BIGTIFF
     };
     static struct option longOptions[] =
     {
@@ -1013,7 +1017,8 @@ int main(int argc, char* argv[])
         { "mask-input", no_argument, NULL, OPT_MASK_INPUT},
         { "mask-suffix", required_argument, NULL, OPT_MASK_SUFFIX},
         { "mask-sigma", required_argument, NULL, OPT_MASK_SIGMA },
-        { "multi-layer-output", no_argument,NULL, OPT_MULTILAYER },
+        { "multi-layer-output", no_argument, NULL, OPT_MULTILAYER },
+        { "bigtiff", no_argument, NULL, OPT_BIGTIFF },
         { "help", no_argument, NULL, 'h' },
         0
     };
@@ -1119,6 +1124,9 @@ int main(int argc, char* argv[])
                 break;
             case OPT_MULTILAYER:
                 Parameters.multiLayer = true;
+                break;
+            case OPT_BIGTIFF:
+                Parameters.useBigTIFF = true;
                 break;
             case ':':
             case '?':

@@ -92,6 +92,7 @@ static void usage(const char* name)
          << "                   LZW       lzw compression" << std::endl
          << "                   DEFLATE   deflate compression" << std::endl
          << "                  For jpeg output set quality number" << std::endl
+         << "      --bigtiff   Use BigTIFF format for TIFF images" << std::endl
          << "      --ignore-exposure  don't correct exposure" << std::endl
          << "                   (this does not work with -e switch together)" << std::endl
          << "      --save-intermediate-images  saves also the intermediate" << std::endl
@@ -137,7 +138,8 @@ int main(int argc, char* argv[])
         INTERMEDIATESUFFIX,
         EXPOSURELAYERS,
         MASKCLIPEXPOSURE,
-        SEAMMODE
+        SEAMMODE,
+        USE_BIGTIFF
     };
     static struct option longOptions[] =
     {
@@ -149,6 +151,7 @@ int main(int argc, char* argv[])
         { "clip-exposure", optional_argument, NULL, MASKCLIPEXPOSURE },
         { "seam", required_argument, NULL, SEAMMODE},
         { "gpu", no_argument, NULL, 'g'},
+        { "bigtiff", no_argument, NULL, USE_BIGTIFF },
         { "help", no_argument, NULL, 'h'},
         0
     };
@@ -292,6 +295,9 @@ int main(int argc, char* argv[])
                 break;
             case 'd':
                 vigra_ext::SetGPUDebugMessages(true);
+                break;
+            case USE_BIGTIFF:
+                HuginBase::Nona::SetAdvancedOption(advOptions, "useBigTIFF", true);
                 break;
             case ':':
             case '?':

@@ -134,7 +134,7 @@ void SetCompression(vigra::ImageExportInfo& output, const std::string& compressi
 
 /** loads image one by one and merge with all previouly loaded images, saves the final results */
 template <class ImageType>
-bool LoadAndMergeImages(std::vector<vigra::ImageImportInfo> imageInfos, const std::string& filename, const std::string& compression, const bool wrap, const bool hardSeam)
+bool LoadAndMergeImages(std::vector<vigra::ImageImportInfo> imageInfos, const std::string& filename, const std::string& compression, const bool wrap, const bool hardSeam, const bool useBigTiff)
 {
     if (imageInfos.empty())
     {
@@ -168,7 +168,7 @@ bool LoadAndMergeImages(std::vector<vigra::ImageImportInfo> imageInfos, const st
     };
     // save output
     {
-        vigra::ImageExportInfo exportImageInfo(filename.c_str());
+        vigra::ImageExportInfo exportImageInfo(filename.c_str(), useBigTiff ? "w8" : "w");
         exportImageInfo.setXResolution(imageInfos[0].getXResolution());
         exportImageInfo.setYResolution(imageInfos[0].getYResolution());
         exportImageInfo.setPosition(roi.upperLeft());
@@ -193,6 +193,8 @@ static void usage(const char* name)
         << "                            For tiff output: PACKBITS, DEFLATE, LZW" << std::endl
         << "     -w, --wrap          Wraparound 360 deg border." << std::endl
         << "     --seam=hard|blend   Select the blend mode for the seam" << std::endl
+        << "     --bigtiff           Write output in BigTIFF format" << std::endl
+        << "                         (only with TIFF output)" << std::endl
         << "     -h, --help          Shows this help" << std::endl
         << std::endl;
 };
@@ -238,7 +240,8 @@ int main(int argc, char* argv[])
     enum
     {
         OPT_COMPRESSION = 1000,
-        OPT_SEAMMODE
+        OPT_SEAMMODE,
+        OPT_BIGTIFF
     };
     static struct option longOptions[] =
     {
@@ -246,6 +249,7 @@ int main(int argc, char* argv[])
         { "compression", required_argument, NULL, OPT_COMPRESSION},
         { "seam", required_argument, NULL, OPT_SEAMMODE},
         { "wrap", no_argument, NULL, 'w' },
+        { "bigtiff", no_argument, NULL, OPT_BIGTIFF},
         { "help", no_argument, NULL, 'h' },
         0
     };
@@ -255,6 +259,7 @@ int main(int argc, char* argv[])
     std::string compression;
     bool wraparound = false;
     bool hardSeam = true;
+    bool useBigTIFF = false;
     while ((c = getopt_long(argc, argv, optstring, longOptions, nullptr)) != -1)
     {
         switch (c)
@@ -293,6 +298,9 @@ int main(int argc, char* argv[])
             break;
         case 'w':
             wraparound = true;
+            break;
+        case OPT_BIGTIFF:
+            useBigTIFF = true;
             break;
         case ':':
         case '?':
@@ -347,7 +355,7 @@ int main(int argc, char* argv[])
     {
         //special case, only one image given
         vigra::ImageImportInfo imageInfo(files[0].c_str());
-        vigra::ImageExportInfo exportInfo(output.c_str());
+        vigra::ImageExportInfo exportInfo(output.c_str(), useBigTIFF ? "w8" : "w");
         exportInfo.setXResolution(imageInfo.getXResolution());
         exportInfo.setYResolution(imageInfo.getYResolution());
         exportInfo.setCanvasSize(imageInfo.getCanvasSize());
@@ -461,31 +469,31 @@ int main(int argc, char* argv[])
         {
             if (pixeltype == "UINT8")
             {
-                success = LoadAndMergeImages<vigra::BRGBImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::BRGBImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "INT16")
             {
-                success = LoadAndMergeImages<vigra::Int16RGBImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::Int16RGBImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "UINT16")
             {
-                success = LoadAndMergeImages<vigra::UInt16RGBImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::UInt16RGBImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "INT32")
             {
-                success = LoadAndMergeImages<vigra::Int32RGBImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::Int32RGBImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "UINT32")
             {
-                success = LoadAndMergeImages<vigra::UInt32RGBImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::UInt32RGBImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "FLOAT")
             {
-                success = LoadAndMergeImages<vigra::FRGBImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::FRGBImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "DOUBLE")
             {
-                success = LoadAndMergeImages<vigra::DRGBImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::DRGBImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else
             {
@@ -497,31 +505,31 @@ int main(int argc, char* argv[])
             //grayscale images
             if (pixeltype == "UINT8")
             {
-                success = LoadAndMergeImages<vigra::BImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::BImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "INT16")
             {
-                success = LoadAndMergeImages<vigra::Int16Image>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::Int16Image>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "UINT16")
             {
-                success = LoadAndMergeImages<vigra::UInt16Image>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::UInt16Image>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "INT32")
             {
-                success = LoadAndMergeImages<vigra::Int32Image>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::Int32Image>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "UINT32")
             {
-                success = LoadAndMergeImages<vigra::UInt32Image>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::UInt32Image>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "FLOAT")
             {
-                success = LoadAndMergeImages<vigra::FImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::FImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else if (pixeltype == "DOUBLE")
             {
-                success = LoadAndMergeImages<vigra::DImage>(imageInfos, output, compression, wraparound, hardSeam);
+                success = LoadAndMergeImages<vigra::DImage>(imageInfos, output, compression, wraparound, hardSeam, useBigTIFF);
             }
             else
             {

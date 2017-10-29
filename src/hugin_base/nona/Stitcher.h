@@ -124,6 +124,7 @@ namespace detail
         unsigned int imgNr, unsigned int nImg,
         const PanoramaOptions & opts,
         const std::string& basename,
+        const bool useBigTIFF,
         AppBase::ProgressDisplay* progress)
     {
         ImageType * final_img = 0;
@@ -215,7 +216,7 @@ namespace detail
 
         progress->setMessage("saving", hugin_utils::stripPath(filename.str()));
 
-        vigra::ImageExportInfo exinfo(filename.str().c_str());
+        vigra::ImageExportInfo exinfo(filename.str().c_str(), useBigTIFF ? "w8" : "w");
         exinfo.setXResolution(150);
         exinfo.setYResolution(150);
         exinfo.setICCProfile(remapped.m_ICCProfile);
@@ -308,7 +309,7 @@ public:
         m_basename = basename;
 
         // setup the output.
-        prepareOutputFile(opts);
+        prepareOutputFile(opts, advOptions);
 
         // remap each image and save
         int i=0;
@@ -325,7 +326,7 @@ public:
                 remapped = remapper.getRemapped(Base::m_pano, modOptions, *it, 
                                                 Base::m_rois[i], Base::m_progress);
             try {
-                saveRemapped(*remapped, *it, Base::m_pano.getNrOfImages(), opts);
+                saveRemapped(*remapped, *it, Base::m_pano.getNrOfImages(), opts, advOptions);
             } catch (vigra::PreconditionViolation & e) {
                 // this can be thrown, if an image
                 // is completely out of the pano
@@ -340,7 +341,7 @@ public:
     }
 
     /** prepare the output file (setup file structures etc.) */
-    virtual void prepareOutputFile(const PanoramaOptions & opts)
+    virtual void prepareOutputFile(const PanoramaOptions & opts, const AdvancedOptions& advOptions)
     {
         Base::m_progress->setMessage("Multiple images output");
     }
@@ -348,9 +349,10 @@ public:
     /** save a remapped image, or layer */
     virtual void saveRemapped(RemappedPanoImage<ImageType, AlphaType> & remapped,
                               unsigned int imgNr, unsigned int nImg,
-                              const PanoramaOptions & opts)
+                              const PanoramaOptions & opts,
+                              const AdvancedOptions& advOptions)
     {
-        detail::saveRemapped(remapped, imgNr, nImg, opts, m_basename, Base::m_progress);
+        detail::saveRemapped(remapped, imgNr, nImg, opts, m_basename, GetAdvancedOption(advOptions, "useBigTIFF", false), Base::m_progress);
 
         if (opts.saveCoordImgs) {
             vigra::UInt16Image xImg;
@@ -433,19 +435,20 @@ public:
     {
     }
 
-    virtual void prepareOutputFile(const PanoramaOptions & opts)
+    virtual void prepareOutputFile(const PanoramaOptions & opts, const AdvancedOptions& advOptions)
     {
         const std::string filename (Base::m_basename + ".tif");
         DEBUG_DEBUG("Layering image into a multi image tif file " << filename);
         Base::m_progress->setMessage("Multiple layer output");
-        m_tiff = TIFFOpen(filename.c_str(), "w");
+        m_tiff = TIFFOpen(filename.c_str(), GetAdvancedOption(advOptions, "useBigTIFF", false) ? "w8" : "w");
         DEBUG_ASSERT(m_tiff && "could not open tiff output file");
     }
 
     /** save the remapped image in a partial tiff layer */
     virtual void saveRemapped(RemappedPanoImage<ImageType, AlphaImageType> & remapped,
                               unsigned int imgNr, unsigned int nImg,
-                              const PanoramaOptions & opts)
+                              const PanoramaOptions & opts,
+                              const AdvancedOptions& advOptions)
     {
         if (remapped.boundingBox().isEmpty())
            return;
@@ -540,7 +543,7 @@ public:
                 {
                     finalFilename.append(suffix);
                 };
-                detail::saveRemapped(*remapped, *it, nImg, modOptions, finalFilename, Base::m_progress);
+                detail::saveRemapped(*remapped, *it, nImg, modOptions, finalFilename, GetAdvancedOption(advOptions, "useBigTIFF", false), Base::m_progress);
             }
             Base::m_progress->setMessage("blending", hugin_utils::stripPath(Base::m_pano.getImage(*it).getFilename()));
             // add image to pano and panoalpha, adjusts panoROI as well.
@@ -593,7 +596,7 @@ public:
 	// save the remapped image
         Base::m_progress->setMessage("saving result", hugin_utils::stripPath(outputfile));
         DEBUG_DEBUG("Saving panorama: " << outputfile);
-        vigra::ImageExportInfo exinfo(outputfile.c_str());
+        vigra::ImageExportInfo exinfo(outputfile.c_str(), GetAdvancedOption(advOptions, "useBigTIFF", false) ? "w8" : "w");
         exinfo.setXResolution(150);
         exinfo.setYResolution(150);
         exinfo.setICCProfile(iccProfile);
@@ -709,7 +712,8 @@ public:
     void stitch(const PanoramaOptions & opts, UIntSet & imgSet,
                 const std::string & filename,
                 SingleImageRemapper<ImageType, AlphaType> & remapper,
-                FUNCTOR & reduce)
+                FUNCTOR & reduce,
+                const AdvancedOptions& advOptions)
     {
         Base::stitch(opts, imgSet, filename, remapper);
 
@@ -733,7 +737,7 @@ public:
 
 //        Base::m_progress.setMessage("saving result: " + hugin_utils::stripPath(outputfile));
         DEBUG_DEBUG("Saving panorama: " << outputfile);
-        vigra::ImageExportInfo exinfo(outputfile.c_str());
+        vigra::ImageExportInfo exinfo(outputfile.c_str(), GetAdvancedOption(advOptions, "useBigTIFF", false) ? "w8" : "w");
         if (opts.outputPixelType.size() > 0) {
             exinfo.setPixelType(opts.outputPixelType.c_str());
         }
@@ -1014,7 +1018,7 @@ static void stitchPanoIntern(const PanoramaData & pano,
             if (opts.outputMode == PanoramaOptions::OUTPUT_HDR) {
                 vigra_ext::ReduceToHDRFunctor<typename ImageType::value_type> hdrmerge;
                 ReduceStitcher<ImageType, AlphaType> stitcher(pano, progress);
-                stitcher.stitch(opts, imgs, basename, m, hdrmerge);
+                stitcher.stitch(opts, imgs, basename, m, hdrmerge, advOptions);
             } else {
                 WeightedStitcher<ImageType, AlphaType> stitcher(pano, progress);
                 m.setAdvancedOptions(advOptions);
