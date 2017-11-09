@@ -506,9 +506,9 @@ void ImagesTreeCtrl::UpdateImageText(wxTreeItemId item)
         SetItemText(item, m_columnMap["y"], hugin_utils::doubleTowxString(img.getYaw(), m_degDigits));
         SetItemText(item, m_columnMap["p"], hugin_utils::doubleTowxString(img.getPitch(), m_degDigits));
         SetItemText(item, m_columnMap["r"], hugin_utils::doubleTowxString(img.getRoll(), m_degDigits));
-        SetItemText(item, m_columnMap["TrX"], hugin_utils::doubleTowxString(img.getX(), m_degDigits));
-        SetItemText(item, m_columnMap["TrY"], hugin_utils::doubleTowxString(img.getY(), m_degDigits));
-        SetItemText(item, m_columnMap["TrZ"], hugin_utils::doubleTowxString(img.getZ(), m_degDigits));
+        SetItemText(item, m_columnMap["TrX"], hugin_utils::doubleTowxString(img.getX(), m_distDigits));
+        SetItemText(item, m_columnMap["TrY"], hugin_utils::doubleTowxString(img.getY(), m_distDigits));
+        SetItemText(item, m_columnMap["TrZ"], hugin_utils::doubleTowxString(img.getZ(), m_distDigits));
         SetItemText(item, m_columnMap["Tpy"], hugin_utils::doubleTowxString(img.getTranslationPlaneYaw(), m_degDigits));
         SetItemText(item, m_columnMap["Tpp"], hugin_utils::doubleTowxString(img.getTranslationPlanePitch(), m_degDigits));
         wxString text=_("not active");
