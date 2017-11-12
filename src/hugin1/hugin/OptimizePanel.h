@@ -102,4 +102,4 @@ public:
 };
 
 
-#endif // _WXPANOCOMMAND_H
+#endif // _OPTIMIZE_PANEL_H

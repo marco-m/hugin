@@ -90,4 +90,4 @@ public:
     virtual bool CanHandle(wxXmlNode *node);
 };
 
-#endif // _WXPANOCOMMAND_H
+#endif // _OPTIMIZE_PHOTO_PANEL_H
