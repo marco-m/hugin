@@ -279,12 +279,13 @@ void OptimizePanel::runOptimizer(const HuginBase::UIntSet & imgs, const bool ign
             std::ostringstream scriptbuf;
             optPano.printPanoramaScript(scriptbuf, optPano.getOptimizeVector(), optPano.getOptions(), allImg, true);
             // open a text dialog with an editor inside
-            wxDialog * edit_dlg = wxXmlResource::Get()->LoadDialog(this, wxT("edit_script_dialog"));
-            wxTextCtrl *txtCtrl=XRCCTRL(*edit_dlg,"script_edit_text",wxTextCtrl);
+            wxDialog edit_dlg;
+            wxXmlResource::Get()->LoadDialog(&edit_dlg, this, wxT("edit_script_dialog"));
+            wxTextCtrl *txtCtrl=XRCCTRL(edit_dlg,"script_edit_text",wxTextCtrl);
             txtCtrl->SetValue(wxString(scriptbuf.str().c_str(), *wxConvCurrent));
 
             char * script = 0;
-            if (edit_dlg->ShowModal() == wxID_OK)
+            if (edit_dlg.ShowModal() == wxID_OK)
             {
                 script = strdup(txtCtrl->GetValue().mb_str(*wxConvCurrent));
             }

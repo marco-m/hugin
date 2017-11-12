@@ -407,18 +407,19 @@ void PreferencesDialog::OnExifArgfileEdit(wxCommandEvent & e)
         CreateNewArgFile(filename, MainFrame::Get()->GetDataPath() + wxT("hugin_exiftool_copy.arg"));
     };
     XRCCTRL(*this, "pref_exiftool_argfile", wxTextCtrl)->SetValue(filename);
-    wxDialog * edit_dlg = wxXmlResource::Get()->LoadDialog(this, wxT("pref_edit_argfile"));
-    RestoreFramePosition(edit_dlg, wxT("EditArgfile"));
-    wxTextCtrl* argfileControl=XRCCTRL(*edit_dlg, "pref_edit_textcontrol", wxTextCtrl);
+    wxDialog edit_dlg;
+    wxXmlResource::Get()->LoadDialog(&edit_dlg, this, wxT("pref_edit_argfile"));
+    RestoreFramePosition(&edit_dlg, wxT("EditArgfile"));
+    wxTextCtrl* argfileControl=XRCCTRL(edit_dlg, "pref_edit_textcontrol", wxTextCtrl);
     argfileControl->LoadFile(filename);
-    if(edit_dlg->ShowModal() == wxID_OK)
+    if(edit_dlg.ShowModal() == wxID_OK)
     {
         if(!argfileControl->SaveFile(filename))
         {
             wxMessageBox(wxString::Format(_("Could not save file \"%s\"."), filename.c_str()),
                 _("Error"), wxOK | wxICON_ERROR);
         };
-        StoreFramePosition(edit_dlg, wxT("EditArgfile"));
+        StoreFramePosition(&edit_dlg, wxT("EditArgfile"));
     };
 };
 
@@ -476,18 +477,19 @@ void PreferencesDialog::OnExifArgfile2Edit(wxCommandEvent & e)
         CreateNewArgFile(filename, MainFrame::Get()->GetDataPath() + wxT("hugin_exiftool_final_example.arg"));
     };
     XRCCTRL(*this, "pref_exiftool_argfile2", wxTextCtrl)->SetValue(filename);
-    wxDialog * edit_dlg = wxXmlResource::Get()->LoadDialog(this, wxT("pref_edit_argfile_placeholders"));
-    RestoreFramePosition(edit_dlg, wxT("EditArgfilePlaceholders"));
-    wxTextCtrl* argfileControl = XRCCTRL(*edit_dlg, "pref_edit_textcontrol", wxTextCtrl);
+    wxDialog edit_dlg;
+    wxXmlResource::Get()->LoadDialog(&edit_dlg, this, wxT("pref_edit_argfile_placeholders"));
+    RestoreFramePosition(&edit_dlg, wxT("EditArgfilePlaceholders"));
+    wxTextCtrl* argfileControl = XRCCTRL(edit_dlg, "pref_edit_textcontrol", wxTextCtrl);
     argfileControl->LoadFile(filename);
-    if (edit_dlg->ShowModal() == wxID_OK)
+    if (edit_dlg.ShowModal() == wxID_OK)
     {
         if (!argfileControl->SaveFile(filename))
         {
             wxMessageBox(wxString::Format(_("Could not save file \"%s\"."), filename.c_str()),
                 _("Error"), wxOK | wxICON_ERROR);
         };
-        StoreFramePosition(edit_dlg, wxT("EditArgfilePlaceholders"));
+        StoreFramePosition(&edit_dlg, wxT("EditArgfilePlaceholders"));
     };
 };
 
