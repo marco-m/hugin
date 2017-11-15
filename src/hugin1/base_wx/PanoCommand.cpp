@@ -30,6 +30,7 @@
 #include <algorithms/basic/TranslatePanorama.h>
 #include <algorithms/basic/CalculateMeanExposure.h>
 #include <algorithms/basic/StraightenPanorama.h>
+#include <panodata/ParseExp.h>
 
 namespace PanoCommand
 {
@@ -138,6 +139,19 @@ namespace PanoCommand
         }
         HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
+    }
+
+    bool UpdateVariablesByParseExpression::processPanorama(HuginBase::Panorama& pano)
+    {
+        if (!m_expression.empty())
+        {
+            Parser::PanoParseExpression(pano, m_expression);
+            return true;
+        }
+        else
+        {
+            return false;
+        };
     }
 
     bool UpdateOptimizeVectorCmd::processPanorama(HuginBase::Panorama & pano)

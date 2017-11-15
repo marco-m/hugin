@@ -37,6 +37,7 @@
 #include "base_wx/LensTools.h"
 #include "base_wx/wxLensDB.h"
 #include "hugin/ResetDialog.h"
+#include "hugin/ChangeImageVariableDialog.h"
 #include "hugin/MainFrame.h"
 #include <vigra_ext/openmp_vigra.h>
 #include <vigra_ext/cms.h>
@@ -75,7 +76,7 @@ bool PanoSingleImageOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::U
 
 bool PanoMultiImageOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntSet images, GuiLevel guiLevel)
 {
-    return images.size()>0;
+    return !images.empty();
 };
 
 /** small function to show add image dialog
@@ -378,6 +379,30 @@ PanoCommand::PanoCommand* AddImagesSeriesOperation::GetInternalCommand(wxWindow*
         return NULL;
     };
 };
+
+wxString ImageVariablesExpressionOperation::GetLabel()
+{
+    return _("Change image variables by parsing expression...");
+}
+
+PanoCommand::PanoCommand * ImageVariablesExpressionOperation::GetInternalCommand(wxWindow * parent, HuginBase::Panorama & pano, HuginBase::UIntSet images)
+{
+    ImageVariablesExpressionDialog dlg(parent, &pano);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        const std::string expression = dlg.GetExpression();
+        if (!expression.empty())
+        {
+            return new PanoCommand::UpdateVariablesByParseExpression(pano, expression);
+        };
+    };
+    return NULL;
+}
+
+bool ImageVariablesExpressionOperation::IsEnabled(HuginBase::Panorama & pano, HuginBase::UIntSet images, GuiLevel guiLevel)
+{
+    return pano.getNrOfImages()>0;
+}
 
 wxString RemoveImageOperation::GetLabel()
 {
@@ -1328,6 +1353,7 @@ void GeneratePanoOperationVector()
     PanoOpImages.push_back(new RemoveImageOperation());
     PanoOpImages.push_back(new ChangeAnchorImageOperation());
     PanoOpImages.push_back(new ChangeColorAnchorImageOperation());
+    PanoOpImages.push_back(new ImageVariablesExpressionOperation());
 
     PanoOpLens.push_back(new NewLensOperation());
     PanoOpLens.push_back(new ChangeLensOperation());

@@ -184,6 +184,19 @@ namespace PanoCommand
         HuginBase::VariableMapVector vars;
     };
 
+    /** update variables by parsing a expression */
+    class WXIMPEX UpdateVariablesByParseExpression : public PanoCommand
+    {
+    public:
+        UpdateVariablesByParseExpression(HuginBase::Panorama & p, const std::string& expression)
+            : PanoCommand(p), m_expression(expression)
+        { };
+        virtual bool processPanorama(HuginBase::Panorama& pano);
+        virtual std::string getName() const { return "update image variables by parsing expression"; }
+    private:
+        std::string m_expression;
+    };
+
     /** updates the optimize vector, aka all variables which should be optimized */
     class WXIMPEX UpdateOptimizeVectorCmd : public PanoCommand
     {

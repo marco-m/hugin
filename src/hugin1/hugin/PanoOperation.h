@@ -87,6 +87,16 @@ protected:
     virtual PanoCommand::PanoCommand* GetInternalCommand(wxWindow* parent, HuginBase::Panorama& pano, HuginBase::UIntSet images);
 };
 
+/** PanoOperation to modify image variables by parsing an expression*/
+class ImageVariablesExpressionOperation : public PanoOperation
+{
+public:
+    virtual wxString GetLabel();
+protected:
+    virtual PanoCommand::PanoCommand* GetInternalCommand(wxWindow* parent, HuginBase::Panorama& pano, HuginBase::UIntSet images);
+    virtual bool IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntSet images, GuiLevel guiLevel);
+};
+
 /** PanoOperation to remove selected images */
 class RemoveImageOperation : public PanoMultiImageOperation
 {

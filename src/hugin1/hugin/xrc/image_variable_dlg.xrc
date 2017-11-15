@@ -719,4 +719,126 @@
     <title>Enter image count per stack</title>
     <style>wxDEFAULT_DIALOG_STYLE|wxTAB_TRAVERSAL</style>
   </object>
+  <object class="wxDialog" name="image_variables_change_dialog">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>Predefined setups:</label>
+                </object>
+                <flag>wxALL|wxEXPAND</flag>
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxChoice" name="change_variable_choice"/>
+                <flag>wxALL|wxEXPAND</flag>
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="change_variable_load">
+                  <label>Load</label>
+                </object>
+                <flag>wxALL|wxEXPAND</flag>
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="change_variable_save">
+                  <label>Save</label>
+                </object>
+                <flag>wxALL|wxEXPAND</flag>
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="change_variable_delete">
+                  <label>Delete</label>
+                </object>
+                <flag>wxALL|wxEXPAND</flag>
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticLine"/>
+                <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+                <border>3</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="change_variable_test">
+                  <label>Test</label>
+                </object>
+                <flag>wxALL|wxEXPAND</flag>
+                <border>3</border>
+              </object>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="change_variable_text">
+              <style>wxTE_MULTILINE|wxTE_RICH</style>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>3</border>
+          </object>
+          <orient>wxHORIZONTAL</orient>
+        </object>
+        <option>1</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
+            <object class="wxButton" name="wxID_OK">
+              <label>OK</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="button">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label>Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>6</border>
+      </object>
+    </object>
+    <title>Change image variables</title>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+  </object>
+  <object class="wxDialog" name="log_dialog">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="log_dialog_text">
+              <style>wxTE_MULTILINE|wxTE_READONLY</style>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>6</border>
+          </object>
+          <orient>wxVERTICAL</orient>
+        </object>
+        <option>1</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
+            <object class="wxButton" name="wxID_OK">
+              <label>OK</label>
+              <default>1</default>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>6</border>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+  </object>
 </resource>
