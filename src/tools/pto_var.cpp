@@ -32,101 +32,40 @@
 #include <panodata/ImageVariableGroup.h>
 #include <panodata/StandardImageVariableGroups.h>
 #include "hugin_utils/utils.h"
-#include "ParseExp.h"
-
-struct ParseVar
-{
-    std::string varname;
-    int imgNr;
-    std::string expression;
-    bool removeOpt;
-    ParseVar(): varname(""), imgNr(-1), expression(""), removeOpt(false) {};
-};
-
-typedef std::vector<ParseVar> ParseVarVec;
-
-bool ParseVarNumber(const std::string&s, ParseVar& var)
-{
-    std::size_t pos = s.find_first_of("0123456789");
-    std::string varName;
-    if (pos == std::string::npos)
-    {
-        varName = s;
-        var.imgNr = -1;
-    }
-    else
-    {
-        if (pos == 0)
-        {
-            return false;
-        };
-        varName = s.substr(0, pos);
-        if (!hugin_utils::stringToInt(s.substr(pos, s.length() - pos), var.imgNr))
-        {
-            return false;
-        };
-    }
-#define image_variable( name, type, default_value ) \
-    if (HuginBase::PTOVariableConverterFor##name::checkApplicability(varName))\
-    {\
-        var.varname=varName;\
-        return true;\
-    };
-#include "panodata/image_variables.h"
-#undef image_variable
-    return false;
-};
+#include "panodata/ParseExp.h"
 
 // parse a single variable and put result in struct ParseVar
-void ParseSingleOptVar(ParseVarVec& varVec, const std::string& s)
+void ParseSingleOptVar(Parser::ParseVarVec& varVec, const std::string& s, std::ostream& errorStream)
 {
     // parse following regex ([!]?)([a-zA-Z]{1,3})(\\d*?) 
     std::string tempString(s);
-    ParseVar var;
-    var.removeOpt = (tempString[0] == '!');
-    if (var.removeOpt)
+    Parser::ParseVar var;
+    var.flag = (tempString[0] == '!');
+    if (var.flag)
     {
         tempString.erase(0, 1);
     };
-    if (ParseVarNumber(tempString, var))
+    if (Parser::ParseVarNumber(tempString, var))
     {
         varVec.push_back(var);
+    }
+    else
+    {
+        errorStream << "The expression \"" << tempString << "\" is not a valid image variable." << std::endl;
     };
 };
 
-void ParseSingleLinkVar(ParseVarVec& varVec, const std::string& s)
+void ParseSingleLinkVar(Parser::ParseVarVec& varVec, const std::string& s, std::ostream& errorStream)
 {
     // parse following regex ([a-zA-Z]{1,3})(\\d+?)
-    ParseVar var;
-    if (ParseVarNumber(s, var))
+    Parser::ParseVar var;
+    if (Parser::ParseVarNumber(s, var))
     {
         varVec.push_back(var);
-    };
-};
-
-void ParseSingleVar(ParseVarVec& varVec, const std::string& s)
-{
-    // parse following regex ([a-zA-Z]{1,3})(\\d*?)=(.*)
-    const std::size_t pos = s.find_first_of("=", 0);
-    if (pos != std::string::npos && pos > 0 && pos < s.length() - 1)
+    }
+    else
     {
-        ParseVar var;
-        const std::string tempString(s.substr(0, pos));
-        if (ParseVarNumber(tempString, var))
-        {
-            var.expression = s.substr(pos + 1, s.length() - pos - 1);
-            varVec.push_back(var);
-        };
-    };
-};
-
-//parse complete variables string
-void ParseVariableString(ParseVarVec& parseVec, const std::string& input, void (*func)(ParseVarVec&, const std::string&))
-{
-    std::vector<std::string> splitResult = hugin_utils::SplitString(input, ", ");
-    for(size_t i=0; i<splitResult.size(); i++)
-    {
-        (*func)(parseVec, splitResult[i]);
+        errorStream << "The expression \"" << s << "\" is not a valid image variable." << std::endl;
     };
 };
 
@@ -209,7 +148,7 @@ void RemoveFromOptVec(HuginBase::OptimizeVector& optVec, std::string varname, si
 };
 
 // link or unlink the parsed image variables
-void UnLinkVars(HuginBase::Panorama& pano, ParseVarVec parseVec, bool link)
+void UnLinkVars(HuginBase::Panorama& pano, Parser::ParseVarVec parseVec, bool link)
 {
     for(size_t i=0; i<parseVec.size(); i++)
     {
@@ -282,28 +221,6 @@ void UnLinkVars(HuginBase::Panorama& pano, ParseVarVec parseVec, bool link)
                 };
             };
         };
-    };
-};
-
-bool UpdateSingleVar(HuginBase::Panorama& pano, ParseVar parseVar, size_t imgNr)
-{
-    double val=pano.getImage(imgNr).getVar(parseVar.varname);
-    Parser::ConstantMap constMap;
-    constMap["i"]=1.0*imgNr;
-    constMap["val"]=val;
-    std::cout << "Updating variable " << parseVar.varname << imgNr << ": " << val;
-    if(Parser::ParseExpression(parseVar.expression, val, constMap))
-    {
-        std::cout << " -> " << val << std::endl;
-        HuginBase::Variable var(parseVar.varname, val);
-        pano.updateVariable(imgNr, var);
-        return true;
-    }
-    else
-    {
-        std::cout << std::endl;
-        std::cerr << "Could not parse given expression \"" << parseVar.expression << "\" for image " << imgNr << "." << std::endl;
-        return false;
     };
 };
 
@@ -381,10 +298,10 @@ int main(int argc, char* argv[])
         0
     };
 
-    ParseVarVec optVars;
-    ParseVarVec linkVars;
-    ParseVarVec unlinkVars;
-    ParseVarVec setVars;
+    Parser::ParseVarVec optVars;
+    Parser::ParseVarVec linkVars;
+    Parser::ParseVarVec unlinkVars;
+    std::string setVars;
     bool modifyOptVec=false;
     int c;
     std::string output;
@@ -399,16 +316,16 @@ int main(int argc, char* argv[])
                 usage(hugin_utils::stripPath(argv[0]).c_str());
                 return 0;
             case SWITCH_OPT:
-                ParseVariableString(optVars, std::string(optarg), ParseSingleOptVar);
+                Parser::ParseVariableString(optVars, std::string(optarg), std::cerr, ParseSingleOptVar);
                 break;
             case SWITCH_LINK:
-                ParseVariableString(linkVars, std::string(optarg), ParseSingleLinkVar);
+                Parser::ParseVariableString(linkVars, std::string(optarg), std::cerr, ParseSingleLinkVar);
                 break;
             case SWITCH_UNLINK:
-                ParseVariableString(unlinkVars, std::string(optarg), ParseSingleLinkVar);
+                Parser::ParseVariableString(unlinkVars, std::string(optarg), std::cerr, ParseSingleLinkVar);
                 break;
             case SWITCH_SET:
-                ParseVariableString(setVars, std::string(optarg), ParseSingleVar);
+                setVars = std::string(optarg);
                 break;
             case SWITCH_SET_FILE:
                 {
@@ -418,9 +335,7 @@ int main(int argc, char* argv[])
                         std::ostringstream contents;
                         contents << ifs.rdbuf();
                         ifs.close();
-                        std::string s(contents.str());
-                        hugin_utils::ReplaceAll(s, "\n", ',');
-                        ParseVariableString(setVars, s, ParseSingleVar);
+                        setVars = contents.str();
                     }
                     else
                     {
@@ -457,7 +372,7 @@ int main(int argc, char* argv[])
         return 1;
     };
 
-    if(optVars.size() + linkVars.size() + unlinkVars.size() + setVars.size()==0)
+    if(optVars.empty() && linkVars.empty() && unlinkVars.empty() && setVars.empty())
     {
         std::cerr << hugin_utils::stripPath(argv[0]) << ": no variables to modify given" << std::endl;
         return 1;
@@ -489,76 +404,24 @@ int main(int argc, char* argv[])
     };
 
     //link/unlink variables
-    if(linkVars.size()>0)
+    if(!linkVars.empty())
     {
         UnLinkVars(pano, linkVars, true);
     };
 
-    if(unlinkVars.size()>0)
+    if(!!unlinkVars.empty())
     {
         UnLinkVars(pano, unlinkVars, false);
     };
 
     // set variables to new value
-    if(setVars.size()>0)
+    if(!setVars.empty())
     {
-        for(size_t i=0; i<setVars.size(); i++)
-        {
-            //skip invalid image numbers
-            if(setVars[i].imgNr>=(int)pano.getNrOfImages())
-            {
-                continue;
-            };
-            if(setVars[i].imgNr<0)
-            {
-                HuginBase::UIntSet updatedImgs;
-                for(size_t j=0; j<pano.getNrOfImages(); j++)
-                {
-                    //if we already update the variable in this image via links, skip it
-                    if(set_contains(updatedImgs, j))
-                    {
-                        continue;
-                    };
-                    // skip following images, if expression could not parsed
-                    if(!UpdateSingleVar(pano, setVars[i], j))
-                    {
-                        break;
-                    };
-                    updatedImgs.insert(j);
-                    if(j==pano.getNrOfImages()-1)
-                    {
-                        break;
-                    };
-                    // now remember linked variables
-                    const HuginBase::SrcPanoImage& img1=pano.getImage(j);
-#define image_variable( name, type, default_value ) \
-    if (HuginBase::PTOVariableConverterFor##name::checkApplicability(setVars[i].varname))\
-    {\
-        if(img1.name##isLinked())\
-        {\
-            for(size_t k=j+1; k<pano.getNrOfImages(); k++)\
-            {\
-                if(img1.name##isLinkedWith(pano.getImage(k)))\
-                {\
-                    updatedImgs.insert(k);\
-                }\
-            };\
-        };\
-    };
-#include "panodata/image_variables.h"
-#undef image_variable
-                };
-            }
-            else
-            {
-                UpdateSingleVar(pano, setVars[i], setVars[i].imgNr);
-            };
-        };
-        Parser::CleanUpParser();
+        Parser::PanoParseExpression(pano, setVars);
     };
 
     // update optimzer vector
-    if(optVars.size()>0)
+    if(!optVars.empty())
     {
         std::set<size_t> refImgs=pano.getRefImages();
         bool linkRefImgsYaw=false;
@@ -605,7 +468,7 @@ int main(int argc, char* argv[])
             {
                 for(size_t imgNr=0; imgNr<pano.getNrOfImages(); imgNr++)
                 {
-                    if(optVars[i].removeOpt)
+                    if(optVars[i].flag)
                     {
                         RemoveFromOptVec(optVec, optVars[i].varname, imgNr, groupedVars);
                     }
@@ -617,7 +480,7 @@ int main(int argc, char* argv[])
             }
             else
             {
-                if(optVars[i].removeOpt)
+                if(optVars[i].flag)
                 {
                     RemoveFromOptVec(optVec, optVars[i].varname, optVars[i].imgNr, groupedVars);
                 }

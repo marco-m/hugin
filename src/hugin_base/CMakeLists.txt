@@ -46,6 +46,7 @@ panodata/Mask.cpp
 panodata/Panorama.cpp
 panodata/PanoramaOptions.cpp
 panodata/PanoramaVariable.cpp
+panodata/ParseExp.cpp
 panodata/PTScriptParsing.cpp
 panodata/SrcPanoImage.cpp
 panodata/ImageVariableGroup.cpp
@@ -117,6 +118,7 @@ panodata/Panorama.h
 panodata/PanoramaData.h
 panodata/PanoramaOptions.h
 panodata/PanoramaVariable.h
+panodata/ParseExp.h
 panodata/PTScriptParsing.h
 panodata/SrcPanoImage.h
 panodata/StandardImageVariableGroups.h

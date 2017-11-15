@@ -24,19 +24,26 @@
  *
  */
 
-#include "ParseExp.h"
-
 // parser using shunting yard algorithm using C++11 features
-
 #include <exception>
 #include <stack>
 #include <queue>
+#include <map>
 #include <functional>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <cstdlib>
+#include "ParseExp.h"
+#include "hugin_utils/utils.h"
+
+#include <panodata/ImageVariableTranslate.h>
 
 namespace Parser
+{
+
+typedef std::map<std::string, double> ConstantMap;
+
+namespace ShuntingYard
 {
 /** internal exception class for all errors */
 class ParseException : public std::runtime_error
@@ -150,7 +157,7 @@ public:
 };
 } // namespace RPNTokens
 
-  /** classes for operators on shunting yards operator stack */
+/** classes for operators on shunting yards operator stack */
 namespace Operators
 {
 /** base class for operator on shunting yards operator stack */
@@ -207,7 +214,7 @@ public:
 };
 }; // namespace Operators
 
-   /** clear the queue */
+/** clear the queue */
 void ClearQueue(std::queue<RPNTokens::TokenBase*>& input)
 {
     while (!input.empty())
@@ -417,7 +424,8 @@ bool ConvertToRPN(const std::string& expression, const ConstantMap& constants, s
             const auto foundVar = constants.find(subString);
             if (foundVar == constants.end())
             {
-                throw ParseException("Unknown variable");
+                const std::string s = "Unknown variable: " + subString;
+                throw ParseException(s.c_str());
             };
             rpn.push(new RPNTokens::NumericToken(foundVar->second));
             pos = found;
@@ -567,42 +575,291 @@ bool EvaluateRPN(std::queue<RPNTokens::TokenBase*>& input, double& result)
     }
     return false;
 };
+}
 
 /** parse complete expression in 2 steps */
-bool ParseExpression(const std::string& expression, double& result, const ConstantMap& constants)
+bool ParseExpression(const std::string& expression, double& result, const ConstantMap& constants, std::string& error)
 {
-    std::queue<RPNTokens::TokenBase*> rpn;
+    std::queue<ShuntingYard::RPNTokens::TokenBase*> rpn;
     try
     {
         // remove all white spaces
-        const std::string inputExpression = RemoveWhiteSpaces(expression);
+        const std::string inputExpression = ShuntingYard::RemoveWhiteSpaces(expression);
         if (inputExpression.empty())
         {
             // if expression is now empty, return false
             return false;
         };
-        ConstantMap inputConstants(constants);
+        ConstantMap inputConstants;
+        // convert constant names to lower case
+        for (auto& c : constants)
+        {
+            inputConstants[hugin_utils::tolower(c.first)] = c.second;
+        }
         // add pi
         inputConstants["pi"] = M_PI;
         // convert expression to reverse polish notation rpn
-        if (ConvertToRPN(inputExpression, inputConstants, rpn))
+        if (ShuntingYard::ConvertToRPN(inputExpression, inputConstants, rpn))
         {
             // if successful, evaluate queue
-            return EvaluateRPN(rpn, result);
+            return ShuntingYard::EvaluateRPN(rpn, result);
         }
         else
         {
             // could not convert to RPN
-            ClearQueue(rpn);
+            ShuntingYard::ClearQueue(rpn);
             return false;
         };
     }
-    catch (ParseException)
+    catch (ShuntingYard::ParseException& exception)
     {
         //something went wrong, delete queue and return false
-        ClearQueue(rpn);
+        ShuntingYard::ClearQueue(rpn);
+        error = std::string(exception.what());
         return false;
     };
+};
+
+ParseVar::ParseVar() : varname(""), imgNr(-1), expression(""), flag(false)
+{
+};
+
+bool ParseVarNumber(const std::string&s, Parser::ParseVar& var)
+{
+    std::size_t pos = s.find_first_of("0123456789");
+    if (pos == std::string::npos)
+    {
+        var.varname = s;
+        var.imgNr = -1;
+    }
+    else
+    {
+        if (pos == 0)
+        {
+            return false;
+        };
+        var.varname = s.substr(0, pos);
+        if (!hugin_utils::stringToInt(s.substr(pos, s.length() - pos), var.imgNr))
+        {
+            return false;
+        };
+    }
+#define image_variable( name, type, default_value ) \
+    if (HuginBase::PTOVariableConverterFor##name::checkApplicability(var.varname))\
+    {\
+        return true;\
+    };
+#include "panodata/image_variables.h"
+#undef image_variable
+    return false;
+};
+
+// parse the given input if it matches a valid expression
+void ParseSingleVar(ParseVarVec& varVec, const std::string& s, std::ostream& errorStream)
+{
+    // parse following regex ([a-zA-Z]{1,3})(\\d*?)=(.*)
+    const std::size_t pos = s.find_first_of("=", 0);
+    if (pos != std::string::npos && pos > 0 && pos < s.length() - 1)
+    {
+        ParseVar var;
+        var.expression = hugin_utils::StrTrim(s.substr(pos + 1, s.length() - pos - 1));
+        if (var.expression.empty())
+        {
+            errorStream << "The expression \"" << s << "\" does not contain a result." << std::endl;
+        }
+        else
+        {
+            const std::string tempString(s.substr(0, pos));
+            if (ParseVarNumber(tempString, var))
+            {
+                varVec.push_back(var);
+            }
+            else
+            {
+                // no image variable from pto syntax
+                if (tempString.find_first_of("0123456789") == std::string::npos)
+                {
+                    // constants should not contain digits
+                    var.flag = true;
+                    varVec.push_back(var);
+                }
+                else
+                {
+                    errorStream << "The expression \"" << tempString << "\" is not a valid image variable or constant." << std::endl;
+                };
+            };
+        };
+    }
+    else
+    {
+        errorStream << "The expression \"" << s << "\" is incomplete." << std::endl;
+    };
+};
+
+//parse complete variables string
+void ParseVariableString(ParseVarVec& parseVec, const std::string& input, std::ostream& errorStream, void(*func)(ParseVarVec&, const std::string&, std::ostream&))
+{
+    // split at ","
+    std::vector<std::string> splitResult = hugin_utils::SplitString(input, ",");
+    for (auto& s : splitResult)
+    {
+        (*func)(parseVec, s, errorStream);
+    };
+};
+
+bool UpdateSingleVar(HuginBase::Panorama& pano, const Parser::ParseVar& parseVar, const Parser::ConstantMap& constants, size_t imgNr, std::ostream& statusStream, std::ostream& errorStream)
+{
+    const HuginBase::SrcPanoImage& srcImg = pano.getImage(imgNr);
+    double val = srcImg.getVar(parseVar.varname);
+    Parser::ConstantMap constMap(constants);
+    constMap["i"] = 1.0*imgNr;
+    constMap["val"] = val;
+    constMap["hfov"] = srcImg.getHFOV();
+    constMap["width"] = srcImg.getWidth();
+    constMap["height"] = srcImg.getHeight();
+    statusStream << "Updating variable " << parseVar.varname << imgNr << ": " << val;
+    std::string error;
+    if (Parser::ParseExpression(parseVar.expression, val, constMap, error))
+    {
+        statusStream << " -> " << val << std::endl;
+        HuginBase::Variable var(parseVar.varname, val);
+        pano.updateVariable(imgNr, var);
+        return true;
+    }
+    else
+    {
+        statusStream << std::endl;
+        errorStream << "Could not parse given expression \"" << parseVar.expression << "\" for variable " << parseVar.varname << " on image " << imgNr << "." << std::endl;
+        if (!error.empty())
+        {
+            errorStream << "(Error: " << error << ")" << std::endl;
+        };
+        return false;
+    };
+};
+
+bool CalculateConstant(HuginBase::Panorama& pano, const Parser::ParseVar& parseVar, Parser::ConstantMap& constants, std::ostream& statusStream, std::ostream& errorStream)
+{
+    const HuginBase::SrcPanoImage& srcImg = pano.getImage(0);
+    double val = 0;
+    Parser::ConstantMap constMap(constants);
+    constMap["hfov"] = srcImg.getHFOV();
+    constMap["width"] = srcImg.getWidth();
+    constMap["height"] = srcImg.getHeight();
+    statusStream << "Calculating constant " << parseVar.varname << " = ";
+    std::string error;
+    if (Parser::ParseExpression(parseVar.expression, val, constMap, error))
+    {
+        statusStream << val << std::endl;
+        constants[parseVar.varname] = val;
+        return true;
+    }
+    else
+    {
+        statusStream << std::endl;
+        errorStream << "Could not parse given expression \"" << parseVar.expression << "\" for constant " << parseVar.varname << "." << std::endl;
+        if (!error.empty())
+        {
+            errorStream << "(Error: " << error << ")" << std::endl;
+        };
+        return false;
+    };
+};
+
+void PanoParseExpression(HuginBase::Panorama& pano, const std::string& expression, std::ostream& statusStream, std::ostream& errorStream)
+{
+    ParseVarVec setVars;
+    // set locale to C to correctly parse decimal numbers
+    char * old_locale = strdup(setlocale(LC_NUMERIC, NULL));
+    setlocale(LC_NUMERIC, "C");
+    // filter out comments
+    std::vector<std::string> lines = hugin_utils::SplitString(expression, "\n");
+    std::string filteredExpression;
+    filteredExpression.reserve(expression.length());
+    for(auto& l:lines)
+    { 
+        const std::string l0 = hugin_utils::StrTrim(l);
+        if (!l0.empty() && l0[0] != '#')
+        {
+            filteredExpression.append(l).append(",");
+        };
+    };
+    ParseVariableString(setVars, filteredExpression, errorStream, ParseSingleVar);
+    if (!setVars.empty())
+    {
+        Parser::ConstantMap constants;
+        constants["imax"] = pano.getNrOfImages() - 1;
+        for (auto& var:setVars)
+        {
+            if (!var.flag)
+            {
+                // update image variable
+                //skip invalid image numbers
+                if (var.imgNr >= (int)pano.getNrOfImages())
+                {
+                    continue;
+                };
+                if (var.imgNr < 0)
+                {
+                    // no img number given, apply to all images
+                    HuginBase::UIntSet updatedImgs;
+                    for (size_t j = 0; j < pano.getNrOfImages(); j++)
+                    {
+                        //if we already update the variable in this image via links, skip it
+                        if (set_contains(updatedImgs, j))
+                        {
+                            continue;
+                        };
+                        // skip following images, if expression could not parsed
+                        if (!UpdateSingleVar(pano, var, constants, j, statusStream, errorStream))
+                        {
+                            break;
+                        };
+                        updatedImgs.insert(j);
+                        if (j == pano.getNrOfImages() - 1)
+                        {
+                            break;
+                        };
+                        // now remember linked variables
+                        const HuginBase::SrcPanoImage& img1 = pano.getImage(j);
+#define image_variable( name, type, default_value ) \
+    if (HuginBase::PTOVariableConverterFor##name::checkApplicability(var.varname))\
+    {\
+        if(img1.name##isLinked())\
+        {\
+            for(size_t k=j+1; k<pano.getNrOfImages(); k++)\
+            {\
+                if(img1.name##isLinkedWith(pano.getImage(k)))\
+                {\
+                    updatedImgs.insert(k);\
+                }\
+            };\
+        };\
+    };
+#include "panodata/image_variables.h"
+#undef image_variable
+                    };
+                }
+                else
+                {
+                    UpdateSingleVar(pano, var, constants, var.imgNr, statusStream, errorStream);
+                };
+            }
+            else
+            {
+                // handle constants
+                CalculateConstant(pano, var, constants, statusStream, errorStream);
+            }
+        };
+    }
+    else
+    {
+        errorStream << "Expression is empty." << std::endl;
+    };
+    ShuntingYard::CleanUpParser();
+    //reset locale
+    setlocale(LC_NUMERIC, old_locale);
+    free(old_locale);
 };
 
 } //namespace Parser
