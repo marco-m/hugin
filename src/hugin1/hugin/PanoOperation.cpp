@@ -382,7 +382,7 @@ PanoCommand::PanoCommand* AddImagesSeriesOperation::GetInternalCommand(wxWindow*
 
 wxString ImageVariablesExpressionOperation::GetLabel()
 {
-    return _("Change image variables by parsing expression...");
+    return _("Manipulate image variables...");
 }
 
 PanoCommand::PanoCommand * ImageVariablesExpressionOperation::GetInternalCommand(wxWindow * parent, HuginBase::Panorama & pano, HuginBase::UIntSet images)
@@ -401,7 +401,7 @@ PanoCommand::PanoCommand * ImageVariablesExpressionOperation::GetInternalCommand
 
 bool ImageVariablesExpressionOperation::IsEnabled(HuginBase::Panorama & pano, HuginBase::UIntSet images, GuiLevel guiLevel)
 {
-    return pano.getNrOfImages()>0;
+    return pano.getNrOfImages() > 0 && guiLevel >= GuiLevel::GUI_ADVANCED;
 }
 
 wxString RemoveImageOperation::GetLabel()

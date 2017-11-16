@@ -201,31 +201,24 @@ void ImageVariablesExpressionDialog::OnTest(wxCommandEvent & e)
     HuginBase::Panorama testPano = m_pano->duplicate();
     std::ostringstream status, error;
     Parser::PanoParseExpression(testPano, GetExpression(), status, error);
-    if (error.str().empty())
+    wxDialog dlg;
+    if (wxXmlResource::Get()->LoadDialog(&dlg, this, "log_dialog"))
     {
-        // no error, show status
-        wxDialog dlg;
-        if (wxXmlResource::Get()->LoadDialog(&dlg, this, "log_dialog"))
+        RestoreFramePosition(&dlg, "LogDialog");
+        if (error.str().empty())
         {
-            RestoreFramePosition(&dlg, "LogDialog");
+        // no error, show status
             XRCCTRL(dlg, "log_dialog_text", wxTextCtrl)->SetValue(wxString(status.str().c_str(), wxConvLocal));
             dlg.SetTitle(_("Result of expression parsing"));
-            dlg.ShowModal();
-            StoreFramePosition(&dlg, "LogDialog");
-        };
-    }
-    else
-    {
-        // show errors
-        wxDialog dlg;
-        if (wxXmlResource::Get()->LoadDialog(&dlg, this, "log_dialog"))
+        }
+        else
         {
-            RestoreFramePosition(&dlg, "LogDialog");
+            // show errors
             XRCCTRL(dlg, "log_dialog_text", wxTextCtrl)->SetValue(wxString(error.str().c_str(), wxConvLocal));
             dlg.SetTitle(_("Errors during expression parsing"));
-            dlg.ShowModal();
-            StoreFramePosition(&dlg, "LogDialog");
         };
+        dlg.ShowModal();
+        StoreFramePosition(&dlg, "LogDialog");
     };
 }
 

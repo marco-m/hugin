@@ -776,7 +776,7 @@
           </object>
           <object class="sizeritem">
             <object class="wxTextCtrl" name="change_variable_text">
-              <style>wxTE_MULTILINE|wxTE_RICH</style>
+              <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH</style>
             </object>
             <option>1</option>
             <flag>wxALL|wxEXPAND</flag>
@@ -805,7 +805,7 @@
         <border>6</border>
       </object>
     </object>
-    <title>Change image variables</title>
+    <title>Manipulate image variables</title>
     <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
   </object>
   <object class="wxDialog" name="log_dialog">
