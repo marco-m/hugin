@@ -3195,7 +3195,7 @@ void GLPreviewFrame::OnRemoveCP(wxCommandEvent & e)
     if (afterEditCPAction == 0)
     {
         wxDialog dlg;
-        wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("edit_cp_optimize_dialog"));
+        wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("edit_cp_optimize_dialog"));
         XRCCTRL(dlg, "edit_cp_text1", wxStaticText)->SetLabel(wxString::Format(_("%lu control points were removed from the panorama.\n\nShould the panorama now be re-optimized?"), static_cast<unsigned long int>(edit_cp_tool->GetFoundCPs().size())));
         XRCCTRL(dlg, "edit_cp_text2", wxStaticText)->SetLabel(wxString::Format(_("Current selected optimizer strategy is \"%s\"."), MainFrame::Get()->GetCurrentOptimizerString().c_str()));
         dlg.Fit();
@@ -3491,8 +3491,10 @@ void GLPreviewFrame::OnCreateCP(wxCommandEvent & e)
                 bool optimize = false;
                 if (afterEditCPAction == 0)
                 {
+                    // close progress window, otherwise the dialog don't autoamtically get the focus
+                    progress.Show(false);
                     wxDialog dlg;
-                    wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("edit_cp_optimize_dialog"));
+                    wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("edit_cp_optimize_dialog"));
                     XRCCTRL(dlg, "edit_cp_text1", wxStaticText)->SetLabel(wxString::Format(_("%lu control points were added to the panorama.\n\nShould the panorama now be re-optimized?"), static_cast<unsigned long int>(cps.size())));
                     XRCCTRL(dlg, "edit_cp_text2", wxStaticText)->SetLabel(wxString::Format(_("Current selected optimizer strategy is \"%s\"."), MainFrame::Get()->GetCurrentOptimizerString().c_str()));
                     dlg.Fit();
