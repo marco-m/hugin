@@ -128,7 +128,9 @@ void PreviewEditCPTool::MouseButtonEvent(wxMouseEvent &e)
                 {
                     // build menu
                     wxMenu menu;
-                    if (!GetSelectedROI().isEmpty())
+                    const vigra::Rect2D roi = GetSelectedROI();
+                    // selected roi should have at least 10 pixel width and height in pano space
+                    if (!roi.isEmpty() && roi.width() > 10 && roi.height() > 10)
                     {
                         menu.Append(ID_CREATE_CP, _("Create control points here"));
                     }

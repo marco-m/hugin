@@ -3340,6 +3340,14 @@ void GLPreviewFrame::OnCreateCP(wxCommandEvent & e)
             {
                 gridy = 1;
             }
+            while (roi.width() / gridx < 20 && gridx > 1)
+            {
+                --gridx;
+            };
+            while (roi.height() / gridy < 20 && gridy > 1)
+            {
+                --gridy;
+            };
             // template width
             const long templWidth = 20;
             // search width
@@ -3492,7 +3500,7 @@ void GLPreviewFrame::OnCreateCP(wxCommandEvent & e)
                 if (afterEditCPAction == 0)
                 {
                     // close progress window, otherwise the dialog don't autoamtically get the focus
-                    progress.Show(false);
+                    wxYield();
                     wxDialog dlg;
                     wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("edit_cp_optimize_dialog"));
                     XRCCTRL(dlg, "edit_cp_text1", wxStaticText)->SetLabel(wxString::Format(_("%lu control points were added to the panorama.\n\nShould the panorama now be re-optimized?"), static_cast<unsigned long int>(cps.size())));
