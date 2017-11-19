@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2017-11-19 17:51+0100\n"
-"PO-Revision-Date: 2017-10-23 11:28+0000\n"
+"POT-Creation-Date: 2017-11-19 19:35+0100\n"
+"PO-Revision-Date: 2017-11-19 18:55+0000\n"
 "Last-Translator: Kornel Benko <kornel@lyx.org>\n"
 "Language-Team: Slovak <kornel@lyx.org>\n"
 "Language: sk\n"
@@ -1503,12 +1503,11 @@ msgstr "Vyberte kontrolné body"
 
 #: hugin1/hugin/ChangeImageVariableDialog.cpp:143
 msgid "Input name for new preset"
-msgstr ""
+msgstr "Zadajte meno pre novú predvoľbu"
 
 #: hugin1/hugin/ChangeImageVariableDialog.cpp:143
-#, fuzzy
 msgid "Save preset"
-msgstr "Uložiť projekt"
+msgstr "Uložiť predvoľbu"
 
 #: hugin1/hugin/ChangeImageVariableDialog.cpp:158
 #, c-format
@@ -1516,16 +1515,16 @@ msgid ""
 "Preset with name \"%s\" already exists.\n"
 "Should this preset be overwritten?"
 msgstr ""
+"Predvoľba s menon \"%s\" už exisuje.\n"
+"Chcete ju prepísať?"
 
 #: hugin1/hugin/ChangeImageVariableDialog.cpp:212
-#, fuzzy
 msgid "Result of expression parsing"
-msgstr "štandardné nastavenie JPEG kompresie"
+msgstr "Výsledok analýzie výrazu"
 
 #: hugin1/hugin/ChangeImageVariableDialog.cpp:218
-#, fuzzy
 msgid "Errors during expression parsing"
-msgstr "Chyba počas spúšťania asistenta"
+msgstr "Chyby pri analýzie výrazu"
 
 #: hugin1/hugin/DragTool.cpp:78
 msgid ""
@@ -3099,7 +3098,6 @@ msgid "No matching images found."
 msgstr "Nenašiel sa ani jeden vyhovujúci obrázok."
 
 #: hugin1/hugin/PanoOperation.cpp:385
-#, fuzzy
 msgid "Manipulate image variables..."
 msgstr "Upraviť premenné obrázku..."
 
@@ -4625,6 +4623,10 @@ msgstr "Licencia"
 msgid "System"
 msgstr "Systém"
 
+#: hugin1/hugin/xrc/about.xrc:188
+msgid "Dedication"
+msgstr "Venovanie"
+
 #: hugin1/hugin/xrc/about.xrc:198 hugin1/hugin/xrc/cpdetector_dialog.xrc:328
 #: hugin1/hugin/xrc/dlg_warning.xrc:46
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:634
@@ -4948,7 +4950,6 @@ msgid "Exit program"
 msgstr "Ukončí program"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:58
-#, fuzzy
 msgid "Batch Stitcher &help"
 msgstr "Pomocník pre Batch Stitcher"
 
@@ -5466,9 +5467,8 @@ msgid "Enter image count per stack"
 msgstr "Vložte počet obrázkov na jeden štós"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:732
-#, fuzzy
 msgid "Predefined setups:"
-msgstr "Užívateľom definované poradie: %s"
+msgstr "Pred-definované nastavenia:"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:744
 msgid "Load"
@@ -5482,12 +5482,11 @@ msgstr "Uložiť"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:770
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:808
-#, fuzzy
 msgid "Manipulate image variables"
-msgstr "Upraviť premenné obrázku..."
+msgstr "Ovplyvniť premenné obrázku"
 
 #: hugin1/hugin/xrc/images_panel.xrc:30
 msgid "Group by:"
@@ -5867,7 +5866,6 @@ msgstr ""
 "ako je napríklad obrázok nadiru vo väčšine panorám fotených rybím okom"
 
 #: hugin1/hugin/xrc/main_menu.xrc:34
-#, fuzzy
 msgid "Ignore &line control points"
 msgstr "Ignorovať kontrolné body pre čiary"
 
@@ -5893,7 +5891,6 @@ msgid "Runs fine-tune on all control points."
 msgstr "Spustí jemné ladenie na každý kontrolný bod."
 
 #: hugin1/hugin/xrc/main_menu.xrc:49
-#, fuzzy
 msgid "Remove control points in &masks"
 msgstr "Odstrániť kontrolné body v maskách"
 
@@ -5918,7 +5915,6 @@ msgid "&View"
 msgstr "Z&obraziť"
 
 #: hugin1/hugin/xrc/main_menu.xrc:61 hugin1/hugin/xrc/preview_frame.xrc:991
-#, fuzzy
 msgid "Full &Screen"
 msgstr "Na celú obrazovku"
 
@@ -5951,7 +5947,6 @@ msgid "Show the OpenGL preview window"
 msgstr "Zobrazí okno rýchleho náhľadu"
 
 #: hugin1/hugin/xrc/main_menu.xrc:82
-#, fuzzy
 msgid "&Photos"
 msgstr "Fotografie"
 
@@ -5960,7 +5955,6 @@ msgid "Show the Photos panel"
 msgstr "Zobrazí  panel Fotografie"
 
 #: hugin1/hugin/xrc/main_menu.xrc:87
-#, fuzzy
 msgid "&Masks"
 msgstr "Masky"
 
@@ -5969,7 +5963,6 @@ msgid "Show the Masks panel"
 msgstr "Zobraziť panel Masky"
 
 #: hugin1/hugin/xrc/main_menu.xrc:92
-#, fuzzy
 msgid "&Control Points"
 msgstr "Kontrolné body"
 
@@ -5978,7 +5971,6 @@ msgid "Show the Control Points panel"
 msgstr "Zobraziť panel Kontrolné body"
 
 #: hugin1/hugin/xrc/main_menu.xrc:97
-#, fuzzy
 msgid "&Optimizer"
 msgstr "Optimalizátor"
 
@@ -5987,7 +5979,6 @@ msgid "Show the Optimizer panel"
 msgstr "Zobraziť panel Optimalizácia"
 
 #: hugin1/hugin/xrc/main_menu.xrc:102
-#, fuzzy
 msgid "&Exposure"
 msgstr "Expozícia"
 
@@ -5996,7 +5987,6 @@ msgid "Show the Exposure panel"
 msgstr "Zobraziť panel Expozícia"
 
 #: hugin1/hugin/xrc/main_menu.xrc:107
-#, fuzzy
 msgid "&Stitcher"
 msgstr "Lepič"
 
@@ -6005,17 +5995,14 @@ msgid "Show the Stitcher panel"
 msgstr "Zobraziť panel Lepenie"
 
 #: hugin1/hugin/xrc/main_menu.xrc:114 hugin1/hugin/xrc/preview_frame.xrc:1010
-#, fuzzy
 msgid "&Simple"
 msgstr "Jednoduché"
 
 #: hugin1/hugin/xrc/main_menu.xrc:119 hugin1/hugin/xrc/preview_frame.xrc:1015
-#, fuzzy
 msgid "&Advanced"
 msgstr "Pokročilé"
 
 #: hugin1/hugin/xrc/main_menu.xrc:123 hugin1/hugin/xrc/preview_frame.xrc:1019
-#, fuzzy
 msgid "&Expert"
 msgstr "Expertné"
 
@@ -6032,7 +6019,6 @@ msgid "Stitch with the settings on the pano tabs"
 msgstr "Lepiť s nastaveniami v paneloch panorámy"
 
 #: hugin1/hugin/xrc/main_menu.xrc:135
-#, fuzzy
 msgid "Stitch &user defined output..."
 msgstr "Lepiť výstup definovaný užívateľom..."
 
@@ -6892,7 +6878,6 @@ msgid "Autorotate images for display."
 msgstr "Automaticky otočiť obrázky pre displej."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:146
-#, fuzzy
 msgid "This affects the control points editor and mask editor."
 msgstr "Toto ovplyvňuje editory pre kontrolné body a masky."
 
@@ -7795,7 +7780,6 @@ msgid "Shows the overview of the panorama sphere."
 msgstr "Zobrazí náhľad panoramatickej guľovej plochy."
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1002
-#, fuzzy
 msgid "&Grid"
 msgstr "Mriežka"
 
@@ -7804,32 +7788,26 @@ msgid "Shows a grid."
 msgstr "Zobrazí mriežku."
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1129
-#, fuzzy
 msgid "&All images"
 msgstr "Všetky obrázky"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1134
-#, fuzzy
 msgid "Image with &median exposure of each stack"
-msgstr "Obraz strednej expozície každého štósu"
+msgstr "Obraz so strednou expozíciou každého štósu"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1138
-#, fuzzy
 msgid "&Brightest image of each stack"
 msgstr "Najsvetlejší obrázok každého štósu"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1142
-#, fuzzy
 msgid "&Darkest image of each stack"
 msgstr "Najtmavší obrázok každého štósu"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1147
-#, fuzzy
 msgid "&Keep currently selected images"
 msgstr "Držať momentálne zvolené obrázky"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1152
-#, fuzzy
 msgid "&Reset selection"
 msgstr "Zrušiť výber"
 
@@ -8129,9 +8107,6 @@ msgstr ""
 
 #~ msgid "Interface"
 #~ msgstr "Rozhranie"
-
-#~ msgid "Dedication"
-#~ msgstr "Venovanie"
 
 #~ msgid "&Donate"
 #~ msgstr "&Darcovstvo"
