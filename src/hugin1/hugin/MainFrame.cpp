@@ -646,10 +646,6 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     SetGuiLevel((GuiLevel)guiLevel);
 
     DEBUG_TRACE("");
-#ifdef __WXGTK__
-    // set explicit focus to assistant panel for better processing key presses
-    images_panel->SetFocus();
-#endif
 }
 
 MainFrame::~MainFrame()

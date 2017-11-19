@@ -155,7 +155,10 @@ bool ImagesPanel::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, co
     config->Flush();
     cpdetector_config.FillControl(m_CPDetectorChoice,true);
     Layout();
-
+#ifdef __WXGTK__
+    // explicitly set focus to propogate correctly key presses/shortcuts
+    m_images_tree->SetFocus();
+#endif
     return true;
 }
 
