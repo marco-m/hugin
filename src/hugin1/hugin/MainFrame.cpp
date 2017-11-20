@@ -433,7 +433,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
         // search all .executor files, do not follow links
         wxDir::GetAllFiles(GetDataPath(), &files, wxT("*.executor"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
         const size_t nrAllUserSequences = files.size();
-        wxDir::GetAllFiles(hugin_utils::GetUserAppDataDir(), &files, wxT("*executor"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
+        wxDir::GetAllFiles(hugin_utils::GetUserAppDataDir(), &files, wxT("*.executor"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
         if (!files.IsEmpty())
         {
             // we found some files
