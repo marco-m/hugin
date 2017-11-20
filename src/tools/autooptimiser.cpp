@@ -85,6 +85,7 @@ int main(int argc, char* argv[])
     int c;
     static struct option longOptions[] =
     {
+        { "output", required_argument, NULL, 'o'},
         { "help", no_argument, NULL, 'h' },
         0
     };
