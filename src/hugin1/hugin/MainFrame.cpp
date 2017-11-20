@@ -749,8 +749,8 @@ void MainFrame::panoramaImagesChanged(HuginBase::Panorama &panorama, const Hugin
 	} else {
 	  enableTools(true);
 	}
-    GetMenuBar()->Enable(XRCID("action_assistant"), pano.getNrOfImages()>=2);
-    GetMenuBar()->Enable(XRCID("action_batch_assistant"), pano.getNrOfImages()>=2);
+    GetMenuBar()->Enable(XRCID("action_assistant"), pano.getNrOfImages()>0);
+    GetMenuBar()->Enable(XRCID("action_batch_assistant"), pano.getNrOfImages()>0);
 }
 
 void MainFrame::OnUserQuit(wxCommandEvent & e)
