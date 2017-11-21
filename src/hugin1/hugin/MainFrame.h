@@ -126,7 +126,7 @@ public:
 
     // load a project
     void LoadProjectFile(const wxString & filename);
-    void RunAssistant(wxWindow* mainWin);
+    void RunAssistant(wxWindow* mainWin, const wxString& userdefinedAssistant=wxEmptyString);
 
     /** disables all OpenGL related menu items and toobar buttons */
     void DisableOpenGLTools();
@@ -223,6 +223,7 @@ private:
     void OnNewProject(wxCommandEvent & e);
     void OnAddTimeImages(wxCommandEvent & e);
     void OnRunAssistant(wxCommandEvent & e);
+    void OnRunAssistantUserdefined(wxCommandEvent & e);
     void OnFineTuneAll(wxCommandEvent & e);
     void OnRemoveCPinMasks(wxCommandEvent & e);
     void OnMergeProject(wxCommandEvent & e);
@@ -284,6 +285,7 @@ private:
     wxMenu* m_menu_file_simple;
     wxMenu* m_menu_file_advanced;
     wxMenuItem* m_outputUserMenu = nullptr;
+    wxMenuItem* m_assistantUserMenu = nullptr;
     // sticky setting, to prevent reading to often
     bool m_optOnlyActiveImages;
     bool m_optIgnoreLineCp;
@@ -296,6 +298,7 @@ private:
 #endif
     // list for user-defined output sequences
     std::map<int, wxString> m_userOutput;
+    std::map<int, wxString> m_userAssistant;
 
     DECLARE_EVENT_TABLE()
 };

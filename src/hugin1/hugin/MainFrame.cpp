@@ -272,7 +272,8 @@ END_EVENT_TABLE()
 enum
 {
     wxIDPYTHONSCRIPTS = wxID_HIGHEST + 2000,
-    wxIDUSEROUTPUTSEQUENCE = wxID_HIGHEST + 2500
+    wxIDUSEROUTPUTSEQUENCE = wxID_HIGHEST + 2500,
+    wxIDUSERASSISTANT = wxID_HIGHEST + 3000
 };
 
 MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
@@ -485,6 +486,64 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
             };
         };
     };
+    // add saved user defined assistants
+    {
+        wxArrayString files;
+        // search all .assistant files, do not follow links
+        wxDir::GetAllFiles(GetDataPath(), &files, wxT("*.assistant"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
+        const size_t nrAllUserSequences = files.size();
+        wxDir::GetAllFiles(hugin_utils::GetUserAppDataDir(), &files, wxT("*.assistant"), wxDIR_FILES | wxDIR_HIDDEN | wxDIR_NO_FOLLOW);
+        if (!files.IsEmpty())
+        {
+            // we found some files
+            long assistantId = wxIDUSERASSISTANT;
+            const int editMenuId = mainMenu->FindMenu(_("&Edit"));
+            if (editMenuId != wxNOT_FOUND)
+            {
+                wxMenu* userAssistantMenu = new wxMenu;
+                size_t i = 0;
+                for (auto file : files)
+                {
+                    if (i > 0 && i == nrAllUserSequences && userAssistantMenu->GetMenuItemCount() > 0)
+                    {
+                        userAssistantMenu->AppendSeparator();
+                    };
+                    wxFileInputStream inputStream(file);
+                    if (inputStream.IsOk())
+                    {
+                        // read descriptions from file
+                        wxFileConfig assistantFile(inputStream);
+                        wxString desc = assistantFile.Read(wxT("/General/Description"), wxEmptyString);
+                        desc = desc.Trim(true).Trim(false);
+                        wxString help = assistantFile.Read(wxT("/General/Help"), wxEmptyString);
+                        help = help.Trim(true).Trim(false);
+                        if (help.IsEmpty())
+                        {
+                            help = wxString::Format(_("User defined assistant: %s"), file);
+                        };
+                        // add menu
+                        if (!desc.IsEmpty())
+                        {
+                            userAssistantMenu->Append(assistantId, desc, help);
+                            Bind(wxEVT_MENU, &MainFrame::OnRunAssistantUserdefined, this, assistantId);
+                            m_userAssistant[assistantId] = file;
+                            ++assistantId;
+                        };
+                    };
+                    i++;
+                };
+                if (userAssistantMenu->GetMenuItemCount() > 0)
+                {
+                    m_assistantUserMenu = mainMenu->GetMenu(editMenuId)->Insert(5, wxID_ANY, _("User defined assistant"), userAssistantMenu);
+                }
+                else
+                {
+                    delete userAssistantMenu;
+                };
+            };
+        };
+    };
+
     // create tool bar
     SetToolBar(wxXmlResource::Get()->LoadToolBar(this, wxT("main_toolbar")));
 
@@ -1948,6 +2007,10 @@ void MainFrame::enableTools(bool option)
     {
         m_outputUserMenu->Enable(option);
     };
+    if (m_assistantUserMenu != nullptr)
+    {
+        m_assistantUserMenu->Enable(option);
+    };
     theMenuBar->Enable(XRCID("action_assistant"), option);
     theMenuBar->Enable(XRCID("action_batch_assistant"), option);
     m_menu_file_advanced->Enable(XRCID("action_import_papywizard"), option);
@@ -2258,7 +2321,7 @@ void MainFrame::DisableOpenGLTools()
     GetToolBar()->EnableTool(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), false); 
 };
 
-void MainFrame::RunAssistant(wxWindow* mainWin)
+void MainFrame::RunAssistant(wxWindow* mainWin, const wxString& userdefinedAssistant)
 {
     //save project into temp directory
     wxString tempDir= wxConfig::Get()->Read(wxT("tempDir"),wxT(""));
@@ -2279,7 +2342,15 @@ void MainFrame::RunAssistant(wxWindow* mainWin)
 
     // get assistant queue
     const wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
-    HuginQueue::CommandQueue* commands = HuginQueue::GetAssistantCommandQueue(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), scriptFileName.GetFullPath());
+    HuginQueue::CommandQueue* commands;
+    if (userdefinedAssistant.IsEmpty())
+    {
+        commands = HuginQueue::GetAssistantCommandQueue(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), scriptFileName.GetFullPath());
+    }
+    else
+    {
+        commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), scriptFileName.GetFullPath(), userdefinedAssistant);
+    };
     //execute queue
     int ret = MyExecuteCommandQueue(commands, mainWin, _("Running assistant"));
 
@@ -2294,27 +2365,35 @@ void MainFrame::RunAssistant(wxWindow* mainWin)
     //if return value is non-zero, an error occurred in the assistant
     if(ret!=0)
     {
-        if (pano.getNrOfImages() == 1)
+        if (userdefinedAssistant.IsEmpty())
         {
-            wxMessageBox(_("The assistant could not find vertical lines. Please add vertical lines in the panorama editor and optimize project manually."),
-                _("Warning"), wxOK | wxICON_INFORMATION, mainWin);
+            if (pano.getNrOfImages() == 1)
+            {
+                wxMessageBox(_("The assistant could not find vertical lines. Please add vertical lines in the panorama editor and optimize project manually."),
+                    _("Warning"), wxOK | wxICON_INFORMATION, mainWin);
+            }
+            else
+            {
+                //check for unconnected images
+                HuginGraph::ImageGraph graph(pano);
+                const HuginGraph::ImageGraph::Components comps = graph.GetComponents();
+                if (comps.size() > 1)
+                {
+                    // switch to images panel.
+                    unsigned i1 = *(comps[0].rbegin());
+                    unsigned i2 = *(comps[1].begin());
+                    ShowCtrlPointEditor(i1, i2);
+                    // display message box with 
+                    wxMessageBox(wxString::Format(_("Warning %d unconnected image groups found:"), static_cast<int>(comps.size())) + Components2Str(comps) + wxT("\n")
+                        + _("Please create control points between unconnected images using the Control Points tab in the panorama editor.\n\nAfter adding the points, press the \"Align\" button again"), _("Error"), wxOK, mainWin);
+                    return;
+                };
+                wxMessageBox(_("The assistant did not complete successfully. Please check the resulting project file."),
+                    _("Warning"), wxOK | wxICON_INFORMATION, mainWin);
+            };
         }
         else
         {
-            //check for unconnected images
-            HuginGraph::ImageGraph graph(pano);
-            const HuginGraph::ImageGraph::Components comps = graph.GetComponents();
-            if (comps.size() > 1)
-            {
-                // switch to images panel.
-                unsigned i1 = *(comps[0].rbegin());
-                unsigned i2 = *(comps[1].begin());
-                ShowCtrlPointEditor(i1, i2);
-                // display message box with 
-                wxMessageBox(wxString::Format(_("Warning %d unconnected image groups found:"), static_cast<int>(comps.size())) + Components2Str(comps) + wxT("\n")
-                    + _("Please create control points between unconnected images using the Control Points tab in the panorama editor.\n\nAfter adding the points, press the \"Align\" button again"), _("Error"), wxOK, mainWin);
-                return;
-            };
             wxMessageBox(_("The assistant did not complete successfully. Please check the resulting project file."),
                 _("Warning"), wxOK | wxICON_INFORMATION, mainWin);
         };
@@ -2324,6 +2403,19 @@ void MainFrame::RunAssistant(wxWindow* mainWin)
 void MainFrame::OnRunAssistant(wxCommandEvent & e)
 {
     RunAssistant(this);
+};
+
+void MainFrame::OnRunAssistantUserdefined(wxCommandEvent & e)
+{
+    const auto filename = m_userAssistant.find(e.GetId());
+    if (filename != m_userAssistant.end())
+    {
+        RunAssistant(this, filename->second);
+    }
+    else
+    {
+        wxBell();
+    };
 };
 
 void MainFrame::OnSendToAssistantQueue(wxCommandEvent &e)
