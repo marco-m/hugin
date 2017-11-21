@@ -456,6 +456,11 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
                         wxFileConfig executorFile(inputStream);
                         wxString desc = executorFile.Read(wxT("/General/Description"), wxEmptyString);
                         desc = desc.Trim(true).Trim(false);
+                        // ignore files with empty description
+                        if (desc.IsEmpty())
+                        {
+                            continue;
+                        }
                         wxString help = executorFile.Read(wxT("/General/Help"), wxEmptyString);
                         help = help.Trim(true).Trim(false);
                         if (help.IsEmpty())
