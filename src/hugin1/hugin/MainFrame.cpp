@@ -481,7 +481,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
                 if ((outputSequencesMenu->GetMenuItemCount() == 1 && !(outputSequencesMenu->FindItemByPosition(0)->IsSeparator())) ||
                     outputSequencesMenu->GetMenuItemCount() > 1)
                 {
-                    mainMenu->GetMenu(outputMenuId)->AppendSubMenu(outputSequencesMenu, _("User defined output sequences"));
+                    m_outputUserMenu = mainMenu->GetMenu(outputMenuId)->AppendSubMenu(outputSequencesMenu, _("User defined output sequences"));
                 }
                 else
                 {
@@ -749,13 +749,7 @@ void MainFrame::panoramaImagesChanged(HuginBase::Panorama &panorama, const Hugin
 {
     DEBUG_TRACE("");
     assert(&pano == &panorama);
-    if (pano.getNrOfImages() == 0) {
-	  enableTools(false);
-	} else {
-	  enableTools(true);
-	}
-    GetMenuBar()->Enable(XRCID("action_assistant"), pano.getNrOfImages()>0);
-    GetMenuBar()->Enable(XRCID("action_batch_assistant"), pano.getNrOfImages()>0);
+    enableTools(pano.getNrOfImages() > 0);
 }
 
 void MainFrame::OnUserQuit(wxCommandEvent & e)
@@ -1955,11 +1949,12 @@ void MainFrame::enableTools(bool option)
     theMenuBar->Enable(XRCID("ID_SHOW_PREVIEW_FRAME"), option);
     theMenuBar->Enable(XRCID("action_stitch"), option);
     theMenuBar->Enable(XRCID("action_stitch_userdefined"), option);
-    const int userOutputMenuId = theMenuBar->FindMenuItem(_("&Output"), _("User defined output sequences"));
-    if (userOutputMenuId != wxNOT_FOUND)
+    if (m_outputUserMenu != nullptr)
     {
-        theMenuBar->Enable(userOutputMenuId, option);
+        m_outputUserMenu->Enable(option);
     };
+    theMenuBar->Enable(XRCID("action_assistant"), option);
+    theMenuBar->Enable(XRCID("action_batch_assistant"), option);
     m_menu_file_advanced->Enable(XRCID("action_import_papywizard"), option);
     //theMenuBar->Enable(XRCID("ID_SHOW_GL_PREVIEW_FRAME"), option);
 }

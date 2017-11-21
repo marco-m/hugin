@@ -283,6 +283,7 @@ private:
     // file menu
     wxMenu* m_menu_file_simple;
     wxMenu* m_menu_file_advanced;
+    wxMenuItem* m_outputUserMenu = nullptr;
     // sticky setting, to prevent reading to often
     bool m_optOnlyActiveImages;
     bool m_optIgnoreLineCp;
