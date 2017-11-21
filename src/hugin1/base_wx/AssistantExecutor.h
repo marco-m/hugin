@@ -37,6 +37,14 @@ namespace HuginQueue
         @return pointer to CommandQueue
     */
     WXIMPEX CommandQueue* GetAssistantCommandQueue(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project);
+    /** generates the command queue for running the assistant
+    @param[in] pano contains to panorama structure for which the queue should generated
+    @param[in] ExePath base path to all used utilities
+    @param[in] project name of the project file, the assistant modifies the given file
+    @param[in] assistantSetting assistant file from which the settings should be reads
+    @return pointer to CommandQueue
+    */
+    WXIMPEX CommandQueue* GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& assistantSetting);
 }; // namespace 
 
 #endif

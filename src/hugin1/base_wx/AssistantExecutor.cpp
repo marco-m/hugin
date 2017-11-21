@@ -25,6 +25,8 @@
 
 #include <wx/config.h>
 #include <wx/translation.h>
+#include <wx/fileconf.h>
+#include <wx/wfstream.h>
 #include "hugin_utils/utils.h"
 #include "algorithms/optimizer/ImageGraph.h"
 #include "base_wx/wxPlatform.h"
@@ -122,6 +124,106 @@ namespace HuginQueue
         panoModifyArgs.Append(wxT("--crop=AUTO --output=") + quotedProject + wxT(" ") + quotedProject);
         commands->push_back(new NormalCommand(GetInternalProgram(ExePath, wxT("pano_modify")),
             panoModifyArgs, _("Searching for best crop...")));
+        return commands;
+    }
+    
+    CommandQueue * GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString & ExePath, const wxString & project, const wxString & assistantSetting)
+    {
+        CommandQueue* commands = new CommandQueue;
+        wxString quotedProject(wxEscapeFilename(project));
+
+        if (pano.getNrOfImages()==0)
+        {
+            std::cerr << "ERROR: Project contains no images. Nothing to do." << std::endl;
+            return commands;
+        }
+        wxFileInputStream input(assistantSetting);
+        if (!input.IsOk())
+        {
+            std::cerr << "ERROR: Can not open file \"" << assistantSetting.mb_str(wxConvLocal) << "\"." << std::endl;
+            return commands;
+        }
+        wxFileConfig settings(input);
+        long stepCount;
+        settings.Read(wxT("/General/StepCount"), &stepCount, 0);
+        if (stepCount == 0)
+        {
+            std::cerr << "ERROR: User-setting does not define any assistant steps." << std::endl;
+            return commands;
+        };
+        // create some condition variables
+        const bool hascp = (pano.getNrOfCtrlPoints() > 0);
+        bool isConnected = false;
+        bool hasVerticalLines = false;
+        if (hascp)
+        {
+            //we check, if all images are connected
+            HuginGraph::ImageGraph graph(pano);
+            isConnected = graph.IsConnected();
+            // check, if there are line cp
+            const HuginBase::CPVector allCP = pano.getCtrlPoints();
+            if (!allCP.empty())
+            {
+                for (size_t i = 0; i < allCP.size() && !hasVerticalLines; i++)
+                {
+                    hasVerticalLines = (allCP[i].mode == HuginBase::ControlPoint::X);
+                };
+            };
+        };
+
+        for (size_t i = 0; i < stepCount; ++i)
+        {
+            wxString stepString(wxT("/Step"));
+            stepString << i;
+            if (!settings.HasGroup(stepString))
+            {
+                std::cerr << "ERROR: Assistant specifies " << stepCount << " steps, but step " << i << " is missing in configuration." << std::endl;
+                CleanQueue(commands);
+                return commands;
+            }
+            settings.SetPath(stepString);
+            // check some conditions
+            const wxString condition = GetSettingString(&settings, "Condition");
+            if (condition.CmpNoCase("no cp") == 0 && hascp)
+            {
+                continue;
+            };
+            if (condition.CmpNoCase("not connected") == 0 && isConnected)
+            {
+                continue;
+            };
+            if (condition.CmpNoCase("no line cp") == 0 && hasVerticalLines)
+            {
+                continue;
+            };
+            // read program name
+            const wxString progName = GetSettingString(&settings, wxT("Program"));
+            if (progName.IsEmpty())
+            {
+                std::cerr << "ERROR: Step " << i << " has no program name specified." << std::endl;
+                CleanQueue(commands);
+                return commands;
+            };
+#ifdef __WXMAC__
+            // check if program can be found in bundle
+            const wxString prog = GetExternalProgram(wxConfig::Get(), ExePath, progName);
+#elif defined __WXMSW__
+
+            const wxString prog = MSWGetProgname(ExePath, progName);
+#else
+            const wxString prog = progName;
+#endif
+            wxString args = GetSettingString(&settings, wxT("Arguments"));
+            if (args.IsEmpty())
+            {
+                std::cerr << "ERROR: Step " << i << " has no arguments given." << std::endl;
+                CleanQueue(commands);
+                return commands;
+            }
+            args.Replace("%project%", quotedProject, true);
+            const wxString description = GetSettingString(&settings, wxT("Description"));
+            commands->push_back(new NormalCommand(prog, args, description));
+        }
         return commands;
     };
 

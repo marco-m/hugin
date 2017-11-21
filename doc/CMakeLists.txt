@@ -3,7 +3,7 @@
 #       useful for Windows, and put this documentation in a sensible
 #       place on Windows machines
 IF (WIN32)
-  INSTALL(FILES fulla.html nona.txt executor_file_format.txt DESTINATION doc)
+  INSTALL(FILES fulla.html nona.txt executor_file_format.txt assistant_file_format.txt DESTINATION doc)
 ELSE (WIN32)
 
 # For all other systems, generate and install the man pages
