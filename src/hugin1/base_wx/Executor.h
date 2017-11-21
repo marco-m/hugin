@@ -88,6 +88,14 @@ namespace HuginQueue
 #endif
     };
     
+#ifdef __WXMSW__
+    /** search for executable in program folder and in PATH, add exe extension if no one is given */
+    WXIMPEX wxString MSWGetProgname(const wxString& bindir, const wxString& name);
+#endif
+
+    /** read a string from setting and remove all whitespaces */
+    WXIMPEX const wxString GetSettingString(wxConfigBase* setting, const wxString& name, const wxString defaultValue = wxEmptyString);
+
 }; //namespace
 
 #endif

@@ -228,4 +228,46 @@ namespace HuginQueue
         return s;
     };
 
+#ifdef __WXMSW__
+    // search for executable in program folder and in PATH
+    // add exe extension if no one is given
+    wxString MSWGetProgname(const wxString& bindir, const wxString& name)
+    {
+        wxFileName prog(name);
+        if (prog.IsAbsolute())
+        {
+            if (prog.FileExists())
+            {
+                return prog.GetFullPath();
+            };
+        }
+        else
+        {
+            // search in program folder and in PATH
+            const bool hasExt = prog.HasExt();
+            if (!prog.HasExt())
+            {
+                prog.SetExt("exe");
+            };
+            wxPathList pathlist;
+            pathlist.Add(bindir);
+            pathlist.AddEnvList(wxT("PATH"));
+            const wxString fullName = pathlist.FindAbsoluteValidPath(prog.GetFullName());
+            if (!fullName.IsEmpty())
+            {
+                return fullName;
+            };
+        };
+        return name;
+    };
+#endif
+
+// read a string from setting and remove all whitespaces
+const wxString GetSettingString(wxConfigBase* setting, const wxString& name, const wxString defaultValue)
+{
+    wxString s = setting->Read(name, defaultValue);
+    s = s.Trim(true).Trim(false);
+    return s;
+};
+
 }; // namespace

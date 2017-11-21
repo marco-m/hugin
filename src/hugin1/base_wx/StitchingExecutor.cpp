@@ -900,14 +900,6 @@ namespace HuginQueue
             return true;
         };
 
-        // read a string from setting and remove all whitespaces
-        const wxString GetSettingString(const wxFileConfig& setting, const wxString& name, const wxString defaultValue = wxEmptyString)
-        {
-            wxString s = setting.Read(name, defaultValue);
-            s = s.Trim(true).Trim(false);
-            return s;
-        };
-    
         // replace the %prefix% placeholder, with optional postfix
         // the string is modified in place
         // return true on success, false if there are errors
@@ -981,39 +973,6 @@ namespace HuginQueue
             return true;
         };
 
-#ifdef __WXMSW__
-        // search for executable in program folder and in PATH
-        // add exe extension if no one is given
-        wxString GetProgname(const wxString& bindir, const wxString& name)
-        {
-            wxFileName prog(name);
-            if (prog.IsAbsolute())
-            {
-                if (prog.FileExists())
-                {
-                    return prog.GetFullPath();
-                };
-            }
-            else
-            {
-                // search in program folder and in PATH
-                const bool hasExt = prog.HasExt();
-                if(!prog.HasExt())
-                {
-                    prog.SetExt("exe");
-                };
-                wxPathList pathlist;
-                pathlist.Add(bindir);
-                pathlist.AddEnvList(wxT("PATH"));
-                const wxString fullName = pathlist.FindAbsoluteValidPath(prog.GetFullName());
-                if (!fullName.IsEmpty())
-                {
-                    return fullName;
-                };
-            };
-            return name;
-        };
-#endif
     }
 
     CommandQueue* GetStitchingCommandQueueUserOutput(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& prefix, const wxString& outputSettings, wxString& statusText, wxArrayString& outputFiles, wxArrayString& tempFilesDelete)
@@ -1039,7 +998,7 @@ namespace HuginQueue
             std::cerr << "ERROR: User-setting does not define any output steps." << std::endl;
             return commands;
         }
-        const wxString desc = detail::GetSettingString(settings, wxT("/General/Description"), wxEmptyString);
+        const wxString desc = GetSettingString(&settings, wxT("/General/Description"), wxEmptyString);
         if (desc.IsEmpty())
         {
             statusText = wxString::Format(_("Stitching using \"%s\""), outputSettings.c_str());
@@ -1048,7 +1007,7 @@ namespace HuginQueue
         {
             statusText = wxString::Format(_("Stitching using \"%s\""), desc.c_str());
         };
-        wxString intermediateImageType = detail::GetSettingString(settings, wxT("/General/IntermediateImageType"), wxT(".tif"));
+        wxString intermediateImageType = GetSettingString(&settings, wxT("/General/IntermediateImageType"), wxT(".tif"));
         // add point if missing
         if (intermediateImageType.Left(1).Cmp(wxT("."))!=0)
         {
@@ -1092,21 +1051,21 @@ namespace HuginQueue
                 return commands;
             }
             settings.SetPath(stepString);
-            const wxString stepType=detail::GetSettingString(settings, wxT("Type"));
+            const wxString stepType=GetSettingString(&settings, wxT("Type"));
             if (stepType.IsEmpty())
             {
                 std::cerr << "ERROR: \"" << stepString.mb_str(wxConvLocal) << "\" has no type defined." << std::endl;
                 CleanQueue(commands);
                 return commands;
             };
-            wxString args = detail::GetSettingString(settings, wxT("Arguments"));
+            wxString args = GetSettingString(&settings, wxT("Arguments"));
             if (args.IsEmpty())
             {
                 std::cerr << "ERROR: Step " << i << " has no arguments given." << std::endl;
                 CleanQueue(commands);
                 return commands;
             }
-            const wxString description = detail::GetSettingString(settings, wxT("Description"));
+            const wxString description = GetSettingString(&settings, wxT("Description"));
             if (stepType.CmpNoCase(wxT("remap")) == 0)
             {
                 // build nona command
@@ -1161,7 +1120,7 @@ namespace HuginQueue
                 if (stepType.CmpNoCase(wxT("merge")) == 0)
                 {
                     // build a merge command
-                    wxString resultFile = detail::GetSettingString(settings, wxT("Result"));
+                    wxString resultFile = GetSettingString(&settings, wxT("Result"));
                     if (resultFile.IsEmpty())
                     {
                         std::cerr << "ERROR: Step " << i << " has no result file specified." << std::endl;
@@ -1175,7 +1134,7 @@ namespace HuginQueue
                         CleanQueue(commands);
                         return commands;
                     };
-                    const wxString BlenderInput = detail::GetSettingString(settings, wxT("Input"), wxT("all"));
+                    const wxString BlenderInput = GetSettingString(&settings, wxT("Input"), wxT("all"));
                     // set the input images depending on the input
                     if (BlenderInput.CmpNoCase(wxT("all")) == 0)
                     {
@@ -1231,12 +1190,12 @@ namespace HuginQueue
                         };
                     };
                     args.Replace(wxT("%size%"), sizeString, true);
-                    wxString wrapSwitch = detail::GetSettingString(settings, wxT("WrapArgument"));
+                    wxString wrapSwitch = GetSettingString(&settings, wxT("WrapArgument"));
                     if (needsWrapSwitch && !wrapSwitch.IsEmpty())
                     {
                         args.Prepend(wrapSwitch + wxT(" "));
                     }
-                    if (!detail::AddBlenderCommand(commands, ExePath, detail::GetSettingString(settings, wxT("Program")), i,
+                    if (!detail::AddBlenderCommand(commands, ExePath, GetSettingString(&settings, wxT("Program")), i,
                         args, description))
                     {
                         return commands;
@@ -1278,7 +1237,7 @@ namespace HuginQueue
                                 CleanQueue(commands);
                                 return commands;
                             };
-                            if (!detail::AddBlenderCommand(commands, ExePath, detail::GetSettingString(settings, wxT("Program")), i,
+                            if (!detail::AddBlenderCommand(commands, ExePath, GetSettingString(&settings, wxT("Program")), i,
                                 finalArgs, description))
                             {
                                 return commands;
@@ -1321,7 +1280,7 @@ namespace HuginQueue
                                     CleanQueue(commands);
                                     return commands;
                                 };
-                                if (!detail::AddBlenderCommand(commands, ExePath, detail::GetSettingString(settings, wxT("Program")), i,
+                                if (!detail::AddBlenderCommand(commands, ExePath, GetSettingString(&settings, wxT("Program")), i,
                                     finalArgs, description))
                                 {
                                     return commands;
@@ -1338,7 +1297,7 @@ namespace HuginQueue
                             if (stepType.CmpNoCase(wxT("modify")) == 0)
                             {
                                 // build a modify command
-                                wxString inputFiles = detail::GetSettingString(settings, wxT("File"));
+                                wxString inputFiles = GetSettingString(&settings, wxT("File"));
                                 if (inputFiles.IsEmpty())
                                 {
                                     std::cerr << "ERROR: Step " << i << " has no input/output file specified." << std::endl;
@@ -1370,7 +1329,7 @@ namespace HuginQueue
                                     CleanQueue(commands);
                                     return commands;
                                 }
-                                const wxString progName = detail::GetSettingString(settings, wxT("Program"));
+                                const wxString progName = GetSettingString(&settings, wxT("Program"));
                                 if (progName.IsEmpty())
                                 {
                                     std::cerr << "ERROR: Step " << i << " has no program name specified." << std::endl;
@@ -1382,7 +1341,7 @@ namespace HuginQueue
                                 const wxString prog = GetExternalProgram(wxConfig::Get(), ExePath, progName);
 #elif defined __WXMSW__
 
-                                const wxString prog = detail::GetProgname(ExePath, progName);
+                                const wxString prog = MSWGetProgname(ExePath, progName);
 #else
                                 const wxString prog = progName;
 #endif
@@ -1443,7 +1402,7 @@ namespace HuginQueue
                             {
                                 if (stepType.CmpNoCase(wxT("exiftool")) == 0)
                                 {
-                                    wxString resultFile = detail::GetSettingString(settings, wxT("Result"));
+                                    wxString resultFile = GetSettingString(&settings, wxT("Result"));
                                     if (resultFile.IsEmpty())
                                     {
                                         std::cerr << "ERROR: Step " << i << " has no result file specified." << std::endl;
