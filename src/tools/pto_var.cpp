@@ -183,13 +183,16 @@ void UnLinkVars(HuginBase::Panorama& pano, Parser::ParseVarVec parseVec, bool li
                 HuginBase::ImageVariableGroup group(HuginBase::StandardImageVariableGroups::getLensVariables(), pano);
                 if (link)
                 {
+                    std::cout << "Linking";
                     group.linkVariableImage(*variables.begin(), parseVec[i].imgNr);
                 }
                 else
                 {
+                    std::cout << "Unlinking";
                     group.unlinkVariableImage(*variables.begin(), parseVec[i].imgNr);
                     group.updatePartNumbers();
                 }
+                std::cout << " image variable " << parseVec[i].varname << " for image " << parseVec[i].imgNr << std::endl;
             }
             else
             {
@@ -200,6 +203,7 @@ void UnLinkVars(HuginBase::Panorama& pano, Parser::ParseVarVec parseVec, bool li
                     HuginBase::ImageVariableGroup group(HuginBase::StandardImageVariableGroups::getStackVariables(), pano);
                     if (link)
                     {
+                        std::cout << "Linking";
                         group.linkVariableImage(HuginBase::ImageVariableGroup::IVE_Yaw, parseVec[i].imgNr);
                         group.linkVariableImage(HuginBase::ImageVariableGroup::IVE_Pitch, parseVec[i].imgNr);
                         group.linkVariableImage(HuginBase::ImageVariableGroup::IVE_Roll, parseVec[i].imgNr);
@@ -211,6 +215,7 @@ void UnLinkVars(HuginBase::Panorama& pano, Parser::ParseVarVec parseVec, bool li
                     }
                     else
                     {
+                        std::cout << "Unlinking";
                         group.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_Yaw, parseVec[i].imgNr);
                         group.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_Pitch, parseVec[i].imgNr);
                         group.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_Roll, parseVec[i].imgNr);
@@ -221,6 +226,7 @@ void UnLinkVars(HuginBase::Panorama& pano, Parser::ParseVarVec parseVec, bool li
                         group.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_TranslationPlanePitch, parseVec[i].imgNr);
                         group.updatePartNumbers();
                     }
+                    std::cout << " image position (ypr, TrXYZ, Tpyp) for image " << parseVec[i].imgNr << std::endl;
                 }
                 else
                 {
@@ -413,23 +419,30 @@ int main(int argc, char* argv[])
     //link/unlink variables
     if(!linkVars.empty())
     {
+        std::cout << "Linking image variables" << std::endl;
         UnLinkVars(pano, linkVars, true);
+        std::cout << std::endl;
     };
 
     if(!unlinkVars.empty())
     {
+        std::cout << "Unlinking image variables" << std::endl;
         UnLinkVars(pano, unlinkVars, false);
+        std::cout << std::endl;
     };
 
     // set variables to new value
     if(!setVars.empty())
     {
+        std::cout << "Setting image variables" << std::endl;
         Parser::PanoParseExpression(pano, setVars);
+        std::cout << std::endl;
     };
 
     // update optimzer vector
     if(!optVars.empty())
     {
+        std::cout << "Updating optimizer variables" << std::endl;
         std::set<size_t> refImgs=pano.getRefImages();
         bool linkRefImgsYaw=false;
         bool linkRefImgsPitch=false;
@@ -500,6 +513,14 @@ int main(int argc, char* argv[])
         pano.setOptimizerSwitch(0);
         pano.setPhotometricOptimizerSwitch(0);
         pano.setOptimizeVector(optVec);
+        std::cout << "Optimizer variables:" << std::endl;
+        for (size_t i = 0; i < optVec.size(); ++i)
+        {
+            std::cout << "Image " << i << ": ";
+            std::copy(optVec[i].begin(), optVec[i].end(), std::ostream_iterator<std::string>(std::cout, " "));
+            std::cout << std::endl;
+        };
+        std::cout << std::endl;
     };
 
     //write output
