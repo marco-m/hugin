@@ -61,7 +61,14 @@ void ParseSingleLinkVar(Parser::ParseVarVec& varVec, const std::string& s, std::
     Parser::ParseVar var;
     if (Parser::ParseVarNumber(s, var))
     {
-        varVec.push_back(var);
+        if (var.imgNr >= 0)
+        {
+            varVec.push_back(var);
+        }
+        else
+        {
+            errorStream << "The expression \"" << s << "\" does not contain a valid image number." << std::endl;
+        }
     }
     else
     {
