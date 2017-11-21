@@ -409,7 +409,7 @@ int main(int argc, char* argv[])
         UnLinkVars(pano, linkVars, true);
     };
 
-    if(!!unlinkVars.empty())
+    if(!unlinkVars.empty())
     {
         UnLinkVars(pano, unlinkVars, false);
     };
