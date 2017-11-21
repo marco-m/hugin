@@ -117,7 +117,14 @@ class HuginExecutor : public APP
         wxString oldCwd;
         if (m_runAssistant)
         {
-            commands = HuginQueue::GetAssistantCommandQueue(pano, m_utilsBinDir, m_input);
+            if (m_userAssistant.IsEmpty())
+            {
+                commands = HuginQueue::GetAssistantCommandQueue(pano, m_utilsBinDir, m_input);
+            }
+            else
+            {
+                commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, m_utilsBinDir, m_input, m_userAssistant);
+            };
         }
         else
         {
@@ -201,6 +208,7 @@ class HuginExecutor : public APP
         parser.AddOption(wxT("t"), wxT("threads"), _("number of used threads"), wxCMD_LINE_VAL_NUMBER);
         parser.AddOption(wxT("p"), wxT("prefix"), _("prefix used for stitching"), wxCMD_LINE_VAL_STRING);
         parser.AddOption(wxT("u"), wxT("user-defined-output"), _("use user defined commands in given file"), wxCMD_LINE_VAL_STRING);
+        parser.AddLongOption(wxT("user-defined-assistant"), _("use user defined assistant commands in given file"), wxCMD_LINE_VAL_STRING);
         parser.AddSwitch(wxT("d"), wxT("dry-run"), _("only print commands"));
         parser.AddParam(wxT("input.pto"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY);
         m_runAssistant = false;
@@ -223,7 +231,7 @@ class HuginExecutor : public APP
         };
         parser.Found(wxT("p"), &m_prefix);
         parser.Found(wxT("u"), &m_userOutput);
-        if (!m_userOutput.IsEmpty())
+        if (!m_userOutput.IsEmpty() && m_runStitching)
         {
             wxFileName userOutputFile(m_userOutput);
             if (!userOutputFile.FileExists())
@@ -243,6 +251,31 @@ class HuginExecutor : public APP
                 else
                 {
                     std::cerr << "ERROR: File \"" << m_userOutput.mb_str(wxConvLocal) << "\" does not exists." << std::endl;
+                    return false;
+                };
+            };
+        }
+        parser.Found(wxT("user-defined-assistant"), &m_userAssistant);
+        if (!m_userAssistant.IsEmpty() && m_runAssistant)
+        {
+            wxFileName userAssistantFile(m_userAssistant);
+            if (!userAssistantFile.FileExists())
+            {
+                if (userAssistantFile.GetDirCount() == 0)
+                {
+                    // file not found, search now in data dir
+                    userAssistantFile.SetPath(wxString(hugin_utils::GetDataDir().c_str(), HUGIN_CONV_FILENAME));
+                    if (!userAssistantFile.FileExists())
+                    {
+                        std::cerr << "ERROR: File \"" << m_userAssistant.mb_str(wxConvLocal) << "\" does not exists." << std::endl
+                            << "       Also tried file \"" << userAssistantFile.GetFullPath().mb_str(wxConvLocal) << "\", which does also not exists." << std::endl;
+                        return false;
+                    }
+                    m_userAssistant = userAssistantFile.GetFullPath();
+                }
+                else
+                {
+                    std::cerr << "ERROR: File \"" << m_userAssistant.mb_str(wxConvLocal) << "\" does not exists." << std::endl;
                     return false;
                 };
             };
@@ -268,6 +301,8 @@ private:
     bool m_runStitching;
     /** input file for userdefined output */
     wxString m_userOutput;
+    /** input file for user defined assistant */
+    wxString m_userAssistant;
     /** flag, if commands should only be printed */
     bool m_dryRun;
     /** input project file */
