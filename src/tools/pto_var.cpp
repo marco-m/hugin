@@ -338,7 +338,11 @@ int main(int argc, char* argv[])
                 Parser::ParseVariableString(unlinkVars, std::string(optarg), std::cerr, ParseSingleLinkVar);
                 break;
             case SWITCH_SET:
-                setVars = std::string(optarg);
+                if (!setVars.empty())
+                {
+                    setVars.append(",");
+                };
+                setVars.append(optarg);
                 break;
             case SWITCH_SET_FILE:
                 {
