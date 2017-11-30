@@ -11,7 +11,7 @@
 [General]
 # short description, displayed in GUI, required
 Description=Short description
-# help text, displayed in dialog when selected
+# help text, displayed in GUI
 Help=A short help text
 # number of steps to follow
 StepCount=2
@@ -26,7 +26,8 @@ Description=Searching control points...
 Program=cpfind
 
 # arguments for the command, use placeholder %project% 
-# for project filename (quoted)
+# for project filename and %image0% for first image
+# file
 Arguments=--multirow --output=%project% %project%
 
 # Condition, if the step should be executed
@@ -34,6 +35,7 @@ Arguments=--multirow --output=%project% %project%
 #   no cp  - project contains no control points
 #   not connected - images are not connected
 #   no line cp - no line control points
+#   single image - project contains only a single image
 # keep in mind, that the condition is only evaluated at the start
 # (it is not updated after running a command in the sequence)
 Condition=not connected

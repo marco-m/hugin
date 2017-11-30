@@ -29,6 +29,7 @@
 #include <wx/wfstream.h>
 #include "hugin_utils/utils.h"
 #include "algorithms/optimizer/ImageGraph.h"
+#include "base_wx/platform.h"
 #include "base_wx/wxPlatform.h"
 #include "hugin/config_defaults.h"
 
@@ -130,13 +131,14 @@ namespace HuginQueue
     CommandQueue * GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString & ExePath, const wxString & project, const wxString & assistantSetting)
     {
         CommandQueue* commands = new CommandQueue;
-        wxString quotedProject(wxEscapeFilename(project));
+        const wxString quotedProject(wxEscapeFilename(project));
 
         if (pano.getNrOfImages()==0)
         {
             std::cerr << "ERROR: Project contains no images. Nothing to do." << std::endl;
             return commands;
-        }
+        };
+        const wxString quotedImage0(wxEscapeFilename(wxString(pano.getImage(0).getFilename().c_str(), HUGIN_CONV_FILENAME)));
         wxFileInputStream input(assistantSetting);
         if (!input.IsOk())
         {
@@ -196,6 +198,10 @@ namespace HuginQueue
             {
                 continue;
             };
+            if (condition.CmpNoCase("single image") == 0 && pano.getNrOfImages() != 1)
+            {
+                continue;
+            };
             // read program name
             const wxString progName = GetSettingString(&settings, wxT("Program"));
             if (progName.IsEmpty())
@@ -221,6 +227,7 @@ namespace HuginQueue
                 return commands;
             }
             args.Replace("%project%", quotedProject, true);
+            args.Replace("%image0%", quotedImage0, true);
             const wxString description = GetSettingString(&settings, wxT("Description"));
             commands->push_back(new NormalCommand(prog, args, description));
         }
