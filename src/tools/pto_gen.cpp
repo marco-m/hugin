@@ -124,7 +124,11 @@ int main(int argc, char* argv[])
                 break;
             case 'f':
                 fov=atof(optarg);
-                if(fov<1 || fov>360)
+                // normally fov should be <=360
+                // but for some multi-lens cameras/one shot panoramic cameras these images can also
+                // have a fov>360 because the fisheye projections covers only a small portion of the
+                // the whole image
+                if(fov<1 || fov>500)
                 {
                     std::cerr << hugin_utils::stripPath(argv[0]) << ": Invalid field of view" << std::endl;
                     return 1;
