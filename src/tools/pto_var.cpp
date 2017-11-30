@@ -237,51 +237,221 @@ void UnLinkVars(HuginBase::Panorama& pano, Parser::ParseVarVec parseVec, bool li
     };
 };
 
+// parse number, take an optional % sign into account
+// in case of a relativ value the result is normed to 1
+bool ParseCoordinateRelativ(const std::string& s, double& val, bool& relativ)
+{
+    size_t pos = s.find('%');
+    relativ = (pos != std::string::npos);
+    if (relativ)
+    {
+        if (pos < s.length() - 1)
+        {
+            // there are characters afters the percent sign
+            // this is not supported
+            return false;
+        };
+        if( hugin_utils::stringToDouble(s.substr(0, pos), val))
+        {
+            val /= 100.0;
+            return true;
+        };
+    }
+    else
+    {
+        // enforce integer values
+        int intValue;
+        if (hugin_utils::stringToInt(s, intValue))
+        {
+            val = intValue;
+            return true;
+        };
+    };
+    return false;
+}
+
+// parse given crop string s and set corresponding crop in pano for images in UIntSet
+void SetCropToImages(const std::string& s, HuginBase::Panorama& pano, HuginBase::UIntSet& imgs)
+{
+    std::vector<std::string> coords = hugin_utils::SplitString(s, ",");
+    if (coords.size() == 2)
+    {
+        // only 2 coordinates, take them as width and height and activate autocenter crop
+        double width, height;
+        bool relWidth = false;
+        bool relHeight = false;
+        if (ParseCoordinateRelativ(coords[0], width, relWidth) && ParseCoordinateRelativ(coords[1], height, relHeight))
+        {
+            for (auto& i : imgs)
+            {
+                HuginBase::SrcPanoImage img = pano.getSrcImage(i);
+                vigra::Rect2D cropRect;
+                cropRect.setSize(relWidth ? (img.getWidth()*width) : width, relHeight ? (img.getHeight()*height) : height);
+                img.setCropRect(cropRect);
+                img.setAutoCenterCrop(true);
+                pano.setSrcImage(i, img);
+                pano.changeFinished();
+                // print result
+                std::cout << "Set crop for image " << i << " to " << pano.getImage(i).getCropRect() << std::endl;
+            };
+        }
+        else
+        {
+            std::cerr << "Could not parse crop string \"" << s << "\"." << std::endl;
+            return;
+        };
+    }
+    else
+    {
+        if (coords.size() == 4)
+        {
+            // we got 4 coordinates
+            int left, right, top, bottom;
+            if (hugin_utils::stringToInt(coords[0], left) && hugin_utils::stringToInt(coords[1], right) &&
+                hugin_utils::stringToInt(coords[2], top) && hugin_utils::stringToInt(coords[3], bottom))
+            {
+                vigra::Rect2D cropRect;
+                if (right > left && bottom > top)
+                {
+                    cropRect.setUpperLeft(vigra::Point2D(left, top));
+                    cropRect.setLowerRight(vigra::Point2D(right, bottom));
+                }
+                else
+                {
+                    std::cerr << "Crop \"" << s << "\" is an invalid crop area." << std::endl;
+                    return;
+                };
+                for (auto& i : imgs)
+                {
+                    HuginBase::SrcPanoImage img = pano.getSrcImage(i);
+                    img.setAutoCenterCrop(false);
+                    img.setCropRect(cropRect);
+                    pano.setSrcImage(i, img);
+                    pano.changeFinished();
+                    // print result
+                    std::cout << "Set crop for image " << i << " to " << pano.getImage(i).getCropRect() << std::endl;
+                };
+            }
+            else
+            {
+                std::cerr << "Could not parse crop values \"" << s << "\"." << std::endl;
+                return;
+            };
+        }
+        else
+        {
+            std::cerr << "Invalid coordinates \"" << s << "\"." << std::endl;
+            return;
+        }
+    };
+    return;
+}
+
+// set the crop from the string
+void SetCrop(HuginBase::Panorama& pano, const std::string& crop)
+{
+    // split string at ';'
+    std::vector<std::string> splitResult = hugin_utils::SplitString(crop, ";");
+    // now process each sub-string
+    for (auto& s : splitResult)
+    {
+        std::string subString = hugin_utils::StrTrim(s);
+        if (subString.empty())
+        {
+            continue;
+        };
+        size_t pos = subString.find("=");
+        if(subString[0]=='i' && pos==std::string::npos)
+        { 
+            std::cerr << "Crop expression \"" << s << "\" is not a valid crop." << std::endl;
+            continue;
+        };
+        if (subString[0] == 'i')
+        {
+            if (pos < 2)
+            {
+                std::cerr << "Crop expression \"" << s << "\" does not contain a valid image number."<< std::endl;
+                continue;
+            };
+            unsigned int imgNr;
+            if(!hugin_utils::stringToUInt(subString.substr(1, pos-1), imgNr))
+            { 
+                std::cerr << "Crop expression \"" << s << "\" does not contain a valid image number." << std::endl;
+                continue;
+            };
+            if (imgNr >= pano.getNrOfImages())
+            {
+                std::cerr << "Pano does not contain image with number " << imgNr << std::endl;
+                continue;
+            };
+            HuginBase::UIntSet imgs;
+            imgs.insert(imgNr);
+            SetCropToImages(subString.substr(pos + 1), pano, imgs);
+        }
+        else
+        {
+            // update crop for all images
+            HuginBase::UIntSet imgs;
+            fill_set(imgs, 0, pano.getNrOfImages() - 1);
+            SetCropToImages(subString, pano, imgs);
+        };
+    };
+};
+
 static void usage(const char* name)
 {
     std::cout << name << ": change image variables inside pto files" << std::endl
-         << name << " version " << hugin_utils::GetHuginVersion() << std::endl
-         << std::endl
-         << "Usage:  " << name << " [options] --opt|--link|--unlink|--set varlist input.pto" << std::endl
-         << std::endl
-         << "     -o, --output=file.pto  Output Hugin PTO file. Default: <filename>_var.pto" << std::endl
-         << "     -h, --help             Shows this help" << std::endl
-         << std::endl
-         << "     --opt varlist          Change optimizer variables" << std::endl
-         << "     --modify-opt           Modify the existing optimizer variables" << std::endl
-         << "                            (without pto_var will start with an" << std::endl
-         << "                             empty variables set)" << std::endl
-         << "                            Examples:" << std::endl
-         << "           --opt=y,p,r        Optimize yaw, pitch and roll of all images" << std::endl
-         << "                              (special treatment for anchor image applies)" << std::endl
-         << "           --opt=v0,b2        Optimize hfov of image 0 and barrel distortion" << std::endl
-         << "                              of image 2" << std::endl
-         << "           --opt=v,!v0        Optimize field of view for all images except" << std::endl
-         << "                              for the first image" << std::endl
-         << "           --opt=!a,!b,!c     Don't optimise distortion (works only with" << std::endl
-         << "                              switch --modify-opt together)" << std::endl
-         << std::endl
-         << "     --link varlist         Link given variables" << std::endl
-         << "                            Example:" << std::endl
-         << "           --link=v3          Link hfov of image 3" << std::endl
-         << "           --link=a1,b1,c1    Link distortions parameter for image 1" << std::endl
-         << std::endl
-         << "     --unlink varlist       Unlink given variables" << std::endl
-         << "                            Examples:" << std::endl
-         << "           --unlink=v5        Unlink hfov for image 5" << std::endl
-         << "           --unlink=a2,b2,c2  Unlink distortions parameters for image 2" << std::endl
-         << std::endl
-         << "     --set varlist          Sets variables to new values" << std::endl
-         << "                            Examples:" << std::endl
-         << "           --set=y0=0,r0=0,p0=0  Resets position of image 0" << std::endl
-         << "           --set=Vx4=-10,Vy4=10  Sets vignetting offset for image 4" << std::endl
-         << "           --set=v=20            Sets the field of view to 20 for all images" << std::endl
-         << "           --set=y=val+20        Increase yaw by 20 deg for all images" << std::endl
-         << "           --set=v=val*1.1       Increase fov by 10 % for all images" << std::endl
-         << "           --set=y=i*20          Set yaw to 0, 20, 40, ..." << std::endl
-         << "     --set-from-file filename  Sets variables to new values" << std::endl
-         << "                               It reads the varlist from a file" << std::endl
-         << std::endl;
+        << name << " version " << hugin_utils::GetHuginVersion() << std::endl
+        << std::endl
+        << "Usage:  " << name << " [options] --opt|--link|--unlink|--set varlist input.pto" << std::endl
+        << std::endl
+        << "     -o, --output=file.pto  Output Hugin PTO file. Default: <filename>_var.pto" << std::endl
+        << "     -h, --help             Shows this help" << std::endl
+        << std::endl
+        << "     --opt varlist          Change optimizer variables" << std::endl
+        << "     --modify-opt           Modify the existing optimizer variables" << std::endl
+        << "                            (without pto_var will start with an" << std::endl
+        << "                             empty variables set)" << std::endl
+        << "                            Examples:" << std::endl
+        << "           --opt=y,p,r        Optimize yaw, pitch and roll of all images" << std::endl
+        << "                              (special treatment for anchor image applies)" << std::endl
+        << "           --opt=v0,b2        Optimize hfov of image 0 and barrel distortion" << std::endl
+        << "                              of image 2" << std::endl
+        << "           --opt=v,!v0        Optimize field of view for all images except" << std::endl
+        << "                              for the first image" << std::endl
+        << "           --opt=!a,!b,!c     Don't optimise distortion (works only with" << std::endl
+        << "                              switch --modify-opt together)" << std::endl
+        << std::endl
+        << "     --link varlist         Link given variables" << std::endl
+        << "                            Example:" << std::endl
+        << "           --link=v3          Link hfov of image 3" << std::endl
+        << "           --link=a1,b1,c1    Link distortions parameter for image 1" << std::endl
+        << std::endl
+        << "     --unlink varlist       Unlink given variables" << std::endl
+        << "                            Examples:" << std::endl
+        << "           --unlink=v5        Unlink hfov for image 5" << std::endl
+        << "           --unlink=a2,b2,c2  Unlink distortions parameters for image 2" << std::endl
+        << std::endl
+        << "     --set varlist          Sets variables to new values" << std::endl
+        << "                            Examples:" << std::endl
+        << "           --set=y0=0,r0=0,p0=0  Resets position of image 0" << std::endl
+        << "           --set=Vx4=-10,Vy4=10  Sets vignetting offset for image 4" << std::endl
+        << "           --set=v=20            Sets the field of view to 20 for all images" << std::endl
+        << "           --set=y=val+20        Increase yaw by 20 deg for all images" << std::endl
+        << "           --set=v=val*1.1       Increase fov by 10 % for all images" << std::endl
+        << "           --set=y=i*20          Set yaw to 0, 20, 40, ..." << std::endl
+        << "     --set-from-file filename  Sets variables to new values" << std::endl
+        << "                               It reads the varlist from a file" << std::endl
+        << std::endl
+        << "     --crop=left,right,top,bottom Set the crop for all images" << std::endl
+        << "     --crop=width,height       Set the crop for all images and activate" << std::endl
+        << "                               autocenter for crop" << std::endl
+        << "                               relative values can be used with %" << std::endl
+        << "     --crop=iNUM=left,right,top,bottom Set the crop for image NUM" << std::endl
+        << "     --crop=iNUM=width,height  Set the crop for image NUM and" <<std::endl
+        << "                             activate autocenter for crop"<<std::endl
+        << "                             These switches can be used several times."<<std::endl
+        << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -296,7 +466,8 @@ int main(int argc, char* argv[])
         SWITCH_UNLINK,
         SWITCH_SET,
         SWITCH_SET_FILE,
-        OPT_MODIFY_OPTVEC
+        OPT_MODIFY_OPTVEC,
+        SWITCH_CROP
     };
     static struct option longOptions[] =
     {
@@ -307,6 +478,7 @@ int main(int argc, char* argv[])
         {"set", required_argument, NULL, SWITCH_SET },
         {"set-from-file", required_argument, NULL, SWITCH_SET_FILE },
         {"modify-opt", no_argument, NULL, OPT_MODIFY_OPTVEC },
+        {"crop", required_argument, NULL, SWITCH_CROP },
         {"help", no_argument, NULL, 'h' },
         0
     };
@@ -314,7 +486,7 @@ int main(int argc, char* argv[])
     Parser::ParseVarVec optVars;
     Parser::ParseVarVec linkVars;
     Parser::ParseVarVec unlinkVars;
-    std::string setVars;
+    std::string setVars, crop;
     bool modifyOptVec=false;
     int c;
     std::string output;
@@ -364,6 +536,13 @@ int main(int argc, char* argv[])
             case OPT_MODIFY_OPTVEC:
                 modifyOptVec=true;
                 break;
+            case SWITCH_CROP:
+                if (!crop.empty())
+                {
+                    crop.append(";");
+                };
+                crop.append(optarg);
+                break;
             case ':':
             case '?':
                 // missing argument or invalid switch
@@ -389,7 +568,7 @@ int main(int argc, char* argv[])
         return 1;
     };
 
-    if(optVars.empty() && linkVars.empty() && unlinkVars.empty() && setVars.empty())
+    if(optVars.empty() && linkVars.empty() && unlinkVars.empty() && setVars.empty() && crop.empty())
     {
         std::cerr << hugin_utils::stripPath(argv[0]) << ": no variables to modify given" << std::endl;
         return 1;
@@ -524,6 +703,14 @@ int main(int argc, char* argv[])
             std::copy(optVec[i].begin(), optVec[i].end(), std::ostream_iterator<std::string>(std::cout, " "));
             std::cout << std::endl;
         };
+        std::cout << std::endl;
+    };
+
+    // update crop
+    if (!crop.empty())
+    {
+        std::cout << "Setting image crop" << std::endl;
+        SetCrop(pano, crop);
         std::cout << std::endl;
     };
 
