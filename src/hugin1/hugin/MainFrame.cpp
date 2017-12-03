@@ -2350,6 +2350,14 @@ void MainFrame::RunAssistant(wxWindow* mainWin, const wxString& userdefinedAssis
     else
     {
         commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), scriptFileName.GetFullPath(), userdefinedAssistant);
+        if (commands->empty())
+        {
+            wxMessageBox(_("The assistant queue is empty. This indicates an error in the user defined assistant file."),
+                _("Error"), wxOK | wxICON_ERROR, mainWin);
+            //delete temporary files
+            wxRemoveFile(scriptFileName.GetFullPath());
+            return;
+        };
     };
     //execute queue
     int ret = MyExecuteCommandQueue(commands, mainWin, _("Running assistant"));
