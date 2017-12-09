@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2017-11-19 19:35+0100\n"
-"PO-Revision-Date: 2017-11-19 18:55+0000\n"
+"POT-Creation-Date: 2017-12-06 21:19+0100\n"
+"PO-Revision-Date: 2017-12-06 20:27+0000\n"
 "Last-Translator: Kornel Benko <kornel@lyx.org>\n"
 "Language-Team: Slovak <kornel@lyx.org>\n"
 "Language: sk\n"
@@ -1161,6 +1161,10 @@ msgstr "predpona použitá na zlepenie"
 #: hugin1/executor/hugin_executor.cpp:203
 msgid "use user defined commands in given file"
 msgstr "použite užívateľom definované príkazy v danom súbore"
+
+#: hugin1/executor/hugin_executor.cpp:211
+msgid "use user defined assistant commands in given file"
+msgstr "použite užívateľom definované príkazy asistenta v danom súbore"
 
 #: hugin1/executor/hugin_executor.cpp:204
 msgid "only print commands"
@@ -2812,6 +2816,14 @@ msgstr ""
 "Nedá sa prepnúť na pokročilé rozhranie. Projekt obsahuje posunkové alebo "
 "šmykové parametre.\n"
 "Tieto vlastnosti nie sú podporované v pokročilom rozhraní."
+
+#: hugin1/hugin/MainFrame.cpp:2355
+msgid ""
+"The assistant queue is empty. This indicates an error in the user defined "
+"assistant file."
+msgstr ""
+"Front asistenta je prázdny. To naznačuje chybu v definovanom súboru "
+"asistenta."
 
 #: hugin1/hugin/MainFrame.cpp:2289
 msgid "Running assistant"
@@ -5909,6 +5921,15 @@ msgstr "Spustiť Python skript"
 #: hugin1/hugin/xrc/main_menu.xrc:56 hugin1/hugin/xrc/preview_frame.xrc:984
 msgid "&Edit"
 msgstr "&Editovať"
+
+#: hugin1/hugin/MainFrame.cpp:522
+#, c-format
+msgid "User defined assistant: %s"
+msgstr "Užívateľom definovaný asistent: %s"
+
+#: hugin1/hugin/MainFrame.cpp:537
+msgid "User defined assistant"
+msgstr "Spustiť definovaného asistenta"
 
 #: hugin1/hugin/xrc/main_menu.xrc:59 hugin1/hugin/xrc/preview_frame.xrc:1006
 msgid "&View"
