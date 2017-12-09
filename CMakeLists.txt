@@ -54,8 +54,8 @@ include(CheckIncludeFiles)
 project(hugin)
 
 # version
-set(V_MAJOR 2017)
-set(V_MINOR 1)
+set(V_MAJOR 2018)
+set(V_MINOR 0)
 set(V_PATCH 0)
 
 #
