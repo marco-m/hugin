@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2017-11-19 17:51+0100\n"
+"POT-Creation-Date: 2017-12-09 10:25+0100\n"
 "PO-Revision-Date: 2017-06-15 09:27+0200\n"
 "Last-Translator: Harry van der Wolf <hvdwolf@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@lists.kde.org>\n"
@@ -19,35 +19,35 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: hugin1/base_wx/AssistantExecutor.cpp:65
+#: hugin1/base_wx/AssistantExecutor.cpp:68
 #: hugin1/hugin/PapywizardImport.cpp:460
 msgid "Searching for control points..."
 msgstr "Zoeken naar ijkpunten..."
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
-#: hugin1/base_wx/AssistantExecutor.cpp:77
+#: hugin1/base_wx/AssistantExecutor.cpp:80
 msgid "Removing control points in clouds..."
 msgstr "Verwijderen ijkpunten in wolken..."
 
-#: hugin1/base_wx/AssistantExecutor.cpp:83
+#: hugin1/base_wx/AssistantExecutor.cpp:86
 msgid "Statistically cleaning of control points..."
 msgstr "statistisch opschonen van ijkpunten"
 
-#: hugin1/base_wx/AssistantExecutor.cpp:101
+#: hugin1/base_wx/AssistantExecutor.cpp:104
 msgid "Searching for vertical lines..."
 msgstr "Zoeken naar verticale lijnen"
 
-#: hugin1/base_wx/AssistantExecutor.cpp:109
-#: hugin1/base_wx/AssistantExecutor.cpp:114
+#: hugin1/base_wx/AssistantExecutor.cpp:112
+#: hugin1/base_wx/AssistantExecutor.cpp:117
 msgid "Optimizing..."
 msgstr "Optimaliseren..."
 
-#: hugin1/base_wx/AssistantExecutor.cpp:124
+#: hugin1/base_wx/AssistantExecutor.cpp:127
 msgid "Searching for best crop..."
 msgstr "Zoeken naar beste uitsnede..."
 
 #: hugin1/base_wx/Executor.cpp:137 hugin1/base_wx/platform.cpp:125
-#: hugin1/hugin/MainFrame.cpp:1673 hugin1/hugin/MainFrame.cpp:2359
+#: hugin1/hugin/MainFrame.cpp:1726 hugin1/hugin/MainFrame.cpp:2454
 #: hugin1/hugin/PanoPanel.cpp:1315
 #, c-format
 msgid "External program %s not found in the bundle, reverting to system path"
@@ -82,7 +82,7 @@ msgstr "Bitmap (*.bmp)|*.bmp|PNG-Bestand (*.png)|*.png"
 
 #: hugin1/base_wx/GraphTools.cpp:84 hugin1/base_wx/LensTools.cpp:403
 #: hugin1/calibrate_lens/LensCalFrame.cpp:735
-#: hugin1/calibrate_lens/LensCalFrame.cpp:800 hugin1/hugin/MainFrame.cpp:925
+#: hugin1/calibrate_lens/LensCalFrame.cpp:800 hugin1/hugin/MainFrame.cpp:978
 #: hugin1/hugin/MaskEditorPanel.cpp:475
 #, c-format
 msgid "File %s exists. Overwrite?"
@@ -140,9 +140,9 @@ msgstr ""
 #: hugin1/hugin/GLPreviewFrame.cpp:3274
 #: hugin1/hugin/ImageVariableDialog.cpp:204 hugin1/hugin/ImagesPanel.cpp:569
 #: hugin1/hugin/ImagesPanel.cpp:632 hugin1/hugin/ImagesPanel.cpp:666
-#: hugin1/hugin/ImagesTree.cpp:2082 hugin1/hugin/MainFrame.cpp:780
-#: hugin1/hugin/MainFrame.cpp:1083 hugin1/hugin/MainFrame.cpp:1253
-#: hugin1/hugin/MainFrame.cpp:1264 hugin1/hugin/OptimizePanel.cpp:163
+#: hugin1/hugin/ImagesTree.cpp:2082 hugin1/hugin/MainFrame.cpp:833
+#: hugin1/hugin/MainFrame.cpp:1136 hugin1/hugin/MainFrame.cpp:1306
+#: hugin1/hugin/MainFrame.cpp:1317 hugin1/hugin/OptimizePanel.cpp:163
 #: hugin1/hugin/OptimizePanel.cpp:195 hugin1/hugin/OptimizePanel.cpp:267
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:149
 #: hugin1/hugin/PanoOperation.cpp:374 hugin1/hugin/PanoPanel.cpp:1675
@@ -241,7 +241,7 @@ msgid "Lens Project Files (*.ini)|*.ini|All files (*)|*"
 msgstr "Lensprojectbestanden (*.ini)|*.ini|Alle bestanden (*)|*"
 
 #: hugin1/base_wx/LensTools.cpp:404 hugin1/calibrate_lens/LensCalFrame.cpp:736
-#: hugin1/calibrate_lens/LensCalFrame.cpp:801 hugin1/hugin/MainFrame.cpp:926
+#: hugin1/calibrate_lens/LensCalFrame.cpp:801 hugin1/hugin/MainFrame.cpp:979
 #: hugin1/hugin/xrc/main_tool.xrc:19
 msgid "Save project"
 msgstr "Opslaan project"
@@ -644,8 +644,8 @@ msgstr "Samenvoegen HDR sets..."
 msgid "Updating metadata..."
 msgstr "Vernieuwen metadata..."
 
-#: hugin1/base_wx/StitchingExecutor.cpp:1045
-#: hugin1/base_wx/StitchingExecutor.cpp:1049
+#: hugin1/base_wx/StitchingExecutor.cpp:1004
+#: hugin1/base_wx/StitchingExecutor.cpp:1008
 #, c-format
 msgid "Stitching using \"%s\""
 msgstr "Samenvoegen gebruik makend van \"%s\""
@@ -687,11 +687,12 @@ msgstr "onbekende projectie"
 #: hugin1/base_wx/wxLensDB.cpp:636 hugin1/base_wx/wxLensDB.cpp:644
 #: hugin1/calibrate_lens/LensCalFrame.cpp:353
 #: hugin1/hugin/CPEditorPanel.cpp:1987 hugin1/hugin/GLViewer.cpp:139
-#: hugin1/hugin/GLViewer.cpp:151 hugin1/hugin/MainFrame.cpp:896
-#: hugin1/hugin/MainFrame.cpp:1611 hugin1/hugin/MainFrame.cpp:1673
-#: hugin1/hugin/MainFrame.cpp:2078 hugin1/hugin/MainFrame.cpp:2320
-#: hugin1/hugin/MainFrame.cpp:2359 hugin1/hugin/MainFrame.cpp:2371
-#: hugin1/hugin/MainFrame.cpp:2386 hugin1/hugin/MainFrame.cpp:2394
+#: hugin1/hugin/GLViewer.cpp:151 hugin1/hugin/MainFrame.cpp:949
+#: hugin1/hugin/MainFrame.cpp:1664 hugin1/hugin/MainFrame.cpp:1726
+#: hugin1/hugin/MainFrame.cpp:2136 hugin1/hugin/MainFrame.cpp:2356
+#: hugin1/hugin/MainFrame.cpp:2396 hugin1/hugin/MainFrame.cpp:2454
+#: hugin1/hugin/MainFrame.cpp:2466 hugin1/hugin/MainFrame.cpp:2481
+#: hugin1/hugin/MainFrame.cpp:2489
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:274
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:333
 #: hugin1/hugin/PanoOperation.cpp:552 hugin1/hugin/PanoPanel.cpp:1100
@@ -763,10 +764,10 @@ msgstr "Invoer  \"%s\" is geen geldig getal."
 #: hugin1/hugin/CPDetectorDialog.cpp:126 hugin1/hugin/GLPreviewFrame.cpp:1582
 #: hugin1/hugin/GLPreviewFrame.cpp:1589 hugin1/hugin/GLPreviewFrame.cpp:1596
 #: hugin1/hugin/GLPreviewFrame.cpp:1610 hugin1/hugin/GLPreviewFrame.cpp:1617
-#: hugin1/hugin/GLPreviewFrame.cpp:1624 hugin1/hugin/MainFrame.cpp:1842
-#: hugin1/hugin/MainFrame.cpp:2305 hugin1/hugin/MainFrame.cpp:2324
-#: hugin1/hugin/MaskEditorPanel.cpp:512 hugin1/hugin/PanoPanel.cpp:1368
-#: hugin1/hugin/PreferencesDialog.cpp:1089
+#: hugin1/hugin/GLPreviewFrame.cpp:1624 hugin1/hugin/MainFrame.cpp:1895
+#: hugin1/hugin/MainFrame.cpp:2381 hugin1/hugin/MainFrame.cpp:2400
+#: hugin1/hugin/MainFrame.cpp:2406 hugin1/hugin/MaskEditorPanel.cpp:512
+#: hugin1/hugin/PanoPanel.cpp:1368 hugin1/hugin/PreferencesDialog.cpp:1089
 #: hugin1/ptbatcher/FindPanoDialog.cpp:294
 #: hugin1/ptbatcher/FindPanoDialog.cpp:315 hugin1/hugin/xrc/dlg_warning.xrc:56
 msgid "Warning"
@@ -1013,7 +1014,7 @@ msgid "xrc directory not found in bundle"
 msgstr "xrc map niet gevonden in bundle"
 
 #: hugin1/calibrate_lens/LensCalApp.cpp:65
-#: hugin1/calibrate_lens/LensCalApp.cpp:77 hugin1/hugin/MainFrame.cpp:2073
+#: hugin1/calibrate_lens/LensCalApp.cpp:77 hugin1/hugin/MainFrame.cpp:2131
 #: hugin1/hugin/huginApp.cpp:223 hugin1/hugin/huginApp.cpp:256
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:97 hugin1/ptbatcher/PTBatcherGUI.cpp:119
 msgid "Fatal Error"
@@ -1056,7 +1057,7 @@ msgstr ""
 "Controleer de afbeelding om te zien of u de correcte afbeelding(en) "
 "toegevoegd heeft."
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:448 hugin1/hugin/MainFrame.cpp:1149
+#: hugin1/calibrate_lens/LensCalFrame.cpp:448 hugin1/hugin/MainFrame.cpp:1202
 msgid "Add Image: cancel"
 msgstr "Voeg afbeelding toe: annuleer"
 
@@ -1134,47 +1135,52 @@ msgstr "Lensdata opslaan"
 msgid "Save lens"
 msgstr "Sla lens op..."
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:789 hugin1/hugin/MainFrame.cpp:914
+#: hugin1/calibrate_lens/LensCalFrame.cpp:789 hugin1/hugin/MainFrame.cpp:967
 msgid "Save project file"
 msgstr "Opslaan project bestand"
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:790 hugin1/hugin/MainFrame.cpp:916
-#: hugin1/hugin/MainFrame.cpp:1073 hugin1/hugin/MainFrame.cpp:1580
-#: hugin1/hugin/MainFrame.cpp:1639 hugin1/ptbatcher/Batch.cpp:672
+#: hugin1/calibrate_lens/LensCalFrame.cpp:790 hugin1/hugin/MainFrame.cpp:969
+#: hugin1/hugin/MainFrame.cpp:1126 hugin1/hugin/MainFrame.cpp:1633
+#: hugin1/hugin/MainFrame.cpp:1692 hugin1/ptbatcher/Batch.cpp:672
 #: hugin1/ptbatcher/BatchFrame.cpp:396 hugin1/ptbatcher/BatchFrame.cpp:424
 #: hugin1/stitch_project/hugin_stitch_project.cpp:358
 msgid "Project files (*.pto)|*.pto|All files (*)|*"
 msgstr "Project bestanden (*.pto)|*.pto|Alle bestanden (*)|*"
 
-#: hugin1/executor/hugin_executor.cpp:180
+#: hugin1/executor/hugin_executor.cpp:187
 msgid "Removing temporary files..."
 msgstr "verwijderen van tijdelijke bestanden..."
 
-#: hugin1/executor/hugin_executor.cpp:198
+#: hugin1/executor/hugin_executor.cpp:205
 msgid "shows this help message"
 msgstr "Toon deze help boodschap"
 
-#: hugin1/executor/hugin_executor.cpp:199
+#: hugin1/executor/hugin_executor.cpp:206
 msgid "execute assistant"
 msgstr "Uitvoeren assistent"
 
-#: hugin1/executor/hugin_executor.cpp:200
+#: hugin1/executor/hugin_executor.cpp:207
 msgid "execute stitching with given project"
 msgstr "Voer samenvoegen op opgegeven project uit"
 
-#: hugin1/executor/hugin_executor.cpp:201
+#: hugin1/executor/hugin_executor.cpp:208
 msgid "number of used threads"
 msgstr "Aantal gebruikte threads"
 
-#: hugin1/executor/hugin_executor.cpp:202
+#: hugin1/executor/hugin_executor.cpp:209
 msgid "prefix used for stitching"
 msgstr "Voorvoeging gebruikt voor samenvoegen"
 
-#: hugin1/executor/hugin_executor.cpp:203
+#: hugin1/executor/hugin_executor.cpp:210
 msgid "use user defined commands in given file"
 msgstr "gebruik door gebruiker gedefinieerde commandos op opgegeven bestand"
 
-#: hugin1/executor/hugin_executor.cpp:204
+#: hugin1/executor/hugin_executor.cpp:211
+#, fuzzy
+msgid "use user defined assistant commands in given file"
+msgstr "gebruik door gebruiker gedefinieerde commandos op opgegeven bestand"
+
+#: hugin1/executor/hugin_executor.cpp:212
 msgid "only print commands"
 msgstr "Alleen commandos tonen"
 
@@ -1437,7 +1443,7 @@ msgstr "Openen van model bestand"
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
 #: hugin1/hugin/CPEditorPanel.cpp:2054 hugin1/hugin/CPEditorPanel.cpp:2090
-#: hugin1/hugin/MainFrame.cpp:1803 hugin1/hugin/PanoOperation.cpp:723
+#: hugin1/hugin/MainFrame.cpp:1856 hugin1/hugin/PanoOperation.cpp:723
 #: hugin1/hugin/PanoOperation.cpp:815
 #, c-format
 msgid "Removed %lu control points"
@@ -1591,8 +1597,8 @@ msgid "Fast Panorama preview"
 msgstr "Snel Panoramavoorbeeld"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:332 hugin1/hugin/GLPreviewFrame.cpp:3007
-#: hugin1/hugin/GLPreviewFrame.cpp:3019 hugin1/hugin/MainFrame.cpp:371
-#: hugin1/hugin/MainFrame.cpp:2166 hugin1/hugin/MainFrame.cpp:2184
+#: hugin1/hugin/GLPreviewFrame.cpp:3019 hugin1/hugin/MainFrame.cpp:372
+#: hugin1/hugin/MainFrame.cpp:2224 hugin1/hugin/MainFrame.cpp:2242
 #: hugin1/hugin/xrc/batch_menu.xrc:5 hugin1/hugin/xrc/lenscal_frame.xrc:466
 #: hugin1/hugin/xrc/main_menu.xrc:227 hugin1/hugin/xrc/main_menu.xrc:252
 #: hugin1/hugin/xrc/preview_frame.xrc:1094
@@ -2509,12 +2515,12 @@ msgstr "&Sluiten"
 msgid "Did you know..."
 msgstr "Wist u dat..."
 
-#: hugin1/hugin/MainFrame.cpp:337
+#: hugin1/hugin/MainFrame.cpp:338
 #, c-format
 msgid "Version %s"
 msgstr "Versie %s"
 
-#: hugin1/hugin/MainFrame.cpp:346
+#: hugin1/hugin/MainFrame.cpp:347
 msgid ""
 "Fatal installation error\n"
 "The file data/splash.png was not found at:"
@@ -2522,60 +2528,74 @@ msgstr ""
 "Fatale installatiefout\n"
 "Bestand data/splash.png niet gevonden in:"
 
-#: hugin1/hugin/MainFrame.cpp:366 hugin1/ptbatcher/BatchFrame.cpp:142
+#: hugin1/hugin/MainFrame.cpp:367 hugin1/ptbatcher/BatchFrame.cpp:142
 #: hugin1/hugin/xrc/batch_menu.xrc:56 hugin1/hugin/xrc/main_menu.xrc:141
 #: hugin1/hugin/xrc/main_menu.xrc:143 hugin1/hugin/xrc/preview_frame.xrc:1026
 #: hugin1/hugin/xrc/preview_frame.xrc:1051
 msgid "&Help"
 msgstr "&Help"
 
-#: hugin1/hugin/MainFrame.cpp:423
+#: hugin1/hugin/MainFrame.cpp:424
 msgid "&Actions"
 msgstr "&Acties"
 
-#: hugin1/hugin/MainFrame.cpp:441 hugin1/hugin/MainFrame.cpp:1953
-#: hugin1/hugin/xrc/main_menu.xrc:138
+#: hugin1/hugin/MainFrame.cpp:442 hugin1/hugin/xrc/main_menu.xrc:138
 msgid "&Output"
 msgstr "Uitv&oer"
 
-#: hugin1/hugin/MainFrame.cpp:463
+#: hugin1/hugin/MainFrame.cpp:464
 #, c-format
 msgid "User defined sequence: %s"
 msgstr "Gebruiker gedefinieerde volgorde:  %s"
 
-#: hugin1/hugin/MainFrame.cpp:479 hugin1/hugin/MainFrame.cpp:1953
+#: hugin1/hugin/MainFrame.cpp:480
 msgid "User defined output sequences"
 msgstr "Gebruiker gedefinieerde volgordes"
 
-#: hugin1/hugin/MainFrame.cpp:573
+#: hugin1/hugin/MainFrame.cpp:500 hugin1/hugin/xrc/main_menu.xrc:56
+#: hugin1/hugin/xrc/preview_frame.xrc:984
+msgid "&Edit"
+msgstr "&Bewerk"
+
+#: hugin1/hugin/MainFrame.cpp:522
+#, fuzzy, c-format
+msgid "User defined assistant: %s"
+msgstr "Gebruiker gedefinieerde volgorde:  %s"
+
+#: hugin1/hugin/MainFrame.cpp:537
+#, fuzzy
+msgid "User defined assistant"
+msgstr "Uitvoeren assistent"
+
+#: hugin1/hugin/MainFrame.cpp:632
 msgid "Started"
 msgstr "Gestart"
 
-#: hugin1/hugin/MainFrame.cpp:706 hugin1/hugin/xrc/main_frame.xrc:34
+#: hugin1/hugin/MainFrame.cpp:765 hugin1/hugin/xrc/main_frame.xrc:34
 msgid "Optimizer"
 msgstr "Optimalisatie"
 
-#: hugin1/hugin/MainFrame.cpp:718 hugin1/hugin/MainFrame.cpp:722
+#: hugin1/hugin/MainFrame.cpp:777 hugin1/hugin/MainFrame.cpp:781
 #: hugin1/hugin/xrc/main_frame.xrc:38 hugin1/hugin/xrc/reset_dialog.xrc:46
 msgid "Exposure"
 msgstr "Belichting"
 
-#: hugin1/hugin/MainFrame.cpp:768
+#: hugin1/hugin/MainFrame.cpp:821
 #, fuzzy
 msgid "Save changes to the project file before opening another project?"
 msgstr "Panorama wijzigingen bewaren voor openen van volgend project?"
 
-#: hugin1/hugin/MainFrame.cpp:771
+#: hugin1/hugin/MainFrame.cpp:824
 #, fuzzy
 msgid "Save changes to the project file before starting a new project?"
 msgstr "Panorama wijzigingen bewaren voor starten van nieuw project?"
 
-#: hugin1/hugin/MainFrame.cpp:775
+#: hugin1/hugin/MainFrame.cpp:828
 #, fuzzy
 msgid "Save changes to the project file before closing?"
 msgstr "Panorama wijzigingen bewaren voor afsluiten?"
 
-#: hugin1/hugin/MainFrame.cpp:788
+#: hugin1/hugin/MainFrame.cpp:841
 #, fuzzy
 msgid ""
 "If you load another project without saving, your changes since last save "
@@ -2584,7 +2604,7 @@ msgstr ""
 "Als u een ander project laadt zonder nu eerst op te slaan, worden uw laatste "
 "wijzigingen niet bewaard"
 
-#: hugin1/hugin/MainFrame.cpp:791
+#: hugin1/hugin/MainFrame.cpp:844
 #, fuzzy
 msgid ""
 "If you start a new project without saving, your changes since last save will "
@@ -2593,47 +2613,47 @@ msgstr ""
 "Als u een nieuw project start zonder eerst op te slaan, worden uw laatste "
 "wijzigingen niet bewaard"
 
-#: hugin1/hugin/MainFrame.cpp:795
+#: hugin1/hugin/MainFrame.cpp:848
 msgid ""
 "If you close without saving, your changes since your last save will be "
 "discarded."
 msgstr ""
 "Als u afsluit zonder opslaan, worden uw laatste wijzigingen niet bewaard"
 
-#: hugin1/hugin/MainFrame.cpp:800
+#: hugin1/hugin/MainFrame.cpp:853
 msgid "Don't Save"
 msgstr "Niet opslaan"
 
-#: hugin1/hugin/MainFrame.cpp:803
+#: hugin1/hugin/MainFrame.cpp:856
 msgid "Close without saving"
 msgstr "Afsluiten zonder opslaan"
 
-#: hugin1/hugin/MainFrame.cpp:834
+#: hugin1/hugin/MainFrame.cpp:887
 msgid "forced close"
 msgstr "Geforceerd afsluiten"
 
-#: hugin1/hugin/MainFrame.cpp:878
+#: hugin1/hugin/MainFrame.cpp:931
 #, c-format
 msgid "saved project %s"
 msgstr "project opgeslagen als %s"
 
-#: hugin1/hugin/MainFrame.cpp:883 hugin1/hugin/MainFrame.cpp:889
-#: hugin1/hugin/MainFrame.cpp:1003 hugin1/hugin/MainFrame.cpp:1009
-#: hugin1/hugin/MainFrame.cpp:1020 hugin1/hugin/MainFrame.cpp:1026
-#: hugin1/hugin/MainFrame.cpp:1123 hugin1/hugin/MainFrame.cpp:1129
-#: hugin1/hugin/MainFrame.cpp:2169 hugin1/hugin/MainFrame.cpp:2175
-#: hugin1/hugin/MainFrame.cpp:2187 hugin1/hugin/MainFrame.cpp:2192
+#: hugin1/hugin/MainFrame.cpp:936 hugin1/hugin/MainFrame.cpp:942
+#: hugin1/hugin/MainFrame.cpp:1056 hugin1/hugin/MainFrame.cpp:1062
+#: hugin1/hugin/MainFrame.cpp:1073 hugin1/hugin/MainFrame.cpp:1079
+#: hugin1/hugin/MainFrame.cpp:1176 hugin1/hugin/MainFrame.cpp:1182
+#: hugin1/hugin/MainFrame.cpp:2227 hugin1/hugin/MainFrame.cpp:2233
+#: hugin1/hugin/MainFrame.cpp:2245 hugin1/hugin/MainFrame.cpp:2250
 #: hugin1/hugin/xrc/main_frame.xrc:4
 msgid "Hugin - Panorama Stitcher"
 msgstr "Hugin - Panorama Stitcher"
 
-#: hugin1/hugin/MainFrame.cpp:885 hugin1/hugin/MainFrame.cpp:1005
-#: hugin1/hugin/MainFrame.cpp:1022 hugin1/hugin/MainFrame.cpp:1125
-#: hugin1/hugin/MainFrame.cpp:2170 hugin1/hugin/MainFrame.cpp:2176
+#: hugin1/hugin/MainFrame.cpp:938 hugin1/hugin/MainFrame.cpp:1058
+#: hugin1/hugin/MainFrame.cpp:1075 hugin1/hugin/MainFrame.cpp:1178
+#: hugin1/hugin/MainFrame.cpp:2228 hugin1/hugin/MainFrame.cpp:2234
 msgid "Panorama editor"
 msgstr "Panorama bewerker"
 
-#: hugin1/hugin/MainFrame.cpp:896
+#: hugin1/hugin/MainFrame.cpp:949
 #, c-format
 msgid ""
 "Could not save project file \"%s\".\n"
@@ -2646,36 +2666,36 @@ msgstr ""
 "\n"
 "(Fout code: %s)"
 
-#: hugin1/hugin/MainFrame.cpp:948
+#: hugin1/hugin/MainFrame.cpp:1001
 msgid "Save PTmender script file"
 msgstr "Opslaan PTMender projectbestand"
 
-#: hugin1/hugin/MainFrame.cpp:950
+#: hugin1/hugin/MainFrame.cpp:1003
 msgid "PTmender files (*.txt)|*.txt"
 msgstr "PTMender bestanden (*.txt)|*.txt"
 
-#: hugin1/hugin/MainFrame.cpp:975
+#: hugin1/hugin/MainFrame.cpp:1028
 msgid "Open project:   "
 msgstr "Open project:"
 
-#: hugin1/hugin/MainFrame.cpp:997
+#: hugin1/hugin/MainFrame.cpp:1050
 msgid "Project opened"
 msgstr "Project geopend"
 
-#: hugin1/hugin/MainFrame.cpp:1014
+#: hugin1/hugin/MainFrame.cpp:1067
 #, fuzzy
 msgid "Loading canceled"
 msgstr "Openen van afbeelding:"
 
-#: hugin1/hugin/MainFrame.cpp:1039
+#: hugin1/hugin/MainFrame.cpp:1092
 msgid "Error opening project:   "
 msgstr "Fout bij openen project:   "
 
-#: hugin1/hugin/MainFrame.cpp:1071 hugin1/hugin/MainFrame.cpp:1578
+#: hugin1/hugin/MainFrame.cpp:1124 hugin1/hugin/MainFrame.cpp:1631
 msgid "Open project file"
 msgstr "Open projectbestand"
 
-#: hugin1/hugin/MainFrame.cpp:1081
+#: hugin1/hugin/MainFrame.cpp:1134
 #, c-format
 msgid ""
 "File %s is an image file and not a project file.\n"
@@ -2686,11 +2706,11 @@ msgstr ""
 "Dit bestand kan niet met Bestand, Open geopend worden.\n"
 "Wilt u dit bestand aan het huidige project toevoegen?"
 
-#: hugin1/hugin/MainFrame.cpp:1107
+#: hugin1/hugin/MainFrame.cpp:1160
 msgid "Open project: cancel"
 msgstr "Open project: annuleren"
 
-#: hugin1/hugin/MainFrame.cpp:1251
+#: hugin1/hugin/MainFrame.cpp:1304
 #, c-format
 msgid ""
 "Could not load image \"%s\".\n"
@@ -2701,7 +2721,7 @@ msgstr ""
 "Dit bestand is geen correcte afbeelding.\n"
 "Het bestand wordt verwijderd uit het project."
 
-#: hugin1/hugin/MainFrame.cpp:1262
+#: hugin1/hugin/MainFrame.cpp:1315
 #, c-format
 msgid ""
 "Could not load image \"%s\".\n"
@@ -2712,32 +2732,32 @@ msgstr ""
 "Het bestand is hernoemd, verwijderd of op een niet toegankelijke locatie.\n"
 "Het bestandwordt verwijderd uit het project."
 
-#: hugin1/hugin/MainFrame.cpp:1611
+#: hugin1/hugin/MainFrame.cpp:1664
 #, c-format
 msgid "Could not read project file %s."
 msgstr "Kan projectbestand %s niet openen:"
 
-#: hugin1/hugin/MainFrame.cpp:1620
+#: hugin1/hugin/MainFrame.cpp:1673
 msgid "Open Papywizard xml file"
 msgstr "Open Papywizard xml bestand"
 
-#: hugin1/hugin/MainFrame.cpp:1621
+#: hugin1/hugin/MainFrame.cpp:1674
 msgid "Papywizard xml files (*.xml)|*.xml|All files (*)|*"
 msgstr "Papywizard xml bestanden (*.xml)|*.xml|Alle bestanden (*)|*"
 
-#: hugin1/hugin/MainFrame.cpp:1637
+#: hugin1/hugin/MainFrame.cpp:1690
 msgid "Choose template project"
 msgstr "Kies templateproject"
 
-#: hugin1/hugin/MainFrame.cpp:1713
+#: hugin1/hugin/MainFrame.cpp:1766
 msgid "Fine-tuning all points"
 msgstr "Fijnafstemmen van alle punten"
 
-#: hugin1/hugin/MainFrame.cpp:1713
+#: hugin1/hugin/MainFrame.cpp:1766
 msgid "Fine-tuning"
 msgstr "Fijnafstemmen"
 
-#: hugin1/hugin/MainFrame.cpp:1784
+#: hugin1/hugin/MainFrame.cpp:1837
 #, c-format
 msgid ""
 "%d points fine-tuned, %d points not updated due to low correlation\n"
@@ -2767,24 +2787,24 @@ msgstr ""
 "Gebruik de ijkpuntenlijst (F3) om alle ijkpunten van het huidige project te "
 "tonen\n"
 
-#: hugin1/hugin/MainFrame.cpp:1786
+#: hugin1/hugin/MainFrame.cpp:1839
 msgid "Fine-tune result"
 msgstr "Resultaat fijnafstemmen"
 
 # hugin1/hugin/ImagesPanel.cpp:866, c-format
-#: hugin1/hugin/MainFrame.cpp:1804
+#: hugin1/hugin/MainFrame.cpp:1857
 msgid "Removing control points in masks"
 msgstr "IJkpunten verwijderen in maskers"
 
-#: hugin1/hugin/MainFrame.cpp:1813
+#: hugin1/hugin/MainFrame.cpp:1866
 msgid "Select python script"
 msgstr "Selecteer python script"
 
-#: hugin1/hugin/MainFrame.cpp:1815
+#: hugin1/hugin/MainFrame.cpp:1868
 msgid "Python script (*.py)|*.py|All files (*.*)|*.*"
 msgstr "ython script (*.py)|*.py||Alle bestanden (*)|*"
 
-#: hugin1/hugin/MainFrame.cpp:2046
+#: hugin1/hugin/MainFrame.cpp:2104
 #, c-format
 msgid ""
 "File \"%s\" not found.\n"
@@ -2793,13 +2813,13 @@ msgstr ""
 "Bestand \"%s\" niet gevonden.\n"
 "Mogelijk is het bestand hernoemd, verplaatst od verwijderd."
 
-#: hugin1/hugin/MainFrame.cpp:2047 hugin1/ptbatcher/Batch.cpp:360
+#: hugin1/hugin/MainFrame.cpp:2105 hugin1/ptbatcher/Batch.cpp:360
 #: hugin1/ptbatcher/Batch.cpp:814 hugin1/ptbatcher/Batch.cpp:830
 #: hugin1/ptbatcher/Batch.cpp:993
 msgid "Error!"
 msgstr "Fout!"
 
-#: hugin1/hugin/MainFrame.cpp:2073
+#: hugin1/hugin/MainFrame.cpp:2131
 #, c-format
 msgid ""
 "Celeste model expected in %s not found, Hugin needs to be properly installed."
@@ -2807,12 +2827,12 @@ msgstr ""
 "Celeste-modelbestand niet gevonden in %s, Hugin moet opnieuw/goed "
 "geinstalleerd worden"
 
-#: hugin1/hugin/MainFrame.cpp:2078
+#: hugin1/hugin/MainFrame.cpp:2136
 #, c-format
 msgid "Could not load Celeste model file %s"
 msgstr "Kan Celeste model bestand %s niet openen"
 
-#: hugin1/hugin/MainFrame.cpp:2212
+#: hugin1/hugin/MainFrame.cpp:2270
 msgid ""
 "Can't switch to simple interface. The project is using stacks and/or "
 "vignetting center shift.\n"
@@ -2822,7 +2842,7 @@ msgstr ""
 "vignettering centrum verschuiving.\n"
 "Deze opties worden niet ondersteund in de simpele modus."
 
-#: hugin1/hugin/MainFrame.cpp:2222
+#: hugin1/hugin/MainFrame.cpp:2280
 msgid ""
 "Can't switch to simple interface. The project is using translation or shear "
 "parameters.\n"
@@ -2832,7 +2852,7 @@ msgstr ""
 "of deformatie parameters.\n"
 "Deze parameters worden niet ondersteund in de simpele modus."
 
-#: hugin1/hugin/MainFrame.cpp:2243
+#: hugin1/hugin/MainFrame.cpp:2301
 msgid ""
 "Can't switch to advanced interface. The project is using translation or "
 "shear parameters.\n"
@@ -2842,11 +2862,17 @@ msgstr ""
 "translatie of deformatie parameters.\n"
 "Deze parameters worden niet ondersteund in de simpele modus."
 
-#: hugin1/hugin/MainFrame.cpp:2289
+#: hugin1/hugin/MainFrame.cpp:2355
+msgid ""
+"The assistant queue is empty. This indicates an error in the user defined "
+"assistant file."
+msgstr ""
+
+#: hugin1/hugin/MainFrame.cpp:2363
 msgid "Running assistant"
 msgstr "Uitvoeren assistent"
 
-#: hugin1/hugin/MainFrame.cpp:2304
+#: hugin1/hugin/MainFrame.cpp:2380
 msgid ""
 "The assistant could not find vertical lines. Please add vertical lines in "
 "the panorama editor and optimize project manually."
@@ -2854,12 +2880,12 @@ msgstr ""
 "De Assistent kon geen verticale lijnen vinden. Voeg aub verticale lijnen toe "
 "in de panorama editor en optimaliseer het project handmatig."
 
-#: hugin1/hugin/MainFrame.cpp:2319
+#: hugin1/hugin/MainFrame.cpp:2395
 #, c-format
 msgid "Warning %d unconnected image groups found:"
 msgstr "Waarschuwing: %d niet verbonden groepen van afbeeldingen gevonden:"
 
-#: hugin1/hugin/MainFrame.cpp:2320
+#: hugin1/hugin/MainFrame.cpp:2396
 msgid ""
 "Please create control points between unconnected images using the Control "
 "Points tab in the panorama editor.\n"
@@ -2871,7 +2897,7 @@ msgstr ""
 "\n"
 "Druk opnieuw op de \"Uitlijn\"-knop na het toevoegen van punten"
 
-#: hugin1/hugin/MainFrame.cpp:2323
+#: hugin1/hugin/MainFrame.cpp:2399 hugin1/hugin/MainFrame.cpp:2405
 msgid ""
 "The assistant did not complete successfully. Please check the resulting "
 "project file."
@@ -2879,15 +2905,15 @@ msgstr ""
 "De assistent is afgesloten met een fout. Controleer aub het gemaakte project "
 "bestand."
 
-#: hugin1/hugin/MainFrame.cpp:2371
+#: hugin1/hugin/MainFrame.cpp:2466
 msgid "Project file not found"
 msgstr "Project niet gevonden"
 
-#: hugin1/hugin/MainFrame.cpp:2386
+#: hugin1/hugin/MainFrame.cpp:2481
 msgid "Can't launch PTBatcherGui"
 msgstr "Kan PTBatcherGui niet starten"
 
-#: hugin1/hugin/MainFrame.cpp:2394
+#: hugin1/hugin/MainFrame.cpp:2489
 msgid "Launched incorrect programme"
 msgstr "Verkeerde programma gestart"
 
@@ -5960,10 +5986,6 @@ msgstr "Voer &Python script uit"
 #: hugin1/hugin/xrc/main_menu.xrc:54
 msgid "Run a python script"
 msgstr "Voer een python script uit"
-
-#: hugin1/hugin/xrc/main_menu.xrc:56 hugin1/hugin/xrc/preview_frame.xrc:984
-msgid "&Edit"
-msgstr "&Bewerk"
 
 #: hugin1/hugin/xrc/main_menu.xrc:59 hugin1/hugin/xrc/preview_frame.xrc:1006
 msgid "&View"
