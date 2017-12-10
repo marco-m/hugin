@@ -31,8 +31,7 @@
 #include <map>
 #include <functional>
 #define _USE_MATH_DEFINES
-#include <math.h>
-#include <cstdlib>
+#include <cmath>
 #include "ParseExp.h"
 #include "hugin_utils/utils.h"
 
@@ -87,7 +86,7 @@ public:
         const double val = rpnStack.top();
         rpnStack.pop();
         const double newVal = m_function(val);
-        if (!isinf(newVal) && !isnan(newVal))
+        if (!std::isinf(newVal) && !std::isnan(newVal))
         {
             rpnStack.push(newVal);
         }
@@ -116,7 +115,7 @@ public:
         const double left = rpnStack.top();
         rpnStack.pop();
         const double newVal = m_function(left, right);
-        if (!isinf(newVal) && !isnan(newVal))
+        if (!std::isinf(newVal) && !std::isnan(newVal))
         {
             rpnStack.push(newVal);
         }
