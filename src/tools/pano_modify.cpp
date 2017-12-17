@@ -67,6 +67,7 @@ static void usage(const char* name)
          << "                                left,right,top,bottom: to given size" << std::endl
          << "    --output-exposure=AUTO|num  Sets the output exposure value to mean" << std::endl
          << "                                exposure (AUTO) or to given value" << std::endl
+         << "                                Prefix number with r for relativ change" << std::endl
          << "    --output-cropped-tiff    Output cropped tiffs as intermediate images" << std::endl
          << "    --output-uncropped-tiff  Output uncropped tiffs as intermediate images" << std::endl
          << "    --output-type=str       Sets the type of output" << std::endl
@@ -168,6 +169,7 @@ int main(int argc, char* argv[])
     double y = 0;
     double z = 0;
     double outputExposure = -1000;
+    bool relativeExposure = false;
     bool calcMeanExposure = false;
     std::string outputType;
     std::string ldrfiletype;
@@ -352,8 +354,22 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    int n = sscanf(optarg, "%lf", &outputExposure);
-                    if (n != 1)
+                    if (!param.empty())
+                    {
+                        // if first character is r assume relative exposure values
+                        relativeExposure = (param[0] == 'R');
+                        if (relativeExposure)
+                        {
+                            param.erase(0, 1);
+                        };
+                        int n = sscanf(param.c_str(), "%lf", &outputExposure);
+                        if (n != 1)
+                        {
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse output exposure value." << std::endl;
+                            return 1;
+                        };
+                    }
+                    else
                     {
                         std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse output exposure value." << std::endl;
                         return 1;
@@ -478,7 +494,14 @@ int main(int argc, char* argv[])
         }
         else
         {
-            opt.outputExposureValue = outputExposure;
+            if (relativeExposure)
+            {
+                opt.outputExposureValue += outputExposure;
+            }
+            else
+            {
+                opt.outputExposureValue = outputExposure;
+            };
         };
         std::cout << "Setting output exposure value to " << opt.outputExposureValue << std::endl;
         pano.setOptions(opt);
