@@ -146,16 +146,7 @@ void PanoramaOptions::printScriptLine(std::ostream & o, bool forPTOptimizer) con
     o << std::endl;
 
     // misc options
-    o << "m g" << gamma << " i" << interpolator;
-    switch (remapAcceleration) {
-    case NO_SPEEDUP:
-        break;
-    case MAX_SPEEDUP:
-        o << " f0";
-        break;
-    case MEDIUM_SPEEDUP:
-        o << " f1";
-    }
+    o << "m i" << interpolator;
     o << " m" << huberSigma;
 
     // options for photometric estimation.

@@ -2611,25 +2611,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
             // parse misc options
             int i;
             if (PTScriptParsing::getIntParam(i, line, "i"))
-		options.interpolator = (vigra_ext::Interpolator) i;
-            (void)PTScriptParsing::getDoubleParam(options.gamma, line, "g");
-
-            if (PTScriptParsing::getIntParam(i, line, "f")) {
-                switch(i) {
-                case 0:
-                    options.remapAcceleration = PanoramaOptions::MAX_SPEEDUP;
-                    break;
-                case 1:
-                    options.remapAcceleration = PanoramaOptions::MEDIUM_SPEEDUP;
-                    break;
-                default:
-                    options.remapAcceleration = PanoramaOptions::NO_SPEEDUP;
-                    break;
-                }
-            } else {
-                options.remapAcceleration = PanoramaOptions::NO_SPEEDUP;
-            }
-
+                options.interpolator = (vigra_ext::Interpolator) i;
             break;
         }
         case 'v':

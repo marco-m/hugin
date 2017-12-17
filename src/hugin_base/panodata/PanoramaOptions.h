@@ -192,18 +192,15 @@ class IMPEX PanoramaOptions
             m_hfov = 360;
             m_size = vigra::Size2D(3000, 1500);
             m_roi = vigra::Rect2D(m_size);
-            outfile = "panorama";
             tiff_saveROI = true;
             tiffCompression = "LZW";
             quality = 100;
             colorCorrection = NONE;
             colorReferenceImage = 0;
             optimizeReferenceImage = 0;
-            gamma = 1.0;
             interpolator = vigra_ext::INTERP_CUBIC;
             // featherWidth = 10;
             outputFormat = TIFF_m;
-            remapAcceleration = MAX_SPEEDUP;
             blendMode = ENBLEND_BLEND;
             hdrMergeMode = HDRMERGE_AVERAGE;
             remapper = NONA;
@@ -343,7 +340,6 @@ class IMPEX PanoramaOptions
     public:
         //TODO: Write accessor methods; make instance variables private unless absolutely neccesary for backward-compatibility.
         
-        std::string outfile;
         FileFormat outputFormat;
 
         // jpeg options
@@ -357,13 +353,11 @@ class IMPEX PanoramaOptions
         unsigned int colorReferenceImage;
 
         // misc options
-        double gamma;
         vigra_ext::Interpolator interpolator;
 
         unsigned int optimizeReferenceImage;
         // unsigned int featherWidth;
 
-        PTStitcherAcceleration remapAcceleration;
         BlendingMechanism blendMode;
         HDRMergeType hdrMergeMode;
         Remapper remapper;

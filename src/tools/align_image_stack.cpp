@@ -879,7 +879,6 @@ int main2(std::vector<std::string> files, Parameters param)
             opts.outputFormat = HuginBase::PanoramaOptions::HDR;
             opts.outputPixelType = "FLOAT";
             opts.outputMode = HuginBase::PanoramaOptions::OUTPUT_HDR;
-            opts.outfile = param.hdrFile;
             pano.setOptions(opts);
 
             // remap all images
@@ -893,8 +892,8 @@ int main2(std::vector<std::string> files, Parameters param)
                 progress = new AppBase::DummyProgressDisplay();
             };
             HuginBase::Nona::stitchPanorama(pano, pano.getOptions(),
-                           progress, opts.outfile, imgs);
-            std::cout << "Written HDR output to " << opts.outfile << std::endl;
+                           progress, param.hdrFile, imgs);
+            std::cout << "Written HDR output to " << param.hdrFile << std::endl;
             delete progress;
         }
         if (param.alignedPrefix.size())
@@ -904,7 +903,6 @@ int main2(std::vector<std::string> files, Parameters param)
             opts.outputMode = HuginBase::PanoramaOptions::OUTPUT_LDR;
             opts.outputFormat = HuginBase::PanoramaOptions::TIFF_m;
             opts.outputPixelType = "";
-            opts.outfile = param.alignedPrefix;
             opts.remapUsingGPU = param.gpu;
             pano.setOptions(opts);
             // remap all images
@@ -921,9 +919,9 @@ int main2(std::vector<std::string> files, Parameters param)
             HuginBase::Nona::AdvancedOptions advOpts;
             HuginBase::Nona::SetAdvancedOption(advOpts, "ignoreExposure", true);
             HuginBase::Nona::stitchPanorama(pano, pano.getOptions(),
-                           progress, opts.outfile, imgs, advOpts);
+                           progress, param.alignedPrefix, imgs, advOpts);
             delete progress;
-            std::cout << "Written aligned images to files with prefix \"" << opts.outfile << "\"" << std::endl;
+            std::cout << "Written aligned images to files with prefix \"" << param.alignedPrefix << "\"" << std::endl;
         }
 
         // At this point we have panorama options set according to the output
