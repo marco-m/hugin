@@ -95,6 +95,9 @@ static void usage(const char* name)
          << "                              For TIF: NONE|PACKBITS|LZW|DEFLATE" << std::endl
          << "    --blender=ENBLEND|INTERNAL  Sets the blender to be used at stitching" << std::endl
          << "                            stage." << std::endl
+         << "    --blender-args=str      Sets the arguments for the blender" << std::endl
+         << "    --fusion-args=str       Sets the arguments for the fusion program" << std::endl
+         << "    --hdrmerge-args=str     Setst the arguments for hdrmerge" << std::endl
          << "    --rotate=yaw,pitch,roll Rotates the whole panorama with the given angles" << std::endl
          << "    --translate=x,y,z       Translate the whole panorama with the given values" << std::endl
          << "    -h, --help             Shows this help" << std::endl
@@ -121,7 +124,10 @@ int main(int argc, char* argv[])
         SWITCH_HDRFILETYPE,
         SWITCH_HDRCOMPRESSION,
         SWITCH_CROPPED_TIFF,
-        SWITCH_UNCROPPED_TIFF
+        SWITCH_UNCROPPED_TIFF,
+        SWITCH_BLENDER_ARGS,
+        SWITCH_FUSION_ARGS,
+        SWITCH_HDRMERGE_ARGS
     };
     static struct option longOptions[] =
     {
@@ -137,6 +143,9 @@ int main(int argc, char* argv[])
         {"output-exposure", required_argument, NULL, SWITCH_EXPOSURE },
         {"output-type", required_argument, NULL, SWITCH_OUTPUT_TYPE },
         {"blender", required_argument, NULL, SWITCH_BLENDER },
+        {"blender-args", required_argument, NULL, SWITCH_BLENDER_ARGS },
+        {"fusion-args", required_argument, NULL, SWITCH_FUSION_ARGS },
+        {"hdrmerge-args", required_argument, NULL, SWITCH_HDRMERGE_ARGS },
         {"ldr-file", required_argument,NULL, SWITCH_LDRFILETYPE },
         {"ldr-compression", required_argument, NULL, SWITCH_LDRCOMPRESSION },
         {"hdr-file", required_argument, NULL, SWITCH_HDRFILETYPE },
@@ -179,6 +188,10 @@ int main(int argc, char* argv[])
     std::string output;
     std::string param;
     std::string blender;
+#define EMPTYARG "(empty)"
+    std::string blenderArgs(EMPTYARG);
+    std::string fusionArgs(EMPTYARG);
+    std::string hdrMergeArgs(EMPTYARG);
     while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
@@ -397,6 +410,15 @@ int main(int argc, char* argv[])
                 break;
             case SWITCH_HDRCOMPRESSION:
                 hdrcompression = hugin_utils::toupper(hugin_utils::StrTrim(optarg));
+                break;
+            case SWITCH_BLENDER_ARGS:
+                blenderArgs = optarg;
+                break;
+            case SWITCH_FUSION_ARGS:
+                fusionArgs = optarg;
+                break;
+            case SWITCH_HDRMERGE_ARGS:
+                hdrMergeArgs = optarg;
                 break;
             case SWITCH_ROTATE:
                 {
@@ -648,6 +670,39 @@ int main(int argc, char* argv[])
         };
         pano.setOptions(opt);
     }
+    if (blenderArgs != EMPTYARG)
+    {
+        HuginBase::PanoramaOptions opt = pano.getOptions();
+        switch (opt.blendMode)
+        {
+            case HuginBase::PanoramaOptions::ENBLEND_BLEND:
+                opt.enblendOptions = blenderArgs;
+                std::cout << "Setting enblend arguments to " << blenderArgs << std::endl;
+                break;
+            case HuginBase::PanoramaOptions::INTERNAL_BLEND:
+                opt.verdandiOptions = blenderArgs;
+                std::cout << "Setting verdandi arguments to " << blenderArgs << std::endl;
+                break;
+            default:
+                std::cout << "Unknow blender in pto file." << std::endl;
+                break;
+        };
+        pano.setOptions(opt);
+    };
+    if (fusionArgs != EMPTYARG)
+    {
+        HuginBase::PanoramaOptions opt = pano.getOptions();
+        opt.enfuseOptions = fusionArgs;
+        std::cout << "Setting enfuse arguments to " << fusionArgs << std::endl;
+        pano.setOptions(opt);
+    };
+    if (hdrMergeArgs != EMPTYARG)
+    {
+        HuginBase::PanoramaOptions opt = pano.getOptions();
+        opt.hdrmergeOptions = hdrMergeArgs;
+        std::cout << "Setting hugin_hdrdmerge arguments to " << hdrMergeArgs << std::endl;
+        pano.setOptions(opt);
+    };
     // ldr output file type
     if (!ldrfiletype.empty())
     {
