@@ -371,8 +371,15 @@ bool IsHighVignetting(std::vector<double> vigCorr)
     srcImage.setRadialVigCorrCoeff(vigCorr);
     srcImage.setSize(vigra::Size2D(500, 500));
     Photometric::ResponseTransform<double> transform(srcImage);
-    transform.enforceMonotonicity();
-    return transform(1.0, hugin_utils::FDiff2D(0,0))<0.7;
+    for (size_t x = 0; x < 250; x += 10)
+    {
+        const double vigFactor = transform.calcVigFactor(hugin_utils::FDiff2D(x, x));
+        if (vigFactor<0.7 || vigFactor>1.1)
+        {
+            return true;
+        };
+    };
+    return false;
 };
 
 bool CheckStrangeWB(PanoramaData & pano)
