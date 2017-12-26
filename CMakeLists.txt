@@ -312,7 +312,24 @@ IF(WIN32)
   IF(NOT BOOST_ROOT)
     SET(BOOST_ROOT ${SOURCE_BASE_DIR}/boost${Boost_root_suffix})
   ENDIF()
-  
+ENDIF(WIN32)
+
+FIND_PACKAGE(Boost 1.47 COMPONENTS filesystem system)
+
+IF (NOT Boost_FOUND)
+  IF(WIN32)
+    MESSAGE(FATAL_ERROR "Boost not found. Bad BOOST_ROOT? On windows, try editing Boost_root_suffix")
+  ELSE()
+    MESSAGE(FATAL_ERROR "Boost not found. Maybe wrong version. Hugin requires at least version 1.47")
+  ENDIF()
+ENDIF (NOT Boost_FOUND)
+
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+ENDIF()
+
+# find enblend-enfuse base path
+IF(WIN32)
   FIND_PATH(ENBLEND_DIR bin/enblend.exe enblend.exe
     PATHS 
       ${SOURCE_BASE_DIR}/enblend-enfuse-4.2-win64 
@@ -340,20 +357,6 @@ IF(WIN32)
   IF(NOT ENBLEND_DIR)
     MESSAGE(FATAL_ERROR "enblend-enfuse files not found.")
   ENDIF()
-ENDIF(WIN32)
-
-FIND_PACKAGE(Boost 1.47 COMPONENTS filesystem system)
-
-IF (NOT Boost_FOUND)
-  IF(WIN32)
-    MESSAGE(FATAL_ERROR "Boost not found. Bad BOOST_ROOT? On windows, try editing Boost_root_suffix")
-  ELSE()
-    MESSAGE(FATAL_ERROR "Boost not found. Maybe wrong version. Hugin requires at least version 1.47")
-  ENDIF()
-ENDIF (NOT Boost_FOUND)
-
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 ENDIF()
 
 # littleCMS 2 now
