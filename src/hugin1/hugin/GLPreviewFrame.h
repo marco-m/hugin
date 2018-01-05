@@ -437,6 +437,7 @@ private:
 
     wxBoxSizer * m_topsizer;
     wxBoxSizer * m_projParamSizer;
+    wxPanel* m_overviewCommandPanel;
     std::vector<wxStaticText *> m_projParamNamesLabel;
     std::vector<wxTextCtrl *>   m_projParamTextCtrl;
     std::vector<wxSlider *>     m_projParamSlider;
