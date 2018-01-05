@@ -702,7 +702,7 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     {
         guiLevel=GUI_ADVANCED;
     };
-    SetGuiLevel((GuiLevel)guiLevel);
+    SetGuiLevel(static_cast<GuiLevel>(guiLevel));
 
     DEBUG_TRACE("");
 }

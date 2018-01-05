@@ -516,11 +516,11 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
 
     flexSizer->Add(m_HFOVSlider, 0, wxEXPAND);
 
-    wxPanel *overview_command_panel = wxXmlResource::Get()->LoadPanel(overview_panel,wxT("overview_command_panel"));
+    m_overviewCommandPanel = wxXmlResource::Get()->LoadPanel(overview_panel,wxT("overview_command_panel"));
     m_OverviewModeChoice = XRCCTRL(*this, "overview_mode_choice", wxChoice);
-    overview_command_panel->SetSize(0,0,200,20,wxSIZE_AUTO_WIDTH);
+    m_overviewCommandPanel->SetSize(0,0,200,20,wxSIZE_AUTO_WIDTH);
 
-    overview_sizer->Add(overview_command_panel, 0, wxEXPAND);
+    overview_sizer->Add(m_overviewCommandPanel, 0, wxEXPAND);
     overview_sizer->Add(m_GLOverview, 1, wxEXPAND);
 
     bool showGrid;
@@ -2993,9 +2993,8 @@ void GLPreviewFrame::SetGuiLevel(GuiLevel newLevel)
         m_GLOverview->SetMode(GLOverview::PANOSPHERE);
         m_OverviewModeChoice->SetSelection(0);
     };
-    wxPanel* panel=XRCCTRL(*this, "overview_command_panel", wxPanel);
-    panel->Show(newLevel==GUI_EXPERT);
-    panel->GetParent()->Layout();
+    m_overviewCommandPanel->Show(newLevel==GUI_EXPERT);
+    m_overviewCommandPanel->GetParent()->Layout();
     if(newLevel==GUI_SIMPLE)
     {
 #ifdef __WXMAC__
