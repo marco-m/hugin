@@ -46,10 +46,12 @@ def writeString(outfile, infile, basefile, lineno, string):
         (relativePath(infile, basefile), lineno, string))
 
 def convertString(string):
-    string = string.replace('&amp;', '&').replace('&quot;', '"')
-    string = string.replace('__', '_')
-    string = string.replace('&lt;', '<').replace('&gt;', '>')
+    string = string.replace('__', r'&#5F;')
+    string = string.replace('_', r'&amp;')
     string = string.replace('\\n', r'&#x0a;')
+    string = string.replace('&amp;', '&').replace('&quot;', '"')
+    string = string.replace('&#5F;', '_')
+    string = string.replace('&lt;', '<').replace('&gt;', '>')
     string = string.replace('\\', '\\\\').replace('"', r'\"')
     string = string.replace('&#x0a;', r'\n')
     #string = string.decode('iso-8859-1')    # this is for python2 OK
