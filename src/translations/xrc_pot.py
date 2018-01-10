@@ -47,7 +47,7 @@ def writeString(outfile, infile, basefile, lineno, string):
 
 def convertString(string):
     string = string.replace('&amp;', '&').replace('&quot;', '"')
-    string = string.replace('_', '&')
+    #string = string.replace('_', '&')
     string = string.replace('&lt;', '<').replace('&gt;', '>')
     string = string.replace('\\n', r'&#x0a;')
     string = string.replace('\\', '\\\\').replace('"', r'\"')
