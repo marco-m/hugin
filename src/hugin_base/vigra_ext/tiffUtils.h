@@ -117,8 +117,9 @@ inline void createTiffDirectory(vigra::TiffImage * tiff, const std::string & pag
     TIFFSetField(tiff, TIFFTAG_COMPRESSION, tiffcomp);
 
     // Set ICC profile, if available.
-    if (icc.size() > 0) {
-        TIFFSetField(tiff, TIFFTAG_ICCPROFILE, icc.size(), icc.front());
+    if (!icc.empty())
+    {
+        TIFFSetField(tiff, TIFFTAG_ICCPROFILE, icc.size(), icc.begin());
     }
 
 }
