@@ -68,7 +68,7 @@ IF(APPLE)
                ${CMAKE_BINARY_DIR}/src/tools/hugin_lensdb  ${CMAKE_BINARY_DIR}/src/hugin1/executor/hugin_executor ${CMAKE_BINARY_DIR}/src/tools/pano_trafo
                ${CMAKE_BINARY_DIR}/src/tools/pto_gen       ${CMAKE_BINARY_DIR}/src/tools/pto_lensstack            ${CMAKE_BINARY_DIR}/src/tools/pto_mask
                ${CMAKE_BINARY_DIR}/src/tools/pto_merge     ${CMAKE_BINARY_DIR}/src/tools/pto_move                 ${CMAKE_BINARY_DIR}/src/tools/pto_template
-               ${CMAKE_BINARY_DIR}/src/tools/pto_var       ${CMAKE_BINARY_DIR}/src/deghosting/deghosting_mask
+               ${CMAKE_BINARY_DIR}/src/tools/pto_var       ${CMAKE_BINARY_DIR}/src/deghosting/deghosting_mask     ${CMAKE_BINARY_DIR}/src/tools/hugin_stacker
     )
 
     FOREACH(_file ${TOOLS})
