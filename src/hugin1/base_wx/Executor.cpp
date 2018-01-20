@@ -187,27 +187,30 @@ namespace HuginQueue
         if (config->Read(name + wxT("/Custom"), 0l))
         {
             wxString fn = config->Read(name + wxT("/Exe"), wxT(""));
-            wxFileName prog(fn);
-            if (prog.IsAbsolute())
+            if (!fn.IsEmpty())
             {
-                if (prog.FileExists())
+                wxFileName prog(fn);
+                if (prog.IsAbsolute())
                 {
-                    return fn;
-                };
-            }
-            else
-            {
-                // search in PATH
-                wxPathList pathlist;
-                pathlist.Add(bindir);
-                pathlist.AddEnvList(wxT("PATH"));
-                fn = pathlist.FindAbsoluteValidPath(fn);
-                if (!fn.IsEmpty())
+                    if (prog.FileExists())
+                    {
+                        return fn;
+                    };
+                }
+                else
                 {
-                    return fn;
+                    // search in PATH
+                    wxPathList pathlist;
+                    pathlist.Add(bindir);
+                    pathlist.AddEnvList(wxT("PATH"));
+                    fn = pathlist.FindAbsoluteValidPath(fn);
+                    if (!fn.IsEmpty())
+                    {
+                        return fn;
+                    };
                 };
+                std::cerr << wxString::Format(_("WARNING: External program %s not found as specified in preferences, reverting to bundled version"), name.c_str()) << std::endl;
             };
-            std::cerr << wxString::Format(_("WARNING: External program %s not found as specified in preferences, reverting to bundled version"), name.c_str()) << std::endl;
         };
         // no user specified program or not found
 #ifdef __WXMSW__
