@@ -182,7 +182,7 @@ IF(APPLE)
 
     ADD_DEPENDENCIES(${PROGNAME} align_image_stack autooptimiser checkpto cpclean linefind geocpset pano_modify icpfind cpfind celeste_standalone
       fulla tca_correct vig_optimize hugin_lensdb hugin_executor pano_trafo pto_gen pto_lensstack pto_mask pto_merge
-      pto_move pto_template pto_var deghosting_mask
+      pto_move pto_template pto_var deghosting_mask hugin_stacker
       translations)
       
   else (MAC_SELF_CONTAINED_BUNDLE)
