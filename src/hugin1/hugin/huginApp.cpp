@@ -569,7 +569,7 @@ int huginApp::OnExit()
 {
     DEBUG_TRACE("");
     delete wxHelpProvider::Set(NULL);
-    return wxApp::OnExit();
+    return 0;
 }
 
 huginApp * huginApp::Get()
