@@ -111,4 +111,9 @@ public:
 };
 #endif
 
+#ifndef __WXMSW__
+/** helper function to check window position settings of help window */
+WXIMPEX void FixHelpSettings();
+#endif
+
 #endif // HUGIN_WXPLATFORM_H

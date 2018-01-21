@@ -59,3 +59,42 @@ void HuginCHMHelpController::DisplayHelpPage(const wxString& name)
     CallHtmlHelp(GetParentWindow(), command.t_str(), 0 /* =HH_DISPLAY_TOPIC */);
 };
 #endif
+
+#ifndef __WXMSW__
+#include <wx/confbase.h>
+#include <wx/gdicmn.h> 
+// check if the help window has correct position/size inside current display
+// this is not done by wxWidgets
+WXIMPEX void FixHelpSettings()
+{
+    wxConfigBase* config = wxConfigBase::Get();
+    int dw, dh;
+    wxDisplaySize(&dw, &dh);
+
+    int x, y, w, h;
+    config->Read("/wxWindows/wxHtmlHelpController/hcX", &x, wxDefaultCoord);
+    config->Read("/wxWindows/wxHtmlHelpController/hcY", &y, wxDefaultCoord);
+    config->Read("/wxWindows/wxHtmlHelpController/hcW", &w, 700);
+    config->Read("/wxWindows/wxHtmlHelpController/hcH", &h, 480);
+    if (w > dw)
+    {
+        w = 700;
+        config->Write("/wxWindows/wxHtmlHelpController/hcW", w);
+    };
+    if (h > dh)
+    {
+        h = 480;
+        config->Write("/wxWindows/wxHtmlHelpController/hcH", h);
+    };
+    if (x<-1 || x>dw-100)
+    {
+        x = wxDefaultCoord;
+        config->Write("/wxWindows/wxHtmlHelpController/hcX", x);
+    };
+    if (y<-1 || y>dh - 100)
+    {
+        y = wxDefaultCoord;
+        config->Write("/wxWindows/wxHtmlHelpController/hcY", y);
+    };
+}
+#endif

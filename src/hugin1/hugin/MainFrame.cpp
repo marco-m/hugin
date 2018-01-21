@@ -704,6 +704,11 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     };
     SetGuiLevel(static_cast<GuiLevel>(guiLevel));
 
+#ifndef __WXMSW__
+    // check settings of help window and fix when needed
+    FixHelpSettings();
+#endif
+
     DEBUG_TRACE("");
 }
 
