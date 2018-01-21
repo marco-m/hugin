@@ -5,6 +5,7 @@ use v5.10; # for say
 use File::Which;
 use File::Find;
 use File::Spec;
+use File::Temp;
 use Cwd;
 
 # define some variables
@@ -38,9 +39,9 @@ find({wanted => sub { if (-f and /\.xrc$/)
     my $filename=File::Spec->abs2rel($File::Find::name);
     if ($^O eq 'MSWin32') {$filename =~ tr#\\#/#;};
     say("Processing $filename");
-    my @s=qx/$wxrc -g $filename/;
-    say $xrc_cpp @s;
-  };
+    my ($fh_temp, $path_temp) = File::Temp::tempfile();
+    system($wxrc, '-g', $filename, '-o', $path_temp);
+    while (<$fh_temp>) {print $xrc_cpp $_}; };
 }, no_chdir => 1}, getcwd);
 close $xrc_cpp;
 
@@ -82,5 +83,5 @@ unlink $path_xrc_cpp;
 unlink $path_infiles_list;
 # unify line breaks to unix
 say 'Unify line breaks';
-system("perl unix_linebreaks.pl $project.pot *.po outdated/*.po");
+system('perl', 'unix_linebreaks.pl', $path_project_pot, '*.po', 'outdated/*.po');
 say 'All done';
