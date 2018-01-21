@@ -237,6 +237,11 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     }
 
     UpdateTaskBarProgressBar();
+
+#ifndef __WXMSW__
+    // check settings of help window and fix when needed
+    FixHelpSettings();
+#endif
 }
 
 void* BatchFrame::Entry()
