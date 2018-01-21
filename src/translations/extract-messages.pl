@@ -39,7 +39,7 @@ find({wanted => sub { if (-f and /\.xrc$/)
     my $filename=File::Spec->abs2rel($File::Find::name);
     if ($^O eq 'MSWin32') {$filename =~ tr#\\#/#;};
     say("Processing $filename");
-    my ($fh_temp, $path_temp) = File::Temp::tempfile();
+    my ($fh_temp, $path_temp) = File::Temp::tempfile( UNLINK => 1);
     system($wxrc, '-g', $filename, '-o', $path_temp);
     while (<$fh_temp>) {print $xrc_cpp $_}; };
 }, no_chdir => 1}, getcwd);
