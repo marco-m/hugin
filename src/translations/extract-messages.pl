@@ -24,26 +24,26 @@ if(!defined $msgmerge) { die 'ERROR: msgmerge not found'; }
 my $basedir=getcwd;
 say 'Found all necessary programs';
 
-my $path_xrc_cpp=File::Spec->rel2abs('xrc.cpp', $basedir);
-my $path_infiles_list=File::Spec->rel2abs('infiles.list', $basedir);
+# create temp directory for all temporary files
+my $temp_dir=File::Temp::tempdir(CLEANUP => 1);
+# temp file which stores all files which should be searched by xgettext
+my ($file_list_handle, $file_list)=File::Temp::tempfile(DIR => $temp_dir);
+# store some absolute file names
 my $path_potfiles_in=File::Spec->rel2abs('POTFILES.in', $basedir);
 my $path_project_pot=File::Spec->rel2abs("$project.pot", $basedir);
 
-# parse all xrc files, create xrc.cpp for xgettext input
-unlink $path_xrc_cpp;
-unlink $path_infiles_list;
+# parse all xrc files with wxrc
 chdir "..";
-open(my $xrc_cpp, '>', $path_xrc_cpp);
+my @xrc_to_cpp;
 find({wanted => sub { if (-f and /\.xrc$/)
   {
     my $filename=File::Spec->abs2rel($File::Find::name);
-    if ($^O eq 'MSWin32') {$filename =~ tr#\\#/#;};
     say("Processing $filename");
-    my ($fh_temp, $path_temp) = File::Temp::tempfile( UNLINK => 1);
+    my $path_temp;
+    (undef, $path_temp) = File::Temp::tempfile(DIR => $temp_dir, OPEN => 0);
     system($wxrc, '-g', $filename, '-o', $path_temp);
-    while (<$fh_temp>) {print $xrc_cpp $_}; };
-}, no_chdir => 1}, getcwd);
-close $xrc_cpp;
+    push @xrc_to_cpp, $path_temp;
+  }}, no_chdir => 1}, getcwd);
 
 #create array of all C++ files
 my @cfiles;
@@ -54,22 +54,23 @@ find({wanted => sub {  if (-f) {
     push(@cfiles, $filename) if /\.(cpp|c|h)$/;
   }}, no_chdir => 1}, getcwd);
 @cfiles=sort @cfiles;
+push @cfiles, @xrc_to_cpp;
+
 # create input file list for xgettext
 say 'Extracting messages';
 # first write all C++ files in file
-open(my $filelist, '>', $path_infiles_list) or die "ERROR: Could not open file $path_infiles_list";
-foreach (@cfiles) {say $filelist $_;};
+foreach (@cfiles) {say $file_list_handle $_;};
 # then add files from POTFILES.in (e.g. tips)
 open(my $potfilein, '<', $path_potfiles_in) or die "ERROR: Could not open file $path_potfiles_in";
-while(<$potfilein>){say $filelist $_;};
+while(<$potfilein>){say $file_list_handle $_;};
 close $potfilein;
-close $filelist;
+close $file_list_handle;
 
 # run xgettext
 chdir $basedir;
 system($xgettext, '--from-code=UTF-8', '--c++', '--keyword=_', '--copyright-holder='.$copyright,
-    '--msgid-bugs-address='.$bugaddr, '--files-from='.$path_infiles_list, '--directory='.$basedir,
-    '--directory='.$cstartdir, '--output='.$path_project_pot)==0 or die "ERROR during running $xgettext";
+    '--msgid-bugs-address='.$bugaddr, '--files-from='.$file_list, '--directory='.$cstartdir, 
+    '--output='.$path_project_pot)==0 or die "ERROR during running $xgettext";
 say 'Done extracting messages';
 
 # update all po files with new template
@@ -79,8 +80,6 @@ find(sub{if (-f and /\.po$/) {
     rename("$_.new.po", $_);
   }}, '.');
 say 'Done merging translations';
-unlink $path_xrc_cpp;
-unlink $path_infiles_list;
 # unify line breaks to unix
 say 'Unify line breaks';
 system('perl', 'unix_linebreaks.pl', $path_project_pot, '*.po', 'outdated/*.po');
