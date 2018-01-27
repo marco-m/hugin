@@ -144,17 +144,7 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
     for (unsigned int i=0; i< filenames.GetCount(); i++) {
         wxFileName file(filenames[i]);
 
-        if (file.GetExt().CmpNoCase(wxT("jpg")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("jpeg")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("tif")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("tiff")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("png")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("bmp")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("gif")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("pnm")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("sun")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("hdr")) == 0 ||
-            file.GetExt().CmpNoCase(wxT("viff")) == 0 )
+        if(vigra::isImage(file.GetFullPath().mb_str(HUGIN_CONV_FILENAME)))
         {
             if(containsInvalidCharacters(filenames[i]))
             {
