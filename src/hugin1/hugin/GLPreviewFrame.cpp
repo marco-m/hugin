@@ -1090,7 +1090,7 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
     }*/
     m_exposureTextCtrl->ChangeValue(wxString(hugin_utils::doubleToString(opts.outputExposureValue,2).c_str(), wxConvLocal));
 
-    bool activeImgs = pano.getActiveImages().size() > 0;
+    const bool activeImgs = !pano.getActiveImages().empty();
 
     // TODO: enable display of parameters and set their limits, if projection has some.
 
@@ -1473,7 +1473,7 @@ void PreviewFrame::OnProjectionChanged()
 
 void GLPreviewFrame::OnCenterHorizontally(wxCommandEvent & e)
 {
-    if (m_pano.getActiveImages().size() == 0) return;
+    if (m_pano.getActiveImages().empty()) return;
 
     PanoCommand::GlobalCmdHist::getInstance().addCommand(
         new PanoCommand::CenterPanoCmd(m_pano)
@@ -1491,7 +1491,7 @@ void GLPreviewFrame::OnStraighten(wxCommandEvent & e)
 
 void GLPreviewFrame::OnFitPano(wxCommandEvent & e)
 {
-    if (m_pano.getActiveImages().size() == 0) return;
+    if (m_pano.getActiveImages().empty()) return;
 
     DEBUG_TRACE("");
     HuginBase::PanoramaOptions opt = m_pano.getOptions();
@@ -2493,7 +2493,7 @@ void GLPreviewFrame::FillBlendChoice()
 void GLPreviewFrame::OnAutocrop(wxCommandEvent &e)
 {
     DEBUG_INFO("Dirty ROI Calc\n");
-    if (m_pano.getActiveImages().size() == 0)
+    if (m_pano.getActiveImages().empty())
     {
         return;
     };
@@ -2523,7 +2523,7 @@ void GLPreviewFrame::OnAutocrop(wxCommandEvent &e)
 void GLPreviewFrame::OnStackAutocrop(wxCommandEvent &e)
 {
     DEBUG_INFO("Dirty ROI Calc\n");
-    if (m_pano.getActiveImages().size() == 0)
+    if (m_pano.getActiveImages().empty())
     {
         return;
     };

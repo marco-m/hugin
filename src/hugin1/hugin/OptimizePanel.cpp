@@ -156,7 +156,7 @@ void OptimizePanel::OnOptimizeButton(wxCommandEvent & e)
     {
         // use only selected images.
         imgs = m_pano->getActiveImages();
-        if (imgs.size() == 0)
+        if (imgs.empty())
         {
             wxMessageBox(_("The project does not contain any active images.\nPlease activate at least one image in the (fast) preview window.\nOptimization canceled."),
 #ifdef _WIN32

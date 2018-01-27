@@ -390,7 +390,7 @@ int main(int argc, char* argv[])
         for(unsigned int i=0;i<pano.getNrOfImages();i++)
         {
             HuginBase::CPointVector cps = pano.getCtrlPointsVectorForImage(i);
-            if(cps.size()>0 || mask)
+            if(!cps.empty() || mask)
             {
                 try
                 {
@@ -400,10 +400,10 @@ int main(int argc, char* argv[])
                     {
                         continue;
                     };
-                    if(cps.size()>0)
+                    if(!cps.empty())
                     {
                         HuginBase::UIntSet cloudCP = celeste::getCelesteControlPoints(model, in, cps, radius, threshold, resize_dimension);
-                        if(cloudCP.size()>0)
+                        if(!cloudCP.empty())
                         {
                             for (HuginBase::UIntSet::reverse_iterator it = cloudCP.rbegin(); it != cloudCP.rend(); ++it)
                             {

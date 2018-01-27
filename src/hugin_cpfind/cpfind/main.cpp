@@ -412,7 +412,7 @@ bool parseOptions(int argc, char** argv, PanoDetector& ioPanoDetector)
     {
         ioPanoDetector.setMatchingStrategy(PanoDetector::PREALIGNED);
     };
-    if(keyfilesIndex.size()>0)
+    if(!keyfilesIndex.empty())
     {
         ioPanoDetector.setKeyPointsIdx(keyfilesIndex);
     };

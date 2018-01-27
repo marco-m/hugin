@@ -3217,7 +3217,7 @@ void wxTreeListMainWindow::PaintItem (wxTreeListItem *item, wxDC& dc) {
     wxDCClipper clipper (dc, 0, item->GetY(), total_w, total_h); // only within line
     // compute text height based on main col
     int text_h = 0;
-    dc.GetTextExtent( item->GetText(GetMainColumn()).size() > 0
+    dc.GetTextExtent( !item->GetText(GetMainColumn()).empty()
             ? item->GetText(GetMainColumn())
             : _T("M"),  // dummy text to avoid zero height and no highlight width
         NULL, &text_h );
@@ -4299,7 +4299,7 @@ void wxTreeListMainWindow::CalculateSize (wxTreeListItem *item, wxDC &dc) {
     wxCoord text_h = 0;
 
     dc.SetFont (GetItemFont (item));
-    dc.GetTextExtent (item->GetText(m_main_column).size() > 0
+    dc.GetTextExtent (!item->GetText(m_main_column).empty()
             ? item->GetText (m_main_column)
             : _T(" "),  // blank to avoid zero height and no highlight width
         &text_w, &text_h);

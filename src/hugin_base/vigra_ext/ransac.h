@@ -402,7 +402,7 @@ void Ransac::estimate(const Estimator & paramEstimator, const std::vector<T> &da
 		exactEstimateData.push_back(&(data[arr[j]]));
 	paramEstimator.estimate(exactEstimateData,exactEstimateParameters);
 	                     //singular data configuration
-	if(exactEstimateParameters.size()==0)
+	if(exactEstimateParameters.empty())
 		return;
 
 	for(j=0; j<numDataObjects; j++) {

@@ -178,7 +178,7 @@ bool RunStitchPanel::StitchProject(const wxString& scriptFile, const wxString& o
     try {
         // copy pto file to temporary file
         m_currentPTOfn = wxFileName::CreateTempFileName(tempDir+wxT("huginpto_"));
-        if(m_currentPTOfn.size() == 0) {
+        if(m_currentPTOfn.empty()) {
             wxLogError(_("Could not create temporary file"));
         }
         DEBUG_DEBUG("tmpPTOfn file: " << (const char *)m_currentPTOfn.mb_str(wxConvLocal));

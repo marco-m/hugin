@@ -130,7 +130,7 @@ int iCPApp::OnRun()
     HuginBase::CPVector cps = matcher.automatch(m_cpsetting,pano,imgs,m_matches,NULL);
     PT_setProgressFcn(NULL);
     PT_setInfoDlgFcn(NULL);
-    if(cps.size()==0)
+    if(cps.empty())
     {
         return 1;
     };

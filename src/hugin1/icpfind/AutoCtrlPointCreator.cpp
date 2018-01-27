@@ -310,7 +310,7 @@ void AutoCtrlPointCreator::Cleanup(CPDetectorSetting &setting, HuginBase::Panora
 {
     if(setting.IsTwoStepDetector())
     {
-        if(keyFiles.size()>0)
+        if(!keyFiles.empty())
         {
             for(unsigned int i=0;i<keyFiles.size();i++)
             {
@@ -360,7 +360,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
                                      int nFeatures, int & ret_value, wxWindow *parent)
 {
     HuginBase::CPVector cps;
-    if (imgs.size() == 0) {
+    if (imgs.empty()) {
         return cps;
     }
     // create suitable command line..
@@ -507,7 +507,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
                            int nFeatures, std::vector<wxString> &keyFiles, int & ret_value, wxWindow *parent)
 {
     HuginBase::CPVector cps;
-    if (imgs.size() == 0) 
+    if (imgs.empty()) 
     {
         return cps;
     }
@@ -776,7 +776,7 @@ HuginBase::CPVector AutoPanoSiftStack::automatch(CPDetectorSetting &setting, Hug
                                      int nFeatures, int & ret_value, wxWindow *parent)
 {
     HuginBase::CPVector cps;
-    if (imgs.size() == 0) {
+    if (imgs.empty()) {
         return cps;
     };
     std::vector<stack_img> stack_images;
@@ -847,7 +847,7 @@ HuginBase::CPVector AutoPanoSiftStack::automatch(CPDetectorSetting &setting, Hug
             {
                 AutoPanoSift matcher;
                 HuginBase::CPVector new_cps = matcher.automatch(stack_setting, pano, images_stack, nFeatures, ret_value, parent);
-                if(new_cps.size()>0)
+                if(!new_cps.empty())
                     AddControlPointsWithCheck(cps,new_cps);
                 if(ret_value!=0)
                     return cps;
@@ -885,7 +885,7 @@ HuginBase::CPVector AutoPanoSiftMultiRow::automatch(CPDetectorSetting &setting, 
             new_cps=matcher.automatch(setting, pano, ImagePair, nFeatures, keyFiles, ret_value, parent);
         else
             new_cps=matcher.automatch(setting, pano, ImagePair, nFeatures, ret_value, parent);
-        if(new_cps.size()>0)
+        if(!new_cps.empty())
             AddControlPointsWithCheck(cps,new_cps);
         if(ret_value!=0)
         {
@@ -919,7 +919,7 @@ HuginBase::CPVector AutoPanoSiftMultiRow::automatch(CPDetectorSetting &setting, 
             new_cps=matcher.automatch(setting, optPano, ImagesGroups, nFeatures, keyFiles, ret_value, parent);
         else
             new_cps=matcher.automatch(setting, optPano, ImagesGroups, nFeatures, ret_value, parent);
-        if(new_cps.size()>0)
+        if(!new_cps.empty())
             AddControlPointsWithCheck(cps,new_cps,&optPano);
         if(ret_value!=0)
         {
@@ -1002,7 +1002,7 @@ HuginBase::CPVector AutoPanoSiftMultiRow::automatch(CPDetectorSetting &setting, 
             new_cps=matcher.automatch(newSetting, optPano, imgs, nFeatures, keyFiles, ret_value, parent);
         else
             new_cps=matcher.automatch(newSetting, optPano, imgs, nFeatures, ret_value, parent);
-        if(new_cps.size()>0)
+        if(!new_cps.empty())
             AddControlPointsWithCheck(cps,new_cps);
     };
     Cleanup(setting, pano, imgs, keyFiles, parent);
@@ -1013,7 +1013,7 @@ HuginBase::CPVector AutoPanoSiftMultiRowStack::automatch(CPDetectorSetting &sett
                                      int nFeatures, int & ret_value, wxWindow *parent)
 {
     HuginBase::CPVector cps;
-    if (imgs.size() == 0) {
+    if (imgs.empty()) {
         return cps;
     };
     std::vector<stack_img> stack_images;
@@ -1076,7 +1076,7 @@ HuginBase::CPVector AutoPanoSiftMultiRowStack::automatch(CPDetectorSetting &sett
             {
                 AutoPanoSift matcher;
                 HuginBase::CPVector new_cps = matcher.automatch(stack_setting, pano, images_stack, nFeatures, ret_value, parent);
-                if(new_cps.size()>0)
+                if(!new_cps.empty())
                     AddControlPointsWithCheck(cps,new_cps);
                 if(ret_value!=0)
                 {
@@ -1093,13 +1093,13 @@ HuginBase::CPVector AutoPanoSiftMultiRowStack::automatch(CPDetectorSetting &sett
         HuginBase::UIntSet allImgs;
         fill_set(allImgs, 0, pano.getNrOfImages()-1);
         HuginBase::Panorama newPano = pano.getSubset(allImgs);
-        if(cps.size()>0)
+        if(!cps.empty())
             for (HuginBase::CPVector::const_iterator it = cps.begin(); it != cps.end(); ++it)
                 newPano.addCtrlPoint(*it);
 
         AutoPanoSiftMultiRow matcher;
         HuginBase::CPVector new_cps = matcher.automatch(setting, newPano, images_layer, nFeatures, ret_value, parent);
-        if(new_cps.size()>0)
+        if(!new_cps.empty())
             AddControlPointsWithCheck(cps,new_cps);
     };
     return cps;
@@ -1166,7 +1166,7 @@ HuginBase::CPVector AutoPanoSiftPreAlign::automatch(CPDetectorSetting &setting, 
             new_cps=matcher.automatch(setting, pano, images, nFeatures, keyFiles, ret_value, parent);
         else
             new_cps=matcher.automatch(setting, pano, images, nFeatures, ret_value, parent);
-        if(new_cps.size()>0)
+        if(!new_cps.empty())
             AddControlPointsWithCheck(cps,new_cps);
         if(ret_value!=0)
         {

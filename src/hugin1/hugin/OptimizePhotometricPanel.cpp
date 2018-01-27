@@ -328,7 +328,7 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
         {
             return;
         };
-        if (points.size() == 0)
+        if (points.empty())
         {
             wxMessageBox(_("Error: no overlapping points found, Photometric optimization aborted"), _("Error"));
             return;

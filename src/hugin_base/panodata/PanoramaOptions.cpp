@@ -111,7 +111,7 @@ void PanoramaOptions::printScriptLine(std::ostream & o, bool forPTOptimizer) con
         // the new exposure options
         o << " E" << outputExposureValue;
         o << " R" << outputMode;
-        if (outputPixelType.size() > 0) {
+        if (!outputPixelType.empty()) {
             o << " T" << outputPixelType;
         }
         if (m_roi != vigra::Rect2D(m_size)) {
@@ -119,7 +119,7 @@ void PanoramaOptions::printScriptLine(std::ostream & o, bool forPTOptimizer) con
         }
     }
 
-    if (m_projectionParams.size() > 0) {
+    if (!m_projectionParams.empty()) {
         o << " P\"";
         for (int i=0; i < (int) m_projectionParams.size(); i++) {
             o << m_projectionParams[i];

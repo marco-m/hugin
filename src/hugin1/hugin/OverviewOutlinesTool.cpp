@@ -427,7 +427,7 @@ void OverviewOutlinesTool::DrawRect(double left, double top, double right, doubl
                 stack.push_back(Rec(true, true, true, true));
             }
             
-            while(stack.size() > 0) {
+            while(!stack.empty()) {
 
                 Rec edge;
                 if (outline) {

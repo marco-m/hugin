@@ -178,7 +178,7 @@ bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAll
             imagesTo.push_back(newFilename);
         };
     };
-    if(imagesFrom.size()>0)
+    if(!imagesFrom.empty())
     {
         if(imagesFrom.size()==imagesTo.size())
         {
@@ -440,7 +440,7 @@ int main(int argc, char* argv[])
                 pathVec projectFiles;
                 std::cout << "Searching project files in " << p << std::endl;
                 SearchPTOFilesInDirectory(projectFiles, p.string(), recursive);
-                if(projectFiles.size()==0)
+                if(projectFiles.empty())
                 {
                     std::cout << "No project files found in given directory " << p.string() << std::endl;
                     return 0;

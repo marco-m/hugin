@@ -161,7 +161,7 @@ void PanoDetector::printDetails()
             std::cout << "Output file          : " << _outputFile << std::endl;
         };
     }
-    if(_keypath.size()>0)
+    if(!_keypath.empty())
     {
         std::cout <<     "Path to keyfiles     : " << _keypath << std::endl;
     };
@@ -251,7 +251,7 @@ void PanoDetector::printFilenames()
         }
         std::cout << "Image " << i << std::endl << "  Imagefile: " << name << std::endl;
         bool writeKeyfileForImage=false;
-        if(_keyPointsIdx.size()>0)
+        if(!_keyPointsIdx.empty())
         {
             for(unsigned j=0; j<_keyPointsIdx.size() && !writeKeyfileForImage; j++)
             {
@@ -367,7 +367,7 @@ public:
     virtual void run()
     {
         //TRACE_PAIR("Matching...");
-        if(_matchData._i1->_kp.size()>0 && _matchData._i2->_kp.size()>0)
+        if(!_matchData._i1->_kp.empty() && !_matchData._i2->_kp.empty())
         {
             PanoDetector::FindMatchesInPair(_matchData, _panoDetector);
             PanoDetector::RansacMatchesInPair(_matchData, _panoDetector);
@@ -598,7 +598,7 @@ void PanoDetector::run()
     };
 
     // Detect matches if writeKeyPoints wasn't set
-    if(_keyPointsIdx.size() == 0)
+    if(_keyPointsIdx.empty())
     {
         switch (getMatchingStrategy())
         {

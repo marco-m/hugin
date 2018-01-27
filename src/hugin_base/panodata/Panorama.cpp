@@ -636,7 +636,7 @@ void Panorama::printPanoramaScript(std::ostream & o,
                 o << " Vm" << img.getVigCorrMode();
             }
 
-            if (img.getFlatfieldFilename().size() > 0) {
+            if (!img.getFlatfieldFilename().empty()) {
                 o << " Vf\"" << img.getFlatfieldFilename() << "\"";
             }
             if (img.getResponseType() > 0) {
@@ -653,7 +653,7 @@ void Panorama::printPanoramaScript(std::ostream & o,
           << (img.getMorph() ? " o" : "");
 #endif
         std::string fname = img.getFilename();
-        if (stripPrefix.size() > 0) {
+        if (!stripPrefix.empty()) {
             // strip prefix from image names.
             // check if the prefix is acutally the same
             std::string tmp = fname.substr(0,stripPrefix.size());
@@ -968,7 +968,7 @@ void Panorama::parseOptimizerScript(std::istream & i, const UIntSet & imgs,
 
 void Panorama::changeFinished(bool keepDirty)
 {
-    if (state.images.size() == 0) {
+    if (state.images.empty()) {
         // force an empty update if all images have been
         // removed
         DEBUG_DEBUG("forcing images update, with no images");
@@ -983,7 +983,7 @@ void Panorama::changeFinished(bool keepDirty)
          std::ostream_iterator<unsigned int>(t, " "));
     DEBUG_TRACE("changed image(s) " << t.str() << " begin");
     //force update of crops
-    if(changedImages.size()>0)
+    if(!changedImages.empty())
     {
         for(UIntSet::iterator it=changedImages.begin();it!=changedImages.end();++it)
         {
@@ -1002,7 +1002,7 @@ void Panorama::changeFinished(bool keepDirty)
     std::list<PanoramaObserver *>::iterator it;
     for(it = observers.begin(); it != observers.end(); ++it) {
         DEBUG_TRACE("notifying listener");
-        if (changedImages.size() > 0 || m_forceImagesUpdate) {
+        if (!changedImages.empty() || m_forceImagesUpdate) {
             (*it)->panoramaImagesChanged(*this, changedImages);
         }
         (*it)->panoramaChanged(*this);
@@ -1027,7 +1027,7 @@ void Panorama::updateMasksForImage(unsigned int imgNr, MaskPolygonVector newMask
 
 void Panorama::transferMask(MaskPolygon mask,unsigned int imgNr, const UIntSet& targetImgs)
 {
-    if(targetImgs.size()==0)
+    if(targetImgs.empty())
     {
         return;
     };
@@ -1436,7 +1436,7 @@ void Panorama::checkRefOptStatus(bool& linkRefImgsYaw, bool& linkRefImgsPitch, b
 
 void Panorama::updateOptimizeVector()
 {
-    if(state.images.size()==0)
+    if(state.images.empty())
     {
         return;
     };
@@ -2013,7 +2013,7 @@ void Panorama::mergePanorama(const Panorama &newPano)
                     // now check if we have to update the masks
                     HuginBase::MaskPolygonVector masksOld=getImage(j).getMasks();
                     HuginBase::MaskPolygonVector masksNew=newPano.getImage(i).getMasks();
-                    if(masksNew.size()>0)
+                    if(!masksNew.empty())
                     {
                         for(unsigned int k=0;k<masksNew.size();k++)
                         {

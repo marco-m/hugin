@@ -157,7 +157,7 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
         }
     }
     // we got some images to add.
-    if (filesv.size() > 0)
+    if (!filesv.empty())
     {
         // use a Command to ensure proper undo and updating of GUI parts
         wxBusyCursor();
@@ -175,7 +175,7 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
         };
 
     }
-    if(invalidFiles.size()>0)
+    if(!invalidFiles.empty())
     {
         ShowFilenameWarning(mf, invalidFiles);
     }
@@ -1210,7 +1210,7 @@ void MainFrame::AddImages(wxArrayString& filenameArray)
             invalidFiles.Add(filenameArray[i]);
         };
     };
-    if(invalidFiles.size()>0)
+    if(!invalidFiles.empty())
     {
         ShowFilenameWarning(this, invalidFiles);
     }
@@ -1222,7 +1222,7 @@ void MainFrame::AddImages(wxArrayString& filenameArray)
         }
 
         // we got some images to add.
-        if (filesv.size() > 0) {
+        if (!filesv.empty()) {
             // use a Command to ensure proper undo and updating of GUI
             // parts
             wxBusyCursor();
@@ -1843,7 +1843,7 @@ void MainFrame::OnRemoveCPinMasks(wxCommandEvent & e)
     if(pano.getCtrlPoints().size()<2)
         return;
     HuginBase::UIntSet cps=getCPinMasks(pano);
-    if(cps.size()>0)
+    if(!cps.empty())
     {
         PanoCommand::GlobalCmdHist::getInstance().addCommand(
                     new PanoCommand::RemoveCtrlPointsCmd(pano,cps)

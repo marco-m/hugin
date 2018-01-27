@@ -216,7 +216,7 @@ VerticalLine FitLine(SingleLine line)
 VerticalLineVector FilterLines(Lines lines,double roll)
 {
     VerticalLineVector vertLines;
-    if(lines.size()>0)
+    if(!lines.empty())
     {
         for(Lines::const_iterator it=lines.begin(); it!=lines.end(); ++it)
         {
@@ -314,7 +314,7 @@ HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsi
     //filter results
     VerticalLineVector filteredLines=FilterLines(foundLines,roll);
     //create control points
-    if(filteredLines.size()>0)
+    if(!filteredLines.empty())
     {
         //we need to transform the coordinates to image coordinates because the detection
         //worked on smaller images or in remapped image
@@ -411,7 +411,7 @@ HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsi
                     maxError=std::max(detectedLines[i].error,maxError);
                 };
             };
-            if(detectedLines.size()>0 && maxError>0) //security check, should never be false
+            if(!detectedLines.empty() && maxError>0) //security check, should never be false
             {
                 //now keep only the best nrLines lines
                 //we are using error and line length as figure of merrit

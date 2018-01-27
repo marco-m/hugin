@@ -230,7 +230,7 @@ namespace detail
             exinfo.setPosition(opts.getROI().upperLeft());
             exinfo.setCanvasSize(vigra::Size2D(opts.getWidth(), opts.getHeight()));
         }
-        if (opts.outputPixelType.size() > 0)
+        if (!opts.outputPixelType.empty())
         {
             exinfo.setPixelType(opts.outputPixelType.c_str());
         }
@@ -529,7 +529,7 @@ public:
             RemappedPanoImage<ImageType, AlphaType> *
                 remapped = remapper.getRemapped(Base::m_pano, modOptions, *it,
                     Base::m_rois[std::distance(imgSet.begin(), imgSet.find(*it))], Base::m_progress);
-            if(iccProfile.size()==0)
+            if(iccProfile.empty())
             {
                 iccProfile=remapped->m_ICCProfile;
             };
@@ -600,7 +600,7 @@ public:
         exinfo.setXResolution(150);
         exinfo.setYResolution(150);
         exinfo.setICCProfile(iccProfile);
-        if (opts.outputPixelType.size() > 0) {
+        if (!opts.outputPixelType.empty()) {
             exinfo.setPixelType(opts.outputPixelType.c_str());
         }
 
@@ -738,7 +738,7 @@ public:
 //        Base::m_progress.setMessage("saving result: " + hugin_utils::stripPath(outputfile));
         DEBUG_DEBUG("Saving panorama: " << outputfile);
         vigra::ImageExportInfo exinfo(outputfile.c_str(), GetAdvancedOption(advOptions, "useBigTIFF", false) ? "w8" : "w");
-        if (opts.outputPixelType.size() > 0) {
+        if (!opts.outputPixelType.empty()) {
             exinfo.setPixelType(opts.outputPixelType.c_str());
         }
         exinfo.setXResolution(150);
@@ -802,7 +802,7 @@ public:
             // but should be enought for the preview.
             remapped[i] = remapper.getRemapped(Base::m_pano, opts, *it,
                                                Base::m_rois[i], Base::m_progress);
-            if(iccProfile.size()==0)
+            if(iccProfile.empty())
             {
                 iccProfile=remapped[i]->m_ICCProfile;
             };
@@ -881,7 +881,7 @@ public:
             RemappedPanoImage<ImageType, AlphaType> *
             remapped = remapper.getRemapped(Base::m_pano, opts, *it,
                                             Base::m_rois[i], Base::m_progress);
-            if (iccProfile.size() == 0) {
+            if (iccProfile.empty()) {
                 // try to extract icc profile.
                 iccProfile = remapped->m_ICCProfile;
             }

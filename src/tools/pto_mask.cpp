@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
             HuginBase::MaskPolygonVector loadedMasks;
             LoadMaskFromStream(in, maskImageSize, loadedMasks, maskFiles[i].imageNr);
             in.close();
-            if(maskImageSize.area()==0 || loadedMasks.size()==0)
+            if(maskImageSize.area()==0 || loadedMasks.empty())
             {
                 std::cerr << "Error: Could not parse mask from file \"" << maskFiles[i].maskFile << "\"." << std::endl;
                 return 1;

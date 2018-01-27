@@ -856,7 +856,7 @@ int main2(std::vector<std::string> files, Parameters param)
         HuginBase::UIntSet imgs = pano.getActiveImages();
         if (optimizeError)
         {
-            if (param.ptoFile.size() > 0)
+            if (!param.ptoFile.empty())
             {
                 std::ofstream script(param.ptoFile.c_str());
                 pano.printPanoramaScript(script, optvars, pano.getOptions(), imgs, false, "");
@@ -925,7 +925,7 @@ int main2(std::vector<std::string> files, Parameters param)
         }
 
         // At this point we have panorama options set according to the output
-        if (param.ptoFile.size() > 0)
+        if (!param.ptoFile.empty())
         {
             std::ofstream script(param.ptoFile.c_str());
             pano.printPanoramaScript(script, optvars, pano.getOptions(), imgs, false, "");

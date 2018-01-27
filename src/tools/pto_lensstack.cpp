@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
     };
 
     // new lenses
-    if(newLensImgs.size()>0)
+    if(!newLensImgs.empty())
     {
         HuginBase::StandardImageVariableGroups variable_groups(pano);
         if(variable_groups.getLenses().getNumberOfParts()<pano.getNrOfImages())
@@ -265,7 +265,7 @@ int main(int argc, char* argv[])
     };
 
     // new stacks
-    if(newStackImgs.size()>0)
+    if(!newStackImgs.empty())
     {
         HuginBase::StandardImageVariableGroups variable_groups(pano);
         if(variable_groups.getStacks().getNumberOfParts()<pano.getNrOfImages())
@@ -288,7 +288,7 @@ int main(int argc, char* argv[])
     };
 
     // change lenses
-    if(changeLensImgs.size()>0)
+    if(!changeLensImgs.empty())
     {
         HuginBase::StandardImageVariableGroups variable_groups(pano);
         size_t lensCount=variable_groups.getLenses().getNumberOfParts();
@@ -317,7 +317,7 @@ int main(int argc, char* argv[])
     };
 
     // change stacks
-    if(changeStackImgs.size()>0)
+    if(!changeStackImgs.empty())
     {
         HuginBase::StandardImageVariableGroups variable_groups(pano);
         size_t stackCount=variable_groups.getStacks().getNumberOfParts();

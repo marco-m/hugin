@@ -921,7 +921,7 @@ void MaskImageCtrl::OnRightMouseUp(wxMouseEvent& mouse)
                         for(HuginBase::UIntSet::const_reverse_iterator it=points.rbegin();it!=points.rend();++it)
                             m_editingMask.removePoint(*it);
                         // now update set of selected points
-                        if(m_selectedPoints.size()>0)
+                        if(!m_selectedPoints.empty())
                         {
                             std::vector<unsigned int> mappedSelectedPoints(m_imageMask[m_activeMask].getMaskPolygon().size());
                             for(unsigned int i=0;i<mappedSelectedPoints.size();i++)
@@ -945,7 +945,7 @@ void MaskImageCtrl::OnRightMouseUp(wxMouseEvent& mouse)
                     else
                         wxBell();
                 };
-                if(m_selectedPoints.size()==0)
+                if(m_selectedPoints.empty())
                     m_maskEditState=NO_SELECTION;
                 else
                     m_maskEditState=POINTS_SELECTED;
@@ -983,7 +983,7 @@ void MaskImageCtrl::OnKeyUp(wxKeyEvent &e)
         {
             if (m_maskEditState == POINTS_SELECTED)
             {
-                if ((m_selectedPoints.size()>0) && (m_editingMask.getMaskPolygon().size() - m_selectedPoints.size() > 2))
+                if ((!m_selectedPoints.empty()) && (m_editingMask.getMaskPolygon().size() - m_selectedPoints.size() > 2))
                 {
                     for (HuginBase::UIntSet::const_reverse_iterator it = m_selectedPoints.rbegin(); it != m_selectedPoints.rend(); ++it)
                         m_editingMask.removePoint(*it);
@@ -1177,7 +1177,7 @@ void MaskImageCtrl::OnDraw(wxDC & dc)
                 dc.DrawRectangle(0,m_bitmap.GetHeight()+2*offset,clientSize.GetWidth(),clientSize.GetHeight()-m_bitmap.GetHeight()+2*offset);
             };
         };
-        if (m_maskMode && m_showActiveMasks && (m_cropMode != HuginBase::SrcPanoImage::NO_CROP || m_masksToDraw.size()>0))
+        if (m_maskMode && m_showActiveMasks && (m_cropMode != HuginBase::SrcPanoImage::NO_CROP || !m_masksToDraw.empty()))
         {
             //whole image, we need it several times
             wxRegion wholeImage(transform(applyRot(hugin_utils::FDiff2D(0,0))),
@@ -1212,7 +1212,7 @@ void MaskImageCtrl::OnDraw(wxDC & dc)
                         break;
                 };
             };
-            if(m_masksToDraw.size()>0)
+            if(!m_masksToDraw.empty())
             {
                 for(unsigned int i=0;i<m_masksToDraw.size();i++)
                 {
@@ -1250,7 +1250,7 @@ void MaskImageCtrl::OnDraw(wxDC & dc)
             dc.DestroyClippingRegion();
         };
         DrawCrop(dc);
-        if(m_maskMode && m_imageMask.size()>0)
+        if(m_maskMode && !m_imageMask.empty())
         {
             //now draw all polygons
             HuginBase::MaskPolygonVector maskList=m_imageMask;

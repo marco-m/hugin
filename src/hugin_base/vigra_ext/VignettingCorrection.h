@@ -571,7 +571,7 @@ void correctRespVigExpInv(vigra::triple<ImgIter, ImgIter, ImgAccessor> srcImg,
 
     // adjust functor
 
-    if (EMoRCoeff.size() == 0) {
+    if (EMoRCoeff.empty()) {
         RnF Rf;
         if (division) {
             applyRadialVigCorrectionDither(srcImg, destImg, center.x, center.y,

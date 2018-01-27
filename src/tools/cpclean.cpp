@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
     {
         AppBase::DummyProgressDisplay dummy;
         CPtoRemove=getCPoutsideLimit_pair(pano, dummy, n);
-        if (CPtoRemove.size()>0)
+        if (!CPtoRemove.empty())
             for (HuginBase::UIntSet::reverse_iterator it = CPtoRemove.rbegin(); it != CPtoRemove.rend(); ++it)
             {
                 pano.removeCtrlPoint(*it);
@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
                 std::cout << std::endl << "Skipping optimisation, current image positions will be used." << std::endl;
             };
             CPtoRemove=getCPoutsideLimit(pano, n, skipOptimisation, includeLineCp);
-            if (CPtoRemove.size()>0)
+            if (!CPtoRemove.empty())
                 for (HuginBase::UIntSet::reverse_iterator it = CPtoRemove.rbegin(); it != CPtoRemove.rend(); ++it)
                 {
                     pano.removeCtrlPoint(*it);

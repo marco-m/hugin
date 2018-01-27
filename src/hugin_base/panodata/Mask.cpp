@@ -205,7 +205,7 @@ void MaskPolygon::subSample(const double max_distance)
 
 void MaskPolygon::calcBoundingBox()
 {
-    if(m_polygon.size()>0)
+    if(!m_polygon.empty())
     {
         m_boundingBox.setUpperLeft(vigra::Point2D(m_polygon[0].x,m_polygon[0].y));
         m_boundingBox.setLowerRight(vigra::Point2D(m_polygon[0].x+1,m_polygon[0].y+1));
@@ -401,7 +401,7 @@ double angle_between(const hugin_utils::FDiff2D a, const hugin_utils::FDiff2D b)
 */
 void generateArc(VectorPolygon& poly, const hugin_utils::FDiff2D s, const hugin_utils::FDiff2D center, const double radius, const bool clockwise)
 {
-    if(poly.size()==0)
+    if(poly.empty())
     {
         return;
     };
@@ -473,7 +473,7 @@ bool MaskPolygon::clipPolygon(const hugin_utils::FDiff2D center,const double rad
                 std::vector<hugin_utils::FDiff2D> points=clip_getIntersectionCircle(p,s,center,radius);
                 DEBUG_ASSERT(points.size()==1);
                 angleCovered+=angle_between(s-center,points[0]-center);
-                if(newPolygon.size()==0)
+                if(newPolygon.empty())
                 {
                     needsFinalArc=true;
                     angleCoveredOffset=angleCovered;
@@ -496,7 +496,7 @@ bool MaskPolygon::clipPolygon(const hugin_utils::FDiff2D center,const double rad
                 if(points.size()>1)
                 {
                     angleCovered+=angle_between(s-center,points[0]-center);
-                    if(newPolygon.size()==0)
+                    if(newPolygon.empty())
                     {
                         needsFinalArc=true;
                         angleCoveredOffset=angleCovered;
@@ -555,7 +555,7 @@ void MaskPolygon::rotate90(bool clockwise,unsigned int maskWidth,unsigned int ma
 
 unsigned int MaskPolygon::FindPointNearPos(const hugin_utils::FDiff2D p, const double tol)
 {
-    if(m_polygon.size()==0)
+    if(m_polygon.empty())
         return UINT_MAX;
     hugin_utils::FDiff2D p1;
     unsigned int j=m_polygon.size()-1;

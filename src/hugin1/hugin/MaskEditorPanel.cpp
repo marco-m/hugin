@@ -233,7 +233,7 @@ MaskEditorPanel::~MaskEditorPanel()
 
 size_t MaskEditorPanel::GetImgNr()
 {
-    if(m_selectedImages.size()==0)
+    if(m_selectedImages.empty())
     {
         return UINT_MAX;
     }
@@ -395,7 +395,7 @@ void MaskEditorPanel::panoramaImagesChanged(HuginBase::Panorama &pano, const Hug
             };
     };
 
-    if (m_selectedImages.size() > 0)
+    if (!m_selectedImages.empty())
     {
         if (set_contains(changed, GetImgNr()))
         {
@@ -416,7 +416,7 @@ void MaskEditorPanel::OnImageSelect(wxListEvent &e)
     setMask(UINT_MAX);
     setImage(GetImgNr());
 
-    bool hasImage = (m_selectedImages.size() > 0);
+    const bool hasImage = !m_selectedImages.empty();
     m_left_textctrl->Enable(hasImage);
     m_top_textctrl->Enable(hasImage);
     m_bottom_textctrl->Enable(hasImage);
@@ -507,7 +507,7 @@ void MaskEditorPanel::OnMaskLoad(wxCommandEvent &e)
         HuginBase::MaskPolygonVector loadedMasks;
         LoadMaskFromStream(in, maskImageSize, loadedMasks, GetImgNr());
         in.close();
-        if(maskImageSize.area()==0 || loadedMasks.size()==0)
+        if(maskImageSize.area()==0 || loadedMasks.empty())
         {
             wxMessageBox(wxString::Format(_("Could not parse mask from file %s."),dlg.GetPath().c_str()),_("Warning"),wxOK | wxICON_EXCLAMATION,this);
             return;
@@ -564,7 +564,7 @@ void MaskEditorPanel::OnMaskPaste(wxCommandEvent &e)
                 LoadMaskFromStream(stream, maskImageSize, loadedMasks, GetImgNr());
             }
             wxTheClipboard->Close();
-            if(maskImageSize.area()==0 || loadedMasks.size()==0)
+            if(maskImageSize.area()==0 || loadedMasks.empty())
             {
                 wxBell();
                 return;
@@ -681,7 +681,7 @@ void MaskEditorPanel::UpdateMaskList(bool restoreSelection)
     m_maskList->Freeze();
     if(GetImgNr()<UINT_MAX)
     {
-        if(m_currentMasks.size()>0)
+        if(!m_currentMasks.empty())
         {
             if(m_maskList->GetItemCount()!=m_currentMasks.size())
             {

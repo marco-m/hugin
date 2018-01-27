@@ -453,7 +453,7 @@ int main(int argc, char* argv[])
         };
     };
 
-    if (outputPixelType.size() > 0)
+    if (!outputPixelType.empty())
     {
         opts.outputPixelType = outputPixelType;
     }

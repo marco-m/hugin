@@ -458,7 +458,7 @@ namespace PanoCommand
     bool NewPartCmd::processPanorama(HuginBase::Panorama& pano)
     {
         // unlink all the variables in the first image.
-        DEBUG_ASSERT(image_numbers.size() > 0);
+        DEBUG_ASSERT(!image_numbers.empty());
         unsigned int image_index = *image_numbers.begin();
         for (std::set<HuginBase::ImageVariableGroup::ImageVariableEnum>::iterator it = vars.begin(); it != vars.end(); ++it)
         {

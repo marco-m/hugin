@@ -354,7 +354,7 @@ void MyExecPanel::AddToOutput(wxInputStream & s)
         if (c == '\b') {
             lastCR=false;
             // backspace
-            if (currLine.size() > 0) {
+            if (!currLine.empty()) {
                 if (currLine.Last() != wxChar('\n') )
                     currLine.Trim();
             }
@@ -364,7 +364,7 @@ void MyExecPanel::AddToOutput(wxInputStream & s)
             // back to start of line
              if (currLine.Last() != wxChar('\n') ) {
                 currLine = currLine.BeforeLast('\n');
-                if(currLine.size() > 0) {
+                if(!currLine.empty()) {
                     currLine.Append('\n');
                 }
              }
@@ -378,7 +378,7 @@ void MyExecPanel::AddToOutput(wxInputStream & s)
             // back to start of line
                 if (currLine.Last() != wxChar('\n') ) {
                     currLine = currLine.BeforeLast('\n');
-                    if(currLine.size() > 0) {
+                    if(!currLine.empty()) {
                         currLine.Append('\n');
                     }
                 }

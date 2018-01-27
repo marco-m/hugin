@@ -272,7 +272,7 @@ void PreviewPanel::updatePreview()
 
         DEBUG_DEBUG("about to stitch images, pano size: " << m_panoImgSize);
         HuginBase::UIntSet displayedImages = pano->getActiveImages();
-        if (displayedImages.size() > 0) {
+        if (!displayedImages.empty()) {
             if (opts.outputMode == HuginBase::PanoramaOptions::OUTPUT_HDR) {
                 DEBUG_DEBUG("HDR output merge");
 

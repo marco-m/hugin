@@ -184,7 +184,7 @@ public:
 	//std::cout << "result:" << std::endl;
 	//pano->printPanoramaScript(std::cerr, m_localPano->getOptimizeVector(), pano->getOptions(), imgs, true );
 
-	if (m_opt_second_pass.size() > 0) {
+	if (!m_opt_second_pass.empty()) {
 	    m_localPano->setOptimizeVector(m_opt_second_pass);
 	    //std::cout << "Optimizing with hfov" << std::endl;
 	    //pano->printPanoramaScript(std::cerr, m_localPano->getOptimizeVector(), pano->getOptions(), imgs, true );

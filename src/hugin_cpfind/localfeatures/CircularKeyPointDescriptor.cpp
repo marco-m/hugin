@@ -53,7 +53,7 @@ CircularKeyPointDescriptor::CircularKeyPointDescriptor(Image& iImage,
     _ori_gridsize(ori_gridsize)
 {
     // default parameters
-    if (rings.size() == 0)
+    if (rings.empty())
     {
         rings.push_back(1);
         ring_radius.push_back(0);

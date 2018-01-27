@@ -153,7 +153,7 @@ void SetGeometricControlPointsUnconnected(HuginBase::Panorama& pano, const int m
     };
 
     // have we found unconnected images?
-    if(imgsToTest.size()==0)
+    if(imgsToTest.empty())
     {
         std::cout << "No unconnected images found." << std::endl
              << "No control point added." << std::endl;

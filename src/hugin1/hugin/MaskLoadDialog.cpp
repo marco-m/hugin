@@ -107,7 +107,7 @@ void MaskLoadDialog::initValues(const HuginBase::SrcPanoImage image, const Hugin
 void MaskLoadDialog::ProcessMask(wxCommandEvent &e)
 {
     m_processedMask=m_loadedMask;
-    if(m_processedMask.size()==0)
+    if(m_processedMask.empty())
     {
         UpdatePreviewImage();
         return;

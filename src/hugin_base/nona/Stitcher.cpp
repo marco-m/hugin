@@ -77,7 +77,7 @@ void stitchPanorama(const PanoramaData & pano,
 //    DEBUG_DEBUG("Output pixel type: " << pixelType);
     PanoramaOptions opts = opt;
     if (opts.outputMode == PanoramaOptions::OUTPUT_HDR) {
-        if (opts.outputPixelType.size() == 0) {
+        if (opts.outputPixelType.empty()) {
             opts.outputPixelType = "FLOAT";
         }
     } else {
@@ -91,7 +91,7 @@ void stitchPanorama(const PanoramaData & pano,
             // clear the parameters to indicatate these should not be used
             opts.outputEMoRParams.clear();
         };
-        if (opts.outputPixelType.size() == 0) {
+        if (opts.outputPixelType.empty()) {
             opts.outputPixelType = pixelType;
         } else {
             // if output format is specified, use output format as stitching format

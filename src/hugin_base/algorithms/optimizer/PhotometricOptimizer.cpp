@@ -122,7 +122,7 @@ void PhotometricOptimizer::OptimData::ToX(double * x)
 {
     for (size_t i=0; i < m_vars.size(); i++)
     {
-        assert(m_vars[i].imgs.size() > 0);
+        assert(!m_vars[i].imgs.empty());
             // get corresponding image number
         unsigned j = *(m_vars[i].imgs.begin());
             // get value
@@ -137,7 +137,7 @@ void PhotometricOptimizer::OptimData::FromX(double * x)
     for (size_t i=0; i < m_vars.size(); i++)
     {
         // TODO: transform some variables, such as the vignetting center!
-        assert(m_vars[i].imgs.size() > 0);
+        assert(!m_vars[i].imgs.empty());
             // copy value int all images
         for (std::set<unsigned>::const_iterator it = m_vars[i].imgs.begin();
              it != m_vars[i].imgs.end(); ++it)

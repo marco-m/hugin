@@ -487,7 +487,7 @@ void CPEditorPanel::OnCPEvent( CPEvent&  ev)
                 };
             };
             changeState(NO_POINT);
-            if(cpToRemove.size()>0)
+            if(!cpToRemove.empty())
             {
                 PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::RemoveCtrlPointsCmd(*m_pano, cpToRemove));
             };
@@ -2043,7 +2043,7 @@ void CPEditorPanel::OnCelesteButton(wxCommandEvent & e)
             return;
         }
 
-        if(cloudCP.size()>0)
+        if(!cloudCP.empty())
         {
             PanoCommand::GlobalCmdHist::getInstance().addCommand(
                 new PanoCommand::RemoveCtrlPointsCmd(*m_pano,cloudCP)

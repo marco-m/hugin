@@ -265,7 +265,7 @@ int main(int argc, char* argv[])
     {
         bool hasVerticalLines=false;
         HuginBase::CPVector allCP=pano.getCtrlPoints();
-        if(allCP.size()>0 && (doPairwise || doAutoOpt || doNormalOpt))
+        if(!allCP.empty() && (doPairwise || doAutoOpt || doNormalOpt))
         {
             for(size_t i=0; i<allCP.size() && !hasVerticalLines; i++)
             {
@@ -413,7 +413,7 @@ int main(int argc, char* argv[])
             std::cout << "\rSelected " << points.size() << " points" << std::endl;
         }
 
-        if (points.size() == 0)
+        if (points.empty())
         {
             std::cerr << "Error: no overlapping points found, exiting" << std::endl;
             return 1;

@@ -187,7 +187,7 @@ UIntSet getCPinMasks(HuginBase::Panorama pano)
 {
     HuginBase::UIntSet cps;
     HuginBase::CPVector cpList=pano.getCtrlPoints();
-    if(cpList.size()>0)
+    if(!cpList.empty())
     {
         for(unsigned int i=0;i<cpList.size();i++)
         {
@@ -202,7 +202,7 @@ UIntSet getCPinMasks(HuginBase::Panorama pano)
             //   but it would require that the pano is correctly align, otherwise the positive masks
             //   would not correctly checked
             HuginBase::MaskPolygonVector masks=pano.getImage(cp.image1Nr).getMasks();
-            if(masks.size()>0)
+            if(!masks.empty())
             {
                 unsigned int j=0;
                 while((!insideMask) && (j<masks.size()))
@@ -215,7 +215,7 @@ UIntSet getCPinMasks(HuginBase::Panorama pano)
             if(!insideMask)
             {
                 masks=pano.getImage(cp.image2Nr).getMasks();
-                if(masks.size()>0)
+                if(!masks.empty())
                 {
                     unsigned int j=0;
                     while((!insideMask) && (j<masks.size()))

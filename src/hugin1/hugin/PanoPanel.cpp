@@ -371,7 +371,7 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
     m_VFOVText->ChangeValue(wxString(val.c_str(), wxConvLocal));
 
     // disable VFOV edit field, due to bugs in setHeight(), setWidth()
-    bool hasImages = pano->getActiveImages().size() > 0;
+    const bool hasImages = !pano->getActiveImages().empty();
     m_VFOVText->Enable(m_keepViewOnResize);
     m_CalcOptWidthButton->Enable(m_keepViewOnResize && hasImages);
     m_CalcHFOVButton->Enable(m_keepViewOnResize && hasImages);
@@ -1001,7 +1001,7 @@ void PanoPanel::OnHDRMergeOptions(wxCommandEvent & e)
 void PanoPanel::DoCalcFOV(wxCommandEvent & e)
 {
     DEBUG_TRACE("");
-    if (pano->getActiveImages().size() == 0) return;
+    if (pano->getActiveImages().empty()) return;
 
     HuginBase::PanoramaOptions opt = pano->getOptions();
     HuginBase::CalculateFitPanorama fitPano(*pano);
@@ -1022,7 +1022,7 @@ void PanoPanel::DoCalcFOV(wxCommandEvent & e)
 
 void PanoPanel::DoCalcOptimalWidth(wxCommandEvent & e)
 {
-    if (pano->getActiveImages().size() == 0) return;
+    if (pano->getActiveImages().empty()) return;
 
     HuginBase::PanoramaOptions opt = pano->getOptions();
     double sizeFactor = 1.0;
@@ -1046,7 +1046,7 @@ void PanoPanel::DoCalcOptimalWidth(wxCommandEvent & e)
 void PanoPanel::DoCalcOptimalROI(wxCommandEvent & e)
 {
     DEBUG_INFO("Dirty ROI Calc\n");
-    if (pano->getActiveImages().size() == 0)
+    if (pano->getActiveImages().empty())
     {
         return;
     };
@@ -1096,7 +1096,7 @@ void PanoPanel::DoStitch()
         if(tempDir.Last()!=wxFileName::GetPathSeparator())
             tempDir.Append(wxFileName::GetPathSeparator());
     wxString currentPTOfn = wxFileName::CreateTempFileName(tempDir+wxT("huginpto_"));
-    if(currentPTOfn.size() == 0) {
+    if(currentPTOfn.empty()) {
         wxMessageBox(_("Could not create temporary project file"),_("Error"),
                 wxCANCEL | wxICON_ERROR,this);
         return;
@@ -1382,7 +1382,7 @@ void PanoPanel::DoUserDefinedStitch(const wxString& settings)
         }
     };
     wxString currentPTOfn = wxFileName::CreateTempFileName(tempDir + wxT("huginpto_"));
-    if (currentPTOfn.size() == 0)
+    if (currentPTOfn.empty())
     {
         wxMessageBox(_("Could not create temporary project file"), _("Error"),
             wxCANCEL | wxICON_ERROR, this);
@@ -1733,7 +1733,7 @@ bool PanoPanel::CheckGoodSize()
 bool PanoPanel::CheckHasImages()
 {
     HuginBase::UIntSet images=getImagesinROI(*pano, pano->getActiveImages());
-    if(images.size()==0)
+    if(images.empty())
     {
         wxMessageBox(_("There are no active images in the output region.\nPlease check your settings, so that at least one image is in the output region."),
 #ifdef _WIN32
@@ -1743,7 +1743,7 @@ bool PanoPanel::CheckHasImages()
 #endif
             wxOK | wxICON_INFORMATION);
     };
-    return images.size()>0;
+    return !images.empty();
 };
 
 bool PanoPanel::CheckFreeSpace(const wxString& folder)

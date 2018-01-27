@@ -463,7 +463,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
             vigra_ext::EMoR::createEMoRLUT(m_destImg.outputEMoRParams, outLut);
         };
         double maxVal = vigra_ext::LUTTraits<input_value_type>::max();
-        if (m_destImg.outputPixelType.size() > 0) {
+        if (!m_destImg.outputPixelType.empty()) {
             maxVal = vigra_ext::getMaxValForPixelType(m_destImg.outputPixelType);
         }
 
@@ -647,7 +647,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
         std::vector<double> outLut;
         // scale up to desired output format
         double maxVal = vigra_ext::LUTTraits<input_value_type>::max();
-        if (m_destImg.outputPixelType.size() > 0) {
+        if (!m_destImg.outputPixelType.empty()) {
             maxVal = vigra_ext::getMaxValForPixelType(m_destImg.outputPixelType);
         }
         if (!m_destImg.outputEMoRParams.empty())

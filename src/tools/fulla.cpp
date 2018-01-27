@@ -788,7 +788,7 @@ void correctRGB(HuginBase::SrcPanoImage& src, vigra::ImageImportInfo& info, cons
     vigra::ImageExportInfo outInfo(outfile);
     outInfo.setICCProfile(info.getICCProfile());
     outInfo.setPixelType(info.getPixelType());
-    if (compression.size() > 0)
+    if (!compression.empty())
     {
         outInfo.setCompression(compression.c_str());
     }

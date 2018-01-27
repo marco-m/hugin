@@ -235,7 +235,7 @@ bool BaseSrcPanoImage::operator==(const BaseSrcPanoImage & other) const
 double SrcPanoImage::getVar(const std::string & code) const
 {
     DEBUG_TRACE("");
-    assert(code.size() > 0);
+    assert(!code.empty());
 #define image_variable( name, type, default_value ) \
     if (PTOVariableConverterFor##name::checkApplicability(code)) \
         return PTOVariableConverterFor##name::getValueFromVariable(code, m_##name );\
@@ -251,7 +251,7 @@ double SrcPanoImage::getVar(const std::string & code) const
 void SrcPanoImage::setVar(const std::string & code, double val)
 {
     DEBUG_TRACE("Var:" << code << " value: " << val);
-    assert(code.size() > 0);
+    assert(!code.empty());
 #define image_variable( name, type, default_value ) \
     if (PTOVariableConverterFor##name::checkApplicability(code)) \
         {PTOVariableConverterFor##name::setValueFromVariable(code, m_##name, val);}\
@@ -950,13 +950,13 @@ void SrcPanoImage::clearActiveMasks()
 
 bool SrcPanoImage::hasMasks() const
 {
-    return m_Masks.getData().size()>0;
+    return !m_Masks.getData().empty();
 };
 
 bool SrcPanoImage::hasPositiveMasks() const
 {
     MaskPolygonVector masks=m_Masks.getData();
-    if(masks.size()>0)
+    if(!masks.empty())
     {
         for(unsigned int i=0;i<masks.size();i++)
         {
@@ -971,12 +971,12 @@ bool SrcPanoImage::hasPositiveMasks() const
 
 bool SrcPanoImage::hasActiveMasks() const
 {
-    return m_ActiveMasks.getData().size()>0;
+    return !m_ActiveMasks.getData().empty();
 };
  
 void SrcPanoImage::printMaskLines(std::ostream &o, unsigned int newImgNr) const
 {
-    if(m_Masks.getData().size()>0)
+    if(!m_Masks.getData().empty())
         for(unsigned int i=0;i<m_Masks.getData().size();i++)
             m_Masks.getData()[i].printPolygonLine(o, newImgNr);
 };

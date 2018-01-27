@@ -176,7 +176,7 @@ class IMPEX SpaceTransform
         /** returns true if this transform is an identity transform */
         bool isIdentity()
         {
-            return m_Stack.size() == 0;
+            return m_Stack.empty();
         }
 
         

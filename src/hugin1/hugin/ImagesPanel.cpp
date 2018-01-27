@@ -292,7 +292,7 @@ void ImagesPanel::CPGenerate(wxCommandEvent & e)
     HuginBase::UIntSet selImg = m_images_tree->GetSelectedImages();
     //if only one image is selected, run detector on all images, except for linefind
     wxString progName = cpdetector_config.settings[m_CPDetectorChoice->GetSelection()].GetProg().Lower();
-    if ((selImg.size() == 0) || (selImg.size() == 1 && progName.Find(wxT("linefind")) == wxNOT_FOUND))
+    if ((selImg.empty()) || (selImg.size() == 1 && progName.Find(wxT("linefind")) == wxNOT_FOUND))
     {
         // add all images.
         selImg.clear();
@@ -354,7 +354,7 @@ void ImagesPanel::OnSelectionChanged(wxTreeEvent & e)
 {
     const HuginBase::UIntSet & sel = m_images_tree->GetSelectedImages();
     DEBUG_DEBUG("selected Images: " << sel.size());
-    if (sel.size() == 0)
+    if (sel.empty())
     {
         // nothing to edit
         DisableImageCtrls();
@@ -519,7 +519,7 @@ void ImagesPanel::OnLensTypeChanged (wxCommandEvent & e)
 {
     size_t var = GetSelectedValue(m_lenstype);
     HuginBase::UIntSet images = m_images_tree->GetSelectedImages();
-    if(images.size()>0)
+    if(!images.empty())
     {
         const HuginBase::SrcPanoImage & img = m_pano->getImage(*(images.begin()));
         double focal_length = HuginBase::SrcPanoImage::calcFocalLength(img.getProjection(), img.getHFOV(), img.getCropFactor(), img.getSize());

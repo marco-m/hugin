@@ -206,13 +206,10 @@ FindPanoDialog::~FindPanoDialog()
 
 void FindPanoDialog::CleanUpPanolist()
 {
-    if(m_panos.size()>0)
+    while(!m_panos.empty())
     {
-        while(!m_panos.empty())
-        {
-            delete m_panos.back();
-            m_panos.pop_back();
-        };
+        delete m_panos.back();
+        m_panos.pop_back();
     };
 };
 
@@ -232,7 +229,7 @@ void FindPanoDialog::OnClose(wxCloseEvent& e)
 
 void FindPanoDialog::OnButtonClose(wxCommandEvent& e)
 {
-    if(m_panos.size()>0)
+    if(!m_panos.empty())
     {
         if(wxMessageBox(_("The list contains possibly unprocessed panoramas.\nIf you close the dialog, you will lose them.\nContinue anyway?"),
                         _("Question"),wxYES_NO|wxICON_QUESTION,this)==wxNO)
@@ -267,7 +264,7 @@ void FindPanoDialog::OnButtonStart(wxCommandEvent& e)
         m_start_dir=m_textctrl_dir->GetValue();
         if(wxDir::Exists(m_start_dir))
         {
-            if(m_panos.size()>0)
+            if(!m_panos.empty())
             {
                 if(wxMessageBox(_("The list contains still not yet processed panoramas.\nIf you continue, they will be disregarded.\nDo you still want to continue?"),
                                 _("Question"),wxYES_NO|wxICON_QUESTION,this)==wxNO)
@@ -298,7 +295,7 @@ void FindPanoDialog::OnButtonStart(wxCommandEvent& e)
 
 void FindPanoDialog::OnButtonSend(wxCommandEvent& e)
 {
-    if(m_panos.size()==0)
+    if(m_panos.empty())
     {
         return;
     }
@@ -536,7 +533,7 @@ void FindPanoDialog::SearchInDir(wxString dirstring, const bool includeSubdir, c
         //allow processing events
         wxGetApp().Yield(true);
     };
-    if(!m_stopped && newPanos.size()>0)
+    if(!m_stopped && !newPanos.empty())
     {
         for(size_t i=0; i<newPanos.size(); i++)
         {
@@ -571,8 +568,8 @@ void FindPanoDialog::SearchInDir(wxString dirstring, const bool includeSubdir, c
         m_button_start->SetLabel(_("Start"));
         EnableButtons(true);
         //enable send button if at least one panorama found
-        m_button_send->Enable(m_panos.size()>0);
-        if(m_panos.size()>0)
+        m_button_send->Enable(!m_panos.empty());
+        if(!m_panos.empty())
         {
             m_statustext->SetLabel(wxString::Format(_("Found %d possible panoramas."), static_cast<int>(m_panos.size())));
         }

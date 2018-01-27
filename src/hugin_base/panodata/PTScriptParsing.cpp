@@ -164,7 +164,7 @@ bool getPTDoubleParam(double & value, int & link,
 {
     std::string val;
     if (getPTParam(val,line, var)) {
-        DEBUG_ASSERT(line.size() > 0);
+        DEBUG_ASSERT(!line.empty());
         DEBUG_DEBUG(var << ":" <<val);
         if (val[0] == '=') {
             if (!hugin_utils::stringToInt(val.substr(1), link))
@@ -187,7 +187,7 @@ bool readVar(Variable & var, int & link, const std::string & line)
 {
     std::string val;
     if (getPTParam(val,line, var.getName())) {
-        DEBUG_ASSERT(line.size() > 0);
+        DEBUG_ASSERT(!line.empty());
         DEBUG_DEBUG(var.getName() << ":" <<val);
         if (val[0] == '=') {
             if (!hugin_utils::stringToInt(val.substr(1), link))

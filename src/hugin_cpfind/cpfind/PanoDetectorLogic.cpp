@@ -98,7 +98,7 @@ bool PanoDetector::LoadKeypoints(ImgData& ioImgInfo, const PanoDetector& iPanoDe
     TRACE_IMG("Loading keypoints...");
 
     lfeat::ImageInfo info = lfeat::loadKeypoints(ioImgInfo._keyfilename, ioImgInfo._kp);
-    ioImgInfo._loadFail = (info.filename.size() == 0);
+    ioImgInfo._loadFail = (info.filename.empty());
 
     // update ImgData
     if(ioImgInfo.NeedsRemapping())
@@ -849,7 +849,7 @@ bool PanoDetector::BuildKDTreesInImage(ImgData& ioImgInfo, const PanoDetector& i
 {
     TRACE_IMG("Build KDTree...");
 
-    if(ioImgInfo._kp.size()==0)
+    if(ioImgInfo._kp.empty())
     {
         return false;
     };

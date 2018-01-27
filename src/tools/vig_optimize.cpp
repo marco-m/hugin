@@ -268,13 +268,13 @@ int main(int argc, char* argv[])
         {
             std::cout << "\rSelected " << points.size() << " points" << std::endl;
         }
-        if (points.size() == 0)
+        if (points.empty())
         {
             std::cerr << "Error: no overlapping points found, exiting" << std::endl;
             return 1;
         }
 
-        if (outputPointsFile.size() > 0)
+        if (!outputPointsFile.empty())
         {
             std::ofstream of(outputPointsFile.c_str());
             for (std::vector<vigra_ext::PointPairRGB>::iterator it = points.begin(); it != points.end(); ++it)

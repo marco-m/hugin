@@ -1096,7 +1096,7 @@ void CPImageCtrl::showPosition(hugin_utils::FDiff2D point, bool warpPointer)
 CPImageCtrl::EditorState CPImageCtrl::isOccupied(wxPoint mousePos, const hugin_utils::FDiff2D &p, unsigned int & pointNr) const
 {
     // check if mouse is hovering over a label
-    if(m_points.size()>0)
+    if(!m_points.empty())
     {
         for(int i=m_points.size()-1; i>=0; i--)
         {

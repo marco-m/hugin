@@ -91,7 +91,7 @@ namespace HuginQueue
         {
             const HuginBase::CPVector allCP = pano.getCtrlPoints();
             bool hasVerticalLines = false;
-            if (allCP.size() > 0)
+            if (!allCP.empty())
             {
                 for (size_t i = 0; i < allCP.size() && !hasVerticalLines; i++)
                 {

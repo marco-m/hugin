@@ -85,12 +85,12 @@ bool FileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
             };
         }
     }
-    if(invalidFiles.size()>0)
+    if(!invalidFiles.empty())
     {
         ShowFilenameWarning(frame, invalidFiles);
     }
     // we got some images to add.
-    if (files.size() > 0)
+    if (!files.empty())
     {
         // use a Command to ensure proper undo and updating of GUI parts
         frame->AddImages(files);
@@ -292,7 +292,7 @@ void LensCalFrame::AddImages(wxArrayString files)
                 };
             };
         };
-        if(m_images.size()>0)
+        if(!m_images.empty())
         {
             const HuginBase::SrcPanoImage* image0=m_images[0]->GetPanoImage();
             const HuginBase::SrcPanoImage* image1=image->GetPanoImage();
@@ -339,7 +339,7 @@ void LensCalFrame::AddImages(wxArrayString files)
     wxCommandEvent e;
     OnImageSelected(e);
     EnableButtons();
-    if(wrongSize.size()>0)
+    if(!wrongSize.empty())
     {
         wxString fileText;
         for(unsigned int i=0;i<wrongSize.size();i++)
@@ -352,7 +352,7 @@ void LensCalFrame::AddImages(wxArrayString files)
         wxMessageBox(wxString::Format(_("The size of the images (%s) does not match the already added image(s)."),fileText.c_str()),
             _("Error"),wxOK|wxICON_EXCLAMATION,this);
     };
-    if(wrongExif.size()>0)
+    if(!wrongExif.empty())
     {
         wxString fileText;
         for(unsigned int i=0;i<wrongExif.size();i++)
@@ -421,7 +421,7 @@ void LensCalFrame::OnAddImage(wxCommandEvent &e)
                 invalidFiles.push_back(Pathnames[i]);
             };
         };
-        if(invalidFiles.size()>0)
+        if(!invalidFiles.empty())
         {
             ShowFilenameWarning(this, invalidFiles);
         }

@@ -101,7 +101,7 @@ wxTextCtrl* GetImageVariableControl(const wxWindow* parent, const char* varname)
 
 void ImageVariableDialog::InitValues()
 {
-    if(m_images.size()==0)
+    if(m_images.empty())
     {
         return;
     };
@@ -236,7 +236,7 @@ bool ImageVariableDialog::ApplyNewVariables()
         }
         commands.push_back(new PanoCommand::UpdateSrcImagesCmd( *m_pano, m_images, SrcImgs ));
     }
-    if(varMap.size()>0)
+    if(!varMap.empty())
     {
         for(HuginBase::UIntSet::const_iterator it=m_images.begin();it!=m_images.end();++it)
         {
@@ -245,7 +245,7 @@ bool ImageVariableDialog::ApplyNewVariables()
                 );
         };
     };
-    if(commands.size()>0)
+    if(!commands.empty())
     {
         PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::CombinedPanoCommand(*m_pano, commands));
         return true;

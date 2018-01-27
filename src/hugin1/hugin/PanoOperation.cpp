@@ -151,7 +151,7 @@ bool AddImageDialog(wxWindow* parent, std::vector<std::string>& files)
                invalidFiles.Add(Pathnames[i]);
            };
         };
-        if(invalidFiles.size()>0)
+        if(!invalidFiles.empty())
         {
             ShowFilenameWarning(parent, invalidFiles);
             return false;
@@ -175,7 +175,7 @@ PanoCommand::PanoCommand* AddImageOperation::GetInternalCommand(wxWindow* parent
     std::vector<std::string> files;
     if(AddImageDialog(parent, files))
     {
-        if(files.size()>0)
+        if(!files.empty())
         {
             return new PanoCommand::wxAddImagesCmd(pano,files);
         };
@@ -270,7 +270,7 @@ PanoCommand::PanoCommand* AddImagesSeriesOperation::GetInternalCommand(wxWindow*
             return NULL;
         };
         //just in case
-        if(files.size()==0)
+        if(files.empty())
         {
             return NULL;
         };
@@ -358,7 +358,7 @@ PanoCommand::PanoCommand* AddImagesSeriesOperation::GetInternalCommand(wxWindow*
         }
     }
 
-    if(files.size()>0)
+    if(!files.empty())
     {
         // sort files by date
         sortbytime spred(timeMap);
@@ -450,7 +450,7 @@ PanoCommand::PanoCommand* ChangeColorAnchorImageOperation::GetInternalCommand(wx
 
 bool NewLensOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntSet images, GuiLevel guiLevel)
 {
-    if(pano.getNrOfImages()==0 || images.size()==0)
+    if(pano.getNrOfImages()==0 || images.empty())
     {
         return false;
     }
@@ -473,7 +473,7 @@ PanoCommand::PanoCommand* NewLensOperation::GetInternalCommand(wxWindow* parent,
 
 bool ChangeLensOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntSet images, GuiLevel guiLevel)
 {
-    if(pano.getNrOfImages()==0 || images.size()==0)
+    if(pano.getNrOfImages()==0 || images.empty())
     {
         return false;
     }
@@ -618,7 +618,7 @@ bool RemoveControlPointsOperation::IsEnabled(HuginBase::Panorama& pano, HuginBas
 PanoCommand::PanoCommand* RemoveControlPointsOperation::GetInternalCommand(wxWindow* parent, HuginBase::Panorama& pano, HuginBase::UIntSet images)
 {
     HuginBase::UIntSet selImages;
-    if(images.size()==0)
+    if(images.empty())
     {
         fill_set(selImages,0,pano.getNrOfCtrlPoints()-1);
     }
@@ -635,7 +635,7 @@ PanoCommand::PanoCommand* RemoveControlPointsOperation::GetInternalCommand(wxWin
             cpsToDelete.insert(it - cps.begin());
         }
     }
-    if(cpsToDelete.size()==0)
+    if(cpsToDelete.empty())
     {
         wxMessageBox(_("Selected images have no control points."),
 #ifdef __WXMSW__
@@ -705,7 +705,7 @@ PanoCommand::PanoCommand* CleanControlPointsOperation::GetInternalCommand(wxWind
     {
         //now run the second step
         HuginBase::UIntSet removedCP2=getCPoutsideLimit(newPano, 2.0);
-        if(removedCP2.size()>0)
+        if(!removedCP2.empty())
         {
             for(HuginBase::UIntSet::const_iterator it=removedCP2.begin();it!=removedCP2.end();++it)
             {
@@ -718,7 +718,7 @@ PanoCommand::PanoCommand* CleanControlPointsOperation::GetInternalCommand(wxWind
     {
         return NULL;
     }
-    if (removedCPs.size()>0)
+    if (!removedCPs.empty())
     {
         wxMessageBox(wxString::Format(_("Removed %lu control points"), (unsigned long int)removedCPs.size()), _("Cleaning"), wxOK | wxICON_INFORMATION, parent);
         return new PanoCommand::RemoveCtrlPointsCmd(pano,removedCPs);
@@ -758,7 +758,7 @@ PanoCommand::PanoCommand* CelesteOperation::GetInternalCommand(wxWindow* parent,
     {
         // Image to analyse
         HuginBase::CPointVector cps=pano.getCtrlPointsVectorForImage(*it);
-        if(cps.size()==0)
+        if(cps.empty())
         {
             if (!progress.updateDisplayValue())
             {
@@ -793,7 +793,7 @@ PanoCommand::PanoCommand* CelesteOperation::GetInternalCommand(wxWindow* parent,
         {
             return NULL;
         };
-        if(cloudCP.size()>0)
+        if(!cloudCP.empty())
         {
             for(HuginBase::UIntSet::const_iterator it2=cloudCP.begin();it2!=cloudCP.end(); ++it2)
             {
@@ -810,7 +810,7 @@ PanoCommand::PanoCommand* CelesteOperation::GetInternalCommand(wxWindow* parent,
     {
         return NULL;
     }
-    if (cpsToRemove.size()>0)
+    if (!cpsToRemove.empty())
     {
         wxMessageBox(wxString::Format(_("Removed %lu control points"), (unsigned long int) cpsToRemove.size()), _("Celeste result"),wxOK|wxICON_INFORMATION);
         return new PanoCommand::RemoveCtrlPointsCmd(pano,cpsToRemove);
@@ -887,7 +887,7 @@ PanoCommand::PanoCommand* ResetOperation::GetInternalCommand(wxWindow* parent, H
             return NULL;
         };
     };
-    if(images.size()==0)
+    if(images.empty())
     {
         fill_set(images,0,pano.getNrOfImages()-1);
     };
@@ -1171,7 +1171,7 @@ bool ResetOperation::ShowDialog(wxWindow* parent)
 
 bool NewStackOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntSet images, GuiLevel guiLevel)
 {
-    if(pano.getNrOfImages()==0 || images.size()==0)
+    if(pano.getNrOfImages()==0 || images.empty())
     {
         return false;
     }
@@ -1194,7 +1194,7 @@ PanoCommand::PanoCommand* NewStackOperation::GetInternalCommand(wxWindow* parent
 
 bool ChangeStackOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UIntSet images, GuiLevel guiLevel)
 {
-    if(pano.getNrOfImages()==0 || images.size()==0)
+    if(pano.getNrOfImages()==0 || images.empty())
     {
         return false;
     }

@@ -927,7 +927,7 @@ void ImagesTreeCtrl::UpdateOptimizerVariables()
         {
             imgNrs.insert(data->GetImgNr());
         };
-        if(imgNrs.size()>0)
+        if(!imgNrs.empty())
         {
             for(size_t i=0;i<GetColumnCount();i++)
             {
@@ -1435,7 +1435,7 @@ void ImagesTreeCtrl::OnDeactivateImage(wxCommandEvent & e)
 void ImagesTreeCtrl::UnLinkImageVariables(bool linked)
 {
     HuginBase::UIntSet images=GetSelectedImages();
-    if(images.size()>0 && m_variableVector[m_selectedColumn]!=HuginBase::ImageVariableGroup::IVE_Filename)
+    if(!images.empty() && m_variableVector[m_selectedColumn]!=HuginBase::ImageVariableGroup::IVE_Filename)
     {
         std::set<HuginBase::ImageVariableGroup::ImageVariableEnum> variables;
         variables.insert(m_variableVector[m_selectedColumn]);
@@ -1477,7 +1477,7 @@ void ImagesTreeCtrl::OnUnlinkImageVariables(wxCommandEvent &e)
 void ImagesTreeCtrl::OnEditImageVariables(wxCommandEvent &e)
 {
     HuginBase::UIntSet imgs=GetSelectedImages();
-    if(imgs.size()>0)
+    if(!imgs.empty())
     {
         ImageVariableDialog dlg(this, m_pano, imgs);
         dlg.SetGuiLevel(m_guiLevel);
@@ -1516,7 +1516,7 @@ void ImagesTreeCtrl::OnBeginDrag(wxTreeEvent &e)
     if(m_pano->getNrOfImages()>0 && !m_dragging)
     {
         m_draggingImages=GetSelectedImages();
-        if(m_draggingImages.size()>0)
+        if(!m_draggingImages.empty())
         {
             if((m_groupMode==GROUP_NONE && m_draggingImages.size()==1 && !ctrlPressed) ||
                 m_groupMode==GROUP_LENS || m_groupMode==GROUP_STACK)
@@ -1990,7 +1990,7 @@ void ImagesTreeCtrl::OnChar(wxTreeEvent &e)
         case WXK_DELETE:
             {
                 HuginBase::UIntSet imgs=GetSelectedImages();
-                if(imgs.size()>0)
+                if(!imgs.empty())
                 {
                     PanoCommand::GlobalCmdHist::getInstance().addCommand(
                         new PanoCommand::RemoveImagesCmd(*m_pano, imgs)

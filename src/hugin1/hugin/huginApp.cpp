@@ -530,7 +530,7 @@ bool huginApp::OnInit()
                 } while (dir.GetNext(&foundFile));
 #endif
             }
-            if(filesv.size()>0)
+            if(!filesv.empty())
             {
                 std::vector<PanoCommand::PanoCommand*> cmds;
                 cmds.push_back(new PanoCommand::wxAddImagesCmd(pano,filesv));
