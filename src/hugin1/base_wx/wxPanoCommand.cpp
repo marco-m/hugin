@@ -651,7 +651,7 @@ bool wxLoadPTProjectCmd::processPanorama(HuginBase::Panorama& pano)
                 // open file dialog
                 wxFileDialog dlg(wxGetActiveWindow(), wxString::Format(_("Select image %s"), fname.GetFullName()),
                                  basedir, fname.GetFullName(),
-                                 HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN  | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition);
+                                 GetFileDialogImageFilters(), wxFD_OPEN  | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition);
                 dlg.SetDirectory(basedir);
                 if (dlg.ShowModal() == wxID_OK) {
                     pano.setImageFilename(i, (const char *)dlg.GetPath().mb_str(HUGIN_CONV_FILENAME));
@@ -844,7 +844,7 @@ bool wxApplyTemplateCmd::processPanorama(HuginBase::Panorama& pano)
         wxString path = config->Read(wxT("actualPath"), wxT(""));
         wxFileDialog dlg(wxGetActiveWindow(), _("Add images"),
                 path, wxT(""),
-                HUGIN_WX_FILE_IMG_FILTER, wxFD_OPEN|wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW , wxDefaultPosition);
+                GetFileDialogImageFilters(), wxFD_OPEN|wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW , wxDefaultPosition);
         dlg.SetDirectory(path);
 
         // remember the image extension

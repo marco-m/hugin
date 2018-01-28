@@ -373,7 +373,7 @@ void LensCalFrame::OnAddImage(wxCommandEvent &e)
     wxString path = config->Read(wxT("/actualPath"), wxT(""));
     wxFileDialog dlg(this,_("Add images"),
                      path, wxT(""),
-                     HUGIN_WX_FILE_IMG_FILTER,
+                     GetFileDialogImageFilters(),
                      wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition);
     dlg.SetDirectory(path);
 

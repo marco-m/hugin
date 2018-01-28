@@ -27,6 +27,44 @@
 #include "platform.h"
 
 #include <hugin_utils/utils.h>
+#include <vigra/imageinfo.hxx>
+
+/** build filter string "*.ext", adds also upper case version for UNIX paths when needed */
+wxString GetFilterExtensions(const wxString& ext)
+{
+    wxString extensionString("*.");
+    extensionString.Append(ext);
+    if (wxFileName::IsCaseSensitive())
+    {
+        extensionString.Append(";*.").Append(ext.Upper());
+    };
+    return extensionString;
+};
+
+wxString GetFileDialogImageFilters()
+{
+    wxString filterString;
+    const std::string extensions = vigra::impexListExtensions();
+    std::vector<std::string> exts=hugin_utils::SplitString(extensions, " ");
+    if (!exts.empty())
+    {
+        filterString.Append(_("All Image files")).Append("|");
+        for (auto& ext : exts)
+        {
+            filterString.Append(GetFilterExtensions(ext)).Append(";");
+        };
+        // remove last character == ";"
+        filterString.RemoveLast();
+        filterString.Append("|");
+    };
+    filterString.Append(_("JPEG files (*.jpg,*.jpeg)")).Append("|").Append(GetFilterExtensions("jpg")).Append(";").Append(GetFilterExtensions("jpeg"));
+    filterString.Append("|").Append(_("TIFF files (*.tif,*.tiff)")).Append("|").Append(GetFilterExtensions("tif")).Append(";").Append(GetFilterExtensions("tiff"));
+    filterString.Append("|").Append(_("PNG files (*.png)")).Append("|").Append(GetFilterExtensions("png"));
+    filterString.Append("|").Append(_("HDR files (*.hdr)")).Append("|").Append(GetFilterExtensions("hdr"));
+    filterString.Append("|").Append(_("EXR files (*.exr)")).Append("|").Append(GetFilterExtensions("exr"));
+    filterString.Append("|").Append(_("All files (*)")).Append("|*");
+    return filterString;
+}
 
 #if defined __WXMAC__ || defined __WXOSX_COCOA__
 

@@ -40,7 +40,9 @@
 #define HUGIN_CONV_FILENAME (*wxConvFileName)
 #endif
 
-#define HUGIN_WX_FILE_IMG_FILTER _("All Image files|*.jpg;*.JPG;*jpeg;*JPEG;*.tif;*.TIF;*.tiff;*.TIFF;*.png;*.PNG;*.bmp;*.BMP;*.gif;*.GIF;*.pnm;*.PNM;*.sun;*.viff;*.hdr;*.HDR;*.exr;*.EXR|JPEG files (*.jpg,*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|TIFF files (*.tif,*.tiff)|*.tif;*.TIF;*.tiff;*.TIFF|PNG files (*.png)|*.png;*.PNG|HDR files (*.hdr)|*.hdr;*.HDR|EXR files (*.exr)|*.exr;*.EXR|All files (*)|*")
+/** return filter for image files, needed by file open dialog 
+  it contains all image format vigra can read and some other format */
+WXIMPEX wxString GetFileDialogImageFilters();
 
 #if defined __WXMAC__ || defined __WXOSX_COCOA__
 
