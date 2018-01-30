@@ -232,7 +232,7 @@ void FindPanoDialog::OnButtonClose(wxCommandEvent& e)
     if(!m_panos.empty())
     {
         if(wxMessageBox(_("The list contains possibly unprocessed panoramas.\nIf you close the dialog, you will lose them.\nContinue anyway?"),
-                        _("Question"),wxYES_NO|wxICON_QUESTION,this)==wxNO)
+                        _("Question"),wxYES_NO|wxICON_WARNING,this)==wxNO)
         {
             return;
         };
@@ -266,8 +266,8 @@ void FindPanoDialog::OnButtonStart(wxCommandEvent& e)
         {
             if(!m_panos.empty())
             {
-                if(wxMessageBox(_("The list contains still not yet processed panoramas.\nIf you continue, they will be disregarded.\nDo you still want to continue?"),
-                                _("Question"),wxYES_NO|wxICON_QUESTION,this)==wxNO)
+                if (wxMessageBox(_("The list contains still not yet processed panoramas.\nIf you continue, they will be disregarded.\nDo you still want to continue?"),
+                                _("Question"),wxYES_NO|wxICON_WARNING,this)==wxNO)
                 {
                     return;
                 };
