@@ -978,6 +978,27 @@ void PossiblePano::PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs)
                     x = (THUMBSIZE - newWidth) / 2;
                     y = 0;
                 }
+                // rotate according to orientation tag
+                if ((*it)->getRoll() == 90)
+                {
+                    rawImage = rawImage.Rotate90();
+                    std::swap(x, y);
+                }
+                else
+                {
+                    if ((*it)->getRoll() == 270)
+                    {
+                        rawImage = rawImage.Rotate90(false);
+                        std::swap(x, y);
+                    }
+                    else
+                    {
+                        if ((*it)->getRoll() == 180)
+                        {
+                            rawImage = rawImage.Rotate180();
+                        };
+                    };
+                };
                 // create final bitmap with centered thumbnail
                 wxBitmap bitmap(THUMBSIZE, THUMBSIZE);
                 wxMemoryDC dc(bitmap);
