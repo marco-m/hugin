@@ -919,6 +919,19 @@ IF(MSVC14)
     )
   ENDIF()
   SET(CPACK_WIX_PATCH_FILE "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist.xml")
+ELSEIF(MSVC15)
+  IF(CMAKE_CL_64)
+    SET(CPACK_WIX_EXTRA_SOURCES 
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist_vc15_x64.wxs"
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/filetype.wxs"
+    )
+  ELSE()
+    SET(CPACK_WIX_EXTRA_SOURCES
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist_vc15_x86.wxs"
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/filetype.wxs"
+    )
+  ENDIF()
+  SET(CPACK_WIX_PATCH_FILE "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist.xml")
 ELSE()
   SET(CPACK_WIX_EXTRA_SOURCES "${CMAKE_SOURCE_DIR}/platforms/windows/wix/filetype.wxs")
   SET(CPACK_WIX_PATCH_FILE "${CMAKE_SOURCE_DIR}/platforms/windows/wix/filetype.xml")
