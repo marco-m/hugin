@@ -126,11 +126,7 @@ IF (UNIX)
 FIND_PACKAGE(PkgConfig)
 ENDIF (UNIX)
 
-IF(WIN32)
-    set(HUGIN_SHARED "0" CACHE STRING "Build shared internal libraries" )
-ELSE(WIN32)
-    set(HUGIN_SHARED "1" CACHE STRING "Build shared internal libraries" )
-ENDIF(WIN32)
+set(HUGIN_SHARED "1" CACHE STRING "Build shared internal libraries" )
 
 #
 # Setup windows search paths for dependencies
