@@ -29,32 +29,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#ifdef HAVE_STD_FILESYSTEM
-#include <filesystem>
-namespace fs = std::tr2::sys;
-#define OVERWRITE_EXISTING std::tr2::sys::copy_options::overwrite_existing
-#else
-#define BOOST_FILESYSTEM_VERSION 3
-#ifdef __GNUC__
-  #include "hugin_config.h"
-  #include <boost/version.hpp>
-  #if BOOST_VERSION<105700
-    #if BOOST_VERSION>=105100
-      // workaround a bug in boost filesystem
-      // boost filesystem is probably compiled with C++03
-      // but Hugin is compiled with C++11, this results in
-      // conflicts in boost::filesystems at a enum
-      // see https://svn.boost.org/trac/boost/ticket/6779
-      #define BOOST_NO_CXX11_SCOPED_ENUMS
-    #else
-      #define BOOST_NO_SCOPED_ENUMS
-    #endif
-  #endif
-#endif
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#define OVERWRITE_EXISTING boost::filesystem::copy_option::overwrite_if_exists
-#endif
+#include <hugin_utils/filesystem.h>
 #include <getopt.h>
 #include <panodata/Panorama.h>
 #include <hugin_utils/stl_utils.h>

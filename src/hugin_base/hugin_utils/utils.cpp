@@ -48,14 +48,7 @@
 #include <hugin_config.h>
 #endif
 #include <algorithm>
-#ifdef HAVE_STD_FILESYSTEM
-#include <filesystem>
-namespace fs = std::tr2::sys;
-#else
-#define BOOST_FILESYSTEM_VERSION 3
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
+#include <hugin_utils/filesystem.h>
 #include <lcms2.h>
 
 #ifdef __APPLE__

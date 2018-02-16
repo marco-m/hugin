@@ -29,14 +29,7 @@
 #include <string>
 #include <fstream>
 #include "hugin_config.h"
-#ifdef HAVE_STD_FILESYSTEM
-#include <filesystem>
-namespace fs = std::tr2::sys;
-#else
-#define BOOST_FILESYSTEM_VERSION 3
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
+#include <hugin_utils/filesystem.h>
 #include <getopt.h>
 #include <panodata/Panorama.h>
 #include <hugin_utils/stl_utils.h>

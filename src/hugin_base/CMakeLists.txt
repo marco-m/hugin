@@ -92,6 +92,7 @@ hugin_math/hugin_math.h
 hugin_math/Matrix3.h
 hugin_math/Vector3.h
 hugin_utils/alphanum.h
+hugin_utils/filesystem.h
 hugin_utils/openmp_lock.h
 hugin_utils/platform.h
 hugin_utils/stl_utils.h
