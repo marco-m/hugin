@@ -26,14 +26,14 @@ IF(WIN32)
             NO_DEFAULT_PATH)
   FILE(GLOB PANO13_EXECUTABLES ${PANO13_EXE_DIR}/PT*.exe ${PANO13_EXE_DIR}/panoinfo.exe)
   INSTALL(FILES ${PANO13_EXECUTABLES} DESTINATION ${BINDIR})
-  IF(${HUGIN_SHARED})
+  IF(HUGIN_SHARED)
     FIND_FILE(PANO13_DLL 
               NAMES pano13.dll libpano13.dll
               PATHS ${SOURCE_BASE_DIR}/libpano13/bin ${SOURCE_BASE_DIR}/Deploy/bin
               NO_SYSTEM_ENVIRONMENT_PATH
               )
     INSTALL(FILES ${PANO13_DLL} DESTINATION ${BINDIR})
-  ENDIF(${HUGIN_SHARED})
+  ENDIF()
 
   # TODO: install documentation for panotools?
   FIND_PATH(PANO13_DOC_DIR Optimize.txt 

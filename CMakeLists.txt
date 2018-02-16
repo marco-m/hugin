@@ -297,16 +297,16 @@ IF( NOT Boost_root_suffix )
 ENDIF( NOT Boost_root_suffix )
 
 IF(WIN32)
-  IF(${HUGIN_SHARED})
+  IF(HUGIN_SHARED)
     SET(Boost_USE_STATIC_LIBS OFF)
     SET(Boost_USE_STATIC_RUNTIME OFF)
     # ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)
     # ADD_DEFINITIONS(-D_DLL)
     ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
-  ELSE(${HUGIN_SHARED})
+  ELSE()
     SET(Boost_USE_STATIC_LIBS ON)
     SET(Boost_USE_STATIC_RUNTIME ON)
-  ENDIF(${HUGIN_SHARED})
+  ENDIF()
   # If BOOST_ROOT was defined in the environment, use it. 
   IF(NOT BOOST_ROOT AND NOT $ENV{BOOST_ROOT} STREQUAL "") 
     SET(BOOST_ROOT $ENV{BOOST_ROOT})
@@ -566,34 +566,34 @@ IF (APPLE)
   ENDIF (NOT MAC_SELF_CONTAINED_BUNDLE)
 ENDIF (APPLE)
 
-IF (${HUGIN_SHARED} AND UNIX AND NOT APPLE)
+IF (HUGIN_SHARED AND UNIX AND NOT APPLE)
   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBDIR}/hugin")
   SET(HUGIN_LIBS_PRIVATE_DIR "1" CACHE INTERNAL "Store internal
     libraries in private subdirectory" )
-ELSE (${HUGIN_SHARED} AND UNIX AND NOT APPLE)
+ELSE ()
   # On OS X files are moved around after make install, do not try to use
   # rpath or CMAKE_INSTALL_NAME_DIR
   SET(HUGIN_LIBS_PRIVATE_DIR "0" CACHE INTERNAL "Store internal
     libraries in private subdirectory" )
-ENDIF (${HUGIN_SHARED} AND UNIX AND NOT APPLE)
+ENDIF()
 
 IF (UNIX)
-  IF (${HUGIN_SHARED})
+  IF (HUGIN_SHARED)
     # use shared internal libraries
     SET(HUGIN_SHARED_LIBS 1)
-  ENDIF (${HUGIN_SHARED})
+  ENDIF (HUGIN_SHARED)
   MESSAGE("-- Using shared internal libraries")
-ELSE (UNIX)
+ELSE()
 
-  IF (${HUGIN_SHARED})
+  IF (HUGIN_SHARED)
     ADD_DEFINITIONS(-DOPENEXR_DLL)
     ADD_DEFINITIONS(-DEXV_HAVE_DLL)
     ADD_DEFINITIONS(-DHugin_shared)
     ADD_DEFINITIONS(-DPANO13_DLL)
     SET(HUGIN_SHARED_LIBS 1)
-  ELSE(${HUGIN_SHARED})
+  ELSE()
     ADD_DEFINITIONS(-DVIGRA_STATIC_LIB)
-  ENDIF(${HUGIN_SHARED})
+  ENDIF()
 
   # Windows installer packaging related stuff
   # unfortunately, CMake/CPack does not support Warsetup directly.
@@ -627,7 +627,7 @@ ELSE (UNIX)
     # "Linking to lib file: libboost_thread-vc90-mt-s-1_37.lib"
     # This can be used to determine on which boost libraries Hugin depend on
     #ADD_DEFINITIONS(/DBOOST_LIB_DIAGNOSTIC)
-    IF(NOT ${HUGIN_SHARED})
+    IF(NOT HUGIN_SHARED)
     # compile everything for the static C runtime
 	FOREACH(TYPE C CXX)
 		# makefiles use blank configuration
@@ -660,9 +660,9 @@ ELSE (UNIX)
     STRING(REPLACE " /INCREMENTAL:NO" "" NEW_FLAGS "${NEW_FLAGS}")
     STRING(REPLACE " /INCREMENTAL" "" NEW_FLAGS "${NEW_FLAGS}")
     SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${NEW_FLAGS} /INCREMENTAL:NO" CACHE STRING "overwritten" FORCE)
-    ENDIF(NOT ${HUGIN_SHARED})
-  ENDIF(MSVC)
-ENDIF (UNIX)
+    ENDIF()
+  ENDIF()
+ENDIF ()
 
 IF(APPLE)
 
