@@ -266,10 +266,16 @@ check_cxx_source_compiles(
     #include <filesystem>
     #include <string>
     
+    #if defined _MSC_VER && _MSC_VER <= 1900
+    namespace fs = std::tr2::sys;
+    #else
+    namespace fs = std::experimental::filesystem;
+    #endif
+
     int main()
     {
-      std::tr2::sys::path filepath;
-      filepath=std::tr2::sys::absolute(filepath);
+      fs::path filepath;
+      filepath=fs::absolute(filepath);
       std::string s=filepath.filename().string();
       return 0;    
     };

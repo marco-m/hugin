@@ -30,8 +30,15 @@
 #include "hugin_config.h"
 #ifdef HAVE_STD_FILESYSTEM
     #include <filesystem>
-    namespace fs = std::tr2::sys;
-    #define OVERWRITE_EXISTING std::tr2::sys::copy_options::overwrite_existing
+    #if defined _MSC_VER && _MSC_VER <= 1900
+        // MSVC 2015 has implemented in std::tr2::sys
+        namespace fs = std::tr2::sys;
+        #define OVERWRITE_EXISTING std::tr2::sys::copy_options::overwrite_existing
+    #else
+        // MSVC 2017 is using experimental namespace
+        namespace fs = std::experimental::filesystem;
+        #define OVERWRITE_EXISTING std::experimental::filesystem::copy_options::overwrite_existing
+    #endif
 #else
     // use Boost::Filesystem as fallback
     #define BOOST_FILESYSTEM_VERSION 3
