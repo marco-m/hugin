@@ -66,7 +66,7 @@ static void usage(const char* name)
          << "  Options: " << std::endl
          << "      -c         create coordinate images (only TIFF_m output)" << std::endl
          << "      -v         verbose output" << std::endl
-         << "      -d         print detailed output for gpu processing" << std::endl
+         << "      -d|--debug print detailed output for gpu processing" << std::endl
          << "      -g|--gpu   perform image remapping on the GPU" << std::endl
          << std::endl
          << "  The following options can be used to override settings in the project file:" << std::endl
@@ -153,6 +153,8 @@ int main(int argc, char* argv[])
         { "gpu", no_argument, NULL, 'g'},
         { "bigtiff", no_argument, NULL, USE_BIGTIFF },
         { "help", no_argument, NULL, 'h'},
+        { "debug", no_argument, NULL, 'd'},
+        { "output", required_argument, NULL, 'o'},
         0
     };
     
