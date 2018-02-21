@@ -342,12 +342,10 @@ bool SrcPanoImage::readEXIF()
     Exiv2::Image::AutoPtr image;
     try {
         image = Exiv2::ImageFactory::open(filename.c_str());
-    }catch(...) {
-        std::cerr << __FILE__ << " " << __LINE__ << " Error opening file" << std::endl;
-        return false;
     }
-    if (image.get() == 0) {
-        std::cerr << "Unable to open file to read EXIF data: " << filename << std::endl;
+    catch (const Exiv2::Error& e)
+    {
+        std::cerr << "Exiv2: Error reading metadata (" << e.what() << ")" << std::endl;
         return false;
     }
 
