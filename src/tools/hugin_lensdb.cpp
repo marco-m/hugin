@@ -99,7 +99,7 @@ bool CheckProjectFile(const fs::path filename)
     {
         return false;
     };
-    std::cout << "Checking " << filename.string();
+    std::cout << "Checking " << filename.string() << "..." << std::endl;
     HuginBase::StandardImageVariableGroups lenses(pano);
     if (lenses.getLenses().getNumberOfParts()==1)
     {
