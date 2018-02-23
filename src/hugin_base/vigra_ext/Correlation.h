@@ -105,6 +105,10 @@ CorrelationResult correlateImageFastFFT(SrcImage & src, DestImage & dest, Kernel
     vigra_precondition(sw >= kw && sh >= kh, "correlateImageFFT(): kernel larger than image.");
 
     CorrelationResult res;
+    if (sw < kw || sh < kh)
+    {
+        return res;
+    };
 
     // calculate mean and variance of kernel/template
     vigra::FindAverageAndVariance<typename KernelImage::PixelType> kMean;
@@ -400,11 +404,13 @@ CorrelationResult subpixelMaxima(vigra::triple<Iterator, Iterator, Accessor> img
     double a,b,c;
     FitPolynom(x, x + 2*interpWidth+1, zx, a,b,c);
     if (std::isnan(a) || std::isnan(b) || std::isnan(c)) {
-	exportImage(img,vigra::ImageExportInfo("test.tif"));
-	DEBUG_ERROR("Bad polynomial fit results");
-	res.maxpos.x=max.x;
-	res.maxpos.y=max.y;
-	return res;
+#ifdef DEBUG_CORRELATION
+        exportImage(img,vigra::ImageExportInfo("test.tif"));
+#endif
+        DEBUG_DEBUG("Bad polynomial fit results");
+        res.maxpos.x=max.x;
+        res.maxpos.y=max.y;
+        return res;
     }
 
     // calculate extrema of x position by setting
@@ -421,6 +427,13 @@ CorrelationResult subpixelMaxima(vigra::triple<Iterator, Iterator, Accessor> img
     double maxx = c*res.maxpos.x*res.maxpos.x + b*res.maxpos.x + a;
 
     FitPolynom(x, x + 2*interpWidth+1, zy, a,b,c);
+    if (std::isnan(a) || std::isnan(b) || std::isnan(c))
+    {
+        DEBUG_DEBUG("Bad polynomial fit results");
+        res.maxpos.x = max.x;
+        res.maxpos.y = max.y;
+        return res;
+    }
     // calculate extrema of y position
     if (c==0)
 	res.maxpos.y=0;
