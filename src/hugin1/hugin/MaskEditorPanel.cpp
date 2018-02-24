@@ -646,6 +646,10 @@ void MaskEditorPanel::OnZoom(wxCommandEvent & e)
     {
         m_editImg->Scroll(posX*factor - ctrlSize.GetWidth() / 2, posY*factor - ctrlSize.GetHeight() / 2);
     };
+    if (e.GetString() == "update_selection")
+    {
+        XRCCTRL(*this, "mask_editor_choice_zoom", wxChoice)->SetSelection(e.GetSelection());
+    };
 }
 
 void MaskEditorPanel::OnColourChanged(wxColourPickerEvent &e)

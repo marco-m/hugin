@@ -975,7 +975,7 @@ void MaskImageCtrl::OnRightMouseUp(wxMouseEvent& mouse)
 
 void MaskImageCtrl::OnKeyUp(wxKeyEvent &e)
 {
-    int key=e.GetKeyCode();
+    const int key=e.GetKeyCode();
     bool processed=false;
     if((key==WXK_DELETE) || (key==WXK_NUMPAD_DELETE))
     {
@@ -1010,6 +1010,41 @@ void MaskImageCtrl::OnKeyUp(wxKeyEvent &e)
                     wxCommandEvent dummy;
                     processed=true;
                     m_editPanel->OnMaskDelete(dummy);
+                };
+            };
+        };
+    }
+    else
+    {
+        // handle key 0|1|2 only when editor state allows it
+        if (m_maskEditState == NO_MASK || m_maskEditState == NO_SELECTION ||
+            m_maskEditState == POINTS_SELECTED || m_maskEditState == CROP_SHOWING)
+        {
+            if (key == '1')
+            {
+                wxCommandEvent zoomEvent(wxEVT_CHOICE, XRCID("mask_editor_choice_zoom"));
+                zoomEvent.SetInt(0);
+                zoomEvent.SetString("update_selection");
+                GetParent()->GetEventHandler()->AddPendingEvent(zoomEvent);
+            }
+            else
+            {
+                if (key == '2')
+                {
+                    wxCommandEvent zoomEvent(wxEVT_CHOICE, XRCID("mask_editor_choice_zoom"));
+                    zoomEvent.SetInt(2);
+                    zoomEvent.SetString("update_selection");
+                    GetParent()->GetEventHandler()->AddPendingEvent(zoomEvent);
+                }
+                else
+                {
+                    if (key == '0')
+                    {
+                        wxCommandEvent zoomEvent(wxEVT_CHOICE, XRCID("mask_editor_choice_zoom"));
+                        zoomEvent.SetInt(1);
+                        zoomEvent.SetString("update_selection");
+                        GetParent()->GetEventHandler()->AddPendingEvent(zoomEvent);
+                    };
                 };
             };
         };
