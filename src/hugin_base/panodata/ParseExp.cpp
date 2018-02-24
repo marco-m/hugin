@@ -788,6 +788,20 @@ void PanoParseExpression(HuginBase::Panorama& pano, const std::string& expressio
     {
         Parser::ConstantMap constants;
         constants["imax"] = pano.getNrOfImages() - 1;
+        for (size_t i = 0; i < pano.getNrOfImages(); ++i)
+        {
+            const HuginBase::SrcPanoImage& img = pano.getImage(i);
+            const std::string imgNr = std::to_string(i);
+            HuginBase::VariableMap vars;
+#define image_variable( name, type, default_value ) \
+            HuginBase::PTOVariableConverterFor##name::addToVariableMap(img.get##name##IV(), vars);
+#include "panodata/image_variables.h"
+#undef image_variable
+            for (auto& var : vars)
+            {
+                constants[var.first + imgNr] = var.second.getValue();
+            }
+        }
         for (auto& var:setVars)
         {
             if (!var.flag)
