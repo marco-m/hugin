@@ -837,6 +837,10 @@ namespace HuginQueue
                             break;
                     };
                     outputFiles.Add(mergedStacksFilename);
+                    if (copyMetadata)
+                    {
+                        filesForFullExiftool.Add(mergedStacksFilename);
+                    };
                 };
             };
             if (!opts.outputHDRLayers)
