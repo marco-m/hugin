@@ -126,6 +126,11 @@ else (EXIV2_INCLUDE_DIR AND EXIV2_LIBRARIES)
             ${SOURCE_BASE_DIR}/expat-2.0.1/win32/bin/Release
             ${wxWidgets_LIB_DIR}
        )
+       IF(VCPKG_TOOLCHAIN AND NOT EXIV2EXPAT_LIBRARIES_DEBUG)
+         find_library_with_debug(EXIV2EXPAT_LIBRARIES_DEBUG
+            NAMES libexpat expat wxexpat
+         )
+       ENDIF()
      ELSE(${HUGIN_SHARED})
        find_library_with_debug(EXIV2_LIBRARIES
           WIN32_DEBUG_POSTFIX d

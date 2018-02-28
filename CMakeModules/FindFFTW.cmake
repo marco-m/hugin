@@ -31,7 +31,11 @@ find_library_with_debug(FFTW_LIBRARIES
         ${SOURCE_BASE_DIR}/fftw-3.3.3/fftw-3.3-libs/x64
         ${SOURCE_BASE_DIR}/fftw-3.3.3/fftw-3.3-libs/
 )
-
+IF(VCPKG_TOOLCHAIN AND NOT FFTW_LIBRARIES_DEBUG)
+find_library_with_debug(FFTW_LIBRARIES_DEBUG
+  NAMES libfftw-3.3 fftw3
+)
+ENDIF()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(FFTW DEFAULT_MSG 

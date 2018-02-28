@@ -34,7 +34,7 @@ ENDIF (NOT WIN32 OR MINGW)
   
   include(FindLibraryWithDebug)
   find_library_with_debug(OPENEXR_HALF_LIBRARY 
-    WIN32_DEBUG_POSTFIX d
+    #WIN32_DEBUG_POSTFIX d
     NAMES Half
     PATHS
       ${_OPENEXRLinkDir}
@@ -44,7 +44,7 @@ ENDIF (NOT WIN32 OR MINGW)
   )
 
   find_library_with_debug(OPENEXR_IEX_LIBRARY
-    WIN32_DEBUG_POSTFIX d
+    #WIN32_DEBUG_POSTFIX d
     NAMES Iex-2_2 Iex
     PATHS
       ${_OPENEXRLinkDir}
@@ -54,7 +54,7 @@ ENDIF (NOT WIN32 OR MINGW)
   )
 
   find_library_with_debug(OPENEXR_ILMTHREAD_LIBRARY 
-    WIN32_DEBUG_POSTFIX d
+    #WIN32_DEBUG_POSTFIX d
     NAMES IlmThread-2_2 IlmThread
     PATHS
       ${_OPENEXRLinkDir}
@@ -64,7 +64,7 @@ ENDIF (NOT WIN32 OR MINGW)
   )
   
   find_library_with_debug(OPENEXR_IMATH_LIBRARY 
-    WIN32_DEBUG_POSTFIX d
+    #WIN32_DEBUG_POSTFIX d
     NAMES Imath-2_2 Imath
     PATHS
       ${_OPENEXRLinkDir}
@@ -75,7 +75,7 @@ ENDIF (NOT WIN32 OR MINGW)
   
   
   find_library_with_debug(OPENEXR_ILMIMF_LIBRARY 
-    WIN32_DEBUG_POSTFIX d
+    #WIN32_DEBUG_POSTFIX d
     NAMES IlmImf-2_2 IlmImf 
     PATHS
       ${_OPENEXRLinkDir}

@@ -140,6 +140,19 @@ IF(WIN32)
         ${SOURCE_BASE_DIR}/expat/bin 
       NO_SYSTEM_ENVIRONMENT_PATH
     )
+    FIND_FILE(LIBICONV_DLL 
+      NAMES libiconv.dll
+      PATHS ${DLL_SEARCH_PATH}
+        ${SOURCE_BASE_DIR}/expat/bin 
+      NO_SYSTEM_ENVIRONMENT_PATH
+    )
+    IF(LIBICONV_DLL)
+      FIND_FILE(LIBCHARSET_DLL
+        NAMES libcharset.dll
+        PATHS ${DLL_SEARCH_PATH}
+        NO_SYSTEM_ENVIRONMENT_PATH
+      )
+    ENDIF()
     FIND_FILE(GLEW_DLL
       NAMES glew32.dll
       PATHS ${DLL_SEARCH_PATH}
@@ -162,17 +175,31 @@ IF(WIN32)
         MESSAGE(FATAL_ERROR "Unknown target for Win32 wxWidgets DLLs")
       ENDIF()
     ENDIF()
+    FIND_PATH(
+      WXWDIGETS_DLL_PATH
+      NAME 
+        wxbase300u_${WXSUFFIX}_custom.dll
+        wxbase301u_${WXSUFFIX}_custom.dll
+        wxbase302u_${WXSUFFIX}_custom.dll
+        wxbase310u_${WXSUFFIX}_custom.dll
+        wxbase311u_${WXSUFFIX}_custom.dll
+        wxbase312u_${WXSUFFIX}_custom.dll
+      PATHS
+        ${wxWidgets_LIB_DIR}
+        ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin
+    )
+    MESSAGE(STATUS "wxWidgets DLL path: ${WXWDIGETS_DLL_PATH}")
     # first variant is for development versions with 3 numbers, second variant for stable versions with 2 numbers
     FILE(GLOB WXWIDGETS_DLL
-      ${wxWidgets_LIB_DIR}/wxbase[2-3][0-9][0-9]u_${WXSUFFIX}*.dll     ${wxWidgets_LIB_DIR}/wxbase[2-3][0-9]u_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9][0-9]u_core_${WXSUFFIX}*.dll ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9]u_core_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9][0-9]u_xrc_${WXSUFFIX}*.dll  ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9]u_xrc_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9][0-9]u_adv_${WXSUFFIX}*.dll  ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9]u_adv_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9][0-9]u_gl_${WXSUFFIX}*.dll   ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9]u_gl_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9][0-9]u_html_${WXSUFFIX}*.dll ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9]u_html_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxbase[2-3][0-9][0-9]u_xml_${WXSUFFIX}*.dll ${wxWidgets_LIB_DIR}/wxbase[2-3][0-9]u_xml_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9][0-9]u_aui_${WXSUFFIX}*.dll  ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9]u_aui_${WXSUFFIX}*.dll
-      ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9][0-9]u_qa_${WXSUFFIX}*.dll   ${wxWidgets_LIB_DIR}/wxmsw[2-3][0-9]u_qa_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9][0-9]u_${WXSUFFIX}*.dll     ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9]u_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_core_${WXSUFFIX}*.dll ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_core_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_xrc_${WXSUFFIX}*.dll  ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_xrc_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_adv_${WXSUFFIX}*.dll  ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_adv_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_gl_${WXSUFFIX}*.dll   ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_gl_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_html_${WXSUFFIX}*.dll ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_html_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9][0-9]u_xml_${WXSUFFIX}*.dll ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9]u_xml_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_aui_${WXSUFFIX}*.dll  ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_aui_${WXSUFFIX}*.dll
+      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_qa_${WXSUFFIX}*.dll   ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_qa_${WXSUFFIX}*.dll
     )
     # some checking in ensure all is found okay
     list(LENGTH WXWIDGETS_DLL COUNT_WXWIDGETS_DLL)
@@ -190,6 +217,9 @@ IF(WIN32)
     ENDIF()
     IF(LZMA_DLL)
       INSTALL(FILES ${LZMA_DLL} DESTINATION ${BINDIR})
+    ENDIF()
+    IF(LIBICONV_DLL)
+      INSTALL(FILES ${LIBICONV_DLL} ${LIBCHARSET_DLL} DESTINATION ${BINDIR})
     ENDIF()
     
     FIND_FILE(SQLITE3_DLL 

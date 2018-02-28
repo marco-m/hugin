@@ -78,6 +78,7 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
       # search the debug lib
       FIND_LIBRARY(${var_name}_DEBUG
                    NAMES ${libnames_debug}
+                   PATH_SUFFIXES debug/lib
                    ${newargs}
       )
 

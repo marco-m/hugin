@@ -18,7 +18,6 @@ IF(WIN32)
   )
 
   FIND_LIBRARY_WITH_DEBUG(VIGRA_LIBRARIES
-    WIN32_DEBUG_POSTFIX d
     NAMES vigraimpex libvigraimpex 
     PATHS
     ${VIGRA_ROOT_PATH}
