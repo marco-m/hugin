@@ -242,9 +242,14 @@ class HuginExecutor : public APP
                     userOutputFile.SetPath(wxString(hugin_utils::GetDataDir().c_str(), HUGIN_CONV_FILENAME));
                     if (!userOutputFile.FileExists())
                     {
-                        std::cerr << "ERROR: File \"" << m_userOutput.mb_str(wxConvLocal) << "\" does not exists." << std::endl
-                            << "       Also tried file \"" << userOutputFile.GetFullPath().mb_str(wxConvLocal) << "\", which does also not exists." << std::endl;
-                        return false;
+                        const wxString testedFile1 = userOutputFile.GetFullPath();
+                        userOutputFile.SetPath(wxString(hugin_utils::GetUserAppDataDir().c_str(), HUGIN_CONV_FILENAME));
+                        if (!userOutputFile.FileExists())
+                        {
+                            std::cerr << "ERROR: File \"" << m_userOutput.mb_str(wxConvLocal) << "\" does not exists." << std::endl
+                                << "       Also tried files \"" << testedFile1.mb_str(wxConvLocal) << "\" and \"" << userOutputFile.GetFullPath().mb_str(wxConvLocal) << "\", which don't exist." << std::endl;
+                            return false;
+                        };
                     }
                     m_userOutput = userOutputFile.GetFullPath();
                 }
@@ -267,9 +272,14 @@ class HuginExecutor : public APP
                     userAssistantFile.SetPath(wxString(hugin_utils::GetDataDir().c_str(), HUGIN_CONV_FILENAME));
                     if (!userAssistantFile.FileExists())
                     {
-                        std::cerr << "ERROR: File \"" << m_userAssistant.mb_str(wxConvLocal) << "\" does not exists." << std::endl
-                            << "       Also tried file \"" << userAssistantFile.GetFullPath().mb_str(wxConvLocal) << "\", which does also not exists." << std::endl;
-                        return false;
+                        const wxString testedFile1 = userAssistantFile.GetFullPath();
+                        userAssistantFile.SetPath(wxString(hugin_utils::GetUserAppDataDir().c_str(), HUGIN_CONV_FILENAME));
+                        if (!userAssistantFile.FileExists())
+                        {
+                            std::cerr << "ERROR: File \"" << m_userAssistant.mb_str(wxConvLocal) << "\" does not exists." << std::endl
+                                << "       Also tried files \"" << testedFile1.mb_str(wxConvLocal) << "\" and \"" << userAssistantFile.GetFullPath().mb_str(wxConvLocal) << "\", which don't exist." << std::endl;
+                            return false;
+                        };
                     }
                     m_userAssistant = userAssistantFile.GetFullPath();
                 }
