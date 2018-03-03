@@ -534,6 +534,10 @@ int main(int argc, char* argv[])
         if (useGPU)
         {
             useGPU = hugin_utils::initGPU(&argc, argv);
+            if (!useGPU)
+            {
+                std::cout << "Could not initialize GPU. Switching back to CPU calculation." << std::endl;
+            };
         }
         opts.remapUsingGPU = useGPU;
         pano.setOptions(opts);
