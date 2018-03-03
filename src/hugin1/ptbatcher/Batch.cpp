@@ -28,7 +28,9 @@
 #include <wx/stdpaths.h>
 #ifdef __WXMSW__
 #include <powrprof.h>
+#ifdef _MSC_VER
 #pragma comment(lib, "PowrProf.lib")
+#endif
 #endif
 
 BEGIN_EVENT_TABLE(Batch, wxFrame)
@@ -860,7 +862,7 @@ void Batch::RunNextInBatch()
 {
     bool value;
     bool repeat = true;
-    unsigned int i;
+    int i;
     while(((i=GetFirstAvailable())!=-1) && repeat)
     {
         //execute command line instructions

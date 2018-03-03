@@ -31,7 +31,9 @@
 #include "FailedProjectsDialog.h"
 #ifdef __WXMSW__
 #include <powrprof.h>
+#ifdef _MSC_VER
 #pragma comment(lib, "PowrProf.lib")
+#endif
 #if wxCHECK_VERSION(3,1,0)
 #include <wx/taskbarbutton.h>
 #endif
