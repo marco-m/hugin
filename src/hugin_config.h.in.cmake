@@ -16,7 +16,7 @@
 #cmakedefine HAVE_FFTW 1
 
 /* Build a fully self contained OSX bundle (with embedded ressources) */
-#cmakedefine MAC_SELF_CONTAINED_BUNDLE
+#cmakedefine MAC_SELF_CONTAINED_BUNDLE 1
 
 /* contains directory of HuginStitchProject.app, if MAC_SELF_CONTAINED_BUNDLE 
    is not set. */
@@ -26,7 +26,7 @@
 #cmakedefine HAVE_OPENMP 1
 
 /* if we have C++17 <filesystem> header */
-#cmakedefine HAVE_STD_FILESYSTEM
+#cmakedefine HAVE_STD_FILESYSTEM 1
 
 /* if using EGL for OpenGL initialization */
 #cmakedefine HAVE_EGL 1
