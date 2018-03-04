@@ -28,4 +28,7 @@
 /* if we have C++17 <filesystem> header */
 #cmakedefine HAVE_STD_FILESYSTEM
 
+/* if using EGL for OpenGL initialization */
+#cmakedefine HAVE_EGL 1
+
 #endif

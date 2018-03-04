@@ -587,6 +587,91 @@ void DestroyContext()
 }
 
 #else
+#if defined HAVE_EGL && HAVE_EGL
+#include <EGL/egl.h>
+
+struct ContextSettings
+{
+    EGLDisplay m_display;
+    EGLContext m_context;
+};
+
+static ContextSettings context;
+
+static const EGLint configAttribs[] = {
+    EGL_BLUE_SIZE, 8,
+    EGL_GREEN_SIZE, 8,
+    EGL_RED_SIZE, 8,
+    EGL_ALPHA_SIZE, 8,
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+    EGL_CONFORMANT, EGL_OPENGL_BIT, 
+    EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
+    EGL_NONE
+};
+
+bool CreateContext(int *argcp, char **argv)
+{
+    // get display connection
+    context.m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if (context.m_display == EGL_NO_DISPLAY)
+    {
+        std::cerr << "Could not connect to EGL_DEFAULT_DISPLAY" << std::endl;
+        return false;
+    };
+    // initialize egl
+    EGLint major, minor;
+    if (eglInitialize(context.m_display, &major, &minor) != EGL_TRUE)
+    {
+        std::cerr << "Could not initialize EGL" << std::endl
+            << "Error: 0x" << std::hex << eglGetError() << std::endl;
+        return false;
+    };
+    std::cout << "Init OpenGL ES " << major << "." << minor << std::endl;
+    std::cout << "Client API: " << eglQueryString(context.m_display, EGL_CLIENT_APIS) << std::endl
+        << "Vendor: " << eglQueryString(context.m_display, EGL_VENDOR) << std::endl
+        << "Version: " << eglQueryString(context.m_display, EGL_VERSION) << std::endl
+        << "EGL Extensions: " << eglQueryString(context.m_display, EGL_EXTENSIONS) << std::endl;
+    // bind OpenGL API (not OpenGL ES)
+    if (!eglBindAPI(EGL_OPENGL_API))
+    {
+        std::cerr << "Could not bind OpenGL API" << std::endl
+            << "Error: 0x" << std::hex << eglGetError() << std::endl;
+        return false;
+    };
+    // choose config
+    EGLint numConfigs;
+    EGLConfig egl_config;
+    if (eglChooseConfig(context.m_display, configAttribs, &egl_config, 1, &numConfigs) != EGL_TRUE)
+    {
+        std::cerr << "Cound not set egl config" << std::endl
+            << "Error: 0x" << std::hex << eglGetError() << std::endl;
+        return false;
+    };
+    // create surface
+    // create context and make it current
+    context.m_context = eglCreateContext(context.m_display, egl_config, EGL_NO_CONTEXT, NULL);
+    if (context.m_context == EGL_NO_CONTEXT)
+    {
+        std::cerr << "Cound not create context" << std::endl
+            << "Error: 0x" << std::hex << eglGetError() << std::endl;
+        return false;
+    };
+    if (eglMakeCurrent(context.m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, context.m_context) != EGL_TRUE)
+    {
+        std::cerr << "Could not make current context" << std::endl
+            << "Error: 0x" << std::hex << eglGetError() << std::endl;
+        return false;
+    };
+    return true;
+}
+
+void DestroyContext()
+{
+    // terminate egl at end
+    eglTerminate(context.m_display);
+};
+
+#else
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <GL/glx.h>
@@ -677,6 +762,7 @@ void DestroyContext()
         XCloseDisplay(context.display);
     };
 };
+#endif
 #endif
 
 bool initGPU(int *argcp, char **argv)
