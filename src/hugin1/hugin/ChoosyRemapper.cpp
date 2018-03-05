@@ -75,8 +75,6 @@ void ChoosyRemapper::UpdateAndResetIndex()
         // Add any projections where the poles maps to a big set of points here.
         case HuginBase::PanoramaOptions::PANINI:
         case HuginBase::PanoramaOptions::EQUI_PANINI:
-		case HuginBase::PanoramaOptions::BIPLANE:
-		case HuginBase::PanoramaOptions::TRIPLANE:
         case HuginBase::PanoramaOptions::GENERAL_PANINI:
             // check for pole crossing
         {
