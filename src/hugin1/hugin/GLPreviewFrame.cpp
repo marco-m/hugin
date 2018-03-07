@@ -1706,6 +1706,7 @@ void GLPreviewFrame::OnChangeFOV(wxScrollEvent & e)
             if (e.GetEventObject() == m_projParamSlider[i]) {
                 // update
                 para[i] = e.GetInt();
+                break;
             }
         }
         opt.setProjectionParameters(para);
@@ -1735,6 +1736,8 @@ void GLPreviewFrame::OnTrackChangeFOV(wxScrollEvent & e)
             if (e.GetEventObject() == m_projParamSlider[i]) {
                 // update
                 para[i] = e.GetInt();
+                m_projParamTextCtrl[i]->ChangeValue(wxString::Format("%d", e.GetInt()));
+                break;
             }
         }
         opt.setProjectionParameters(para);
