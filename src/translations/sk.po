@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2018-01-10 11:32+0100\n"
-"PO-Revision-Date: 2018-01-10 10:34+0000\n"
+"POT-Creation-Date: 2018-03-07 22:41+0100\n"
+"PO-Revision-Date: 2018-03-08 11:06+0000\n"
 "Last-Translator: Kornel Benko <kornel@lyx.org>\n"
 "Language-Team: Slovak <kornel@lyx.org>\n"
 "Language: sk\n"
@@ -681,6 +681,34 @@ msgstr "Šošovka"
 msgid "unknown projection"
 msgstr "Neznáma projekcia"
 
+#: hugin1/base_wx/platform.cpp:51
+msgid "All Image files"
+msgstr "Všetky obrázkové súbory"
+
+#: hugin1/base_wx/platform.cpp:60
+msgid "JPEG files (*.jpg,*.jpeg)"
+msgstr "JPEG súbory (*.jpg,*.jpeg)"
+
+#: hugin1/base_wx/platform.cpp:61
+msgid "TIFF files (*.tif,*.tiff)"
+msgstr "TIFF súbory (*.tif,*.tiff)"
+
+#: hugin1/base_wx/platform.cpp:62
+msgid "PNG files (*.png)"
+msgstr "PNG súbory (*.png)"
+
+#: hugin1/base_wx/platform.cpp:63
+msgid "HDR files (*.hdr)"
+msgstr "HDR súbory (*.hdr)"
+
+#: hugin1/base_wx/platform.cpp:64
+msgid "EXR files (*.exr)"
+msgstr "EXR súbory (*.exr)"
+
+#: hugin1/base_wx/platform.cpp:65
+msgid "All files (*)"
+msgstr "Všetky súbory (*)"
+
 #: hugin1/base_wx/platform.cpp:125 hugin1/base_wx/wxLensDB.cpp:631
 #: hugin1/base_wx/wxLensDB.cpp:636 hugin1/base_wx/wxLensDB.cpp:644
 #: hugin1/calibrate_lens/LensCalFrame.cpp:353
@@ -720,21 +748,6 @@ msgstr ""
 #, c-format
 msgid "Debug report generated in \"%s\"."
 msgstr "Ladiace správy generované v \"%s\"."
-
-#: hugin1/base_wx/platform.h:43
-msgid ""
-"All Image files|*.jpg;*.JPG;*jpeg;*JPEG;*.tif;*.TIF;*.tiff;*.TIFF;*.png;*."
-"PNG;*.bmp;*.BMP;*.gif;*.GIF;*.pnm;*.PNM;*.sun;*.viff;*.hdr;*.HDR;*.exr;*.EXR|"
-"JPEG files (*.jpg,*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|TIFF files (*.tif,*."
-"tiff)|*.tif;*.TIF;*.tiff;*.TIFF|PNG files (*.png)|*.png;*.PNG|HDR files (*."
-"hdr)|*.hdr;*.HDR|EXR files (*.exr)|*.exr;*.EXR|All files (*)|*"
-msgstr ""
-"Všetky súbory obrázkov|*.jpg;*.JPG;*jpeg;*JPEG;*.tif;*.TIF;*.tiff;*.TIFF;*."
-"png;*.PNG;*.bmp;*.BMP;*.gif;*.GIF;*.pnm;*.PNM;*.sun;*.viff,*.hdr;*.HDR;*.exr;"
-"*.EXR|JPEG súbory (*.jpg,*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|Súbory TIFF (*."
-"tif,*.tiff)|*.tif;*.TIF;*.tiff;*.TIFF|Súbory PNG (*.png)|(*.png)|*.png;*.PNG|"
-"Súbory HDR (*.hdr)|*.hdr;*.HDR|Súbory EXR (*.exr)|*.exr;*.EXR|Všetky súbory "
-"(*)|*"
 
 #: hugin1/base_wx/wxLensDB.cpp:132
 #, c-format
@@ -7175,10 +7188,6 @@ msgstr "Štandardný miešač pre nové projekty."
 msgid "Processor"
 msgstr "Procesor"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:876
-msgid "Hugin_stitch_project"
-msgstr "Hugin_stitch_project"
-
 #: hugin1/hugin/xrc/pref_dialog.xrc:879
 msgid "The engine that will run the stitch"
 msgstr "Nástroj, ktorý prevedie lepenie"
@@ -8126,6 +8135,20 @@ msgstr ""
 "Optimalizácia všetkých parametrov skreslenia \"všetko\" má zmysel iba vtedy, "
 "ak sa obrázky veľmi prekrývajú a použili ste tiež mnoho dobre rozprestrených "
 "kontrolných bodov."
+
+#~ msgid ""
+#~ "All Image files|*.jpg;*.JPG;*jpeg;*JPEG;*.tif;*.TIF;*.tiff;*.TIFF;*.png;*."
+#~ "PNG;*.bmp;*.BMP;*.gif;*.GIF;*.pnm;*.PNM;*.sun;*.viff;*.hdr;*.HDR;*.exr;*."
+#~ "EXR|JPEG files (*.jpg,*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|TIFF files (*.tif,"
+#~ "*.tiff)|*.tif;*.TIF;*.tiff;*.TIFF|PNG files (*.png)|*.png;*.PNG|HDR files "
+#~ "(*.hdr)|*.hdr;*.HDR|EXR files (*.exr)|*.exr;*.EXR|All files (*)|*"
+#~ msgstr ""
+#~ "Všetky súbory obrázkov|*.jpg;*.JPG;*jpeg;*JPEG;*.tif;*.TIF;*.tiff;*.TIFF;"
+#~ "*.png;*.PNG;*.bmp;*.BMP;*.gif;*.GIF;*.pnm;*.PNM;*.sun;*.viff,*.hdr;*.HDR;"
+#~ "*.exr;*.EXR|JPEG súbory (*.jpg,*.jpeg)|*.jpg;*.JPG;*.jpeg;*.JPEG|Súbory "
+#~ "TIFF (*.tif,*.tiff)|*.tif;*.TIF;*.tiff;*.TIFF|Súbory PNG (*.png)|(*.png)|"
+#~ "*.png;*.PNG|Súbory HDR (*.hdr)|*.hdr;*.HDR|Súbory EXR (*.exr)|*.exr;*.EXR|"
+#~ "Všetky súbory (*)|*"
 
 #~ msgid "Interface"
 #~ msgstr "Rozhranie"
