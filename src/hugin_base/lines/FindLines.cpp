@@ -155,22 +155,80 @@ HuginBase::CPVector GetControlPoints(const SingleLine& line,const unsigned int i
 
 #define MAX_RESIZE_DIM 1600
 
-struct VerticalLine
+//return footpoint of point p on line between point p1 and p2
+vigra::Point2D GetFootpoint(const vigra::Point2D& p, const vigra::Point2D& p1, const vigra::Point2D& p2, double& u)
 {
-    vigra::Point2D start;
-    vigra::Point2D end;
+    hugin_utils::FDiff2D diff = p2 - p1;
+    u = ((p.x - p1.x)*(p2.x - p1.x) + (p.y - p1.y)*(p2.y - p1.y)) / hugin_utils::sqr(hugin_utils::norm(diff));
+    diff *= u;
+    return vigra::Point2D(p1.x + diff.x, p1.y + diff.y);
+};
+
+vigra::Point2D GetFootpoint(const vigra::Point2D& p, const vigra::Point2D& p1, const vigra::Point2D& p2)
+{
+    double u;
+    return GetFootpoint(p, p1, p2, u);
+};
+
+class VerticalLine
+{
+public:
+    void SetStart(const vigra::Point2D point)
+    {
+        m_start = point;
+    };
+    void SetStart(const int x, const int y)
+    {
+        m_start = vigra::Point2D(x, y);
+    };
+    void SetEnd(const vigra::Point2D point)
+    {
+        m_end = point;
+    };
+    void SetEnd(const int x, const int y)
+    {
+        m_end = vigra::Point2D(x, y);
+    };
+    double GetLineLength() const
+    {
+        return (m_end - m_start).magnitude();
+    };
+    double GetEstimatedDistance(const VerticalLine& otherLine) const
+    {
+        auto getDist = [](const vigra::Point2D& p, const vigra::Point2D& p1, const vigra::Point2D& p2)->double
+        {
+            double t;
+            const vigra::Point2D endPoint = GetFootpoint(p, p1, p2, t);
+            if (-0.1 < t && t < 1.1)
+            {
+                return (endPoint - p).magnitude();
+            }
+            else
+            {
+                return DBL_MAX;
+            };
+        };
+        return std::min({getDist(otherLine.GetStart(), m_start, m_end), getDist(otherLine.GetEnd(), m_start, m_end),
+            getDist(m_start, otherLine.GetStart(), otherLine.GetEnd()), getDist(m_end, otherLine.GetStart(), otherLine.GetEnd())});
+    }
+    double GetAngle() const
+    {
+        return atan2(m_end.y - m_start.y, m_end.x - m_start.x);
+    };
+    const vigra::Point2D& GetStart() const
+    {
+        return m_start;
+    };
+    const vigra::Point2D& GetEnd() const
+    {
+        return m_end;
+    };
+private:
+    vigra::Point2D m_start;
+    vigra::Point2D m_end;
 };
 
 typedef std::vector<VerticalLine> VerticalLineVector;
-
-//return footpoint of point p on line between point p1 and p2
-vigra::Point2D GetFootpoint(vigra::Point2D p, vigra::Point2D p1, vigra::Point2D p2)
-{
-    hugin_utils::FDiff2D diff=p2-p1;
-    double u=((p.x-p1.x)*(p2.x-p1.x)+(p.y-p1.y)*(p2.y-p1.y))/hugin_utils::sqr(hugin_utils::norm(diff));
-    diff*=u;
-    return vigra::Point2D(p1.x+diff.x,p1.y+diff.y);
-};
 
 //linear fit of given line, returns endpoints of fitted line
 VerticalLine FitLine(SingleLine line)
@@ -191,10 +249,8 @@ VerticalLine FitLine(SingleLine line)
     if(std::abs(s_x2-s_x*s_x)<0.00001)
     {
         //vertical line needs special treatment
-        vl.start.x=s_x;
-        vl.start.y=line.line[0].y;
-        vl.end.x=s_x;
-        vl.end.y=line.line[n-1].y;
+        vl.SetStart(s_x, line.line[0].y);
+        vl.SetEnd(s_x, line.line[n - 1].y);
     }
     else
     {
@@ -205,8 +261,8 @@ VerticalLine FitLine(SingleLine line)
         vigra::Point2D p1(0,offset);
         vigra::Point2D p2(100,100*slope+offset);
         //calculate footpoint of first and last point
-        vl.start=GetFootpoint(line.line[0],p1,p2);
-        vl.end=GetFootpoint(line.line[n-1],p1,p2);
+        vl.SetStart(GetFootpoint(line.line[0], p1, p2));
+        vl.SetEnd(GetFootpoint(line.line[n - 1], p1, p2));
     };
     return vl;
 };
@@ -223,12 +279,37 @@ VerticalLineVector FilterLines(Lines lines,double roll)
             if((*it).status==valid_line && (*it).line.size()>2)
             {
                 VerticalLine vl=FitLine(*it);
-                vigra::Diff2D diff=vl.end-vl.start;
+                const vigra::Diff2D diff = vl.GetEnd() - vl.GetStart();
+                // check that line is long enough
                 if(diff.magnitude()>20)
                 {
+                    // now check angle with respect to roll angle, accept only deviation of 5° (sin 5°=0.1)
                     if(std::abs((diff.x*cos(DEG_TO_RAD(roll))+diff.y*sin(DEG_TO_RAD(roll)))/diff.magnitude())<0.1)
                     {
-                        vertLines.push_back(vl);
+                        // check distance and angle to other lines
+                        bool distanceBig = true;
+                        for (auto& otherLine : vertLines)
+                        {
+                            // distance should be at least 80 pixel = 5 % from image width
+                            if (vl.GetEstimatedDistance(otherLine) < 80)
+                            {
+                                // now check if line are parallel = have the same angle (tan(3°)=0.05)
+                                if (std::abs(vl.GetAngle() - otherLine.GetAngle()) < 0.05)
+                                {
+                                    distanceBig = false;
+                                    // both lines are close to each other, keep only the longer one
+                                    if (vl.GetLineLength() > otherLine.GetLineLength())
+                                    {
+                                        otherLine = vl;
+                                    }
+                                    continue;
+                                };
+                            };
+                        }
+                        if (distanceBig)
+                        {
+                            vertLines.push_back(vl);
+                        };
                     };
                 };
             };
@@ -331,22 +412,22 @@ HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsi
             cp.mode=HuginBase::ControlPoint::X;
             if(!needsRemap)
             {
-                cp.x1=filteredLines[i].start.x*size_factor;
-                cp.y1=filteredLines[i].start.y*size_factor;
-                cp.x2=filteredLines[i].end.x*size_factor;
-                cp.y2=filteredLines[i].end.y*size_factor;
+                cp.x1 = filteredLines[i].GetStart().x*size_factor;
+                cp.y1 = filteredLines[i].GetStart().y*size_factor;
+                cp.x2 = filteredLines[i].GetEnd().x*size_factor;
+                cp.y2 = filteredLines[i].GetEnd().y*size_factor;
             }
             else
             {
                 double xout;
                 double yout;
-                if(!transform.transformImgCoord(xout,yout,filteredLines[i].start.x,filteredLines[i].start.y))
+                if(!transform.transformImgCoord(xout,yout,filteredLines[i].GetStart().x,filteredLines[i].GetStart().y))
                 {
                     continue;
                 };
                 cp.x1=xout;
                 cp.y1=yout;
-                if(!transform.transformImgCoord(xout,yout,filteredLines[i].end.x,filteredLines[i].end.y))
+                if(!transform.transformImgCoord(xout,yout,filteredLines[i].GetEnd().x,filteredLines[i].GetEnd().y))
                 {
                     continue;
                 };
