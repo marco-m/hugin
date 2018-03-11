@@ -810,7 +810,7 @@ void CPEditorPanel::NewPointChange(hugin_utils::FDiff2D p, bool left)
             // other point already selected, finalize point.
 
             // TODO: option to ignore the auto fine tune button when multiple images are selected.
-            if (m_fineTuneCB->IsChecked() ) {
+            if (m_fineTuneCB->IsChecked() && (thisImgNr != otherImgNr)) {                
                 vigra_ext::CorrelationResult corrRes;
 
                 hugin_utils::FDiff2D newPoint = otherImg->getNewPoint();
