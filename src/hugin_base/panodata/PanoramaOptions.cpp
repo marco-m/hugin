@@ -374,47 +374,26 @@ double PanoramaOptions::getVFOV() const
     transf.createTransform(src, *this);
 
     hugin_utils::FDiff2D pmiddle;
-    hugin_utils::FDiff2D pcorner;
-    transf.transform(pmiddle, hugin_utils::FDiff2D(0, m_size.y / 2.0));
-//    transf.transform(pcorner, FDiff2D(m_size.x/2.0, m_size.y/2.0));
-    double VFOV;
-    if (pmiddle.x > 90 ||pmiddle.y < -90) {
-        // the pole has been crossed
-        VFOV = 2*(180-pmiddle.y);
-    } else {
-        VFOV = 2*pmiddle.y;
-    }
-    //double VFOV = 2.0*std::max(pcorner.y, pmiddle.y);
-
-    /*
-    double VFOV;
-    switch (m_projectionFormat) {
-        case PanoramaOptions::RECTILINEAR:
-            VFOV = 2.0 * atan( (double)m_height * tan(DEG_TO_RAD(m_hfov)/2.0) / m_width);
-            VFOV = RAD_TO_DEG(VFOV);
-            break;
-        case PanoramaOptions::CYLINDRICAL:
+    if (transf.transform(pmiddle, hugin_utils::FDiff2D(0, m_size.y / 2.0)))
+    {
+        double VFOV;
+        if (pmiddle.x > 90 || pmiddle.y < -90)
         {
-            // equations: w = f * v (f: focal length, in pixel)
-            double f = m_width / DEG_TO_RAD(m_hfov);
-            VFOV = 2*atan(m_height/(2.0*f));
-            VFOV = RAD_TO_DEG(VFOV);
-            break;
+            // the pole has been crossed
+            VFOV = 2 * (180 - pmiddle.y);
         }
-        case PanoramaOptions::EQUIRECTANGULAR:
-            // FIXME: This is wrong!
-        case TRANSVERSE_MERCATOR:
-        case MERCATOR:
-            VFOV = m_hfov * m_height / m_width;
-            break;
-        case PanoramaOptions::FULL_FRAME_FISHEYE:
-            VFOV = m_hfov * m_height / m_width;
-            break;
+        else
+        {
+            VFOV = 2 * pmiddle.y;
+        }
+        DEBUG_DEBUG(" HFOV: " << m_hfov << " size: " << m_size << " roi: " << m_roi << "  => vfov: " << VFOV);
+        return VFOV;
     }
-    */
-    DEBUG_DEBUG(" HFOV: " << m_hfov << " size: " << m_size << " roi: " << m_roi << "  => vfov: " << VFOV);
-
-    return VFOV;
+    else
+    {
+        DEBUG_DEBUG(" HFOV: " << m_hfov << " size: " << m_size << " roi: " << m_roi << "  => vfov: " << getMaxVFOV() << " (setting to max)");
+        return getMaxVFOV();
+    }
 }
 
 const std::string PanoramaOptions::fileformatNames[] =
