@@ -1495,13 +1495,7 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
 void CPEditorPanel::EnablePointEdit(bool state)
 {
     m_delButton->Enable(state);
-    bool enableFineTune = state;
-    // enable fine-tune button only when a normal control point is selected
-    if (enableFineTune && m_selectedPoint<UINT_MAX && m_selectedPoint<currentPoints.size())
-    {
-        enableFineTune = currentPoints[m_selectedPoint].second.mode == HuginBase::ControlPoint::X_Y;
-    };
-    XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable(enableFineTune);
+    XRCCTRL(*this, "cp_editor_finetune_button", wxButton)->Enable(state);
     m_x1Text->Enable(state);
     m_y1Text->Enable(state);
     m_x2Text->Enable(state);
@@ -2167,13 +2161,6 @@ void CPEditorPanel::FineTuneSelectedPoint(bool left)
 
     HuginBase::ControlPoint cp = currentPoints[m_selectedPoint].second;
 
-    // fine-tune works only for normal control points
-    // so exit for line control points
-    if (cp.mode != HuginBase::ControlPoint::X_Y)
-    {
-        wxBell();
-        return;
-    }
     unsigned int srcNr = cp.image1Nr;
     unsigned int moveNr = cp.image2Nr;
     vigra::Diff2D srcPnt(hugin_utils::roundi(cp.x1), hugin_utils::roundi(cp.y1));
