@@ -842,9 +842,9 @@ void CPEditorPanel::NewPointChange(hugin_utils::FDiff2D p, bool left)
                     if (corrRes.corrPos.x >= 0 && corrRes.corrPos.y >= 0 && corrRes.maxpos.x >= 0 && corrRes.maxpos.y >= 0)
                     {
                         thisImg->setScale(m_detailZoomFactor);
-                        thisImg->setNewPoint(corrRes.maxpos);
+                        thisImg->setNewPoint(corrRes.maxi > -1 ? corrRes.maxpos : p);
                         thisImg->update();
-                        otherImg->setNewPoint(corrRes.corrPos);
+                        otherImg->setNewPoint(corrRes.maxi > -1 ? corrRes.corrPos : newPoint);
                         changeState(BOTH_POINTS_SELECTED);
                     };
                 } else {
@@ -1106,7 +1106,20 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
 {
     DEBUG_TRACE("tmpl img nr: " << tmplImgNr << " corr src: "
                 << subjImgNr);
-
+    if (tmplImgNr == subjImgNr)
+    {
+        const double distance = (tmplPoint - o_subjPoint.toDiff2D()).magnitude();
+        while (distance < sWidth && sWidth>templSize)
+        {
+            sWidth *= 0.75;
+        };
+        if (sWidth < templSize)
+        {
+            MainFrame::Get()->SetStatusText(_("Line control points too narrow, skipping fine-tune."));
+            wxBell();
+            return false;
+        };
+    };
     MainFrame::Get()->SetStatusText(_("searching similar points..."),0);
 
     double corrThresh=HUGIN_FT_CORR_THRESHOLD;
@@ -2138,13 +2151,10 @@ hugin_utils::FDiff2D CPEditorPanel::LocalFineTunePoint(unsigned int srcNr,
     long templWidth = wxConfigBase::Get()->Read(wxT("/Finetune/TemplateSize"),HUGIN_FT_TEMPLATE_SIZE);
     long sWidth = templWidth + wxConfigBase::Get()->Read(wxT("/Finetune/LocalSearchWidth"),HUGIN_FT_LOCAL_SEARCH_WIDTH);
     vigra_ext::CorrelationResult result;
-    PointFineTune(srcNr,
-                  srcPnt,
-                  templWidth,
-                  moveNr,
-                  movePnt,
-                  sWidth,
-                  result);
+    if (!PointFineTune(srcNr, srcPnt, templWidth, moveNr, movePnt, sWidth, result))
+    {
+        return hugin_utils::FDiff2D(-1, -1);
+    };
     movedSrcPnt = result.corrPos;
     if (result.corrPos.x < 0 || result.corrPos.y < 0 || result.maxpos.x < 0 || result.maxpos.y < 0)
     {
