@@ -34,6 +34,9 @@
 #include "base_wx/huginConfig.h"
 #include "hugin/config_defaults.h"
 #include "base_wx/PTWXDlg.h"
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+#include "base_wx/wxPlatform.h"
+#endif
 
 #include <tiffio.h>
 
@@ -49,6 +52,9 @@ bool LensCalApp::OnInit()
     wxHandleFatalExceptions();
 #endif
     SetAppName(wxT("hugin"));
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+    CheckConfigFilename();
+#endif
     // register our custom pano tools dialog handlers
     registerPTWXDlgFcn();
 

@@ -98,3 +98,27 @@ WXIMPEX void FixHelpSettings()
     };
 }
 #endif
+
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+#include <wx/stdpaths.h>
+#include <wx/app.h>
+#include <wx/filename.h>
+void CheckConfigFilename()
+{
+    wxStandardPaths& paths = wxStandardPaths::Get();
+    // get config file name for old config filename
+    const wxFileName oldConfigFile (paths.GetUserConfigDir(), paths.MakeConfigFileName(wxTheApp->GetAppName(), wxStandardPaths::ConfigFileConv_Dot));
+    // now switch to XDG layout
+    paths.SetFileLayout(wxStandardPaths::FileLayout_XDG);
+    if (oldConfigFile.FileExists())
+    {
+        // get the new filename
+        const wxFileName newConfigFile(paths.GetUserConfigDir(), paths.MakeConfigFileName(wxTheApp->GetAppName(), wxStandardPaths::ConfigFileConv_Dot));
+        // if old file exists but not new file, move old config to new place
+        if (!newConfigFile.FileExists())
+        {
+            wxRenameFile(oldConfigFile.GetFullPath(), newConfigFile.GetFullPath());
+        };
+    };
+};
+#endif

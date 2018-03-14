@@ -63,6 +63,9 @@ bool PTBatcherGUI::OnInit()
 #endif
     // Required to access the preferences of hugin
     SetAppName(wxT("hugin"));
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+    CheckConfigFilename();
+#endif
 
     // need to explicitly initialize locale for C++ library/runtime
     setlocale(LC_ALL, "");

@@ -76,6 +76,9 @@ class HuginExecutor : public APP
         m_locale.AddCatalogLookupPathPrefix(wxT(INSTALL_LOCALE_DIR));
 #endif
         // init our config settings
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+        CheckConfigFilename();
+#endif
         wxConfig* config = new wxConfig(wxT("hugin"));
         wxConfigBase::Set(config);
 

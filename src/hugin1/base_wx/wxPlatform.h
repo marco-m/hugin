@@ -116,4 +116,9 @@ public:
 WXIMPEX void FixHelpSettings();
 #endif
 
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+/** function to locate Hugins config file */
+WXIMPEX void CheckConfigFilename();
+#endif
+
 #endif // HUGIN_WXPLATFORM_H

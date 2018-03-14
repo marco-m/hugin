@@ -64,6 +64,9 @@
 #include <wx/taskbarbutton.h>
 #endif
 #endif
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+#include "base_wx/wxPlatform.h"
+#endif
 
 #include <tiffio.h>
 
@@ -185,7 +188,10 @@ bool huginApp::OnInit()
 {
     DEBUG_TRACE("=========================== huginApp::OnInit() begin ===================");
     SetAppName(wxT("hugin"));
-    
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+    CheckConfigFilename();
+#endif
+
     // Connect to ImageCache: we need to tell it when it is safe to handle UI events.
     ImageCache::getInstance().asyncLoadCompleteSignal = &huginApp::imageLoadedAsync;
 

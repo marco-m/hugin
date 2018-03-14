@@ -33,6 +33,9 @@
 #include <panodata/Panorama.h>
 #include <base_wx/platform.h>
 #include "hugin/config_defaults.h"
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+#include "base_wx/wxPlatform.h"
+#endif
 
 extern "C"
 {
@@ -41,6 +44,9 @@ extern "C"
 
 void iCPApp::ReadDetectorConfig()
 {
+#if defined __WXGTK__ && wxCHECK_VERSION(3,1,1)
+    CheckConfigFilename();
+#endif
     wxConfig config(wxT("hugin"));
     //read cp detectors settings
     CPDetectorConfig cpdetector_config;
