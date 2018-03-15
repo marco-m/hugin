@@ -1108,14 +1108,17 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
                 << subjImgNr);
     if (tmplImgNr == subjImgNr)
     {
+        // for line control points (assumed when both points are in the same image)
+        // check the distance before running fine-tune
+        // if both points are in the search area decrease search area
         const double distance = (tmplPoint - o_subjPoint.toDiff2D()).magnitude();
-        while (distance < sWidth && sWidth>templSize)
+        if (distance < sWidth)
         {
-            sWidth *= 0.75;
+            sWidth = 0.9 * distance;
         };
-        if (sWidth < templSize)
+        if (sWidth < 1.1 * templSize)
         {
-            MainFrame::Get()->SetStatusText(_("Line control points too narrow, skipping fine-tune."));
+            MainFrame::Get()->SetStatusText(_("Distance between line control points too short, skipping fine-tune."));
             wxBell();
             return false;
         };
