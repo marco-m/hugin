@@ -176,7 +176,7 @@ IF(WIN32)
       ENDIF()
     ENDIF()
     FIND_PATH(
-      WXWDIGETS_DLL_PATH
+      WXWIDGETS_DLL_PATH
       NAME 
         wxbase300u_${WXSUFFIX}_custom.dll
         wxbase301u_${WXSUFFIX}_custom.dll
@@ -187,19 +187,20 @@ IF(WIN32)
       PATHS
         ${wxWidgets_LIB_DIR}
         ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin
+      NO_SYSTEM_ENVIRONMENT_PATH
     )
-    MESSAGE(STATUS "wxWidgets DLL path: ${WXWDIGETS_DLL_PATH}")
+    MESSAGE(STATUS "wxWidgets DLL path: ${WXWIDGETS_DLL_PATH}")
     # first variant is for development versions with 3 numbers, second variant for stable versions with 2 numbers
     FILE(GLOB WXWIDGETS_DLL
-      ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9][0-9]u_${WXSUFFIX}*.dll     ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9]u_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_core_${WXSUFFIX}*.dll ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_core_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_xrc_${WXSUFFIX}*.dll  ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_xrc_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_adv_${WXSUFFIX}*.dll  ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_adv_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_gl_${WXSUFFIX}*.dll   ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_gl_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_html_${WXSUFFIX}*.dll ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_html_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9][0-9]u_xml_${WXSUFFIX}*.dll ${WXWDIGETS_DLL_PATH}/wxbase[2-3][0-9]u_xml_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_aui_${WXSUFFIX}*.dll  ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_aui_${WXSUFFIX}*.dll
-      ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_qa_${WXSUFFIX}*.dll   ${WXWDIGETS_DLL_PATH}/wxmsw[2-3][0-9]u_qa_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxbase[2-3][0-9][0-9]u_${WXSUFFIX}*.dll     ${WXWIDGETS_DLL_PATH}/wxbase[2-3][0-9]u_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_core_${WXSUFFIX}*.dll ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9]u_core_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_xrc_${WXSUFFIX}*.dll  ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9]u_xrc_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_adv_${WXSUFFIX}*.dll  ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9]u_adv_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_gl_${WXSUFFIX}*.dll   ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9]u_gl_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_html_${WXSUFFIX}*.dll ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9]u_html_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxbase[2-3][0-9][0-9]u_xml_${WXSUFFIX}*.dll ${WXWIDGETS_DLL_PATH}/wxbase[2-3][0-9]u_xml_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_aui_${WXSUFFIX}*.dll  ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9]u_aui_${WXSUFFIX}*.dll
+      ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9][0-9]u_qa_${WXSUFFIX}*.dll   ${WXWIDGETS_DLL_PATH}/wxmsw[2-3][0-9]u_qa_${WXSUFFIX}*.dll
     )
     # some checking in ensure all is found okay
     list(LENGTH WXWIDGETS_DLL COUNT_WXWIDGETS_DLL)
