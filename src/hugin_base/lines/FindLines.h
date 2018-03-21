@@ -74,7 +74,7 @@ namespace HuginLines
      *  @param nrLine maximal number of lines to return
      *  @return HuginBase::CPVector with all vertical control points
      */
-    IMPEX HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::UInt8RGBImage& image,const unsigned int nrLines);
-    IMPEX HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::BImage& image,const unsigned int nrLines);
+    IMPEX HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano, const unsigned int imgNr, vigra::UInt8RGBImage& image, vigra::BImage& mask, const unsigned int nrLines);
+    IMPEX HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano, const unsigned int imgNr, vigra::BImage& image, vigra::BImage& mask, const unsigned int nrLines);
 };
 #endif

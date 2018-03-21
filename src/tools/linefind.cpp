@@ -124,15 +124,14 @@ void convertGrayToUInt8(SrcIMG& src, const std::string& origType, vigra::BImage&
 }
 
 template <class SrcIMG>
-vigra::BImage LoadGrayImageAndConvert(vigra::ImageImportInfo& info)
+vigra::BImage LoadGrayImageAndConvert(vigra::ImageImportInfo& info, vigra::BImage& mask)
 {
     vigra::BImage image;
     SrcIMG imageIn(info.width(),info.height());
     if(info.numExtraBands()==1)
     {
-        vigra::BImage mask(info.size());
+        mask.resize(info.width(), info.height());
         vigra::importImageAlpha(info,destImage(imageIn),destImage(mask));
-        mask.resize(0,0);
     }
     else
     {
@@ -144,15 +143,14 @@ vigra::BImage LoadGrayImageAndConvert(vigra::ImageImportInfo& info)
 };
 
 template <class SrcIMG>
-vigra::UInt8RGBImage LoadImageAndConvert(vigra::ImageImportInfo& info)
+vigra::UInt8RGBImage LoadImageAndConvert(vigra::ImageImportInfo& info, vigra::BImage& mask)
 {
     vigra::UInt8RGBImage image;
     SrcIMG imageIn(info.width(),info.height());
     if(info.numExtraBands()==1)
     {
-        vigra::BImage mask(info.size());
+        mask.resize(info.width(), info.height());
         vigra::importImageAlpha(info,destImage(imageIn),destImage(mask));
-        mask.resize(0,0);
     }
     else
     {
@@ -167,6 +165,7 @@ vigra::UInt8RGBImage LoadImageAndConvert(vigra::ImageImportInfo& info)
 HuginBase::CPVector LoadGrayImageAndFindLines(vigra::ImageImportInfo info, HuginBase::Panorama& pano, size_t imgNr, int nrLines)
 {
     vigra::BImage image;
+    vigra::BImage mask;
     HuginBase::CPVector lineCp;
     std::string pixelType=info.getPixelType();
     if(pixelType=="UINT8")
@@ -174,9 +173,8 @@ HuginBase::CPVector LoadGrayImageAndFindLines(vigra::ImageImportInfo info, Hugin
         image.resize(info.width(),info.height());
         if(info.numExtraBands()==1)
         {
-            vigra::BImage mask(info.size());
+            mask.resize(info.width(), info.height());
             vigra::importImageAlpha(info,destImage(image),destImage(mask));
-            mask.resize(0,0);
         }
         else
         {
@@ -187,19 +185,19 @@ HuginBase::CPVector LoadGrayImageAndFindLines(vigra::ImageImportInfo info, Hugin
     {
         if(pixelType=="UINT16" || pixelType=="INT16")
         {
-            image=LoadGrayImageAndConvert<vigra::UInt16Image>(info);
+            image=LoadGrayImageAndConvert<vigra::UInt16Image>(info, mask);
         }
         else
         {
             if(pixelType=="INT32" || pixelType=="UINT32")
             {
-                image=LoadGrayImageAndConvert<vigra::UInt32Image>(info);
+                image=LoadGrayImageAndConvert<vigra::UInt32Image>(info, mask);
             }
             else
             {
                 if(pixelType=="FLOAT" || pixelType=="DOUBLE")
                 {
-                    image=LoadGrayImageAndConvert<vigra::FImage>(info);
+                    image=LoadGrayImageAndConvert<vigra::FImage>(info, mask);
                 }
                 else
                 {
@@ -210,7 +208,7 @@ HuginBase::CPVector LoadGrayImageAndFindLines(vigra::ImageImportInfo info, Hugin
     };
     if(image.width()>0 && image.height()>0)
     {
-        lineCp=HuginLines::GetVerticalLines(pano, imgNr, image, nrLines);
+        lineCp=HuginLines::GetVerticalLines(pano, imgNr, image, mask, nrLines);
     };
     return lineCp;
 };
@@ -219,6 +217,7 @@ HuginBase::CPVector LoadGrayImageAndFindLines(vigra::ImageImportInfo info, Hugin
 HuginBase::CPVector LoadImageAndFindLines(vigra::ImageImportInfo info, HuginBase::Panorama& pano, size_t imgNr, int nrLines)
 {
     vigra::UInt8RGBImage image;
+    vigra::BImage mask;
     HuginBase::CPVector lineCp;
     std::string pixelType=info.getPixelType();
     if(pixelType=="UINT8")
@@ -226,9 +225,8 @@ HuginBase::CPVector LoadImageAndFindLines(vigra::ImageImportInfo info, HuginBase
         image.resize(info.width(),info.height());
         if(info.numExtraBands()==1)
         {
-            vigra::BImage mask(info.size());
+            mask.resize(info.width(), info.height());
             vigra::importImageAlpha(info,destImage(image),destImage(mask));
-            mask.resize(0,0);
         }
         else
         {
@@ -239,19 +237,19 @@ HuginBase::CPVector LoadImageAndFindLines(vigra::ImageImportInfo info, HuginBase
     {
         if(pixelType=="UINT16" || pixelType=="INT16")
         {
-            image=LoadImageAndConvert<vigra::UInt16RGBImage>(info);
+            image=LoadImageAndConvert<vigra::UInt16RGBImage>(info, mask);
         }
         else
         {
             if(pixelType=="INT32" || pixelType=="UINT32")
             {
-                image=LoadImageAndConvert<vigra::UInt32RGBImage>(info);
+                image=LoadImageAndConvert<vigra::UInt32RGBImage>(info, mask);
             }
             else
             {
                 if(pixelType=="FLOAT" || pixelType=="DOUBLE")
                 {
-                    image=LoadImageAndConvert<vigra::FRGBImage>(info);
+                    image=LoadImageAndConvert<vigra::FRGBImage>(info, mask);
                 }
                 else
                 {
@@ -262,7 +260,7 @@ HuginBase::CPVector LoadImageAndFindLines(vigra::ImageImportInfo info, HuginBase
     };
     if(image.width()>0 && image.height()>0)
     {
-        lineCp=HuginLines::GetVerticalLines(pano, imgNr, image, nrLines);
+        lineCp=HuginLines::GetVerticalLines(pano, imgNr, image, mask, nrLines);
     }
     return lineCp;
 };

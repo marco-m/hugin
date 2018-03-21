@@ -324,8 +324,24 @@ bool SortByError(const HuginBase::ControlPoint& cp1, const HuginBase::ControlPoi
     return cp1.error<cp2.error;
 };
 
+class InvertedMaskAccessor
+{
+public:
+    typedef vigra::UInt8 value_type;
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const
+    {
+        return 255 - (*i);
+    }
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const
+    {
+        return 255 - i[d];
+    }
+};
+
 template <class ImageType>
-HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,ImageType& image, const unsigned int nrLines)
+HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,ImageType& image, vigra::BImage& mask, const unsigned int nrLines)
 {
     HuginBase::CPVector verticalLines;
     HuginBase::CPVector detectedLines;
@@ -375,12 +391,25 @@ HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsi
         HuginBase::Nona::RemappedPanoImage<ImageType,vigra::BImage>* remapped=new HuginBase::Nona::RemappedPanoImage<ImageType,vigra::BImage>;
         AppBase::ProgressDisplay* progress=new AppBase::DummyProgressDisplay();
         remapped->setPanoImage(remappedImage,opts,opts.getROI());
-        remapped->remapImage(vigra::srcImageRange(image),vigra_ext::INTERP_CUBIC, progress);
+        if (mask.size().area() > 0)
+        {
+            remapped->remapImage(vigra::srcImageRange(image), vigra::srcImage(mask), vigra_ext::INTERP_CUBIC, progress);
+        }
+        else
+        {
+            remapped->remapImage(vigra::srcImageRange(image), vigra_ext::INTERP_CUBIC, progress);
+        };
         ImageType remappedBitmap=remapped->m_image;
+        mask = remapped->m_mask;
         //detect edges
         edge=detectEdges(remappedBitmap,2,4,std::max(remappedBitmap.width(),remappedBitmap.height())+10,size_factor);
         delete remapped;
         delete progress;
+    };
+    // ignore all edges outside of masked areas
+    if (mask.size().area() > 0)
+    {
+        vigra::initImageIf(vigra::destImageRange(*edge), vigra::srcImage(mask, InvertedMaskAccessor()), vigra::UInt8(255));
     };
     //detect lines
     //we need the focal length
@@ -535,14 +564,14 @@ HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsi
     return verticalLines;
 };
 
-HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::UInt8RGBImage& image, const unsigned int nrLines)
+HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::UInt8RGBImage& image, vigra::BImage& mask, const unsigned int nrLines)
 {
-    return _getVerticalLines(pano, imgNr, image, nrLines);
+    return _getVerticalLines(pano, imgNr, image, mask, nrLines);
 };
 
-HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::BImage& image, const unsigned int nrLines)
+HuginBase::CPVector GetVerticalLines(const HuginBase::Panorama& pano,const unsigned int imgNr,vigra::BImage& image, vigra::BImage& mask, const unsigned int nrLines)
 {
-    return _getVerticalLines(pano, imgNr, image, nrLines);
+    return _getVerticalLines(pano, imgNr, image, mask, nrLines);
 };
 
 }; //namespace
