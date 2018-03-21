@@ -901,6 +901,14 @@ wxString PossiblePano::GetLensName()
 
 wxString PossiblePano::GetFocalLength()
 {
+    if (!m_images.empty())
+    {
+        const double focal35 = (*m_images.begin())->getExifFocalLength35();
+        if (focal35 > 0)
+        {
+            return wxString::Format(wxT("%0.1f mm (%0.0f mm)"), m_focallength, focal35);
+        };
+    };
     return wxString::Format(wxT("%0.1f mm"), m_focallength);
 };
 
