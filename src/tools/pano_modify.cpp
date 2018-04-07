@@ -52,6 +52,9 @@ static void usage(const char* name)
          << "  Options:" << std::endl
          << "    -o, --output=file.pto  Output Hugin PTO file. Default: <filename>_mod.pto" << std::endl
          << "    -p, --projection=x     Sets the output projection to number x" << std::endl
+         << "    --projection-parameter=x    Sets the parameter of the projection" << std::endl
+         << "                                (Several parameters are separated by"<<std::endl
+         << "                                space or comma)" << std::endl
          << "    --fov=AUTO|HFOV|HFOVxVFOV   Sets field of view" << std::endl
          << "                                AUTO: calculates optimal fov" << std::endl
          << "                                HFOV|HFOVxVFOV: set to given fov" << std::endl
@@ -127,12 +130,14 @@ int main(int argc, char* argv[])
         SWITCH_UNCROPPED_TIFF,
         SWITCH_BLENDER_ARGS,
         SWITCH_FUSION_ARGS,
-        SWITCH_HDRMERGE_ARGS
+        SWITCH_HDRMERGE_ARGS,
+        SWITCH_PROJECTION_PARAMETER
     };
     static struct option longOptions[] =
     {
         {"output", required_argument, NULL, 'o' },
         {"projection", required_argument, NULL, 'p' },
+        {"projection-parameter", required_argument, NULL, SWITCH_PROJECTION_PARAMETER },
         {"fov", required_argument, NULL, SWITCH_FOV },
         {"straighten", no_argument, NULL, 's' },
         {"center", no_argument, NULL, 'c' },
@@ -157,6 +162,7 @@ int main(int argc, char* argv[])
     };
 
     int projection=-1;
+    std::vector<double> projParameter;
     double newHFOV=-1;
     double newVFOV=-1;
     int scale=100;
@@ -215,6 +221,26 @@ int main(int argc, char* argv[])
                     std::cerr << hugin_utils::stripPath(argv[0]) << ": projection " << projection << " is an invalid projection number." << std::endl;
                     return 1;
                 };
+                break;
+            case SWITCH_PROJECTION_PARAMETER:
+                // projection parameters
+                {
+                    // split at space or comma
+                    std::vector<std::string> parameter = hugin_utils::SplitString(optarg, ", ");
+                    for(const auto& p: parameter)
+                    { 
+                        double d;
+                        if (hugin_utils::stringToDouble(p, d))
+                        {
+                            projParameter.push_back(d);
+                        }
+                        else
+                        { 
+                            std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse projection parameters \"" << optarg << "\"." << std::endl;
+                            return 1;
+                        };
+                    };
+                }
                 break;
             case SWITCH_FOV:
                 //field of view
@@ -506,6 +532,41 @@ int main(int argc, char* argv[])
         }
         pano.setOptions(opt);
     };
+    if (!projParameter.empty())
+    {
+        HuginBase::PanoramaOptions opt = pano.getOptions();
+        if (projParameter.size() > opt.m_projFeatures.numberOfParameters)
+        {
+            std::cout << "Warning: Given " << projParameter.size() << " projection parameters, but projection supports" << std::endl
+                << "         only " << opt.m_projFeatures.numberOfParameters << ". Ignoring surplus parameters." << std::endl;
+            while (projParameter.size() > opt.m_projFeatures.numberOfParameters)
+            {
+                projParameter.pop_back();
+            }
+        }
+        if (!projParameter.empty())
+        {
+            std::vector<double> newProjParameters = opt.getProjectionParameters();
+            std::copy(projParameter.begin(), projParameter.end(), newProjParameters.begin());
+            opt.setProjectionParameters(newProjParameters);
+            // read back, new the limits have been applied
+            newProjParameters = opt.getProjectionParameters();
+            auto it = newProjParameters.begin();
+            std::cout << "Setting projection parameters to: " << *it;
+            ++it;
+            while (it != newProjParameters.end())
+            {
+                std::cout << ", " << *it;
+                ++it;
+            }
+            std::cout << std::endl;
+            pano.setOptions(opt);
+        }
+        else
+        {
+            std::cout << "Warning: Current projection does not support projection parameters." << std::endl;
+        }
+    }
     // output exposure value
     if (outputExposure > -1000 || calcMeanExposure)
     {
