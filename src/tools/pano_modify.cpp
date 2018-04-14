@@ -103,6 +103,7 @@ static void usage(const char* name)
          << "    --hdrmerge-args=str     Setst the arguments for hdrmerge" << std::endl
          << "    --rotate=yaw,pitch,roll Rotates the whole panorama with the given angles" << std::endl
          << "    --translate=x,y,z       Translate the whole panorama with the given values" << std::endl
+         << "    --interpolation=int     Sets the interpolation method" << std::endl
          << "    -h, --help             Shows this help" << std::endl
          << std::endl;
 }
@@ -131,7 +132,8 @@ int main(int argc, char* argv[])
         SWITCH_BLENDER_ARGS,
         SWITCH_FUSION_ARGS,
         SWITCH_HDRMERGE_ARGS,
-        SWITCH_PROJECTION_PARAMETER
+        SWITCH_PROJECTION_PARAMETER,
+        SWITCH_INTERPOLATION
     };
     static struct option longOptions[] =
     {
@@ -157,6 +159,7 @@ int main(int argc, char* argv[])
         {"hdr-compression", required_argument, NULL, SWITCH_HDRCOMPRESSION },
         {"rotate", required_argument, NULL, SWITCH_ROTATE },
         {"translate", required_argument, NULL, SWITCH_TRANSLATE },
+        {"interpolation", required_argument, NULL, SWITCH_INTERPOLATION},
         {"help", no_argument, NULL, 'h' },
         0
     };
@@ -198,6 +201,7 @@ int main(int argc, char* argv[])
     std::string blenderArgs(EMPTYARG);
     std::string fusionArgs(EMPTYARG);
     std::string hdrMergeArgs(EMPTYARG);
+    int interpolation = -1;
     while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
@@ -466,6 +470,18 @@ int main(int argc, char* argv[])
                     };
                 };
                 break;
+            case SWITCH_INTERPOLATION:
+                if (!hugin_utils::stringToInt(optarg, interpolation))
+                {
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse interpolation value. Given: \"" << optarg << "\"" << std::endl;
+                    return 1;
+                };
+                if (interpolation<0 || interpolation>vigra_ext::INTERP_SINC_1024)
+                {
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Interpolator " << interpolation << " is not valid." << std::endl;
+                    return 1;
+                }
+                break;
             case ':':
             case '?':
                 // missing argument or invalid switch
@@ -532,6 +548,7 @@ int main(int argc, char* argv[])
         }
         pano.setOptions(opt);
     };
+    // set projection parameters
     if (!projParameter.empty())
     {
         HuginBase::PanoramaOptions opt = pano.getOptions();
@@ -985,6 +1002,14 @@ int main(int argc, char* argv[])
         HuginBase::PanoramaOptions opt = pano.getOptions();
         opt.setROI(newROI);
         std::cout << "Set crop size to " << newROI.left() << "," << newROI.right() << "," << newROI.top() << "," << newROI.bottom() << std::endl;
+        pano.setOptions(opt);
+    };
+    //setting interpolation method
+    if (interpolation>=0)
+    {
+        HuginBase::PanoramaOptions opt = pano.getOptions();
+        opt.interpolator = static_cast<vigra_ext::Interpolator>(interpolation);
+        std::cout << "Set interpolation method to " << interpolation << std::endl;
         pano.setOptions(opt);
     };
 
