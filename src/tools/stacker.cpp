@@ -1254,6 +1254,18 @@ int main(int argc, char* argv[])
         {
             success = main_stacker<vigra::RGBValue<vigra::UInt16>>(images);
         }
+        else if (pixeltype == "UINT32")
+        {
+            success = main_stacker<vigra::RGBValue<vigra::UInt32>>(images);
+        }
+        else if (pixeltype == "FLOAT")
+        {
+            success = main_stacker<vigra::RGBValue<float>>(images);
+        }
+        else if (pixeltype == "DOUBLE")
+        {
+            success = main_stacker<vigra::RGBValue<double>>(images);
+        }
         else
         {
             std::cerr << " ERROR: unsupported pixel type: " << pixeltype << std::endl;
@@ -1269,6 +1281,18 @@ int main(int argc, char* argv[])
         else if (pixeltype == "UINT16")
         {
             success = main_stacker<vigra::UInt16>(images);
+        }
+        else if (pixeltype == "UINT32")
+        {
+            success = main_stacker<vigra::UInt32>(images);
+        }
+        else if (pixeltype == "FLOAT")
+        {
+            success = main_stacker<float>(images);
+        }
+        else if (pixeltype == "DOUBLE")
+        {
+            success = main_stacker<double>(images);
         }
         else
         {
