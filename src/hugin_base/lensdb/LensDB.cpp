@@ -2573,7 +2573,18 @@ bool SaveLensDataFromPano(const HuginBase::Panorama& pano)
         {
             if (img0.getExifCropFactor() < 0.1f)
             {
-                lensDB.SaveCameraCrop(camMaker, camModel, img0.getCropFactor());
+                double cropFactor = img0.getCropFactor();
+                if (cropFactor == 1 && img0.getExifFocalLength() > 0)
+                {
+                    // a cropfactor of 1 can also mean unknown crop factor
+                    // so recalculate crop factor with HFOV and EXIF focal length
+                    cropFactor = HuginBase::SrcPanoImage::calcCropFactor(img0.getProjection(), img0.getHFOV(), img0.getExifFocalLength(), img0.getSize());
+                    if (std::abs(cropFactor - 1) < 0.1)
+                    {
+                        cropFactor = 1;
+                    };
+                };
+                lensDB.SaveCameraCrop(camMaker, camModel, cropFactor);
             };
             // now check EMoR parameters
             const std::vector<float> emor=img0.getEMoRParams();
