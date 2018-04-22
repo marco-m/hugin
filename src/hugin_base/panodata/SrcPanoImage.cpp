@@ -691,7 +691,10 @@ bool SrcPanoImage::readProjectionFromDB()
         if (focal>0)
         {
             double fov;
-            if (lensDB.GetFov(lensname, focal, fov))
+            // read fov only for non rectilinear images
+            // for these relay on the EXIF data, because often user manage to store
+            // wrong values in the database, so ignore them for rectilinear images
+            if (getProjection() != RECTILINEAR && lensDB.GetFov(lensname, focal, fov))
             {
                 // ignore values if fov is bigger than 120 deg
                 // then probably an invalid value was written earlier
