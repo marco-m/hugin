@@ -160,7 +160,7 @@ static void usage(const char* name)
         << "                              Only pixel which differ more than" << std::endl
         << "                              mask-sigma * standard deviation" << std::endl
         << "                              are visible in output" << std::endl
-        << "                              available for modes median|winsor|clip" << std::endl
+        << "                              available for modes median, winsor or sigma" << std::endl
         << "     --mask-suffix=STRING     Suffix for the masked input images" << std::endl
         << "                              (default: _mask)" << std::endl
         << "     --mask-sigma=NUMBER      Sigma parameter for input images masking" << std::endl
