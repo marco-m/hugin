@@ -677,6 +677,7 @@ std::string SrcPanoImage::getDBLensName() const
 bool SrcPanoImage::readProjectionFromDB()
 {
     bool success=false;
+    double oldFocal = 0;
     const std::string lensname = getDBLensName();
     const double focal = getExifFocalLength();
     if (!lensname.empty())
@@ -685,8 +686,9 @@ bool SrcPanoImage::readProjectionFromDB()
         Projection dbProjection;
         if(lensDB.GetProjection(lensname, dbProjection))
         {
+            oldFocal = calcFocalLength(getProjection(), getHFOV(), getCropFactor(), getSize());
             setProjection(dbProjection);
-            success=true;
+            success = true;
         };
         if (focal>0)
         {
@@ -696,15 +698,11 @@ bool SrcPanoImage::readProjectionFromDB()
             // wrong values in the database, so ignore them for rectilinear images
             if (getProjection() != RECTILINEAR && lensDB.GetFov(lensname, focal, fov))
             {
-                // ignore values if fov is bigger than 120 deg
-                // then probably an invalid value was written earlier
-                if (getProjection() == RECTILINEAR && fov < 120)
-                {
-                    // calculate FOV for given image, take different aspect ratios into account
-                    const double newFocal = calcFocalLength(getProjection(), fov, getCropFactor(), vigra::Size2D(3000, 2000));
-                    const double newFov = calcHFOV(getProjection(), newFocal, getCropFactor(), getSize());
-                    setHFOV(newFov);
-                };
+                // calculate FOV for given image, take different aspect ratios into account
+                const double newFocal = calcFocalLength(getProjection(), fov, getCropFactor(), vigra::Size2D(3000, 2000));
+                const double newFov = calcHFOV(getProjection(), newFocal, getCropFactor(), getSize());
+                setHFOV(newFov);
+                oldFocal = 0;
             };
             vigra::Rect2D dbCropRect;
             if (lensDB.GetCrop(lensname, focal, getSize(), dbCropRect))
@@ -712,6 +710,12 @@ bool SrcPanoImage::readProjectionFromDB()
                 setCropMode(isCircularCrop() ? CROP_CIRCLE : CROP_RECTANGLE);
                 setCropRect(dbCropRect);
             };
+        };
+        // updated fov after changing projection, if not already done with value from database
+        if (success && oldFocal > 0)
+        {
+            const double newFov = calcHFOV(getProjection(), oldFocal, getCropFactor(), getSize());
+            setHFOV(newFov);
         };
     };
     return success;
