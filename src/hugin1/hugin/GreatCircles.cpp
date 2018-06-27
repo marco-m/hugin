@@ -47,7 +47,8 @@
 // The number of segments to use in subdivision of the line.
 // Higher numbers increase the accuracy of the line, but it is slower.
 // Must be at least two. More is much better.
-const unsigned int segments = 48;
+const unsigned int max_segments = 48;
+const double min_segment_angle = 1.0 / 180.0 * M_PI;
 
 GreatCircles::GreatCircles() : m_visualizationState(NULL)
 {
@@ -149,6 +150,11 @@ GreatCircleArc::GreatCircleArc(double startLat, double startLong,
     // draw a line strip and transform the coordinates as we go.
     double b1 = 0.0;
     double b2 = 1.0;
+    
+    const double line_v[3] = {p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]};
+    const double line_length = sqrt(line_v[0] * line_v[0] + line_v[1] * line_v[1] + line_v[2] * line_v[2]);
+    unsigned int segments = hugin_utils::roundi(line_length / min_segment_angle);
+    segments = std::max(2u, std::min(max_segments, segments));
     const double bDifference = 1.0 / double(segments);
     // for discontinuity detection.
     int lastSegment = 1;
