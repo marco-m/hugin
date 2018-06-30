@@ -197,6 +197,13 @@ public:
     ///
     SrcPanoImage() :BaseSrcPanoImage()
     {};
+
+    SrcPanoImage(const BaseSrcPanoImage::Projection projection, const double hfov, const vigra::Size2D size) :BaseSrcPanoImage()
+    {
+        setProjection(projection);
+        setHFOV(hfov);
+        setSize(size);
+    };
     
     virtual ~SrcPanoImage() {};
 public:
