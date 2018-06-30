@@ -208,7 +208,7 @@ class IMPEX Panorama : public ManagedPanoramaData, public AppBase::DocumentData
         };
         
         /// get a panorama image, counting starts with 0
-        const SrcPanoImage & getImage(std::size_t nr) const
+        inline const SrcPanoImage & getImage(std::size_t nr) const
         {
             assert(nr < state.images.size());
             return *state.images[nr];
