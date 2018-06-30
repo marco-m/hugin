@@ -329,6 +329,7 @@ bool MaskPolygon::clipPolygon(const vigra::Rect2D rect)
     m_polygon=clip_onPlane(m_polygon, rect, clipRight);
     m_polygon=clip_onPlane(m_polygon, rect, clipTop);
     m_polygon=clip_onPlane(m_polygon, rect, clipBottom);
+    calcBoundingBox();
     return (m_polygon.size()>2);
 };
 
@@ -531,6 +532,7 @@ bool MaskPolygon::clipPolygon(const hugin_utils::FDiff2D center,const double rad
         generateArc(newPolygon,newPolygon[0],center,radius,(angleCovered+angleCoveredOffset)<0);
     };        
     m_polygon=newPolygon;
+    calcBoundingBox();
     return (m_polygon.size()>2);
 };
 
@@ -551,6 +553,7 @@ void MaskPolygon::rotate90(bool clockwise,unsigned int maskWidth,unsigned int ma
             m_polygon[i].y=maskWidth-p.x;
         };
     };
+    calcBoundingBox();
 };
 
 unsigned int MaskPolygon::FindPointNearPos(const hugin_utils::FDiff2D p, const double tol)
@@ -616,6 +619,7 @@ bool MaskPolygon::parsePolygonString(const std::string& polygonStr)
             };
         };
     };
+    calcBoundingBox();
     return m_polygon.size()>2;
 };
 
