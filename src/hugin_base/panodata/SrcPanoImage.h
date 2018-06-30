@@ -111,9 +111,7 @@ public:
 public:
     ///
     BaseSrcPanoImage()
-    {
-        setDefaults();
-    }
+    {};
     
     virtual ~BaseSrcPanoImage() {};
     
@@ -178,12 +176,9 @@ public:
 #undef image_variable
 
 protected:
-    ///
-    void setDefaults();
-
     // the image variables m_[variable name]
 #define image_variable( name, type, default_value ) \
-    ImageVariable<type > m_##name;
+    ImageVariable<type> m_##name {ImageVariable<type>(default_value)};
 #include "image_variables.h"
 #undef image_variable
 };
@@ -200,10 +195,8 @@ class IMPEX SrcPanoImage : public BaseSrcPanoImage
 {
 public:
     ///
-    SrcPanoImage()
-    {
-        setDefaults();
-    }
+    SrcPanoImage() :BaseSrcPanoImage()
+    {};
     
     virtual ~SrcPanoImage() {};
 public:

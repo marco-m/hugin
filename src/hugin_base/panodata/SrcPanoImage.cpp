@@ -123,23 +123,6 @@ bool SrcPanoImage::horizontalWarpNeeded()
     return false;
 }
 
-void BaseSrcPanoImage::setDefaults()
-{
-    /* Some of the vectors are difficult to initalise with the variables list
-     * header, so we make some local variables which are used in it.
-     */
-    // Radial Distortion defaults
-    std::vector<double> distortion_default(4, 0.0);
-    distortion_default[3] = 1;
-    
-    std::vector<double> RadialVigCorrCoeff_default(4, 0.0);
-    RadialVigCorrCoeff_default[0] = 1;
-    HuginBase::MaskPolygonVector defaultMaskVector;
-#define image_variable( name, type, default_value ) m_##name.setData(default_value);
-#include "image_variables.h"
-#undef image_variable
-}
-
 bool SrcPanoImage::isInside(vigra::Point2D p, bool ignoreMasks) const
 {
     bool insideCrop=false;
