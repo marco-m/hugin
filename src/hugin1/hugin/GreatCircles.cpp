@@ -79,11 +79,7 @@ GreatCircleArc::GreatCircleArc(double startLat, double startLong,
     // get the output projection
     const HuginBase::PanoramaOptions & options = *(visualizationState.GetOptions());
     // make an image to transform spherical coordinates into the output projection
-    HuginBase::SrcPanoImage equirectangularImage;
-    equirectangularImage.setProjection(HuginBase::SrcPanoImage::EQUIRECTANGULAR);
-    equirectangularImage.setHFOV(360.0);
-    equirectangularImage.setSize(vigra::Size2D(360.0, 180.0));
-    
+    static const HuginBase::SrcPanoImage equirectangularImage(HuginBase::SrcPanoImage::EQUIRECTANGULAR, 360.0, vigra::Size2D(360.0, 180.0));
     // make a transformation from spherical coordinates to the output projection
     HuginBase::PTools::Transform transform;
     transform.createInvTransform(equirectangularImage, options);
