@@ -556,7 +556,7 @@ void MaskPolygon::rotate90(bool clockwise,unsigned int maskWidth,unsigned int ma
     calcBoundingBox();
 };
 
-unsigned int MaskPolygon::FindPointNearPos(const hugin_utils::FDiff2D p, const double tol)
+unsigned int MaskPolygon::FindPointNearPos(const hugin_utils::FDiff2D p, const double tol) const
 {
     if(m_polygon.empty())
         return UINT_MAX;

@@ -117,7 +117,7 @@ public:
     void subSample(const double max_distance);
 
     /** search a point which lies near the polygon line and return the index for inserting the new point */
-    unsigned int FindPointNearPos(const hugin_utils::FDiff2D p, const double tol);
+    unsigned int FindPointNearPos(const hugin_utils::FDiff2D p, const double tol) const;
 
     //operators
     /** assign operator */
