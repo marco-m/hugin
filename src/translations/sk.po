@@ -2,21 +2,21 @@
 # Copyright (C) YEAR Pablo dAngelo
 # This file is distributed under the same license as the hugin package.
 #
-# Jozef Riha <jose1711@gmail.com>, 2006, 2007, 2008, 2009, 2010, 2011.
-# Kornel Benko <kornel@lyx.org>, 2013, 2014, 2015, 2016, 2017.
+# Jozef Riha <jose1711@gmail.com>, 2006-2011.
+# Kornel Benko <kornel@lyx.org>, 2013-2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2018-04-21 19:24+0200\n"
-"PO-Revision-Date: 2018-04-21 17:27+0000\n"
+"POT-Creation-Date: 2018-07-14 21:04+0200\n"
+"PO-Revision-Date: 2018-07-14 20:27+0000\n"
 "Last-Translator: Kornel Benko <kornel@lyx.org>\n"
 "Language-Team: Slovak <kornel@lyx.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "X-Poedit-Language: Slovak\n"
 "X-Poedit-Country: SLOVAKIA\n"
@@ -3841,6 +3841,50 @@ msgstr ""
 "Chyba: %s\n"
 " Jeden z dôvodov môze byť neplatný alebo chýbajúci obrázok."
 
+#: hugin1/hugin/RawImport.cpp:61
+#, c-format
+msgid ""
+"Executable \"%s\" not found.\n"
+"Please specify a valid executable."
+msgstr ""
+"Spustiteľný program \"%s\" nebol nájdený.\n"
+"Zadajte, prosím, platný spustiteľný program."
+
+#: hugin1/hugin/RawImport.cpp:79
+#, c-format
+msgid ""
+"Executable \"%s\" not found in PATH.\n"
+"Please specify a valid executable."
+msgstr ""
+"Spustiteľný program \"%s\" nebol nájdený v PATH.\n"
+"Zadajte, prosím, platný spustiteľný program."
+
+#: hugin1/hugin/RawImport.cpp:155 hugin1/hugin/RawImport.cpp:230
+#, c-format
+msgid "Executing: %s %s"
+msgstr "Spúšťam: %s %s"
+
+#: hugin1/hugin/RawImport.cpp:181
+#, c-format
+msgid ""
+"History stack \"%s\" not found.\n"
+"Please specify a valid file or leave field empty for default settings."
+msgstr ""
+"Zásobník pre históriu \"%s\" nebol nájdený.\n"
+"Zadajte, prosím, platnú cestu alebo nechajte to pole v nastaveniach prázdne."
+
+#: hugin1/hugin/RawImport.cpp:244 hugin1/hugin/xrc/import_raw_dialog.xrc:204
+msgid "Import RAW images"
+msgstr "Importovať RAW obrázky"
+
+#: hugin1/hugin/RawImport.cpp:293
+msgid ""
+"Could not process of output of reference image.\n"
+"Can't process further images."
+msgstr ""
+"Nie je možné spracovať výstup referenčného obrázku.\n"
+"Nemôžem spracovať ďalšie obrázky."
+
 #: hugin1/hugin/huginApp.cpp:235
 #, c-format
 msgid "Directory '%s' does not exists"
@@ -4891,6 +4935,76 @@ msgstr "Odoslať vybrané panorámy do frontu"
 msgid "Close"
 msgstr "Zavrieť"
 
+#: hugin1/hugin/RawImport.cpp:356
+#, c-format
+msgid "Executing: %s"
+msgstr "Spúšťam: %s"
+
+#: hugin1/hugin/RawImport.cpp:441
+msgid "Please add at least one RAW image to list before you can import it."
+msgstr ""
+"Musíte pridať aspoň jeden RAW obrázok do listiny aby sa dal importovať."
+
+#: hugin1/hugin/RawImport.cpp:524
+msgid ""
+"At least one RAW images was not successfully converted.\n"
+"This image(s) will be skipped"
+msgstr ""
+"Prinajmenšom jeden RAW obrázok nebol úspešne konvertovaný.\n"
+"Také obrázky sa vynechajú"
+
+#: hugin1/hugin/RawImport.cpp:552
+msgid "Import RAW files"
+msgstr "Importovať RAW súbory"
+
+#: hugin1/hugin/RawImport.cpp:554
+msgid "RAW files"
+msgstr "RAW súbory"
+
+#: hugin1/hugin/RawImport.cpp:654
+msgid "Warning: Read error"
+msgstr "Varovanie: Chyba čítania"
+
+#: hugin1/hugin/RawImport.cpp:655
+msgid ""
+"The following files will be skipped because the metadata of these files "
+"could not read."
+msgstr ""
+"Nasledovné súbory budú vynechané lebo metadáty týchto súborov sa nedali "
+"načítať."
+
+#: hugin1/hugin/RawImport.cpp:665
+msgid "Warning: RAW images from different cameras"
+msgstr "Varovanie: RAW obrázky rozličných kamier"
+
+#: hugin1/hugin/RawImport.cpp:666
+msgid ""
+"The following images were shot with different camera than the other on.\n"
+"The RAW import works only for images from the same cam."
+msgstr ""
+"Nasledovné obrázky boli snímané s inou kamerou ako tie ostatné.\n"
+"RAW-import sa robí len pre obrázky rovnakej kamery."
+
+#: hugin1/hugin/RawImport.cpp:720
+msgid "Select dcraw"
+msgstr "Vybrať dcraw"
+
+#: hugin1/hugin/RawImport.cpp:732
+msgid "Select RawTherapee cli"
+msgstr "Vyberte RawTherapee-cli"
+
+#: hugin1/hugin/RawImport.cpp:744
+msgid "Select default RT history stack"
+msgstr "Vybrať štandardný zásobník pre RT históriu"
+
+#: hugin1/hugin/RawImport.cpp:745
+msgid "RT history stack|*.pp3"
+msgstr "Zásobník pre históriu RT|*.pp3"
+
+#: hugin1/hugin/RawImport.cpp:770
+msgid "(WB reference)"
+msgstr "(VB referencia)"
+
 #: hugin1/hugin/xrc/batch_frame.xrc:479
 msgid "Searching panoramas"
 msgstr "Prehľadávam panorámu"
@@ -5307,9 +5421,9 @@ msgstr ""
 msgid "Parameters for Control Point Detectors"
 msgstr "Parametre pre detektory kontrolných bodov"
 
-#: hugin1/hugin/xrc/dlg_warning.xrc:35
-msgid "Invalid filenames"
-msgstr "Neplatné mená súborov"
+#: hugin1/hugin/xrc/dlg_warning.xrc:55
+msgid "Warning: Invalid filenames"
+msgstr "Varovanie: Neplatné mená súborov"
 
 #: hugin1/hugin/xrc/edit_script_dialog.xrc:4
 msgid "Edit Panorama Tools Script"
@@ -5648,6 +5762,67 @@ msgstr "stupňov"
 msgid "Camera and Lens data"
 msgstr "Údaje o kamere a šošovke"
 
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:10
+msgid "Images"
+msgstr "Obrázky"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:22
+msgid "Add image(s)..."
+msgstr "Pridať obrázky..."
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:23
+msgid "Add other images to list"
+msgstr "Pridá ďalšie obrázky do listiny"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:30
+msgid "Remove image"
+msgstr "Odobrať obrázok"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:31
+msgid "Remove selected image from list"
+msgstr "Odstrániť vybrané obrázky z listiny"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:38
+msgid "WB reference"
+msgstr "VB referencia"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:39
+msgid "Mark selected image as white balance reference image"
+msgstr "Označte vybraný obrázok ako refernčný na vyváženie bielej"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:63
+msgid "Dcraw executable:"
+msgstr "Spustiteľný súbor dcraw:"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:90
+msgid "Additional dcraw parameters:"
+msgstr "Ďalšie dcraw argumenty:"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:108
+msgid "Dcraw"
+msgstr "Dcraw"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:118
+msgid "RT-cli executable:"
+msgstr "Spustiteľný program s RT-cli:"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:145
+msgid "Default history stack:"
+msgstr "Štandardný zásobník pre históriu:"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:159
+msgid "Leave empty to use default settings in RawTherapee"
+msgstr ""
+"Pre použitie štandardných nastavení v RawTherapee to nechajte to prázdne"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:171
+msgid "RawTherapee"
+msgstr "RawTherapee"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:177
+msgid "Converter settings"
+msgstr "Nastavenia konvertoru"
+
 #: hugin1/hugin/xrc/lenscal_frame.xrc:30 hugin1/hugin/xrc/main_tool.xrc:46
 msgid "Add"
 msgstr "Pridať"
@@ -5886,6 +6061,14 @@ msgstr "&Pridať obrázok"
 #: hugin1/hugin/xrc/main_menu.xrc:18 hugin1/hugin/xrc/main_tool.xrc:47
 msgid "Add another image to the current project"
 msgstr "Pridá ďalší obrázok do aktuálneho projektu"
+
+#: hugin1/hugin/xrc/main_menu.xrc:21
+msgid "Import &RAW file(s)..."
+msgstr "Importovať &RAW súbory…"
+
+#: hugin1/hugin/xrc/main_menu.xrc:22
+msgid "Convert RAW file to TIFF and add TIFF to current project"
+msgstr "Konvertovať RAW súbor na TIFF a pridať do aktuálneho projektu"
 
 #: hugin1/hugin/xrc/main_menu.xrc:21
 msgid "Run a&ssistant"
@@ -10333,3 +10516,6 @@ msgstr ""
 #~ msgstr ""
 #~ "V paneli obrázku a šošovky môže byť vybraných viacero obrázkov naraz. "
 #~ "Príkazy sa budú spúšťať na zvolených obrázkoch."
+
+#~ msgid "Invalid filenames"
+#~ msgstr "Neplatné mená súborov"
