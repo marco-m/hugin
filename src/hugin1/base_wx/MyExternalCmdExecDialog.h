@@ -76,6 +76,8 @@ public:
     bool SaveLog(const wxString &filename);
     /** copy the content of the log window into the clipboard */
     void CopyLogToClipboard();
+    /** returns the output */
+    wxArrayString GetLogAsArrayString();
     /** display the string in the panel */
     void AddString(const wxString& s);
 
@@ -162,6 +164,6 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-DECLARE_EXPORTED_EVENT_TYPE(WXIMPEX, EVT_QUEUE_PROGRESS, -1)
+wxDECLARE_EXPORTED_EVENT(WXIMPEX, EVT_QUEUE_PROGRESS, wxCommandEvent);
 
 #endif

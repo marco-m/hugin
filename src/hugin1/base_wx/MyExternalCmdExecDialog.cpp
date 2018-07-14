@@ -61,7 +61,7 @@
 // event tables and other macros for wxWidgets
 // ----------------------------------------------------------------------------
 
-DEFINE_EVENT_TYPE(EVT_QUEUE_PROGRESS)
+wxDEFINE_EVENT(EVT_QUEUE_PROGRESS, wxCommandEvent);
 
 BEGIN_EVENT_TABLE(MyExecPanel, wxPanel)
     EVT_TIMER(wxID_ANY, MyExecPanel::OnTimer)
@@ -500,6 +500,16 @@ void MyExecPanel::CopyLogToClipboard()
 {
     m_textctrl->SelectAll();
     m_textctrl->Copy();
+};
+
+wxArrayString MyExecPanel::GetLogAsArrayString()
+{
+    wxArrayString output;
+    for (size_t i = 0; i < m_textctrl->GetNumberOfLines(); ++i)
+    {
+        output.push_back(m_textctrl->GetLineText(i));
+    }
+    return output;
 };
 
 void MyExecPanel::AddString(const wxString& s)

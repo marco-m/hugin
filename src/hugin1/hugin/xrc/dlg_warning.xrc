@@ -3,12 +3,13 @@
   <object class="wxDialog" name="dlg_warning_filename">
     <object class="wxBoxSizer">
       <object class="sizeritem">
-        <object class="wxStaticBoxSizer">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxStaticBitmap">
               <bitmap stock_id="wxART_WARNING"/>
             </object>
-            <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+            <flag>wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL</flag>
             <border>12</border>
           </object>
           <object class="sizeritem">
@@ -32,8 +33,6 @@
             <option>1</option>
             <flag>wxEXPAND</flag>
           </object>
-          <label>Invalid filenames</label>
-          <orient>wxHORIZONTAL</orient>
         </object>
         <option>1</option>
         <flag>wxALL|wxEXPAND</flag>
@@ -53,7 +52,7 @@
       </object>
       <orient>wxVERTICAL</orient>
     </object>
-    <title>Warning</title>
+    <title>Warning: Invalid filenames</title>
     <style>wxDEFAULT_DIALOG_STYLE</style>
   </object>
 </resource>
