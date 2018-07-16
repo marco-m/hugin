@@ -34,6 +34,7 @@
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
 #include <exiv2/easyaccess.hpp>
+#include <exiv2/xmpsidecar.hpp>
 
 /** base class for implementation of Raw import functions */
 class RawImport
@@ -43,7 +44,9 @@ public:
     /** image extension of converted files */
     virtual wxString GetImageExtension() { return wxString("tif"); }
     /** reads additional parameters from dialog into class */
-    virtual bool ProcessAdditionalParameters(wxDialog* dlg) { return true; };
+    virtual bool ProcessAdditionalParameters(wxDialog* dlg) { return true; }
+    /** return true if program supports overwritting output, otherwise false */
+    virtual bool SupportsOverwrite() { return true; }
     /** checks if valid executable was given in dialog 
      *  either absolute path or when relative path is given check PATH */
     bool CheckExe(wxDialog* dlg)
@@ -236,6 +239,108 @@ private:
     wxString m_usedHistoryStack;
 };
 
+/** special class for Darktable raw import */
+class DarkTableRawImport : public RawImport
+{
+public:
+    DarkTableRawImport() : RawImport("raw_darktable_exe") {}
+    ~DarkTableRawImport()
+    {
+        // destructor, clean up generated files;
+        if (!m_usedSettings.IsEmpty())
+        {
+            wxRemoveFile(m_usedSettings);
+        };
+    }
+    bool SupportsOverwrite() override { return false; }
+    wxString GetCmdForReference(const wxString& rawFilename, const wxString& imageFilename) override
+    {
+        wxString cmd(HuginQueue::wxEscapeFilename(m_exe));
+        cmd.Append(" --verbose ");
+        cmd.Append(HuginQueue::wxEscapeFilename(rawFilename));
+        cmd.Append(" ");
+#ifdef __WXMSW__
+        // darktable has problems with Windows paths as output
+        // so change separator before
+        wxString file(imageFilename);
+        file.Replace("\\", "/", true);
+        cmd.Append(HuginQueue::wxEscapeFilename(file));
+#else
+        cmd.Append(HuginQueue::wxEscapeFilename(imageFilename));
+#endif
+        // switch --bpp does not work, so using this strange workaround
+        cmd.Append(" --core --conf plugins/imageio/format/tiff/bpp=16");
+        m_refImage = imageFilename;
+        return cmd;
+    };
+    bool ProcessReferenceOutput(const wxArrayString& output) override
+    {
+        // extract XMP package for converted reference image and store in temp
+        Exiv2::Image::AutoPtr image;
+        try
+        {
+            image = Exiv2::ImageFactory::open(std::string(m_refImage.mb_str(HUGIN_CONV_FILENAME)));
+        }
+        catch (const Exiv2::Error& e)
+        {
+            std::cerr << "Exiv2: Error reading metadata (" << e.what() << ")" << std::endl;
+            return false;
+        }
+        try
+        {
+            image->readMetadata();
+        }
+        catch (const Exiv2::Error& e)
+        {
+            std::cerr << "Caught Exiv2 exception " << e.what() << std::endl;
+            return false;
+        };
+        m_usedSettings = wxFileName::CreateTempFileName("hugdt");
+        Exiv2::Image::AutoPtr image2;
+        try
+        {
+            image2 = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, std::string(m_usedSettings.mb_str(HUGIN_CONV_FILENAME)));
+        }
+        catch (const Exiv2::Error& e)
+        {
+            std::cerr << "Exiv2: Error creating temp xmp file (" << e.what() << ")" << std::endl;
+            return false;
+        }
+        image2->setXmpData(image->xmpData());
+        image2->writeMetadata();
+        return true;
+    };
+    HuginQueue::CommandQueue* GetCmdQueueForImport(const wxArrayString& rawFilenames, const wxArrayString& imageFilenames) override
+    {
+        HuginQueue::CommandQueue* queue = new HuginQueue::CommandQueue();
+        for (size_t i = 0; i < rawFilenames.size(); ++i)
+        {
+            wxString args("--verbose ");
+            args.Append(HuginQueue::wxEscapeFilename(rawFilenames[i]));
+            args.Append(" ");
+            args.Append(HuginQueue::wxEscapeFilename(m_usedSettings));
+            args.Append(" ");
+#ifdef __WXMSW__
+            // darktable has problems with Windows paths as output
+            // so change separator before
+            wxString file(imageFilenames[i]);
+            file.Replace("\\", "/", true);
+            args.Append(HuginQueue::wxEscapeFilename(file));
+#else
+            args.Append(HuginQueue::wxEscapeFilename(imageFilenames[i]));
+#endif
+            // switch --bpp does not work, so using this strange workaround
+            args.Append(" --core --conf plugins/imageio/format/tiff/bpp=16");
+            queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
+        }
+        return queue;
+    };
+private:
+    wxString m_refImage;
+    wxString m_usedSettings;
+};
+
+
 /** dialog class for showing progress of raw import */
 class RawImportProgress :public wxDialog
 {
@@ -375,6 +480,7 @@ BEGIN_EVENT_TABLE(RawImportDialog, wxDialog)
     EVT_BUTTON(XRCID("raw_dcraw_exe_select"), RawImportDialog::OnSelectDCRAWExe)
     EVT_BUTTON(XRCID("raw_rt_exe_select"), RawImportDialog::OnSelectRTExe)
     EVT_BUTTON(XRCID("raw_rt_history_stack_select"), RawImportDialog::OnSelectRTHistoryStack)
+    EVT_BUTTON(XRCID("raw_darktable_exe_select"), RawImportDialog::OnSelectDarktableExe)
     EVT_BUTTON(wxID_OK, RawImportDialog::OnOk)
     EVT_INIT_DIALOG(RawImportDialog::OnInitDialog)
 END_EVENT_TABLE()
@@ -382,9 +488,11 @@ END_EVENT_TABLE()
 #ifdef __WXMSW__
 #define DEFAULT_DCRAW_EXE "dcraw.exe"
 #define DEFAULT_RAWTHERAPEE_EXE "rawtherapee-cli.exe"
+#define DEFAULT_DARKTABLE_EXE "darktable-cli.exe"
 #else
 #define DEFAULT_DCRAW_EXE "dcraw"
 #define DEFAULT_RAWTHERAPEE_EXE "rawtherapee-cli"
+#define DEFAULT_DARKTABLE_EXE "darktable-cli"
 #endif
 
 RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
@@ -419,6 +527,11 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
     // RT history stack
     s = config->Read("/RawImportDialog/RTHistoryStack", "");
     ctrl = XRCCTRL(*this, "raw_rt_history_stack", wxTextCtrl);
+    ctrl->SetValue(s);
+    ctrl->AutoCompleteFileNames();
+    // Darktable
+    s = config->Read("/RawImportDialog/DarktableExe", DEFAULT_DARKTABLE_EXE);
+    ctrl = XRCCTRL(*this, "raw_darktable_exe", wxTextCtrl);
     ctrl->SetValue(s);
     ctrl->AutoCompleteFileNames();
     XRCCTRL(*this, "raw_converter_notebook", wxNotebook)->SetSelection(config->Read("/RawImportDialog/Converter", 0l));
@@ -456,6 +569,9 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
         case 1:
             rawConverter = std::make_shared<RTRawImport>();
             break;
+        case 2:
+            rawConverter = std::make_shared<DarkTableRawImport>();
+            break;
         default:
             // this should not happen
             wxBell();
@@ -474,7 +590,7 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
     {
         // check if image files already exists
         m_images.clear();
-        wxString existingImages;
+        wxArrayString existingImages;
         for (auto& img : m_rawImages)
         {
             wxFileName newImage(img);
@@ -482,15 +598,28 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
             m_images.push_back(newImage.GetFullPath());
             if (newImage.FileExists())
             {
-                existingImages.Append(newImage.GetFullPath().Append(" "));
+                existingImages.push_back(newImage.GetFullPath());
             };
         };
         if (!existingImages.IsEmpty())
         {
-            if (wxMessageBox(_("Overwrite existing images?\n\n") + existingImages,
-                _("Overwrite existing images"), wxYES_NO | wxICON_QUESTION) != wxYES)
+            wxDialog dlg;
+            wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_warning_overwrite"));
+            XRCCTRL(dlg, "dlg_overwrite_list", wxListBox)->Append(existingImages);
+            dlg.Fit();
+            dlg.CenterOnScreen();
+            if (dlg.ShowModal() != wxID_OK)
             {
                 return;
+            };
+        };
+        if (!rawConverter->SupportsOverwrite())
+        {
+            // raw converter does not support overwritting
+            // so delete the file explicit before
+            for (auto& img : existingImages)
+            {
+                wxRemoveFile(img);
             };
         };
     };
@@ -504,6 +633,7 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
         config->Write("/RawImportDialog/dcrawParameter", XRCCTRL(*this, "raw_dcraw_parameter", wxTextCtrl)->GetValue().Trim(true).Trim(false));
         config->Write("/RawImportDialog/RTExe", XRCCTRL(*this, "raw_rt_exe", wxTextCtrl)->GetValue());
         config->Write("/RawImportDialog/RTHistoryStack", XRCCTRL(*this, "raw_rt_history_stack", wxTextCtrl)->GetValue());
+        config->Write("/RawImportDialog/DarktableExe", XRCCTRL(*this, "raw_darktable_exe", wxTextCtrl)->GetValue());
         config->Flush();
         // check if all files were generated
         std::vector<std::string> files;
@@ -729,7 +859,7 @@ void RawImportDialog::OnSelectDCRAWExe(wxCommandEvent & e)
 void RawImportDialog::OnSelectRTExe(wxCommandEvent & e)
 {
     OnSelectFile(e, 
-        _("Select RawTherapee cli"), 
+        _("Select RawTherapee-cli"), 
 #ifdef __WXMSW__
         _("Executables (*.exe)|*.exe"),
 #else
@@ -744,6 +874,18 @@ void RawImportDialog::OnSelectRTHistoryStack(wxCommandEvent& e)
         _("Select default RT history stack"), 
         _("RT history stack|*.pp3"),
         "raw_rt_history_stack");
+}
+
+void RawImportDialog::OnSelectDarktableExe(wxCommandEvent & e)
+{
+    OnSelectFile(e,
+        _("Select Darktable-cli"),
+#ifdef __WXMSW__
+        _("Executables (*.exe)|*.exe"),
+#else
+        wxT("*"),
+#endif
+        "raw_darktable_exe");
 }
 
 void RawImportDialog::OnSelectFile(wxCommandEvent& e, const wxString& caption, const wxString& filter, const char* id)

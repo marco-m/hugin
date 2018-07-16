@@ -170,6 +170,42 @@
                     </object>
                     <label>RawTherapee</label>
                   </object>
+                  <object class="notebookpage">
+                    <object class="wxPanel">
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Darktable-cli executable:</label>
+                              </object>
+                              <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+                              <border>3</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="raw_darktable_exe"/>
+                              <option>1</option>
+                              <flag>wxALL|wxEXPAND</flag>
+                              <border>3</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="raw_darktable_exe_select">
+                                <label>Choose...</label>
+                              </object>
+                              <flag>wxALL</flag>
+                              <border>3</border>
+                            </object>
+                            <orient>wxHORIZONTAL</orient>
+                          </object>
+                          <flag>wxALL|wxEXPAND</flag>
+                          <border>3</border>
+                        </object>
+                      
+                      </object>
+                    </object>
+                    <label>Darktable</label>
+                  </object>
                 </object>
                 <option>1</option>
                 <flag>wxALL|wxEXPAND</flag>

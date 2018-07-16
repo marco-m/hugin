@@ -53,6 +53,7 @@ protected:
     void OnSelectDCRAWExe(wxCommandEvent& e);
     void OnSelectRTExe(wxCommandEvent& e);
     void OnSelectRTHistoryStack(wxCommandEvent& e);
+    void OnSelectDarktableExe(wxCommandEvent& e);
 
 private:
     /** fill list with image names */
