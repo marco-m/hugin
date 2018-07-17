@@ -91,7 +91,7 @@ public:
         return true;
     };
     /** return command for processing of reference image */
-    virtual wxString GetCmdForReference(const wxString& rawFilename, const wxString& imageFilename) = 0;
+    virtual HuginQueue::CommandQueue* GetCmdQueueForReference(const wxString& rawFilename, const wxString& imageFilename) = 0;
     /** read output of processing of reference image to read in white balance of reference image */
     virtual bool ProcessReferenceOutput(const wxArrayString& output) = 0;
     /** return commands for processing of all other images with white balance read by RawImport::ProcessReferenceOutput */
@@ -117,17 +117,24 @@ public:
         m_additionalParameters = XRCCTRL(*dlg, "raw_dcraw_parameter", wxTextCtrl)->GetValue().Trim(true).Trim(false);
         return true;
     };
-    wxString GetCmdForReference(const wxString& rawFilename, const wxString& imageFilename) override
+    HuginQueue::CommandQueue* GetCmdQueueForReference(const wxString& rawFilename, const wxString& imageFilename) override
     {
-        wxString cmd(HuginQueue::wxEscapeFilename(m_exe));
-        cmd.Append(" -w -v -4 -T ");
+        HuginQueue::CommandQueue* queue = new HuginQueue::CommandQueue();
+        wxString args(" -w -v -4 -T ");
         if (!m_additionalParameters.IsEmpty())
         {
-            cmd.Append(m_additionalParameters);
-            cmd.Append(" ");
+            args.Append(m_additionalParameters);
+            args.Append(" ");
         };
-        cmd.Append(HuginQueue::wxEscapeFilename(rawFilename));
-        return cmd;
+        args.Append(HuginQueue::wxEscapeFilename(rawFilename));
+        queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
+        args.Empty();
+        args.Append("-overwrite_original -tagsfromfile ");
+        args.Append(HuginQueue::wxEscapeFilename(rawFilename));
+        args.Append(" -all:all ");
+        args.Append(HuginQueue::wxEscapeFilename(imageFilename));
+        queue->push_back(new HuginQueue::OptionalCommand(HuginQueue::GetExternalProgram(wxConfig::Get(), huginApp::Get()->GetUtilsBinDir(), "exiftool"), args, wxString::Format(_("Updating EXIF data for %s"), imageFilename)));
+        return queue;
     };
     bool ProcessReferenceOutput(const wxArrayString& output) override
     {
@@ -145,7 +152,9 @@ public:
     HuginQueue::CommandQueue* GetCmdQueueForImport(const wxArrayString& rawFilenames, const wxArrayString& imageFilenames) override
     {
         HuginQueue::CommandQueue* queue = new HuginQueue::CommandQueue();
-        for (auto& img : rawFilenames)
+        wxConfigBase* config = wxConfig::Get();
+        const wxString binDir = huginApp::Get()->GetUtilsBinDir();
+        for (size_t i = 0; i < rawFilenames.size(); ++i)
         {
             wxString args(m_wb);
             args.Append(" -v -4 -T ");
@@ -154,8 +163,14 @@ public:
                 args.Append(m_additionalParameters);
                 args.Append(" ");
             };
-            args.Append(HuginQueue::wxEscapeFilename(img));
+            args.Append(HuginQueue::wxEscapeFilename(rawFilenames[i]));
             queue->push_back(new HuginQueue::NormalCommand(m_exe, args,wxString::Format(_("Executing: %s %s"), m_exe, args)));
+            args.Empty();
+            args.Append("-overwrite_original -tagsfromfile ");
+            args.Append(HuginQueue::wxEscapeFilename(rawFilenames[i]));
+            args.Append(" -all:all ");
+            args.Append(HuginQueue::wxEscapeFilename(imageFilenames[i]));
+            queue->push_back(new HuginQueue::OptionalCommand(HuginQueue::GetExternalProgram(config, binDir, "exiftool"), args, wxString::Format(_("Updating EXIF data for %s"), imageFilenames[i])));
         }
         return queue;
     };
@@ -192,25 +207,26 @@ public:
         }
         return true;
     };
-    wxString GetCmdForReference(const wxString& rawFilename, const wxString& imageFilename) override
+    HuginQueue::CommandQueue* GetCmdQueueForReference(const wxString& rawFilename, const wxString& imageFilename) override
     {
-        wxString cmd(HuginQueue::wxEscapeFilename(m_exe));
-        cmd.Append(" -O " + HuginQueue::wxEscapeFilename(imageFilename));
+        HuginQueue::CommandQueue* queue = new HuginQueue::CommandQueue();
+        wxString args("-O " + HuginQueue::wxEscapeFilename(imageFilename));
         if (m_historyStack.IsEmpty())
         {
-            cmd.Append(" -d");
+            args.Append(" -d");
         }
         else
         {
-            cmd.Append(" -p " + HuginQueue::wxEscapeFilename(m_historyStack));
+            args.Append(" -p " + HuginQueue::wxEscapeFilename(m_historyStack));
         };
         // apply some special settings, especially disable all crop and rotation settings
-        cmd.Append(" -s -p " + HuginQueue::wxEscapeFilename(
+        args.Append(" -s -p " + HuginQueue::wxEscapeFilename(
             wxString(std::string(hugin_utils::GetDataDir() + "hugin_rt.pp3").c_str(), HUGIN_CONV_FILENAME)));
-        cmd.Append(" -tz -Y -c ");
-        cmd.Append(HuginQueue::wxEscapeFilename(rawFilename));
+        args.Append(" -tz -Y -c ");
+        args.Append(HuginQueue::wxEscapeFilename(rawFilename));
         m_usedHistoryStack = imageFilename + ".pp3";
-        return cmd;
+        queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
+        return queue;
     };
     bool ProcessReferenceOutput(const wxArrayString& output) override
     {
@@ -253,25 +269,26 @@ public:
         };
     }
     bool SupportsOverwrite() override { return false; }
-    wxString GetCmdForReference(const wxString& rawFilename, const wxString& imageFilename) override
+    HuginQueue::CommandQueue* GetCmdQueueForReference(const wxString& rawFilename, const wxString& imageFilename) override
     {
-        wxString cmd(HuginQueue::wxEscapeFilename(m_exe));
-        cmd.Append(" --verbose ");
-        cmd.Append(HuginQueue::wxEscapeFilename(rawFilename));
-        cmd.Append(" ");
+        HuginQueue::CommandQueue* queue = new HuginQueue::CommandQueue();
+        wxString args(" --verbose ");
+        args.Append(HuginQueue::wxEscapeFilename(rawFilename));
+        args.Append(" ");
 #ifdef __WXMSW__
         // darktable has problems with Windows paths as output
         // so change separator before
         wxString file(imageFilename);
         file.Replace("\\", "/", true);
-        cmd.Append(HuginQueue::wxEscapeFilename(file));
+        args.Append(HuginQueue::wxEscapeFilename(file));
 #else
-        cmd.Append(HuginQueue::wxEscapeFilename(imageFilename));
+        args.Append(HuginQueue::wxEscapeFilename(imageFilename));
 #endif
         // switch --bpp does not work, so using this strange workaround
-        cmd.Append(" --core --conf plugins/imageio/format/tiff/bpp=16");
+        args.Append(" --core --conf plugins/imageio/format/tiff/bpp=16");
         m_refImage = imageFilename;
-        return cmd;
+        queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
+        return queue;
     };
     bool ProcessReferenceOutput(const wxArrayString& output) override
     {
@@ -457,10 +474,8 @@ protected:
     void OnInitDialog(wxInitDialogEvent& e)
     {
         // start processing reference image
-        const wxString cmd(m_converter->GetCmdForReference(m_rawImages[m_refImg], m_images[m_refImg]));
-        m_progressPanel->AddString(wxString::Format(_("Executing: %s"), cmd));
         Bind(wxEVT_END_PROCESS, &RawImportProgress::OnProcessReferenceTerminate, this);
-        m_progressPanel->ExecWithRedirect(cmd);
+        m_progressPanel->ExecQueue(m_converter->GetCmdQueueForReference(m_rawImages[m_refImg], m_images[m_refImg]));
     }
 
 private:
