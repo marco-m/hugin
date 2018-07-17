@@ -50,7 +50,7 @@ namespace HuginQueue
     };
 
     /** optional command for queue, processing of queue is always continued, also if an error occurred */
-    class OptionalCommand : public NormalCommand
+    class WXIMPEX OptionalCommand : public NormalCommand
     {
     public:
         OptionalCommand(wxString prog, wxString args, wxString comment=wxEmptyString) : NormalCommand(prog, args, comment) {};
