@@ -500,6 +500,7 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
     // load our children. some children might need special
     // initialization. this will be done later.
     wxXmlResource::Get()->LoadDialog(this, parent, wxT("import_raw_dialog"));
+    SetMinSize(wxSize(400, 300));
 
 #ifdef __WXMSW__
     wxIcon myIcon(huginApp::Get()->GetXRCPath() + wxT("data/hugin.ico"),wxBITMAP_TYPE_ICO);
