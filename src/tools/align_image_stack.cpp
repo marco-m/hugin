@@ -104,6 +104,11 @@ static void usage(const char* name)
          << "  --distortion Try to load distortion information from lens database" << std::endl
          << "  --use-given-order  Use the image order as given from command line" << std::endl
          << "                     (By default images will be sorted by exposure values.)" << std::endl
+         << "  --align-to-first   Align all images to the first one. By default" << std::endl
+         << "                     align_image_stack matches all image pairs" << std::endl
+         << "                     consecutive." << std::endl
+         << "                     This implies also the --use-given-order option" << std::endl
+         << "  --dont-remap-ref   Don't output the remapped reference image" << std::endl
          << "  --gpu     Use GPU for remapping" << std::endl
          << "  -h        Display help (this text)" << std::endl
          << std::endl;
@@ -475,6 +480,8 @@ struct Parameters
         gpu = false;
         loadDistortion = false;
         sortImagesByEv = true;
+        alignToFirst = false;
+        dontRemapRef = false;
     }
 
     double cpErrorThreshold;
@@ -497,6 +504,8 @@ struct Parameters
     bool gpu;
     bool loadDistortion;
     bool sortImagesByEv;
+    bool alignToFirst;
+    bool dontRemapRef;
     int pyrLevel;
     std::string alignedPrefix;
     std::string ptoFile;
@@ -769,8 +778,16 @@ int main2(std::vector<std::string> files, Parameters param)
         {
             if (g_verbose > 0)
             {
-                std::cout << "Creating control points between " << pano.getSrcImage(images[i-1]).getFilename().c_str() << " and " <<
-                     pano.getSrcImage(images[i]).getFilename().c_str() << std::endl;
+                if (param.alignToFirst)
+                {
+                    std::cout << "Creating control points between " << pano.getSrcImage(images[0]).getFilename().c_str() << " and " <<
+                        pano.getSrcImage(images[i]).getFilename().c_str() << std::endl;
+                }
+                else
+                {
+                    std::cout << "Creating control points between " << pano.getSrcImage(images[i - 1]).getFilename().c_str() << " and " <<
+                        pano.getSrcImage(images[i]).getFilename().c_str() << std::endl;
+                };
             }
 
             // load the actual image data of the next image
@@ -796,15 +813,24 @@ int main2(std::vector<std::string> files, Parameters param)
             // add control points.
             // work on smaller images
             // TODO: or use a fast interest point operator.
-            createCtrlPoints(pano, images[i-1], *leftImg, *leftImgOrig, images[i], *rightImg, *rightImgOrig, param.pyrLevel, 2, param.nPoints, param.grid, param.corrThresh, param.stereo);
+            if (param.alignToFirst)
+            {
+                createCtrlPoints(pano, 0, *leftImg, *leftImgOrig, images[i], *rightImg, *rightImgOrig, param.pyrLevel, 2, param.nPoints, param.grid, param.corrThresh, param.stereo);
+                vigra::initImage(vigra::destImageRange(*rightImg), vigra::NumericTraits<PixelType>::zero());
+                vigra::initImage(vigra::destImageRange(*rightImgOrig), vigra::NumericTraits<PixelType>::zero());
+            }
+            else
+            {
+                createCtrlPoints(pano, images[i - 1], *leftImg, *leftImgOrig, images[i], *rightImg, *rightImgOrig, param.pyrLevel, 2, param.nPoints, param.grid, param.corrThresh, param.stereo);
 
-            // swap images;
-            delete leftImg;
-            delete leftImgOrig;
-            leftImg = rightImg;
-            leftImgOrig = rightImgOrig;
-            rightImg = new ImageType(leftImg->size());
-            rightImgOrig = new ImageType(leftImgOrig->size());
+                // swap images;
+                delete leftImg;
+                delete leftImgOrig;
+                leftImg = rightImg;
+                leftImgOrig = rightImgOrig;
+                rightImg = new ImageType(leftImg->size());
+                rightImgOrig = new ImageType(leftImgOrig->size());
+            };
         }
         delete leftImg;
         delete rightImg;
@@ -852,6 +878,11 @@ int main2(std::vector<std::string> files, Parameters param)
         {
             autoCrop(pano);
         }
+        // deactivate ref image if requested
+        if (param.dontRemapRef)
+        {
+            pano.activateImage(0, false);
+        };
 
         HuginBase::UIntSet imgs = pano.getActiveImages();
         if (optimizeError)
@@ -958,6 +989,8 @@ int main(int argc, char* argv[])
         GPU,
         LENSDB,
         USEGIVENORDER,
+        ALIGNTOFIRST,
+        DONTREMAPREF,
     };
 
     static struct option longOptions[] =
@@ -968,6 +1001,8 @@ int main(int argc, char* argv[])
         {"gpu", no_argument, NULL, GPU },
         {"distortion", no_argument, NULL, LENSDB },
         {"use-given-order", no_argument, NULL, USEGIVENORDER },
+        {"align-to-first", no_argument, NULL, ALIGNTOFIRST},
+        {"dont-remap-ref", no_argument, NULL, DONTREMAPREF},
         {"help", no_argument, NULL, 'h' },
         0
     };
@@ -1088,6 +1123,13 @@ int main(int argc, char* argv[])
                 break;
             case USEGIVENORDER:
                 param.sortImagesByEv = false;
+                break;
+            case ALIGNTOFIRST:
+                param.alignToFirst = true;
+                param.sortImagesByEv = false;
+                break;
+            case DONTREMAPREF:
+                param.dontRemapRef = true;
                 break;
             case ':':
             case '?':
