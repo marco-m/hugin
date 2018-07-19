@@ -963,6 +963,7 @@ int main(int argc, char* argv[])
     static struct option longOptions[] =
     {
         {"corr", required_argument, NULL, CORRTHRESH },
+        {"verbose", no_argument, NULL, 'v'},
         {"threads", required_argument, NULL, THREADS },
         {"gpu", no_argument, NULL, GPU },
         {"distortion", no_argument, NULL, LENSDB },
