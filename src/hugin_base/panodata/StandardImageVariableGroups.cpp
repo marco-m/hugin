@@ -41,10 +41,7 @@ const ConstImageVariableGroup::ImageVariableEnum lens_variables_array[]
                ImageVariableGroup::IVE_HFOV,
                ImageVariableGroup::IVE_ResponseType,
                ImageVariableGroup::IVE_EMoRParams,
-               ImageVariableGroup::IVE_ExposureValue,
                ImageVariableGroup::IVE_Gamma,
-               ImageVariableGroup::IVE_WhiteBalanceRed,
-               ImageVariableGroup::IVE_WhiteBalanceBlue,
                ImageVariableGroup::IVE_RadialDistortion,
                ImageVariableGroup::IVE_RadialDistortionRed,
                ImageVariableGroup::IVE_RadialDistortionBlue,
@@ -62,7 +59,7 @@ const ConstImageVariableGroup::ImageVariableEnum lens_variables_array[]
  */
 const std::set<ConstImageVariableGroup::ImageVariableEnum> lens_variables_set =
     std::set<ConstImageVariableGroup::ImageVariableEnum>(lens_variables_array,
-                                                         lens_variables_array + 18);
+                                                         lens_variables_array + 15);
 
 
 /** The image variables that are specific to stack. These are by default linked
