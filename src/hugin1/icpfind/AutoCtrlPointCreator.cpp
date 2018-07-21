@@ -224,6 +224,19 @@ bool CanStartProg(wxString progName,wxWindow* parent)
     return canStart;
 };
 
+wxString GetCheckedTempDir()
+{
+    wxString tempDir = wxConfigBase::Get()->Read(wxT("tempDir"), wxT(""));
+    if (!tempDir.IsEmpty())
+    {
+        if (tempDir.Last() != wxFileName::GetPathSeparator())
+        {
+            tempDir.Append(wxFileName::GetPathSeparator());
+        };
+    };
+    return tempDir;
+};
+
 HuginBase::CPVector AutoCtrlPointCreator::automatch(CPDetectorSetting &setting, HuginBase::Panorama & pano, const HuginBase::UIntSet & imgs,
                            int nFeatures, wxWindow *parent)
 {
@@ -338,7 +351,7 @@ void AutoCtrlPointCreator::Cleanup(CPDetectorSetting &setting, HuginBase::Panora
             return;
         };
     
-        wxString ptoinfile_name = wxFileName::CreateTempFileName(wxT("ap_inproj"));
+        wxString ptoinfile_name = wxFileName::CreateTempFileName(GetCheckedTempDir() + ("ap_inproj"));
         cleanupArgs.Replace(wxT("%s"), ptoinfile_name);
         std::ofstream ptoinstream(ptoinfile_name.mb_str(wxConvFile));
         pano.printPanoramaScript(ptoinstream, pano.getOptimizeVector(), pano.getOptions(), imgs, false);
@@ -355,7 +368,7 @@ void AutoCtrlPointCreator::Cleanup(CPDetectorSetting &setting, HuginBase::Panora
         };
     };
 };
-        
+
 HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBase::Panorama & pano, const HuginBase::UIntSet & imgs,
                                      int nFeatures, int & ret_value, wxWindow *parent)
 {
@@ -375,7 +388,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
     wxString autopanoArgs = setting.GetArgs();
     
     // TODO: create a secure temporary filename here
-    wxString ptofile = wxFileName::CreateTempFileName(wxT("ap_res"));
+    wxString ptofile = wxFileName::CreateTempFileName(GetCheckedTempDir() + wxT("ap_res"));
     autopanoArgs.Replace(wxT("%o"), ptofile);
     wxString tmp;
     tmp.Printf(wxT("%d"), nFeatures);
@@ -407,7 +420,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
     wxString namefile_name;
     if (use_namefile) {
         // create temporary file with image names.
-        namefile_name = wxFileName::CreateTempFileName(wxT("ap_imgnames"), &namefile);
+        namefile_name = wxFileName::CreateTempFileName(GetCheckedTempDir() + wxT("ap_imgnames"), &namefile);
         DEBUG_DEBUG("before replace %namefile: " << autopanoArgs.mb_str(wxConvLocal));
         autopanoArgs.Replace(wxT("%namefile"), namefile_name);
         DEBUG_DEBUG("after replace %namefile: " << autopanoArgs.mb_str(wxConvLocal));
@@ -432,7 +445,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
     wxString ptoinfile_name;
     if (use_inputscript) {
         wxFile ptoinfile;
-        ptoinfile_name = wxFileName::CreateTempFileName(wxT("ap_inproj"));
+        ptoinfile_name = wxFileName::CreateTempFileName(GetCheckedTempDir() + ("ap_inproj"));
         autopanoArgs.Replace(wxT("%s"), ptoinfile_name);
 
         std::ofstream ptoinstream(ptoinfile_name.mb_str(wxConvFile));
@@ -518,10 +531,6 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
     wxString generateKeysArgs=setting.GetArgs();
     wxString matcherArgs = setting.GetArgsMatcher();
     
-    wxString tempDir= wxConfigBase::Get()->Read(wxT("tempDir"),wxT(""));
-    if(!tempDir.IsEmpty())
-        if(tempDir.Last()!=wxFileName::GetPathSeparator())
-            tempDir.Append(wxFileName::GetPathSeparator());
     //check arguments
     if(generateKeysArgs.Find(wxT("%i"))==wxNOT_FOUND || generateKeysArgs.Find(wxT("%k"))==wxNOT_FOUND)
     {
@@ -537,6 +546,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
     };
 
     ret_value=0;
+    const wxString tempDir = GetCheckedTempDir();
     for (HuginBase::UIntSet::const_iterator img = imgs.begin(); img != imgs.end(); ++img)
     {
         if(keyFiles[*img].IsEmpty())
@@ -580,7 +590,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
     };
 
     // TODO: create a secure temporary filename here
-    wxString ptofile = wxFileName::CreateTempFileName(wxT("ap_res"));
+    wxString ptofile = wxFileName::CreateTempFileName(GetCheckedTempDir() + wxT("ap_res"));
     matcherArgs.Replace(wxT("%o"), ptofile);
     wxString tmp;
     tmp.Printf(wxT("%d"), nFeatures);
@@ -669,7 +679,7 @@ HuginBase::CPVector AutoPanoKolor::automatch(CPDetectorSetting &setting, HuginBa
         imgFiles.append(" ").append(hugin_utils::quoteFilename(pano.getImage(*it).getFilename()));
     }
 
-    wxString ptofilepath = wxFileName::CreateTempFileName(wxT("ap_res"));
+    wxString ptofilepath = wxFileName::CreateTempFileName(GetCheckedTempDir() + wxT("ap_res"));
     wxFileName ptofn(ptofilepath);
     wxString ptofile = ptofn.GetFullName();
     autopanoArgs.Replace(wxT("%o"), ptofile);
