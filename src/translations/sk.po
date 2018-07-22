@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2018-07-14 21:04+0200\n"
-"PO-Revision-Date: 2018-07-14 20:27+0000\n"
+"POT-Creation-Date: 2018-07-22 17:01+0200\n"
+"PO-Revision-Date: 2018-07-22 15:16+0000\n"
 "Last-Translator: Kornel Benko <kornel@lyx.org>\n"
 "Language-Team: Slovak <kornel@lyx.org>\n"
 "Language: sk\n"
@@ -3864,6 +3864,11 @@ msgstr ""
 msgid "Executing: %s %s"
 msgstr "Spúšťam: %s %s"
 
+#: hugin1/hugin/RawImport.cpp:136 hugin1/hugin/RawImport.cpp:173
+#, c-format
+msgid "Updating EXIF data for %s"
+msgstr "Obnovujem EXIF informácie pre %s"
+
 #: hugin1/hugin/RawImport.cpp:181
 #, c-format
 msgid ""
@@ -4935,11 +4940,6 @@ msgstr "Odoslať vybrané panorámy do frontu"
 msgid "Close"
 msgstr "Zavrieť"
 
-#: hugin1/hugin/RawImport.cpp:356
-#, c-format
-msgid "Executing: %s"
-msgstr "Spúšťam: %s"
-
 #: hugin1/hugin/RawImport.cpp:441
 msgid "Please add at least one RAW image to list before you can import it."
 msgstr ""
@@ -4989,8 +4989,8 @@ msgstr ""
 msgid "Select dcraw"
 msgstr "Vybrať dcraw"
 
-#: hugin1/hugin/RawImport.cpp:732
-msgid "Select RawTherapee cli"
+#: hugin1/hugin/RawImport.cpp:878
+msgid "Select RawTherapee-cli"
 msgstr "Vyberte RawTherapee-cli"
 
 #: hugin1/hugin/RawImport.cpp:744
@@ -5000,6 +5000,10 @@ msgstr "Vybrať štandardný zásobník pre RT históriu"
 #: hugin1/hugin/RawImport.cpp:745
 msgid "RT history stack|*.pp3"
 msgstr "Zásobník pre históriu RT|*.pp3"
+
+#: hugin1/hugin/RawImport.cpp:898
+msgid "Select Darktable-cli"
+msgstr "Vyberte Darktable-cli"
 
 #: hugin1/hugin/RawImport.cpp:770
 msgid "(WB reference)"
@@ -5425,6 +5429,16 @@ msgstr "Parametre pre detektory kontrolných bodov"
 msgid "Warning: Invalid filenames"
 msgstr "Varovanie: Neplatné mená súborov"
 
+#: hugin1/hugin/xrc/dlg_warning.xrc:74
+msgid ""
+"The following files exist already.\n"
+"They will be overwritten when running the RAW import.\n"
+"Do you want to overwrite these files?"
+msgstr ""
+"Nasledovné súbory už existujú.\n"
+"Budú prepísané keď sa spustí RAW-import.\n"
+"Chcete prepísať tieto súbory?"
+
 #: hugin1/hugin/xrc/edit_script_dialog.xrc:4
 msgid "Edit Panorama Tools Script"
 msgstr "Editovať skript Panorama Tools"
@@ -5818,6 +5832,14 @@ msgstr ""
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:171
 msgid "RawTherapee"
 msgstr "RawTherapee"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:181
+msgid "Darktable-cli executable:"
+msgstr "Spustiteľný program darktable-cli:"
+
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:207
+msgid "Darktable"
+msgstr "Darktable"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:177
 msgid "Converter settings"
@@ -8324,6 +8346,9 @@ msgstr ""
 "ak sa obrázky veľmi prekrývajú a použili ste tiež mnoho dobre rozprestrených "
 "kontrolných bodov."
 
+#~ msgid "Executing: %s"
+#~ msgstr "Spúšťam: %s"
+
 #~ msgid ""
 #~ "All Image files|*.jpg;*.JPG;*jpeg;*JPEG;*.tif;*.TIF;*.tiff;*.TIFF;*.png;*."
 #~ "PNG;*.bmp;*.BMP;*.gif;*.GIF;*.pnm;*.PNM;*.sun;*.viff;*.hdr;*.HDR;*.exr;*."
@@ -10519,3 +10544,6 @@ msgstr ""
 
 #~ msgid "Invalid filenames"
 #~ msgstr "Neplatné mená súborov"
+
+#~ msgid "Select RawTherapee cli"
+#~ msgstr "Vyberte RawTherapee-cli"
