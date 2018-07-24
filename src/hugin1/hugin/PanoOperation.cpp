@@ -891,10 +891,6 @@ PanoCommand::PanoCommand* ResetOperation::GetInternalCommand(wxWindow* parent, H
     {
         fill_set(images,0,pano.getNrOfImages()-1);
     };
-    // If we should unlink exposure value (to load it from EXIF)
-    bool needs_unlink_exposure = false;
-    bool needs_unlink_redbal = false;
-    bool needs_unlink_bluebal = false;
     double redBalanceAnchor = pano.getImage(pano.getOptions().colorReferenceImage).getExifRedBalance();
     double blueBalanceAnchor = pano.getImage(pano.getOptions().colorReferenceImage).getExifBlueBalance();
     if(fabs(redBalanceAnchor)<1e-2)
@@ -958,12 +954,6 @@ PanoCommand::PanoCommand* ResetOperation::GetInternalCommand(wxWindow* parent, H
         {
             if(m_resetExposure==1 || m_resetExposure==3)
             {
-                if (pano.getImage(imgNr).ExposureValueisLinked())
-                {
-                    /* Unlink exposure value variable so the EXIF values can be
-                     * independant. */
-                    needs_unlink_exposure = true;
-                }
                 //reset to exif value
                 double eV=srcImg.calcExifExposureValue();
                 if ((m_resetExposure == 1 && eV != 0) || m_resetExposure == 3)
@@ -981,18 +971,6 @@ PanoCommand::PanoCommand* ResetOperation::GetInternalCommand(wxWindow* parent, H
         {
             if(m_resetColor==1)
             {
-                if (pano.getImage(imgNr).WhiteBalanceRedisLinked())
-                {
-                    /* Unlink red balance variable so the EXIF values can be
-                     * independant. */
-                    needs_unlink_redbal = true;
-                }
-                if (pano.getImage(imgNr).WhiteBalanceBlueisLinked())
-                {
-                    /* Unlink red balance variable so the EXIF values can be
-                     * independant. */
-                    needs_unlink_bluebal = true;
-                }
                 double redBal=1;
                 double blueBal=1;
                 const HuginBase::SrcPanoImage& img=pano.getImage(imgNr);
@@ -1041,48 +1019,6 @@ PanoCommand::PanoCommand* ResetOperation::GetInternalCommand(wxWindow* parent, H
         vars.push_back(ImgVars);
     };
     std::vector<PanoCommand::PanoCommand *> reset_commands;
-    if (needs_unlink_exposure)
-    {
-        std::set<HuginBase::ImageVariableGroup::ImageVariableEnum> variables;
-        variables.insert(HuginBase::ImageVariableGroup::IVE_ExposureValue);
-        
-        reset_commands.push_back(
-                new PanoCommand::ChangePartImagesLinkingCmd(
-                            pano,
-                            images,
-                            variables,
-                            false,
-                            HuginBase::StandardImageVariableGroups::getLensVariables())
-                );
-    }
-    if (needs_unlink_redbal)
-    {
-        std::set<HuginBase::ImageVariableGroup::ImageVariableEnum> variables;
-        variables.insert(HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed);
-        
-        reset_commands.push_back(
-                new PanoCommand::ChangePartImagesLinkingCmd(
-                            pano,
-                            images,
-                            variables,
-                            false,
-                            HuginBase::StandardImageVariableGroups::getLensVariables())
-                );
-    }
-    if (needs_unlink_bluebal)
-    {
-        std::set<HuginBase::ImageVariableGroup::ImageVariableEnum> variables;
-        variables.insert(HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue);
-        
-        reset_commands.push_back(
-                new PanoCommand::ChangePartImagesLinkingCmd(
-                            pano,
-                            images,
-                            variables,
-                            false,
-                            HuginBase::StandardImageVariableGroups::getLensVariables())
-                );
-    }
     reset_commands.push_back(
                             new PanoCommand::UpdateImagesVariablesCmd(pano, images, vars)
                                            );

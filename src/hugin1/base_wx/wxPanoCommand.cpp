@@ -177,26 +177,6 @@ void applyColorBalanceValue(HuginBase::SrcPanoImage& srcImg, HuginBase::Panorama
     srcImg.setWhiteBalanceBlue(blueBal);
 };
 
-void copySrcImageExif(HuginBase::SrcPanoImage& destImg, HuginBase::SrcPanoImage srcImg)
-{
-    destImg.setExifExposureTime(srcImg.getExifExposureTime());
-    destImg.setExifAperture(srcImg.getExifAperture());
-    destImg.setExifExposureMode(srcImg.getExifExposureMode());
-    destImg.setExifISO(srcImg.getExifISO());
-    destImg.setExifMake(srcImg.getExifMake());
-    destImg.setExifModel(srcImg.getExifModel());
-    destImg.setExifLens(srcImg.getExifLens());
-    destImg.setExifOrientation(srcImg.getExifOrientation());
-    destImg.setExifFocalLength(srcImg.getExifFocalLength());
-    destImg.setExifFocalLength35(srcImg.getExifFocalLength35());
-    destImg.setExifCropFactor(srcImg.getExifCropFactor());
-    destImg.setExifDistance(srcImg.getExifDistance());
-    destImg.setExifDate(srcImg.getExifDate());
-    destImg.setExifRedBalance(srcImg.getExifRedBalance());
-    destImg.setExifBlueBalance(srcImg.getExifBlueBalance());
-    destImg.setFileMetadata(srcImg.getFileMetadata());
-};
-
 bool getLensDataFromUser(wxWindow * parent, HuginBase::SrcPanoImage & srcImg)
 {
     // display lens dialog
@@ -221,7 +201,7 @@ bool getLensDataFromUser(wxWindow * parent, HuginBase::SrcPanoImage & srcImg)
 bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
 {
     // check if the files should be sorted by date
-    long sort = wxConfigBase::Get()->Read(wxT("General/SortNewImgOnAdd"), HUGIN_GUI_SORT_NEW_IMG_ON_ADD);
+    const long sort = wxConfigBase::Get()->Read(wxT("General/SortNewImgOnAdd"), HUGIN_GUI_SORT_NEW_IMG_ON_ADD);
 
     switch (sort) {
         case 1:
@@ -237,17 +217,14 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
             break;
     }
 
-    std::vector<std::string>::const_iterator it;
-    HuginBase::Lens lens;
-    HuginBase::SrcPanoImage srcImg;
-    HuginBase::SrcPanoImage srcImgExif;
     HuginBase::StandardImageVariableGroups variable_groups(pano);
     HuginBase::ImageVariableGroup & lenses = variable_groups.getLenses();
     const size_t oldImgCount = pano.getNrOfImages();
 
     // load additional images...
-    for (it = files.begin(); it != files.end(); ++it) {
-        const std::string &filename = *it;
+    for (const auto& filename: files)
+    {
+        HuginBase::SrcPanoImage srcImg;
         wxString fname(filename.c_str(), HUGIN_CONV_FILENAME);
 
         // try to read settings automatically.
@@ -370,10 +347,7 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
             };
         };
         // save EXIF data for later to prevent double loading of EXIF data
-        srcImgExif=srcImg;
         applyColorBalanceValue(srcImg, pano);
-        double redBal=srcImg.getWhiteBalanceRed();
-        double blueBal=srcImg.getWhiteBalanceBlue();
         if (! ok ) {
                 // search for image with matching size and exif data
                 // and re-use it.
@@ -386,21 +360,10 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
                          other.getExifFocalLength() == srcImg.getExifFocalLength()
                        )
                     {
-                        double ev = srcImg.getExposureValue();
-                        srcImg = pano.getSrcImage(i);
-                        srcImg.setFilename(filename);
-                        srcImg.deleteAllMasks();
-                        copySrcImageExif(srcImg, srcImgExif);
                         // add image
                         int imgNr = pano.addImage(srcImg);
                         variable_groups.update();
                         lenses.switchParts(imgNr, lenses.getPartNumber(i));
-                        lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_ExposureValue, i);
-                        srcImg.setExposureValue(ev);
-                        lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed, i);
-                        lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue, i);
-                        applyColorBalanceValue(srcImg, pano);
-                        pano.setSrcImage(imgNr, srcImg);
                         added=true;
                         break;
                     }
@@ -411,7 +374,7 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
         // if no similar image found, ask user
         if (! ok) {
             if (!getLensDataFromUser(wxGetActiveWindow(), srcImg)) {
-                // assume a standart lens
+                // assume a standard lens
                 srcImg.setHFOV(50);
                 srcImg.setCropFactor(1);
             }
@@ -440,19 +403,6 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
                    )
                 {
                     matchingLensNr = lenses.getPartNumber(i);
-                    // copy data from other image, just keep
-                    // the file name and reload the exif data (for exposure)
-                    ev = srcImg.getExposureValue();
-                    redBal = srcImg.getWhiteBalanceRed();
-                    blueBal = srcImg.getWhiteBalanceBlue();
-                    set_exposure = true;
-                    srcImg = pano.getSrcImage(i);
-                    srcImg.setFilename(filename);
-                    srcImg.deleteAllMasks();
-                    copySrcImageExif(srcImg, srcImgExif);
-                    srcImg.setExposureValue(ev);
-                    srcImg.setWhiteBalanceRed(redBal);
-                    srcImg.setWhiteBalanceBlue(blueBal);
                     break;
                 }
             }
@@ -462,12 +412,6 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
                 if (other.getSize() == srcImg.getSize() )
                 {
                     matchingLensNr = lenses.getPartNumber(i);
-                    // copy data from other image, just keep
-                    // the file name
-                    srcImg = pano.getSrcImage(i);
-                    srcImg.setFilename(filename);
-                    srcImg.deleteAllMasks();
-                    copySrcImageExif(srcImg, srcImgExif);
                     break;
                 }
             }
@@ -481,38 +425,12 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
         if (matchingLensNr != -1)
         {
             lenses.switchParts(imgNr, matchingLensNr);
-            // unlink and set exposure value, if wanted.
-            if (set_exposure)
-            {
-                lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_ExposureValue, imgNr);
-                lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed, imgNr);
-                lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue, imgNr);
-                //don't link image size, this will foul the photometric optimizer
-                lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_Size, imgNr);
-                /// @todo avoid copying the SrcPanoImage.
-                HuginBase::SrcPanoImage t = pano.getSrcImage(imgNr);
-                t.setExposureValue(ev);
-                t.setWhiteBalanceRed(redBal);
-                t.setWhiteBalanceBlue(blueBal);
-                pano.setSrcImage(imgNr, t);
-            }
         }
         if (imgNr == 0) {
             // get initial value for output exposure
             HuginBase::PanoramaOptions opts = pano.getOptions();
             opts.outputExposureValue = srcImg.getExposureValue();
             pano.setOptions(opts);
-            // set the exposure, but there isn't anything to link to so don't try unlinking.
-            // links are made by default when adding new images.
-            if (set_exposure)
-            {
-                /// @todo avoid copying the SrcPanoImage.
-                HuginBase::SrcPanoImage t = pano.getSrcImage(imgNr);
-                t.setExposureValue(ev);
-                t.setWhiteBalanceRed(redBal);
-                t.setWhiteBalanceBlue(blueBal);
-                pano.setSrcImage(imgNr, t);
-            }
         }
     }
     if (pano.hasPossibleStacks())

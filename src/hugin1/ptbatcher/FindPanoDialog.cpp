@@ -774,9 +774,21 @@ wxString PossiblePano::GeneratePanorama(NamingConvention nc, bool createLinks, H
         return wxEmptyString;
     };
     //generate panorama
+    double redBalanceAnchor = (*m_images.begin())->getExifRedBalance();
+    double blueBalanceAnchor = (*m_images.begin())->getExifBlueBalance();
+    if (fabs(redBalanceAnchor)<1e-2)
+    {
+        redBalanceAnchor = 1;
+    };
+    if (fabs(blueBalanceAnchor)<1e-2)
+    {
+        blueBalanceAnchor = 1;
+    };
     HuginBase::Panorama pano;
     for(ImageSet::iterator it=m_images.begin(); it!=m_images.end(); ++it)
     {
+        (*it)->setWhiteBalanceRed((*it)->getExifRedBalance() / redBalanceAnchor);
+        (*it)->setWhiteBalanceBlue((*it)->getExifBlueBalance() / blueBalanceAnchor);
         pano.addImage(*(*it));
     };
     //assign all images the same lens number
@@ -784,28 +796,9 @@ wxString PossiblePano::GeneratePanorama(NamingConvention nc, bool createLinks, H
     HuginBase::ImageVariableGroup& lenses = variable_groups.getLenses();
     if(pano.getNrOfImages()>1)
     {
-        double redBalanceAnchor=pano.getImage(pano.getOptions().colorReferenceImage).getExifRedBalance();
-        double blueBalanceAnchor=pano.getImage(pano.getOptions().colorReferenceImage).getExifBlueBalance();
-        if(fabs(redBalanceAnchor)<1e-2)
-        {
-            redBalanceAnchor=1;
-        };
-        if(fabs(blueBalanceAnchor)<1e-2)
-        {
-            blueBalanceAnchor=1;
-        };
         for(unsigned int i=1; i<pano.getNrOfImages(); i++)
         {
-            HuginBase::SrcPanoImage img = pano.getSrcImage(i);
-            double ev=img.getExposureValue();
-            lenses.switchParts(i,lenses.getPartNumber(0));
-            lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_ExposureValue, i);
-            img.setExposureValue(ev);
-            lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed, i);
-            lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue, i);
-            img.setWhiteBalanceRed(img.getExifRedBalance()/redBalanceAnchor);
-            img.setWhiteBalanceBlue(img.getExifBlueBalance()/blueBalanceAnchor);
-            pano.setSrcImage(i, img);
+            lenses.switchParts(i, lenses.getPartNumber(0));
         };
     };
     if (pano.hasPossibleStacks())

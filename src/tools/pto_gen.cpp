@@ -253,6 +253,8 @@ int main(int argc, char* argv[])
     sort(filelist.begin(),filelist.end(),doj::alphanum_less());
 
     HuginBase::Panorama pano;
+    double redBalanceAnchor = 1.0;
+    double blueBalanceAnchor = 1.0;
     for(size_t i=0; i<filelist.size(); i++)
     {
         HuginBase::SrcPanoImage srcImage;
@@ -358,7 +360,24 @@ int main(int argc, char* argv[])
                 std::cout << "\tNo valid vignetting data found in lens database." << std::endl;
             };
         };
-
+        if (pano.getNrOfImages() == 0)
+        {
+            redBalanceAnchor = srcImage.getExifRedBalance();
+            blueBalanceAnchor = srcImage.getExifBlueBalance();
+            if (fabs(redBalanceAnchor)<1e-2)
+            {
+                redBalanceAnchor = 1;
+            };
+            if (fabs(blueBalanceAnchor)<1e-2)
+            {
+                blueBalanceAnchor = 1;
+            };
+        }
+        else
+        {
+            srcImage.setWhiteBalanceRed(srcImage.getExifRedBalance() / redBalanceAnchor);
+            srcImage.setWhiteBalanceBlue(srcImage.getExifBlueBalance() / blueBalanceAnchor);
+        };
         pano.addImage(srcImage);
     };
 
@@ -372,16 +391,6 @@ int main(int argc, char* argv[])
     //link lenses
     if(pano.getNrOfImages()>1)
     {
-        double redBalanceAnchor=pano.getImage(pano.getOptions().colorReferenceImage).getExifRedBalance();
-        double blueBalanceAnchor=pano.getImage(pano.getOptions().colorReferenceImage).getExifBlueBalance();
-        if(fabs(redBalanceAnchor)<1e-2)
-        {
-            redBalanceAnchor=1;
-        };
-        if(fabs(blueBalanceAnchor)<1e-2)
-        {
-            blueBalanceAnchor=1;
-        };
         HuginBase::StandardImageVariableGroups variable_groups(pano);
         HuginBase::ImageVariableGroup& lenses = variable_groups.getLenses();
 
@@ -404,16 +413,7 @@ int main(int argc, char* argv[])
             };
             if(image!=-1)
             {
-                HuginBase::SrcPanoImage img=pano.getSrcImage(i);
-                double ev=img.getExposureValue();
                 lenses.switchParts(i,lenses.getPartNumber(image));
-                lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_ExposureValue, i);
-                img.setExposureValue(ev);
-                lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed, i);
-                lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue, i);
-                img.setWhiteBalanceRed(img.getExifRedBalance()/redBalanceAnchor);
-                img.setWhiteBalanceBlue(img.getExifBlueBalance()/blueBalanceAnchor);
-                pano.setSrcImage(i, img);
             };
         };
         std::cout << std::endl << "Assigned " << lenses.getNumberOfParts() << " lenses." << std::endl;

@@ -676,10 +676,7 @@ HuginBase::Panorama LensCalFrame::GetPanorama()
         {
             HuginBase::SrcPanoImage img = pano.getSrcImage(i);
             lenses.switchParts(i,lenses.getPartNumber(0));
-            lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_ExposureValue, i);
             img.setExposureValue(0);
-            lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceRed, i);
-            lenses.unlinkVariableImage(HuginBase::ImageVariableGroup::IVE_WhiteBalanceBlue, i);
             img.setWhiteBalanceRed(1);
             img.setWhiteBalanceBlue(1);
             pano.setSrcImage(i, img);
