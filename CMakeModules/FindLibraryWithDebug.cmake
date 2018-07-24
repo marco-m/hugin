@@ -11,7 +11,7 @@
 
 MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libname)
 
-  IF(NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX")
+  IF((NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX") AND (NOT VCPKG_TOOLCHAIN))
 
      # no WIN32_DEBUG_POSTFIX -> simply pass all arguments to FIND_LIBRARY
      FIND_LIBRARY(${var_name}
@@ -21,7 +21,7 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
                   ${ARGN}
      )
 
-  ELSE(NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX")
+  ELSE()
 
     IF(NOT WIN32)
       # on non-win32 we don't need to take care about WIN32_DEBUG_POSTFIX
@@ -31,7 +31,13 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
     ELSE(NOT WIN32)
 
       # 1. get all possible libnames
-      SET(args ${ARGN})
+      IF(VCPKG_TOOLCHAIN AND (NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX"))
+        SET(args ${win32_dbg_postfix_name})
+        LIST(APPEND args ${dgb_postfix})
+        LIST(APPEND args ${ARGN})
+      ELSE()
+        SET(args ${ARGN})
+      ENDIF()
       SET(newargs "")
       SET(libnames_release "")
       SET(libnames_debug "")
@@ -54,6 +60,11 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
             ELSE("${val}" STREQUAL "PATHS")
               LIST(APPEND libnames_release "${val}")
               LIST(APPEND libnames_debug   "${val}${dgb_postfix}")
+              IF(VCPKG_TOOLCHAIN)
+                # in VCPKG the debug library does often not contain a postfix, 
+                # so search also for this variant
+                LIST(APPEND libnames_debug "${val}")
+              ENDIF()
             ENDIF("${val}" STREQUAL "PATHS")
           ENDIF(append_rest)
 
@@ -64,6 +75,11 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
         # just one name
         LIST(APPEND libnames_release "${libname}")
         LIST(APPEND libnames_debug   "${libname}${dgb_postfix}")
+        IF(VCPKG_TOOLCHAIN)
+          # in VCPKG the debug library does often not contain a postfix, 
+          # so search also for this variant
+          LIST(APPEND libnames_debug "${val}")
+        ENDIF()
 
         SET(newargs ${args})
 
@@ -76,11 +92,19 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
       )
 
       # search the debug lib
-      FIND_LIBRARY(${var_name}_DEBUG
-                   NAMES ${libnames_debug}
-                   PATH_SUFFIXES debug/lib
-                   ${newargs}
-      )
+      IF(VCPKG_TOOLCHAIN)
+        FIND_LIBRARY(${var_name}_DEBUG
+                     NAMES ${libnames_debug}
+                     PATHS ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/lib
+                     ${newargs}
+                     NO_DEFAULT_PATH
+          )
+      ELSE()
+        FIND_LIBRARY(${var_name}_DEBUG
+                     NAMES ${libnames_debug}
+                     ${newargs}
+        )
+      ENDIF()
 
       IF(${var_name}_RELEASE AND ${var_name}_DEBUG)
 
@@ -109,6 +133,6 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
 
     ENDIF(NOT WIN32)
 
-  ENDIF(NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX")
+  ENDIF()
 
 ENDMACRO(FIND_LIBRARY_WITH_DEBUG)
