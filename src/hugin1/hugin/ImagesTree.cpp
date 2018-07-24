@@ -1158,8 +1158,20 @@ void ImagesTreeCtrl::OnContextMenu(wxTreeEvent & e)
         {
             bool emptyText=GetItemText(e.GetItem(),m_selectedColumn).IsEmpty();
             ImagesTreeData* data=static_cast<ImagesTreeData*>(GetItemData(e.GetItem()));
-            if((m_groupMode==GROUP_LENS && m_variableVector[m_selectedColumn]!=HuginBase::ImageVariableGroup::IVE_Yaw) ||
-               (m_groupMode==GROUP_STACK && m_variableVector[m_selectedColumn]==HuginBase::ImageVariableGroup::IVE_Yaw) )
+            bool varIsLinkable = false;
+            if (m_groupMode == GROUP_LENS)
+            {
+                varIsLinkable = m_variableVector[m_selectedColumn] != HuginBase::ImageVariableGroup::IVE_Yaw &&
+                    set_contains(HuginBase::ConstStandardImageVariableGroups::getLensVariables(), m_variableVector[m_selectedColumn]);
+            }
+            else
+            {
+                if (m_groupMode == GROUP_STACK)
+                {
+                    varIsLinkable = m_variableVector[m_selectedColumn] == HuginBase::ImageVariableGroup::IVE_Yaw;
+                }
+            };
+            if(varIsLinkable)
             {
                 if(data->IsGroup())
                 {
