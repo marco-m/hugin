@@ -3408,10 +3408,7 @@ void wxTreeListMainWindow::PaintLevel (wxTreeListItem *item, wxDC &dc,
         if (HasFlag(wxTR_ROW_LINES)) { // horizontal lines between rows
             //dc.DestroyClippingRegion();
             int total_width = std::max(m_owner->GetHeaderWindow()->GetWidth(), m_owner->GetClientSize().GetWidth());
-            // if the background colour is white, choose a
-            // contrasting color for the lines
-            wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_3DLIGHT ), 1, wxPENSTYLE_SOLID);
-            dc.SetPen ((GetBackgroundColour() == *wxWHITE)? pen: *wxWHITE_PEN);
+            dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT), 1, wxPENSTYLE_SOLID));
             dc.DrawLine (0, y_top, total_width, y_top);
             dc.DrawLine (0, y_top+h, total_width, y_top+h);
         }
