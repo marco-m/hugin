@@ -839,7 +839,7 @@ wxBitmap CPImageCtrl::generateMagBitmap(hugin_utils::FDiff2D point, wxPoint canv
 
     // apply the transform
     AppBase::DummyProgressDisplay progDisp;
-    vigra_ext::transformImageIntern(vigra::srcImageRange(*(m_img->image8)),
+    vigra_ext::transformImageIntern(vigra::srcImageRange(*m_img->get8BitImage()),
                          vigra::destImageRange(magImg),
                          vigra::destImage(maskImg),
                          transform,
