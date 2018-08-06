@@ -898,6 +898,10 @@ void MainFrame::OnExit(wxCloseEvent & e)
     {
        preview_frame->Close(true);
     }
+    if(gl_preview_frame)
+    {
+        gl_preview_frame->Close(true);
+    }
 
     ImageCache::getInstance().flush();
     Destroy();
