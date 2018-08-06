@@ -601,7 +601,7 @@ struct ApplyLogFunctor
     ApplyLogFunctor(float min_, float max_)
     {
         // protect against zeros in image data
-        if (min_ == 0.0f) {
+        if (min_ <= 0.0f) {
             min_ = 1e-5f;
         }
         minv = std::log10(min_);
