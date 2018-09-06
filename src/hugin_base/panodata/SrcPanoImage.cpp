@@ -520,7 +520,7 @@ bool SrcPanoImage::readEXIF()
         };
     };
     // check results, if 35 mm focal length is too small reset crop factor to 0
-    if (focalLength > 0 && cropFactor > 0 && focalLength*cropFactor < 8)
+    if (focalLength > 0 && cropFactor > 0 && focalLength*cropFactor < 6)
     {
         cropFactor = 0;
         // check alternative way to calculate crop factor, e.g. when focal length and focal length in 35 mm are given
@@ -528,7 +528,7 @@ bool SrcPanoImage::readEXIF()
         const double newCropFactor = Exiv2Helper::getCropFactor(exifData, getWidth(), getHeight());
         if (newCropFactor > 0)
         {
-            if (focalLength*newCropFactor > 8)
+            if (focalLength*newCropFactor >= 6)
             {
                 cropFactor = newCropFactor;
             }
