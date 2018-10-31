@@ -882,6 +882,11 @@ void Batch::RunNextInBatch()
         }
         else
         {
+            if (m_projList.Item(i).status == Project::MISSING)
+            {
+                // skip non-existing project files
+                continue;
+            };
             m_projList.Item(i).status=Project::RUNNING;
             m_running = true;
             if(m_projList.Item(i).target==Project::STITCHING)
