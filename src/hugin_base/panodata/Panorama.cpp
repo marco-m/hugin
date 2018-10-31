@@ -2173,7 +2173,7 @@ Panorama::ReadWriteError Panorama::readData(std::istream& dataInput, std::string
         
     } else {
         DEBUG_FATAL("Could not parse the data input successfully.");
-        return PARCER_ERROR;
+        return PARSER_ERROR;
     }
 }
 
