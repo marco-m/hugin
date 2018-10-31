@@ -127,11 +127,6 @@ bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAll
         return false;
     };
     prjfile.close();
-    if(pano.getNrOfImages()==0)
-    {
-        std::cerr << "ERROR: project " << input << " does not contain any images." << std::endl;
-        return false;
-    };
     pathVec imagesFrom, imagesTo;
     // check if all images exists
     for(size_t i=0; i<pano.getNrOfImages(); i++)

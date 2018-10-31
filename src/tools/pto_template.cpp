@@ -129,13 +129,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if(pano.getNrOfImages()==0)
-    {
-        std::cerr << "Error: project file does not contains any image" << std::endl;
-        std::cerr << "aborting processing" << std::endl;
-        return 1;
-    };
-
     HuginBase::Panorama newPano;
     std::ifstream templateStream(templateFile.c_str());
     if (!templateStream.good())

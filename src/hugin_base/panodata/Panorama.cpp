@@ -3255,23 +3255,30 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
         };
     };
 
-    if (options.optimizeReferenceImage < 0 || options.optimizeReferenceImage >= images.size())
+    if (images.empty())
     {
-        // optimize reference images reference to non-existing image
-        options.optimizeReferenceImage = 0;
-        std::cout << "WARNING: Optimize reference image refers to non existing image. Reset to default value." << std::endl;
-    };
-    if (options.colorReferenceImage < 0 || options.colorReferenceImage >= images.size())
+        std::cerr << "ERROR: Project file contains no images." << std::endl;
+    }
+    else
     {
-        // optimize reference images reference to non-existing image
-        options.colorReferenceImage = 0;
-        std::cout << "WARNING: Optimize photometric reference image refers to non existing image. Reset to default value." << std::endl;
+        if (options.optimizeReferenceImage < 0 || options.optimizeReferenceImage >= images.size())
+        {
+            // optimize reference images reference to non-existing image
+            options.optimizeReferenceImage = 0;
+            std::cout << "WARNING: Optimize reference image refers to non existing image. Reset to default value." << std::endl;
+        };
+        if (options.colorReferenceImage < 0 || options.colorReferenceImage >= images.size())
+        {
+            // optimize reference images reference to non-existing image
+            options.colorReferenceImage = 0;
+            std::cout << "WARNING: Optimize photometric reference image refers to non existing image. Reset to default value." << std::endl;
+        };
     };
     // reset locale
     setlocale(LC_NUMERIC,old_locale);
     free(old_locale);
 
-    return true;
+    return !images.empty();
 }
 
 } // namespace

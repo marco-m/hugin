@@ -385,12 +385,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if(pano.getNrOfImages()==0)
-    {
-        std::cerr << "error: project file does not contains any image" << std::endl
-            << "aborting processing" << std::endl;
-        return 1;
-    };
     if(pano.getNrOfImages()==1)
     {
         std::cerr << "error: project file contains only one image" << std::endl

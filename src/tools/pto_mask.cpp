@@ -222,12 +222,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if(pano.getNrOfImages()==0)
-    {
-        std::cerr << "Error: project file does not contains any image" << std::endl;
-        return 1;
-    };
-
     //read masks and apply
     for(size_t i=0; i<maskFiles.size(); i++)
     {

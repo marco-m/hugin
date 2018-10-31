@@ -234,13 +234,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if(pano.getNrOfImages()==0)
-    {
-        std::cerr << "error: project file does not contains any image" << std::endl;
-        std::cerr << "aborting processing" << std::endl;
-        return 1;
-    };
-
     // new lenses
     if(!newLensImgs.empty())
     {
