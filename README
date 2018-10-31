@@ -93,67 +93,7 @@ These programs are built on top of the pano13 library,
 http://panotools.sourceforge.net/
 
 
-3. DEPENDENCIES
-
-Hugin is work in progress and dependencies can be added any time.
-
-Hugin depends on the following packages. The list may be
-incomplete, and there may be some platform-specific dependencies.
-
-For the latest updates, check
-http://wiki.panotools.org/Development_of_Open_Source_tools#Dependencies
-
-
-3.1. Build-Time Dependencies
-
-Users compiling Hugin from source will need:
-
-    A C++compiler which supports OpenMP and C++11.
-        * OpenMP support is not required. But when compiling
-          without OpenMP nona and cpfind (and some other
-          algorithm) are running only with one thread, 
-          which is slower.
-    
-    The wxWidgets GUI toolkit version >=3.0.0.
-    C++17 TS <filesystem> or boost::filesystem (boost >=1.47)
-    libtiff the TIFF library with LZW support.
-    libpano13 version >=2.9.19
-    libjpg the JPEG library
-    libpng the PNG library
-    libopenexr the OpenEXR library
-    libvigra the VIGRA libray, header files and impex library (>=1.9)
-    Exiv2 Image metadata library
-    GLEW the OpenGL Extension Wrangler Library
-    gettext
-    sqlite3, the SQL database backend for the lens database
-    littlecms2, little cms color engine
-    optionally, lapack
-    optionally, libfftw3
-    on Unix you need also
-        libGLU the OpenGL utility library
-        libxi
-        libxmu
-    on Windows you need
-        HTML Help Workshop for generating compiled HTML help file
-    on Mac OS you need
-        freeglut or glut, the OpenGL utility toolkit
-    for the optional Python Scripting Interface (currently functional and tested only on Linux and Windows)
-        Python version >=2.6
-        SWIG >=2.0 - If Python >=3.2, SWIG must be >=2.0.4
-    Hugin can be compiled with gcc, as well as with MSVC.
-    The build process requires CMake version >=3.1
-
-
-3.2. At runtime
-
-    enblend >= 3.2 is required.
-    Exiftool, version >=9.09 is required to support GPano tags. Otherwise they are ignored.
-    
-    Starting with Hugin 2010.3 and newer, Hugin ships with its own control points generator cpfind. Prior to 2010.3 another optional but recommended runtime dependency was a control points generator.
-    Optionally Python argparse command-line parsing library for the Python scripts. 
-
-
-4. USE
+3. USE
     
 hugin can be used to stitch multiple images together. The resulting image can
 span 360 degrees. Another common use is the creation of very high resolution
@@ -165,7 +105,7 @@ See http://wiki.panotools.org/Development_of_Open_Source_tools#Supported_Platfor
 for some information on releases for different platforms.
 
 
-5. TYPICAL WORKFLOW
+4. TYPICAL WORKFLOW
 
   1. load images
   2. specify initial parameters (lens etc)
@@ -174,7 +114,7 @@ for some information on releases for different platforms.
   5. set output parameters and stitch images together.
 
 
-6. KNOWN ISSUES / INCOMPATIBILITIES / LIMITATIONS
+5. KNOWN ISSUES / INCOMPATIBILITIES / LIMITATIONS
 
 Check the Hugin FAQ and bug tracker
 
