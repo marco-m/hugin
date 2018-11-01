@@ -206,7 +206,7 @@ void AboutDialog::GetSystemInformation(wxFont *font)
 #if !(defined HAVE_STD_FILESYSTEM)
     text=text+wxT("\n")+wxString::Format(wxT("Boost: %i.%i.%i"),BOOST_VERSION / 100000, BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
 #endif
-    text = text + wxT("\n") + wxT("Exiv2: ") + wxString(Exiv2::version(), wxConvLocal);
+    text = text + wxT("\n") + wxT("Exiv2: ") + wxString(Exiv2::versionString().c_str(), wxConvLocal);
     text = text + wxT("\n") + wxT("SQLite3: ") + wxString(sqlite3_libversion(), wxConvLocal);
     text = text + wxT("\n") + wxString::Format(wxT("Vigra: %s"), wxString(VIGRA_VERSION, wxConvLocal).c_str());
     text = text + wxT("\n") + wxString::Format(wxT("LittleCMS2: %i.%i"), LCMS_VERSION / 1000, LCMS_VERSION / 10 % 100);
