@@ -72,6 +72,16 @@ bool LensCalApp::OnInit()
         return false;
     }
     m_xrcPrefix = thePath + wxT("/");
+#elif defined UNIX_SELF_CONTAINED_BUNDLE
+    // initialize paths
+    {
+      wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+      exePath.RemoveLastDir();
+      const wxString huginRoot=exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+      // add the locale directory specified during configure
+      m_xrcPrefix = huginRoot + wxT("share/hugin/xrc/");
+      locale.AddCatalogLookupPathPrefix(huginRoot + wxT("share/locale"));
+    }
 #else
     // add the locale directory specified during configure
     m_xrcPrefix = wxT(INSTALL_XRC_DIR);

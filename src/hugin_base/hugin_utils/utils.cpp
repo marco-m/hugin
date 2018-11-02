@@ -423,6 +423,14 @@ std::string GetDataDir()
         data_path.append("/../Resources/xrc/");
     }
     return data_path;
+#elif defined UNIX_SELF_CONTAINED_BUNDLE
+    fs::path data_path = fs::read_symlink("/proc/self/exe");
+    data_path.remove_filename();
+    if (data_path.has_parent_path())
+    {
+        return (data_path.parent_path() / "share/hugin/data").string();
+    };
+    return std::string();
 #else
     return std::string(INSTALL_DATA_DIR);
 #endif

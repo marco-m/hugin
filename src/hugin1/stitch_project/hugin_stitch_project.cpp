@@ -29,7 +29,7 @@
 #include "panoinc.h"
 
 #include <wx/wfstream.h>
-#ifdef __WXMSW__
+#if defined __WXMSW__ || defined UNIX_SELF_CONTAINED_BUNDLE
 #include <wx/stdpaths.h>
 #endif
 
@@ -286,6 +286,15 @@ bool stitchApp::OnInit()
     // locale setup
     m_locale.AddCatalogLookupPathPrefix(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + wxT("share\\locale"));
 
+#elif defined UNIX_SELF_CONTAINED_BUNDLE
+    // initialize paths
+    {
+      wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+      exePath.RemoveLastDir();
+      const wxString huginRoot=exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+      // add the locale directory specified during configure
+      m_locale.AddCatalogLookupPathPrefix(huginRoot + wxT("share/locale"));
+    }
 #else
     // add the locale directory specified during configure
     m_locale.AddCatalogLookupPathPrefix(wxT(INSTALL_LOCALE_DIR));

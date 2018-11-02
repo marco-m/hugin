@@ -26,7 +26,7 @@
 
 #include "PTBatcherGUI.h"
 #include <wx/cshelp.h>
-#ifdef __WXMSW__
+#if defined __WXMSW__ || defined UNIX_SELF_CONTAINED_BUNDLE
 #include <wx/stdpaths.h>
 #endif
 #include "lensdb/LensDB.h"
@@ -101,6 +101,18 @@ bool PTBatcherGUI::OnInit()
             return false;
         }
 
+    }
+
+#elif defined UNIX_SELF_CONTAINED_BUNDLE
+    // initialize paths
+    {
+      wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+      exePath.RemoveLastDir();
+      const wxString huginRoot(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+      m_xrcPrefix = huginRoot + wxT("share/hugin/xrc/");
+
+      // locale setup
+      m_locale.AddCatalogLookupPathPrefix(huginRoot + wxT("share/locale"));
     }
 #else
     // add the locale directory specified during configure

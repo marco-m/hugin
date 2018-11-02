@@ -31,4 +31,7 @@
 /* if using EGL for OpenGL initialization */
 #cmakedefine HAVE_EGL 1
 
+/* Build a fully self contained OSX bundle (with embedded ressources) */
+#cmakedefine UNIX_SELF_CONTAINED_BUNDLE 1
+
 #endif

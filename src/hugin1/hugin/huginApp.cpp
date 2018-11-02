@@ -57,9 +57,9 @@
 #include "base_wx/platform.h"
 #include "base_wx/huginConfig.h"
 #include <wx/cshelp.h>
+#include <wx/stdpaths.h>
 #ifdef __WXMSW__
 #include <wx/dir.h>
-#include <wx/stdpaths.h>
 #if wxCHECK_VERSION(3,1,0)
 #include <wx/taskbarbutton.h>
 #endif
@@ -250,7 +250,20 @@ bool huginApp::OnInit()
     }
 #endif
     
-	
+#elif defined UNIX_SELF_CONTAINED_BUNDLE
+    // initialize paths
+    {
+      wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
+      m_utilsBinDir = exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+      exePath.RemoveLastDir();
+      const wxString huginRoot=exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+      m_xrcPrefix = huginRoot + wxT("share/hugin/xrc/");
+      m_DataDir = huginRoot + wxT("share/hugin/data/");
+
+      // locale setup
+      locale.AddCatalogLookupPathPrefix(huginRoot + wxT("share/locale"));
+    }
+
 #else
     // add the locale directory specified during configure
     m_xrcPrefix = wxT(INSTALL_XRC_DIR);
