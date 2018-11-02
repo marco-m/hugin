@@ -406,23 +406,13 @@ std::string GetDataDir()
 #ifdef _WIN32
     char buffer[MAX_PATH];//always use MAX_PATH for filepaths
     GetModuleFileName(NULL,buffer,sizeof(buffer));
-    std::string working_path(buffer);
-    std::string data_path("");
-    //remove filename
-    std::string::size_type pos=working_path.rfind("\\");
-    if(pos!=std::string::npos)
+    fs::path data_path(buffer);
+    data_path.remove_filename();
+    if (data_path.has_parent_path())
     {
-        working_path.erase(pos);
-        //remove last dir: should be bin
-        pos=working_path.rfind("\\");
-        if(pos!=std::string::npos)
-        {
-            working_path.erase(pos);
-            //append path delimiter and path
-            working_path.append("\\share\\hugin\\data\\");
-            data_path=working_path;
-        }
-    }
+        return (data_path.parent_path() / "share/hugin/data").string();
+    };
+    return std::string();
 #elif defined MAC_SELF_CONTAINED_BUNDLE
     char path[PATH_MAX + 1];
     uint32_t size = sizeof(path);
@@ -432,10 +422,10 @@ std::string GetDataDir()
         data_path=dirname(path);
         data_path.append("/../Resources/xrc/");
     }
-#else
-    std::string data_path = (INSTALL_DATA_DIR);
-#endif
     return data_path;
+#else
+    return std::string(INSTALL_DATA_DIR);
+#endif
 };
 
 std::string GetUserAppDataDir()
