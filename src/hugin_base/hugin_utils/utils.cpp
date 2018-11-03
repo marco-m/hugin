@@ -410,7 +410,7 @@ std::string GetDataDir()
     data_path.remove_filename();
     if (data_path.has_parent_path())
     {
-        return (data_path.parent_path() / "share/hugin/data").string();
+        return (data_path.parent_path() / "share/hugin/data").string() + "\\";
     };
     return std::string();
 #elif defined MAC_SELF_CONTAINED_BUNDLE
@@ -428,7 +428,7 @@ std::string GetDataDir()
     data_path.remove_filename();
     if (data_path.has_parent_path())
     {
-        return (data_path.parent_path() / "share/hugin/data").string();
+        return (data_path.parent_path() / "share/hugin/data").string() + "/";
     };
     return std::string();
 #else
