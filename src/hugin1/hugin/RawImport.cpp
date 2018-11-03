@@ -193,10 +193,10 @@ public:
     RTRawImport() : RawImport("raw_rt_exe") {};
     bool ProcessAdditionalParameters(wxDialog* dlg) override
     {
-        m_historyStack = XRCCTRL(*dlg, "raw_rt_history_stack", wxTextCtrl)->GetValue().Trim(true).Trim(false);
-        if (!m_historyStack.IsEmpty() && !wxFileName::FileExists(m_historyStack))
+        m_processingProfile = XRCCTRL(*dlg, "raw_rt_processing_profile", wxTextCtrl)->GetValue().Trim(true).Trim(false);
+        if (!m_processingProfile.IsEmpty() && !wxFileName::FileExists(m_processingProfile))
         {
-            wxMessageBox(wxString::Format(_("History stack \"%s\" not found.\nPlease specify a valid file or leave field empty for default settings."), m_historyStack),
+            wxMessageBox(wxString::Format(_("Processing profile \"%s\" not found.\nPlease specify a valid file or leave field empty for default settings."), m_processingProfile),
 #ifdef _WIN32
                 _("Hugin"),
 #else
@@ -211,28 +211,28 @@ public:
     {
         HuginQueue::CommandQueue* queue = new HuginQueue::CommandQueue();
         wxString args("-O " + HuginQueue::wxEscapeFilename(imageFilename));
-        if (m_historyStack.IsEmpty())
+        if (m_processingProfile.IsEmpty())
         {
             args.Append(" -d");
         }
         else
         {
-            args.Append(" -p " + HuginQueue::wxEscapeFilename(m_historyStack));
+            args.Append(" -p " + HuginQueue::wxEscapeFilename(m_processingProfile));
         };
         // apply some special settings, especially disable all crop and rotation settings
         args.Append(" -s -p " + HuginQueue::wxEscapeFilename(
             wxString(std::string(hugin_utils::GetDataDir() + "hugin_rt.pp3").c_str(), HUGIN_CONV_FILENAME)));
         args.Append(" -tz -Y -c ");
         args.Append(HuginQueue::wxEscapeFilename(rawFilename));
-        m_usedHistoryStack = imageFilename + ".pp3";
+        m_usedProcessingProfile = imageFilename + ".pp3";
         queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
         return queue;
     };
     bool ProcessReferenceOutput(const wxArrayString& output) override
     {
-        // we need to change the WB setting in the history stack so the white balance of the reference image
+        // we need to change the WB setting in the processing profile so the white balance of the reference image
         // is used and not the stored WB from each individual image
-        wxFileConfig config(wxEmptyString, wxEmptyString, m_usedHistoryStack);
+        wxFileConfig config(wxEmptyString, wxEmptyString, m_usedProcessingProfile);
         config.Write("/White Balance/Setting", "Custom");
         config.Flush();
         return true;
@@ -243,7 +243,7 @@ public:
         for (size_t i = 0; i < rawFilenames.size(); ++i)
         {
             wxString args("-o " + HuginQueue::wxEscapeFilename(imageFilenames[i]));
-            args.Append(" -p "+HuginQueue::wxEscapeFilename(m_usedHistoryStack));
+            args.Append(" -p "+HuginQueue::wxEscapeFilename(m_usedProcessingProfile));
             args.Append(" -tz -Y -c ");
             args.Append(HuginQueue::wxEscapeFilename(rawFilenames[i]));
             queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
@@ -251,8 +251,8 @@ public:
         return queue;
     };
 private:
-    wxString m_historyStack;
-    wxString m_usedHistoryStack;
+    wxString m_processingProfile;
+    wxString m_usedProcessingProfile;
 };
 
 /** special class for Darktable raw import */
@@ -494,7 +494,7 @@ BEGIN_EVENT_TABLE(RawImportDialog, wxDialog)
     EVT_BUTTON(XRCID("raw_set_wb_ref"), RawImportDialog::OnSetWBReference)
     EVT_BUTTON(XRCID("raw_dcraw_exe_select"), RawImportDialog::OnSelectDCRAWExe)
     EVT_BUTTON(XRCID("raw_rt_exe_select"), RawImportDialog::OnSelectRTExe)
-    EVT_BUTTON(XRCID("raw_rt_history_stack_select"), RawImportDialog::OnSelectRTHistoryStack)
+    EVT_BUTTON(XRCID("raw_rt_processing_profile_select"), RawImportDialog::OnSelectRTProcessingProfile)
     EVT_BUTTON(XRCID("raw_darktable_exe_select"), RawImportDialog::OnSelectDarktableExe)
     EVT_BUTTON(wxID_OK, RawImportDialog::OnOk)
     EVT_INIT_DIALOG(RawImportDialog::OnInitDialog)
@@ -540,9 +540,9 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
     ctrl = XRCCTRL(*this, "raw_rt_exe", wxTextCtrl);
     ctrl->SetValue(s);
     ctrl->AutoCompleteFileNames();
-    // RT history stack
-    s = config->Read("/RawImportDialog/RTHistoryStack", "");
-    ctrl = XRCCTRL(*this, "raw_rt_history_stack", wxTextCtrl);
+    // RT processing profile
+    s = config->Read("/RawImportDialog/RTProcessingProfile", "");
+    ctrl = XRCCTRL(*this, "raw_rt_processing_profile", wxTextCtrl);
     ctrl->SetValue(s);
     ctrl->AutoCompleteFileNames();
     // Darktable
@@ -648,7 +648,7 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
         config->Write("/RawImportDialog/dcrawExe", XRCCTRL(*this, "raw_dcraw_exe", wxTextCtrl)->GetValue());
         config->Write("/RawImportDialog/dcrawParameter", XRCCTRL(*this, "raw_dcraw_parameter", wxTextCtrl)->GetValue().Trim(true).Trim(false));
         config->Write("/RawImportDialog/RTExe", XRCCTRL(*this, "raw_rt_exe", wxTextCtrl)->GetValue());
-        config->Write("/RawImportDialog/RTHistoryStack", XRCCTRL(*this, "raw_rt_history_stack", wxTextCtrl)->GetValue());
+        config->Write("/RawImportDialog/RTProcessingProfile", XRCCTRL(*this, "raw_rt_processing_profile", wxTextCtrl)->GetValue());
         config->Write("/RawImportDialog/DarktableExe", XRCCTRL(*this, "raw_darktable_exe", wxTextCtrl)->GetValue());
         config->Flush();
         // check if all files were generated
@@ -884,12 +884,12 @@ void RawImportDialog::OnSelectRTExe(wxCommandEvent & e)
         "raw_rt_exe");
 }
 
-void RawImportDialog::OnSelectRTHistoryStack(wxCommandEvent& e)
+void RawImportDialog::OnSelectRTProcessingProfile(wxCommandEvent& e)
 {
     OnSelectFile(e, 
-        _("Select default RT history stack"), 
-        _("RT history stack|*.pp3"),
-        "raw_rt_history_stack");
+        _("Select default RT processing profile"), 
+        _("RT processing profile|*.pp3"),
+        "raw_rt_processing_profile");
 }
 
 void RawImportDialog::OnSelectDarktableExe(wxCommandEvent & e)

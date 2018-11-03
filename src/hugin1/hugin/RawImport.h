@@ -49,16 +49,16 @@ protected:
     void OnSetWBReference(wxCommandEvent& e);
     /** event handler called when dialog is shown */
     void OnInitDialog(wxInitDialogEvent& e);
-    /** event handler for selection of exe and history stack in dialog */
+    /** event handler for selection of exe and processing profile stack in dialog */
     void OnSelectDCRAWExe(wxCommandEvent& e);
     void OnSelectRTExe(wxCommandEvent& e);
-    void OnSelectRTHistoryStack(wxCommandEvent& e);
+    void OnSelectRTProcessingProfile(wxCommandEvent& e);
     void OnSelectDarktableExe(wxCommandEvent& e);
 
 private:
     /** fill list with image names */
     void FillImageList();
-    /** show dialog for selection of exe or history stack */
+    /** show dialog for selection of exe or processing profile */
     void OnSelectFile(wxCommandEvent& e, const wxString& caption, const wxString& filter, const char* id);
     HuginBase::Panorama* m_pano;
     wxArrayString m_rawImages;
