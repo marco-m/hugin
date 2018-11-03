@@ -363,7 +363,7 @@ class RawImportProgress :public wxDialog
 {
 public:
     RawImportProgress(wxWindow * parent, std::shared_ptr<RawImport>& converter, const wxArrayString& rawImages, const wxArrayString& images, const int refImg) : 
-        wxDialog(parent, wxID_ANY, _("Import RAW images"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
+        wxDialog(parent, wxID_ANY, _("Import Raw Images"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
         m_converter(converter), m_rawImages(rawImages), m_images(images), m_refImg(refImg), m_isRunning(false)
     {
         DEBUG_ASSERT(m_rawImages.size() > 0);
@@ -567,7 +567,7 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
     if (m_rawImages.IsEmpty())
     {
         // no image in list
-        wxMessageBox(_("Please add at least one RAW image to list before you can import it."),
+        wxMessageBox(_("Please add at least one raw image to list before you can import it."),
 #ifdef _WIN32
             _("Hugin"),
 #else
@@ -667,7 +667,7 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
         };
         if (missingFiles || files.empty())
         {
-            wxMessageBox(_("At least one RAW images was not successfully converted.\nThis image(s) will be skipped"),
+            wxMessageBox(_("At least one raw images was not successfully converted.\nThis image(s) will be skipped"),
 #ifdef _WIN32
                 _("Hugin"),
 #else
@@ -684,7 +684,7 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
         cmds.push_back(new PanoCommand::wxAddImagesCmd(*m_pano, files));
         rawConverter->AddAdditionalPanoramaCommand(cmds, m_pano, m_pano->getNrOfImages(), files.size());
         PanoCommand::CombinedPanoCommand* combinedCmd = new PanoCommand::CombinedPanoCommand(*m_pano, cmds);
-        combinedCmd->setName("import RAW images");
+        combinedCmd->setName("import raw images");
         PanoCommand::GlobalCmdHist::getInstance().addCommand(combinedCmd);
         EndModal(wxID_OK);
     };
@@ -695,9 +695,9 @@ void RawImportDialog::OnAddImages(wxCommandEvent & e)
 {
     wxConfigBase* config = wxConfigBase::Get();
     wxString path = config->Read(wxT("/actualPath"), wxT(""));
-    wxFileDialog dlg(this, _("Import RAW files"),
+    wxFileDialog dlg(this, _("Import Raw Files"),
         path, wxT(""),
-        wxString(_("RAW files")).Append("|*.DNG;*.CRW;*.CR2;*.CR3;*.RAW;*.ERF;*.RAF;*.MRW;*.NEF;*.ORF;*.RW2;*.PEF;*.SRW;*.ARW|").Append(_("All files (*)")).Append("|*"),
+        wxString(_("Raw files")).Append("|*.DNG;*.CRW;*.CR2;*.CR3;*.RAW;*.ERF;*.RAF;*.MRW;*.NEF;*.ORF;*.RW2;*.PEF;*.SRW;*.ARW|").Append(_("All files (*)")).Append("|*"),
         wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST , wxDefaultPosition);
     dlg.SetDirectory(path);
 
@@ -808,8 +808,8 @@ void RawImportDialog::OnAddImages(wxCommandEvent & e)
         {
             wxDialog dlg;
             wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_warning_filename"));
-            dlg.SetLabel(_("Warning: RAW images from different cameras"));
-            XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following images were shot with different camera than the other on.\nThe RAW import works only for images from the same cam."));
+            dlg.SetLabel(_("Warning: raw images from different cameras"));
+            XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following images were shot with different camera than the other on.\nThe raw import works only for images from the same cam."));
             XRCCTRL(dlg, "dlg_warning_list", wxListBox)->Append(differentCam);
             dlg.Fit();
             dlg.CenterOnScreen();
