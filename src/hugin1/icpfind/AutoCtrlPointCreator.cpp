@@ -203,7 +203,7 @@ bool CanStartProg(wxString progName,wxWindow* parent)
     else
     {
         wxPathList pathlist;
-#ifdef __WXMSW__
+#if defined __WXMSW__ || defined UNIX_SELF_CONTAINED_BUNDLE
         const wxFileName exePath(wxStandardPaths::Get().GetExecutablePath());
         pathlist.Add(exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 #endif
