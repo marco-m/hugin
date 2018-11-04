@@ -370,7 +370,7 @@ void GLViewer::Redraw()
 #if defined __WXMAC__ && wxCHECK_VERSION(3,1,0) 
     wxColour col(128,128,128);
 #else
-    wxColour col = wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE);
+    wxColour col = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
 #endif
     m_renderer->SetBackground(col.Red(), col.Green(), col.Blue());
     if (m_visualization_state->RequireRecalculateViewport())
