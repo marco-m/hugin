@@ -695,9 +695,16 @@ void RawImportDialog::OnAddImages(wxCommandEvent & e)
 {
     wxConfigBase* config = wxConfigBase::Get();
     wxString path = config->Read(wxT("/actualPath"), wxT(""));
+    // build filter for raw files
+    wxString rawFilter("*.DNG;*.CRW;*.CR2;*.CR3;*.RAW;*.ERF;*.RAF;*.MRW;*.NEF;*.ORF;*.RW2;*.PEF;*.SRW;*.ARW");
+    if (wxFileName::IsCaseSensitive())
+    {
+        // if file system is case sensitive add also lowercase variant
+        rawFilter.Append(";").Append(rawFilter.Lower());
+    };
     wxFileDialog dlg(this, _("Import Raw Files"),
         path, wxT(""),
-        wxString(_("Raw files")).Append("|*.DNG;*.CRW;*.CR2;*.CR3;*.RAW;*.ERF;*.RAF;*.MRW;*.NEF;*.ORF;*.RW2;*.PEF;*.SRW;*.ARW|").Append(_("All files (*)")).Append("|*"),
+        wxString(_("Raw files")).Append("|").Append(rawFilter).Append("|").Append(_("All files (*)")).Append("|*"),
         wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST , wxDefaultPosition);
     dlg.SetDirectory(path);
 
