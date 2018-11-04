@@ -216,6 +216,18 @@ namespace HuginQueue
 #ifdef __WXMSW__
         // on Windows assume prog is bundled in program dir
         return bindir + name;
+#elif defined UNIX_SELF_CONTAINED_BUNDLE
+        // for AppImage check if program is in it
+        if (wxFileName::FileExists(bindir + name))
+        {
+            // program found in AppImage, so return path in AppImage
+            return bindir + name;
+        }
+        else
+        {
+            // not in AppImage, assume it is in PATH of user
+            return name;
+        };
 #else
         // on Unix simply return name, assume it is in the path
         return name;

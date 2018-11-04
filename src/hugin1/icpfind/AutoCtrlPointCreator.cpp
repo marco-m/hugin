@@ -48,7 +48,7 @@
 #include "base_wx/huginConfig.h"
 #include "base_wx/wxPlatform.h"
 #include <wx/utils.h>
-#ifdef __WXMSW__
+#if defined __WXMSW__ || defined UNIX_SELF_CONTAINED_BUNDLE
 #include <wx/stdpaths.h>
 #endif
 
@@ -169,7 +169,7 @@ wxString GetProgPath(wxString progName)
     if(!bundled.IsEmpty())
         return bundled;
 #else 
-#ifdef __WXMSW__
+#if defined __WXMSW__ || defined UNIX_SELF_CONTAINED_BUNDLE
     wxFileName prog(progName);
     if(prog.IsAbsolute())
     {
