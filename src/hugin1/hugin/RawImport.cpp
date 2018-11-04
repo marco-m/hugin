@@ -222,7 +222,7 @@ public:
         // apply some special settings, especially disable all crop and rotation settings
         args.Append(" -s -p " + HuginQueue::wxEscapeFilename(
             wxString(std::string(hugin_utils::GetDataDir() + "hugin_rt.pp3").c_str(), HUGIN_CONV_FILENAME)));
-        args.Append(" -tz -Y -c ");
+        args.Append(" -b16 -tz -Y -c ");
         args.Append(HuginQueue::wxEscapeFilename(rawFilename));
         m_usedProcessingProfile = imageFilename + ".pp3";
         queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
@@ -244,7 +244,7 @@ public:
         {
             wxString args("-o " + HuginQueue::wxEscapeFilename(imageFilenames[i]));
             args.Append(" -p "+HuginQueue::wxEscapeFilename(m_usedProcessingProfile));
-            args.Append(" -tz -Y -c ");
+            args.Append(" -b16 -tz -Y -c ");
             args.Append(HuginQueue::wxEscapeFilename(rawFilenames[i]));
             queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
         }
