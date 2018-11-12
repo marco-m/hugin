@@ -129,7 +129,7 @@ IF(WIN32)
       LIST(APPEND BOOST_DLLs ${BOOST_SYSTEM_DLL} ${BOOST_FILESYSTEM_DLL})
     ENDIF()
     FIND_FILE(EXIV2_DLL 
-      NAMES exiv2.dll libexiv2.dll exiv2lib.dll
+      NAMES exiv2.dll libexiv2.dll
       PATHS ${DLL_SEARCH_PATH}
             ${SOURCE_BASE_DIR}/exiv2/bin 
       NO_SYSTEM_ENVIRONMENT_PATH
