@@ -29,7 +29,6 @@ hugin_math/Matrix3.cpp
 hugin_math/Vector3.cpp
 hugin_utils/alphanum.cpp
 hugin_utils/utils.cpp
-hugin_utils/platform.cpp
 lensdb/LensDB.cpp
 lines/FindLines.cpp 
 lines/FindN8Lines.cpp
