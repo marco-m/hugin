@@ -480,9 +480,6 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
 
     m_HFOVSlider->SetToolTip(_("drag to change the horizontal field of view"));
 
-    m_exposureText = XRCCTRL(*this, "exposure_text", wxTextCtrl);
-    DEBUG_ASSERT(m_exposureText);
-    m_exposureText->PushEventHandler(new TextKillFocusHandler(this));
     m_HFOVText = XRCCTRL(*this, "pano_text_hfov" ,wxTextCtrl);
     DEBUG_ASSERT(m_HFOVText);
     m_HFOVText->PushEventHandler(new TextKillFocusHandler(this));
@@ -652,6 +649,8 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     m_defaultExposureBut = XRCCTRL(*this, "exposure_default_button", wxBitmapButton);
 
     m_exposureTextCtrl = XRCCTRL(*this, "exposure_text", wxTextCtrl);
+    m_exposureTextCtrl->PushEventHandler(new TextKillFocusHandler(this));
+
     m_exposureSpinBut = XRCCTRL(*this, "exposure_spin", wxSpinButton); 
     m_exposureSpinBut->SetValue(0);
 
@@ -829,7 +828,7 @@ GLPreviewFrame::~GLPreviewFrame()
     }
     m_focalLengthText->PopEventHandler(true);
     m_cropFactorText->PopEventHandler(true);
-    m_exposureText->PopEventHandler(true);
+    m_exposureTextCtrl->PopEventHandler(true);
     m_HFOVText->PopEventHandler(true);
     m_VFOVText->PopEventHandler(true);
     m_ROILeftTxt->PopEventHandler(true);

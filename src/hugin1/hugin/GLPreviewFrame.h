@@ -396,7 +396,6 @@ private:
     // wxChoice * m_outputModeChoice;
     wxTextCtrl * m_exposureTextCtrl;
     wxBitmapButton * m_defaultExposureBut;
-    wxTextCtrl* m_exposureText;
     wxSpinButton * m_exposureSpinBut;
     /// Bar for context sensitive projection information.
     wxInfoBar * m_infoBar;
