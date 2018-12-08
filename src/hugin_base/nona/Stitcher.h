@@ -159,17 +159,7 @@ namespace detail
             {
                 exinfo1.setPosition(remapped.boundingBox().upperLeft());
                 exinfo1.setCanvasSize(vigra::Size2D(opts.getWidth(), opts.getHeight()));
-                vigra::Rect2D rect = remapped.boundingBox();
-                if (rect.right() > opts.getROI().right())
-                {
-                    rect &= opts.getROI();
-                    rect.moveBy(-rect.upperLeft());
-                    vigra::exportImage(srcImageRange(remapped.m_mask, rect), exinfo1);
-                }
-                else
-                {
-                    vigra::exportImage(srcImageRange(remapped.m_mask), exinfo1);
-                };
+                vigra::exportImage(srcImageRange(remapped.m_mask), exinfo1);
             }
 
             // calculate real alpha for saving with the image
@@ -177,7 +167,6 @@ namespace detail
             remapped.calcAlpha();
         }
 
-        vigra::Rect2D subImage;
         if (!opts.tiff_saveROI)
         {
             // FIXME: this is stupid. Should not require space for full image...
@@ -203,11 +192,6 @@ namespace detail
         {
             final_img = &remapped.m_image;
             alpha_img = &remapped.m_mask;
-            if (remapped.boundingBox().right() > opts.getROI().right())
-            {
-                subImage = remapped.boundingBox() & opts.getROI();
-                subImage.moveBy(-subImage.upperLeft());
-            };
         }
 
         std::string ext = opts.getOutputExtension();
@@ -250,27 +234,13 @@ namespace detail
             };
         }
 
-        if (subImage.area() > 0)
+        if (supportsAlpha)
         {
-            if (supportsAlpha)
-            {
-                vigra::exportImageAlpha(srcImageRange(*final_img, subImage), srcImage(*alpha_img), exinfo);
-            }
-            else
-            {
-                vigra::exportImage(srcImageRange(*final_img, subImage), exinfo);
-            };
+            vigra::exportImageAlpha(srcImageRange(*final_img), srcImage(*alpha_img), exinfo);
         }
         else
         {
-            if (supportsAlpha)
-            {
-                vigra::exportImageAlpha(srcImageRange(*final_img), srcImage(*alpha_img), exinfo);
-            }
-            else
-            {
-                vigra::exportImage(srcImageRange(*final_img), exinfo);
-            };
+            vigra::exportImage(srcImageRange(*final_img), exinfo);
         };
     };
 } // namespace detail

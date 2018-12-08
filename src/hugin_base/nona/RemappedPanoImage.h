@@ -32,6 +32,7 @@
 #include <vigra/copyimage.hxx>
 #include <vigra/flatmorphology.hxx>
 #include <vigra_ext/ROIImage.h>
+#include <vigra_ext/openmp_vigra.h>
 
 #include <appbase/ProgressDisplay.h>
 #include <nona/StitcherOptions.h>
@@ -417,6 +418,15 @@ void RemappedPanoImage<RemapImage,AlphaImage>::calcAlpha()
     }
 }
 
+/** copies image into new image with changed size */
+template <class ImageType>
+ImageType CopyImageNewSize(const ImageType& image, const vigra::Size2D& newSize)
+{
+    ImageType newImage(newSize);
+    vigra::omp::copyImage(vigra::srcImageRange(image), vigra::destImage(newImage));
+    return newImage;
+};
+
 /** remap a image without alpha channel*/
 template<class RemapImage, class AlphaImage>
 template<class ImgIter, class ImgAccessor>
@@ -546,6 +556,15 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
                                    m_srcImg.horizontalWarpNeeded(),
                                    interpol,
                                    progress);
+            if (Base::boundingBox().right() > m_destImg.getROI().right())
+            {
+                // dest image was enlarged for GPU alignment issue
+                // delete the pixels outside
+                vigra::Rect2D newBoundingBox = Base::boundingBox() & m_destImg.getROI();
+                Base::m_image = CopyImageNewSize(Base::m_image, newBoundingBox.size());
+                Base::m_mask = CopyImageNewSize(Base::m_mask, newBoundingBox.size());
+                Base::m_region = newBoundingBox;
+            };
         } else {
             transformImageAlpha(srcImg,
                                 vigra::srcImage(alpha),
@@ -591,6 +610,15 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
                                   interpol,
                                   progress);
             }
+            if (Base::boundingBox().right() > m_destImg.getROI().right())
+            {
+                // dest image was enlarged for GPU alignment issue
+                // delete the pixels outside
+                vigra::Rect2D newBoundingBox = Base::boundingBox() & m_destImg.getROI();
+                Base::m_image = CopyImageNewSize(Base::m_image, newBoundingBox.size());
+                Base::m_mask = CopyImageNewSize(Base::m_mask, newBoundingBox.size());
+                Base::m_region = newBoundingBox;
+            };
         } else {
             transformImage(srcImg,
                            destImageRange(Base::m_image),
@@ -723,6 +751,15 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
                                               m_srcImg.horizontalWarpNeeded(),
                                               interp,
                                               progress);
+            if (Base::boundingBox().right() > m_destImg.getROI().right())
+            {
+                // dest image was enlarged for GPU alignment issue
+                // delete the pixels outside
+                vigra::Rect2D newBoundingBox = Base::boundingBox() & m_destImg.getROI();
+                Base::m_image = CopyImageNewSize(Base::m_image, newBoundingBox.size());
+                Base::m_mask = CopyImageNewSize(Base::m_mask, newBoundingBox.size());
+                Base::m_region = newBoundingBox;
+            };
         } else {
             vigra_ext::transformImageAlpha(srcImg,
                                            vigra::srcImage(alpha),
@@ -749,6 +786,15 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
                                               m_srcImg.horizontalWarpNeeded(),
                                               interp,
                                               progress);
+            if (Base::boundingBox().right() > m_destImg.getROI().right())
+            {
+                // dest image was enlarged for GPU alignment issue
+                // delete the pixels outside
+                vigra::Rect2D newBoundingBox = Base::boundingBox() & m_destImg.getROI();
+                Base::m_image = CopyImageNewSize(Base::m_image, newBoundingBox.size());
+                Base::m_mask = CopyImageNewSize(Base::m_mask, newBoundingBox.size());
+                Base::m_region = newBoundingBox;
+            };
         } else {
             vigra_ext::transformImageAlpha(srcImg,
                                            alphaImg,
