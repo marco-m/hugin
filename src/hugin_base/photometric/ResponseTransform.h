@@ -168,7 +168,7 @@ class InvResponseTransform : public ResponseTransform<VTIn>
         void setHDROutput(bool hdrMode, double destExposure);
         
         /// output lut
-        void setOutput(double destExposure, const LUTD & destLut, double scale);
+        void setOutput(double destExposure, const LUTD & destLut, double scale, double rangeCompression = 0.0);
         
 		void enforceMonotonicity()
 		{
@@ -248,7 +248,8 @@ class InvResponseTransform : public ResponseTransform<VTIn>
         double m_destExposure;
         bool m_hdrMode;
         double m_intScale;
-        
+        double m_rangeCompression;
+
     private:
         std::mt19937 Twister;
 };
@@ -420,12 +421,13 @@ InvResponseTransform<VTIn,VTOut>::InvResponseTransform()
 {
     m_destExposure = 1.0;
     m_hdrMode = false;
+    m_rangeCompression = 0.0;
     m_intScale = 1;
 }
 
 template <class VTIn, class VTOut>
 InvResponseTransform<VTIn,VTOut>::InvResponseTransform(const HuginBase::SrcPanoImage & src)
-: Base(src), m_hdrMode(false)
+: Base(src), m_hdrMode(false), m_rangeCompression(0.0)
 {
     m_destExposure = 1.0;
     m_intScale = 1;
@@ -440,6 +442,7 @@ void InvResponseTransform<VTIn,VTOut>::init(const HuginBase::SrcPanoImage & src)
 {
     m_destExposure = 1.0;
     m_intScale = 1;
+    m_rangeCompression = 0.0;
     Base::init(src);
     if (!Base::m_lutR.empty()) {
         invertLUT();
@@ -454,16 +457,22 @@ void InvResponseTransform<VTIn,VTOut>::setHDROutput(bool hdrMode, double destExp
     m_intScale = 1;
     m_destExposure = destExposure;
     m_destLut.clear();
+    m_rangeCompression = 0.0;
 }
 
 template <class VTIn, class VTOut>
-void InvResponseTransform<VTIn,VTOut>::setOutput(double destExposure, const LUTD & destLut, double scale)
+void InvResponseTransform<VTIn,VTOut>::setOutput(double destExposure, const LUTD & destLut, double scale, double rangeCompression)
 {
     m_hdrMode = false;
     m_destLut = destLut;
     if (!m_destLut.empty()) {
         m_destLutFunc = vigra_ext::LUTFunctor<VTInCompReal, LUTD>(m_destLut);
+        m_rangeCompression = rangeCompression;
     }
+    else
+    {
+        m_rangeCompression = 0.0;
+    };
     m_destExposure = destExposure;
     m_intScale = scale;
 }
@@ -504,6 +513,10 @@ InvResponseTransform<VTIn,VTOut>::apply(VT1 v, const hugin_utils::FDiff2D & pos,
     ret *= m_destExposure / (Base::calcVigFactor(pos) * Base::m_srcExposure);
     // apply output transform if required
     if (!m_destLut.empty()) {
+        if (m_rangeCompression > 0.0)
+        {
+            ret = log2(m_rangeCompression*ret + 1) / log2(m_rangeCompression + 1);
+        };
         ret = m_destLutFunc(ret);
     }
     // dither all integer images
@@ -531,6 +544,12 @@ InvResponseTransform<VTIn,VTOut>::apply(vigra::RGBValue<VT1> v, const hugin_util
     ret.blue() /= Base::m_WhiteBalanceBlue;
     // apply output transform if required
     if (!m_destLut.empty()) {
+        if (m_rangeCompression > 0)
+        {
+            ret.red() = log2(m_rangeCompression*ret.red() + 1) / log2(m_rangeCompression + 1);
+            ret.blue() = log2(m_rangeCompression*ret.blue() + 1) / log2(m_rangeCompression + 1);
+            ret.green() = log2(m_rangeCompression*ret.green() + 1) / log2(m_rangeCompression + 1);
+        };
         ret = m_destLutFunc(ret);
     }
     // dither 8 bit images.
@@ -627,6 +646,10 @@ InvResponseTransform<VTIn,VTOut>::emitGLSL(std::ostringstream& oss, std::vector<
         << "    p.rgb = (p.rgb * exposure_whitebalance) / vig;" << endl;
 
     if (!m_destLut.empty()) {
+        if (m_rangeCompression > 0)
+        {
+            oss << "    p.rgb = log2(" << m_rangeCompression << " * p.rgb + 1.0) / " << log2(m_rangeCompression + 1) << ";" << endl;
+        };
         oss << "    p.rgb = p.rgb * " << (destLutSize - 1.0) << ";" << endl
             << "    vec2 destR = texture2DRect(DestLutTexture, vec2(p.r, 0.0)).sq;" << endl
             << "    vec2 destG = texture2DRect(DestLutTexture, vec2(p.g, 0.0)).sq;" << endl

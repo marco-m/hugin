@@ -924,7 +924,7 @@ void TextureManager::TextureInfo::DefineLevels(int min,
             vigra_ext::EMoR::createEMoRLUT(m_viewState->GetSrcImage(0)->getEMoRParams(), outLut);
             vigra_ext::enforceMonotonicity(outLut);
             invResponse.setOutput(1.0 / pow(2.0, dest_img.outputExposureValue),
-                outLut, 255.0);
+                outLut, 255.0, dest_img.outputRangeCompression);
             /*} else {
                // HDR output. not sure how that would be handled by the opengl
                // preview, though. It might be possible to apply a logarithmic

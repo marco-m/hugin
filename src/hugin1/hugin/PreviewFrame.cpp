@@ -58,6 +58,8 @@ enum {
     ID_EXPOSURE_TEXT,
     ID_EXPOSURE_SPIN,
     ID_EXPOSURE_DEFAULT,
+    ID_RANGE_COMPRESSION_TEXT,
+    ID_RANGE_COMPRESSION_SPIN,
     ID_TOGGLE_BUT = wxID_HIGHEST+100,
     PROJ_PARAM_NAMES_ID = wxID_HIGHEST+1000,
     PROJ_PARAM_VAL_ID = wxID_HIGHEST+1100,
@@ -84,6 +86,8 @@ BEGIN_EVENT_TABLE(PreviewFrame, wxFrame)
     EVT_BUTTON(ID_EXPOSURE_DEFAULT, PreviewFrame::OnDefaultExposure)
     EVT_SPIN_DOWN(ID_EXPOSURE_SPIN, PreviewFrame::OnDecreaseExposure)
     EVT_SPIN_UP(ID_EXPOSURE_SPIN, PreviewFrame::OnIncreaseExposure)
+    EVT_SPIN_DOWN(ID_RANGE_COMPRESSION_SPIN, PreviewFrame::OnRangeCompressionDecrease)
+    EVT_SPIN_UP(ID_RANGE_COMPRESSION_SPIN, PreviewFrame::OnRangeCompressionIncrease)
     EVT_CHOICE(ID_BLEND_CHOICE, PreviewFrame::OnBlendChoice)
     EVT_CHOICE(ID_PROJECTION_CHOICE, PreviewFrame::OnProjectionChoice)
     EVT_CHOICE(ID_OUTPUTMODE_CHOICE, PreviewFrame::OnOutputChoice)
@@ -273,7 +277,14 @@ PreviewFrame::PreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     m_exposureSpinBut->SetRange(-0x8000, 0x7fff);
     m_exposureSpinBut->SetValue(0);
     blendModeSizer->Add(m_exposureSpinBut, 0, wxALIGN_CENTER_VERTICAL);
-
+    blendModeSizer->Add(new wxStaticText(this, wxID_ANY, _("Range compression:")), 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 5);
+    m_rangeCompressionTextCtrl = new wxTextCtrl(this, ID_RANGE_COMPRESSION_TEXT, wxT("0"),
+        wxDefaultPosition, wxSize(50, -1), wxTE_PROCESS_ENTER);
+    blendModeSizer->Add(m_rangeCompressionTextCtrl, 0, wxLEFT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5);
+    m_rangeCompressionSpinBut = new wxSpinButton(this, ID_RANGE_COMPRESSION_SPIN, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
+    m_rangeCompressionSpinBut->SetRange(-0x8000, 0x7fff);
+    m_rangeCompressionSpinBut->SetValue(0);
+    blendModeSizer->Add(m_rangeCompressionSpinBut, 0, wxALIGN_CENTER_VERTICAL);
     m_topsizer->Add(blendModeSizer, 0, wxEXPAND | wxALL, 5);
 
     m_projParamSizer = new wxStaticBoxSizer(
@@ -444,6 +455,7 @@ void PreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
         */
     }
     m_exposureTextCtrl->SetValue(wxString(hugin_utils::doubleToString(opts.outputExposureValue,2).c_str(), wxConvLocal));
+    m_rangeCompressionTextCtrl->SetValue(wxString(hugin_utils::doubleToString(opts.outputRangeCompression,1).c_str(), wxConvLocal));
 
     const bool activeImgs = !pano.getActiveImages().empty();
     m_ToolBar->EnableTool(XRCID("preview_center_tool"), activeImgs);
@@ -743,25 +755,59 @@ void PreviewFrame::OnTextCtrlChanged(wxCommandEvent & e)
             }
         }
         opts.outputExposureValue = p;
-    } else {
-        int nParam = opts.m_projFeatures.numberOfParameters;
-        std::vector<double> para = opts.getProjectionParameters();
-        for (int i = 0; i < nParam; i++) {
-            if (e.GetEventObject() == m_projParamTextCtrl[i]) {
-                wxString text = m_projParamTextCtrl[i]->GetValue();
-                DEBUG_INFO ("param " << i << ":  = " << text.mb_str(wxConvLocal) );
-                double p = 0;
-                if (text != wxT("")) {
-                    if (!hugin_utils::str2double(text, p)) {
-                        wxLogError(_("Value must be numeric."));
-                        return;
-                    }
-                }
-                para[i] = p;
-            }
-        }
-        opts.setProjectionParameters(para);
     }
+    else
+    {
+        if (e.GetEventObject() == m_rangeCompressionTextCtrl)
+        {
+            //range compression
+            const wxString text = m_rangeCompressionTextCtrl->GetValue();
+            if (text.IsEmpty())
+            {
+                return;
+            };
+            double p = 0;
+            if (!hugin_utils::str2double(text, p))
+            {
+                wxLogError(_("Value must be numeric."));
+                return;
+            };
+            if (p < 0 || p>20)
+            {
+                wxLogError(_("Value for range compression is outside of valid range."));
+                return;
+            };
+            if (p == opts.outputRangeCompression)
+            {
+                return;
+            };
+            opts.outputRangeCompression = p;
+        }
+        else
+        {
+            int nParam = opts.m_projFeatures.numberOfParameters;
+            std::vector<double> para = opts.getProjectionParameters();
+            for (int i = 0; i < nParam; i++)
+            {
+                if (e.GetEventObject() == m_projParamTextCtrl[i])
+                {
+                    wxString text = m_projParamTextCtrl[i]->GetValue();
+                    DEBUG_INFO("param " << i << ":  = " << text.mb_str(wxConvLocal));
+                    double p = 0;
+                    if (text != wxT(""))
+                    {
+                        if (!hugin_utils::str2double(text, p))
+                        {
+                            wxLogError(_("Value must be numeric."));
+                            return;
+                        }
+                    }
+                    para[i] = p;
+                }
+            }
+            opts.setProjectionParameters(para);
+        };
+    };
     PanoCommand::GlobalCmdHist::getInstance().addCommand(
             new PanoCommand::SetPanoOptionsCmd( m_pano, opts )
                                            );
@@ -859,6 +905,26 @@ void PreviewFrame::OnDecreaseExposure( wxSpinEvent & e )
     PanoCommand::GlobalCmdHist::getInstance().addCommand(
             new PanoCommand::SetPanoOptionsCmd( m_pano, opt )
                                            );
+    updatePano();
+}
+
+void PreviewFrame::OnRangeCompressionIncrease(wxSpinEvent & e)
+{
+    HuginBase::PanoramaOptions opt = m_pano.getOptions();
+    opt.outputRangeCompression = std::min(opt.outputRangeCompression + 1.0, 20.0);
+    PanoCommand::GlobalCmdHist::getInstance().addCommand(
+        new PanoCommand::SetPanoOptionsCmd(m_pano, opt)
+    );
+    updatePano();
+}
+
+void PreviewFrame::OnRangeCompressionDecrease(wxSpinEvent & e)
+{
+    HuginBase::PanoramaOptions opt = m_pano.getOptions();
+    opt.outputRangeCompression = std::max(opt.outputRangeCompression - 1.0, 0.0);
+    PanoCommand::GlobalCmdHist::getInstance().addCommand(
+        new PanoCommand::SetPanoOptionsCmd(m_pano, opt)
+    );
     updatePano();
 }
 

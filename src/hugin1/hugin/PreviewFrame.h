@@ -71,6 +71,8 @@ protected:
     void OnDefaultExposure( wxCommandEvent & e );
     void OnDecreaseExposure( wxSpinEvent & e );
     void OnIncreaseExposure( wxSpinEvent & e );
+    void OnRangeCompressionIncrease(wxSpinEvent & e);
+    void OnRangeCompressionDecrease(wxSpinEvent & e);
     /** event handler for reset projection parameters */
     void OnProjParameterReset(wxCommandEvent & e);
 
@@ -100,6 +102,8 @@ private:
     wxTextCtrl * m_exposureTextCtrl;
     wxBitmapButton * m_defaultExposureBut;
     wxSpinButton * m_exposureSpinBut;
+    wxTextCtrl* m_rangeCompressionTextCtrl;
+    wxSpinButton* m_rangeCompressionSpinBut;
 
     wxString m_choices[3];
     int m_oldProjFormat;

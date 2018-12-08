@@ -234,6 +234,7 @@ class IMPEX PanoramaOptions
 
             outputEMoRParams.resize(5,0.0f);
             outputExposureValue = 0.0;
+            outputRangeCompression = 0.0;
             outputPixelType = "";
 
             panoProjectionFeaturesQuery(m_projectionFormat, &m_projFeatures);
@@ -397,6 +398,7 @@ class IMPEX PanoramaOptions
         // select the exposure of the output images in LDR mode.
         double outputExposureValue;
         std::vector<float> outputEMoRParams;
+        double outputRangeCompression;
 
         // choose pixel type for output images.
         std::string outputPixelType;

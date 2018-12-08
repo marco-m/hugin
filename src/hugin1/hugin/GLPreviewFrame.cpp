@@ -150,6 +150,9 @@ BEGIN_EVENT_TABLE(GLPreviewFrame, wxFrame)
     EVT_BUTTON(XRCID("exposure_default_button"), GLPreviewFrame::OnDefaultExposure)
     EVT_SPIN_DOWN(XRCID("exposure_spin"), GLPreviewFrame::OnDecreaseExposure)
     EVT_SPIN_UP(XRCID("exposure_spin"), GLPreviewFrame::OnIncreaseExposure)
+    EVT_SPIN_DOWN(XRCID("range_compression_spin"), GLPreviewFrame::OnRangeCompressionDecrease)
+    EVT_SPIN_UP(XRCID("range_compression_spin"), GLPreviewFrame::OnRangeCompressionIncrease)
+    EVT_TEXT_ENTER(XRCID("range_compression_text"), GLPreviewFrame::OnRangeCompressionChanged)
     EVT_CHOICE(XRCID("blend_mode_choice"), GLPreviewFrame::OnBlendChoice)
     EVT_CHOICE(XRCID("drag_mode_choice"), GLPreviewFrame::OnDragChoice)
     EVT_CHOICE(XRCID("projection_choice"), GLPreviewFrame::OnProjectionChoice)
@@ -654,6 +657,12 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     m_exposureSpinBut = XRCCTRL(*this, "exposure_spin", wxSpinButton); 
     m_exposureSpinBut->SetValue(0);
 
+    m_rangeCompressionTextCtrl = XRCCTRL(*this, "range_compression_text", wxTextCtrl);
+    m_rangeCompressionTextCtrl->PushEventHandler(new TextKillFocusHandler(this));
+
+    m_rangeCompressionSpinBut = XRCCTRL(*this, "range_compression_spin", wxSpinButton);
+    m_rangeCompressionSpinBut->SetValue(0);
+
     m_projection_panel = XRCCTRL(*this, "projection_panel", wxPanel);
     m_projParamSizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -830,6 +839,7 @@ GLPreviewFrame::~GLPreviewFrame()
     m_cropFactorText->PopEventHandler(true);
     m_exposureTextCtrl->PopEventHandler(true);
     m_HFOVText->PopEventHandler(true);
+    m_rangeCompressionTextCtrl->PopEventHandler(true);
     m_VFOVText->PopEventHandler(true);
     m_ROILeftTxt->PopEventHandler(true);
     m_ROIRightTxt->PopEventHandler(true);
@@ -1088,6 +1098,7 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
         m_incExposureBut->Show();
     }*/
     m_exposureTextCtrl->ChangeValue(wxString(hugin_utils::doubleToString(opts.outputExposureValue,2).c_str(), wxConvLocal));
+    m_rangeCompressionTextCtrl->ChangeValue(wxString(hugin_utils::doubleToString(opts.outputRangeCompression, 1).c_str(), wxConvLocal));
 
     const bool activeImgs = !pano.getActiveImages().empty();
 
@@ -1648,6 +1659,53 @@ void GLPreviewFrame::OnExposureChanged(wxCommandEvent & e)
             new PanoCommand::SetPanoOptionsCmd( m_pano, opts )
                                            );
 }
+
+void GLPreviewFrame::OnRangeCompressionIncrease(wxSpinEvent & e)
+{
+    HuginBase::PanoramaOptions opt = m_pano.getOptions();
+    opt.outputRangeCompression = std::min(opt.outputRangeCompression + 1.0, 20.0);
+    PanoCommand::GlobalCmdHist::getInstance().addCommand(
+        new PanoCommand::SetPanoOptionsCmd(m_pano, opt)
+    );
+}
+
+void GLPreviewFrame::OnRangeCompressionDecrease(wxSpinEvent & e)
+{
+    HuginBase::PanoramaOptions opt = m_pano.getOptions();
+    opt.outputRangeCompression = std::max(opt.outputRangeCompression - 1.0, 0.0);
+    PanoCommand::GlobalCmdHist::getInstance().addCommand(
+        new PanoCommand::SetPanoOptionsCmd(m_pano, opt)
+    );
+}
+
+void GLPreviewFrame::OnRangeCompressionChanged(wxCommandEvent & e)
+{
+    HuginBase::PanoramaOptions opts = m_pano.getOptions();
+    // range compression
+    const wxString text = m_rangeCompressionTextCtrl->GetValue();
+    if (!text.IsEmpty())
+    {
+        double p = 0;
+        if (!hugin_utils::str2double(text, p))
+        {
+            wxLogError(_("Value must be numeric."));
+            return;
+        };
+        if (p < 0 || p>20)
+        {
+            wxLogError(_("Value for range compression is outside of valid range."));
+            return;
+        };
+        if (p != opts.outputRangeCompression)
+        {
+            opts.outputRangeCompression = p;
+            PanoCommand::GlobalCmdHist::getInstance().addCommand(
+                new PanoCommand::SetPanoOptionsCmd(m_pano, opts)
+            );
+        };
+    };
+}
+
 
 void GLPreviewFrame::OnProjParameterChanged(wxCommandEvent & e)
 {

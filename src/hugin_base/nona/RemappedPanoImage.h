@@ -478,7 +478,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
         }
 
         invResponse.setOutput(1.0/pow(2.0,m_destImg.outputExposureValue), outLut,
-                              maxVal);
+                              maxVal, m_destImg.outputRangeCompression);
     } else {
         invResponse.setHDROutput(true,1.0/pow(2.0,m_destImg.outputExposureValue));
     }
@@ -684,7 +684,7 @@ void RemappedPanoImage<RemapImage,AlphaImage>::remapImage(vigra::triple<ImgIter,
             vigra_ext::enforceMonotonicity(outLut);
         };
         invResponse.setOutput(1.0/pow(2.0,m_destImg.outputExposureValue), outLut,
-                              maxVal);
+                              maxVal, m_destImg.outputRangeCompression);
     } else {
         invResponse.setHDROutput(true,1.0/pow(2.0,m_destImg.outputExposureValue));
     }

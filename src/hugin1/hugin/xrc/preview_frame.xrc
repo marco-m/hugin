@@ -393,6 +393,31 @@
                           <flag>wxALIGN_CENTRE_VERTICAL</flag>
                         </object>
                         <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Range compression:</label>
+                          </object>
+                          <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                          <border>5</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="range_compression_text">
+                            <size>50,-1</size>
+                            <style>wxTE_PROCESS_ENTER</style>
+                          </object>
+                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxSpinButton" name="range_compression_spin">
+                            <value>0</value>
+                            <min>-32767</min>
+                            <max>32768</max>
+                            <style>wxSP_VERTICAL|wxSP_ARROW_KEYS</style>
+                          </object>
+                          <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                          <border>5</border>
+                        </object>
+                        
+                        <object class="sizeritem">
                           <object class="wxToggleButton" name="preview_color_picker_toggle_button">
                             <style>wxBU_EXACTFIT</style>
                             <bitmap>data/preview_white_balance.png</bitmap>

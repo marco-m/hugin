@@ -138,6 +138,11 @@ void PreviewPanel::panoramaChanged(HuginBase::Panorama &pano)
         DEBUG_DEBUG("output exposure value changed");
         dirty = true;
     };
+    if (newOpts.outputRangeCompression != opts.outputRangeCompression)
+    {
+        DEBUG_DEBUG("output range compression changed");
+        dirty = true;
+    };
 
     opts = newOpts;
     if (dirty) {
@@ -201,6 +206,26 @@ struct ExposureResponseFunctor2
     }
 };
 
+struct RangeCompression
+{
+public:
+    RangeCompression(double rangeCompression)
+    {
+        m_rangeCompression = rangeCompression;
+        m_logM1 = std::log2(m_rangeCompression + 1);
+    };
+
+    vigra::RGBValue<float> operator()(vigra::RGBValue<float> const& v) const
+    {
+        return vigra::RGBValue<float>(std::log2(m_rangeCompression * v.red() + 1) / m_logM1,
+            std::log2(m_rangeCompression * v.green() + 1) / m_logM1,
+            std::log2(m_rangeCompression * v.blue() + 1) / m_logM1
+            );
+    }
+private:
+    double m_rangeCompression;
+    double m_logM1;
+};
 
 void PreviewPanel::updatePreview()
 {
@@ -356,6 +381,11 @@ void PreviewPanel::updatePreview()
                     vigra::omp::transformImage(srcImageRange(panoImg), destImage(panoImg8),
                                           vigra::functor::Arg1()*vigra::functor::Param(255));
                 } else {
+                    if (opts.outputRangeCompression > 0.0)
+                    {
+                        RangeCompression rangeCompression(opts.outputRangeCompression);
+                        vigra::omp::transformImage(srcImageRange(panoImg), destImage(panoImg), rangeCompression);
+                    }
                 // create suitable lut for response
                     typedef  std::vector<double> LUT;
                     LUT lut;

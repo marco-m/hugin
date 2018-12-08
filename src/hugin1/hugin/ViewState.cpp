@@ -147,7 +147,8 @@ void ViewState::SetOptions(const HuginBase::PanoramaOptions *new_opts)
             it->first->SetDirtyViewport();
             it->first->ForceRequireRedraw();
         }
-        if (  new_opts->outputExposureValue != opts.outputExposureValue)
+        if ((new_opts->outputExposureValue != opts.outputExposureValue) ||
+            (new_opts->outputRangeCompression != opts.outputRangeCompression))
         {
             // output exposure changed. All image photometrics are now different.
             it->first->SetDirtyViewport();

@@ -291,6 +291,7 @@ public:
             if (GetAdvancedOption(advOptions, "ignoreExposure", false))
             {
                 modOptions.outputExposureValue = Base::m_pano.getImage(*it).getExposureValue();
+                modOptions.outputRangeCompression = 0.0;
             };
             RemappedPanoImage<ImageType, AlphaType> *
                 remapped = remapper.getRemapped(Base::m_pano, modOptions, *it, 
@@ -495,6 +496,7 @@ public:
             if (GetAdvancedOption(advOptions, "ignoreExposure", false))
             {
                 modOptions.outputExposureValue = Base::m_pano.getImage(*it).getExposureValue();
+                modOptions.outputRangeCompression = 0.0;
             };
             RemappedPanoImage<ImageType, AlphaType> *
                 remapped = remapper.getRemapped(Base::m_pano, modOptions, *it,

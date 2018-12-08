@@ -754,6 +754,8 @@ void Panorama::printPanoramaScript(std::ostream & o,
     o << "#hugin_outputStacksMinOverlap " << std::setprecision(3) << output.outputStacksMinOverlap << endl;
     o << "#hugin_outputLayersExposureDiff " << std::setprecision(2) << output.outputLayersExposureDiff << endl;
 
+    o << "#hugin_outputRangeCompression " << std::setprecision(2) << output.outputRangeCompression << endl;
+
     if(optvars==getOptimizeVector())
     {
         o << "#hugin_optimizerMasterSwitch " << getOptimizerSwitch() << endl;
@@ -2946,6 +2948,9 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         options.outputImageTypeHDR = value;
                     } else if (var == "#hugin_outputImageTypeHDRCompression") {
                         options.outputImageTypeHDRCompression = value;
+                    } else if (var == "#hugin_outputRangeCompression") {
+                        options.outputRangeCompression = atoi(value.c_str());
+                        options.outputRangeCompression = std::max(0.0, std::min(options.outputRangeCompression, 20.0));
                     } else if (var == "#hugin_optimizerMasterSwitch") {
                         optSwitch = atoi(value.c_str());
                     } else if (var == "#hugin_optimizerPhotoMasterSwitch") {
