@@ -656,12 +656,14 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
 
     m_exposureSpinBut = XRCCTRL(*this, "exposure_spin", wxSpinButton); 
     m_exposureSpinBut->SetValue(0);
+    m_exposureSpinBut->SetMaxSize(wxSize(-1, m_exposureTextCtrl->GetSize().GetHeight()));
 
     m_rangeCompressionTextCtrl = XRCCTRL(*this, "range_compression_text", wxTextCtrl);
     m_rangeCompressionTextCtrl->PushEventHandler(new TextKillFocusHandler(this));
 
     m_rangeCompressionSpinBut = XRCCTRL(*this, "range_compression_spin", wxSpinButton);
     m_rangeCompressionSpinBut->SetValue(0);
+    m_rangeCompressionSpinBut->SetMaxSize(wxSize(-1, m_rangeCompressionTextCtrl->GetSize().GetHeight()));
 
     m_projection_panel = XRCCTRL(*this, "projection_panel", wxPanel);
     m_projParamSizer = new wxBoxSizer(wxHORIZONTAL);

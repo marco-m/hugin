@@ -276,6 +276,7 @@ PreviewFrame::PreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
                                          wxDefaultSize, wxSP_VERTICAL);
     m_exposureSpinBut->SetRange(-0x8000, 0x7fff);
     m_exposureSpinBut->SetValue(0);
+    m_exposureSpinBut->SetMaxSize(wxSize(-1, m_exposureTextCtrl->GetSize().GetHeight()));
     blendModeSizer->Add(m_exposureSpinBut, 0, wxALIGN_CENTER_VERTICAL);
     blendModeSizer->Add(new wxStaticText(this, wxID_ANY, _("Range compression:")), 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 5);
     m_rangeCompressionTextCtrl = new wxTextCtrl(this, ID_RANGE_COMPRESSION_TEXT, wxT("0"),
@@ -284,6 +285,7 @@ PreviewFrame::PreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     m_rangeCompressionSpinBut = new wxSpinButton(this, ID_RANGE_COMPRESSION_SPIN, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
     m_rangeCompressionSpinBut->SetRange(-0x8000, 0x7fff);
     m_rangeCompressionSpinBut->SetValue(0);
+    m_rangeCompressionSpinBut->SetMaxSize(wxSize(-1, m_rangeCompressionTextCtrl->GetSize().GetHeight()));
     blendModeSizer->Add(m_rangeCompressionSpinBut, 0, wxALIGN_CENTER_VERTICAL);
     m_topsizer->Add(blendModeSizer, 0, wxEXPAND | wxALL, 5);
 
