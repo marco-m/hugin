@@ -348,12 +348,12 @@ void PreviewPanel::updatePreview()
                 // apply the exposure
                 double scale = 1.0/pow(2.0,opts.outputExposureValue);
 
-                vigra::transformImage(srcImageRange(panoImg), destImage(panoImg),
+                vigra::omp::transformImage(srcImageRange(panoImg), destImage(panoImg),
                                       vigra::functor::Arg1()*vigra::functor::Param(scale));
 
                 DEBUG_DEBUG("LDR output, with response: " << src.getResponseType());
                 if (src.getResponseType() == HuginBase::SrcPanoImage::RESPONSE_LINEAR) {
-                    vigra::transformImage(srcImageRange(panoImg), destImage(panoImg8),
+                    vigra::omp::transformImage(srcImageRange(panoImg), destImage(panoImg8),
                                           vigra::functor::Arg1()*vigra::functor::Param(255));
                 } else {
                 // create suitable lut for response
@@ -378,7 +378,7 @@ void PreviewPanel::updatePreview()
                     typedef vigra::RGBValue<float> FRGB;
                     vigra_ext::LUTFunctor<FRGB, LUT> lutf(lut);
 
-                    vigra::transformImage(srcImageRange(panoImg), destImage(panoImg8),
+                    vigra::omp::transformImage(srcImageRange(panoImg), destImage(panoImg8),
                                           lutf);
                 }
                 // apply color profiles
