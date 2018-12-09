@@ -816,7 +816,7 @@ void RawImportDialog::OnAddImages(wxCommandEvent & e)
             wxDialog dlg;
             wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_warning_filename"));
             dlg.SetLabel(_("Warning: raw images from different cameras"));
-            XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following images were shot with different camera than the other on.\nThe raw import works only for images from the same cam."));
+            XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following images were shot with different camera than the other one.\nThe raw import works only for images from the same cam."));
             XRCCTRL(dlg, "dlg_warning_list", wxListBox)->Append(differentCam);
             dlg.Fit();
             dlg.CenterOnScreen();

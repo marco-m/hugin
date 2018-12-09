@@ -148,7 +148,9 @@
                               <border>3</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxTextCtrl" name="raw_rt_processing_profile"/>
+                              <object class="wxTextCtrl" name="raw_rt_processing_profile">
+                                <tooltip>Leave empty to use default settings in RawTherapee</tooltip>
+                              </object>
                               <option>1</option>
                               <flag>wxALL|wxEXPAND</flag>
                               <border>3</border>
@@ -156,7 +158,6 @@
                             <object class="sizeritem">
                               <object class="wxButton" name="raw_rt_processing_profile_select">
                                 <label>Choose...</label>
-                                <tooltip>Leave empty to use default settings in RawTherapee</tooltip>
                               </object>
                               <flag>wxALL</flag>
                               <border>3</border>
