@@ -32,10 +32,24 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
 
       # 1. get all possible libnames
       IF(VCPKG_TOOLCHAIN AND (NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX"))
-        SET(args ${win32_dbg_postfix_name})
-        LIST(APPEND args ${dgb_postfix})
-        LIST(APPEND args ${ARGN})
+        SET(DBG_POSTFIX "d")
+        IF("${win32_dbg_postfix_name}" STREQUAL "NAMES")
+          UNSET(SINGLE_LIBNAME)
+          SET(args ${dgb_postfix})
+          LIST(APPEND args ${libname})
+          LIST(APPEND args ${ARGN})
+        ELSE()
+          SET(SINGLE_LIBNAME "${win32_dbg_postfix_name}")
+          SET(args ${libname})
+          LIST(APPEND args ${ARGN})
+        ENDIF()
       ELSE()
+        SET(DBG_POSTFIX ${dgb_postfix})
+        IF("${libname}" STREQUAL "NAMES")
+          UNSET(SINGLE_LIBNAME)
+        ELSE()
+          SET(SINGLE_LIBNAME "${libname}")
+        ENDIF()
         SET(args ${ARGN})
       ENDIF()
       SET(newargs "")
@@ -44,7 +58,7 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
 
       LIST(LENGTH args listCount)
 
-      IF("${libname}" STREQUAL "NAMES")
+      IF(NOT SINGLE_LIBNAME)
         SET(append_rest 0)
         LIST(APPEND args " ")
 
@@ -59,7 +73,7 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
               SET(append_rest 1)
             ELSE("${val}" STREQUAL "PATHS")
               LIST(APPEND libnames_release "${val}")
-              LIST(APPEND libnames_debug   "${val}${dgb_postfix}")
+              LIST(APPEND libnames_debug   "${val}${DBG_POSTFIX}")
               IF(VCPKG_TOOLCHAIN)
                 # in VCPKG the debug library does often not contain a postfix, 
                 # so search also for this variant
@@ -70,20 +84,20 @@ MACRO(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
 
         ENDFOREACH(i)
 
-      ELSE("${libname}" STREQUAL "NAMES")
+      ELSE()
 
         # just one name
-        LIST(APPEND libnames_release "${libname}")
-        LIST(APPEND libnames_debug   "${libname}${dgb_postfix}")
+        LIST(APPEND libnames_release "${SINGLE_LIBNAME}")
+        LIST(APPEND libnames_debug   "${SINGLE_LIBNAME}${DBG_POSTFIX}")
         IF(VCPKG_TOOLCHAIN)
           # in VCPKG the debug library does often not contain a postfix, 
           # so search also for this variant
-          LIST(APPEND libnames_debug "${val}")
+          LIST(APPEND libnames_debug "${SINGLE_LIBNAME}")
         ENDIF()
 
         SET(newargs ${args})
 
-      ENDIF("${libname}" STREQUAL "NAMES")
+      ENDIF()
 
       # search the release lib
       FIND_LIBRARY(${var_name}_RELEASE
