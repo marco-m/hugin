@@ -280,7 +280,7 @@ PreviewFrame::PreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     blendModeSizer->Add(m_exposureSpinBut, 0, wxALIGN_CENTER_VERTICAL);
     blendModeSizer->Add(new wxStaticText(this, wxID_ANY, _("Range compression:")), 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 5);
     m_rangeCompressionTextCtrl = new wxTextCtrl(this, ID_RANGE_COMPRESSION_TEXT, wxT("0"),
-        wxDefaultPosition, wxSize(50, -1), wxTE_PROCESS_ENTER);
+        wxDefaultPosition, wxSize(30, -1), wxTE_PROCESS_ENTER);
     blendModeSizer->Add(m_rangeCompressionTextCtrl, 0, wxLEFT | wxTOP | wxBOTTOM | wxALIGN_CENTER_VERTICAL, 5);
     m_rangeCompressionSpinBut = new wxSpinButton(this, ID_RANGE_COMPRESSION_SPIN, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
     m_rangeCompressionSpinBut->SetRange(-0x8000, 0x7fff);
