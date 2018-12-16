@@ -35,6 +35,9 @@
 #include <exiv2/image.hpp>
 #include <exiv2/easyaccess.hpp>
 #include <exiv2/xmpsidecar.hpp>
+#ifdef __WXMSW__
+#include <wx/msw/registry.h>
+#endif
 
 /** base class for implementation of Raw import functions */
 class RawImport
@@ -537,6 +540,22 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
     ctrl->SetValue(s);
     // RawTherapee
     s = config->Read("/RawImportDialog/RTExe", DEFAULT_RAWTHERAPEE_EXE);
+#ifdef __WXMSW__
+    // try reading installed version from registry
+    // works only with RT 5.5 and above
+    if (s == DEFAULT_RAWTHERAPEE_EXE || !wxFileName::FileExists(s))
+    {
+        wxRegKey regkey(wxRegKey::HKLM, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\rawtherapee-cli.exe");
+        wxString prog;
+        if (regkey.HasValue(wxT("")) && regkey.QueryRawValue(wxT(""), prog))
+        {
+            if (wxFileName::FileExists(prog))
+            {
+                s = prog;
+            };
+        };
+    };
+#endif
     ctrl = XRCCTRL(*this, "raw_rt_exe", wxTextCtrl);
     ctrl->SetValue(s);
     ctrl->AutoCompleteFileNames();
@@ -547,6 +566,21 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
     ctrl->AutoCompleteFileNames();
     // Darktable
     s = config->Read("/RawImportDialog/DarktableExe", DEFAULT_DARKTABLE_EXE);
+#ifdef __WXMSW__
+    // try reading installed version from registry
+    if (s == DEFAULT_DARKTABLE_EXE || !wxFileName::FileExists(s))
+    {
+        wxRegKey regkey(wxRegKey::HKLM, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\darktable-cli.exe");
+        wxString prog;
+        if (regkey.HasValue(wxT("")) && regkey.QueryRawValue(wxT(""), prog))
+        {
+            if (wxFileName::FileExists(prog))
+            {
+                s = prog;
+            }
+        };
+    };
+#endif
     ctrl = XRCCTRL(*this, "raw_darktable_exe", wxTextCtrl);
     ctrl->SetValue(s);
     ctrl->AutoCompleteFileNames();
