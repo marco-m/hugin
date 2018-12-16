@@ -165,6 +165,7 @@ private:
     void OnNextImg(wxCommandEvent & e);
 
     void OnColumnWidthChange( wxListEvent & e );
+    void OnColumnHeaderClick(wxListEvent & e);
 
     void OnFineTuneButton(wxCommandEvent & e);
     void OnActionButton(wxCommandEvent& e);
@@ -223,6 +224,8 @@ private:
     CPImageCtrl::ImageRotation GetRot(double yaw, double roll, double pitch);
     /** updated the internal transform object for drawing line in controls */
     void UpdateTransforms();
+    /** sorting functions*/
+    void SortList();
 
     CPCreationState cpCreationState;
 
@@ -274,6 +277,9 @@ private:
     // point 2 in left window), in local point numbers
     std::set<unsigned int> mirroredPoints;
     size_t m_countCP;
+    // store current sorting column
+    long m_sortCol = -1;
+    bool m_sortAscending = true;
 
     CPImageCtrl::ImageRotation m_leftRot;
     CPImageCtrl::ImageRotation m_rightRot;

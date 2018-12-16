@@ -71,6 +71,7 @@ BEGIN_EVENT_TABLE(CPEditorPanel, wxPanel)
     EVT_LIST_ITEM_SELECTED(XRCID("cp_editor_cp_list"), CPEditorPanel::OnCPListSelect)
     EVT_LIST_ITEM_DESELECTED(XRCID("cp_editor_cp_list"), CPEditorPanel::OnCPListDeselect)
     EVT_LIST_COL_END_DRAG(XRCID("cp_editor_cp_list"), CPEditorPanel::OnColumnWidthChange)
+    EVT_LIST_COL_CLICK(XRCID("cp_editor_cp_list"), CPEditorPanel::OnColumnHeaderClick)
     EVT_CHOICE(XRCID("cp_editor_choice_zoom"), CPEditorPanel::OnZoom)
     EVT_TEXT_ENTER(XRCID("cp_editor_x1"), CPEditorPanel::OnTextPointChange )
     EVT_TEXT_ENTER(XRCID("cp_editor_y1"), CPEditorPanel::OnTextPointChange )
@@ -95,6 +96,15 @@ CPEditorPanel::CPEditorPanel()
     m_pano = 0;
     m_countCP = 0;
 }
+
+// helper function to set image in header
+void SetColumnImage(wxListCtrl* list, int col, int image)
+{
+    wxListItem item;
+    item.SetMask(wxLIST_MASK_IMAGE);
+    item.SetImage(image);
+    list->SetColumn(col, item);
+};
 
 bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
                     const wxPoint& pos,
@@ -156,6 +166,42 @@ bool CPEditorPanel::Create(wxWindow* parent, wxWindowID id,
         if(width != -1)
             m_cpList->SetColumnWidth(j, width);
     }
+    m_sortCol = config->Read(wxT("/CPEditorPanel/SortColumn"), -1);
+    m_sortAscending = config->Read(wxT("/CPEditorPanel/SortAscending"), 1) == 1 ? true : false;
+    if (m_sortCol != -1)
+    {
+        SetColumnImage(m_cpList, m_sortCol, m_sortAscending ? 0 : 1);
+    };
+
+    // creating bitmaps for indicating sorting order
+    wxMemoryDC memDC;
+    memDC.SetFont(GetFont());
+    wxSize fontSize = memDC.GetTextExtent(wxT("\u25b3"));
+    wxCoord charSize = std::max(fontSize.GetWidth(), fontSize.GetHeight());
+    wxImageList* sortIcons = new wxImageList(charSize, charSize, true, 0);
+    {
+        wxBitmap bmp(charSize, charSize);
+        wxMemoryDC dc(bmp);
+        dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+        dc.SetBackground(GetBackgroundColour());
+        dc.Clear();
+        dc.SetFont(GetFont());
+        dc.DrawText(wxT("\u25b3"), (charSize - fontSize.GetWidth()) / 2, (charSize - fontSize.GetHeight()) / 2);
+        dc.SelectObject(wxNullBitmap);
+        sortIcons->Add(bmp, GetBackgroundColour());
+    };
+    {
+        wxBitmap bmp(charSize, charSize);
+        wxMemoryDC dc(bmp);
+        dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+        dc.SetBackground(GetBackgroundColour());
+        dc.Clear();
+        dc.SetFont(GetFont());
+        dc.DrawText(wxT("\u25bd"), (charSize - fontSize.GetWidth()) / 2, (charSize - fontSize.GetHeight()) / 2);
+        dc.SelectObject(wxNullBitmap);
+        sortIcons->Add(bmp, GetBackgroundColour());
+    };
+    m_cpList->AssignImageList(sortIcons, wxIMAGE_LIST_SMALL);
 
     // other controls
     m_x1Text = XRCCTRL(*this,"cp_editor_x1", wxTextCtrl);
@@ -258,9 +304,13 @@ CPEditorPanel::~CPEditorPanel()
     m_x2Text->PopEventHandler(true);
     m_y2Text->PopEventHandler(true);
 
-    wxConfigBase::Get()->Write(wxT("/CPEditorPanel/autoAdd"), m_autoAddCB->IsChecked() ? 1 : 0);
-    wxConfigBase::Get()->Write(wxT("/CPEditorPanel/autoFineTune"), m_fineTuneCB->IsChecked() ? 1 : 0);
-    wxConfigBase::Get()->Write(wxT("/CPEditorPanel/autoEstimate"), m_estimateCB->IsChecked() ? 1 : 0);
+    wxConfigBase* config = wxConfig::Get();
+    config->Write(wxT("/CPEditorPanel/autoAdd"), m_autoAddCB->IsChecked() ? 1 : 0);
+    config->Write(wxT("/CPEditorPanel/autoFineTune"), m_fineTuneCB->IsChecked() ? 1 : 0);
+    config->Write(wxT("/CPEditorPanel/autoEstimate"), m_estimateCB->IsChecked() ? 1 : 0);
+    config->Write(wxT("/CPEditorPanel/SortColumn"), m_sortCol);
+    config->Write(wxT("/CPEditorPanel/SortAscending"), m_sortAscending ? 1 : 0);
+    config->Flush();
 
     m_pano->removeObserver(this);
     DEBUG_TRACE("dtor end");
@@ -346,7 +396,144 @@ void CPEditorPanel::UpdateTransforms()
         m_rightTransform.createTransform(m_pano->getImage(m_rightImageNr), m_pano->getOptions());
         m_rightInvTransform.createInvTransform(m_pano->getImage(m_rightImageNr), m_pano->getOptions());
     };
-};
+}
+
+// define sorting callbacks
+int wxCALLBACK SortIndexDescending(wxIntPtr item1, wxIntPtr item2, wxIntPtr WXUNUSED(sortData))
+{
+    if (item1 < item2)
+        return 1;
+    if (item1 > item2)
+        return -1;
+    return 0;
+}
+
+int wxCALLBACK SortIndexAscending(wxIntPtr item1, wxIntPtr item2, wxIntPtr WXUNUSED(sortData))
+{
+    if (item1 > item2)
+        return 1;
+    if (item1 < item2)
+        return -1;
+    return 0;
+}
+
+#define SORTASCENDING(functionName, var) \
+int wxCALLBACK functionName(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)\
+{\
+    HuginBase::CPointVector* data = (HuginBase::CPointVector*)(sortData);\
+    if (data->at(item1).second.var > data->at(item2).second.var)\
+        return 1;\
+    if (data->at(item1).second.var < data->at(item2).second.var)\
+        return -1;\
+    return 0;\
+}
+
+#define SORTDESCENDING(functionName, var) \
+int wxCALLBACK functionName(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)\
+{\
+    HuginBase::CPointVector* data = (HuginBase::CPointVector*)(sortData); \
+    if (data->at(item1).second.var < data->at(item2).second.var)\
+        return 1; \
+    if (data->at(item1).second.var > data->at(item2).second.var)\
+        return -1; \
+    return 0; \
+}
+
+SORTASCENDING(SortX1Ascending, x1)
+SORTDESCENDING(SortX1Descending, x1)
+SORTASCENDING(SortY1Ascending, y1)
+SORTDESCENDING(SortY1Descending, y1)
+SORTASCENDING(SortX2Ascending, x2)
+SORTDESCENDING(SortX2Descending, x2)
+SORTASCENDING(SortY2Ascending, y2)
+SORTDESCENDING(SortY2Descending, y2)
+SORTASCENDING(SortModeAscending, mode)
+SORTDESCENDING(SortModeDescending, mode)
+SORTASCENDING(SortErrorAscending, error)
+SORTDESCENDING(SortErrorDescending, error)
+
+#undef SORTASCENDING
+#undef SORTDESCENDING
+
+void CPEditorPanel::SortList()
+{
+    if (m_sortCol > -1)
+    {
+        switch (m_sortCol)
+        {
+            case 0:  // index
+                if (m_sortAscending)
+                {
+                    m_cpList->SortItems(SortIndexAscending, 0);
+                }
+                else
+                {
+                    m_cpList->SortItems(SortIndexDescending, 0);
+                };
+                break;
+            case 1: // x1
+                if (m_sortAscending)
+                {
+                    m_cpList->SortItems(SortX1Ascending, wxIntPtr(&currentPoints));
+                }
+                else
+                {
+                    m_cpList->SortItems(SortX1Descending, wxIntPtr(&currentPoints));
+                };
+                break;
+            case 2: // y1
+                if (m_sortAscending)
+                {
+                    m_cpList->SortItems(SortY1Ascending, wxIntPtr(&currentPoints));
+                }
+                else
+                {
+                    m_cpList->SortItems(SortY1Descending, wxIntPtr(&currentPoints));
+                };
+                break;
+            case 3: // x2
+                if (m_sortAscending)
+                {
+                    m_cpList->SortItems(SortX2Ascending, wxIntPtr(&currentPoints));
+                }
+                else
+                {
+                    m_cpList->SortItems(SortX2Descending, wxIntPtr(&currentPoints));
+                };
+                break;
+            case 4: // y2
+                if (m_sortAscending)
+                {
+                    m_cpList->SortItems(SortY2Ascending, wxIntPtr(&currentPoints));
+                }
+                else
+                {
+                    m_cpList->SortItems(SortY2Descending, wxIntPtr(&currentPoints));
+                };
+                break;
+            case 5: // mode
+                if (m_sortAscending)
+                {
+                    m_cpList->SortItems(SortModeAscending, wxIntPtr(&currentPoints));
+                }
+                else
+                {
+                    m_cpList->SortItems(SortModeDescending, wxIntPtr(&currentPoints));
+                };
+                break;
+            case 6: // error
+                if (m_sortAscending)
+                {
+                    m_cpList->SortItems(SortErrorAscending, wxIntPtr(&currentPoints));
+                }
+                else
+                {
+                    m_cpList->SortItems(SortErrorDescending, wxIntPtr(&currentPoints));
+                };
+                break;
+        };
+    };
+}
 
 void CPEditorPanel::OnCPEvent( CPEvent&  ev)
 {
@@ -582,7 +769,11 @@ void CPEditorPanel::ClearSelection()
         // no point selected, no need to select one.
         return;
     }
-    m_cpList->SetItemState(m_selectedPoint, 0, wxLIST_STATE_SELECTED);
+    const long selectedPoint = m_cpList->FindItem(-1, m_selectedPoint);
+    if (selectedPoint != wxNOT_FOUND)
+    {
+        m_cpList->SetItemState(selectedPoint, 0, wxLIST_STATE_SELECTED);
+    };
 
     m_selectedPoint=UINT_MAX;
     changeState(NO_POINT);
@@ -611,8 +802,9 @@ void CPEditorPanel::SelectLocalPoint(unsigned int LVpointNr)
     m_cpModeChoice->SetSelection(p.mode);
     m_leftImg->selectPoint(LVpointNr);
     m_rightImg->selectPoint(LVpointNr);
-    m_cpList->SetItemState(LVpointNr, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-    m_cpList->EnsureVisible(LVpointNr);
+    const long selectedPoint = m_cpList->FindItem(-1, LVpointNr);
+    m_cpList->SetItemState(selectedPoint, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    m_cpList->EnsureVisible(selectedPoint);
 
     EnablePointEdit(true);
 }
@@ -1410,6 +1602,7 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
 
     // update control points
     const HuginBase::CPVector & controlPoints = m_pano->getCtrlPoints();
+    const size_t oldCurrentPointSize = currentPoints.size();
     currentPoints.clear();
     mirroredPoints.clear();
 
@@ -1438,10 +1631,15 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     m_rightImg->update();
 
     // put these control points into our listview.
-    unsigned int selectedCP = UINT_MAX;
-    for ( int i=0; i < m_cpList->GetItemCount() ; i++ ) {
-      if ( m_cpList->GetItemState( i, wxLIST_STATE_SELECTED ) ) {
-        selectedCP = i;            // remembers the old selection
+    unsigned int selectedItem = UINT_MAX;
+    long selectedCP = -1;
+    for (int i = 0; i < m_cpList->GetItemCount(); i++)
+    {
+      if ( m_cpList->GetItemState( i, wxLIST_STATE_SELECTED))
+      {
+          selectedItem = (unsigned int) i;            // remembers the old selection, only one can be selected
+          selectedCP = m_cpList->GetItemData(i);
+          break;
       }
     }
     m_cpList->Freeze();
@@ -1450,7 +1648,9 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
     for (unsigned int i=0; i < currentPoints.size(); ++i) {
         const HuginBase::ControlPoint & p(currentPoints[i].second);
         DEBUG_DEBUG("inserting LVItem " << i);
-        m_cpList->InsertItem(i,wxString::Format(wxT("%d"),i));
+        long item = m_cpList->InsertItem(i, wxString::Format(wxT("%d"), i), -1);
+        // store index in list data field
+        m_cpList->SetItemData(item, i);
         m_cpList->SetItem(i,1,wxString::Format(wxT("%.2f"),p.x1));
         m_cpList->SetItem(i,2,wxString::Format(wxT("%.2f"),p.y1));
         m_cpList->SetItem(i,3,wxString::Format(wxT("%.2f"),p.x2));
@@ -1473,13 +1673,32 @@ void CPEditorPanel::UpdateDisplay(bool newPair)
         m_cpList->SetItem(i,5,mode);
         m_cpList->SetItem(i,6,wxString::Format(wxT("%.2f"),p.error));
     }
+    SortList();
 
-    if ( selectedCP < (unsigned int) m_cpList->GetItemCount() && ! newPair) {
+    if (selectedItem <= (unsigned int)m_cpList->GetItemCount() && !newPair && m_cpList->GetItemCount() > 0)
+    {
         // sets an old selection again, only if the images have not changed
-        m_cpList->SetItemState( selectedCP,
-                                wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED );
-        m_cpList->EnsureVisible(selectedCP);
-        m_selectedPoint = selectedCP;
+        if (oldCurrentPointSize == currentPoints.size())
+        {
+            // number of control points is not changed, so select the same cp
+            // as before
+            long selected = m_cpList->FindItem(-1, selectedCP);
+            m_cpList->SetItemState(selected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+            m_cpList->EnsureVisible(selected);
+            m_selectedPoint = selectedCP;
+        }
+        else
+        {
+            // number of cp has change, so keep the next item seleteced
+            if (selectedItem == (unsigned int)m_cpList->GetItemCount())
+            {
+                // previously last item was selected, move selected to now last item
+                selectedItem = m_cpList->GetItemCount() - 1;
+            };
+            m_cpList->SetItemState(selectedItem, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+            m_cpList->EnsureVisible(selectedItem);
+            m_selectedPoint = m_cpList->GetItemData(selectedItem);
+        };
         EnablePointEdit(true);
 
         const HuginBase::ControlPoint & p = currentPoints[m_selectedPoint].second;
@@ -1531,7 +1750,7 @@ void CPEditorPanel::OnTextPointChange(wxCommandEvent &e)
     if (item == -1) {
         return;
     }
-    unsigned int nr = (unsigned int) item;
+    const unsigned int nr = m_cpList->GetItemData(item);
     assert(nr < currentPoints.size());
     HuginBase::ControlPoint cp = currentPoints[nr].second;
 
@@ -1604,7 +1823,7 @@ void CPEditorPanel::OnCPListSelect(wxListEvent & ev)
     int t = ev.GetIndex();
     DEBUG_TRACE("selected: " << t);
     if (t >=0) {
-        SelectLocalPoint((unsigned int) t);
+        SelectLocalPoint(m_cpList->GetItemData(t));
         changeState(NO_POINT);
     }
     EnablePointEdit(true);
@@ -1709,7 +1928,7 @@ void CPEditorPanel::OnKey(wxKeyEvent & e)
                 wxBell();
                 return;
             }
-            unsigned int pNr = localPNr2GlobalPNr((unsigned int) item);
+            unsigned int pNr = localPNr2GlobalPNr(m_cpList->GetItemData(item));
             DEBUG_DEBUG("about to delete point " << pNr);
             PanoCommand::GlobalCmdHist::getInstance().addCommand(
                 new PanoCommand::RemoveCtrlPointCmd(*m_pano,pNr)
@@ -1796,7 +2015,7 @@ void CPEditorPanel::OnDeleteButton(wxCommandEvent & e)
             return;
         }
         // get the global point number
-        unsigned int pNr = localPNr2GlobalPNr((unsigned int) item);
+        unsigned int pNr = localPNr2GlobalPNr(m_cpList->GetItemData(item));
 
         PanoCommand::GlobalCmdHist::getInstance().addCommand(
             new PanoCommand::RemoveCtrlPointCmd(*m_pano,pNr )
@@ -2352,6 +2571,28 @@ void CPEditorPanel::OnColumnWidthChange( wxListEvent & e )
 {
     int colNum = e.GetColumn();
     wxConfigBase::Get()->Write( wxString::Format(wxT("/CPEditorPanel/ColumnWidth%d"),colNum), m_cpList->GetColumnWidth(colNum) );
+}
+
+void CPEditorPanel::OnColumnHeaderClick(wxListEvent & e)
+{
+    const int newCol = e.GetColumn();
+    if (m_sortCol == newCol)
+    {
+        m_sortAscending = !m_sortAscending;
+        SetColumnImage(m_cpList, m_sortCol, m_sortAscending ? 0 : 1);
+    }
+    else
+    {
+        if (m_sortCol != -1)
+        {
+            SetColumnImage(m_cpList, m_sortCol, -1);
+        };
+        m_sortCol = newCol;
+        SetColumnImage(m_cpList, m_sortCol, 0);
+        m_sortAscending = true;
+    }
+    SortList();
+    Refresh();
 }
 
 CPImageCtrl::ImageRotation CPEditorPanel::GetRot(double yaw, double pitch, double roll)
