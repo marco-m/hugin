@@ -271,6 +271,7 @@ PanoPanel::~PanoPanel(void)
 {
     DEBUG_TRACE("dtor");
     wxConfigBase::Get()->Write(wxT("Stitcher/DefaultRemapper"),m_RemapperChoice->GetSelection());
+    wxConfigBase::Get()->Flush();
 
     m_HFOVText->PopEventHandler(true);
     m_VFOVText->PopEventHandler(true);

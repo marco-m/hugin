@@ -222,7 +222,8 @@ MaskEditorPanel::~MaskEditorPanel()
     config->Write(wxT("/MaskEditorPanel/ShowActiveMasks"),XRCCTRL(*this,"mask_editor_show_active_masks",wxCheckBox)->GetValue());
     config->Write(wxT("/MaskEditorPanel/DefaultMaskType"),(long)m_defaultMaskType);
     config->Write(wxT("/MaskEditorPanel/CropImagesLens"), m_cropLens->GetValue());
-    
+    config->Flush();
+
     DEBUG_TRACE("dtor");
     if (m_imageGroups)
     {
