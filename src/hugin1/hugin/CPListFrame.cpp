@@ -107,6 +107,36 @@ bool CPListCtrl::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
         };
     };
     EnableAlternateRowColours(true);
+
+    wxMemoryDC memDC;
+    memDC.SetFont(GetFont());
+    wxSize fontSize = memDC.GetTextExtent(wxT("\u25b3"));
+    wxCoord charSize = std::max(fontSize.GetWidth(), fontSize.GetHeight());
+    wxImageList* sortIcons = new wxImageList(charSize, charSize, true, 0);
+    {
+        wxBitmap bmp(charSize, charSize);
+        wxMemoryDC dc(bmp);
+        dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+        dc.SetBackground(GetBackgroundColour());
+        dc.Clear();
+        dc.SetFont(GetFont());
+        dc.DrawText(wxT("\u25b3"), (charSize - fontSize.GetWidth()) / 2, (charSize - fontSize.GetHeight()) / 2);
+        dc.SelectObject(wxNullBitmap);
+        sortIcons->Add(bmp, GetBackgroundColour());
+    };
+    {
+        wxBitmap bmp(charSize, charSize);
+        wxMemoryDC dc(bmp);
+        dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
+        dc.SetBackground(GetBackgroundColour());
+        dc.Clear();
+        dc.SetFont(GetFont());
+        dc.DrawText(wxT("\u25bd"), (charSize - fontSize.GetWidth()) / 2, (charSize - fontSize.GetHeight()) / 2);
+        dc.SelectObject(wxNullBitmap);
+        sortIcons->Add(bmp, GetBackgroundColour());
+    };
+    AssignImageList(sortIcons, wxIMAGE_LIST_SMALL);
+    SetColumnImage(0, 0);
     return true;
 };
 
@@ -162,6 +192,11 @@ wxString CPListCtrl::OnGetItemText(long item, long column) const
             return wxEmptyString;
     };
     return wxEmptyString;
+};
+
+int CPListCtrl::OnGetItemImage(long item) const
+{
+    return -1;
 };
 
 void CPListCtrl::panoramaChanged(HuginBase::Panorama &pano)
@@ -358,10 +393,13 @@ void CPListCtrl::OnCPListHeaderClick(wxListEvent& e)
     if (m_sortCol == newCol)
     {
         m_sortAscend = !m_sortAscend;
+        SetColumnImage(m_sortCol, m_sortAscend ? 0 : 1);
     }
     else
     {
+        ClearColumnImage(m_sortCol);
         m_sortCol = newCol;
+        SetColumnImage(m_sortCol, 0);
         m_sortAscend = true;
     }
     SortInternalList(false);

@@ -65,6 +65,8 @@ public:
 protected:
     /** create labels for virtual list control */
     virtual wxString OnGetItemText(long item, long column) const;
+    /** show no images */
+    virtual int OnGetItemImage(long item) const;
     /** selection event handler */
     void OnCPListSelectionChanged(wxListEvent & e);
     /** sort criterium changed */
