@@ -290,7 +290,7 @@ wxRect DisplayedControlPoint::DrawTextMag(wxDC& dc, wxPoint p, hugin_utils::FDif
     wxCoord tw, th;
     dc.GetTextExtent(m_label, &tw, &th);
 
-    if (drawMag)
+    if (drawMag && m_control->getScale() < 2)
     {
         wxBitmap magBitmap = m_control->generateMagBitmap(pointInput, p);
         // TODO: select position depending on visible part of canvas
