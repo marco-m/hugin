@@ -76,6 +76,10 @@ CPListCtrl::CPListCtrl() : m_pano(NULL)
 
 CPListCtrl::~CPListCtrl()
 {
+    wxConfigBase* config = wxConfig::Get();
+    config->Write(wxT("/CPListFrame/SortColumn"), m_sortCol);
+    config->Write(wxT("/CPListFrame/SortAscending"), m_sortAscend ? 1 : 0);
+    config->Flush();
     if (m_pano)
     {
         m_pano->removeObserver(this);
@@ -136,7 +140,11 @@ bool CPListCtrl::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
         sortIcons->Add(bmp, GetBackgroundColour());
     };
     AssignImageList(sortIcons, wxIMAGE_LIST_SMALL);
-    SetColumnImage(0, 0);
+    wxConfigBase* config = wxConfig::Get();
+    m_sortCol=config->Read(wxT("/CPListFrame/SortColumn"), 0l);
+    m_sortAscend = config->Read(wxT("/CPListFrame/SortAscending"), 1l) == 1;
+    config->Flush();
+    SetColumnImage(m_sortCol, m_sortAscend ? 0 : 1);
     return true;
 };
 
