@@ -98,7 +98,7 @@ bool CPListCtrl::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos,
     InsertColumn(2, _("Right Img."), wxLIST_FORMAT_RIGHT, 65);
     InsertColumn(3, _("P CP#"), wxLIST_FORMAT_RIGHT, 25);
     InsertColumn(4, _("Alignment"), wxLIST_FORMAT_LEFT, 80);
-    InsertColumn(5, _("Distance"), wxLIST_FORMAT_RIGHT, 80);
+    InsertColumn(5, MainFrame::Get()->IsShowingCorrelation() ? _("Correlation") : _("Distance"), wxLIST_FORMAT_RIGHT, 80);
 
     //get saved width
     for (int j = 0; j < GetColumnCount(); j++)
@@ -210,6 +210,19 @@ int CPListCtrl::OnGetItemImage(long item) const
 void CPListCtrl::panoramaChanged(HuginBase::Panorama &pano)
 {
     m_onlyActiveImages = MainFrame::Get()->GetOptimizeOnlyActiveImages();
+    wxListItem item;
+    if (GetColumn(5, item))
+    {
+        if (MainFrame::Get()->IsShowingCorrelation())
+        {
+            item.SetText(_("Correlation"));
+        }
+        else
+        {
+            item.SetText(_("Distance"));
+        }
+        SetColumn(5, item);
+    };
     UpdateInternalCPList();
     SetItemCount(m_internalCPList.size());
     Refresh();

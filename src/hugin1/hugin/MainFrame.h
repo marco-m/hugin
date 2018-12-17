@@ -180,6 +180,7 @@ public:
     const wxString GetSelectedCPGenerator();
 
     wxString getProjectName();
+    bool IsShowingCorrelation() const;
 
     struct celeste::svm_model* GetSVMModel();
     
@@ -279,6 +280,8 @@ private:
 
     // filename of the current project
     wxString m_filename;
+    // true, if cp errors contains correlation instead of error
+    int m_showCorrelation=0;
 
     // self
     static MainFrame* m_this;

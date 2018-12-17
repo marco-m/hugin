@@ -1410,6 +1410,21 @@ void CPEditorPanel::panoramaChanged(HuginBase::Panorama &pano)
         m_countCP = pano.getNrOfCtrlPoints();
         UpdateDisplay(false);
     };
+    // update header if necessary
+    wxListItem item;
+    if (m_cpList->GetColumn(6, item))
+    {
+        if (MainFrame::Get()->IsShowingCorrelation())
+        {
+            item.SetText(_("Correlation"));
+        }
+        else
+        {
+            item.SetText(_("Distance"));
+        }
+        m_cpList->SetColumn(6, item);
+    };
+
     DEBUG_TRACE("");
 }
 

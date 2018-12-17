@@ -365,6 +365,8 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     SetMenuBar(mainMenu);
     m_optOnlyActiveImages = (wxConfigBase::Get()->Read(wxT("/OptimizePanel/OnlyActiveImages"), 1l) != 0);
     m_optIgnoreLineCp = false;
+    // observe the panorama, this should be the first observer
+    pano.addObserver(this);
 
 #ifdef HUGIN_HSI
     wxMenuBar* menubar=GetMenuBar();
@@ -625,9 +627,6 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
     wxYield();
     DEBUG_TRACE("");
 
-    // observe the panorama
-    pano.addObserver(this);
-
     // Set sizing characteristics
     //set minumum size
 #if defined __WXMAC__ || defined __WXMSW__
@@ -747,6 +746,15 @@ MainFrame::~MainFrame()
 
 void MainFrame::panoramaChanged(HuginBase::Panorama &pano)
 {
+    // set flag to indicate list should show correlation instead of error
+    if (m_showCorrelation == 2)
+    {
+        m_showCorrelation = 0;
+    };
+    if (m_showCorrelation == 1)
+    {
+        ++m_showCorrelation;
+    };
     wxToolBar* theToolBar = GetToolBar();
     wxMenuBar* theMenuBar = GetMenuBar();
     bool can_undo = PanoCommand::GlobalCmdHist::getInstance().canUndo();
@@ -1839,6 +1847,7 @@ void MainFrame::OnFineTuneAll(wxCommandEvent & e)
         }
     }
     }
+    m_showCorrelation = 1;
     wxString result;
     result.Printf(_("%d points fine-tuned, %d points not updated due to low correlation\n\nHint: The errors of the fine-tuned points have been set to the correlation coefficient\nProblematic points can be spotted (just after fine-tune, before optimizing)\nby an error <= %.3f.\nThe error of points without a well defined peak (typically in regions with uniform color)\nwill be set to 0\n\nUse the Control Point list (F3) to see all points of the current project\n"),
                   nGood, nBad, corrThresh);
@@ -2084,6 +2093,11 @@ MainFrame * MainFrame::Get()
 wxString MainFrame::getProjectName()
 {
     return m_filename;
+}
+
+bool MainFrame::IsShowingCorrelation() const
+{
+    return m_showCorrelation > 0;
 }
 
 void MainFrame::OnMRUFiles(wxCommandEvent &e)
