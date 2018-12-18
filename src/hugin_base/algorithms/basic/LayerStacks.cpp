@@ -46,8 +46,21 @@ std::vector<UIntSet> getHDRStacks(const PanoramaData & pano, UIntSet allImgs, Pa
     // overlap calculation
     if (opts.outputStacksMinOverlap < 0)
     {
+        // first get all stacks
         HuginBase::ConstStandardImageVariableGroups variable_groups(pano);
-        return variable_groups.getStacks().getPartsSet();
+        std::vector<UIntSet> allStacks = variable_groups.getStacks().getPartsSet();
+        std::vector<UIntSet> activeStacks;
+        for (const auto& singleStack : allStacks)
+        {
+            // now check that each stack contains only active images
+            UIntSet activeImgsInStack;
+            std::set_intersection(singleStack.begin(), singleStack.end(), allImgs.begin(), allImgs.end(), std::inserter(activeImgsInStack, activeImgsInStack.begin()));
+            if (!activeImgsInStack.empty())
+            {
+                activeStacks.push_back(activeImgsInStack);
+            };
+        }
+        return activeStacks;
     };
 
     UIntSet stack;
