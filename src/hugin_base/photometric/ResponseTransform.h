@@ -597,6 +597,14 @@ InvResponseTransform<VTIn,VTOut>::emitGLSL(std::ostringstream& oss, std::vector<
         << "    // whiteBalanceRed = " << Base::m_src.getWhiteBalanceRed() << endl
         << "    // whiteBalanceBlue = " << Base::m_src.getWhiteBalanceBlue() << endl;
 
+    // alpha hdrWeight
+    if (m_hdrMode)
+    {
+        // hdr weight needs to be calculated from input pixel value
+        // so do it before the whole InvResponseTransformation is done
+        oss << "    p.a = max(p.r, max(p.g, p.b));" << endl;
+    }
+
     if (!Base::m_lutR.empty()) {
         oss << "    p.rgb = p.rgb * " << (invLutSize - 1.0) << ";" << endl
             << "    vec2 invR = texture2DRect(InvLutTexture, vec2(p.r, 0.0)).sq;" << endl
@@ -658,11 +666,6 @@ InvResponseTransform<VTIn,VTOut>::emitGLSL(std::ostringstream& oss, std::vector<
             << "    vec3 destY = vec3(destR.y, destG.y, destB.y);" << endl
             << "    vec3 destA = fract(p.rgb);" << endl
             << "    p.rgb = mix(destX, destY, destA);" << endl;
-    }
-
-    // alpha hdrWeight
-    if (m_hdrMode) {
-        oss << "    p.a = max(p.r, max(p.g, p.b));" << endl;
     }
 }
 
