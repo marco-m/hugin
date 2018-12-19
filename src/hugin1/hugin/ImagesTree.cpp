@@ -1084,6 +1084,8 @@ void ImagesTreeCtrl::SetGroupMode(GroupMode newGroup)
             fill_set(imgs,0,m_pano->getNrOfImages()-1);
         };
         panoramaImagesChanged(*m_pano,imgs);
+        // reset already modified tag
+        m_needsUpdate = true;
         ExpandAll(m_root);
     };
 };
