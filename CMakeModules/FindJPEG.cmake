@@ -46,12 +46,6 @@ find_library_with_debug(JPEG_LIBRARIES
         ${SOURCE_BASE_DIR}/jpeg-8/lib 
         ${wxWidgets_LIB_DIR}
 )
-IF(VCPKG_TOOLCHAIN AND NOT JPEG_LIBRARIES_DEBUG)
-find_library_with_debug(JPEG_LIBRARIES_DEBUG
-  NAMES jpeg libjpeg
-)
-ENDIF()
-
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(JPEG DEFAULT_MSG 
