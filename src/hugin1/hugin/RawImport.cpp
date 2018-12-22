@@ -553,6 +553,19 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
             {
                 s = prog;
             };
+        }
+        else
+        {
+            // now check if installed for current user only
+            wxRegKey regkeyUser(wxRegKey::HKCU, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\rawtherapee-cli.exe");
+            wxString prog;
+            if (regkeyUser.HasValue(wxT("")) && regkeyUser.QueryRawValue(wxT(""), prog))
+            {
+                if (wxFileName::FileExists(prog))
+                {
+                    s = prog;
+                };
+            };
         };
     };
 #endif
@@ -578,6 +591,19 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
             {
                 s = prog;
             }
+        }
+        else
+        {
+            // now check if installed for current user only
+            wxRegKey regkeyUser(wxRegKey::HKCU, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\darktable-cli.exe");
+            wxString prog;
+            if (regkeyUser.HasValue(wxT("")) && regkeyUser.QueryRawValue(wxT(""), prog))
+            {
+                if (wxFileName::FileExists(prog))
+                {
+                    s = prog;
+                };
+            };
         };
     };
 #endif
