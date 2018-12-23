@@ -1,8 +1,11 @@
-Hugin 2018.2
+Hugin 2019.0
 * Added raw import: It converts the RAW images to TIFF using a raw converter.
   This can be done by dcraw (requires additional exiftool), RawTherapee or
   darktable. These programs needs to be installed externally.
 * Fixes for align_image_stack with EXR images.
+* Added option for range compression. Can be helpful for LDR panoramas to 
+  brighten the shadows before merging, because at this stage the blender has 
+  some more information which can be helpful.
 * New hotkeys for mask editor (change zoom level with 0, 1 and 2).
 * Expression parser (pto_var and "manipulate image variables" in GUI) can now read also
   all image variables.
