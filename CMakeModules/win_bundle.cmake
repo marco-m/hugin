@@ -178,6 +178,7 @@ IF(WIN32)
     FIND_PATH(
       WXWIDGETS_DLL_PATH
       NAME 
+        wxbase313u_${WXSUFFIX}_custom.dll
         wxbase300u_${WXSUFFIX}_custom.dll
         wxbase301u_${WXSUFFIX}_custom.dll
         wxbase302u_${WXSUFFIX}_custom.dll
@@ -189,6 +190,25 @@ IF(WIN32)
         ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin
       NO_SYSTEM_ENVIRONMENT_PATH
     )
+    IF(NOT WXWIDGETS_DLL_PATH AND CMAKE_SIZEOF_VOID_P EQUAL 8) 
+      # for 64 bit build check also variant with x64
+      SET(WXSUFFIX "${WXSUFFIX}_x64")
+      FIND_PATH(
+        WXWIDGETS_DLL_PATH
+        NAME 
+          wxbase313u_${WXSUFFIX}_custom.dll
+          wxbase300u_${WXSUFFIX}_custom.dll
+          wxbase301u_${WXSUFFIX}_custom.dll
+          wxbase302u_${WXSUFFIX}_custom.dll
+          wxbase310u_${WXSUFFIX}_custom.dll
+          wxbase311u_${WXSUFFIX}_custom.dll
+          wxbase312u_${WXSUFFIX}_custom.dll
+        PATHS
+          ${wxWidgets_LIB_DIR}
+          ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin
+        NO_SYSTEM_ENVIRONMENT_PATH
+      )
+    ENDIF()
     MESSAGE(STATUS "wxWidgets DLL path: ${WXWIDGETS_DLL_PATH}")
     # first variant is for development versions with 3 numbers, second variant for stable versions with 2 numbers
     FILE(GLOB WXWIDGETS_DLL
