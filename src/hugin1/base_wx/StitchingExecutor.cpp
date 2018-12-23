@@ -21,8 +21,8 @@
 *
 */
 
+#include "base_wx/platform.h"
 #include "StitchingExecutor.h"
-
 #include <list>
 #include <wx/config.h>
 #include <wx/translation.h>
@@ -34,7 +34,6 @@
 #include "hugin_base/panotools/PanoToolsUtils.h"
 #include "hugin_base/panodata/PanoramaOptions.h"
 #include "hugin_base/algorithms/basic/LayerStacks.h"
-#include "base_wx/platform.h"
 #include "base_wx/wxPlatform.h"
 #include "base_wx/LensTools.h"
 #include "hugin/config_defaults.h"

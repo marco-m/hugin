@@ -29,10 +29,6 @@
 
 #include <string>
 #include "ProjectArray.h"
-#include <wx/dir.h>
-#ifndef __WXMSW__
-#include <sys/wait.h>
-#endif
 #include "RunStitchFrame.h"
 #if wxCHECK_VERSION(3,1,0)
 #include <wx/power.h>

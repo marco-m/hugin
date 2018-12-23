@@ -27,8 +27,8 @@
  */
 
 #include "hugin_config.h"
-#include "base_wx/wxutils.h"
 #include "panoinc_WX.h"
+#include "base_wx/wxutils.h"
 
 #include "hugin/LocalizedFileTipProvider.h"
 

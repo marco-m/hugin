@@ -22,7 +22,9 @@
  */ 
 
 
-
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "ToolHelper.h"
 #include "Tool.h"
 #include "GLPreviewFrame.h"

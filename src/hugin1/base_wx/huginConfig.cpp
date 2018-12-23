@@ -24,10 +24,9 @@
  *
  */
 
-#include "huginConfig.h"
-
-#include "hugin/config_defaults.h"
 #include "platform.h"
+#include "huginConfig.h"
+#include "hugin/config_defaults.h"
 
 // functions to handle with default project/output filenames
 typedef std::map<wxString, wxString> Placeholdersmap;

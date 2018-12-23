@@ -25,8 +25,8 @@
  */
 
 #include "hugin_config.h"
-#include "panoinc.h"
 #include "panoinc_WX.h"
+#include "panoinc.h"
 #include "PTWXDlg.h"
 #include <wx/app.h>
 

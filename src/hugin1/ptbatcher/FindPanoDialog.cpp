@@ -32,6 +32,10 @@
 #include "hugin_utils/alphanum.h"
 #include "hugin/config_defaults.h"
 #include "wx/mstream.h"
+#ifdef _WIN32
+// workaround for a conflict between exiv2 and wxWidgets/CMake built
+#define HAVE_PID_T 1
+#endif
 #include "exiv2/exiv2.hpp"
 #include "exiv2/preview.hpp"
 #ifdef _WIN32

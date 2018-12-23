@@ -24,6 +24,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "PreviewGuideTool.h"
 #ifdef __WXMAC__
 #include <OpenGL/gl.h>

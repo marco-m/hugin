@@ -32,6 +32,10 @@
 #include "algorithms/optimizer/ImageGraph.h"
 #include "algorithms/control_points/CleanCP.h"
 #include "celeste/Celeste.h"
+#ifdef _WIN32
+// workaround for a conflict between exiv2 and wxWidgets/CMake built
+#define HAVE_PID_T 1
+#endif
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
 #include "base_wx/LensTools.h"

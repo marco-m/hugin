@@ -23,6 +23,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include <hugin/PreviewColorPickerTool.h>
 #include <wx/platform.h>
 #include "GLPreviewFrame.h"

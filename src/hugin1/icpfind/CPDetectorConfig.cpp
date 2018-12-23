@@ -25,6 +25,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "icpfind/CPDetectorConfig.h"
 #include "hugin_config.h"
 #include <wx/fileconf.h>

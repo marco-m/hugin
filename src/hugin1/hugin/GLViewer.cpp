@@ -20,10 +20,7 @@
  *
  */
 
-#ifdef __APPLE__
 #include "panoinc_WX.h"
-#endif
-
 #include "base_wx/wxutils.h"
 
 #include "panoinc.h"

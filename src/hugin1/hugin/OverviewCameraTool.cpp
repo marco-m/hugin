@@ -20,7 +20,9 @@
  */
 
 
-
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "OverviewCameraTool.h"
 #include "GLViewer.h"
 

@@ -19,6 +19,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "PreviewDifferenceTool.h"
 #include "hugin_config.h"
 #include <GL/glew.h>

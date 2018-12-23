@@ -25,6 +25,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "hugin/CPDetectorDialog.h"
 #include "hugin_config.h"
 #include "base_wx/huginConfig.h"

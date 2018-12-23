@@ -20,6 +20,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include <math.h>
 #include <iostream>
 
@@ -58,6 +61,10 @@
 
 // for loading preview images
 #include "wx/mstream.h"
+#ifdef _WIN32
+// workaround for a conflict between exiv2 and wxWidgets/CMake built
+#define HAVE_PID_T 1
+#endif
 #include "exiv2/exiv2.hpp"
 #include "exiv2/preview.hpp"
 

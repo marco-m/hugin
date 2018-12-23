@@ -24,6 +24,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "Batch.h"
 #include <wx/stdpaths.h>
 #ifdef __WXMSW__
@@ -31,6 +34,10 @@
 #ifdef _MSC_VER
 #pragma comment(lib, "PowrProf.lib")
 #endif
+#endif
+#include <wx/dir.h>
+#ifndef __WXMSW__
+#include <sys/wait.h>
 #endif
 
 BEGIN_EVENT_TABLE(Batch, wxFrame)

@@ -31,6 +31,10 @@
 #include "hugin/huginApp.h"
 #include "base_wx/CommandHistory.h"
 #include "base_wx/wxPanoCommand.h"
+#ifdef _WIN32
+// workaround for a conflict between exiv2 and wxWidgets/CMake built
+#define HAVE_PID_T 1
+#endif
 #include <exiv2/exif.hpp>
 #include <exiv2/image.hpp>
 #include <exiv2/easyaccess.hpp>

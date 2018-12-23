@@ -26,6 +26,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "hugin/CPImagesComboBox.h"
 
 BEGIN_EVENT_TABLE(CPImagesComboBox,wxOwnerDrawnComboBox)

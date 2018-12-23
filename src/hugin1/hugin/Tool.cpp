@@ -20,6 +20,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "Tool.h"
 #include "ToolHelper.h"
 

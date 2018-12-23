@@ -21,6 +21,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include <hugin/PreviewControlPointTool.h>
 #include <panodata/ControlPoint.h>
 

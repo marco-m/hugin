@@ -19,8 +19,11 @@
  *
  */
 
-#include "PreviewPanoMaskTool.h"
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include <wx/platform.h>
+#include "PreviewPanoMaskTool.h"
 #ifdef __WXMAC__
 #include <OpenGL/gl.h>
 #else

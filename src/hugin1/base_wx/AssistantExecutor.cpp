@@ -21,6 +21,7 @@
 *
 */
 
+#include "base_wx/platform.h"
 #include "AssistantExecutor.h"
 
 #include <wx/config.h>
@@ -29,7 +30,6 @@
 #include <wx/wfstream.h>
 #include "hugin_utils/utils.h"
 #include "algorithms/optimizer/ImageGraph.h"
-#include "base_wx/platform.h"
 #include "base_wx/wxPlatform.h"
 #include "hugin/config_defaults.h"
 

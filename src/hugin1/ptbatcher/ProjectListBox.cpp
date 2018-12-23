@@ -24,6 +24,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "ProjectListBox.h"
 
 enum

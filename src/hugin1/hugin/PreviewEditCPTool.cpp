@@ -25,9 +25,9 @@
  *
  */
 
-#include "hugin/PreviewEditCPTool.h"
 #include "panoinc_WX.h"
 #include "panoinc.h"
+#include "hugin/PreviewEditCPTool.h"
 #include <map>
 
 #include <wx/platform.h>

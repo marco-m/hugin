@@ -24,6 +24,9 @@
  *
  */
 
+#ifdef _WIN32
+#include "wx/msw/wrapwin.h"
+#endif
 #include "ProjectArray.h"
 #include <wx/arrimpl.cpp>
 #include "base_wx/huginConfig.h"

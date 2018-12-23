@@ -22,9 +22,9 @@
 *
 */
 
+#include "panoinc_WX.h"
 #include "PapywizardImport.h"
 
-#include "panoinc_WX.h"
 #include "hugin_utils/utils.h"
 #include <wx/xml/xml.h>
 #include <wx/msgdlg.h>

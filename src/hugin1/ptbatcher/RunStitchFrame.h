@@ -26,13 +26,13 @@
 
 #ifndef RUNSTITCHFRAME_H
 #define RUNSTITCHFRAME_H
+#include "base_wx/platform.h"
 #include "panoinc_WX.h"
 
 #include <wx/wfstream.h>
 
 #include "base_wx/RunStitchPanel.h"
 #include "base_wx/huginConfig.h"
-#include "base_wx/platform.h"
 
 // somewhere SetDesc gets defined.. this breaks wx/cmdline.h on OSX
 #ifdef SetDesc

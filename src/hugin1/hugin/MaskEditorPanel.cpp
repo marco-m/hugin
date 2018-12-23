@@ -24,11 +24,7 @@
  *
  */
 
-// often necessary before panoinc.h
-#ifdef __APPLE__
 #include "panoinc_WX.h"
-#endif
-
 #include "panoinc.h"
 #include <hugin_utils/stl_utils.h>
 
