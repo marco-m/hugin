@@ -147,10 +147,6 @@ void PanoramaOptions::printScriptLine(std::ostream & o, bool forPTOptimizer) con
 
     // misc options
     o << "m i" << interpolator;
-    o << " m" << huberSigma;
-
-    // options for photometric estimation.
-    o << " p" << photometricHuberSigma;
 
     o << std::endl;
 }
