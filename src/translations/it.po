@@ -36,7 +36,7 @@ msgstr ""
 "Project-Id-Version: hugin 0.8\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2018-12-17 19:57+0100\n"
-"PO-Revision-Date: 2018-12-24 10:56+0100\n"
+"PO-Revision-Date: 2018-12-25 11:13+0100\n"
 "Last-Translator: Cristian Marchi <cri.penta@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -185,7 +185,7 @@ msgstr "Hugin"
 # Tipo di obiettivo
 #: hugin1/base_wx/LensTools.cpp:38 hugin1/base_wx/LensTools.cpp:81
 msgid "Normal (rectilinear)"
-msgstr "Normale (rettilineo)"
+msgstr "Normale (rettilineare)"
 
 # Tipo di obiettivo
 #: hugin1/base_wx/LensTools.cpp:39 hugin1/base_wx/LensTools.cpp:82
@@ -693,10 +693,12 @@ msgstr "ultima immagine"
 msgid "directory"
 msgstr "cartella"
 
+# tooltip
 #: hugin1/base_wx/huginConfig.cpp:46 hugin1/hugin/ImagesTree.cpp:155
 msgid "Camera maker"
 msgstr "Produttore fotocamera"
 
+# tooltip
 #: hugin1/base_wx/huginConfig.cpp:47 hugin1/hugin/ImagesTree.cpp:156
 msgid "Camera model"
 msgstr "Modello fotocamera"
@@ -1318,7 +1320,7 @@ msgstr "Elabora solamente le coppie di immagini senza punti di controllo"
 
 #: hugin1/hugin/CPDetectorDialog.cpp:254
 msgid "Select control point detector program"
-msgstr "Selezionare il programma di ricerca dei punti di controllo"
+msgstr "Selezione del programma di ricerca dei punti di controllo"
 
 #: hugin1/hugin/CPDetectorDialog.cpp:262
 msgid "Executables (*.exe,*.vbs,*.cmd, *.bat)|*.exe;*.vbs;*.cmd;*.bat"
@@ -1373,7 +1375,7 @@ msgid ""
 "Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: "
 "%0.3f %0.3f "
 msgstr ""
-"Punto calibrato, angolo: %.0f gradi, coefficiente correlazione: %0.3f, "
+"Punto calibrato: angolo: %.0f gradi - coefficiente correlazione: %0.3f - "
 "curvatura: %0.3f %0.3f "
 
 #: hugin1/hugin/CPEditorPanel.cpp:909 hugin1/hugin/CPEditorPanel.cpp:1054
@@ -2241,6 +2243,7 @@ msgstr "Numero immagine"
 msgid "Width"
 msgstr "Larghezza"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:148
 msgid "Image width"
 msgstr "Larghezza immagine"
@@ -2249,6 +2252,7 @@ msgstr "Larghezza immagine"
 msgid "Height"
 msgstr "Altezza"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:149
 msgid "Image height"
 msgstr "Altezza immagine"
@@ -2257,6 +2261,7 @@ msgstr "Altezza immagine"
 msgid "Anchor"
 msgstr "Ancora"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:150
 msgid "Anchor image for position and/or exposure"
 msgstr "Blocca quest'immagine per la posizione e/o per l'esposizione"
@@ -2266,6 +2271,7 @@ msgstr "Blocca quest'immagine per la posizione e/o per l'esposizione"
 msgid "# Ctrl Pnts"
 msgstr "n° P.d.C."
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:151
 msgid "Number of control points in this image"
 msgstr "Numero di punti di controllo in questa immagine"
@@ -2274,6 +2280,7 @@ msgstr "Numero di punti di controllo in questa immagine"
 msgid "Lens no."
 msgstr "Obiettivo n°"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:152
 msgid "Assigned lens number"
 msgstr "Numero obiettivo assegnato"
@@ -2282,6 +2289,7 @@ msgstr "Numero obiettivo assegnato"
 msgid "Stack no."
 msgstr "Numero pila"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:153
 msgid "Assigned stack number"
 msgstr "Numero della pila assegnato"
@@ -2294,7 +2302,7 @@ msgstr "Produttore"
 msgid "Model"
 msgstr "Modello"
 
-# (ndt) pulsante
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:157
 msgid "Used lens"
 msgstr "Obiettivo usato"
@@ -2303,9 +2311,10 @@ msgstr "Obiettivo usato"
 msgid "Capture date"
 msgstr "Data di scatto"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:158
 msgid "Date, image was taken"
-msgstr "Data di scatto"
+msgstr "Data di cattura dell'immagine"
 
 #: hugin1/hugin/ImagesTree.cpp:159
 msgid "Focal length"
@@ -2319,6 +2328,7 @@ msgstr "Apertura"
 msgid "Shutter Speed"
 msgstr "Velocità dell'otturatore"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:161
 msgid "Shutter speed"
 msgstr "Velocità dell'otturatore"
@@ -2327,6 +2337,7 @@ msgstr "Velocità dell'otturatore"
 msgid "ISO"
 msgstr "ISO"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:162
 msgid "ISO speed"
 msgstr "Velocità ISO"
@@ -2358,14 +2369,17 @@ msgstr "Rollio (r)"
 msgid "Roll"
 msgstr "Rollio"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:167
 msgid "Camera translation X"
 msgstr "Traslazione fotocamera lungo X"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:168
 msgid "Camera translation Y"
 msgstr "Traslazione fotocamera lungo Y"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:169
 msgid "Camera translation Z"
 msgstr "Traslazione fotocamera lungo Z"
@@ -2374,6 +2388,7 @@ msgstr "Traslazione fotocamera lungo Z"
 msgid "Plane yaw"
 msgstr "Imbardata del piano"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:170
 msgid "Translation remap plane yaw"
 msgstr "La traslazione rimappa l'imbardata del piano"
@@ -2383,6 +2398,7 @@ msgstr "La traslazione rimappa l'imbardata del piano"
 msgid "Plane pitch"
 msgstr "Inclinazione del piano"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:171
 msgid "Translation remap plane pitch"
 msgstr "La traslazione rimappa l'inclinazione del piano"
@@ -2395,6 +2411,7 @@ msgstr "Traslazione fotocamera"
 msgid "Lens type (f)"
 msgstr "Tipo obiettivo (f)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:174
 msgid "Lens type (rectilinear, fisheye, equirectangular, ...)"
 msgstr "Tipo di obiettivo (rettilineare, fisheye, equirettangolare...)"
@@ -2408,55 +2425,68 @@ msgstr "Hfov (v)"
 msgid "Horizontal field of view (v)"
 msgstr "Campo inquadrato orizzontale (v)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:176
 msgid "Radial distortion (a)"
 msgstr "Distorsione radiale (a)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:177
 msgid "Radial distortion (b, barrel)"
 msgstr "Distorsione radiale (b, barilotto)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:178
 msgid "Radial distortion (c)"
 msgstr "Distorsione radiale (c)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:179
 msgid "Horizontal image center shift (d)"
 msgstr "Spostamento orizzontale del centro dell'immagine (d)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:180
 msgid "Vertical image center shift (e)"
 msgstr "Spostamento verticale del centro dell'immagine (e)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:181
 msgid "Horizontal image shearing (g)"
 msgstr "Stiramento orizzontale dell'immagine (g)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:182
 msgid "Vertical image shearing (t)"
 msgstr "Stiramento verticale dell'immagine (g)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:184
 msgid "Exposure value (Eev)"
 msgstr "Valore dell'esposizione (EeV)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:185
 msgid "Red multiplier (Er)"
 msgstr "Moltiplicatore del rosso (Er)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:186
 msgid "Blue multiplier (Eb)"
 msgstr "Moltiplicatore del blu (Eb)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:187 hugin1/hugin/ImagesTree.cpp:188
 #: hugin1/hugin/ImagesTree.cpp:189
 msgid "Vignetting (Vb, Vc, Vd)"
 msgstr "Vignettatura (Vb, Vc, Vd)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:190
 msgid "Horizontal vignetting center shift (Vx)"
 msgstr "Spostamento orizzontale del centro di vignettatura (Vx)"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:191
 msgid "Vertical vignetting center shift (Vy)"
 msgstr "Spostamento verticale del centro di vignettatura (Vy)"
@@ -2465,15 +2495,17 @@ msgstr "Spostamento verticale del centro di vignettatura (Vy)"
 msgid "Response type"
 msgstr "Tipo risposta"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:192
 msgid "Camera response type"
 msgstr "Tipo di risposta fotocamera"
 
+# tooltip
 #: hugin1/hugin/ImagesTree.cpp:193 hugin1/hugin/ImagesTree.cpp:194
 #: hugin1/hugin/ImagesTree.cpp:195 hugin1/hugin/ImagesTree.cpp:196
 #: hugin1/hugin/ImagesTree.cpp:197
 msgid "Camera response parameter"
-msgstr "Parametro di risposta fotocamera"
+msgstr "Parametro di risposta della fotocamera"
 
 #: hugin1/hugin/ImagesTree.cpp:514 hugin1/hugin/ImagesTree.cpp:696
 msgid "not active"
@@ -3007,7 +3039,7 @@ msgstr ""
 
 #: hugin1/hugin/MaskEditorPanel.cpp:464 hugin1/hugin/MaskEditorPanel.cpp:477
 msgid "Save mask"
-msgstr "Salva maschera"
+msgstr "Esportazione maschera"
 
 #: hugin1/hugin/MaskEditorPanel.cpp:466 hugin1/hugin/MaskEditorPanel.cpp:498
 msgid "Mask files (*.msk)|*.msk|All files (*)|*"
@@ -3015,7 +3047,7 @@ msgstr "File maschera (*.msk)|*.msk|Tutti i file (*)|*"
 
 #: hugin1/hugin/MaskEditorPanel.cpp:496
 msgid "Load mask"
-msgstr "Carica maschera"
+msgstr "Importazione maschera"
 
 #: hugin1/hugin/MaskEditorPanel.cpp:502
 msgid "Load mask: cancel"
@@ -3515,7 +3547,7 @@ msgstr "Impossibile creare il file di progetto temporaneo"
 #: hugin1/hugin/PanoPanel.cpp:1431 hugin1/ptbatcher/Batch.cpp:682
 #: hugin1/stitch_project/hugin_stitch_project.cpp:394
 msgid "Specify output prefix"
-msgstr "Specificare il prefisso dell'output"
+msgstr "Specifica del prefisso dell'output"
 
 #: hugin1/hugin/PanoPanel.cpp:1164 hugin1/hugin/PanoPanel.cpp:1284
 #: hugin1/hugin/PanoPanel.cpp:1449 hugin1/ptbatcher/BatchFrame.cpp:535
@@ -3530,7 +3562,7 @@ msgstr ""
 
 #: hugin1/hugin/PanoPanel.cpp:1352
 msgid "Select user defined output"
-msgstr "Selezionare output definito dall'utente..."
+msgstr "Selezione dell'output definito dall'utente..."
 
 #: hugin1/hugin/PanoPanel.cpp:1353
 msgid "User defined output|*.executor"
@@ -3727,7 +3759,7 @@ msgstr "Valenciano (Catalano del sud)"
 
 #: hugin1/hugin/PreferencesDialog.cpp:294
 msgid "Select Enblend"
-msgstr "Selezionare enblend"
+msgstr "Selezione di enblend"
 
 #: hugin1/hugin/PreferencesDialog.cpp:297 hugin1/hugin/PreferencesDialog.cpp:314
 #: hugin1/hugin/RawImport.cpp:909 hugin1/hugin/RawImport.cpp:921
@@ -3737,7 +3769,7 @@ msgstr "Eseguibili (*.exe)|*.exe"
 
 #: hugin1/hugin/PreferencesDialog.cpp:311
 msgid "Select Enfuse"
-msgstr "Selezionare enfuse"
+msgstr "Selezione di enfuse"
 
 #: hugin1/hugin/PreferencesDialog.cpp:340 hugin1/hugin/PreferencesDialog.cpp:428
 #: hugin1/hugin/xrc/pref_dialog.xrc:1002 hugin1/hugin/xrc/pref_dialog.xrc:1061
@@ -4101,7 +4133,7 @@ msgstr "Apre l'elaboratore in serie di Hugin"
 #: hugin1/hugin/huginApp.cpp:379 hugin1/hugin/xrc/main_menu.xrc:206
 #: hugin1/hugin/xrc/main_menu.xrc:236 hugin1/hugin/xrc/preview_frame.xrc:1108
 msgid "Opens PTBatcher, the batch processor for Hugin's project files"
-msgstr "Apre PTBatcher, l'elaboratore in serie dei file di progetto di Hugin."
+msgstr "Apre PTBatcher, l'elaboratore in serie dei file di progetto di Hugin"
 
 #: hugin1/hugin/huginApp.cpp:384
 msgid "Open Lens calibrate tool"
@@ -6166,6 +6198,7 @@ msgstr ""
 "corrispondente alle immagini. Collegare la posizione delle immagini in ogni "
 "pila?"
 
+# tooltip
 #: hugin1/hugin/xrc/main_frame.xrc:317 hugin1/hugin/xrc/main_tool.xrc:51
 msgid "Re-optimize"
 msgstr "Ri-ottimizza"
@@ -6388,7 +6421,7 @@ msgstr "&Semplice"
 
 #: hugin1/hugin/xrc/main_menu.xrc:123 hugin1/hugin/xrc/preview_frame.xrc:1041
 msgid "&Advanced"
-msgstr "&Avanzato"
+msgstr "&Avanzata"
 
 #: hugin1/hugin/xrc/main_menu.xrc:127 hugin1/hugin/xrc/preview_frame.xrc:1045
 msgid "&Expert"
@@ -6417,7 +6450,7 @@ msgstr ""
 
 #: hugin1/hugin/xrc/main_menu.xrc:149 hugin1/hugin/xrc/preview_frame.xrc:1054
 msgid "Some information on the different buttons and so on."
-msgstr "Informazioni sui diversi pulsanti e altre cose."
+msgstr "Informazioni sull'uso del programma"
 
 #: hugin1/hugin/xrc/main_menu.xrc:152 hugin1/hugin/xrc/preview_frame.xrc:1057
 msgid "&Tip of the day"
@@ -6459,6 +6492,7 @@ msgstr "Preferen&ze"
 msgid "&New"
 msgstr "&Nuovo"
 
+# tooltip
 #: hugin1/hugin/xrc/main_menu.xrc:178 hugin1/hugin/xrc/main_tool.xrc:7
 #: hugin1/hugin/xrc/preview_frame.xrc:1084
 #: hugin1/hugin/xrc/preview_frame.xrc:1126
@@ -6532,7 +6566,7 @@ msgstr "&Unisci progetto..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:211 hugin1/hugin/xrc/main_menu.xrc:241
 msgid "Merges an existing project file with the current project."
-msgstr "Unisce un progetto esistente con quello corrente."
+msgstr "Unisce un progetto esistente con quello corrente"
 
 #: hugin1/hugin/xrc/main_menu.xrc:214
 msgid "Import settings from Papywizard &XML file..."
@@ -6548,7 +6582,7 @@ msgstr "Applica &modello"
 
 #: hugin1/hugin/xrc/main_menu.xrc:219 hugin1/hugin/xrc/main_menu.xrc:245
 msgid "Assign the settings of a previously saved project to the current images."
-msgstr "Applica le impostazioni di un progetto salvato alle immagini attuali."
+msgstr "Applica le impostazioni di un progetto salvato alle immagini attuali"
 
 #: hugin1/hugin/xrc/main_menu.xrc:253
 msgid "&Close editor"
@@ -6574,6 +6608,7 @@ msgstr "Apri"
 msgid "Open a project file"
 msgstr "Apre un file progetto"
 
+# tooltip
 #: hugin1/hugin/xrc/main_tool.xrc:25
 msgid "Save project as"
 msgstr "Salva il progetto con nome"
@@ -6706,24 +6741,25 @@ msgstr "Mostra l'estensione delle maschere e del ritaglio attivi"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:221
 msgid "All images of selected lens"
-msgstr "Tutte le immagini degll'obiettivo selezionato"
+msgstr "Tutte le immagini dell'obiettivo selezionato"
 
+# tooltip
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:222
 msgid ""
 "Applies all changes to all images with the same lens as the selected image(s)."
 msgstr ""
-"Applica tutte le modifiche a tutte le immagine con lo stesso obiettivo delle "
-"immagini selezionate."
+"Applica le modifiche a tutte le immagini con lo stesso obiettivo di quelle "
+"selezionate"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:234
 #: hugin1/hugin/xrc/pano_panel.xrc:376
 msgid "Top:"
-msgstr "Superiore:"
+msgstr "Sopra:"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:257
 #: hugin1/hugin/xrc/pano_panel.xrc:358
 msgid "Left:"
-msgstr "Sinistra:"
+msgstr "Sotto:"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:281
 #: hugin1/hugin/xrc/pano_panel.xrc:394
@@ -6898,6 +6934,7 @@ msgstr "Nearest neighbour"
 msgid "Sinc 1024"
 msgstr "Sinc 1024"
 
+# tooltip
 #: hugin1/hugin/xrc/pano_panel.xrc:27 hugin1/hugin/xrc/pref_dialog.xrc:1174
 msgid "approximation of values between source pixels"
 msgstr "Approssimazione dei valori tra i pixel sorgente"
@@ -6993,8 +7030,8 @@ msgid ""
 "Calculate crop borders such that the final image has the largest area without "
 "excess"
 msgstr ""
-"Calculate crop borders such that the final image has the largest area without "
-"excess"
+"Calcola il bordo di ritaglio in modo che l'immagine finale copra l'area "
+"maggiore senza parti vuote"
 
 # tooltip
 #: hugin1/hugin/xrc/pano_panel.xrc:481 hugin1/hugin/xrc/pano_panel.xrc:1274
@@ -7212,11 +7249,11 @@ msgstr "Modalità di unione:"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1386 hugin1/hugin/xrc/pref_dialog.xrc:851
 msgid "hard seam (faster)"
-msgstr "Cucitura netta (più veloce)"
+msgstr "cucitura netta (più veloce)"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1387 hugin1/hugin/xrc/pref_dialog.xrc:852
 msgid "blend seam"
-msgstr "Cucitura fusa"
+msgstr "cucitura fusa"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:15
 msgid "Resource Usage"
@@ -7384,7 +7421,7 @@ msgstr ""
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:359
 msgid "Downscale final pano"
-msgstr "Riduci panorama finale del"
+msgstr "Riduci panorama finale al"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:375
 msgid "percent of max. width"
@@ -7480,7 +7517,7 @@ msgstr "Angolo di partenza:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:594
 msgid "Stop angle:"
-msgstr "Angolo di fermata:"
+msgstr "Angolo di arrivo:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:613
 msgid "Steps:"
@@ -7528,17 +7565,19 @@ msgstr "Formato dell'output"
 msgid "Default File Format:"
 msgstr "Formato file predefinito:"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:770
 msgid "default output format for final panorama"
-msgstr "formato di output predefinito del panorama finale"
+msgstr "Formato di output predefinito del panorama finale"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:777
 msgid "TIFF Compression:"
 msgstr "Compressione TIFF:"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:791
 msgid "default TIFF compression"
-msgstr "compressione TIFF predefinita"
+msgstr "Compressione TIFF predefinita"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:797
 msgid "JPEG Quality:"
@@ -7556,6 +7595,7 @@ msgstr "Programma per l'unione"
 msgid "Default blender:"
 msgstr "Programma predefinito per l'unione:"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:836
 msgid "Default blender which is used for new projects."
 msgstr "Programma di unione predefinito da utilizzare nei nuovi progetti"
@@ -7564,6 +7604,7 @@ msgstr "Programma di unione predefinito da utilizzare nei nuovi progetti"
 msgid "Processor"
 msgstr "Processore"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:879
 msgid "The engine that will run the stitch"
 msgstr "Il motore che eseguirà l'assemblaggio"
@@ -7581,12 +7622,13 @@ msgid ""
 msgstr ""
 "Se selezionata, il processore riprenderà immediatamente l'elaborazione della "
 "coda dei lavori. Diversamente il processore rimane in pausa fino a quando "
-"l'utente non lo avvia manualmente."
+"l'utente non lo avvia manualmente"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:896
 msgid "Overwrite existing files"
 msgstr "Sovrascrivi i file esistenti"
 
+# Tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:897
 msgid "WARNING: existing files will be silently overwritten."
 msgstr ""
@@ -7642,6 +7684,7 @@ msgstr ""
 msgid "Intermediate ExifTool argfile:"
 msgstr "Argfile Exiftool intermedio:"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:993 hugin1/hugin/xrc/pref_dialog.xrc:1052
 msgid "Leave empty for default"
 msgstr "Vuoto per predefinita di sistema"
@@ -7668,9 +7711,10 @@ msgstr "Argfile Exiftool finale:"
 msgid "Create Photo Sphere XMP data"
 msgstr "Crea dati  XMP per Photosfera"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:1087
 msgid "This will only be done for equirectangular output images."
-msgstr "Verrà fatto solo per le immagini di output equirettangolari"
+msgstr "Valido solo per le immagini di output equirettangolari"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1102
 msgid "Advanced options"
@@ -7680,6 +7724,7 @@ msgstr "Opzioni avanzate"
 msgid "Number of threads:"
 msgstr "Numero di thread:"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:1117
 msgid ""
 "Nona and the OpenMP enabled enblend/enfuse can use multiple threads for "
@@ -7690,7 +7735,7 @@ msgstr ""
 "Nona ed enblend/enfuse abilitati a OpenMP sono in grado di utilizzare diversi "
 "thread per l'elaborazione.\n"
 "Impostare questo valore al numero massimo di processori o core di processori "
-"disponibili nel sistema."
+"disponibili nel sistema"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1124
 msgid "0 for automatic detection"
@@ -7712,6 +7757,7 @@ msgstr "Crea le immagini ritagliate di default"
 msgid "Use GPU for remapping"
 msgstr "Usa la GPU per la rimappatura"
 
+# tooltip
 #: hugin1/hugin/xrc/pref_dialog.xrc:1194
 msgid "Use video card GPU to speed up remapping"
 msgstr "Utilizza la GPU della scheda video per accelerare la rimappatura"
@@ -7917,6 +7963,7 @@ msgstr ""
 "\n"
 "I segnaposto sono sensibili alle lettere maiuscole/minuscole."
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:645
 msgid "Center the preview horizontally"
 msgstr "Centra l'anteprima orizzontalmente"
@@ -7940,7 +7987,7 @@ msgstr "Stima il campo inquadrato"
 msgid "Fit"
 msgstr "Adatta"
 
-# (ndt) suggerimento, negli altri non c'è il punto...
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:18
 msgid "Automatically straighten a wavy horizon"
 msgstr "Raddrizza automaticamente un orizzonte ondulato"
@@ -7949,6 +7996,7 @@ msgstr "Raddrizza automaticamente un orizzonte ondulato"
 msgid "Straighten"
 msgstr "Raddrizza"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:23 hugin1/hugin/xrc/preview_frame.xrc:53
 msgid "Numerical Transform"
 msgstr "Trasformazione numerica"
@@ -7958,6 +8006,7 @@ msgstr "Trasformazione numerica"
 msgid "Num. Transf."
 msgstr "Trasform. num."
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:29
 msgid "Auto update"
 msgstr "Aggiorna automaticamente"
@@ -7966,6 +8015,7 @@ msgstr "Aggiorna automaticamente"
 msgid "Auto"
 msgstr "Automatico"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:35
 msgid "Update preview"
 msgstr "Aggiorna l'anteprima"
@@ -8026,14 +8076,17 @@ msgstr "Crea un panorama ad alta risoluzione"
 msgid "Identify"
 msgstr "Identifica"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:298
 msgid "Match images to their numbers"
 msgstr "Fa corrispondere le immagini ai relativi numeri"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:318
 msgid "Use full photometric correction (slow)"
 msgstr "Utilizza la correzione fotometrica completa (lento)"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:326
 msgid ""
 "Show lines between the ends of each control point. The longer the line, the "
@@ -8042,6 +8095,7 @@ msgstr ""
 "Mostra delle linee tra le coppie di punti di controllo. Maggiore è la "
 "lunghezza della linea, maggiore è l'errore"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:374
 msgid ""
 "Sets the exposure value of the panorama to the mean exposure of all images."
@@ -8053,6 +8107,7 @@ msgstr ""
 msgid "Gray picker"
 msgstr "Selezionatore del grigio"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:426
 msgid "Correct global white balance by selecting a neutral gray area."
 msgstr ""
@@ -8128,7 +8183,7 @@ msgstr "Triangolo aureo (sopra)"
 msgid "Golden triangle (up)"
 msgstr "Triangolo aureo (sotto)"
 
-# (ndt) suggerimento, negli altri non c'è il punto...
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:669
 msgid "Automatically straighten a wavy horizon."
 msgstr "Raddrizza automaticamente un orizzonte ondulato"
@@ -8184,9 +8239,10 @@ msgstr "Destra:"
 msgid "bottom:"
 msgstr "Inferiore:"
 
+# tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:971
 msgid "Reset crop to maximal possible area"
-msgstr "Reimposta il ritaglia alla massima superficie possibile"
+msgstr "Reimposta il ritaglio alla massima superficie possibile"
 
 # tooltip
 #: hugin1/hugin/xrc/preview_frame.xrc:981
@@ -8263,7 +8319,7 @@ msgstr "a uno (nessuna correzione del colore)"
 
 #: hugin1/hugin/xrc/reset_dialog.xrc:130
 msgid "Reset values"
-msgstr "Ripristina valori"
+msgstr "Ripristino valori"
 
 #: hugin1/hugin/xrc/data/tips.txt:3
 msgid ""
