@@ -98,7 +98,7 @@ p w1000 h600 f0 v360 E12.3
 #                  1 - Panoramic (Scanning cameras like Noblex)
 #                  2 - Circular fisheye
 #                  3 - full-frame fisheye
-#                  4 - PSphere, equirectangular
+#                  4 - Equirectangular (spherical panos)
 #                  8 - orthographic fisheye
 #                 10 - stereographic fisheye
 #                 21 - Equisolid fisheye
@@ -122,32 +122,29 @@ p w1000 h600 f0 v360 E12.3
 # Er           white balance factor for red channel
 # Eb           white balance factor for blue channel
 #
-# Vm           vignetting correction mode (default 0):
+# Vm           vignetting correction mode (default 5):
 #                  0: no vignetting correction
-#                  1: radial vignetting correction (see j,k,l,o options)
-#                  2: flatfield vignetting correction (see p option)
+#                  1: radial vignetting correction (see Va, Vb, Vc, Vd options)
+#                  2: flatfield vignetting correction (see Vf option)
 #                  4: proportional correction: i_new = i / corr.
-#                       This mode is recommended for use with linear data.
-#                       If the input data is gamma corrected, try adding g2.2
-#                       to the m line.
 #
 #                      default is additive correction: i_new = i + corr
 
 #                    Both radial and flatfield correction can be combined with the
 #                     proportional correction by adding 4.
-#                 Examples: i1 - radial polynomial correction by addition.
-#                                 The coefficients j,k,l,o must be specified.
-#                           i5 - radial polynomial correction by division.
-#                                 The coefficients j,k,l,o must be specified.
-#                           i6 - flatfield correction by division.
-#                                 The flatfield image should be specified with the p option
+#                 Examples: Vm1 - radial polynomial correction by addition.
+#                                 The coefficients Va, Vb, Vc, Vd must be specified.
+#                           Vm5 - radial polynomial correction by division.
+#                                 The coefficients Va, Vb, Vc, Vd must be specified.
+#                           Vm6 - flatfield correction by division.
+#                                 The flatfield image should be specified with the Vf option
 #
 # Va,Vb,Vc,Vd  vignetting correction coefficients. (defaults: 1,0,0,0)
 #               ( 0, 2, 4, 6 order polynomial coefficients):
 #                corr = ( i + j*r^2 + k*r^4 + l*r^6), where r is the distance from the image center
 #              The corrected pixel value is calculated with: i_new = i_old + corr
-#              if additive correction is used (default)
-#			   for proportional correction (h5): i_new = i_old / corr;
+#              if additive correction is used.
+#              for proportional correction (Vm5): i_new = i_old / corr;
 #
 # Vx,Vy        radial vignetting correction offset in pixels (defaults Vx0 Vy0, optional).
 #                 Used to correct for offset from center of image
@@ -176,6 +173,12 @@ p w1000 h600 f0 v360 E12.3
 # j0           stack number
 #
 # nName        file name of the input image.
+#
+#      Parameters in different images can be linked using '='
+#      followed by the image number starting with 0.
+#      Example 'v=0' sets horizontal field of view as in
+#      image number 0. You can only refer to images before the 
+#      current image.
 
 i f2 r0   p0    y0     v183    a0 b-0.1 c0  S100,600,100,800 n"photo1.jpg"
 i f2 r0   p0    y180   v183    a0 b-0.1 c0  S100,600,100,800 n"photo1.jpg"
@@ -184,12 +187,6 @@ i f2 r0   p0    y180   v183    a0 b-0.1 c0  S100,600,100,800 n"photo1.jpg"
 # 'm'-line options
 # ----------------
 # Set mode for stitcher, not required
-#
-#
-# g2.5         Set gamma value for internal computations (default 1.0)
-#                  See <http://www.fh-furtwangen.de/~dersch/gamma/gamma.html>
-#               This is especially useful in conjunction with the vignetting correction
-#               by division
 #
 # i2           Set interpolator, See <http://www.fh-furtwangen.de/~dersch/interpolator/interpolator.html>
 #                one of:
@@ -212,8 +209,18 @@ m i2
 # (a,b,c,d,e,v,r,p,y geometric parameters) and vig_optimize
 # (Eev,Er,Eb,Va,Vb,Vc,Vd,Vx,Vy,Ra,Rb,Rc,Rd,Re photometric parameters)
 #
-# The format is described in libpano13 Optimize.txt
-
+# Optimization variables are listed together with the image number
+# starting at 0. There can be several v-lines.
+#
+# y0           Optimize yaw in image 0
+# p1           Optimize pitch in image 1
+# r2           Optimize roll in image 2
+# v0           Optimize field of view in image 0
+#
+#      If a image has a parameter linked to another image only
+#      need to optimize the master.
+#
+v v0 r0 p0 r1 p1 y1
 
 # 'k'-line options
 # ----------------
@@ -239,4 +246,20 @@ k i2 t0 p"1262 2159 1402 2065 1468 2003"
 # Control point lines
 # nona ignores all 'c' lines, these lines are used by autooptimiser
 #
-# The format is described in libpano13 Optimize.txt
+# One line per point pair
+# about one pair of points per image per variable being optimized.
+# The more variables being optimized the more control points needed.
+#
+# n0           first image
+# N1           second image
+# x1066.5       first image x point position
+# y844.333      first image y point position
+# X239.52       second image x point position
+# Y804.64       second image y point position
+# t0           type of control point (optional)
+#                  0 - normal (default)
+#                  1 - optimize horizontally only
+#                  2 - optimize vertically only
+#                  3+ (all other numbers) - straight line
+
+c n0 N1 x1066.5 y844.333 X239.52 Y804.64 t0
