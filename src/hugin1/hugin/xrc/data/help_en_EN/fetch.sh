@@ -15,5 +15,5 @@ rm -f robots.txt
 rm -f index.php*
 rm -f gnu-fdl.png
 rm -f load.php*
-rm -f poweredby_mediawiki_88x31.png
+rm -f poweredby_mediawiki_*.png
 

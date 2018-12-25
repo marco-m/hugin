@@ -3,34 +3,36 @@
 <head>
 <meta charset="UTF-8"/>
 <title>Hugin Mask tab - PanoTools.org Wiki</title>
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
-<meta name="generator" content="MediaWiki 1.23.15"/>
 
 
 
-
-
-
+<!--[if IE 6]><![endif]--><!--[if IE 7]><![endif]-->
 <style media="screen" type="text/css" title="Screen style sheet"> @import url(manual.css); </style>
 
-<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}
-/* cache key: panotools_wiki:resourceloader:filter:minify-css:7:90730a7865ba4b50e0b837e1821ff0a3 */</style>
+
+<meta name="generator" content="MediaWiki 1.27.4"/>
 
 
 
-<!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
-<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Hugin_Mask_tab skin-vector action-view vector-animateLayout">
-		
-		
-		<div id="content" class="mw-body" role="main">
-			<a id="top"></a>
-			
-						<h1 id="firstHeading" class="firstHeading" lang="en"><span dir="auto">Hugin Mask tab</span></h1>
-						<div id="bodyContent">
-								<div id="siteSub">From PanoTools.org Wiki</div>
-								
-												
-				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><table cellspacing="0" cellpadding="0" style="clear: right; margin-bottom: .5em; float: right; padding: .5em 0 .8em 1.4em; background: none; width:auto">
+
+
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Hugin_Mask_tab rootpage-Hugin_Mask_tab skin-monobook action-view">
+<div id="globalWrapper">
+		<div id="column-content">
+			<div id="content" class="mw-body" role="main">
+				<a id="top"></a>
+				
+				
+				<h1 id="firstHeading" class="firstHeading" lang="en">Hugin Mask tab</h1>
+				
+				<div id="bodyContent" class="mw-body-content">
+					<div id="siteSub">From PanoTools.org Wiki</div>
+					
+										
+
+					<!-- start content -->
+					<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><table cellspacing="0" cellpadding="0" style="clear: right; margin-bottom: .5em; float: right; padding: .5em 0 .8em 1.4em; background: none; width:auto">
 <tr>
 <td> <div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
 <ul>
@@ -62,12 +64,8 @@
 <h1><a name="Hugin_Masks_tab"><span class="mw-headline">Hugin Masks tab</span></a></h1>
 <p>The <b>Hugin Masks tab</b> has two functions:
 </p>
-<ul>
-<li> Creating <b>masks</b> for individual images that include or exclude specific parts of these individual images in your final panorama.
-</li>
-<li> <b>Cropping</b> one or more of your individual images, as you would do for, e.g., <a href="Fisheye_Projection.html" title="Fisheye Projection">fisheye Projection</a> images having a circular area in the middle with a useless black area outside, or scanned images that might have edges that need to be <i>cropped</i> away.
-</li>
-</ul>
+<ul><li> Creating <b>masks</b> for individual images that include or exclude specific parts of these individual images in your final panorama.</li>
+<li> <b>Cropping</b> one or more of your individual images, as you would do for, e.g., <a href="Fisheye_Projection.html" title="Fisheye Projection">fisheye Projection</a> images having a circular area in the middle with a useless black area outside, or scanned images that might have edges that need to be <i>cropped</i> away.</li></ul>
 <p>The top-left side of the masks window shows a list of all images in the current project. 
 </p><p>The <b>Masks</b> tab has in the mid-section on the left side two sub-tabs <i>Masks</i> and <i>Crop</i>, each with its own functionality. Note that you have to select an image in the top left before the functionality of both will be enabled.
 </p>
@@ -86,14 +84,9 @@
 <h2><a name="Selecting_a_mask"><span class="mw-headline">Selecting a mask</span></a></h2>
 <p>There are 3 ways to select a mask:
 </p>
-<ul>
-<li> left mouse click inside polygon
-</li>
-<li> use rubberband around polygon, this works only when the active polygon has no selected points
-</li>
-<li> click on the polygon in the listbox on the left
-</li>
-</ul>
+<ul><li> left mouse click inside polygon</li>
+<li> use rubberband around polygon, this works only when the active polygon has no selected points</li>
+<li> click on the polygon in the listbox on the left</li></ul>
 <h2><a name="De-selecting_a_mask"><span class="mw-headline">De-selecting a mask</span></a></h2>
 <p>Click somewhere not on the mask's row in the listbox on the left.
 </p>
@@ -120,36 +113,23 @@
 <h2><a name="Masks_and_Control_Points"><span class="mw-headline">Masks and Control Points</span></a></h2>
 <p>While <a href="Control_points.html" title="Control points">control points</a> inside masks are still used in geometric optimization, you can use masks to eliminate unwanted control points:
 </p>
-<ul>
-<li> Create a mask before calling <a href="Cpfind.html" title="Cpfind">cpfind</a>. Cpfind will respect the masks and will not create cp in these areas. This is the preferred way, because cpfind will now distribute all control points in unmasked area only.
-</li>
-<li> Remove control points within masks with the menu command: Edit &gt; Remove control points in mask. As a result it can be possible to remove all control points between one image pair.
-</li>
-</ul>
+<ul><li> Create a mask before calling <a href="Cpfind.html" title="Cpfind">cpfind</a>. Cpfind will respect the masks and will not create cp in these areas. This is the preferred way, because cpfind will now distribute all control points in unmasked area only.</li>
+<li> Remove control points within masks with the menu command: Edit &gt; Remove control points in mask. As a result it can be possible to remove all control points between one image pair.</li></ul>
 <p>The photometric optimizer takes the masks automatically into account.
 </p>
 <h1><a name="Cropping_images"><span class="mw-headline">Cropping images</span></a></h1>
 <p><i>Image cropping</i> shouldn't be confused with a camera's <a href="Crop_factor.html" title="Crop factor">Crop factor</a>, which is something else entirely. Use the <b>Crop</b> tab to indicate the areas of the input images that <a href="Hugin.html" title="Hugin">hugin</a> should exclude from the stitching output. There are three situations where you might want to use crop parameters:
 </p>
-<ul>
-<li> With a scanned input image, there are usually black edges or marks along the sides of the image.
-</li>
-<li> With a circular <a href="Fisheye_Projection.html" title="Fisheye Projection">Fisheye Projection</a> image there are black unexposed areas outside the image circle.
-</li>
-<li> Some lenses have a lot of flaring around the edges which you don't want to keep.
-</li>
-</ul>
+<ul><li> With a scanned input image, there are usually black edges or marks along the sides of the image.</li>
+<li> With a circular <a href="Fisheye_Projection.html" title="Fisheye Projection">Fisheye Projection</a> image there are black unexposed areas outside the image circle.</li>
+<li> Some lenses have a lot of flaring around the edges which you don't want to keep.</li></ul>
 <p>Select the image to be cropped in the list to the left, you can adjust the position of the crop area by dragging the perimeter in the image preview on the right.  Multiple images can be selected by holding down the <i>Shift</i> or <i>Ctrl</i> keys while clicking in the image list. Then the selected crop is applied to all images.
-</p><p>Note that unlike PTGui<a class="external" href="http://wiki.panotools.org/PTGui">[*]</a>, setting crop parameters<a class="external" href="http://wiki.panotools.org/index.php?title=Crop_parameters&amp;action=edit&amp;redlink=1">[*]</a> in hugin doesn't change the <a href="Field_of_View.html" title="Field of View">Field of View</a> or optical centre of your images, it simply indicates areas of the image to be masked out, so you can change the cropping for photos in your project at any stage of the stitching process.
+</p><p>Note that unlike PTGui<a class="external" href="https://wiki.panotools.org/PTGui">[*]</a>, setting crop parameters<a class="external" href="https://wiki.panotools.org/index.php?title=Crop_parameters&amp;action=edit&amp;redlink=1">[*]</a> in hugin doesn't change the <a href="Field_of_View.html" title="Field of View">Field of View</a> or optical centre of your images, it simply indicates areas of the image to be masked out, so you can change the cropping for photos in your project at any stage of the stitching process.
 In detail, <a href="Hugin.html" title="Hugin">hugin</a> uses the <b>S</b> 'selection' parameter in the <b>i</b> and <b>o</b> script lines instead of the <b>C</b> 'crop' parameter.
 </p><p>Depending on the input image type, cropping has two different behaviours:
 </p>
-<ul>
-<li> For circular fisheye photos the crop area is a circle.
-</li>
-<li> For any other input image, the crop area is a rectangle.
-</li>
-</ul>
+<ul><li> For circular fisheye photos the crop area is a circle.</li>
+<li> For any other input image, the crop area is a rectangle.</li></ul>
 <p>Change the input image type in the <a href="Hugin_Photos_tab.html" title="Hugin Photos tab">Hugin Photos tab</a> or in the <a href="Hugin_Assistant_tab.html" title="Hugin Assistant tab">Hugin Assistant tab</a>.
 </p><p>The <b>Crop</b> tab features four text boxes for <b>Left</b>, <b>Top</b>, <b>Right</b> and <b>Bottom</b> where you can manually enter the positions of the four edges.  The origin is top-left and numbers indicate the distance in pixels from this origin.
 </p><p>Note that numbers can be negative and can extend beyond the width and height of the photo, this is primarily useful for partial fisheye images where the full circle is not visible, in this case the crop circle extends beyond the picture frame.
@@ -163,7 +143,12 @@ In detail, <a href="Hugin.html" title="Hugin">hugin</a> uses the <b>S</b> 'selec
 </p>
 
 
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
 
-</div>								<div class="printfooter">
-				Retrieved from "http://wiki.panotools.org/index.php?title=Hugin_Mask_tab&amp;oldid=15671<a class="external" href="http://wiki.panotools.org/index.php?title=Hugin_Mask_tab&amp;oldid=15671">[*]</a>"				</div>
-												</div></div></body></html>
+
+</div><div class="printfooter">
+Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Hugin_Mask_tab&amp;oldid=15671">https://wiki.panotools.org/index.php?title=Hugin_Mask_tab&amp;oldid=15671</a>"</div>
+					</div></div></body></html>

@@ -3,34 +3,36 @@
 <head>
 <meta charset="UTF-8"/>
 <title>Cpfind - PanoTools.org Wiki</title>
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
-<meta name="generator" content="MediaWiki 1.23.15"/>
 
 
 
-
-
-
+<!--[if IE 6]><![endif]--><!--[if IE 7]><![endif]-->
 <style media="screen" type="text/css" title="Screen style sheet"> @import url(manual.css); </style>
 
-<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}
-/* cache key: panotools_wiki:resourceloader:filter:minify-css:7:90730a7865ba4b50e0b837e1821ff0a3 */</style>
+
+<meta name="generator" content="MediaWiki 1.27.4"/>
 
 
 
-<!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
-<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Cpfind skin-vector action-view vector-animateLayout">
-		
-		
-		<div id="content" class="mw-body" role="main">
-			<a id="top"></a>
-			
-						<h1 id="firstHeading" class="firstHeading" lang="en"><span dir="auto">Cpfind</span></h1>
-						<div id="bodyContent">
-								<div id="siteSub">From PanoTools.org Wiki</div>
-								
-												
-				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
+
+
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Cpfind rootpage-Cpfind skin-monobook action-view">
+<div id="globalWrapper">
+		<div id="column-content">
+			<div id="content" class="mw-body" role="main">
+				<a id="top"></a>
+				
+				
+				<h1 id="firstHeading" class="firstHeading" lang="en">Cpfind</h1>
+				
+				<div id="bodyContent" class="mw-body-content">
+					<div id="siteSub">From PanoTools.org Wiki</div>
+					
+										
+
+					<!-- start content -->
+					<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
 <ul>
 <li class="toclevel-1 tocsection-1"><a href="Cpfind.html#General_and_description"><span class="tocnumber">1</span> <span class="toctext">General and description</span></a></li>
 <li class="toclevel-1 tocsection-2"><a href="Cpfind.html#Usage"><span class="tocnumber">2</span> <span class="toctext">Usage</span></a>
@@ -64,15 +66,11 @@
 </pre>
 <p>Internal the control point detector algorithm is divided into 2 parts: 
 </p>
-<ul>
-<li> The first step is the feature description: In this step the images of the project file are loaded and so called keypoints are searched. They describe distinctive features in the image. Cpfind is using a gradient based descriptor for the feature description of the keypoints. 
-</li>
-<li> In a second step, the feature matching, all keypoints of two images are matched against each other to find features which are on both images. If this matching was successful two keypoints in the two images become one control point.
-</li>
-</ul>
+<ul><li> The first step is the feature description: In this step the images of the project file are loaded and so called keypoints are searched. They describe distinctive features in the image. Cpfind is using a gradient based descriptor for the feature description of the keypoints. </li>
+<li> In a second step, the feature matching, all keypoints of two images are matched against each other to find features which are on both images. If this matching was successful two keypoints in the two images become one control point.</li></ul>
 <h1><a name="Usage"><span class="mw-headline">Usage</span></a></h1>
 <h2><a name="Rectilinear_and_fisheye_images"><span class="mw-headline">Rectilinear and fisheye images</span></a></h2>
-<p>Cpfind can find control points in rectilinear and fisheye images. To achieve good control points images with a high horizontal field of view (e.g. ultra wide rectilinear or fisheye) are therefore remapped into a conformal space (cpfind is using the stereographic projection<a class="external" href="http://wiki.panotools.org/Projection#Stereographic_projection">[*]</a>) and the feature matching occurs in this space. Before writing the control points the coordinates are remapped back to the image space. This happens automatic depending on the information about the lens in the input project file. So check that your input project file contains reasonable information about the used lens.
+<p>Cpfind can find control points in rectilinear and fisheye images. To achieve good control points images with a high horizontal field of view (e.g. ultra wide rectilinear or fisheye) are therefore remapped into a conformal space (cpfind is using the stereographic projection<a class="external" href="https://wiki.panotools.org/Projection#Stereographic_projection">[*]</a>) and the feature matching occurs in this space. Before writing the control points the coordinates are remapped back to the image space. This happens automatic depending on the information about the lens in the input project file. So check that your input project file contains reasonable information about the used lens.
 </p>
 <h2><a name="Using_celeste"><span class="mw-headline">Using celeste</span></a></h2>
 <p>Outdoor panorama often contains clouds. Clouds are bad areas for setting control points because they are moving object. Cpfind can use the same algorithm as <a href="Celeste_standalone.html" title="Celeste standalone">celeste_standalone</a> to masked out areas which contains clouds. (This is only done internal for the keypoint finding step and does not change the alpha channel of your image. If you want to generate a mask image use <a href="Celeste_standalone.html" title="Celeste standalone">celeste_standalone</a>). To run cpfind with celeste use
@@ -145,26 +143,11 @@ If you want to save them to another directory use the --keypath switch.
 </p><p>--ransacdist &lt;int&gt;            Ransac: homography estimation distance threshold (pixels) (default: 25)
 </p><p>--ransacmode &lt;string&gt;        Select the mode used in the ransac step. Possible values: auto, hom, rpy, rpyv, rpyb (default: auto)
 </p>
-<ul>
-<li> hom: Assume a homography. Only applicable for non-wide angle views. Uses the original panomatic code. It is also more flexible than required and can generate false matches, particularly if most of the matches are located on a single line.
-</li>
-</ul>
-<ul>
-<li> rpy: Align images using roll, pitch and yaw. This requires a good estimate for the horizontal field of view (and distortion, for  heavily distorted images). It is the preferred mode if a calibrated lens is used, or the HFOV could be read successfully from the EXIF data.
-</li>
-</ul>
-<ul>
-<li> rpyv: Align pair by optimizing roll, pitch, yaw and field of view. Should work without prior knowledge of the field of view, but might fail more often, due to error function used in the panotools optimizer, it tends to shrink the fov to 0.
-</li>
-</ul>
-<ul>
-<li> rpyvb: Align pair by optimizing roll, pitch, yaw, field of view and the "b" distortion parameter.  Probably very fragile, just implemented for testing.
-</li>
-</ul>
-<ul>
-<li> auto: Use homography for images with hfov &lt; 65 degrees and rpy otherwise.
-</li>
-</ul>
+<ul><li> hom: Assume a homography. Only applicable for non-wide angle views. Uses the original panomatic code. It is also more flexible than required and can generate false matches, particularly if most of the matches are located on a single line.</li></ul>
+<ul><li> rpy: Align images using roll, pitch and yaw. This requires a good estimate for the horizontal field of view (and distortion, for  heavily distorted images). It is the preferred mode if a calibrated lens is used, or the HFOV could be read successfully from the EXIF data.</li></ul>
+<ul><li> rpyv: Align pair by optimizing roll, pitch, yaw and field of view. Should work without prior knowledge of the field of view, but might fail more often, due to error function used in the panotools optimizer, it tends to shrink the fov to 0.</li></ul>
+<ul><li> rpyvb: Align pair by optimizing roll, pitch, yaw, field of view and the "b" distortion parameter.  Probably very fragile, just implemented for testing.</li></ul>
+<ul><li> auto: Use homography for images with hfov &lt; 65 degrees and rpy otherwise.</li></ul>
 <p>--minmatches &lt;int&gt;            Minimum matches (default: 4)
 </p><p>--sieve2width &lt;int&gt;           Sieve 2: Number of buckets on width (default: 5)
 </p><p>--sieve2height &lt;int&gt;          Sieve 2: Number of buckets on height (default: 5)
@@ -175,7 +158,12 @@ This filtering step (sieve2) works similar like sieve1 step described above: The
 </p>
 
 
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
 
-</div>								<div class="printfooter">
-				Retrieved from "http://wiki.panotools.org/index.php?title=Cpfind&amp;oldid=14282<a class="external" href="http://wiki.panotools.org/index.php?title=Cpfind&amp;oldid=14282">[*]</a>"				</div>
-												</div></div></body></html>
+
+</div><div class="printfooter">
+Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Cpfind&amp;oldid=14282">https://wiki.panotools.org/index.php?title=Cpfind&amp;oldid=14282</a>"</div>
+					</div></div></body></html>

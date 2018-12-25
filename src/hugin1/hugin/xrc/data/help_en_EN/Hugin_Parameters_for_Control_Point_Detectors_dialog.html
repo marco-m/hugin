@@ -3,34 +3,36 @@
 <head>
 <meta charset="UTF-8"/>
 <title>Hugin Parameters for Control Point Detectors dialog - PanoTools.org Wiki</title>
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
-<meta name="generator" content="MediaWiki 1.23.15"/>
 
 
 
-
-
-
+<!--[if IE 6]><![endif]--><!--[if IE 7]><![endif]-->
 <style media="screen" type="text/css" title="Screen style sheet"> @import url(manual.css); </style>
 
-<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}
-/* cache key: panotools_wiki:resourceloader:filter:minify-css:7:90730a7865ba4b50e0b837e1821ff0a3 */</style>
+
+<meta name="generator" content="MediaWiki 1.27.4"/>
 
 
 
-<!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
-<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Hugin_Parameters_for_Control_Point_Detectors_dialog skin-vector action-view vector-animateLayout">
-		
-		
-		<div id="content" class="mw-body" role="main">
-			<a id="top"></a>
-			
-						<h1 id="firstHeading" class="firstHeading" lang="en"><span dir="auto">Hugin Parameters for Control Point Detectors dialog</span></h1>
-						<div id="bodyContent">
-								<div id="siteSub">From PanoTools.org Wiki</div>
-								
-												
-				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p>This dialog is accessible from the <a href="Hugin_Preferences.html#Control_Point_Detectors" title="Hugin Preferences">Control Point Detectors tab</a> of the <a href="Hugin_Preferences.html" title="Hugin Preferences">Hugin Preferences</a> and is used to change the parameters of the control point detectors.
+
+
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Hugin_Parameters_for_Control_Point_Detectors_dialog rootpage-Hugin_Parameters_for_Control_Point_Detectors_dialog skin-monobook action-view">
+<div id="globalWrapper">
+		<div id="column-content">
+			<div id="content" class="mw-body" role="main">
+				<a id="top"></a>
+				
+				
+				<h1 id="firstHeading" class="firstHeading" lang="en">Hugin Parameters for Control Point Detectors dialog</h1>
+				
+				<div id="bodyContent" class="mw-body-content">
+					<div id="siteSub">From PanoTools.org Wiki</div>
+					
+										
+
+					<!-- start content -->
+					<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p>This dialog is accessible from the <a href="Hugin_Preferences.html#Control_Point_Detectors" title="Hugin Preferences">Control Point Detectors tab</a> of the <a href="Hugin_Preferences.html" title="Hugin Preferences">Hugin Preferences</a> and is used to change the parameters of the control point detectors.
 </p><p>This page gives a description of all options. <a href="Control_Point_Detector_Parameters.html" title="Control Point Detector Parameters">Control point detector parameters site</a> gives an overview about the settings for the different control point detectors and for different use cases.
 </p>
 <div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
@@ -99,25 +101,24 @@ You have to give the program name and arguments for both programs. A big speed u
 </p>
 <h2><a name="Detector_for_stacks"><span class="mw-headline">Detector for stacks</span></a></h2>
 <p>Here you can define the control points detector which works on stacks (in setting <b>Panorama with stacks</b> and <b>Multi-row panorama with stacks</b> only). You can use e. g. <a href="Align_image_stack.html" title="Align image stack">Align image stack</a> for aligning the stack. 
-If you used a tripod, you can leave this field empty. Then the detector does not run on the stacks. In this case you can use linking of the image positions on the Hugin Images tab<a class="external" href="http://wiki.panotools.org/Hugin_Images_tab">[*]</a>.
+If you used a tripod, you can leave this field empty. Then the detector does not run on the stacks. In this case you can use linking of the image positions on the Hugin Images tab<a class="external" href="https://wiki.panotools.org/Hugin_Images_tab">[*]</a>.
 </p>
 <h2><a name="Hints"><span class="mw-headline">Hints</span></a></h2>
 <p>Typical tweaks might be to:
 </p>
-<ul>
-<li> Set <i>--noransac</i> for <a href="Autopano-sift.html" title="Autopano-sift">autopano-sift</a> when using non-<a href="Rectilinear_Projection.html" title="Rectilinear Projection">rectilinear Projection</a> input images.
-</li>
-<li> Set <i>--size</i> for <a href="Autopano-sift.html" title="Autopano-sift">autopano-sift</a> which by default downsizes images to 700 pixels before matching.
-</li>
-<li> Some operating systems have problems supplying more than 120 or so photos at one time to these external tools, with autopano-sift-C 2.5.1 or later you can use these alternative arguments to specify input via a project file: <i>--maxmatches&#160;%p&#160;%o&#160;%s</i>
-</li>
-<li> MacOS only: If you are using control point detector which are contained in the bundle, give only the program name (without path). Hugin tries to find the program then inside the bundle.
-</li>
-</ul>
+<ul><li> Set <i>--noransac</i> for <a href="Autopano-sift.html" title="Autopano-sift">autopano-sift</a> when using non-<a href="Rectilinear_Projection.html" title="Rectilinear Projection">rectilinear Projection</a> input images.</li>
+<li> Set <i>--size</i> for <a href="Autopano-sift.html" title="Autopano-sift">autopano-sift</a> which by default downsizes images to 700 pixels before matching.</li>
+<li> Some operating systems have problems supplying more than 120 or so photos at one time to these external tools, with autopano-sift-C 2.5.1 or later you can use these alternative arguments to specify input via a project file: <i>--maxmatches&#160;%p&#160;%o&#160;%s</i></li>
+<li> MacOS only: If you are using control point detector which are contained in the bundle, give only the program name (without path). Hugin tries to find the program then inside the bundle.</li></ul>
 
 
 
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
 
-</div>								<div class="printfooter">
-				Retrieved from "http://wiki.panotools.org/index.php?title=Hugin_Parameters_for_Control_Point_Detectors_dialog&amp;oldid=14918<a class="external" href="http://wiki.panotools.org/index.php?title=Hugin_Parameters_for_Control_Point_Detectors_dialog&amp;oldid=14918">[*]</a>"				</div>
-												</div></div></body></html>
+
+</div><div class="printfooter">
+Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Hugin_Parameters_for_Control_Point_Detectors_dialog&amp;oldid=14918">https://wiki.panotools.org/index.php?title=Hugin_Parameters_for_Control_Point_Detectors_dialog&amp;oldid=14918</a>"</div>
+					</div></div></body></html>
