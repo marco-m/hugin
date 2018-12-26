@@ -36,7 +36,7 @@ msgstr ""
 "Project-Id-Version: hugin 0.8\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2018-12-17 19:57+0100\n"
-"PO-Revision-Date: 2018-12-25 11:13+0100\n"
+"PO-Revision-Date: 2018-12-26 09:51+0100\n"
 "Last-Translator: Cristian Marchi <cri.penta@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -3580,8 +3580,8 @@ msgstr ""
 "La larghezza e l'altezza delle immagini jpeg deve essere inferiore a 65500 "
 "pixel. É stata richiesta un'immagine jpeg con %dx%d pixel.\n"
 "Tale dimensione non è supportata dal formato jpeg.\n"
-"Diminuire la dimensione nel pannello di assemblaggio o selezionare il formato "
-"di output TIF o PNG."
+"Diminuire la dimensione nella scheda dell'assemblatore o selezionare il "
+"formato di output TIF o PNG."
 
 #: hugin1/hugin/PanoPanel.cpp:1688
 #, c-format
@@ -4461,15 +4461,15 @@ msgstr "Saltare il caricamento della coda?"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:201
 msgid "Do nothing"
-msgstr "Non fare nulla"
+msgstr "non fare nulla"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:202
 msgid "Close PTBatcherGUI"
-msgstr "Chiude PTBatcherGUI"
+msgstr "chiudi PTBatcherGUI"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:205
 msgid "Shutdown computer"
-msgstr "Spegni il computer"
+msgstr "spegni il computer"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:213
 msgid "Suspend computer"
@@ -4485,15 +4485,15 @@ msgstr "Inserire l'applicazione da linea di comando da eseguire:"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:364
 msgid "Enter application"
-msgstr "Inserire l'applicazione"
+msgstr "Inserimento dell'applicazione"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:381 hugin1/ptbatcher/FindPanoDialog.cpp:245
 msgid "Specify a directory to search for projects in"
-msgstr "Specificare una cartella in cui ricercare i file di progetto"
+msgstr "Selezione della cartella in cui ricercare i file di progetto"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:401 hugin1/ptbatcher/BatchFrame.cpp:429
 msgid "Specify project source file(s)"
-msgstr "Specificare i file sorgenti del progetto"
+msgstr "Specifica dei file sorgenti del progetto"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:472
 #, c-format
@@ -4522,7 +4522,7 @@ msgstr "Elaboratore in serie di Hugin"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:516
 msgid "Specify output prefix for project "
-msgstr "Specificare il prefisso dell'output per il progetto"
+msgstr "Specifica del prefisso dell'output per il progetto"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:557
 msgid "The prefix of an assistant target cannot be changed."
@@ -5000,22 +5000,25 @@ msgstr "Sposta progetto in basso"
 msgid "Overwrite always"
 msgstr "Sovrascrivi sempre"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:78
 msgid "Overwrite existing image files without further notice."
-msgstr "Sovrascrivi le immagini esistenti senza ulteriori avvisi."
+msgstr "Sovrascrivi le immagini esistenti senza ulteriori avvisi"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:84
 msgid "Remove finished project"
 msgstr "Rimuovi i progetti terminati"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:85
 msgid "Automatically remove successfully finished projects from queue."
-msgstr "Rimuovi automaticamente i progetti terminati dalla coda"
+msgstr "Rimuovi automaticamente dalla coda i progetti terminati"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:91
 msgid "Automatic stitch after assistant"
 msgstr "Assembla automaticamente dopo l'assistente"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:92
 msgid "Automatically stitch projects after (successfully) running assistant."
 msgstr ""
@@ -5030,6 +5033,7 @@ msgstr "Al termine"
 msgid "Verbose output"
 msgstr "Output prolisso"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:118
 msgid "Show detailed output in separate window."
 msgstr "Mostra l'output dettagliato in una finestra separata"
@@ -5088,6 +5092,7 @@ msgstr "Cartelle"
 msgid "Minimum number of images:"
 msgstr "Numero minimo di immagini:"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:254
 msgid "Minimum number of images a panorama should contain."
 msgstr "Il numero minimo di immagini che un panorama dovrebbe contenere"
@@ -5096,7 +5101,7 @@ msgstr "Il numero minimo di immagini che un panorama dovrebbe contenere"
 msgid "Maximum time difference:"
 msgstr "Differenza massima di tempo:"
 
-# Tooltip
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:273
 msgid ""
 "Maximal time difference in seconds between two consecutive images belonging "
@@ -5113,9 +5118,10 @@ msgstr "Pile:"
 msgid "Create links"
 msgstr "Crea collegamenti"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:297
 msgid "Check if the stacks were shot on a tripod."
-msgstr "Controlla se le pile sono state scattate con un cavalletto."
+msgstr "Controlla se le pile sono state scattate usando un cavalletto"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:304
 msgid "Lens database:"
@@ -5125,6 +5131,7 @@ msgstr "Database obiettivo"
 msgid "Load distortion data"
 msgstr "Carica i dati di distorsione"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_frame.xrc:312
 msgid "Tries to load distortion data from lens database if checked."
 msgstr ""
@@ -5285,8 +5292,9 @@ msgstr "&Aiuto dell'assemblatore in serie"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:60
 msgid "Open Batch Stitcher help."
-msgstr "Apre l'aiuto dell'assemblatore in serie."
+msgstr "Apre l'aiuto dell'assemblatore in serie"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:9
 msgid "Clear batch"
 msgstr "Pulisci serie"
@@ -5296,6 +5304,7 @@ msgstr "Pulisci serie"
 msgid "clear"
 msgstr "Pulisci"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:15
 msgid "Open batch"
 msgstr "Apri serie"
@@ -5304,6 +5313,7 @@ msgstr "Apri serie"
 msgid "open"
 msgstr "apri"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:21
 msgid "Save batch"
 msgstr "Salva serie"
@@ -5320,6 +5330,7 @@ msgstr "Avvia l'elaborazione in serie"
 msgid "start"
 msgstr "avvia"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:34
 msgid "Skip project(s)"
 msgstr "Salta progetto"
@@ -5340,6 +5351,7 @@ msgstr "Mette in pausa l'elaborazione in serie"
 msgid "pause"
 msgstr "pausa"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:47
 msgid "Cancel batch"
 msgstr "Annulla serie"
@@ -5352,6 +5364,7 @@ msgstr "Annulla l'elaborazione in serie"
 msgid "cancel"
 msgstr "Annulla"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:54
 msgid "Add project(s)"
 msgstr "Aggiungi progetto"
@@ -5364,6 +5377,7 @@ msgstr "Aggiunge dei file di progetto alla serie"
 msgid "add"
 msgstr "aggiungi"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:60
 msgid "Remove project"
 msgstr "Rimuovi progetto"
@@ -5372,6 +5386,7 @@ msgstr "Rimuovi progetto"
 msgid "remove"
 msgstr "rimuovi"
 
+# tooltip
 #: hugin1/hugin/xrc/batch_toolbar.xrc:66
 msgid "Search directory"
 msgstr "Cerca cartella"
@@ -6373,7 +6388,7 @@ msgstr "&Foto"
 
 #: hugin1/hugin/xrc/main_menu.xrc:88
 msgid "Show the Photos panel"
-msgstr "Mostra il pannello delle foto"
+msgstr "Mostra la scheda delle foto"
 
 #: hugin1/hugin/xrc/main_menu.xrc:91
 msgid "&Masks"
@@ -6381,7 +6396,7 @@ msgstr "&Maschere"
 
 #: hugin1/hugin/xrc/main_menu.xrc:93
 msgid "Show the Masks panel"
-msgstr "Mostra il pannello delle maschere"
+msgstr "Mostra la scheda delle maschere"
 
 #: hugin1/hugin/xrc/main_menu.xrc:96
 msgid "&Control Points"
@@ -6437,7 +6452,7 @@ msgstr "Asse&mbla"
 
 #: hugin1/hugin/xrc/main_menu.xrc:136
 msgid "Stitch with the settings on the pano tabs"
-msgstr "Unisci con le impostazioni nelle schede del panorama"
+msgstr "Unisce con le impostazioni nelle schede del panorama"
 
 #: hugin1/hugin/xrc/main_menu.xrc:139
 msgid "Stitch &user defined output..."
@@ -6446,7 +6461,7 @@ msgstr "Assembla output definito dall'&utente..."
 #: hugin1/hugin/xrc/main_menu.xrc:140
 msgid "Stitch with the settings from a user defined output sequence"
 msgstr ""
-"Unisci con le impostazioni di una sequenza di output definita dall'utente"
+"Unisce con le impostazioni di una sequenza di output definita dall'utente"
 
 #: hugin1/hugin/xrc/main_menu.xrc:149 hugin1/hugin/xrc/preview_frame.xrc:1054
 msgid "Some information on the different buttons and so on."
