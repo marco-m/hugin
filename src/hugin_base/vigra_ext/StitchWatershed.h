@@ -162,7 +162,12 @@ namespace vigra_ext
             return;
         }
         const double smoothRadius = std::max(1.0, std::max(roi.regions[3].size().width(), roi.regions[3].size().height()) / 1000.0);
-        const bool doWrap = wrap && (roi.regions[3].size().width() == image1.width());
+        const bool doWrap = wrap && (
+            (roi.regions[3].size().width() == image1.width()) ||
+            (roi.regions[3].upperLeft.x == 0) ||
+            (roi.regions[3].lowerRight.x == image1.width()) ||
+            (!hardSeam && (roi.regions[2].size().width() == image1.width()))
+            );
         // build seed map
         vigra::omp::transformImage(vigra::srcImageRange(labels), vigra::destImage(labels), vigra::functor::Arg1() % vigra::functor::Param(3));
         // build difference, only consider overlapping area
