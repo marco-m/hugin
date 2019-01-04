@@ -648,39 +648,41 @@ ELSE()
     # This can be used to determine on which boost libraries Hugin depend on
     #ADD_DEFINITIONS(/DBOOST_LIB_DIAGNOSTIC)
     IF(NOT HUGIN_SHARED)
-    # compile everything for the static C runtime
-	FOREACH(TYPE C CXX)
-		# makefiles use blank configuration
-		FOREACH(CFG "_DEBUG" "_MINSIZEREL" "_RELEASE" "_RELWITHDEBINFO")
-			#MESSAGE("Replacing CMAKE_${TYPE}_FLAGS${CFG}: ${CMAKE_${TYPE}_FLAGS${CFG}}")
-			SET(NEW_FLAGS "${CMAKE_${TYPE}_FLAGS${CFG}}")
-			# fix up static libc flags
-			STRING(REPLACE "/MD" "/MT" NEW_FLAGS "${NEW_FLAGS}")
-			# *FORCE* to override whats already placed into the cache
-			SET(CMAKE_${TYPE}_FLAGS${CFG} "${NEW_FLAGS}" CACHE STRING
-				"CMAKE_${TYPE}_FLAGS${CFG} (overwritten to ensure static build)" FORCE)
-			#MESSAGE("New       CMAKE_${TYPE}_FLAGS${CFG}: ${CMAKE_${TYPE}_FLAGS${CFG}}")
-		ENDFOREACH(CFG)
-	ENDFOREACH(TYPE)
-    # link only with the static C runtime !! THIS IS A MUST !!
-	SET(NEW_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-	# ensure that the flags are not duplicaated on subsequent runs
-	STRING(REPLACE " /NODEFAULTLIB:\"MSVCRT.lib\" /NODEFAULTLIB:\"MSVCRTd.lib\"" "" NEW_FLAGS "${NEW_FLAGS}")
-	# note that flag names (NODEFAULTLIB) etc.) are case sensitive
-    SET( CMAKE_EXE_LINKER_FLAGS
+      # compile everything for the static C runtime
+      FOREACH(TYPE C CXX)
+        # makefiles use blank configuration
+        FOREACH(CFG "_DEBUG" "_MINSIZEREL" "_RELEASE" "_RELWITHDEBINFO")
+          #MESSAGE("Replacing CMAKE_${TYPE}_FLAGS${CFG}: ${CMAKE_${TYPE}_FLAGS${CFG}}")
+          SET(NEW_FLAGS "${CMAKE_${TYPE}_FLAGS${CFG}}")
+          # fix up static libc flags
+          STRING(REPLACE "/MD" "/MT" NEW_FLAGS "${NEW_FLAGS}")
+          # *FORCE* to override whats already placed into the cache
+          SET(CMAKE_${TYPE}_FLAGS${CFG} "${NEW_FLAGS}" CACHE STRING "CMAKE_${TYPE}_FLAGS${CFG} (overwritten to ensure static build)" FORCE)
+          #MESSAGE("New       CMAKE_${TYPE}_FLAGS${CFG}: ${CMAKE_${TYPE}_FLAGS${CFG}}")
+        ENDFOREACH(CFG)
+      ENDFOREACH(TYPE)
+      # link only with the static C runtime !! THIS IS A MUST !!
+      SET(NEW_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+      # ensure that the flags are not duplicaated on subsequent runs
+      STRING(REPLACE " /NODEFAULTLIB:\"MSVCRT.lib\" /NODEFAULTLIB:\"MSVCRTd.lib\"" "" NEW_FLAGS "${NEW_FLAGS}")
+      # note that flag names (NODEFAULTLIB) etc.) are case sensitive
+      SET( CMAKE_EXE_LINKER_FLAGS
         "${NEW_FLAGS} /NODEFAULTLIB:\"MSVCRT.lib\" /NODEFAULTLIB:\"MSVCRTd.lib\""
-       CACHE STRING "for MSVC" FORCE
-    )
-    FOREACH(CFG "MINSIZEREL" "RELEASE" "RELWITHDEBINFO")
-      SET(NEW_FLAGS "${CMAKE_EXE_LINKER_FLAGS_${CFG}}")
-      STRING(REPLACE " /LTCG" "" NEW_FLAGS "${NEW_FLAGS}")
-      SET(CMAKE_EXE_LINKER_FLAGS_${CFG} "${NEW_FLAGS} /LTCG" CACHE STRING "overwritten" FORCE)
-    ENDFOREACH()
-    SET(NEW_FLAGS "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO}")
-    STRING(REPLACE " /INCREMENTAL:NO" "" NEW_FLAGS "${NEW_FLAGS}")
-    STRING(REPLACE " /INCREMENTAL" "" NEW_FLAGS "${NEW_FLAGS}")
-    SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${NEW_FLAGS} /INCREMENTAL:NO" CACHE STRING "overwritten" FORCE)
+        CACHE STRING "for MSVC" FORCE
+      )
+      FOREACH(CFG "MINSIZEREL" "RELEASE" "RELWITHDEBINFO")
+        SET(NEW_FLAGS "${CMAKE_EXE_LINKER_FLAGS_${CFG}}")
+        STRING(REPLACE " /LTCG" "" NEW_FLAGS "${NEW_FLAGS}")
+        SET(CMAKE_EXE_LINKER_FLAGS_${CFG} "${NEW_FLAGS} /LTCG" CACHE STRING "overwritten" FORCE)
+      ENDFOREACH()
+      SET(NEW_FLAGS "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO}")
+      STRING(REPLACE " /INCREMENTAL:NO" "" NEW_FLAGS "${NEW_FLAGS}")
+      STRING(REPLACE " /INCREMENTAL" "" NEW_FLAGS "${NEW_FLAGS}")
+      SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${NEW_FLAGS} /INCREMENTAL:NO" CACHE STRING "overwritten" FORCE)
     ENDIF()
+    # allow multi-threading compiling
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP" CACHE STRING "overwritten" FORCE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP" CACHE STRING "overwritten" FORCE)
   ENDIF()
 ENDIF ()
 
