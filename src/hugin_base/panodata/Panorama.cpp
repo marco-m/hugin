@@ -2949,7 +2949,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                     } else if (var == "#hugin_outputImageTypeHDRCompression") {
                         options.outputImageTypeHDRCompression = value;
                     } else if (var == "#hugin_outputRangeCompression") {
-                        options.outputRangeCompression = atoi(value.c_str());
+                        options.outputRangeCompression = atof(value.c_str());
                         options.outputRangeCompression = std::max(0.0, std::min(options.outputRangeCompression, 20.0));
                     } else if (var == "#hugin_optimizerMasterSwitch") {
                         optSwitch = atoi(value.c_str());
