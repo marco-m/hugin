@@ -71,6 +71,8 @@ static void usage(const char* name)
          << "    --output-exposure=AUTO|num  Sets the output exposure value to mean" << std::endl
          << "                                exposure (AUTO) or to given value" << std::endl
          << "                                Prefix number with r for relativ change" << std::endl
+         << "    --output-range-compression=num  Set range compression" << std::endl
+         << "                                    Value should be a real in range 0..20" << std::endl
          << "    --output-cropped-tiff    Output cropped tiffs as intermediate images" << std::endl
          << "    --output-uncropped-tiff  Output uncropped tiffs as intermediate images" << std::endl
          << "    --output-type=str       Sets the type of output" << std::endl
@@ -121,6 +123,7 @@ int main(int argc, char* argv[])
         SWITCH_ROTATE,
         SWITCH_TRANSLATE,
         SWITCH_EXPOSURE,
+        SWITCH_RANGE_COMPRESSION,
         SWITCH_OUTPUT_TYPE,
         SWITCH_BLENDER,
         SWITCH_LDRFILETYPE,
@@ -148,6 +151,7 @@ int main(int argc, char* argv[])
         {"output-cropped-tiff", no_argument, NULL, SWITCH_CROPPED_TIFF },
         {"output-uncropped-tiff", no_argument, NULL, SWITCH_UNCROPPED_TIFF },
         {"output-exposure", required_argument, NULL, SWITCH_EXPOSURE },
+        {"output-range-compression", required_argument, NULL, SWITCH_RANGE_COMPRESSION },
         {"output-type", required_argument, NULL, SWITCH_OUTPUT_TYPE },
         {"blender", required_argument, NULL, SWITCH_BLENDER },
         {"blender-args", required_argument, NULL, SWITCH_BLENDER_ARGS },
@@ -187,6 +191,7 @@ int main(int argc, char* argv[])
     double y = 0;
     double z = 0;
     double outputExposure = -1000;
+    double outputRangeCompression = -1;
     bool relativeExposure = false;
     bool calcMeanExposure = false;
     std::string outputType;
@@ -419,6 +424,18 @@ int main(int argc, char* argv[])
                     };
                 };
                 break;
+            case SWITCH_RANGE_COMPRESSION:
+                if(!hugin_utils::stringToDouble(std::string(optarg), outputRangeCompression))
+                { 
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse output range compression (" << optarg << ")." << std::endl;
+                    return 1;
+                };
+                if (outputRangeCompression < 0.0 || outputRangeCompression > 20.0)
+                {
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": range compression must be a real between 0 and 20." << std::endl;
+                    return 1;
+                };
+                break;
             case SWITCH_OUTPUT_TYPE:
                 if (!outputType.empty())
                 {
@@ -604,6 +621,14 @@ int main(int argc, char* argv[])
             };
         };
         std::cout << "Setting output exposure value to " << opt.outputExposureValue << std::endl;
+        pano.setOptions(opt);
+    };
+    // output range compression
+    if (outputRangeCompression >= 0.0)
+    {
+        HuginBase::PanoramaOptions opt = pano.getOptions();
+        opt.outputRangeCompression = outputRangeCompression;
+        std::cout << "Setting output range compression to " << opt.outputRangeCompression << std::endl;
         pano.setOptions(opt);
     };
     // output type: normal, fused, hdr pano..

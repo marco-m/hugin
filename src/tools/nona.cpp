@@ -95,6 +95,8 @@ static void usage(const char* name)
          << "      --bigtiff   Use BigTIFF format for TIFF images" << std::endl
          << "      --ignore-exposure  don't correct exposure" << std::endl
          << "                   (this does not work with -e switch together)" << std::endl
+         << "      --output-range-compression=value  set range compression" << std::endl
+         << "                   value should be a real in range 0..20" << std::endl
          << "      --save-intermediate-images  saves also the intermediate" << std::endl
          << "                   images (only when output is TIFF, PNG or JPEG)" << std::endl
          << "      --intermediate-suffix=SUFFIX  suffix for intermediate images" << std::endl
@@ -125,6 +127,7 @@ int main(int argc, char* argv[])
     HuginBase::PanoramaOptions::OutputMode outputMode = HuginBase::PanoramaOptions::OUTPUT_LDR;
     bool overrideExposure = false;
     double exposure=0;
+    double rangeCompression = -1;
     HuginBase::Nona::AdvancedOptions advOptions;
     int verbose = 0;
     bool useGPU = false;
@@ -139,7 +142,8 @@ int main(int argc, char* argv[])
         EXPOSURELAYERS,
         MASKCLIPEXPOSURE,
         SEAMMODE,
-        USE_BIGTIFF
+        USE_BIGTIFF,
+        RANGECOMPRESSION
     };
     static struct option longOptions[] =
     {
@@ -152,6 +156,7 @@ int main(int argc, char* argv[])
         { "seam", required_argument, NULL, SEAMMODE},
         { "gpu", no_argument, NULL, 'g'},
         { "bigtiff", no_argument, NULL, USE_BIGTIFF },
+        { "output-range-compression", required_argument, NULL, RANGECOMPRESSION },
         { "help", no_argument, NULL, 'h'},
         { "debug", no_argument, NULL, 'd'},
         { "output", required_argument, NULL, 'o'},
@@ -300,6 +305,18 @@ int main(int argc, char* argv[])
                 break;
             case USE_BIGTIFF:
                 HuginBase::Nona::SetAdvancedOption(advOptions, "useBigTIFF", true);
+                break;
+            case RANGECOMPRESSION:
+                if (!hugin_utils::stringToDouble(std::string(optarg), rangeCompression))
+                {
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": Could not parse output range compression (" << optarg << ")." << std::endl;
+                    return 1;
+                };
+                if (rangeCompression < 0.0 || rangeCompression > 20.0)
+                {
+                    std::cerr << hugin_utils::stripPath(argv[0]) << ": range compression must be a real between 0 and 20." << std::endl;
+                    return 1;
+                };
                 break;
             case ':':
             case '?':
@@ -475,6 +492,18 @@ int main(int argc, char* argv[])
                 << "         Ignore switch --ignore-exposure." << std::endl;
         }
     }
+    if (rangeCompression >= 0.0)
+    {
+        if (HuginBase::Nona::GetAdvancedOption(advOptions, "ignoreExposure", false))
+        {
+            std::cout << "WARNING: Switch --ignore-exposure disables range compression." << std::endl
+                << "         --output-range-compression is therefore ignored." << std::endl;
+        }
+        else
+        {
+            opts.outputRangeCompression = rangeCompression;
+        };
+    };
 
     if (outputImages.empty())
     {
