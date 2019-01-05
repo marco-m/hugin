@@ -468,7 +468,7 @@ int main(int argc, char* argv[])
     if (overrideExposure)
     {
         opts.outputExposureValue = exposure;
-        if (HuginBase::Nona::GetAdvancedOption(advOptions, "ignoreExosure", false))
+        if (HuginBase::Nona::GetAdvancedOption(advOptions, "ignoreExposure", false))
         {
             HuginBase::Nona::SetAdvancedOption(advOptions, "ignoreExposure", false);
             std::cout << "WARNING: Switches --ignore-exposure and -e can't to used together." << std::endl
