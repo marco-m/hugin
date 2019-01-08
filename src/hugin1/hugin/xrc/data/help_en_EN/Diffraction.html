@@ -1,40 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="client-nojs">
+<html class="client-nojs" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8"/>
 <title>Diffraction - PanoTools.org Wiki</title>
 
 
 
-<!--[if IE 6]><![endif]--><!--[if IE 7]><![endif]-->
+
 <style media="screen" type="text/css" title="Screen style sheet"> @import url(manual.css); </style>
 
-
-<meta name="generator" content="MediaWiki 1.27.4"/>
-
-
+<meta name="generator" content="MediaWiki 1.31.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 
 
+
+
+<!--[if lt IE 9]><![endif]-->
 </head>
-<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Diffraction rootpage-Diffraction skin-monobook action-view">
-<div id="globalWrapper">
-		<div id="column-content">
-			<div id="content" class="mw-body" role="main">
-				<a id="top"></a>
-				
-				
-				<h1 id="firstHeading" class="firstHeading" lang="en">Diffraction</h1>
-				
-				<div id="bodyContent" class="mw-body-content">
-					<div id="siteSub">From PanoTools.org Wiki</div>
-					
-										
-
-					<!-- start content -->
-					<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p><br />
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Diffraction rootpage-Diffraction skin-vector action-view">		
+		
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+			
+<h1 id="firstHeading" class="firstHeading" lang="en">Diffraction</h1>			<div id="bodyContent" class="mw-body-content">
+				<div id="siteSub" class="noprint">From PanoTools.org Wiki</div>				
+								
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><p><br />
 </p>
-<div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
+<div id="toc" class="toc"><div class="toctitle" lang="en" dir="ltr"><h2>Contents</h2></div>
 <ul>
 <li class="toclevel-1 tocsection-1"><a href="Diffraction.html#What_it_is"><span class="tocnumber">1</span> <span class="toctext">What it is</span></a></li>
 <li class="toclevel-1 tocsection-2"><a href="Diffraction.html#Sharpness"><span class="tocnumber">2</span> <span class="toctext">Sharpness</span></a></li>
@@ -60,9 +54,62 @@
 <p>The maximum obtainable resolution is limited by diffraction according to the Rayleigh criterion<a class="external" href="http://www.wikipedia.org/wiki/angular_resolution">[*]</a>. We can safely assume the equivalent of one pixel distance as the minimum resolvable distance required by the Rayleigh criterion. Since this criterion defines the angular resolution it can be directly used for zoomable panoramas neglecting sensor sizes etc. By simply dividing the panorama <a href="Field_of_View.html" title="Field of View">Field of View</a> (FoV) by the angular resolution we get the maximum possible pixel resolution.
 </p><p>For an average value we take the wavelength of light <i>λ</i> = 550nm = 5.5*10<sup>-4</sup>mm which is in the middle of the spectrum and a color where our eyes are most sensitive. The resulting formula is:
 </p>
-<pre><img class="mwe-math-fallback-image-inline tex" alt=" pixel resolution = \frac{FoV}{asin\left(\frac{1}{1490*D}\right)}" src="5a12c95d04637539015c2d09b5002204.png" />
+<pre><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;"><math xmlns="http://www.w3.org/1998/Math/MathML"  alttext="{\displaystyle pixelresolution={\frac {FoV}{asin\left({\frac {1}{1490*D}}\right)}}}">
+  <semantics>
+    <mrow class="MJX-TeXAtom-ORD">
+      <mstyle displaystyle="true" scriptlevel="0">
+        <mi>p</mi>
+        <mi>i</mi>
+        <mi>x</mi>
+        <mi>e</mi>
+        <mi>l</mi>
+        <mi>r</mi>
+        <mi>e</mi>
+        <mi>s</mi>
+        <mi>o</mi>
+        <mi>l</mi>
+        <mi>u</mi>
+        <mi>t</mi>
+        <mi>i</mi>
+        <mi>o</mi>
+        <mi>n</mi>
+        <mo>=</mo>
+        <mrow class="MJX-TeXAtom-ORD">
+          <mfrac>
+            <mrow>
+              <mi>F</mi>
+              <mi>o</mi>
+              <mi>V</mi>
+            </mrow>
+            <mrow>
+              <mi>a</mi>
+              <mi>s</mi>
+              <mi>i</mi>
+              <mi>n</mi>
+              <mrow>
+                <mo>(</mo>
+                <mrow class="MJX-TeXAtom-ORD">
+                  <mfrac>
+                    <mn>1</mn>
+                    <mrow>
+                      <mn>1490</mn>
+                      <mo>&#x2217;<!-- ∗ --></mo>
+                      <mi>D</mi>
+                    </mrow>
+                  </mfrac>
+                </mrow>
+                <mo>)</mo>
+              </mrow>
+            </mrow>
+          </mfrac>
+        </mrow>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">{\displaystyle pixelresolution={\frac {FoV}{asin\left({\frac {1}{1490*D}}\right)}}}</annotation>
+  </semantics>
+</math></span><img src="7a52a97d85628ff81bb576d212dcae925f38f1eb.svg" class="mwe-math-fallback-image-inline" aria-hidden="true" style="vertical-align: -4.505ex; margin-left: -0.089ex; width:33.627ex; height:7.843ex;" alt="{\displaystyle pixelresolution={\frac {FoV}{asin\left({\frac {1}{1490*D}}\right)}}}" /></span>
 </pre>
-<p><i>D</i> is the physical diameter of the lens' <a href="Entrance_pupil.html" title="Entrance pupil" class="mw-redirect">entrance pupil</a>, which is the focal length in mm divided by the f-number. The following table shows the maximum angular resolution in <b>pixels/degree</b> which is obtainable by a given focal length (vertical) and f-number (horizontal) without regard to currently available sensors for an ideal lens without aberrations:
+<p><i>D</i> is the physical diameter of the lens' <a href="Entrance_pupil.html" class="mw-redirect" title="Entrance pupil">entrance pupil</a>, which is the focal length in mm divided by the f-number. The following table shows the maximum angular resolution in <b>pixels/degree</b> which is obtainable by a given focal length (vertical) and f-number (horizontal) without regard to currently available sensors for an ideal lens without aberrations:
 </p>
 <pre>          <b>2.8      4     5.6       8      11      16      22    32    44</b>
   <b>50</b>      464    325     232     163     118      81      59    41    30
@@ -92,14 +139,13 @@
 <li>A very extensive article about resolution limits on <a rel="nofollow" class="external text" href="http://www.luminous-landscape.com/tutorials/resolution.shtml">Luminous Landscape</a> containing many valuable links.</li></ul>
 
 
-
-<!-- 
+<!--
 Transclusion expansion time report (%,ms,calls,template)
-100.00%    1.442      1 - -total
-100.00%    1.442      1 - Template:Glossary
+100.00%    1.971      1 Template:Glossary
+100.00%    1.971      1 -total
 -->
+</div>
 
-
-</div><div class="printfooter">
-Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Diffraction&amp;oldid=15719">https://wiki.panotools.org/index.php?title=Diffraction&amp;oldid=15719</a>"</div>
-					</div></div></body></html>
+</div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Diffraction&amp;oldid=15719">https://wiki.panotools.org/index.php?title=Diffraction&amp;oldid=15719</a>"					</div>
+				</div></div></body></html>

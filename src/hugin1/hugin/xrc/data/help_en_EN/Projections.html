@@ -1,45 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="client-nojs">
+<html class="client-nojs" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8"/>
 <title>Projections - PanoTools.org Wiki</title>
 
 
 
-<!--[if IE 6]><![endif]--><!--[if IE 7]><![endif]-->
+
 <style media="screen" type="text/css" title="Screen style sheet"> @import url(manual.css); </style>
 
-
-<meta name="generator" content="MediaWiki 1.27.4"/>
-
-
+<meta name="generator" content="MediaWiki 1.31.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 
 
+
+
+<!--[if lt IE 9]><![endif]-->
 </head>
-<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Projections rootpage-Projections skin-monobook action-view">
-<div id="globalWrapper">
-		<div id="column-content">
-			<div id="content" class="mw-body" role="main">
-				<a id="top"></a>
-				
-				
-				<h1 id="firstHeading" class="firstHeading" lang="en">Projections</h1>
-				
-				<div id="bodyContent" class="mw-body-content">
-					<div id="siteSub">From PanoTools.org Wiki</div>
-					
-										
-
-					<!-- start content -->
-					<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p><br />
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Projections rootpage-Projections skin-vector action-view">		
+		
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+			
+<h1 id="firstHeading" class="firstHeading" lang="en">Projections</h1>			<div id="bodyContent" class="mw-body-content">
+				<div id="siteSub" class="noprint">From PanoTools.org Wiki</div>				
+								
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><p><br />
 Representing a spherical view of the world on a flat computer monitor or print requires some manner of mapping from the 3D spherical scene in which the camera and viewer are embedded to the 2D medium on which they are rendered.  The techniques used for mapping are of exactly the same type long used by map makers to project the entire globe, or portions of it, onto two dimensional maps.  There is no single, unique projection for representing sections of the sphere on the globe.  Instead, all projections have various attributes and limitations.  There are many classes of projections used for various purposes (e.g. <a rel="nofollow" class="external text" href="http://mathworld.wolfram.com/MapProjection.html">Mathworld's Projection Page</a>), but only a few are traditionally used for panoramic imaging.
 </p><p><br />
 <b>First - a word of warning: If you are looking for a single projection, that will map a spherical (even partial) panorama on a flat surface without bending lines: This won't work!</b>
 </p><p>This link explains well why it is impossible: <a rel="nofollow" class="external free" href="http://www.progonos.com/furuti/MapProj/Normal/CartDef/MapDef/mapDef.html">http://www.progonos.com/furuti/MapProj/Normal/CartDef/MapDef/mapDef.html</a>
 </p><p>Some of the most common projections when working with Panoramic imaging are:
 </p>
-<div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
+<div id="toc" class="toc"><div class="toctitle" lang="en" dir="ltr"><h2>Contents</h2></div>
 <ul>
 <li class="toclevel-1 tocsection-1"><a href="Projections.html#Cylindrical_projections"><span class="tocnumber">1</span> <span class="toctext">Cylindrical projections</span></a>
 <ul>
@@ -76,8 +70,8 @@ Representing a spherical view of the world on a flat computer monitor or print r
 <p>Cylindrical projections resemble classic rectangular world maps. The horizontal <a href="Field_of_View.html" title="Field of View">Field of View</a> is anything up to 360 degrees, horizontal distance is proportional to pan or <a href="Yaw.html" title="Yaw">yaw</a> angle, vertical distance is related to the angle above or below the horizon.
 </p>
 <h2><a name="Cylindrical_projection"><span class="mw-headline">Cylindrical projection</span></a></h2>
-<div class="thumb tright"><div class="thumbinner" style="width:202px;"><img alt="" src="200px-Big_ben_cylindrical.jpg" width="200" height="100" class="thumbimage" /><a class="external" href="https://wiki.panotools.org/File:Big_ben_cylindrical.jpg">[*]</a>  <div class="thumbcaption"><div class="magnify"><a class="external" href="https://wiki.panotools.org/File:Big_ben_cylindrical.jpg">[*]</a></div><a href="Cylindrical_Projection.html" title="Cylindrical Projection">Cylindrical Projection</a> h360° v120°</div></div></div>This is the projection most commonly used for printed panoramas with a large range of longitude (&gt;120 degrees).  It can be envisioned by imagining wrapping a flat piece of paper around the sphere tangent to the equator, and projecting a light out from the center of the sphere.  A full range of longitude, up to 360 degrees, can be represented with a cylindrical projection, but near the poles, the images become very distorted, so a full range of latitude cannot be used.  See <a href="Cylindrical_Projection.html" title="Cylindrical Projection">Cylindrical Projection</a> for more.
-<p><br style="clear:both;" />
+<div class="thumb tright"><div class="thumbinner" style="width:202px;"><img alt="" src="200px-Big_ben_cylindrical.jpg" width="200" height="100" class="thumbimage" /><a class="external" href="https://wiki.panotools.org/File:Big_ben_cylindrical.jpg">[*]</a>  <div class="thumbcaption"><div class="magnify"><a class="external" href="https://wiki.panotools.org/File:Big_ben_cylindrical.jpg">[*]</a></div><a href="Cylindrical_Projection.html" title="Cylindrical Projection">Cylindrical Projection</a> h360° v120°</div></div></div><p>This is the projection most commonly used for printed panoramas with a large range of longitude (&gt;120 degrees).  It can be envisioned by imagining wrapping a flat piece of paper around the sphere tangent to the equator, and projecting a light out from the center of the sphere.  A full range of longitude, up to 360 degrees, can be represented with a cylindrical projection, but near the poles, the images become very distorted, so a full range of latitude cannot be used.  See <a href="Cylindrical_Projection.html" title="Cylindrical Projection">Cylindrical Projection</a> for more.
+</p><p><br style="clear:both;" />
 </p>
 <h2><a name="Mercator_projection"><span class="mw-headline">Mercator projection</span></a></h2>
 <div class="thumb tright"><div class="thumbinner" style="width:202px;"><img alt="" src="200px-Big_ben_mercator.jpg" width="200" height="100" class="thumbimage" /><a class="external" href="https://wiki.panotools.org/File:Big_ben_mercator.jpg">[*]</a>  <div class="thumbcaption"><div class="magnify"><a class="external" href="https://wiki.panotools.org/File:Big_ben_mercator.jpg">[*]</a></div>Mercator Projection<a class="external" href="https://wiki.panotools.org/index.php?title=Mercator_Projection&amp;action=edit&amp;redlink=1">[*]</a> h360° v140°</div></div></div>
@@ -159,23 +153,22 @@ Representing a spherical view of the world on a flat computer monitor or print r
 <br style="clear:both;" />
 </p>
 <h1><a name="External_links"><span class="mw-headline">External links</span></a></h1>
-<ul><li> Description of panoramic image projections - <a rel="nofollow" class="external free" href="http://www.cambridgeincolour.com/tutorials/image-projections.htm">http://www.cambridgeincolour.com/tutorials/image-projections.htm</a></li>
-<li> Two talks from the 2009 Panotools Meeting<a class="external" href="https://wiki.panotools.org/Panotools_Meeting">[*]</a> by the <i>panotwins</i> with a comparison of projection types:</li></ul>
+<ul><li>Description of panoramic image projections - <a rel="nofollow" class="external free" href="http://www.cambridgeincolour.com/tutorials/image-projections.htm">http://www.cambridgeincolour.com/tutorials/image-projections.htm</a></li>
+<li>Two talks from the 2009 Panotools Meeting<a class="external" href="https://wiki.panotools.org/Panotools_Meeting">[*]</a> by the <i>panotwins</i> with a comparison of projection types:</li></ul>
 <dl><dd>Introduction <a rel="nofollow" class="external free" href="http://pt2009.panobotics.de/index.php?id=163">http://pt2009.panobotics.de/index.php?id=163</a></dd>
 <dd>Talk #1 by Markus <a rel="nofollow" class="external free" href="http://pt2009.panobotics.de/index.php?id=164">http://pt2009.panobotics.de/index.php?id=164</a></dd>
 <dd>Talk #2 by Jürgen <a rel="nofollow" class="external free" href="http://pt2009.panobotics.de/index.php?id=165">http://pt2009.panobotics.de/index.php?id=165</a></dd></dl>
-<ul><li> xkcd discusses <i>What your favorite map projection says about you</i> - <a rel="nofollow" class="external free" href="http://xkcd.com/977/">http://xkcd.com/977/</a></li></ul>
+<ul><li>xkcd discusses <i>What your favorite map projection says about you</i> - <a rel="nofollow" class="external free" href="http://xkcd.com/977/">http://xkcd.com/977/</a></li></ul>
 
 
-
-<!-- 
+<!--
 Transclusion expansion time report (%,ms,calls,template)
-100.00%    5.117      1 - -total
- 35.08%    1.795      1 - Template:Glossary
- 29.62%    1.516     15 - Template:Clr
+100.00%    3.372      1 -total
+ 38.91%    1.312      1 Template:Glossary
+ 32.40%    1.092     15 Template:Clr
 -->
+</div>
 
-
-</div><div class="printfooter">
-Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Projections&amp;oldid=15630">https://wiki.panotools.org/index.php?title=Projections&amp;oldid=15630</a>"</div>
-					</div></div></body></html>
+</div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Projections&amp;oldid=15630">https://wiki.panotools.org/index.php?title=Projections&amp;oldid=15630</a>"					</div>
+				</div></div></body></html>

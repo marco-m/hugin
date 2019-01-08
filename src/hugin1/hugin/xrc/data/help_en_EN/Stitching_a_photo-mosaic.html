@@ -1,41 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="client-nojs">
+<html class="client-nojs" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8"/>
 <title>Stitching a photo-mosaic - PanoTools.org Wiki</title>
 
 
 
-<!--[if IE 6]><![endif]--><!--[if IE 7]><![endif]-->
+
 <style media="screen" type="text/css" title="Screen style sheet"> @import url(manual.css); </style>
 
-
-<meta name="generator" content="MediaWiki 1.27.4"/>
-
-
+<meta name="generator" content="MediaWiki 1.31.1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 
 
+
+
+<!--[if lt IE 9]><![endif]-->
 </head>
-<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Stitching_a_photo-mosaic rootpage-Stitching_a_photo-mosaic skin-monobook action-view">
-<div id="globalWrapper">
-		<div id="column-content">
-			<div id="content" class="mw-body" role="main">
-				<a id="top"></a>
-				
-				
-				<h1 id="firstHeading" class="firstHeading" lang="en">Stitching a photo-mosaic</h1>
-				
-				<div id="bodyContent" class="mw-body-content">
-					<div id="siteSub">From PanoTools.org Wiki</div>
-					
-										
-
-					<!-- start content -->
-					<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p>This section is a stub.
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Stitching_a_photo-mosaic rootpage-Stitching_a_photo-mosaic skin-vector action-view">		
+		
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+			
+<h1 id="firstHeading" class="firstHeading" lang="en">Stitching a photo-mosaic</h1>			<div id="bodyContent" class="mw-body-content">
+				<div id="siteSub" class="noprint">From PanoTools.org Wiki</div>				
+								
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><p>This section is a stub.
 </p><p><br />
 </p>
-<div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
+<div id="toc" class="toc"><div class="toctitle" lang="en" dir="ltr"><h2>Contents</h2></div>
 <ul>
 <li class="toclevel-1 tocsection-1"><a href="Stitching_a_photo-mosaic.html#Definition_of_photo-mosaic"><span class="tocnumber">1</span> <span class="toctext">Definition of photo-mosaic</span></a></li>
 <li class="toclevel-1 tocsection-2"><a href="Stitching_a_photo-mosaic.html#Understanding_the_mosaic_lens_model"><span class="tocnumber">2</span> <span class="toctext">Understanding the mosaic lens model</span></a>
@@ -62,29 +56,28 @@
 <h3><a name="Mosaic_lens_model"><span class="mw-headline">Mosaic lens model</span></a></h3>
 <p>In order to generate a photo-mosaic from the individual images, the panotools lens model re-projects the images in the following way.
 </p>
-<ul><li> Each image is projected onto a plane with yaw Tpy and pitch Tpp (the translation remapping plane). This re-projection uses all the lens model's parameters; the position parameters described above, as well as FOV, distortion. etc.</li>
-<li> The plane is projected onto the panosphere.</li>
-<li> The panorama camera, which gives the viewpoint of the photo mosaic, sits in the center of the panosphere and looks straight ahead at the panosphere (and the perpendicular projection plane).  This camera gives the FOV of the whole photo-mosaic.</li></ul>
+<ul><li>Each image is projected onto a plane with yaw Tpy and pitch Tpp (the translation remapping plane). This re-projection uses all the lens model's parameters; the position parameters described above, as well as FOV, distortion. etc.</li>
+<li>The plane is projected onto the panosphere.</li>
+<li>The panorama camera, which gives the viewpoint of the photo mosaic, sits in the center of the panosphere and looks straight ahead at the panosphere (and the perpendicular projection plane).  This camera gives the FOV of the whole photo-mosaic.</li></ul>
 <p><br />
 To illustrate the model, consider the following picture, which looks straight down at a photo mosaic which consists of three images taken "to the right" of the center.
 </p>
-<ul><li> The unit-panosphere<a class="external" href="https://wiki.panotools.org/index.php?title=Panosphere&amp;action=edit&amp;redlink=1">[*]</a> is drawn in gray.</li>
-<li> "The panorama camera" is centered in Origin, X,Y,Z =0. The translation remapping plane has default position Tpy=0 and Tpp=0.</li>
-<li> Three photos are taken with camera positions 1, 2 and 3 by varying TrX,TrZ and Yaw</li>
-<li> The photos are reprojected to a plane (red) that touches the panosphere in (0,0,1) and then onto the panosphere using the "Panorama camera"</li></ul>
+<ul><li>The unit-panosphere<a class="external" href="https://wiki.panotools.org/index.php?title=Panosphere&amp;action=edit&amp;redlink=1">[*]</a> is drawn in gray.</li>
+<li>"The panorama camera" is centered in Origin, X,Y,Z =0. The translation remapping plane has default position Tpy=0 and Tpp=0.</li>
+<li>Three photos are taken with camera positions 1, 2 and 3 by varying TrX,TrZ and Yaw</li>
+<li>The photos are reprojected to a plane (red) that touches the panosphere in (0,0,1) and then onto the panosphere using the "Panorama camera"</li></ul>
 <p><img alt="Illustration4.png" src="Illustration4.png" width="712" height="547" /><a class="external" href="https://wiki.panotools.org/File:Illustration4.png">[*]</a>
 </p>
 <h3><a name="Result"><span class="mw-headline">Result</span></a></h3>
 <p>Because the projection plane is a plane and perpendicular to the panorama camera, there will be miss-fit when this assumption is not true for the real-world subject.  For example, photos of a flat wall mural could be rendered perfect, while a three dimensional subject would not be.
 </p>
 
-
-<!-- 
+<!--
 Transclusion expansion time report (%,ms,calls,template)
-100.00%    0.000      1 - -total
+100.00%    0.000      1 -total
 -->
+</div>
 
-
-</div><div class="printfooter">
-Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Stitching_a_photo-mosaic&amp;oldid=15598">https://wiki.panotools.org/index.php?title=Stitching_a_photo-mosaic&amp;oldid=15598</a>"</div>
-					</div></div></body></html>
+</div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="https://wiki.panotools.org/index.php?title=Stitching_a_photo-mosaic&amp;oldid=15598">https://wiki.panotools.org/index.php?title=Stitching_a_photo-mosaic&amp;oldid=15598</a>"					</div>
+				</div></div></body></html>
