@@ -164,8 +164,6 @@ namespace vigra_ext
         const double smoothRadius = std::max(1.0, std::max(roi.regions[3].size().width(), roi.regions[3].size().height()) / 1000.0);
         const bool doWrap = wrap && (
             (roi.regions[3].size().width() == image1.width()) ||
-            (roi.regions[3].upperLeft.x == 0) ||
-            (roi.regions[3].lowerRight.x == image1.width()) ||
             (!hardSeam && (roi.regions[2].size().width() == image1.width()))
             );
         // build seed map
