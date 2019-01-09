@@ -32,8 +32,8 @@ for my $file (@ARGV)
     $data =~ s/<div[^>]*>[[:space:]]*<\/div>//gs;
     $data =~ s/<meta name="ResourceLoaderDynamicStyles".*?\/>/<style media="screen" type="text\/css" title="Screen style sheet"> \@import url(manual.css); <\/style>/s;
     # wxHtml does only understand the <a name=".."> style anchors, so reformat all headings to this style
-    $data =~ s/<span class="mw-headline".*?id="([^"]*)">(.*?)<\/span>/<a name="$1"><span class="mw-headline">$2<\/span><\/a>/gs;
-    $data =~ s/<img src="([a-f0-9]{40})"/<img src="$1.svg"/gs;
+    $data =~ s/<span class="mw-headline"[^>]*id="([^"]*)">(.*?)<\/span>/<a name="$1"><span class="mw-headline">$2<\/span><\/a>/gs;
+    $data =~ s/<img src="([a-f0-9]{40})"/<img src="$1.png"/gs;
     
     open FILE, ">$file";
     print FILE $data;

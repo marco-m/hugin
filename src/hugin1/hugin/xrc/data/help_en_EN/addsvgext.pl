@@ -9,4 +9,6 @@ for my $file (@ARGV)
 {
     next unless $file =~ /^[a-f0-9]{40}$/;
     rename $file, "$file.svg";
+    system ('rsvg-convert', '-o', "$file.png", "$file.svg");
+    unlink ("$file.svg");
 }
