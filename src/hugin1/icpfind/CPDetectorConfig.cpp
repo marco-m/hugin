@@ -27,6 +27,8 @@
 
 #ifdef _WIN32
 #include "wx/msw/wrapwin.h"
+// Mingw define still DIFFERENCE, which conflicts with vigra, so disable it
+#undef DIFFERENCE
 #endif
 #include "icpfind/CPDetectorConfig.h"
 #include "hugin_config.h"
