@@ -26,6 +26,8 @@
 
 #ifdef _WIN32
 #include "wx/msw/wrapwin.h"
+ // Mingw define still DIFFERENCE, which conflicts with vigra, so disable it
+#undef DIFFERENCE
 #endif
 #include "hugin/HtmlWindow.h"
 
