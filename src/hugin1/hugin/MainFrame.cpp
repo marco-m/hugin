@@ -1481,12 +1481,6 @@ void MainFrame::OnShowPrefs(wxCommandEvent & e)
     };
 }
 
-void MainFrame::UpdatePanels( wxCommandEvent& WXUNUSED(event) )
-{   // Maybe this can be invoced by the Panorama::Changed() or
-    // something like this. So no everytime update would be needed.
-    DEBUG_TRACE("");
-}
-
 void MainFrame::OnTogglePreviewFrame(wxCommandEvent & e)
 {
     DEBUG_TRACE("");

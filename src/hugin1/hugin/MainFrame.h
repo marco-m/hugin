@@ -240,7 +240,6 @@ private:
     void OnMRUFiles(wxCommandEvent &e);
     /** event handler for full screen */
     void OnFullScreen(wxCommandEvent &e);
-    void UpdatePanels(wxCommandEvent & e);
     void OnSize(wxSizeEvent &e);
     void enableTools(bool option);
     /** adds the given files to the projects, with checking for invalid filenames */
