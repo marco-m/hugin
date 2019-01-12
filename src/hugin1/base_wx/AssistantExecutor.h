@@ -42,9 +42,10 @@ namespace HuginQueue
     @param[in] ExePath base path to all used utilities
     @param[in] project name of the project file, the assistant modifies the given file
     @param[in] assistantSetting assistant file from which the settings should be reads
+        @param errStream output stream on which the error should be written
     @return pointer to CommandQueue
     */
-    WXIMPEX CommandQueue* GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& assistantSetting);
+    WXIMPEX CommandQueue* GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& assistantSetting, std::ostream& errStream);
 }; // namespace 
 
 #endif

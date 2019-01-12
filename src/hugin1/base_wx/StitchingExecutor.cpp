@@ -389,13 +389,13 @@ namespace HuginQueue
         };
     } // namespace detail
 
-    CommandQueue* GetStitchingCommandQueue(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& prefix, wxString& statusText, wxArrayString& outputFiles, wxArrayString& tempFilesDelete)
+    CommandQueue* GetStitchingCommandQueue(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& prefix, wxString& statusText, wxArrayString& outputFiles, wxArrayString& tempFilesDelete, std::ostream& errStream)
     {
         CommandQueue* commands = new CommandQueue;
         const HuginBase::UIntSet allActiveImages = getImagesinROI(pano, pano.getActiveImages());
         if (allActiveImages.empty())
         {
-            std::cerr << "ERROR: No active images in ROI. Nothing to do." << std::endl;
+            errStream << "ERROR: No active images in ROI. Nothing to do." << std::endl;
             return commands;
         }
         std::vector<HuginBase::UIntSet> stacks;
@@ -406,17 +406,17 @@ namespace HuginQueue
         opts.remapUsingGPU = config->Read(wxT("/Nona/UseGPU"), HUGIN_NONA_USEGPU) == 1;
         if (opts.remapper != HuginBase::PanoramaOptions::NONA)
         {
-            std::cerr << "ERROR: Only nona remappper is supported by hugin_executor." << std::endl;
+            errStream << "ERROR: Only nona remappper is supported by hugin_executor." << std::endl;
             return commands;
         };
         if (opts.blendMode != HuginBase::PanoramaOptions::ENBLEND_BLEND && opts.blendMode != HuginBase::PanoramaOptions::INTERNAL_BLEND)
         {
-            std::cerr << "ERROR: Only enblend and internal remappper are currently supported by hugin_executor." << std::endl;
+            errStream << "ERROR: Only enblend and internal remappper are currently supported by hugin_executor." << std::endl;
             return commands;
         };
         if (opts.hdrMergeMode != HuginBase::PanoramaOptions::HDRMERGE_AVERAGE)
         {
-            std::cerr << "ERROR: Only hdr merger HDRMERGE_AVERAGE is currently supported by hugin_executor." << std::endl;
+            errStream << "ERROR: Only hdr merger HDRMERGE_AVERAGE is currently supported by hugin_executor." << std::endl;
             return commands;
         };
         double exiftoolVersion;
@@ -571,7 +571,7 @@ namespace HuginQueue
                         }
                         else
                         {
-                            std::cerr << "ERROR: Invalid output image type found." << std::endl;
+                            errStream << "ERROR: Invalid output image type found." << std::endl;
                             return commands;
                         };
                     };
@@ -872,11 +872,11 @@ namespace HuginQueue
         // do some checks on the way
         // if an error occurs or the input is not valid, the queue is cleared and the function returns false
         bool AddBlenderCommand(CommandQueue* queue, const wxString& ExePath, const wxString& prog, 
-            const int& stepNr, const wxString& arguments, const wxString& description)
+            const int& stepNr, const wxString& arguments, const wxString& description, std::ostream& errStream)
         {
             if (prog.IsEmpty())
             {
-                std::cerr << "ERROR: Step " << stepNr << " has no program name specified." << std::endl;
+                errStream << "ERROR: Step " << stepNr << " has no program name specified." << std::endl;
                 CleanQueue(queue);
                 return false;
             }
@@ -978,19 +978,19 @@ namespace HuginQueue
 
     }
 
-    CommandQueue* GetStitchingCommandQueueUserOutput(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& prefix, const wxString& outputSettings, wxString& statusText, wxArrayString& outputFiles, wxArrayString& tempFilesDelete)
+    CommandQueue* GetStitchingCommandQueueUserOutput(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& prefix, const wxString& outputSettings, wxString& statusText, wxArrayString& outputFiles, wxArrayString& tempFilesDelete, std::ostream& errStream)
     {
         CommandQueue* commands = new CommandQueue;
         const HuginBase::UIntSet allActiveImages = getImagesinROI(pano, pano.getActiveImages());
         if (allActiveImages.empty())
         {
-            std::cerr << "ERROR: No active images in ROI. Nothing to do." << std::endl;
+            errStream << "ERROR: No active images in ROI. Nothing to do." << std::endl;
             return commands;
         }
         wxFileInputStream input(outputSettings);
         if (!input.IsOk())
         {
-            std::cerr << "ERROR: Can not open file \"" << outputSettings.mb_str(wxConvLocal) << "\"." << std::endl;
+            errStream << "ERROR: Can not open file \"" << outputSettings.mb_str(wxConvLocal) << "\"." << std::endl;
             return commands;
         }
         wxFileConfig settings(input);
@@ -998,7 +998,7 @@ namespace HuginQueue
         settings.Read(wxT("/General/StepCount"), &stepCount, 0);
         if (stepCount == 0)
         {
-            std::cerr << "ERROR: User-setting does not define any output steps." << std::endl;
+            errStream << "ERROR: User-setting does not define any output steps." << std::endl;
             return commands;
         }
         const wxString desc = GetSettingString(&settings, wxT("/General/Description"), wxEmptyString);
@@ -1049,7 +1049,7 @@ namespace HuginQueue
             stepString << i;
             if (!settings.HasGroup(stepString))
             {
-                std::cerr << "ERROR: Output specifies " << stepCount << " steps, but step " << i << " is missing in configuration." << std::endl;
+                errStream << "ERROR: Output specifies " << stepCount << " steps, but step " << i << " is missing in configuration." << std::endl;
                 CleanQueue(commands);
                 return commands;
             }
@@ -1057,14 +1057,14 @@ namespace HuginQueue
             const wxString stepType=GetSettingString(&settings, wxT("Type"));
             if (stepType.IsEmpty())
             {
-                std::cerr << "ERROR: \"" << stepString.mb_str(wxConvLocal) << "\" has no type defined." << std::endl;
+                errStream << "ERROR: \"" << stepString.mb_str(wxConvLocal) << "\" has no type defined." << std::endl;
                 CleanQueue(commands);
                 return commands;
             };
             wxString args = GetSettingString(&settings, wxT("Arguments"));
             if (args.IsEmpty())
             {
-                std::cerr << "ERROR: Step " << i << " has no arguments given." << std::endl;
+                errStream << "ERROR: Step " << i << " has no arguments given." << std::endl;
                 CleanQueue(commands);
                 return commands;
             }
@@ -1126,14 +1126,14 @@ namespace HuginQueue
                     wxString resultFile = GetSettingString(&settings, wxT("Result"));
                     if (resultFile.IsEmpty())
                     {
-                        std::cerr << "ERROR: Step " << i << " has no result file specified." << std::endl;
+                        errStream << "ERROR: Step " << i << " has no result file specified." << std::endl;
                         CleanQueue(commands);
                         return commands;
                     };
                     resultFile.Replace(wxT("%prefix%"), prefix, true);
                     if (args.Replace(wxT("%result%"), wxEscapeFilename(resultFile), true) == 0)
                     {
-                        std::cerr << "ERROR: Step " << i << " has missing %result% placeholder in arguments." << std::endl;
+                        errStream << "ERROR: Step " << i << " has missing %result% placeholder in arguments." << std::endl;
                         CleanQueue(commands);
                         return commands;
                     };
@@ -1143,7 +1143,7 @@ namespace HuginQueue
                     {
                         if (args.Replace(wxT("%input%"), GetQuotedFilenamesString(remappedImages), true) == 0)
                         {
-                            std::cerr << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
+                            errStream << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
                             CleanQueue(commands);
                             return commands;
                         };
@@ -1161,7 +1161,7 @@ namespace HuginQueue
                             };
                             if (args.Replace(wxT("%input%"), GetQuotedFilenamesString(stacksFiles), true) == 0)
                             {
-                                std::cerr << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
+                                errStream << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
                                 CleanQueue(commands);
                                 return commands;
                             };
@@ -1179,14 +1179,14 @@ namespace HuginQueue
                                 };
                                 if (args.Replace(wxT("%input%"), GetQuotedFilenamesString(exposureLayersFiles), true) == 0)
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
                             }
                             else
                             {
-                                std::cerr << "ERROR: Step " << i << " has invalid input type: \"" << BlenderInput.mb_str(wxConvLocal) << "\"." << std::endl;
+                                errStream << "ERROR: Step " << i << " has invalid input type: \"" << BlenderInput.mb_str(wxConvLocal) << "\"." << std::endl;
                                 CleanQueue(commands);
                                 return commands;
                             };
@@ -1199,7 +1199,7 @@ namespace HuginQueue
                         args.Prepend(wrapSwitch + wxT(" "));
                     }
                     if (!detail::AddBlenderCommand(commands, ExePath, GetSettingString(&settings, wxT("Program")), i,
-                        args, description))
+                        args, description, errStream))
                     {
                         return commands;
                     };
@@ -1230,18 +1230,18 @@ namespace HuginQueue
                             wxArrayString remappedStackImages = detail::GetNumberedFilename(prefix, intermediateImageType, stacks[stackNr]);
                             if (finalArgs.Replace(wxT("%input%"), GetQuotedFilenamesString(remappedStackImages), true) == 0)
                             {
-                                std::cerr << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
+                                errStream << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
                                 CleanQueue(commands);
                                 return commands;
                             };
                             if (finalArgs.Replace(wxT("%output%"), wxEscapeFilename(stacksFiles[stackNr]), true) == 0)
                             {
-                                std::cerr << "ERROR: Step " << i << " has missing %output% placeholder in arguments." << std::endl;
+                                errStream << "ERROR: Step " << i << " has missing %output% placeholder in arguments." << std::endl;
                                 CleanQueue(commands);
                                 return commands;
                             };
                             if (!detail::AddBlenderCommand(commands, ExePath, GetSettingString(&settings, wxT("Program")), i,
-                                finalArgs, description))
+                                finalArgs, description, errStream))
                             {
                                 return commands;
                             };
@@ -1273,18 +1273,18 @@ namespace HuginQueue
                                 wxArrayString remappedLayerImages = detail::GetNumberedFilename(prefix, intermediateImageType, exposureLayers[exposureLayerNr]);
                                 if (finalArgs.Replace(wxT("%input%"), GetQuotedFilenamesString(remappedLayerImages), true) == 0)
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has missing %input% placeholder in arguments." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
                                 if (finalArgs.Replace(wxT("%output%"), wxEscapeFilename(exposureLayersFiles[exposureLayerNr]), true) == 0)
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has missing %output% placeholder in arguments." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has missing %output% placeholder in arguments." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
                                 if (!detail::AddBlenderCommand(commands, ExePath, GetSettingString(&settings, wxT("Program")), i,
-                                    finalArgs, description))
+                                    finalArgs, description, errStream))
                                 {
                                     return commands;
                                 };
@@ -1303,39 +1303,39 @@ namespace HuginQueue
                                 wxString inputFiles = GetSettingString(&settings, wxT("File"));
                                 if (inputFiles.IsEmpty())
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has no input/output file specified." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has no input/output file specified." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
                                 if (args.Find(wxT("%file%")) == wxNOT_FOUND)
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has missing %file% placeholder in arguments." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has missing %file% placeholder in arguments." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
                                 args.Replace(wxT("%project%"), wxEscapeFilename(project), true);
                                 if (!detail::ReplacePrefixPlaceholder(args, prefix))
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has invalid %prefix% placeholder in arguments." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has invalid %prefix% placeholder in arguments." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
                                 if (!detail::ReplaceWidthHeightPlaceHolder(args, "width", opts.getWidth()))
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has invalid %width% placeholder in arguments." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has invalid %width% placeholder in arguments." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 }
                                 if (!detail::ReplaceWidthHeightPlaceHolder(args, "height", opts.getHeight()))
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has invalid %height% placeholder in arguments." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has invalid %height% placeholder in arguments." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 }
                                 const wxString progName = GetSettingString(&settings, wxT("Program"));
                                 if (progName.IsEmpty())
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has no program name specified." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has no program name specified." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };
@@ -1364,7 +1364,7 @@ namespace HuginQueue
                                     {
                                         if (stacks.empty())
                                         {
-                                            std::cerr << "ERROR: Step " << i << " requests to modify stacks, but no stack was created before." << std::endl;
+                                            errStream << "ERROR: Step " << i << " requests to modify stacks, but no stack was created before." << std::endl;
                                             CleanQueue(commands);
                                             return commands;
                                         };
@@ -1381,7 +1381,7 @@ namespace HuginQueue
                                         {
                                             if (exposureLayers.empty())
                                             {
-                                                std::cerr << "ERROR: Step " << i << " requests to modify exposure layers, but no exposure layer was created before." << std::endl;
+                                                errStream << "ERROR: Step " << i << " requests to modify exposure layers, but no exposure layer was created before." << std::endl;
                                                 CleanQueue(commands);
                                                 return commands;
                                             };
@@ -1408,14 +1408,14 @@ namespace HuginQueue
                                     wxString resultFile = GetSettingString(&settings, wxT("Result"));
                                     if (resultFile.IsEmpty())
                                     {
-                                        std::cerr << "ERROR: Step " << i << " has no result file specified." << std::endl;
+                                        errStream << "ERROR: Step " << i << " has no result file specified." << std::endl;
                                         CleanQueue(commands);
                                         return commands;
                                     };
                                     resultFile.Replace(wxT("%prefix%"), prefix, true);
                                     if (args.Replace(wxT("%result%"), wxEscapeFilename(resultFile), true) == 0)
                                     {
-                                        std::cerr << "ERROR: Step " << i << " has missing %result% placeholder in arguments." << std::endl;
+                                        errStream << "ERROR: Step " << i << " has missing %result% placeholder in arguments." << std::endl;
                                         CleanQueue(commands);
                                         return commands;
                                     };
@@ -1425,7 +1425,7 @@ namespace HuginQueue
                                 }
                                 else
                                 {
-                                    std::cerr << "ERROR: Step " << i << " has unknown Type \"" << stepType.mb_str(wxConvLocal) << "\"." << std::endl;
+                                    errStream << "ERROR: Step " << i << " has unknown Type \"" << stepType.mb_str(wxConvLocal) << "\"." << std::endl;
                                     CleanQueue(commands);
                                     return commands;
                                 };

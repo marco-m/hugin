@@ -128,21 +128,21 @@ namespace HuginQueue
         return commands;
     }
     
-    CommandQueue * GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString & ExePath, const wxString & project, const wxString & assistantSetting)
+    CommandQueue * GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString & ExePath, const wxString & project, const wxString & assistantSetting, std::ostream& errStream)
     {
         CommandQueue* commands = new CommandQueue;
         const wxString quotedProject(wxEscapeFilename(project));
 
         if (pano.getNrOfImages()==0)
         {
-            std::cerr << "ERROR: Project contains no images. Nothing to do." << std::endl;
+            errStream << "ERROR: Project contains no images. Nothing to do." << std::endl;
             return commands;
         };
         const wxString quotedImage0(wxEscapeFilename(wxString(pano.getImage(0).getFilename().c_str(), HUGIN_CONV_FILENAME)));
         wxFileInputStream input(assistantSetting);
         if (!input.IsOk())
         {
-            std::cerr << "ERROR: Can not open file \"" << assistantSetting.mb_str(wxConvLocal) << "\"." << std::endl;
+            errStream << "ERROR: Can not open file \"" << assistantSetting.mb_str(wxConvLocal) << "\"." << std::endl;
             return commands;
         }
         wxFileConfig settings(input);
@@ -150,7 +150,7 @@ namespace HuginQueue
         settings.Read(wxT("/General/StepCount"), &stepCount, 0);
         if (stepCount == 0)
         {
-            std::cerr << "ERROR: User-setting does not define any assistant steps." << std::endl;
+            errStream << "ERROR: User-setting does not define any assistant steps." << std::endl;
             return commands;
         };
         // create some condition variables
@@ -179,7 +179,7 @@ namespace HuginQueue
             stepString << i;
             if (!settings.HasGroup(stepString))
             {
-                std::cerr << "ERROR: Assistant specifies " << stepCount << " steps, but step " << i << " is missing in configuration." << std::endl;
+                errStream << "ERROR: Assistant specifies " << stepCount << " steps, but step " << i << " is missing in configuration." << std::endl;
                 CleanQueue(commands);
                 return commands;
             }
@@ -206,7 +206,7 @@ namespace HuginQueue
             const wxString progName = GetSettingString(&settings, wxT("Program"));
             if (progName.IsEmpty())
             {
-                std::cerr << "ERROR: Step " << i << " has no program name specified." << std::endl;
+                errStream << "ERROR: Step " << i << " has no program name specified." << std::endl;
                 CleanQueue(commands);
                 return commands;
             };
@@ -222,7 +222,7 @@ namespace HuginQueue
             wxString args = GetSettingString(&settings, wxT("Arguments"));
             if (args.IsEmpty())
             {
-                std::cerr << "ERROR: Step " << i << " has no arguments given." << std::endl;
+                errStream << "ERROR: Step " << i << " has no arguments given." << std::endl;
                 CleanQueue(commands);
                 return commands;
             }

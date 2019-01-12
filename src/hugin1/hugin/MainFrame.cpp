@@ -2363,10 +2363,11 @@ void MainFrame::RunAssistant(wxWindow* mainWin, const wxString& userdefinedAssis
     }
     else
     {
-        commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), scriptFileName.GetFullPath(), userdefinedAssistant);
+        std::stringstream errors;
+        commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), scriptFileName.GetFullPath(), userdefinedAssistant, errors);
         if (commands->empty())
         {
-            wxMessageBox(_("The assistant queue is empty. This indicates an error in the user defined assistant file."),
+            wxMessageBox(_("The assistant queue is empty. This indicates an error in the user defined assistant file.") + "\n\n" + wxString(errors.str()),
                 _("Error"), wxOK | wxICON_ERROR, mainWin);
             //delete temporary files
             wxRemoveFile(scriptFileName.GetFullPath());

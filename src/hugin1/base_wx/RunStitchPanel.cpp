@@ -197,17 +197,18 @@ bool RunStitchPanel::StitchProject(const wxString& scriptFile, const wxString& o
         wxString statusText;
         m_tempFiles.clear();
         HuginQueue::CommandQueue* commands;
+        std::stringstream errors;
         if (userDefinedOutput.IsEmpty())
         {
-            commands = HuginQueue::GetStitchingCommandQueue(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), m_currentPTOfn, basename, statusText, outputFiles, m_tempFiles);
+            commands = HuginQueue::GetStitchingCommandQueue(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), m_currentPTOfn, basename, statusText, outputFiles, m_tempFiles, errors);
         }
         else
         {
-            commands= HuginQueue::GetStitchingCommandQueueUserOutput(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), m_currentPTOfn, basename, userDefinedOutput, statusText, outputFiles, m_tempFiles);
+            commands= HuginQueue::GetStitchingCommandQueueUserOutput(pano, exePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), m_currentPTOfn, basename, userDefinedOutput, statusText, outputFiles, m_tempFiles, errors);
         };
         if (commands->empty())
         {
-            wxMessageBox(_("Queue is empty. This should never happen.") , _("Error during stitching"), wxICON_ERROR | wxOK);
+            wxMessageBox(_("Queue is empty. This should never happen.") + "\n\n" + wxString(errors.str()), _("Error during stitching"), wxICON_ERROR | wxOK);
             return false;
         };
         // check output directories.

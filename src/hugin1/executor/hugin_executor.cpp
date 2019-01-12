@@ -135,7 +135,7 @@ class HuginExecutor : public APP
             }
             else
             {
-                commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, m_utilsBinDir, m_input, m_userAssistant);
+                commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, m_utilsBinDir, m_input, m_userAssistant, std::cerr);
             };
         }
         else
@@ -157,11 +157,11 @@ class HuginExecutor : public APP
             wxArrayString outputFiles;
             if (m_userOutput.IsEmpty())
             {
-                commands = HuginQueue::GetStitchingCommandQueue(pano, m_utilsBinDir, inputFile.GetFullPath(), outputPrefix.GetName(), statusText, outputFiles, tempfiles);
+                commands = HuginQueue::GetStitchingCommandQueue(pano, m_utilsBinDir, inputFile.GetFullPath(), outputPrefix.GetName(), statusText, outputFiles, tempfiles, std::cerr);
             }
             else
             {
-                commands = HuginQueue::GetStitchingCommandQueueUserOutput(pano, m_utilsBinDir, inputFile.GetFullPath(), outputPrefix.GetName(), m_userOutput, statusText, outputFiles, tempfiles);
+                commands = HuginQueue::GetStitchingCommandQueueUserOutput(pano, m_utilsBinDir, inputFile.GetFullPath(), outputPrefix.GetName(), m_userOutput, statusText, outputFiles, tempfiles, std::cerr);
             };
             if (!m_dryRun)
             {
