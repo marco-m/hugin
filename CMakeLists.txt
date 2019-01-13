@@ -158,7 +158,7 @@ ENDIF(WIN32)
 ##
 #  This must come before FINDs for tiff, jpeg, png, zlib to enable
 #  finding the wxWidgets distributions of those packages (Win32 only).
-SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl net qa)
+SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl qa)
 FIND_PACKAGE(wxWidgets REQUIRED)
 
 # hugin requires wxwidgets 3.0 or above
@@ -680,9 +680,6 @@ ELSE()
       STRING(REPLACE " /INCREMENTAL" "" NEW_FLAGS "${NEW_FLAGS}")
       SET(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${NEW_FLAGS} /INCREMENTAL:NO" CACHE STRING "overwritten" FORCE)
     ENDIF()
-    # allow multi-threading compiling
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP" CACHE STRING "overwritten" FORCE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP" CACHE STRING "overwritten" FORCE)
   ENDIF()
 ENDIF ()
 
