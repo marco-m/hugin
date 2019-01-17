@@ -458,6 +458,11 @@ int main(int argc, char* argv[])
                                     pano.linkImageVariableYaw(firstImgStack, firstImgStack + i);
                                     pano.linkImageVariablePitch(firstImgStack, firstImgStack + i);
                                     pano.linkImageVariableRoll(firstImgStack, firstImgStack + i);
+                                    pano.linkImageVariableX(firstImgStack, firstImgStack + i);
+                                    pano.linkImageVariableY(firstImgStack, firstImgStack + i);
+                                    pano.linkImageVariableZ(firstImgStack, firstImgStack + i);
+                                    pano.linkImageVariableTranslationPlaneYaw(firstImgStack, firstImgStack + i);
+                                    pano.linkImageVariableTranslationPlanePitch(firstImgStack, firstImgStack + i);
                                 };
                             };
                         };
