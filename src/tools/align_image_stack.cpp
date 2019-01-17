@@ -698,11 +698,7 @@ int main2(std::vector<std::string> files, Parameters param)
                 pano.unlinkImageVariableRadialDistortionCenterShift(0);
             }
             // All images are in the same stack: Link the stack variable.
-            pano.linkImageVariableStack(imgNr, 0);
-            // exposure value is linked, reset to value found in EXIF
-            pano.unlinkImageVariableExposureValue(0);
-            srcImg.setExposureValue(srcImg.calcExifExposureValue());
-            pano.setSrcImage(i, srcImg);
+            pano.linkImageVariableStack(0, imgNr);
             images.push_back(i);
             // optimize yaw, roll, pitch
             std::set<std::string> vars;
