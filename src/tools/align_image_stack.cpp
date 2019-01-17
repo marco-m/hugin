@@ -866,6 +866,21 @@ int main2(std::vector<std::string> files, Parameters param)
             {
                 alignStereoWindow(pano, param.pop_out);
             }
+            if (param.optHFOV)
+            {
+                // check that reference image contains cp, otherwise optimizing hfov
+                // goes haywire
+                if (pano.getCtrlPointsForImage(0).empty())
+                {
+                    std::cerr << std::endl << "After control points pruning reference images has no control" << std::endl
+                        << "points Optimizing field of view in this case results in undefined" << std::endl
+                        << "behaviour. Increase error distance (-t parameter), tweak cp" << std::endl
+                        << "detection parameters or don't optimize HFOV." << std::endl
+                        << std::endl
+                        << "Exiting..." << std::endl;
+                    return 1;
+                };
+            };
             // reoptimize
             optimizeError = (HuginBase::PTools::optimize(pano) > 0);
         }
