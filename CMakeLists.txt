@@ -158,7 +158,12 @@ ENDIF(WIN32)
 ##
 #  This must come before FINDs for tiff, jpeg, png, zlib to enable
 #  finding the wxWidgets distributions of those packages (Win32 only).
-SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl qa)
+IF(WIN32)
+  SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl qa)
+ELSE()
+# Unix needs also wxWidgets net library
+  SET(wxWidgets_USE_LIBS base core aui xrc html xml adv gl net qa)
+ENDIF()
 FIND_PACKAGE(wxWidgets REQUIRED)
 
 # hugin requires wxwidgets 3.0 or above
