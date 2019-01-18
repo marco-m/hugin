@@ -716,8 +716,11 @@ IF(APPLE)
       POST_BUILD
       COMMAND ${CMAKE_SOURCE_DIR}/mac/PackageCreateToolsLibs.sh
       ARGS ${CMAKE_CURRENT_BINARY_DIR}/tools_mac
-      fulla tca_correct vig_optimize hugin_lensdb hugin_executor pano_trafo pto_gen
-        pto_lensstack pto_mask pto_merge pto_move pto_template pto_var deghosting_mask hugin_stacker :enblend :enfuse)
+        align_image_stack autooptimiser celeste_standalone checkpto cpclean cpfind
+        deghosting_mask fulla geocpset hugin_executor hugin_lensdb hugin_stacker
+        icpfind linefind pano_modify pano_trafo pto_gen pto_lensstack pto_mask pto_merge
+        pto_move pto_template pto_var tca_correct vig_optimize
+        :enblend :enfuse :hugin_hdrmerge :nona :verdandi)
 
     INSTALL( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tools_mac
              DESTINATION Hugin 
