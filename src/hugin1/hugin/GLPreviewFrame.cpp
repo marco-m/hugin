@@ -782,9 +782,8 @@ void GLPreviewFrame::LoadOpenGLLayout()
     FillBlendChoice();
 };
 
-GLPreviewFrame::~GLPreviewFrame()
+void GLPreviewFrame::StorePositionAndSize()
 {
-    DEBUG_TRACE("dtor writing config");
     wxConfigBase * cfg = wxConfigBase::Get();
 
     StoreFramePosition(this, wxT("GLPreviewFrame"));
@@ -801,7 +800,13 @@ GLPreviewFrame::~GLPreviewFrame()
     cfg->Write(wxT("/GLPreviewFrame/showPreviewGrid"), GetMenuBar()->FindItem(XRCID("action_show_grid"))->IsChecked());
     cfg->Write(wxT("/GLPreviewFrame/individualDragMode"), individualDragging());
     cfg->Write(wxT("/GLPreviewFrame/guide"),m_GuideChoiceProj->GetSelection());
-    
+};
+
+GLPreviewFrame::~GLPreviewFrame()
+{
+    DEBUG_TRACE("dtor writing config");
+    StorePositionAndSize();
+
     // delete all of the tools. When the preview is never used we never get an
     // OpenGL context and therefore don't create the tools.
     if (crop_tool)

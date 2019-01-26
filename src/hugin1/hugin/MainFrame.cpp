@@ -908,7 +908,14 @@ void MainFrame::OnExit(wxCloseEvent & e)
     }
     if(gl_preview_frame)
     {
-        gl_preview_frame->Close(true);
+        if(m_guiLevel==GUI_SIMPLE)
+        {
+            gl_preview_frame->StorePositionAndSize();
+        }
+        else
+        {
+            gl_preview_frame->Close(true);
+        };
     }
 
     ImageCache::getInstance().flush();

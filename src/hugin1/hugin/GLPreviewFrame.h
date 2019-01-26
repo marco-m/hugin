@@ -193,6 +193,8 @@ public:
     /** dtor.
      */
     virtual ~GLPreviewFrame();
+    /** store position and size of window in wxConfig */
+    void StorePositionAndSize();
 
     virtual void panoramaChanged(HuginBase::Panorama &pano);
     virtual void panoramaImagesChanged(HuginBase::Panorama &pano, const HuginBase::UIntSet &changed);
