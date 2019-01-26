@@ -62,8 +62,8 @@ build "openexr"   openexr*      ../../scripts/openexr.sh
 build "libpano"   libpano13*    ../../scripts/pano13.sh
 build "libexiv2"  exiv2*        ../../scripts/libexiv2.sh
 build "liblcms2"  lcms2*        ../../scripts/lcms2.sh
-build "vigra"     vigra*        "patch -p1 -N < ../../patches/vigra-patch-include-vigra-hdf5impex.hxx.diff;" ../../scripts/vigra.sh
-build "wxmac"     wxWidgets*    "patch -p1 -N < ../../patches/wx-patch-quicktime-removal.diff; patch -p1 -N < ../../patches/wx-patch-yosemite.diff" ../../scripts/wxmac.sh
+build "vigra"     vigra*        ../../scripts/vigra.sh
+build "wxmac"     wxWidgets*    ../../scripts/wxmac.sh
 build "enblend"   enblend*      ../../scripts/enblend.sh
 
 echo "$pre Finished! $pst"

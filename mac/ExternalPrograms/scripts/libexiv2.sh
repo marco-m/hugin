@@ -5,19 +5,6 @@
 # $Id: $
 # Copyright (c) 2008, Ippei Ukai
 
-
-# prepare
-
-# export REPOSITORYDIR="/PATH2HUGIN/mac/ExternalPrograms/repository" \
-# ARCHS="ppc i386" \
-#  ppcTARGET="powerpc-apple-darwin8" \
-#  i386TARGET="i386-apple-darwin8" \
-#  ppcMACSDKDIR="/Developer/SDKs/MacOSX10.4u.sdk" \
-#  i386MACSDKDIR="/Developer/SDKs/MacOSX10.4u.sdk" \
-#  ppcONLYARG="-mcpu=G3 -mtune=G4" \
-#  i386ONLYARG="-mfpmath=sse -msse2 -mtune=pentium-m -ftree-vectorize" \
-#  OTHERARGs="";
-
 # -------------------------------
 # 20091206.0 sg Script NOT tested but uses std boilerplate
 # 20100111.0 sg Script tested for building dylib
@@ -30,18 +17,18 @@
 env \
  PATH="$REPOSITORYDIR/bin:$PATH" \
  CC="$CC" CXX="$CXX" \
- CFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
- CXXFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
+ CFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include $ARGS -O3" \
+ CXXFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include $ARGS -O3" \
  CPPFLAGS="-I$REPOSITORYDIR/include" \
  LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS -prebind -stdlib=libc++ -lc++" \
  PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
  NEXT_ROOT="$MACSDKDIR" \
- ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
- --enable-shared --with-libintl-prefix="$REPOSITORYDIR" \
- --disable-lensdata --disable-commercial \
- --enable-static=no || fail "configure step for $ARCH";
-
-make clean
+ cmake -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DCMAKE_OSX_SYSROOT="macosx${SDKVERSION}" \
+  -DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" \
+  -DEXIV2_ENABLE_LENSDATA=OFF -DEXIV2_BUILD_EXIV2_COMMAND=OFF -DEXIV2_BUILD_SAMPLES=OFF . \
+  || fail "cmake step";
 
 make $MAKEARGS || fail "make step of $ARCH";
 make install || fail "make install step of $ARCH";
+
+install_name_tool -id "$REPOSITORYDIR/lib/libexiv2."??".dylib" "$REPOSITORYDIR/lib/libexiv2."??".dylib"

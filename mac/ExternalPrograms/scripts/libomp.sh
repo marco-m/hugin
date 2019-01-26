@@ -13,7 +13,7 @@ CPPFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include" \
 LDFLAGS="-L$REPOSITORYDIR/lib" \
 cmake -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" \
 -DCMAKE_OSX_SYSROOT="macosx${SDKVERSION}" -DCMAKE_OSX_DEPLOYMENT_TARGET="$OSVERSION" \
--DLIBOMP_ARCH="32e" || fail "configure step for $ARCH";
+-DLIBOMP_ARCH="32e" . || fail "configure step for $ARCH";
 
 make $MAKEARGS || fail "failed at make step of $ARCH";
 make install || fail "make install step of $ARCH";

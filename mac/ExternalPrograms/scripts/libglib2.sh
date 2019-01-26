@@ -20,6 +20,8 @@
 
 export MSGFMT="$REPOSITORYDIR/bin/msgfmt"
 
+[ ! -f ./configure ] && ./autogen.sh
+
 env \
  CC="$CC" CXX="$CXX" \
  CFLAGS="-isysroot $MACSDKDIR $ARGS   -O3" \

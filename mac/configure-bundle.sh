@@ -17,23 +17,21 @@
 #   - build (cd into this folder)
 #
 # then run:
-#  						../hugin/mac/cmake-bundle.sh
+#    $ ../hugin/mac/cmake-bundle.sh
+#    $ make
 #
-# 						make
+# for packaging:
 #
-#						make install   (installing into PREFIX)
-# 		(or)			make package   (to create a dmg image)
+#    $ make package   (to create a dmg image)
 #
-# 					(styling the dmg can sometimes be a bit fiddly,
-# 							retry if it doesn't work correctly)
+#     (styling the dmg can sometimes be a bit fiddly,
+#               retry if it doesn't work correctly)
 
 
-# Use "Release" and "/" for creating a dmg
-# add   -DHUGIN_BUILDER="YOUR NAME" to the cmake call to set the builder
+# You can add -DHUGIN_BUILDER="YOUR NAME" to the cmake call
 
 TYPE="Release"
-PREFIX="~/Desktop/Hugin"
-
+PREFIX="/"
 
 SDKVERSION=$(sw_vers -productVersion | sed "s:.[[:digit:]]*.$::g") # "10.12"
 REPOSITORYDIR=$(cd .. && pwd)"/hugin/mac/ExternalPrograms/repository"
