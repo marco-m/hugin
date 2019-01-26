@@ -22,7 +22,7 @@ LDFLAGS="$LDARGS" \
 cmake ./cmake -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DBUILD_UTILS=OFF \
 	-DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" -DCMAKE_OSX_SYSROOT="$MACSDKDIR" || fail "cmake step";
 
-make || fail "make step";
+make glew || fail "make step";
 make install || fail "make install step";
 
 install_name_tool -id "$REPOSITORYDIR/lib/libGLEW.dylib" "$REPOSITORYDIR/lib/libGLEW.dylib"
