@@ -305,7 +305,7 @@ int main(int argc, char* argv[])
         else
         {
             std::cout << "Warning: Pto project contains only one lens." << std::endl
-                 << "         Therefor the lens can not be changed. Use --new-lens instead." << std::endl;
+                 << "         Therefore the lens can not be changed. Use --new-lens instead." << std::endl;
         };
     };
 
