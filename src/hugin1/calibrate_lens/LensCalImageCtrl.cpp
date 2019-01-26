@@ -55,6 +55,7 @@ LensCalImageCtrl::LensCalImageCtrl() : wxPanel()
     m_c=0;
     m_d=0;
     m_e=0;
+    m_monitorProfile = NULL;
     // load monitor profile
     wxString profileName;
     HuginBase::Color::GetMonitorProfile(profileName, m_monitorProfile);
