@@ -81,7 +81,7 @@ private:
  *  It contains the menu & statusbar and a big notebook with
  *  the different tabs. It also holds the Panorama model.
  *
- *  it therefor also hold operations that determine the lifecycle
+ *  it therefore also hold operations that determine the lifecycle
  *  of the panorama object (new, open, save, quit).
  */
 class MainFrame : public wxFrame, public HuginBase::PanoramaObserver, public AppBase::ProgressDisplay

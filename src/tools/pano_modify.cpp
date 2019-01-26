@@ -787,7 +787,7 @@ int main(int argc, char* argv[])
                 std::cout << "Setting verdandi arguments to " << blenderArgs << std::endl;
                 break;
             default:
-                std::cout << "Unknow blender in pto file." << std::endl;
+                std::cout << "Unknown blender in pto file." << std::endl;
                 break;
         };
         pano.setOptions(opt);

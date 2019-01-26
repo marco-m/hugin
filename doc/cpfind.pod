@@ -29,7 +29,7 @@ was successful two keypoints in the two images become one control point.
 
 =head2 Rectilinear and fisheye images
 
-Cpfind can find control points in rectilinear and fisheye images. To achieve good control points images with a high horizontal field of view (e.g. ultra wide rectilinear or fisheye) are therefor remapped into a conformal space (cpfind is using the stereographic projection) and the feature matching occurs in this space. Before writing the control points the coordinates are remapped back to the image space. This happens automatic depending on the information about the lens in the input project file. So check that your input project file contains reasonable information about the used lens.
+Cpfind can find control points in rectilinear and fisheye images. To achieve good control points images with a high horizontal field of view (e.g. ultra wide rectilinear or fisheye) are therefore remapped into a conformal space (cpfind is using the stereographic projection) and the feature matching occurs in this space. Before writing the control points the coordinates are remapped back to the image space. This happens automatic depending on the information about the lens in the input project file. So check that your input project file contains reasonable information about the used lens.
 
 =head2 Using celeste
 
