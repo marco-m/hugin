@@ -436,6 +436,27 @@ std::string GetDataDir()
 #endif
 };
 
+#ifndef _WIN32
+std::string GetHomeDir()
+{
+    char *homedir = getenv("HOME");
+    struct passwd *pw;
+    if (homedir == NULL)
+    {
+        pw = getpwuid(getuid());
+        if (pw != NULL)
+        {
+            homedir = pw->pw_dir;
+        };
+    };
+    if (homedir == NULL)
+    {
+        return std::string();
+    };
+    return std::string(homedir);
+}
+#endif
+
 std::string GetUserAppDataDir()
 {
     fs::path path;
@@ -448,24 +469,38 @@ std::string GetUserAppDataDir()
     path = fs::path(fullpath);
     path /= "hugin";
 #else
-    char *homedir = getenv("HOME");
-    struct passwd *pw;
-    if (homedir == NULL)
+#ifdef USE_XDG_DIRS
+    char *xdgDataDir = getenv("XDG_DATA_HOME");
+    if (strlen(xdgDataDir) == 0)
     {
-        pw = getpwuid(getuid());
-        if(pw != NULL)
+        // no XDG_DATA_HOME enviroment variable set
+        // use $HOME/.local/share instead
+        const  std::string homeDir = GetHomeDir();
+        if (homeDir.empty())
         {
-            homedir = pw->pw_dir;
+            return std::string();
         };
+        path = fs::path(homeDir);
+        path /= ".local/share/hugin";
+    }
+    else
+    {
+        // XDG_DATA_HOME set, use hugindata sub directory
+        path = fs::path(xdgDataDir);
+        path /= "hugin";
     };
-    if(homedir == NULL)
+#else
+    // old behaviour, save in users home directory, sub-directory .hugindata
+    const std::string homeDir = GetHomeDir();
+    if (homeDir.empty())
     {
         return std::string();
     };
-    path = fs::path(homedir);
+    path = fs::path(homeDir);
     // we have already a file with name ".hugin" for our wxWidgets settings
     // therefore we use directory ".hugindata" in homedir
     path /= ".hugindata";
+#endif
 #endif
     if (!fs::exists(path))
     {

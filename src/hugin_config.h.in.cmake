@@ -34,4 +34,7 @@
 /* Build a fully self contained OSX bundle (with embedded ressources) */
 #cmakedefine UNIX_SELF_CONTAINED_BUNDLE 1
 
+/* Store settings according to XDG specification, works only with wxWidgets 3.1.1 or later */
+#cmakedefine USE_XDG_DIRS 1
+
 #endif
