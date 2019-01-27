@@ -170,6 +170,7 @@ FindPanoDialog::FindPanoDialog(BatchFrame* batchframe, wxString xrcPrefix)
     m_thumbs = new wxImageList(THUMBSIZE, THUMBSIZE, true, 0);
     m_thumbsList = XRCCTRL(*this, "find_pano_selected_thumbslist", wxListCtrl);
     m_thumbsList->SetImageList(m_thumbs, wxIMAGE_LIST_NORMAL);
+    m_thumbsList->Bind(wxEVT_MOTION, &FindPanoDialog::OnListMouseMove, this);
 #ifdef _WIN32
     // default image spacing is too big, wxWidgets does not provide direct 
     // access to the spacing, so using the direct API function
@@ -361,7 +362,7 @@ void FindPanoDialog::OnSelectPossiblePano(wxCommandEvent &e)
         XRCCTRL(*this, "find_pano_selected_lens", wxStaticText)->SetLabel(m_panos[selected]->GetLensName());
         XRCCTRL(*this, "find_pano_selected_focallength", wxStaticText)->SetLabel(m_panos[selected]->GetFocalLength());
         XRCCTRL(*this, "find_pano_selected_date_time", wxStaticText)->SetLabel(m_panos[selected]->GetStartString() + wxT(" (")+ m_panos[selected]->GetDuration() + wxT(")"));
-        m_panos[selected]->PopulateListCtrl(m_thumbsList, m_thumbs);
+        m_panos[selected]->PopulateListCtrl(m_thumbsList, m_thumbs, m_tooltips);
     }
     else
     {
@@ -371,6 +372,7 @@ void FindPanoDialog::OnSelectPossiblePano(wxCommandEvent &e)
         XRCCTRL(*this, "find_pano_selected_date_time", wxStaticText)->SetLabel(wxEmptyString);
         m_thumbsList->DeleteAllItems();
         m_thumbs->RemoveAll();
+        m_tooltips.Clear();
     };
 };
 
@@ -455,6 +457,24 @@ void FindPanoDialog::OnSplitPanos(wxCommandEvent &e)
         };
     };
 }
+
+void FindPanoDialog::OnListMouseMove(wxMouseEvent & e)
+{
+    if (m_tooltips.IsEmpty())
+    {
+        return;
+    }
+    int flags;
+    long item = m_thumbsList->HitTest(e.GetPosition(), flags);
+    if (item != wxNOT_FOUND && (flags&wxLIST_HITTEST_ONITEM) && item < m_tooltips.GetCount())
+    {
+        m_thumbsList->SetToolTip(m_tooltips[item]);
+    }
+    else
+    {
+        m_thumbsList->UnsetToolTip();
+    };
+};
 
 int SortWxFilenames(const wxString& s1,const wxString& s2)
 {
@@ -900,11 +920,7 @@ wxString PossiblePano::GetFocalLength()
 {
     if (!m_images.empty())
     {
-        const double focal35 = (*m_images.begin())->getExifFocalLength35();
-        if (focal35 > 0)
-        {
-            return wxString::Format(wxT("%0.1f mm (%0.0f mm)"), m_focallength, focal35);
-        };
+        return FormatString::GetFocalLength(*m_images.begin());
     };
     return wxString::Format(wxT("%0.1f mm"), m_focallength);
 };
@@ -927,10 +943,11 @@ wxString PossiblePano::GetDuration()
     };
 };
 
-void PossiblePano::PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs)
+void PossiblePano::PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs, wxArrayString& tooltips)
 {
     list->DeleteAllItems();
     thumbs->RemoveAll();
+    tooltips.Clear();
     wxBusyCursor cursor;
     for (ImageSet::iterator it = m_images.begin(); it != m_images.end(); ++it)
     {
@@ -1022,6 +1039,10 @@ void PossiblePano::PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs)
         // create item in thumb list
         wxFileName fn(wxString((*it)->getFilename().c_str(), HUGIN_CONV_FILENAME));
         list->InsertItem(list->GetItemCount(), fn.GetFullName(), index);
+        // build tooltip text
+        tooltips.Add(fn.GetFullName() + "\n" + FormatString::GetAperture(*it) + ", "
+            + FormatString::GetExposureTime(*it) + ", " + _("ISO") + FormatString::GetIso(*it)
+            + "\n" + FormatString::GetExifDateTime(*it));
     };
 };
 

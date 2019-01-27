@@ -74,6 +74,8 @@ protected:
     void OnRemoveImage(wxCommandEvent &e);
     /** event handler to split into 2 panos */
     void OnSplitPanos(wxCommandEvent &e);
+    /** mouse move handler for tooltips */
+    void OnListMouseMove(wxMouseEvent &e);
 
 private:
     BatchFrame* m_batchframe;
@@ -93,6 +95,7 @@ private:
     wxSpinCtrl* m_sc_maxTimeDiff;
     wxImageList* m_thumbs;
     wxListCtrl* m_thumbsList;
+    wxArrayString m_tooltips;
     wxChoice* m_ch_blender;
 
     std::vector<PossiblePano*> m_panos;
@@ -157,7 +160,7 @@ public:
     /** returns the duration as string */
     wxString GetDuration();
     /** add all images to wxListCtrl */
-    void PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs);
+    void PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs, wxArrayString& tooltips);
     /** removes the image at given index */
     void RemoveImage(const unsigned int index);
     /** split pano into 2 subpanos, index is used as first image of second pano
