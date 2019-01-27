@@ -470,5 +470,113 @@ bool CheckLensStacks(HuginBase::Panorama* pano, bool allowCancel)
             return false;
         };
     };
+}
+
+namespace FormatString
+{
+wxString GetExifDateTime(const HuginBase::SrcPanoImage* img)
+{
+    wxString s;
+    struct tm exifdatetime;
+    if (img->getExifDateTime(&exifdatetime) == 0)
+    {
+        wxDateTime s_datetime = wxDateTime(exifdatetime);
+        s = s_datetime.Format();
+    }
+    else
+    {
+        s = wxString(img->getExifDate().c_str(), wxConvLocal);
+    }
+    return s;
+}
+
+wxString GetFocalLength(const HuginBase::SrcPanoImage* img)
+{
+    wxString s;
+    if (img->getExifFocalLength() > 0.0)
+    {
+        if (img->getExifFocalLength35() > 0.0)
+        {
+            s = wxString::Format(wxT("%0.1f mm (%0.0f mm)"), img->getExifFocalLength(), img->getExifFocalLength35());
+        }
+        else
+        {
+            s = wxString::Format(wxT("%0.1f mm"), img->getExifFocalLength());
+        };
+    }
+    else
+    {
+        s = wxEmptyString;
+    };
+    return s;
 };
+
+wxString GetAperture(const HuginBase::SrcPanoImage* img)
+{
+    wxString s;
+    if (img->getExifAperture() > 0)
+    {
+        s = wxString::Format(wxT("F%.1f"), img->getExifAperture());
+    }
+    else
+    {
+        s = wxEmptyString;
+    };
+    return s;
+};
+
+wxString GetExposureTime(const HuginBase::SrcPanoImage* img)
+{
+    wxString s;
+    const double exposureTime = img->getExifExposureTime();
+    if (exposureTime > 0.5)
+    {
+        if (exposureTime >= 1.0)
+        {
+            if (exposureTime >= 10.0)
+            {
+                s = wxString::Format(wxT("%3.0f s"), exposureTime);
+            }
+            else
+            {
+                s = wxString::Format(wxT("%1.1f s"), exposureTime);
+            }
+        }
+        else
+        {
+            s = wxString::Format(wxT("%1.2f s"), exposureTime);
+        }
+    }
+    else
+    {
+        if (exposureTime > 1e-9)
+        {
+            s = wxString::Format(wxT("1/%0.0f s"), 1.0 / exposureTime);
+        }
+        else
+        {
+            //Sanity
+            s = wxEmptyString;
+        }
+    }
+    return s;
+};
+
+wxString GetIso(const HuginBase::SrcPanoImage* img)
+{
+    wxString s;
+    if (img->getExifISO() > 0)
+    {
+        s = wxString::Format(wxT("%0.0f"), img->getExifISO());
+    }
+    else
+    {
+        s = wxEmptyString;
+    };
+    return s;
+};
+
+};
+
+
 
