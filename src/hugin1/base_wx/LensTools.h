@@ -80,4 +80,18 @@ WXIMPEX bool LoadLensParametersChoose(wxWindow * parent, HuginBase::Lens & lens,
  *  @returns true, if all conditions are satisfied, false if user selected cancel in dialog box */
 WXIMPEX bool CheckLensStacks(HuginBase::Panorama* pano, bool allowCancel);
 
+namespace FormatString
+{
+/** returns Exif DateTimeOriginal as formatted wxString */
+WXIMPEX wxString GetExifDateTime(const HuginBase::SrcPanoImage* img);
+/** return focallength and focallength 35 mm as wxString */
+WXIMPEX wxString GetFocalLength(const HuginBase::SrcPanoImage* img);
+/** returns formatted aperture value */
+WXIMPEX wxString GetAperture(const HuginBase::SrcPanoImage* img);
+/** returns formatted exposure time */
+WXIMPEX wxString GetExposureTime(const HuginBase::SrcPanoImage* img);
+/** returns formatted iso value */
+WXIMPEX wxString GetIso(const HuginBase::SrcPanoImage* img);
+};
+
 #endif // LENSTOOLS_H

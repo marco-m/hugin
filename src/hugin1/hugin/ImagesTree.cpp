@@ -408,86 +408,11 @@ void ImagesTreeCtrl::UpdateImageText(wxTreeItemId item)
     SetItemText(item, m_columnMap["maker"], wxString(img.getExifMake().c_str(), wxConvLocal));
     SetItemText(item, m_columnMap["model"], wxString(img.getExifModel().c_str(), wxConvLocal));
     SetItemText(item, m_columnMap["lens"], wxString(img.getExifLens().c_str(), wxConvLocal));
-    struct tm exifdatetime;
-    if(img.getExifDateTime(&exifdatetime)==0)
-    {
-        wxDateTime s_datetime=wxDateTime(exifdatetime);
-        s=s_datetime.Format();
-    }
-    else
-    {
-        s = wxString(img.getExifDate().c_str(),wxConvLocal);
-    }
-    SetItemText(item, m_columnMap["date"], s);
-
-    if(img.getExifFocalLength()>0.0)
-    {
-        if(img.getExifFocalLength35()>0.0)
-        {
-            s = wxString::Format(wxT("%0.1f mm (%0.0f mm)"),img.getExifFocalLength(),img.getExifFocalLength35());
-        }
-        else
-        {
-            s = wxString::Format(wxT("%0.1f mm"),img.getExifFocalLength());
-        };
-    }
-    else
-    {
-        s = wxEmptyString;
-    };
-    SetItemText(item, m_columnMap["focallength"], s);
-
-    if(img.getExifAperture()>0)
-    {
-        s=wxString::Format(wxT("F%.1f"),img.getExifAperture());
-    }
-    else
-    {
-        s=wxEmptyString;
-    };
-    SetItemText(item, m_columnMap["aperture"], s);
-
-    if(img.getExifExposureTime()>0.5)
-    {
-        if(img.getExifExposureTime()>=1.0) 
-        {
-            if(img.getExifExposureTime()>=10.0) 
-            {
-                s=wxString::Format(wxT("%3.0f s"),img.getExifExposureTime());
-            }
-            else
-            {
-                s=wxString::Format(wxT("%1.1f s"),img.getExifExposureTime());
-            }
-        }
-        else
-        {
-            s=wxString::Format(wxT("%1.2f s"),img.getExifExposureTime());
-        }
-    }
-    else
-    {
-        if (img.getExifExposureTime() > 1e-9)
-        {
-            s=wxString::Format(wxT("1/%0.0f s"),1.0/img.getExifExposureTime());
-        } 
-        else
-        {
-            //Sanity
-            s=wxT("");
-        }
-    }
-    SetItemText(item, m_columnMap["time"], s);
-
-    if(img.getExifISO()>0)
-    {
-        s=wxString::Format(wxT("%0.0f"),img.getExifISO());
-    }
-    else
-    {
-        s=wxEmptyString;
-    };
-    SetItemText(item, m_columnMap["iso"], s);
+    SetItemText(item, m_columnMap["date"], FormatString::GetExifDateTime(&img));
+    SetItemText(item, m_columnMap["focallength"], FormatString::GetFocalLength(&img));
+    SetItemText(item, m_columnMap["aperture"], FormatString::GetAperture(&img));
+    SetItemText(item, m_columnMap["time"], FormatString::GetExposureTime(&img));
+    SetItemText(item, m_columnMap["iso"], FormatString::GetIso(&img));
 
     if (m_groupMode == GROUP_STACK && (img.YawisLinked() || isSingleImage))
     {
