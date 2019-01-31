@@ -86,6 +86,7 @@ IF(APPLE)
     FILE(GLOB OTHER ${CMAKE_SOURCE_DIR}/src/hugin1/executor/*.executor)
     LIST(APPEND OTHER 
                       ${CMAKE_SOURCE_DIR}/src/celeste/data/celeste.model
+                      ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/hugin_rt.pp3
                       ${CMAKE_SOURCE_DIR}/src/hugin1/base_wx/hugin_exiftool_copy.arg
                       ${CMAKE_BINARY_DIR}/src/hugin1/icpfind/default.setting )
     FOREACH(_file ${OTHER})
