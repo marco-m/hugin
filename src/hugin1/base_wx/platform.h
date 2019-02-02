@@ -43,6 +43,10 @@
 /** return filter for image files, needed by file open dialog 
   it contains all image format vigra can read and some other format */
 WXIMPEX wxString GetFileDialogImageFilters();
+/** return filter for image and raw files, needed by file open dialog */
+WXIMPEX wxString GetFileDialogImageAndRawFilters();
+/** return true, if given extension is in list of known raw extension (comparision is case insensitive */
+WXIMPEX bool IsRawExtension(const wxString& testExt);
 
 #if defined __WXMAC__ || defined __WXOSX_COCOA__
 

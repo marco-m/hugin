@@ -47,7 +47,7 @@
 class RawImport
 {
 public:
-    RawImport(const char* id) :m_exeCtrlXRC(id) {};
+    RawImport(wxString ConfigExePath) { m_exe = wxConfig::Get()->Read(ConfigExePath, ""); };
     /** image extension of converted files */
     virtual wxString GetImageExtension() { return wxString("tif"); }
     /** reads additional parameters from dialog into class */
@@ -58,7 +58,11 @@ public:
      *  either absolute path or when relative path is given check PATH */
     bool CheckExe(wxDialog* dlg)
     {
-        const wxFileName exePath(XRCCTRL(*dlg, m_exeCtrlXRC, wxTextCtrl)->GetValue());
+        if (m_exe.IsEmpty())
+        {
+            m_exe = GetDefaultExe();
+        };
+        const wxFileName exePath(m_exe);
         if (exePath.IsAbsolute())
         {
             if (exePath.FileExists())
@@ -68,7 +72,7 @@ public:
             }
             else
             {
-                wxMessageBox(wxString::Format(_("Executable \"%s\" not found.\nPlease specify a valid executable."), exePath.GetFullPath()),
+                wxMessageBox(wxString::Format(_("Executable \"%s\" not found.\nPlease specify a valid executable in preferences."), exePath.GetFullPath()),
 #ifdef _WIN32
                     _("Hugin"),
 #else
@@ -86,7 +90,7 @@ public:
         m_exe = pathlist.FindAbsoluteValidPath(exePath.GetFullPath());
         if (m_exe.IsEmpty())
         {
-            wxMessageBox(wxString::Format(_("Executable \"%s\" not found in PATH.\nPlease specify a valid executable."), exePath.GetFullPath()),
+            wxMessageBox(wxString::Format(_("Executable \"%s\" not found in PATH.\nPlease specify a valid executable in preferences."), exePath.GetFullPath()),
 #ifdef _WIN32
                 _("Hugin"),
 #else
@@ -108,16 +112,16 @@ public:
      *  remains unchanged by PanoCommand::wxAddImagesCmd */
     virtual void AddAdditionalPanoramaCommand(std::vector<PanoCommand::PanoCommand*>& cmds, HuginBase::Panorama* pano, const int oldImageCount, const int addedImageCount) {};
 protected:
+    /** returns the default name of the executable */
+    virtual wxString GetDefaultExe() { return wxEmptyString; };
     wxString m_exe;
-private:
-    const char* m_exeCtrlXRC;
 };
 
-/** special class for raw import with dcraw */
+    /** special class for raw import with dcraw */
 class DCRawImport :public RawImport
 {
 public:
-    DCRawImport() : RawImport("raw_dcraw_exe") {};
+    DCRawImport() : RawImport("/RawImportDialog/dcrawExe") {};
     wxString GetImageExtension() override { return wxString("tiff"); }
     bool ProcessAdditionalParameters(wxDialog* dlg) override 
     {
@@ -188,6 +192,15 @@ public:
         fill_set(imgs, oldImageCount, oldImageCount + addedImageCount - 1);
         cmds.push_back(new PanoCommand::ChangeImageResponseTypeCmd(*pano, imgs, HuginBase::SrcPanoImage::RESPONSE_LINEAR));
     };
+protected:
+    virtual wxString GetDefaultExe()
+    {
+#ifdef _WIN32
+        return "dcraw.exe";
+#else
+        return "dcraw";
+#endif
+    };
 private:
     wxString m_additionalParameters;
     wxString m_wb;
@@ -197,7 +210,7 @@ private:
 class RTRawImport :public RawImport
 {
 public:
-    RTRawImport() : RawImport("raw_rt_exe") {};
+    RTRawImport() : RawImport("/RawImportDialog/RTExe") {};
     bool ProcessAdditionalParameters(wxDialog* dlg) override
     {
         m_processingProfile = XRCCTRL(*dlg, "raw_rt_processing_profile", wxTextCtrl)->GetValue().Trim(true).Trim(false);
@@ -257,6 +270,42 @@ public:
         }
         return queue;
     };
+protected:
+    virtual wxString GetDefaultExe()
+    {
+#ifdef __WXMSW__
+        // try reading installed version from registry
+        // works only with RT 5.5 and above
+        wxRegKey regkey(wxRegKey::HKLM, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\rawtherapee-cli.exe");
+        wxString prog;
+        if (regkey.HasValue(wxT("")) && regkey.QueryRawValue(wxT(""), prog))
+        {
+            if (wxFileName::FileExists(prog))
+            {
+                return prog;
+            };
+        }
+        else
+        {
+            // now check if installed for current user only
+            wxRegKey regkeyUser(wxRegKey::HKCU, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\rawtherapee-cli.exe");
+            wxString prog;
+            if (regkeyUser.HasValue(wxT("")) && regkeyUser.QueryRawValue(wxT(""), prog))
+            {
+                if (wxFileName::FileExists(prog))
+                {
+                    return prog;
+                };
+            };
+        };
+        // nothing found in registry, return default name
+        return "rawtherapee-cli.exe";
+#elif defined __WXMAC__
+        return "/Applications/RawTherapee.app/Contents/MacOS/rawtherapee-cli";
+#else
+        return "rawtherapee-cli";
+#endif
+    };
 private:
     wxString m_processingProfile;
     wxString m_usedProcessingProfile;
@@ -266,7 +315,7 @@ private:
 class DarkTableRawImport : public RawImport
 {
 public:
-    DarkTableRawImport() : RawImport("raw_darktable_exe") {}
+    DarkTableRawImport() : RawImport("/RawImportDialog/DarktableExe") {}
     ~DarkTableRawImport()
     {
         // destructor, clean up generated files;
@@ -358,6 +407,41 @@ public:
             queue->push_back(new HuginQueue::NormalCommand(m_exe, args, wxString::Format(_("Executing: %s %s"), m_exe, args)));
         }
         return queue;
+    };
+protected:
+    virtual wxString GetDefaultExe()
+    {
+#ifdef __WXMSW__
+        // try reading installed version from registry
+        wxRegKey regkey(wxRegKey::HKLM, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\darktable-cli.exe");
+        wxString prog;
+        if (regkey.HasValue(wxT("")) && regkey.QueryRawValue(wxT(""), prog))
+        {
+            if (wxFileName::FileExists(prog))
+            {
+                return prog;
+            }
+        }
+        else
+        {
+            // now check if installed for current user only
+            wxRegKey regkeyUser(wxRegKey::HKCU, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\darktable-cli.exe");
+            wxString prog;
+            if (regkeyUser.HasValue(wxT("")) && regkeyUser.QueryRawValue(wxT(""), prog))
+            {
+                if (wxFileName::FileExists(prog))
+                {
+                    return prog;
+                };
+            };
+        };
+        // nothing found in registry, return default name
+        return "darktable-cli.exe";
+#elif defined __WXMAC__
+        return "/Applications/darktable.app/Contents/MacOS/darktable-cli";
+#else
+        return "darktable-cli";
+#endif
     };
 private:
     wxString m_refImage;
@@ -496,33 +580,18 @@ private:
 };
 
 BEGIN_EVENT_TABLE(RawImportDialog, wxDialog)
-    EVT_BUTTON(XRCID("raw_add_images"), RawImportDialog::OnAddImages)
-    EVT_BUTTON(XRCID("raw_remove_image"), RawImportDialog::OnRemoveImage)
-    EVT_BUTTON(XRCID("raw_set_wb_ref"), RawImportDialog::OnSetWBReference)
-    EVT_BUTTON(XRCID("raw_dcraw_exe_select"), RawImportDialog::OnSelectDCRAWExe)
-    EVT_BUTTON(XRCID("raw_rt_exe_select"), RawImportDialog::OnSelectRTExe)
     EVT_BUTTON(XRCID("raw_rt_processing_profile_select"), RawImportDialog::OnSelectRTProcessingProfile)
-    EVT_BUTTON(XRCID("raw_darktable_exe_select"), RawImportDialog::OnSelectDarktableExe)
     EVT_BUTTON(wxID_OK, RawImportDialog::OnOk)
-    EVT_INIT_DIALOG(RawImportDialog::OnInitDialog)
+    EVT_RADIOBUTTON(XRCID("raw_rb_dcraw"), RawImportDialog::OnRawConverterSelected)
+    EVT_RADIOBUTTON(XRCID("raw_rb_rt"), RawImportDialog::OnRawConverterSelected)
+    EVT_RADIOBUTTON(XRCID("raw_rb_darktable"), RawImportDialog::OnRawConverterSelected)
 END_EVENT_TABLE()
 
-#ifdef __WXMSW__
-#define DEFAULT_DCRAW_EXE "dcraw.exe"
-#define DEFAULT_RAWTHERAPEE_EXE "rawtherapee-cli.exe"
-#define DEFAULT_DARKTABLE_EXE "darktable-cli.exe"
-#else
-#define DEFAULT_DCRAW_EXE "dcraw"
-#define DEFAULT_RAWTHERAPEE_EXE "rawtherapee-cli"
-#define DEFAULT_DARKTABLE_EXE "darktable-cli"
-#endif
-
-RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
+RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano, std::vector<std::string>& rawFiles)
 {
     // load our children. some children might need special
     // initialization. this will be done later.
     wxXmlResource::Get()->LoadDialog(this, parent, wxT("import_raw_dialog"));
-    SetMinSize(wxSize(400, 300));
 
 #ifdef __WXMSW__
     wxIcon myIcon(huginApp::Get()->GetXRCPath() + wxT("data/hugin.ico"),wxBITMAP_TYPE_ICO);
@@ -532,131 +601,169 @@ RawImportDialog::RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano)
     SetIcon(myIcon);
     RestoreFramePosition(this, "RawImportDialog");
     wxConfigBase* config = wxConfig::Get();
-    const long splitterPos = config->Read("/RawImportDialog/SplitterPos", 200);
-    XRCCTRL(*this, "raw_splitter_window", wxSplitterWindow)->SetSashPosition(splitterPos);
     // dcraw
-    wxString s = config->Read("/RawImportDialog/dcrawExe", DEFAULT_DCRAW_EXE);
-    wxTextCtrl* ctrl = XRCCTRL(*this, "raw_dcraw_exe", wxTextCtrl);
-    ctrl->SetValue(s);
-    ctrl->AutoCompleteFileNames();
-    s = config->Read("/RawImportDialog/dcrawParameter", "");
-    ctrl = XRCCTRL(*this, "raw_dcraw_parameter", wxTextCtrl);
-    ctrl->SetValue(s);
-    // RawTherapee
-    s = config->Read("/RawImportDialog/RTExe", DEFAULT_RAWTHERAPEE_EXE);
-#ifdef __WXMSW__
-    // try reading installed version from registry
-    // works only with RT 5.5 and above
-    if (s == DEFAULT_RAWTHERAPEE_EXE || !wxFileName::FileExists(s))
-    {
-        wxRegKey regkey(wxRegKey::HKLM, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\rawtherapee-cli.exe");
-        wxString prog;
-        if (regkey.HasValue(wxT("")) && regkey.QueryRawValue(wxT(""), prog))
-        {
-            if (wxFileName::FileExists(prog))
-            {
-                s = prog;
-            };
-        }
-        else
-        {
-            // now check if installed for current user only
-            wxRegKey regkeyUser(wxRegKey::HKCU, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\rawtherapee-cli.exe");
-            wxString prog;
-            if (regkeyUser.HasValue(wxT("")) && regkeyUser.QueryRawValue(wxT(""), prog))
-            {
-                if (wxFileName::FileExists(prog))
-                {
-                    s = prog;
-                };
-            };
-        };
-    };
-#endif
-    ctrl = XRCCTRL(*this, "raw_rt_exe", wxTextCtrl);
-    ctrl->SetValue(s);
-    ctrl->AutoCompleteFileNames();
+    wxString s = config->Read("/RawImportDialog/dcrawParameter", "");
+    XRCCTRL(*this, "raw_dcraw_parameter", wxTextCtrl)->SetValue(s);
+
     // RT processing profile
     s = config->Read("/RawImportDialog/RTProcessingProfile", "");
-    ctrl = XRCCTRL(*this, "raw_rt_processing_profile", wxTextCtrl);
+    wxTextCtrl* ctrl = XRCCTRL(*this, "raw_rt_processing_profile", wxTextCtrl);
     ctrl->SetValue(s);
     ctrl->AutoCompleteFileNames();
-    // Darktable
-    s = config->Read("/RawImportDialog/DarktableExe", DEFAULT_DARKTABLE_EXE);
-#ifdef __WXMSW__
-    // try reading installed version from registry
-    if (s == DEFAULT_DARKTABLE_EXE || !wxFileName::FileExists(s))
+    // read last used converter
+    const long converter = config->Read("/RawImportDialog/Converter", 0l);
+    switch (converter)
     {
-        wxRegKey regkey(wxRegKey::HKLM, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\darktable-cli.exe");
-        wxString prog;
-        if (regkey.HasValue(wxT("")) && regkey.QueryRawValue(wxT(""), prog))
-        {
-            if (wxFileName::FileExists(prog))
-            {
-                s = prog;
-            }
-        }
-        else
-        {
-            // now check if installed for current user only
-            wxRegKey regkeyUser(wxRegKey::HKCU, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\darktable-cli.exe");
-            wxString prog;
-            if (regkeyUser.HasValue(wxT("")) && regkeyUser.QueryRawValue(wxT(""), prog))
-            {
-                if (wxFileName::FileExists(prog))
-                {
-                    s = prog;
-                };
-            };
-        };
+        default:
+        case 0: 
+            XRCCTRL(*this, "raw_rb_dcraw", wxRadioButton)->SetValue(true);
+            break;
+        case 1:
+            XRCCTRL(*this, "raw_rb_rt", wxRadioButton)->SetValue(true);
+            break;
+        case 2:
+            XRCCTRL(*this, "raw_rb_darktable", wxRadioButton)->SetValue(true);
+            break;
     };
-#endif
-    ctrl = XRCCTRL(*this, "raw_darktable_exe", wxTextCtrl);
-    ctrl->SetValue(s);
-    ctrl->AutoCompleteFileNames();
-    XRCCTRL(*this, "raw_converter_notebook", wxNotebook)->SetSelection(config->Read("/RawImportDialog/Converter", 0l));
+    wxCommandEvent dummy;
+    OnRawConverterSelected(dummy);
+
     m_pano=pano;
+    for (auto& file : rawFiles)
+    {
+        m_rawImages.Add(wxString(file.c_str(), HUGIN_CONV_FILENAME));
+    };
 };
 
 RawImportDialog::~RawImportDialog()
 {
-    wxConfigBase* config = wxConfig::Get();
-    config->Write("/RawImportDialog/SplitterPos", XRCCTRL(*this, "raw_splitter_window", wxSplitterWindow)->GetSashPosition());
     StoreFramePosition(this, "RawImportDialog");
-    config->Flush();
+}
+
+PanoCommand::PanoCommand * RawImportDialog::GetPanoCommand()
+{
+    return m_cmd;
+};
+
+bool RawImportDialog::CheckRawFiles()
+{
+    wxArrayString errorReadingFile;
+    wxArrayString differentCam;
+    std::string camera;
+    for (auto& file : m_rawImages)
+    {
+        // check that all images are from the same camera
+        Exiv2::Image::AutoPtr image;
+        try
+        {
+            image = Exiv2::ImageFactory::open(std::string(file.mb_str(HUGIN_CONV_FILENAME)));
+        }
+        catch (const Exiv2::Error& e)
+        {
+            std::cerr << "Exiv2: Error reading metadata (" << e.what() << ")" << std::endl;
+            errorReadingFile.push_back(file);
+            continue;
+        }
+
+        try
+        {
+            image->readMetadata();
+        }
+        catch (const Exiv2::Error& e)
+        {
+            std::cerr << "Caught Exiv2 exception '" << e.what() << "' for file " << file << std::endl;
+            errorReadingFile.push_back(file);
+        };
+        Exiv2::ExifData &exifData = image->exifData();
+        if (exifData.empty())
+        {
+            errorReadingFile.push_back(file);
+            continue;
+        };
+        std::string cam;
+        auto make = Exiv2::make(exifData);
+        if (make != exifData.end() && make->count())
+        {
+            cam = make->toString();
+        };
+        auto model = Exiv2::model(exifData);
+        if (model != exifData.end() && model->count())
+        {
+            cam += "|" + model->toString();
+        };
+        if (camera.empty())
+        {
+            camera = cam;
+        }
+        else
+        {
+            if (cam != camera)
+            {
+                differentCam.push_back(file);
+                continue;
+            };
+        };
+    };
+    if (!errorReadingFile.IsEmpty())
+    {
+        wxDialog dlg;
+        wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_warning_filename"));
+        dlg.SetLabel(_("Warning: Read error"));
+        XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following files will be skipped because the metadata of these files could not read."));
+        XRCCTRL(dlg, "dlg_warning_list", wxListBox)->Append(errorReadingFile);
+        dlg.Fit();
+        dlg.CenterOnScreen();
+        dlg.ShowModal();
+        for (auto& file : errorReadingFile)
+        {
+            m_rawImages.Remove(file);
+        };
+        if (m_rawImages.IsEmpty())
+        {
+            return false;
+        };
+    };
+    if (differentCam.IsEmpty())
+    {
+        FillImageChoice();
+        return true;
+    }
+    else
+    {
+        wxDialog dlg;
+        wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_warning_filename"));
+        dlg.SetLabel(_("Warning: raw images from different cameras"));
+        XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following images were shot with different camera than the other one.\nThe raw import works only for images from the same cam."));
+        XRCCTRL(dlg, "dlg_warning_list", wxListBox)->Append(differentCam);
+        dlg.Fit();
+        dlg.CenterOnScreen();
+        dlg.ShowModal();
+        return false;
+    };
 };
 
 void RawImportDialog::OnOk(wxCommandEvent & e)
 {
-    if (m_rawImages.IsEmpty())
-    {
-        // no image in list
-        wxMessageBox(_("Please add at least one raw image to list before you can import it."),
-#ifdef _WIN32
-            _("Hugin"),
-#else
-            wxT(""),
-#endif
-            wxOK | wxICON_INFORMATION, this);
-        return;
-    };
     std::shared_ptr<RawImport> rawConverter;
-    switch (XRCCTRL(*this, "raw_converter_notebook", wxNotebook)->GetSelection())
+    long rawConverterInt;
+    if (XRCCTRL(*this, "raw_rb_dcraw", wxRadioButton)->GetValue())
     {
-        case 0:
-            rawConverter = std::make_shared<DCRawImport>();
-            break;
-        case 1:
-            rawConverter = std::make_shared<RTRawImport>();
-            break;
-        case 2:
-            rawConverter = std::make_shared<DarkTableRawImport>();
-            break;
-        default:
-            // this should not happen
-            wxBell();
-            return;
+        rawConverter = std::make_shared<DCRawImport>();
+        rawConverterInt = 0;
     }
+    else
+    {
+        if (XRCCTRL(*this, "raw_rb_rt", wxRadioButton)->GetValue())
+        {
+            rawConverter = std::make_shared<RTRawImport>();
+            rawConverterInt = 1;
+        }
+        else
+        {
+            rawConverter = std::make_shared<DarkTableRawImport>();
+            rawConverterInt = 2;
+        };
+    };
     // check if given program is available
     if (!rawConverter->CheckExe(this))
     {
@@ -703,17 +810,14 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
             };
         };
     };
-    RawImportProgress dlg(this, rawConverter, m_rawImages, m_images, m_refImg);
+    RawImportProgress dlg(this, rawConverter, m_rawImages, m_images, XRCCTRL(*this, "raw_choice_wb", wxChoice)->GetSelection());
     if (dlg.ShowModal() == wxID_OK)
     {
         // save settings for next call
         wxConfigBase* config = wxConfig::Get();
-        config->Write("/RawImportDialog/Converter", XRCCTRL(*this, "raw_converter_notebook", wxNotebook)->GetSelection());
-        config->Write("/RawImportDialog/dcrawExe", XRCCTRL(*this, "raw_dcraw_exe", wxTextCtrl)->GetValue());
+        config->Write("/RawImportDialog/Converter", rawConverterInt);
         config->Write("/RawImportDialog/dcrawParameter", XRCCTRL(*this, "raw_dcraw_parameter", wxTextCtrl)->GetValue().Trim(true).Trim(false));
-        config->Write("/RawImportDialog/RTExe", XRCCTRL(*this, "raw_rt_exe", wxTextCtrl)->GetValue());
         config->Write("/RawImportDialog/RTProcessingProfile", XRCCTRL(*this, "raw_rt_processing_profile", wxTextCtrl)->GetValue());
-        config->Write("/RawImportDialog/DarktableExe", XRCCTRL(*this, "raw_darktable_exe", wxTextCtrl)->GetValue());
         config->Flush();
         // check if all files were generated
         std::vector<std::string> files;
@@ -743,266 +847,66 @@ void RawImportDialog::OnOk(wxCommandEvent & e)
         {
             return;
         };
-        // now build PanoCommand and add it the GlobalCmdHist
+        // now build PanoCommand and store it
         std::vector<PanoCommand::PanoCommand*> cmds;
         cmds.push_back(new PanoCommand::wxAddImagesCmd(*m_pano, files));
         rawConverter->AddAdditionalPanoramaCommand(cmds, m_pano, m_pano->getNrOfImages(), files.size());
-        PanoCommand::CombinedPanoCommand* combinedCmd = new PanoCommand::CombinedPanoCommand(*m_pano, cmds);
-        combinedCmd->setName("import raw images");
-        PanoCommand::GlobalCmdHist::getInstance().addCommand(combinedCmd);
+        m_cmd = new PanoCommand::CombinedPanoCommand(*m_pano, cmds);
+        m_cmd->setName("import raw images");
+        // close dialog
         EndModal(wxID_OK);
+        return;
     };
     EndModal(wxID_CANCEL);
 }
 
-void RawImportDialog::OnAddImages(wxCommandEvent & e)
-{
-    wxConfigBase* config = wxConfigBase::Get();
-    wxString path = config->Read(wxT("/actualPath"), wxT(""));
-    // build filter for raw files
-    wxString rawFilter("*.DNG;*.CRW;*.CR2;*.CR3;*.RAW;*.ERF;*.RAF;*.MRW;*.NEF;*.ORF;*.RW2;*.PEF;*.SRW;*.ARW");
-    if (wxFileName::IsCaseSensitive())
-    {
-        // if file system is case sensitive add also lowercase variant
-        rawFilter.Append(";").Append(rawFilter.Lower());
-    };
-    wxFileDialog dlg(this, _("Import Raw Files"),
-        path, wxT(""),
-        wxString(_("Raw files")).Append("|").Append(rawFilter).Append("|").Append(_("All files (*)")).Append("|*"),
-        wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST , wxDefaultPosition);
-    dlg.SetDirectory(path);
-
-    wxArrayString invalidFilenames;
-    wxArrayString errorReadingFile;
-    wxArrayString differentCam;
-    // call the file dialog
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        // get the selections
-        wxArrayString Pathnames;
-        dlg.GetPaths(Pathnames);
-
-        // remember path for later
-#ifdef __WXGTK__
-        //workaround a bug in GTK, see https://bugzilla.redhat.com/show_bug.cgi?id=849692 and http://trac.wxwidgets.org/ticket/14525
-        config->Write(wxT("/actualPath"), wxPathOnly(Pathnames[0]));
-#else
-        config->Write(wxT("/actualPath"), dlg.GetDirectory());
-#endif
-        for (auto& file : Pathnames)
-        {
-            // check filenames for invalid characters
-            if (containsInvalidCharacters(file))
-            {
-                invalidFilenames.push_back(file);
-                continue;
-            };
-            // check that all images are from the same camera
-            Exiv2::Image::AutoPtr image;
-            try
-            {
-                image = Exiv2::ImageFactory::open(std::string(file.mb_str(HUGIN_CONV_FILENAME)));
-            }
-            catch (const Exiv2::Error& e)
-            {
-                std::cerr << "Exiv2: Error reading metadata (" << e.what() << ")" << std::endl;
-                errorReadingFile.push_back(file);
-                continue;
-            }
-
-            try
-            {
-                image->readMetadata();
-            }
-            catch (const Exiv2::Error& e)
-            {
-                std::cerr << "Caught Exiv2 exception '" << e.what() << "' for file " << file << std::endl;
-                errorReadingFile.push_back(file);
-            };
-            Exiv2::ExifData &exifData = image->exifData();
-            if (exifData.empty())
-            {
-                errorReadingFile.push_back(file);
-                continue;
-            };
-            std::string cam;
-            auto make = Exiv2::make(exifData);
-            if (make != exifData.end() && make->count())
-            {
-                cam = make->toString();
-            };
-            auto model = Exiv2::model(exifData);
-            if (model != exifData.end() && model->count())
-            {
-                cam += "|" + model->toString();
-            };
-            if (m_camera.empty())
-            {
-                m_camera = cam;
-            }
-            else
-            {
-                if (cam != m_camera)
-                {
-                    differentCam.push_back(file);
-                    continue;
-                };
-            };
-            // prevent duplicates
-            if (m_rawImages.Index(file) == wxNOT_FOUND)
-            {
-                m_rawImages.Add(file);
-            };
-        };
-        // update reference WB image if needed
-        if (m_refImg == -1 && !m_rawImages.IsEmpty())
-        {
-            m_refImg = 0;
-        };
-        FillImageList();
-        if (!invalidFilenames.IsEmpty())
-        {
-            ShowFilenameWarning(this, invalidFilenames);
-        }
-        if (!errorReadingFile.IsEmpty())
-        {
-            wxDialog dlg;
-            wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_warning_filename"));
-            dlg.SetLabel(_("Warning: Read error"));
-            XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following files will be skipped because the metadata of these files could not read."));
-            XRCCTRL(dlg, "dlg_warning_list", wxListBox)->Append(errorReadingFile);
-            dlg.Fit();
-            dlg.CenterOnScreen();
-            dlg.ShowModal();
-        };
-        if (!differentCam.IsEmpty())
-        {
-            wxDialog dlg;
-            wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("dlg_warning_filename"));
-            dlg.SetLabel(_("Warning: raw images from different cameras"));
-            XRCCTRL(dlg, "dlg_warning_text", wxStaticText)->SetLabel(_("The following images were shot with different camera than the other one.\nThe raw import works only for images from the same cam."));
-            XRCCTRL(dlg, "dlg_warning_list", wxListBox)->Append(differentCam);
-            dlg.Fit();
-            dlg.CenterOnScreen();
-            dlg.ShowModal();
-        };
-    };
-}
-
-void RawImportDialog::OnRemoveImage(wxCommandEvent & e)
-{
-    const int selection = XRCCTRL(*this, "raw_images_list", wxListBox)->GetSelection();
-    if (selection != wxNOT_FOUND)
-    {
-        m_rawImages.RemoveAt(selection);
-        if (m_refImg >= m_rawImages.size())
-        {
-            m_refImg = 0;
-        };
-        if (m_rawImages.IsEmpty())
-        {
-            m_refImg = -1;
-            m_camera.clear();
-        };
-        FillImageList();
-    }
-    else
-    {
-        wxBell();
-    };
-}
-
-void RawImportDialog::OnSetWBReference(wxCommandEvent & e)
-{
-    if (m_rawImages.IsEmpty())
-    {
-        wxBell();
-    }
-    else
-    {
-        m_refImg = XRCCTRL(*this, "raw_images_list", wxListBox)->GetSelection();
-        FillImageList();
-    }
-}
-
-void RawImportDialog::OnInitDialog(wxInitDialogEvent & e)
-{
-    wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, XRCID("raw_add_images"));
-    GetEventHandler()->QueueEvent(event);
-}
-
-void RawImportDialog::OnSelectDCRAWExe(wxCommandEvent & e)
-{
-    OnSelectFile(e, 
-        _("Select dcraw"), 
-#ifdef __WXMSW__
-        _("Executables (*.exe)|*.exe"),
-#else
-        wxT("*"),
-#endif
-        "raw_dcraw_exe");
-}
-
-void RawImportDialog::OnSelectRTExe(wxCommandEvent & e)
-{
-    OnSelectFile(e, 
-        _("Select RawTherapee-cli"), 
-#ifdef __WXMSW__
-        _("Executables (*.exe)|*.exe"),
-#else
-        wxT("*"),
-#endif
-        "raw_rt_exe");
-}
-
 void RawImportDialog::OnSelectRTProcessingProfile(wxCommandEvent& e)
 {
-    OnSelectFile(e, 
-        _("Select default RT processing profile"), 
-        _("RT processing profile|*.pp3"),
-        "raw_rt_processing_profile");
-}
-
-void RawImportDialog::OnSelectDarktableExe(wxCommandEvent & e)
-{
-    OnSelectFile(e,
-        _("Select Darktable-cli"),
-#ifdef __WXMSW__
-        _("Executables (*.exe)|*.exe"),
-#else
-        wxT("*"),
-#endif
-        "raw_darktable_exe");
-}
-
-void RawImportDialog::OnSelectFile(wxCommandEvent& e, const wxString& caption, const wxString& filter, const char* id)
-{
-    wxTextCtrl* input = XRCCTRL(*this, id, wxTextCtrl);
-    wxFileDialog dlg(this, caption, "", input->GetValue(), filter, wxFD_OPEN, wxDefaultPosition);
+    wxTextCtrl* input = XRCCTRL(*this, "raw_rt_processing_profile", wxTextCtrl);
+    wxFileDialog dlg(this, _("Select default RT processing profile"), "", input->GetValue(), _("RT processing profile|*.pp3"), wxFD_OPEN, wxDefaultPosition);
     if (dlg.ShowModal() == wxID_OK)
     {
         input->SetValue(dlg.GetPath());
     }
 }
 
-void RawImportDialog::FillImageList()
+void RawImportDialog::OnRawConverterSelected(wxCommandEvent & e)
 {
-    wxListBox* listBox = XRCCTRL(*this, "raw_images_list", wxListBox);
-    const int oldSelection = listBox->GetSelection();
-    listBox->Clear();
+    enum Converter {
+        DCRAW,
+        RAWTHERAPEE,
+        DARKTABLE
+    } rawConverter;
+    if (XRCCTRL(*this, "raw_rb_dcraw", wxRadioButton)->GetValue())
+    {
+        rawConverter = Converter::DCRAW;
+    }
+    else
+    {
+        if (XRCCTRL(*this, "raw_rb_rt", wxRadioButton)->GetValue())
+        {
+            rawConverter = Converter::RAWTHERAPEE;
+        }
+        else
+        {
+            rawConverter = Converter::DARKTABLE;
+        };
+    };
+    XRCCTRL(*this, "raw_dcraw_text", wxStaticText)->Enable(rawConverter == Converter::DCRAW);
+    XRCCTRL(*this, "raw_dcraw_parameter", wxTextCtrl)->Enable(rawConverter == Converter::DCRAW);
+    XRCCTRL(*this, "raw_rt_text", wxStaticText)->Enable(rawConverter == Converter::RAWTHERAPEE);
+    XRCCTRL(*this, "raw_rt_processing_profile", wxTextCtrl)->Enable(rawConverter == Converter::RAWTHERAPEE);
+    XRCCTRL(*this, "raw_rt_processing_profile_select", wxButton)->Enable(rawConverter == Converter::RAWTHERAPEE);
+};
+
+void RawImportDialog::FillImageChoice()
+{
+    wxChoice* choice = XRCCTRL(*this, "raw_choice_wb", wxChoice);
     for (int i=0; i<m_rawImages.size();++i)
     {
         const wxFileName file(m_rawImages[i]);
-        wxString string(file.GetFullName());
-        if (i == m_refImg)
-        {
-            string.Append(" ").Append(_("(WB reference)"));
-        };
-        listBox->Append(string);
+        choice->Append(file.GetFullName());
     };
-    if (oldSelection>=0 && oldSelection < listBox->GetCount())
-    {
-        listBox->SetSelection(oldSelection);
-    };
-}
+    choice->SetSelection(0);
+};
 

@@ -28,43 +28,34 @@
 
 #include "panoinc_WX.h"
 #include "panoinc.h"
+#include "base_wx/Command.h"
 
 /** Dialog for raw import */
 class RawImportDialog : public wxDialog
 {
 public:
     /** Constructor, read from xrc ressource; restore last uses settings and position */
-    RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano);
+    RawImportDialog(wxWindow *parent, HuginBase::Panorama* pano, std::vector<std::string>& rawFiles);
     /** destructor, saves position */
     ~RawImportDialog();
+    /** return PanoCommand for adding converted raw files to Panorama */
+    PanoCommand::PanoCommand* GetPanoCommand();
+    /** return true, if all raw files are from the same camera */
+    bool CheckRawFiles();
 
 protected:
     /** called when dialog is finished and does the conversion */
     void OnOk(wxCommandEvent & e);
-    /** event handler for adding image(s) */
-    void OnAddImages(wxCommandEvent& e);
-    /** event handler for removing selected image from list */
-    void OnRemoveImage(wxCommandEvent& e);
-    /** event handler to mark current selected image as reference image for white balance */
-    void OnSetWBReference(wxCommandEvent& e);
-    /** event handler called when dialog is shown */
-    void OnInitDialog(wxInitDialogEvent& e);
-    /** event handler for selection of exe and processing profile stack in dialog */
-    void OnSelectDCRAWExe(wxCommandEvent& e);
-    void OnSelectRTExe(wxCommandEvent& e);
     void OnSelectRTProcessingProfile(wxCommandEvent& e);
-    void OnSelectDarktableExe(wxCommandEvent& e);
+    void OnRawConverterSelected(wxCommandEvent & e);
 
 private:
     /** fill list with image names */
-    void FillImageList();
-    /** show dialog for selection of exe or processing profile */
-    void OnSelectFile(wxCommandEvent& e, const wxString& caption, const wxString& filter, const char* id);
+    void FillImageChoice();
     HuginBase::Panorama* m_pano;
     wxArrayString m_rawImages;
     wxArrayString m_images;
-    std::string m_camera;
-    int m_refImg = -1;
+    PanoCommand::PanoCommand* m_cmd=NULL;
 
     DECLARE_EVENT_TABLE()
 };

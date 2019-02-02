@@ -29,6 +29,13 @@
 #include <hugin_utils/utils.h>
 #include <vigra/imageinfo.hxx>
 
+/** return vector of known extensions of raw files */
+std::vector<std::string> GetRawExtensions()
+{
+    std::vector<std::string> rawExt{ "dng", "crw", "cr2","cr3","raw","erf","raf","mrw","nef","orf","rw2","pef","srw","arw" };
+    return rawExt;
+};
+
 /** build filter string "*.ext", adds also upper case version for UNIX paths when needed */
 wxString GetFilterExtensions(const wxString& ext)
 {
@@ -41,22 +48,34 @@ wxString GetFilterExtensions(const wxString& ext)
     return extensionString;
 };
 
-wxString GetFileDialogImageFilters()
+wxString GetVigraImageFilter()
 {
     wxString filterString;
     const std::string extensions = vigra::impexListExtensions();
-    std::vector<std::string> exts=hugin_utils::SplitString(extensions, " ");
-    if (!exts.empty())
+    std::vector<std::string> exts = hugin_utils::SplitString(extensions, " ");
+    if (exts.empty())
     {
-        filterString.Append(_("All Image files")).Append("|");
-        for (auto& ext : exts)
-        {
-            filterString.Append(GetFilterExtensions(ext)).Append(";");
-        };
-        // remove last character == ";"
-        filterString.RemoveLast();
-        filterString.Append("|");
+        // if something goes wrong, add some defaults
+        exts.push_back("tif");
+        exts.push_back("tiff");
+        exts.push_back("jpg");
+        exts.push_back("jpeg");
+        exts.push_back("png");
+    }
+    filterString.Append(_("All Image files")).Append("|");
+    for (auto& ext : exts)
+    {
+        filterString.Append(GetFilterExtensions(ext)).Append(";");
     };
+    // remove last character == ";"
+    filterString.RemoveLast();
+    filterString.Append("|");
+    return filterString;
+};
+
+wxString GetFileDialogImageFilters()
+{
+    wxString filterString=GetVigraImageFilter();
     filterString.Append(_("JPEG files (*.jpg,*.jpeg)")).Append("|").Append(GetFilterExtensions("jpg")).Append(";").Append(GetFilterExtensions("jpeg"));
     filterString.Append("|").Append(_("TIFF files (*.tif,*.tiff)")).Append("|").Append(GetFilterExtensions("tif")).Append(";").Append(GetFilterExtensions("tiff"));
     filterString.Append("|").Append(_("PNG files (*.png)")).Append("|").Append(GetFilterExtensions("png"));
@@ -65,6 +84,41 @@ wxString GetFileDialogImageFilters()
     filterString.Append("|").Append(_("All files (*)")).Append("|*");
     return filterString;
 }
+
+wxString GetFileDialogImageAndRawFilters()
+{
+    wxString filterString = GetVigraImageFilter();
+    // now the raw formats
+    std::vector<std::string> exts = GetRawExtensions();
+    filterString.Append(_("Raw files")).Append("|");
+    for (auto& ext : exts)
+    {
+        filterString.Append(GetFilterExtensions(ext)).Append(";");
+    };
+    // remove last character == ";"
+    filterString.RemoveLast();
+    filterString.Append("|");
+    // now add some image format at its own
+    filterString.Append(_("JPEG files (*.jpg,*.jpeg)")).Append("|").Append(GetFilterExtensions("jpg")).Append(";").Append(GetFilterExtensions("jpeg"));
+    filterString.Append("|").Append(_("TIFF files (*.tif,*.tiff)")).Append("|").Append(GetFilterExtensions("tif")).Append(";").Append(GetFilterExtensions("tiff"));
+    filterString.Append("|").Append(_("PNG files (*.png)")).Append("|").Append(GetFilterExtensions("png"));
+    filterString.Append("|").Append(_("HDR files (*.hdr)")).Append("|").Append(GetFilterExtensions("hdr"));
+    filterString.Append("|").Append(_("EXR files (*.exr)")).Append("|").Append(GetFilterExtensions("exr"));
+    return filterString;
+};
+
+bool IsRawExtension(const wxString& testExt)
+{
+    std::vector<std::string> rawExts = GetRawExtensions();
+    for (auto& ext : rawExts)
+    {
+        if (testExt.CmpNoCase(wxString(ext.c_str(), wxConvLocal)) == 0)
+        {
+            return true;
+        };
+    };
+    return false;
+};
 
 #if defined __WXMAC__ || defined __WXOSX_COCOA__
 
