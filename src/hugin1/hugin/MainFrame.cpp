@@ -249,7 +249,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_BUTTON(XRCID("action_add_images"),  MainFrame::OnAddImages)
     EVT_MENU(XRCID("action_add_time_images"),  MainFrame::OnAddTimeImages)
     EVT_BUTTON(XRCID("action_add_time_images"),  MainFrame::OnAddTimeImages)
-    EVT_MENU(XRCID("action_import_raw"), MainFrame::OnImportRawImages)
     EVT_CLOSE(  MainFrame::OnExit)
     EVT_SIZE(MainFrame::OnSize)
     EVT_COMMAND(wxID_ANY, EVT_LOADING_FAILED, MainFrame::OnLoadingFailed)
@@ -1263,12 +1262,6 @@ void MainFrame::OnAddTimeImages( wxCommandEvent& event )
     {
         PanoCommand::GlobalCmdHist::getInstance().addCommand(cmd);
     };
-};
-
-void MainFrame::OnImportRawImages(wxCommandEvent& e)
-{
-    RawImportDialog dlg(this, &pano);
-    dlg.ShowModal();
 };
 
 void MainFrame::OnShowPanel(wxCommandEvent & e)
