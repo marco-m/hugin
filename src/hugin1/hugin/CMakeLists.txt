@@ -83,7 +83,7 @@ IF(APPLE)
     ENDFOREACH(_file)
 
     #other files
-    FILE(GLOB OTHER ${CMAKE_SOURCE_DIR}/src/hugin1/executor/*.executor)
+    FILE(GLOB OTHER ${CMAKE_SOURCE_DIR}/src/hugin1/executor/*.executor ${CMAKE_SOURCE_DIR}/src/hugin1/executor/*.assistant)
     LIST(APPEND OTHER 
                       ${CMAKE_SOURCE_DIR}/src/celeste/data/celeste.model
                       ${CMAKE_SOURCE_DIR}/src/hugin1/hugin/hugin_rt.pp3
