@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slovenski prevod\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2018-12-17 19:57+0100\n"
+"POT-Creation-Date: 2019-02-02 10:59+0100\n"
 "PO-Revision-Date: 2009-02-17 22:25+0100\n"
 "Last-Translator: Zoran Mesec <zoran.mesec@gmail.com>\n"
 "Language-Team: Zoran Mesec <zoran.mesec@gmail.com>\n"
@@ -45,8 +45,8 @@ msgstr "Optimiziranje"
 msgid "Searching for best crop..."
 msgstr "iskanje soležnih točk..."
 
-#: hugin1/base_wx/Executor.cpp:137 hugin1/base_wx/platform.cpp:163
-#: hugin1/hugin/MainFrame.cpp:1740 hugin1/hugin/MainFrame.cpp:2474
+#: hugin1/base_wx/Executor.cpp:137 hugin1/base_wx/platform.cpp:217
+#: hugin1/hugin/MainFrame.cpp:1774 hugin1/hugin/MainFrame.cpp:2509
 #: hugin1/hugin/PanoPanel.cpp:1316
 #, c-format
 msgid "External program %s not found in the bundle, reverting to system path"
@@ -81,8 +81,8 @@ msgstr ""
 
 #: hugin1/base_wx/GraphTools.cpp:84 hugin1/base_wx/LensTools.cpp:403
 #: hugin1/calibrate_lens/LensCalFrame.cpp:732
-#: hugin1/calibrate_lens/LensCalFrame.cpp:797 hugin1/hugin/MainFrame.cpp:987
-#: hugin1/hugin/MaskEditorPanel.cpp:476
+#: hugin1/calibrate_lens/LensCalFrame.cpp:797 hugin1/hugin/MainFrame.cpp:1038
+#: hugin1/hugin/MaskEditorPanel.cpp:472
 #, c-format
 msgid "File %s exists. Overwrite?"
 msgstr "Datoteka %s obstaja. Prepiši?"
@@ -119,7 +119,7 @@ msgid "The crop factor must be positive."
 msgstr "Faktor izreza mora biti pozitiven."
 
 #: hugin1/base_wx/HFOVDialog.cpp:374 hugin1/hugin/ImageVariableDialog.cpp:202
-#: hugin1/hugin/ImagesPanel.cpp:567 hugin1/hugin/ImagesTree.cpp:2092
+#: hugin1/hugin/ImagesPanel.cpp:567 hugin1/hugin/ImagesTree.cpp:2019
 #, c-format
 msgid ""
 "You have given a field of view of %.2f degrees.\n"
@@ -129,27 +129,28 @@ msgid ""
 msgstr ""
 
 #: hugin1/base_wx/HFOVDialog.cpp:376 hugin1/base_wx/LensTools.cpp:460
-#: hugin1/base_wx/wxPanoCommand.cpp:452 hugin1/hugin/CPEditorPanel.cpp:1349
-#: hugin1/hugin/CPEditorPanel.cpp:1364 hugin1/hugin/GLPreviewFrame.cpp:1846
-#: hugin1/hugin/GLPreviewFrame.cpp:1935 hugin1/hugin/GLPreviewFrame.cpp:2952
-#: hugin1/hugin/GLPreviewFrame.cpp:3313 hugin1/hugin/GLPreviewFrame.cpp:3324
-#: hugin1/hugin/GLPreviewFrame.cpp:3335
+#: hugin1/base_wx/wxPanoCommand.cpp:452 hugin1/hugin/CPEditorPanel.cpp:1347
+#: hugin1/hugin/CPEditorPanel.cpp:1362 hugin1/hugin/GLPreviewFrame.cpp:1854
+#: hugin1/hugin/GLPreviewFrame.cpp:1943 hugin1/hugin/GLPreviewFrame.cpp:2960
+#: hugin1/hugin/GLPreviewFrame.cpp:3321 hugin1/hugin/GLPreviewFrame.cpp:3332
+#: hugin1/hugin/GLPreviewFrame.cpp:3343
 #: hugin1/hugin/ImageVariableDialog.cpp:204 hugin1/hugin/ImagesPanel.cpp:569
 #: hugin1/hugin/ImagesPanel.cpp:632 hugin1/hugin/ImagesPanel.cpp:666
-#: hugin1/hugin/ImagesTree.cpp:2094 hugin1/hugin/MainFrame.cpp:838
-#: hugin1/hugin/MainFrame.cpp:1145 hugin1/hugin/MainFrame.cpp:1320
-#: hugin1/hugin/MainFrame.cpp:1331 hugin1/hugin/OptimizePanel.cpp:163
-#: hugin1/hugin/OptimizePanel.cpp:195 hugin1/hugin/OptimizePanel.cpp:267
+#: hugin1/hugin/ImagesTree.cpp:2021 hugin1/hugin/MainFrame.cpp:207
+#: hugin1/hugin/MainFrame.cpp:882 hugin1/hugin/MainFrame.cpp:1196
+#: hugin1/hugin/MainFrame.cpp:1360 hugin1/hugin/MainFrame.cpp:1371
+#: hugin1/hugin/OptimizePanel.cpp:163 hugin1/hugin/OptimizePanel.cpp:195
+#: hugin1/hugin/OptimizePanel.cpp:267
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:149
-#: hugin1/hugin/PanoOperation.cpp:374 hugin1/hugin/PanoPanel.cpp:1676
-#: hugin1/hugin/PanoPanel.cpp:1705 hugin1/hugin/PanoPanel.cpp:1741
-#: hugin1/hugin/PanoPanel.cpp:1761 hugin1/hugin/PapywizardImport.cpp:343
-#: hugin1/hugin/PapywizardImport.cpp:355 hugin1/hugin/RawImport.cpp:69
-#: hugin1/hugin/RawImport.cpp:87 hugin1/hugin/RawImport.cpp:204
-#: hugin1/hugin/RawImport.cpp:420 hugin1/hugin/RawImport.cpp:606
-#: hugin1/hugin/RawImport.cpp:706 hugin1/hugin/xrc/main_frame.xrc:123
-#: hugin1/hugin/xrc/main_frame.xrc:183 hugin1/hugin/xrc/main_frame.xrc:255
-#: hugin1/hugin/xrc/pano_panel.xrc:1099
+#: hugin1/hugin/PanoOperation.cpp:232 hugin1/hugin/PanoOperation.cpp:455
+#: hugin1/hugin/PanoPanel.cpp:1676 hugin1/hugin/PanoPanel.cpp:1705
+#: hugin1/hugin/PanoPanel.cpp:1741 hugin1/hugin/PanoPanel.cpp:1761
+#: hugin1/hugin/PapywizardImport.cpp:343 hugin1/hugin/PapywizardImport.cpp:355
+#: hugin1/hugin/RawImport.cpp:77 hugin1/hugin/RawImport.cpp:95
+#: hugin1/hugin/RawImport.cpp:221 hugin1/hugin/RawImport.cpp:508
+#: hugin1/hugin/RawImport.cpp:840 hugin1/hugin/huginApp.cpp:577
+#: hugin1/hugin/xrc/main_frame.xrc:123 hugin1/hugin/xrc/main_frame.xrc:183
+#: hugin1/hugin/xrc/main_frame.xrc:255 hugin1/hugin/xrc/pano_panel.xrc:1099
 #, fuzzy
 msgid "Hugin"
 msgstr "madžarski"
@@ -171,7 +172,7 @@ msgid "Full frame fisheye"
 msgstr "Cel okvir ribje oko"
 
 #: hugin1/base_wx/LensTools.cpp:42 hugin1/base_wx/LensTools.cpp:85
-#: hugin1/base_wx/huginConfig.cpp:41 hugin1/hugin/GLPreviewFrame.cpp:1474
+#: hugin1/base_wx/huginConfig.cpp:40 hugin1/hugin/GLPreviewFrame.cpp:1482
 #: hugin1/hugin/PreviewFrame.cpp:618
 msgid "Equirectangular"
 msgstr "Enakopravokotna"
@@ -243,7 +244,7 @@ msgid "Lens Project Files (*.ini)|*.ini|All files (*)|*"
 msgstr "Projektne datoteke za objektiv (*.ini)|*.ini|Vse datoteke (*)|*"
 
 #: hugin1/base_wx/LensTools.cpp:404 hugin1/calibrate_lens/LensCalFrame.cpp:733
-#: hugin1/calibrate_lens/LensCalFrame.cpp:798 hugin1/hugin/MainFrame.cpp:988
+#: hugin1/calibrate_lens/LensCalFrame.cpp:798 hugin1/hugin/MainFrame.cpp:1039
 #: hugin1/hugin/xrc/main_tool.xrc:19
 msgid "Save project"
 msgstr "Shrani projekt"
@@ -276,7 +277,7 @@ msgid "Error pausing process %ld, code 2"
 msgstr "Napaka pri odpiranju projekta:"
 
 #: hugin1/base_wx/MyExternalCmdExecDialog.cpp:555
-#: hugin1/hugin/RawImport.cpp:393 hugin1/ptbatcher/RunStitchFrame.cpp:43
+#: hugin1/hugin/RawImport.cpp:481 hugin1/ptbatcher/RunStitchFrame.cpp:43
 #: hugin1/stitch_project/hugin_stitch_project.cpp:111
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:334
 #: hugin1/hugin/xrc/images_panel.xrc:555
@@ -289,8 +290,8 @@ msgstr "Napaka pri odpiranju projekta:"
 #: hugin1/hugin/xrc/pano_panel.xrc:55 hugin1/hugin/xrc/pano_panel.xrc:97
 #: hugin1/hugin/xrc/pano_panel.xrc:144 hugin1/hugin/xrc/pano_panel.xrc:1034
 #: hugin1/hugin/xrc/pano_panel.xrc:1360 hugin1/hugin/xrc/pano_panel.xrc:1409
-#: hugin1/hugin/xrc/pref_dialog.xrc:1550 hugin1/hugin/xrc/pref_dialog.xrc:1599
-#: hugin1/hugin/xrc/pref_dialog.xrc:1666
+#: hugin1/hugin/xrc/pref_dialog.xrc:1633 hugin1/hugin/xrc/pref_dialog.xrc:1682
+#: hugin1/hugin/xrc/pref_dialog.xrc:1749
 #: hugin1/hugin/xrc/preview_frame.xrc:114
 #: hugin1/hugin/xrc/reset_dialog.xrc:122
 msgid "Cancel"
@@ -329,12 +330,12 @@ msgstr "Čas do konca: "
 msgid "Panorama Tools"
 msgstr "Panorama Tools"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:100 hugin1/base_wx/RunStitchPanel.cpp:260
+#: hugin1/base_wx/RunStitchPanel.cpp:100 hugin1/base_wx/RunStitchPanel.cpp:261
 msgid "Could not open project file:"
 msgstr "Napaka pri odpiranju datoteke:"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:110 hugin1/base_wx/RunStitchPanel.cpp:272
-#: hugin1/ptbatcher/ProjectArray.cpp:89
+#: hugin1/base_wx/RunStitchPanel.cpp:110 hugin1/base_wx/RunStitchPanel.cpp:273
+#: hugin1/ptbatcher/ProjectArray.cpp:92
 #, c-format
 msgid "could not open script: %s"
 msgstr "odpiranje skripte ni uspelo: %s"
@@ -344,8 +345,8 @@ msgstr "odpiranje skripte ni uspelo: %s"
 msgid "Project %s does not contain any active images."
 msgstr ""
 
-#: hugin1/base_wx/RunStitchPanel.cpp:136 hugin1/base_wx/RunStitchPanel.cpp:280
-#: hugin1/ptbatcher/ProjectArray.cpp:126
+#: hugin1/base_wx/RunStitchPanel.cpp:136 hugin1/base_wx/RunStitchPanel.cpp:281
+#: hugin1/ptbatcher/ProjectArray.cpp:129
 #, c-format
 msgid "error while parsing panotools script: %s"
 msgstr "napaka pri branju panotools skripte: %s"
@@ -359,17 +360,17 @@ msgstr ""
 msgid "Could not create temporary file"
 msgstr "Ustvarjanje začasne datoteke ni uspelo"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:210 hugin1/base_wx/RunStitchPanel.cpp:302
+#: hugin1/base_wx/RunStitchPanel.cpp:211 hugin1/base_wx/RunStitchPanel.cpp:303
 msgid "Queue is empty. This should never happen."
 msgstr ""
 
-#: hugin1/base_wx/RunStitchPanel.cpp:210 hugin1/base_wx/RunStitchPanel.cpp:244
-#: hugin1/base_wx/RunStitchPanel.cpp:250
+#: hugin1/base_wx/RunStitchPanel.cpp:211 hugin1/base_wx/RunStitchPanel.cpp:245
+#: hugin1/base_wx/RunStitchPanel.cpp:251
 #: hugin1/stitch_project/hugin_stitch_project.cpp:163
 msgid "Error during stitching"
 msgstr "Napaka pri šivanju"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:228
+#: hugin1/base_wx/RunStitchPanel.cpp:229
 msgid ""
 "Overwrite existing images?\n"
 "\n"
@@ -377,338 +378,338 @@ msgstr ""
 "Prepiši obstoječe slike?\n"
 "\n"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:228 hugin1/hugin/xrc/dlg_warning.xrc:117
+#: hugin1/base_wx/RunStitchPanel.cpp:229 hugin1/hugin/xrc/dlg_warning.xrc:117
 msgid "Overwrite existing images"
 msgstr "Prepiši obstoječe slike?"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:243
+#: hugin1/base_wx/RunStitchPanel.cpp:244
 #, fuzzy, c-format
 msgid ""
 "Error while stitching project\n"
 "%s"
 msgstr "Napaka pri šivanju projekta %s"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:302 hugin1/base_wx/RunStitchPanel.cpp:308
-#: hugin1/base_wx/RunStitchPanel.cpp:315
+#: hugin1/base_wx/RunStitchPanel.cpp:303 hugin1/base_wx/RunStitchPanel.cpp:309
+#: hugin1/base_wx/RunStitchPanel.cpp:316
 #, fuzzy
 msgid "Error during running assistant"
 msgstr "Napaka pri šivanju"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:307
+#: hugin1/base_wx/RunStitchPanel.cpp:308
 #, fuzzy, c-format
 msgid ""
 "Error while running assistant\n"
 "%s"
 msgstr "napaka pri branju panotools skripte: %s"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:205
+#: hugin1/base_wx/StitchingExecutor.cpp:204
 #, fuzzy
 msgid "Stitching panorama..."
 msgstr "Šivanje Panorame"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:208
+#: hugin1/base_wx/StitchingExecutor.cpp:207
 msgid "Platform:"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:209
+#: hugin1/base_wx/StitchingExecutor.cpp:208
 #, fuzzy
 msgid "Version:"
 msgstr "Verzija %s"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:210
+#: hugin1/base_wx/StitchingExecutor.cpp:209
 #, fuzzy
 msgid "Working directory:"
 msgstr ""
 "\n"
 " trenutni direktorij"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:211
+#: hugin1/base_wx/StitchingExecutor.cpp:210
 #, fuzzy
 msgid "Output prefix:"
 msgstr "Označi izhodno predpono"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:223
-#: hugin1/base_wx/StitchingExecutor.cpp:227
-#: hugin1/base_wx/StitchingExecutor.cpp:233
+#: hugin1/base_wx/StitchingExecutor.cpp:222
+#: hugin1/base_wx/StitchingExecutor.cpp:226
+#: hugin1/base_wx/StitchingExecutor.cpp:232
 #: hugin1/hugin/xrc/batch_frame.xrc:330 hugin1/hugin/xrc/pano_panel.xrc:830
 msgid "Blender:"
 msgstr "Spajanje:"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:227
+#: hugin1/base_wx/StitchingExecutor.cpp:226
 msgid "Unknown blender (enblend --version failed)"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:233
+#: hugin1/base_wx/StitchingExecutor.cpp:232
 #, fuzzy
 msgid "internal"
 msgstr "Notranja napaka"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:242
-#: hugin1/base_wx/StitchingExecutor.cpp:246
+#: hugin1/base_wx/StitchingExecutor.cpp:241
+#: hugin1/base_wx/StitchingExecutor.cpp:245
 #, fuzzy
 msgid "Exposure fusion:"
 msgstr "Osvetlitev:"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:246
+#: hugin1/base_wx/StitchingExecutor.cpp:245
 msgid "Unknown exposure fusion (enfuse --version failed)"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:254
+#: hugin1/base_wx/StitchingExecutor.cpp:253
 #, fuzzy
 msgid "ExifTool version:"
 msgstr "Enfuse možnosti"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:259
+#: hugin1/base_wx/StitchingExecutor.cpp:258
 #, fuzzy
 msgid "ExifTool:"
 msgstr "Enfuse možnosti"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:259
+#: hugin1/base_wx/StitchingExecutor.cpp:258
 msgid "FAILED"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:265
+#: hugin1/base_wx/StitchingExecutor.cpp:264
 #, fuzzy
 msgid "Number of active images:"
 msgstr "Število točk na sliko"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:266
+#: hugin1/base_wx/StitchingExecutor.cpp:265
 #, fuzzy, c-format
 msgid "Output exposure value: %.1f"
 msgstr "Spojeni osvetlitveni sloji"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:267
+#: hugin1/base_wx/StitchingExecutor.cpp:266
 #, fuzzy, c-format
 msgid "Canvas size: %dx%d"
 msgstr "Velikost platna panorame"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:268
+#: hugin1/base_wx/StitchingExecutor.cpp:267
 #, c-format
 msgid "ROI: (%d, %d) - (%d, %d)"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:269
+#: hugin1/base_wx/StitchingExecutor.cpp:268
 #, c-format
 msgid "FOV: %.0fx%.0f"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:275
-#: hugin1/base_wx/StitchingExecutor.cpp:281
-#: hugin1/base_wx/StitchingExecutor.cpp:348
+#: hugin1/base_wx/StitchingExecutor.cpp:274
+#: hugin1/base_wx/StitchingExecutor.cpp:280
+#: hugin1/base_wx/StitchingExecutor.cpp:347
 #: hugin1/hugin/xrc/pano_panel.xrc:176
 #, fuzzy
 msgid "Projection:"
 msgstr "Projekt odprt"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:284
+#: hugin1/base_wx/StitchingExecutor.cpp:283
 msgid "Using GPU for remapping:"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:284
+#: hugin1/base_wx/StitchingExecutor.cpp:283
 msgid "true"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:284
+#: hugin1/base_wx/StitchingExecutor.cpp:283
 msgid "false"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:288
+#: hugin1/base_wx/StitchingExecutor.cpp:287
 #: hugin1/hugin/xrc/pano_panel.xrc:465
 #, fuzzy
 msgid "Panorama Outputs:"
 msgstr "Narmoalni izhod:"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:291
-#: hugin1/base_wx/StitchingExecutor.cpp:312
+#: hugin1/base_wx/StitchingExecutor.cpp:290
+#: hugin1/base_wx/StitchingExecutor.cpp:311
 #: hugin1/hugin/xrc/pano_panel.xrc:480 hugin1/hugin/xrc/pano_panel.xrc:643
 #: hugin1/hugin/xrc/pano_panel.xrc:1266
 msgid "Exposure corrected, low dynamic range"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:295
+#: hugin1/base_wx/StitchingExecutor.cpp:294
 #: hugin1/hugin/xrc/pano_panel.xrc:492 hugin1/hugin/xrc/pano_panel.xrc:1281
 #, fuzzy
 msgid "Exposure fused from stacks"
 msgstr "Osvetlitev"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:299
+#: hugin1/base_wx/StitchingExecutor.cpp:298
 #: hugin1/hugin/xrc/pano_panel.xrc:501 hugin1/hugin/xrc/pano_panel.xrc:1295
 msgid "Exposure fused from any arrangement"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:303
-#: hugin1/base_wx/StitchingExecutor.cpp:320
-#: hugin1/base_wx/StitchingExecutor.cpp:333
+#: hugin1/base_wx/StitchingExecutor.cpp:302
+#: hugin1/base_wx/StitchingExecutor.cpp:319
+#: hugin1/base_wx/StitchingExecutor.cpp:332
 #: hugin1/hugin/xrc/pano_panel.xrc:570 hugin1/hugin/xrc/pano_panel.xrc:663
 #: hugin1/hugin/xrc/pano_panel.xrc:1309
 #, fuzzy
 msgid "High dynamic range"
 msgstr "Majhen dinamičen razpon"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:309
+#: hugin1/base_wx/StitchingExecutor.cpp:308
 #: hugin1/hugin/xrc/pano_panel.xrc:628
 #, fuzzy
 msgid "Remapped Images:"
 msgstr "Preslikane slike"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:316
+#: hugin1/base_wx/StitchingExecutor.cpp:315
 #: hugin1/hugin/xrc/pano_panel.xrc:654
 msgid "No exposure correction, low dynamic range"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:326
+#: hugin1/base_wx/StitchingExecutor.cpp:325
 #: hugin1/hugin/xrc/pano_panel.xrc:673
 msgid "Combined stacks:"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:329
+#: hugin1/base_wx/StitchingExecutor.cpp:328
 #: hugin1/hugin/xrc/pano_panel.xrc:688
 #, fuzzy
 msgid "Exposure fused stacks"
 msgstr "Osvetlitev"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:339
+#: hugin1/base_wx/StitchingExecutor.cpp:338
 #: hugin1/hugin/xrc/pano_panel.xrc:708
 msgid "Layers:"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:340
+#: hugin1/base_wx/StitchingExecutor.cpp:339
 #: hugin1/hugin/xrc/pano_panel.xrc:723
 msgid "Blended layers of similar exposure, without exposure correction"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:344
+#: hugin1/base_wx/StitchingExecutor.cpp:343
 #, fuzzy
 msgid "First input image"
 msgstr "Shrani neizrezane slike"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:345
+#: hugin1/base_wx/StitchingExecutor.cpp:344
 #, fuzzy
 msgid "Number:"
 msgstr "Številu procesorjev:"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:346
+#: hugin1/base_wx/StitchingExecutor.cpp:345
 #, fuzzy
 msgid "Filename:"
 msgstr "Ime datoteke"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:347
+#: hugin1/base_wx/StitchingExecutor.cpp:346
 #, fuzzy, c-format
 msgid "Size: %dx%d"
 msgstr "Velikost platna panorame"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:349
+#: hugin1/base_wx/StitchingExecutor.cpp:348
 #, fuzzy
 msgid "Response type:"
 msgstr "Tip objektiva:"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:350
+#: hugin1/base_wx/StitchingExecutor.cpp:349
 #, c-format
 msgid "HFOV: %.0f"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:351
+#: hugin1/base_wx/StitchingExecutor.cpp:350
 #, fuzzy, c-format
 msgid "Exposure value: %.1f"
 msgstr "Osvetlitev (EV)"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:587
+#: hugin1/base_wx/StitchingExecutor.cpp:586
 msgid "Remapping and blending LDR images..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:598
+#: hugin1/base_wx/StitchingExecutor.cpp:597
 #, fuzzy
 msgid "Remapping LDR images..."
 msgstr "Preslikane slike"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:609
+#: hugin1/base_wx/StitchingExecutor.cpp:608
 #, fuzzy
 msgid "Blending images..."
 msgstr "Razmeščanje slik"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:658
+#: hugin1/base_wx/StitchingExecutor.cpp:657
 msgid "Remapping LDR images and blending exposure layers..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:676
+#: hugin1/base_wx/StitchingExecutor.cpp:675
 #, fuzzy
 msgid "Remapping LDR images without exposure correction..."
 msgstr "Izboljšava osvetlitve in vinjet"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:696
+#: hugin1/base_wx/StitchingExecutor.cpp:695
 #, fuzzy, c-format
 msgid "Blending exposure layer %u..."
 msgstr "Spojeni osvetlitveni sloji"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:717
+#: hugin1/base_wx/StitchingExecutor.cpp:716
 msgid "Fusing all exposure layers..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:740
+#: hugin1/base_wx/StitchingExecutor.cpp:739
 #, fuzzy, c-format
 msgid "Fusing stack number %u..."
 msgstr "Spremeni številk objektiva"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:763
-#: hugin1/base_wx/StitchingExecutor.cpp:774
+#: hugin1/base_wx/StitchingExecutor.cpp:762
+#: hugin1/base_wx/StitchingExecutor.cpp:773
 msgid "Blending all stacks..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:791
+#: hugin1/base_wx/StitchingExecutor.cpp:790
 #, fuzzy
 msgid "Remapping HDR images..."
 msgstr "Preslikane slike"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:813
+#: hugin1/base_wx/StitchingExecutor.cpp:812
 #, fuzzy, c-format
 msgid "Merging HDR stack number %u..."
 msgstr "Spremeni številk objektiva"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:829
-#: hugin1/base_wx/StitchingExecutor.cpp:836
+#: hugin1/base_wx/StitchingExecutor.cpp:828
+#: hugin1/base_wx/StitchingExecutor.cpp:835
 msgid "Blending HDR stacks..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:857
-#: hugin1/base_wx/StitchingExecutor.cpp:863
+#: hugin1/base_wx/StitchingExecutor.cpp:856
+#: hugin1/base_wx/StitchingExecutor.cpp:862
 msgid "Updating metadata..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:1008
-#: hugin1/base_wx/StitchingExecutor.cpp:1012
+#: hugin1/base_wx/StitchingExecutor.cpp:1007
+#: hugin1/base_wx/StitchingExecutor.cpp:1011
 #, fuzzy, c-format
 msgid "Stitching using \"%s\""
 msgstr "Šivanje %s"
 
-#: hugin1/base_wx/huginConfig.cpp:37
+#: hugin1/base_wx/huginConfig.cpp:36
 #, fuzzy
 msgid "first image"
 msgstr "Shrani neizrezane slike"
 
-#: hugin1/base_wx/huginConfig.cpp:38
+#: hugin1/base_wx/huginConfig.cpp:37
 #, fuzzy
 msgid "last image"
 msgstr "Dodaj sliko"
 
-#: hugin1/base_wx/huginConfig.cpp:40
+#: hugin1/base_wx/huginConfig.cpp:39
 #, fuzzy
 msgid "directory"
 msgstr ""
 "\n"
 " trenutni direktorij"
 
-#: hugin1/base_wx/huginConfig.cpp:46 hugin1/hugin/ImagesTree.cpp:155
+#: hugin1/base_wx/huginConfig.cpp:45 hugin1/hugin/ImagesTree.cpp:155
 #, fuzzy
 msgid "Camera maker"
 msgstr "Naprava in objektiv"
 
-#: hugin1/base_wx/huginConfig.cpp:47 hugin1/hugin/ImagesTree.cpp:156
+#: hugin1/base_wx/huginConfig.cpp:46 hugin1/hugin/ImagesTree.cpp:156
 #, fuzzy
 msgid "Camera model"
 msgstr "ODziv fotoaparata:"
 
-#: hugin1/base_wx/huginConfig.cpp:48 hugin1/hugin/ImagesPanel.cpp:691
-#: hugin1/hugin/ImagesTree.cpp:157 hugin1/hugin/ImagesTree.cpp:1270
+#: hugin1/base_wx/huginConfig.cpp:47 hugin1/hugin/ImagesPanel.cpp:691
+#: hugin1/hugin/ImagesTree.cpp:157 hugin1/hugin/ImagesTree.cpp:1197
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:152
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:347
 #: hugin1/hugin/xrc/lensdb_dialogs.xrc:8
@@ -716,65 +717,70 @@ msgstr "ODziv fotoaparata:"
 msgid "Lens"
 msgstr "Objektiv"
 
-#: hugin1/base_wx/huginConfig.cpp:84
+#: hugin1/base_wx/huginConfig.cpp:83
 #, fuzzy
 msgid "unknown projection"
 msgstr "Projekt odprt"
 
-#: hugin1/base_wx/platform.cpp:51
+#: hugin1/base_wx/platform.cpp:65
 #, fuzzy
 msgid "All Image files"
 msgstr "Datoteka s sliko:"
 
-#: hugin1/base_wx/platform.cpp:60
+#: hugin1/base_wx/platform.cpp:79 hugin1/base_wx/platform.cpp:102
 msgid "JPEG files (*.jpg,*.jpeg)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:61
+#: hugin1/base_wx/platform.cpp:80 hugin1/base_wx/platform.cpp:103
 msgid "TIFF files (*.tif,*.tiff)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:62
+#: hugin1/base_wx/platform.cpp:81 hugin1/base_wx/platform.cpp:104
 msgid "PNG files (*.png)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:63
+#: hugin1/base_wx/platform.cpp:82 hugin1/base_wx/platform.cpp:105
 msgid "HDR files (*.hdr)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:64
+#: hugin1/base_wx/platform.cpp:83 hugin1/base_wx/platform.cpp:106
 msgid "EXR files (*.exr)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:65 hugin1/hugin/RawImport.cpp:741
+#: hugin1/base_wx/platform.cpp:84
 msgid "All files (*)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:163 hugin1/base_wx/wxLensDB.cpp:631
+#: hugin1/base_wx/platform.cpp:93
+#, fuzzy
+msgid "Raw files"
+msgstr "Nalaganje slike %s"
+
+#: hugin1/base_wx/platform.cpp:217 hugin1/base_wx/wxLensDB.cpp:631
 #: hugin1/base_wx/wxLensDB.cpp:636 hugin1/base_wx/wxLensDB.cpp:644
 #: hugin1/calibrate_lens/LensCalFrame.cpp:353
-#: hugin1/hugin/CPEditorPanel.cpp:2237 hugin1/hugin/GLViewer.cpp:139
-#: hugin1/hugin/GLViewer.cpp:151 hugin1/hugin/MainFrame.cpp:958
-#: hugin1/hugin/MainFrame.cpp:1678 hugin1/hugin/MainFrame.cpp:1740
-#: hugin1/hugin/MainFrame.cpp:2156 hugin1/hugin/MainFrame.cpp:2376
-#: hugin1/hugin/MainFrame.cpp:2416 hugin1/hugin/MainFrame.cpp:2474
-#: hugin1/hugin/MainFrame.cpp:2486 hugin1/hugin/MainFrame.cpp:2501
-#: hugin1/hugin/MainFrame.cpp:2509
+#: hugin1/hugin/CPEditorPanel.cpp:2235 hugin1/hugin/GLViewer.cpp:136
+#: hugin1/hugin/GLViewer.cpp:148 hugin1/hugin/MainFrame.cpp:1009
+#: hugin1/hugin/MainFrame.cpp:1712 hugin1/hugin/MainFrame.cpp:1774
+#: hugin1/hugin/MainFrame.cpp:2190 hugin1/hugin/MainFrame.cpp:2411
+#: hugin1/hugin/MainFrame.cpp:2451 hugin1/hugin/MainFrame.cpp:2509
+#: hugin1/hugin/MainFrame.cpp:2521 hugin1/hugin/MainFrame.cpp:2536
+#: hugin1/hugin/MainFrame.cpp:2544
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:274
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:333
-#: hugin1/hugin/PanoOperation.cpp:552 hugin1/hugin/PanoPanel.cpp:1101
+#: hugin1/hugin/PanoOperation.cpp:633 hugin1/hugin/PanoPanel.cpp:1101
 #: hugin1/hugin/PanoPanel.cpp:1316 hugin1/hugin/PanoPanel.cpp:1388
-#: hugin1/hugin/PreferencesDialog.cpp:420
-#: hugin1/hugin/PreferencesDialog.cpp:490
+#: hugin1/hugin/PreferencesDialog.cpp:477
+#: hugin1/hugin/PreferencesDialog.cpp:547
 #: hugin1/icpfind/AutoCtrlPointCreator.cpp:223
-#: hugin1/ptbatcher/FindPanoDialog.cpp:335
-#: hugin1/ptbatcher/ProjectListBox.cpp:180
+#: hugin1/ptbatcher/FindPanoDialog.cpp:340
+#: hugin1/ptbatcher/ProjectListBox.cpp:183
 #: hugin1/stitch_project/hugin_stitch_project.cpp:360
 #: hugin1/stitch_project/hugin_stitch_project.cpp:403
 msgid "Error"
 msgstr "Napaka"
 
-#: hugin1/base_wx/platform.cpp:472
+#: hugin1/base_wx/platform.cpp:526
 #, c-format
 msgid ""
 "The filename(s) contains one of the following invalid characters: %s\n"
@@ -782,7 +788,7 @@ msgid ""
 "again."
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:489
+#: hugin1/base_wx/platform.cpp:543
 #, c-format
 msgid "Debug report generated in \"%s\"."
 msgstr ""
@@ -810,15 +816,15 @@ msgstr "Prosimo vnesite ustrezno število"
 #: hugin1/calibrate_lens/LensCalFrame.cpp:756
 #: hugin1/calibrate_lens/LensCalFrame.cpp:782
 #: hugin1/calibrate_lens/LensCalFrame.cpp:854
-#: hugin1/hugin/CPDetectorDialog.cpp:126 hugin1/hugin/GLPreviewFrame.cpp:1594
-#: hugin1/hugin/GLPreviewFrame.cpp:1601 hugin1/hugin/GLPreviewFrame.cpp:1608
-#: hugin1/hugin/GLPreviewFrame.cpp:1622 hugin1/hugin/GLPreviewFrame.cpp:1629
-#: hugin1/hugin/GLPreviewFrame.cpp:1636 hugin1/hugin/MainFrame.cpp:1910
-#: hugin1/hugin/MainFrame.cpp:2401 hugin1/hugin/MainFrame.cpp:2420
-#: hugin1/hugin/MainFrame.cpp:2426 hugin1/hugin/MaskEditorPanel.cpp:513
-#: hugin1/hugin/PanoPanel.cpp:1369 hugin1/hugin/PreferencesDialog.cpp:1089
-#: hugin1/ptbatcher/FindPanoDialog.cpp:291
-#: hugin1/ptbatcher/FindPanoDialog.cpp:312
+#: hugin1/hugin/CPDetectorDialog.cpp:131 hugin1/hugin/GLPreviewFrame.cpp:1602
+#: hugin1/hugin/GLPreviewFrame.cpp:1609 hugin1/hugin/GLPreviewFrame.cpp:1616
+#: hugin1/hugin/GLPreviewFrame.cpp:1630 hugin1/hugin/GLPreviewFrame.cpp:1637
+#: hugin1/hugin/GLPreviewFrame.cpp:1644 hugin1/hugin/MainFrame.cpp:1944
+#: hugin1/hugin/MainFrame.cpp:2436 hugin1/hugin/MainFrame.cpp:2455
+#: hugin1/hugin/MainFrame.cpp:2461 hugin1/hugin/MaskEditorPanel.cpp:509
+#: hugin1/hugin/PanoPanel.cpp:1369 hugin1/hugin/PreferencesDialog.cpp:1159
+#: hugin1/ptbatcher/FindPanoDialog.cpp:296
+#: hugin1/ptbatcher/FindPanoDialog.cpp:317
 msgid "Warning"
 msgstr ""
 
@@ -999,7 +1005,7 @@ msgstr "Napaka izvajanja %s"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:764
 #: hugin1/calibrate_lens/LensCalFrame.cpp:374
-#: hugin1/hugin/PanoOperation.cpp:92
+#: hugin1/hugin/PanoOperation.cpp:97
 msgid "Add images"
 msgstr "Dodaj slike"
 
@@ -1024,19 +1030,19 @@ msgstr "Napaka pri nalaganju projektne datoteke"
 msgid "Result"
 msgstr ""
 
-#: hugin1/calibrate_lens/LensCalApp.cpp:71 hugin1/hugin/huginApp.cpp:229
+#: hugin1/calibrate_lens/LensCalApp.cpp:71 hugin1/hugin/huginApp.cpp:230
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:100
 msgid "xrc directory not found in bundle"
 msgstr "xrc direktorija ni mogoče najti v paketu"
 
 #: hugin1/calibrate_lens/LensCalApp.cpp:71
-#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/MainFrame.cpp:2151
-#: hugin1/hugin/huginApp.cpp:229 hugin1/hugin/huginApp.cpp:275
+#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/MainFrame.cpp:2185
+#: hugin1/hugin/huginApp.cpp:230 hugin1/hugin/huginApp.cpp:276
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:100 hugin1/ptbatcher/PTBatcherGUI.cpp:134
 msgid "Fatal Error"
 msgstr "Usodna napaka"
 
-#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/huginApp.cpp:275
+#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/huginApp.cpp:276
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:134
 msgid ""
 "xrc directory not found, hugin needs to be properly installed\n"
@@ -1067,7 +1073,7 @@ msgid ""
 "Please check the image again, if you selected the correct images."
 msgstr ""
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:448 hugin1/hugin/MainFrame.cpp:1211
+#: hugin1/calibrate_lens/LensCalFrame.cpp:448
 msgid "Add Image: cancel"
 msgstr "Dodaj sliko: prekliči"
 
@@ -1126,7 +1132,7 @@ msgid "Save lens parameters to ini file"
 msgstr "Shrani parametre objektiva v datoteko"
 
 #: hugin1/calibrate_lens/LensCalFrame.cpp:762
-#: hugin1/hugin/PanoOperation.cpp:586
+#: hugin1/hugin/PanoOperation.cpp:667
 #, fuzzy
 msgid "Save lens parameters to lens database"
 msgstr "Shrani parametre objektiva v datoteko"
@@ -1142,13 +1148,13 @@ msgstr "Naloži podatke objektiva..."
 msgid "Save lens"
 msgstr "Shrani objektiv..."
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:786 hugin1/hugin/MainFrame.cpp:976
+#: hugin1/calibrate_lens/LensCalFrame.cpp:786 hugin1/hugin/MainFrame.cpp:1027
 msgid "Save project file"
 msgstr "Shrani projekt"
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:787 hugin1/hugin/MainFrame.cpp:978
-#: hugin1/hugin/MainFrame.cpp:1135 hugin1/hugin/MainFrame.cpp:1647
-#: hugin1/hugin/MainFrame.cpp:1706 hugin1/ptbatcher/Batch.cpp:674
+#: hugin1/calibrate_lens/LensCalFrame.cpp:787 hugin1/hugin/MainFrame.cpp:1029
+#: hugin1/hugin/MainFrame.cpp:1186 hugin1/hugin/MainFrame.cpp:1681
+#: hugin1/hugin/MainFrame.cpp:1740 hugin1/ptbatcher/Batch.cpp:681
 #: hugin1/ptbatcher/BatchFrame.cpp:403 hugin1/ptbatcher/BatchFrame.cpp:431
 #: hugin1/stitch_project/hugin_stitch_project.cpp:370
 msgid "Project files (*.pto)|*.pto|All files (*)|*"
@@ -1193,144 +1199,144 @@ msgstr ""
 msgid "only print commands"
 msgstr "ukaz:"
 
-#: hugin1/hugin/AboutDialog.cpp:138
+#: hugin1/hugin/AboutDialog.cpp:142
 #, fuzzy, c-format
 msgid "Operating System: %s"
 msgstr "Ustvarjanje sivinske slike %s"
 
-#: hugin1/hugin/AboutDialog.cpp:141
+#: hugin1/hugin/AboutDialog.cpp:145
 msgid "64 bit"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:143
+#: hugin1/hugin/AboutDialog.cpp:147
 msgid "32 bit"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:144
+#: hugin1/hugin/AboutDialog.cpp:148
 #, c-format
 msgid "Architecture: %s"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:147
+#: hugin1/hugin/AboutDialog.cpp:151
 #, c-format
 msgid "Free memory: %lld kiB"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:150
+#: hugin1/hugin/AboutDialog.cpp:154
 #, c-format
 msgid "Active Codepage: %u"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:182
+#: hugin1/hugin/AboutDialog.cpp:186
 #, fuzzy, c-format
 msgid "Version: %s"
 msgstr "Verzija %s"
 
-#: hugin1/hugin/AboutDialog.cpp:183
+#: hugin1/hugin/AboutDialog.cpp:187
 #, c-format
 msgid "Path to resources: %s"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:184
+#: hugin1/hugin/AboutDialog.cpp:188
 #, c-format
 msgid "Path to data: %s"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:186
+#: hugin1/hugin/AboutDialog.cpp:190
 #, fuzzy, c-format
 msgid "Hugins camera and lens database: %s"
 msgstr "Podatki naprave in objektiva"
 
-#: hugin1/hugin/AboutDialog.cpp:187
+#: hugin1/hugin/AboutDialog.cpp:191
 msgid "Multi-threading using C++11 std::thread and OpenMP"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:190
+#: hugin1/hugin/AboutDialog.cpp:194
 #, fuzzy, c-format
 msgid "Monitor profile: %s"
 msgstr "Napaka pri odpiranju datoteke:"
 
-#: hugin1/hugin/AboutDialog.cpp:192
+#: hugin1/hugin/AboutDialog.cpp:196
 msgid "Libraries"
 msgstr ""
 
-#: hugin1/hugin/CPDetectorDialog.cpp:98
+#: hugin1/hugin/CPDetectorDialog.cpp:103
 msgid "Autopano from http://autopano.kolor.com is not available for OS X"
 msgstr "Autopano na http://autopano.kolor.com za OSX ni na voljo"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:99
+#: hugin1/hugin/CPDetectorDialog.cpp:104
 #, fuzzy
 msgid "Using Autopano-Sift instead"
 msgstr "Želite uporabit Autopano-Sift?"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:125
+#: hugin1/hugin/CPDetectorDialog.cpp:130
 msgid ""
 "At least one input field is empty.\n"
 "Please check your inputs."
 msgstr ""
 
-#: hugin1/hugin/CPDetectorDialog.cpp:220
+#: hugin1/hugin/CPDetectorDialog.cpp:225
 msgid "Try to connect all overlapping images."
 msgstr ""
 
-#: hugin1/hugin/CPDetectorDialog.cpp:226
+#: hugin1/hugin/CPDetectorDialog.cpp:231
 #, fuzzy
 msgid "Only work on image pairs without control points."
 msgstr "Ni mogoče ugotoviti položaja slike brez stičnih točk"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:254
+#: hugin1/hugin/CPDetectorDialog.cpp:259
 #, fuzzy
 msgid "Select control point detector program"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:262
+#: hugin1/hugin/CPDetectorDialog.cpp:267
 #, fuzzy
 msgid "Executables (*.exe,*.vbs,*.cmd, *.bat)|*.exe;*.vbs;*.cmd;*.bat"
 msgstr "Izvršljive"
 
-#: hugin1/hugin/CPEditorPanel.cpp:152
+#: hugin1/hugin/CPEditorPanel.cpp:150
 msgid "#"
 msgstr "#"
 
-#: hugin1/hugin/CPEditorPanel.cpp:153
+#: hugin1/hugin/CPEditorPanel.cpp:151
 msgid "left x"
 msgstr "levo x"
 
-#: hugin1/hugin/CPEditorPanel.cpp:154
+#: hugin1/hugin/CPEditorPanel.cpp:152
 msgid "left y"
 msgstr "levo y"
 
-#: hugin1/hugin/CPEditorPanel.cpp:155
+#: hugin1/hugin/CPEditorPanel.cpp:153
 msgid "right x"
 msgstr "desno x"
 
-#: hugin1/hugin/CPEditorPanel.cpp:156
+#: hugin1/hugin/CPEditorPanel.cpp:154
 msgid "right y"
 msgstr "desno y"
 
-#: hugin1/hugin/CPEditorPanel.cpp:157 hugin1/hugin/CPListFrame.cpp:100
+#: hugin1/hugin/CPEditorPanel.cpp:155 hugin1/hugin/CPListFrame.cpp:100
 msgid "Alignment"
 msgstr "Razmestitev"
 
-#: hugin1/hugin/CPEditorPanel.cpp:158 hugin1/hugin/CPEditorPanel.cpp:1423
+#: hugin1/hugin/CPEditorPanel.cpp:156 hugin1/hugin/CPEditorPanel.cpp:1421
 #: hugin1/hugin/CPListFrame.cpp:101 hugin1/hugin/CPListFrame.cpp:222
 msgid "Distance"
 msgstr "Razdalja"
 
-#: hugin1/hugin/CPEditorPanel.cpp:596 hugin1/hugin/CPEditorPanel.cpp:742
+#: hugin1/hugin/CPEditorPanel.cpp:594 hugin1/hugin/CPEditorPanel.cpp:740
 msgid "new control point added"
 msgstr "stična točka dodana"
 
-#: hugin1/hugin/CPEditorPanel.cpp:868 hugin1/hugin/CPEditorPanel.cpp:1318
+#: hugin1/hugin/CPEditorPanel.cpp:866 hugin1/hugin/CPEditorPanel.cpp:1316
 msgid "searching similar points..."
 msgstr "iskanje soležnih točk..."
 
-#: hugin1/hugin/CPEditorPanel.cpp:887 hugin1/hugin/CPEditorPanel.cpp:1027
+#: hugin1/hugin/CPEditorPanel.cpp:885 hugin1/hugin/CPEditorPanel.cpp:1025
 msgid "Error during Fine-tune"
 msgstr "Napaka pri nadrobnem usklajevanju"
 
-#: hugin1/hugin/CPEditorPanel.cpp:906 hugin1/hugin/CPEditorPanel.cpp:1051
-#: hugin1/hugin/CPEditorPanel.cpp:1341
+#: hugin1/hugin/CPEditorPanel.cpp:904 hugin1/hugin/CPEditorPanel.cpp:1049
+#: hugin1/hugin/CPEditorPanel.cpp:1339
 #, c-format
 msgid ""
 "Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, "
@@ -1339,30 +1345,30 @@ msgstr ""
 "Točka usklajena, kot: %.0f stopinjj, koeficient korelacije: %0.3f, "
 "ukrivljenost: %0.3f %0.3f "
 
-#: hugin1/hugin/CPEditorPanel.cpp:909 hugin1/hugin/CPEditorPanel.cpp:1054
+#: hugin1/hugin/CPEditorPanel.cpp:907 hugin1/hugin/CPEditorPanel.cpp:1052
 msgid "change points, or press right mouse button to add the pair"
 msgstr "spremenite točke ali pritisnite desno miškino tipko za dodajanje para"
 
-#: hugin1/hugin/CPEditorPanel.cpp:930
+#: hugin1/hugin/CPEditorPanel.cpp:928
 msgid "Estimated point outside image"
 msgstr "Ocenjeno število točk izven slike"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1313
+#: hugin1/hugin/CPEditorPanel.cpp:1311
 msgid "Distance between line control points too short, skipping fine-tune."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:1347 hugin1/hugin/CPEditorPanel.cpp:1362
+#: hugin1/hugin/CPEditorPanel.cpp:1345 hugin1/hugin/CPEditorPanel.cpp:1360
 #, fuzzy
 msgid "No similar point found."
 msgstr "Ni soležne točke."
 
-#: hugin1/hugin/CPEditorPanel.cpp:1354
+#: hugin1/hugin/CPEditorPanel.cpp:1352
 msgid ""
 "An internal transformation went wrong.\n"
 "Check that the point is inside the image."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:1369
+#: hugin1/hugin/CPEditorPanel.cpp:1367
 #, fuzzy, c-format
 msgid ""
 "Check the similarity visually.\n"
@@ -1372,38 +1378,38 @@ msgstr ""
 "Ni soležne točke. Primerjaj podobnost vizualno.\n"
 "Koeficient korelacije (%.3f) je nižji kot prag, ki je določen v nastavitvah."
 
-#: hugin1/hugin/CPEditorPanel.cpp:1392 hugin1/hugin/CPEditorPanel.cpp:1403
+#: hugin1/hugin/CPEditorPanel.cpp:1390 hugin1/hugin/CPEditorPanel.cpp:1401
 #, fuzzy
 msgid "Add new Line"
 msgstr "Dodaj smer"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1398 hugin1/hugin/CPEditorPanel.cpp:1401
-#: hugin1/hugin/CPEditorPanel.cpp:1685 hugin1/hugin/CPListFrame.cpp:192
+#: hugin1/hugin/CPEditorPanel.cpp:1396 hugin1/hugin/CPEditorPanel.cpp:1399
+#: hugin1/hugin/CPEditorPanel.cpp:1683 hugin1/hugin/CPListFrame.cpp:192
 #, c-format
 msgid "Line %d"
 msgstr "Llinija %d"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1419 hugin1/hugin/CPListFrame.cpp:101
+#: hugin1/hugin/CPEditorPanel.cpp:1417 hugin1/hugin/CPListFrame.cpp:101
 #: hugin1/hugin/CPListFrame.cpp:218
 #, fuzzy
 msgid "Correlation"
 msgstr "Prag korelacije"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1676 hugin1/hugin/CPListFrame.cpp:183
-#: hugin1/hugin/GLPreviewFrame.cpp:610 hugin1/hugin/GLPreviewFrame.cpp:3019
+#: hugin1/hugin/CPEditorPanel.cpp:1674 hugin1/hugin/CPListFrame.cpp:183
+#: hugin1/hugin/GLPreviewFrame.cpp:610 hugin1/hugin/GLPreviewFrame.cpp:3027
 #: hugin1/hugin/PreviewFrame.cpp:219 hugin1/hugin/xrc/cp_editor_panel.xrc:185
 msgid "normal"
 msgstr "normalno"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1679 hugin1/hugin/CPListFrame.cpp:186
+#: hugin1/hugin/CPEditorPanel.cpp:1677 hugin1/hugin/CPListFrame.cpp:186
 msgid "vert. Line"
 msgstr "vod. črta"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1682 hugin1/hugin/CPListFrame.cpp:189
+#: hugin1/hugin/CPEditorPanel.cpp:1680 hugin1/hugin/CPListFrame.cpp:189
 msgid "horiz. Line"
 msgstr "horiz. črta"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1984
+#: hugin1/hugin/CPEditorPanel.cpp:1982
 msgid ""
 "Create control points.\n"
 "To create less points,\n"
@@ -1413,98 +1419,98 @@ msgstr ""
 "Za več točk,\n"
 "vnesite večje število."
 
-#: hugin1/hugin/CPEditorPanel.cpp:1984
+#: hugin1/hugin/CPEditorPanel.cpp:1982
 msgid "Corner Detection threshold"
 msgstr "Prag odkrivanja kotov"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1984 hugin1/hugin/CPEditorPanel.cpp:1988
+#: hugin1/hugin/CPEditorPanel.cpp:1982 hugin1/hugin/CPEditorPanel.cpp:1986
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:323
 #: hugin1/hugin/xrc/images_panel.xrc:253
 msgid "Create control points"
 msgstr "Ustvari stične točke."
 
-#: hugin1/hugin/CPEditorPanel.cpp:1988
+#: hugin1/hugin/CPEditorPanel.cpp:1986
 msgid "Corner Detection scale"
 msgstr "Lestvica odkrivanja robov"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2000
+#: hugin1/hugin/CPEditorPanel.cpp:1998
 msgid "Error during control point creation:\n"
 msgstr "Napaka med ustvarjanjem stičnih točk:\n"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2097
+#: hugin1/hugin/CPEditorPanel.cpp:2095
 msgid "Select point in right image"
 msgstr "Izberi točko na desni sliki"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2109
+#: hugin1/hugin/CPEditorPanel.cpp:2107
 msgid "Select point in left image"
 msgstr "Izberi točko na levi sliki"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2186
+#: hugin1/hugin/CPEditorPanel.cpp:2184
 #, c-format
 msgid "Create cp (Current setting: %s)"
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2237
+#: hugin1/hugin/CPEditorPanel.cpp:2235
 #, fuzzy
 msgid ""
 "Cannot run celeste without at least one control point connecting the two "
 "images"
 msgstr "Odstrani stične točke, ki povezujejo izbrani sliki"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2242 hugin1/hugin/CPEditorPanel.cpp:2262
-#: hugin1/hugin/PanoOperation.cpp:736 hugin1/hugin/PanoOperation.cpp:786
+#: hugin1/hugin/CPEditorPanel.cpp:2240 hugin1/hugin/CPEditorPanel.cpp:2260
+#: hugin1/hugin/PanoOperation.cpp:817 hugin1/hugin/PanoOperation.cpp:867
 msgid "Running Celeste"
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2243 hugin1/hugin/PanoOperation.cpp:737
+#: hugin1/hugin/CPEditorPanel.cpp:2241 hugin1/hugin/PanoOperation.cpp:818
 #, fuzzy
 msgid "Loading model file"
 msgstr "Nalaganje slike %s"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2304 hugin1/hugin/CPEditorPanel.cpp:2340
-#: hugin1/hugin/MainFrame.cpp:1871 hugin1/hugin/PanoOperation.cpp:723
-#: hugin1/hugin/PanoOperation.cpp:815
+#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/CPEditorPanel.cpp:2338
+#: hugin1/hugin/MainFrame.cpp:1905 hugin1/hugin/PanoOperation.cpp:804
+#: hugin1/hugin/PanoOperation.cpp:896
 #, fuzzy, c-format
 msgid "Removed %lu control points"
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2304 hugin1/hugin/PanoOperation.cpp:815
+#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/PanoOperation.cpp:896
 #, fuzzy
 msgid "Celeste result"
 msgstr "Rezultati nadrobnega usklajevanja"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2340 hugin1/hugin/PanoOperation.cpp:723
+#: hugin1/hugin/CPEditorPanel.cpp:2338 hugin1/hugin/PanoOperation.cpp:804
 msgid "Cleaning"
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2352
+#: hugin1/hugin/CPEditorPanel.cpp:2350
 #, fuzzy
 msgid "Create cp"
 msgstr "Ustvari"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2355
+#: hugin1/hugin/CPEditorPanel.cpp:2353
 msgid ""
 "Create control points for image pair with currently selected control point "
 "detector on photos tab."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2363
+#: hugin1/hugin/CPEditorPanel.cpp:2361
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:328
 #, fuzzy
 msgid "Celeste"
 msgstr "Izbriši"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2366
+#: hugin1/hugin/CPEditorPanel.cpp:2364
 #, fuzzy
 msgid "Tries to remove control points from clouds"
 msgstr "Ustvari stične točke."
 
-#: hugin1/hugin/CPEditorPanel.cpp:2374
+#: hugin1/hugin/CPEditorPanel.cpp:2372
 #, fuzzy
 msgid "Clean cp"
 msgstr "Začetni kot:"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2377 hugin1/hugin/xrc/pref_dialog.xrc:317
+#: hugin1/hugin/CPEditorPanel.cpp:2375 hugin1/hugin/xrc/pref_dialog.xrc:400
 msgid "Remove outlying control points by statistical method"
 msgstr ""
 
@@ -1606,18 +1612,18 @@ msgid ""
 "drag or ctrl-drag."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:264 hugin1/hugin/GLPreviewFrame.cpp:3082
+#: hugin1/hugin/GLPreviewFrame.cpp:264 hugin1/hugin/GLPreviewFrame.cpp:3090
 #, fuzzy
 msgid "Fast Panorama preview"
 msgstr "Predogled panorame"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:335 hugin1/hugin/GLPreviewFrame.cpp:3068
-#: hugin1/hugin/GLPreviewFrame.cpp:3080 hugin1/hugin/MainFrame.cpp:364
-#: hugin1/hugin/MainFrame.cpp:2244 hugin1/hugin/MainFrame.cpp:2262
+#: hugin1/hugin/GLPreviewFrame.cpp:335 hugin1/hugin/GLPreviewFrame.cpp:3076
+#: hugin1/hugin/GLPreviewFrame.cpp:3088 hugin1/hugin/MainFrame.cpp:408
+#: hugin1/hugin/MainFrame.cpp:2278 hugin1/hugin/MainFrame.cpp:2296
 #: hugin1/hugin/xrc/batch_menu.xrc:5 hugin1/hugin/xrc/lenscal_frame.xrc:466
-#: hugin1/hugin/xrc/main_menu.xrc:231 hugin1/hugin/xrc/main_menu.xrc:256
-#: hugin1/hugin/xrc/preview_frame.xrc:1120
-#: hugin1/hugin/xrc/preview_frame.xrc:1151
+#: hugin1/hugin/xrc/main_menu.xrc:227 hugin1/hugin/xrc/main_menu.xrc:252
+#: hugin1/hugin/xrc/preview_frame.xrc:1117
+#: hugin1/hugin/xrc/preview_frame.xrc:1148
 msgid "&File"
 msgstr "&Datoteka"
 
@@ -1632,10 +1638,10 @@ msgstr "Vse"
 #: hugin1/hugin/GLPreviewFrame.cpp:403 hugin1/hugin/ImagesPanel.cpp:688
 #: hugin1/hugin/xrc/pano_panel.xrc:554 hugin1/hugin/xrc/pano_panel.xrc:611
 #: hugin1/hugin/xrc/pano_panel.xrc:1196 hugin1/hugin/xrc/pano_panel.xrc:1243
-#: hugin1/hugin/xrc/pref_dialog.xrc:785 hugin1/hugin/xrc/preview_frame.xrc:47
-#: hugin1/hugin/xrc/preview_frame.xrc:613
-#: hugin1/hugin/xrc/preview_frame.xrc:703
-#: hugin1/hugin/xrc/preview_frame.xrc:885
+#: hugin1/hugin/xrc/pref_dialog.xrc:868 hugin1/hugin/xrc/preview_frame.xrc:47
+#: hugin1/hugin/xrc/preview_frame.xrc:612
+#: hugin1/hugin/xrc/preview_frame.xrc:702
+#: hugin1/hugin/xrc/preview_frame.xrc:883
 msgid "None"
 msgstr "Brez"
 
@@ -1662,7 +1668,7 @@ msgid "drag to change the horizontal field of view"
 msgstr "povleci za spreminjanje horizontalnega zornega kota"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:539 hugin1/hugin/xrc/lenscal_frame.xrc:440
-#: hugin1/hugin/xrc/main_tool.xrc:67 hugin1/hugin/xrc/preview_frame.xrc:480
+#: hugin1/hugin/xrc/main_tool.xrc:67 hugin1/hugin/xrc/preview_frame.xrc:479
 msgid "Preview"
 msgstr "Predogled"
 
@@ -1679,86 +1685,86 @@ msgstr ""
 msgid "param:"
 msgstr "param:"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:982
+#: hugin1/hugin/GLPreviewFrame.cpp:987
 #, fuzzy
 msgid "No images loaded."
 msgstr "ni naloženih slik"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1020
+#: hugin1/hugin/GLPreviewFrame.cpp:1025
 #, fuzzy, c-format
 msgid "%lu images loaded."
 msgstr "%d slik naloženih"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1037
+#: hugin1/hugin/GLPreviewFrame.cpp:1042
 #, fuzzy, c-format
 msgid "Images are connected by %lu control points.\n"
 msgstr "Sliki imata %d skupnih točk.\n"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1046
+#: hugin1/hugin/GLPreviewFrame.cpp:1051
 #, fuzzy, c-format
 msgid "%lu unconnected image groups found: %s\n"
 msgstr "%d nepovezanih skupin slik"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1052
+#: hugin1/hugin/GLPreviewFrame.cpp:1057
 msgid "Images or control points have changed, new alignment is needed."
 msgstr ""
 "Slike ali stične točke so se spremenile, zato je poteno ponovno razmeščanje."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1063
+#: hugin1/hugin/GLPreviewFrame.cpp:1068
 #, fuzzy, c-format
 msgid "Mean error after optimization: %.1f pixel, max: %.1f"
 msgstr "Srednja napaka po optimizaciji: %.1f pixel, max: %.1f\n"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1472 hugin1/hugin/PreviewFrame.cpp:616
+#: hugin1/hugin/GLPreviewFrame.cpp:1480 hugin1/hugin/PreviewFrame.cpp:616
 #, fuzzy
 msgid "Rectilinear"
 msgstr "Navadna"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1473 hugin1/hugin/PreviewFrame.cpp:617
+#: hugin1/hugin/GLPreviewFrame.cpp:1481 hugin1/hugin/PreviewFrame.cpp:617
 msgid "Cylindrical"
 msgstr "Cilindrična"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1594 hugin1/hugin/PreviewFrame.cpp:720
+#: hugin1/hugin/GLPreviewFrame.cpp:1602 hugin1/hugin/PreviewFrame.cpp:720
 msgid "Yaw value must be numeric."
 msgstr "Vrednost zasuka mora biti numerična."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1601 hugin1/hugin/PreviewFrame.cpp:726
+#: hugin1/hugin/GLPreviewFrame.cpp:1609 hugin1/hugin/PreviewFrame.cpp:726
 msgid "Pitch value must be numeric."
 msgstr "Vrednost odklona mora biti numerična."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1608 hugin1/hugin/PreviewFrame.cpp:732
+#: hugin1/hugin/GLPreviewFrame.cpp:1616 hugin1/hugin/PreviewFrame.cpp:732
 msgid "Roll value must be numeric."
 msgstr "Vrednost nagiba mora biti numerična."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1622
+#: hugin1/hugin/GLPreviewFrame.cpp:1630
 #, fuzzy
 msgid "X value must be numeric."
 msgstr "Vrednost zasuka mora biti numerična."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1629
+#: hugin1/hugin/GLPreviewFrame.cpp:1637
 #, fuzzy
 msgid "Y value must be numeric."
 msgstr "Vrednost zasuka mora biti numerična."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1636
+#: hugin1/hugin/GLPreviewFrame.cpp:1644
 #, fuzzy
 msgid "Z value must be numeric."
 msgstr "Vrednost zasuka mora biti numerična."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1655 hugin1/hugin/GLPreviewFrame.cpp:1693
-#: hugin1/hugin/GLPreviewFrame.cpp:1724 hugin1/hugin/GLPreviewFrame.cpp:2819
-#: hugin1/hugin/GLPreviewFrame.cpp:2850
+#: hugin1/hugin/GLPreviewFrame.cpp:1663 hugin1/hugin/GLPreviewFrame.cpp:1701
+#: hugin1/hugin/GLPreviewFrame.cpp:1732 hugin1/hugin/GLPreviewFrame.cpp:2827
+#: hugin1/hugin/GLPreviewFrame.cpp:2858
 #: hugin1/hugin/ImageVariableDialog.cpp:222 hugin1/hugin/PanoPanel.cpp:672
 #: hugin1/hugin/PanoPanel.cpp:703 hugin1/hugin/PreviewFrame.cpp:755
 #: hugin1/hugin/PreviewFrame.cpp:774 hugin1/hugin/PreviewFrame.cpp:803
 msgid "Value must be numeric."
 msgstr "Vrednost mora biti numerična"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1698 hugin1/hugin/PreviewFrame.cpp:779
+#: hugin1/hugin/GLPreviewFrame.cpp:1706 hugin1/hugin/PreviewFrame.cpp:779
 msgid "Value for range compression is outside of valid range."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1844 hugin1/hugin/GLPreviewFrame.cpp:1933
+#: hugin1/hugin/GLPreviewFrame.cpp:1852 hugin1/hugin/GLPreviewFrame.cpp:1941
 msgid ""
 "The mosaic/plane mode works only correct for a remapping plane of yaw=0 and "
 "pitch=0.\n"
@@ -1766,81 +1772,81 @@ msgid ""
 "Should the Tpy and Tpp parameters reset to zero?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2539 hugin1/hugin/PreviewFrame.cpp:220
+#: hugin1/hugin/GLPreviewFrame.cpp:2547 hugin1/hugin/PreviewFrame.cpp:220
 msgid "difference"
 msgstr "razlika"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2565 hugin1/hugin/GLPreviewFrame.cpp:2595
-#: hugin1/hugin/PanoPanel.cpp:1057 hugin1/hugin/xrc/preview_frame.xrc:845
+#: hugin1/hugin/GLPreviewFrame.cpp:2573 hugin1/hugin/GLPreviewFrame.cpp:2603
+#: hugin1/hugin/PanoPanel.cpp:1057 hugin1/hugin/xrc/preview_frame.xrc:843
 #, fuzzy
 msgid "Autocrop"
 msgstr "Auto"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2565 hugin1/hugin/GLPreviewFrame.cpp:2595
+#: hugin1/hugin/GLPreviewFrame.cpp:2573 hugin1/hugin/GLPreviewFrame.cpp:2603
 #: hugin1/hugin/PanoPanel.cpp:1057
 #, fuzzy
 msgid "Calculating optimal crop"
 msgstr "Izračunaj optimalno velikost"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2765 hugin1/hugin/PanoPanel.cpp:782
+#: hugin1/hugin/GLPreviewFrame.cpp:2773 hugin1/hugin/PanoPanel.cpp:782
 msgid "Top needs to be an integer bigger than 0"
 msgstr "vrh mora biti celo število večje od 0"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2769 hugin1/hugin/PanoPanel.cpp:786
+#: hugin1/hugin/GLPreviewFrame.cpp:2777 hugin1/hugin/PanoPanel.cpp:786
 msgid "left needs to be an integer bigger than 0"
 msgstr "levo mora biti celo število večje od 0"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2773 hugin1/hugin/PanoPanel.cpp:790
+#: hugin1/hugin/GLPreviewFrame.cpp:2781 hugin1/hugin/PanoPanel.cpp:790
 msgid "right needs to be an integer bigger than 0"
 msgstr "desno mora biti celo število večje od 0"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2777 hugin1/hugin/PanoPanel.cpp:794
+#: hugin1/hugin/GLPreviewFrame.cpp:2785 hugin1/hugin/PanoPanel.cpp:794
 msgid "bottom needs to be an integer bigger than 0"
 msgstr "spodaj mora biti celo število večje od 0"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2783
+#: hugin1/hugin/GLPreviewFrame.cpp:2791
 msgid "left boundary must be smaller than right"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2789
+#: hugin1/hugin/GLPreviewFrame.cpp:2797
 msgid "top boundary must be smaller than bottom"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2825 hugin1/hugin/PanoPanel.cpp:678
+#: hugin1/hugin/GLPreviewFrame.cpp:2833 hugin1/hugin/PanoPanel.cpp:678
 #, c-format
 msgid "Invalid HFOV value. Maximum HFOV for this projection is %lf."
 msgstr ""
 "Neveljavna vrednost horizontalnega vidnega kot.\n"
 "Največja vrednost za to projekcijo je: %lf."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2856 hugin1/hugin/PanoPanel.cpp:709
+#: hugin1/hugin/GLPreviewFrame.cpp:2864 hugin1/hugin/PanoPanel.cpp:709
 #, c-format
 msgid "Invalid VFOV value. Maximum VFOV for this projection is %lf."
 msgstr ""
 "Neveljavna vrednost vertikalnega vidnega kot.\n"
 "Največja vrednost za to projekcijo je: %lf."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2894
+#: hugin1/hugin/GLPreviewFrame.cpp:2902
 msgid ""
 "With a wide field of view, panoramas with rectilinear projection get very "
 "stretched towards the edges.\n"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2896
+#: hugin1/hugin/GLPreviewFrame.cpp:2904
 msgid ""
 "Since the field of view is only very wide in the horizontal direction, try a "
 "cylindrical projection instead."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2898
+#: hugin1/hugin/GLPreviewFrame.cpp:2906
 msgid "For a very wide panorama, try equirectangular projection instead."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2900
+#: hugin1/hugin/GLPreviewFrame.cpp:2908
 msgid " You could also try Panini projection."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2905
+#: hugin1/hugin/GLPreviewFrame.cpp:2913
 msgid ""
 "With a wide vertical field of view, panoramas with cylindrical projection "
 "get very stretched at the top and bottom.\n"
@@ -1848,14 +1854,14 @@ msgid ""
 "space."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2911
+#: hugin1/hugin/GLPreviewFrame.cpp:2919
 msgid ""
 "Since the vertical field of view is not too wide, you could try setting the "
 "panorama projection to cylindrical.\n"
 "Cylindrical projection preserves vertical lines, unlike equirectangular."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2917
+#: hugin1/hugin/GLPreviewFrame.cpp:2925
 msgid ""
 "Stereographic projection is conformal, unlike this Fisheye panorama "
 "projection.\n"
@@ -1863,7 +1869,7 @@ msgid ""
 "easier on the eye."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2922
+#: hugin1/hugin/GLPreviewFrame.cpp:2930
 msgid ""
 "Panoramas with stereographic projection and a very wide field of view "
 "stretch the image around the edges a lot.\n"
@@ -1871,41 +1877,41 @@ msgid ""
 "field of view and still have a reasonable coverage of the middle."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2929
+#: hugin1/hugin/GLPreviewFrame.cpp:2937
 msgid ""
 "Setting the panorama to rectilinear projection would keep the straight lines "
 "straight."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2950
+#: hugin1/hugin/GLPreviewFrame.cpp:2958
 msgid ""
 "You have hidden the infobar, which shows hints about selection of "
 "projection.\n"
 "If you want to see the bar again, activate the bar in the preferences again."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3020
+#: hugin1/hugin/GLPreviewFrame.cpp:3028
 msgid "normal, individual"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3023
+#: hugin1/hugin/GLPreviewFrame.cpp:3031
 msgid "mosaic"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3024
+#: hugin1/hugin/GLPreviewFrame.cpp:3032
 msgid "mosaic, individual"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3044
+#: hugin1/hugin/GLPreviewFrame.cpp:3052
 msgid "Panosphere"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3047
+#: hugin1/hugin/GLPreviewFrame.cpp:3055
 #, fuzzy
 msgid "Mosaic plane"
 msgstr "Bilinearna"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3260
+#: hugin1/hugin/GLPreviewFrame.cpp:3268
 #, c-format
 msgid ""
 "%lu control points were removed from the panorama.\n"
@@ -1913,24 +1919,24 @@ msgid ""
 "Should the panorama now be re-optimized?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3261 hugin1/hugin/GLPreviewFrame.cpp:3568
+#: hugin1/hugin/GLPreviewFrame.cpp:3269 hugin1/hugin/GLPreviewFrame.cpp:3576
 #, c-format
 msgid "Current selected optimizer strategy is \"%s\"."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3311
+#: hugin1/hugin/GLPreviewFrame.cpp:3319
 msgid ""
 "The selected region contains no active image.\n"
 "Please select a region which is covered by at least 2 images."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3322
+#: hugin1/hugin/GLPreviewFrame.cpp:3330
 msgid ""
 "The selected region is only covered by a single image.\n"
 "Can't create control points for a single image."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3333
+#: hugin1/hugin/GLPreviewFrame.cpp:3341
 msgid ""
 "The selected rectangle is very big.\n"
 "This function is only intended for smaller areas. Otherwise unwanted side "
@@ -1939,31 +1945,31 @@ msgid ""
 "Proceed anyway?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3358 hugin1/hugin/PapywizardImport.cpp:467
+#: hugin1/hugin/GLPreviewFrame.cpp:3366 hugin1/hugin/PapywizardImport.cpp:467
 #, fuzzy
 msgid "Searching control points"
 msgstr "Ustvari stične točke."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3358
+#: hugin1/hugin/GLPreviewFrame.cpp:3366
 #, fuzzy
 msgid "Processing"
 msgstr "Obdelava"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3365
+#: hugin1/hugin/GLPreviewFrame.cpp:3373
 msgid "Remap image to panorama projection..."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3419
+#: hugin1/hugin/GLPreviewFrame.cpp:3427
 #, fuzzy
 msgid "Matching interest points..."
 msgstr "iskanje soležnih točk..."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3538
+#: hugin1/hugin/GLPreviewFrame.cpp:3546
 #, fuzzy
 msgid "Checking results..."
 msgstr "Spremeni objektiv..."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3567
+#: hugin1/hugin/GLPreviewFrame.cpp:3575
 #, c-format
 msgid ""
 "%lu control points were added to the panorama.\n"
@@ -1971,13 +1977,13 @@ msgid ""
 "Should the panorama now be re-optimized?"
 msgstr ""
 
-#: hugin1/hugin/GLViewer.cpp:139
+#: hugin1/hugin/GLViewer.cpp:136
 msgid ""
 "Error initializing GLEW\n"
 "Fast preview window can not be opened."
 msgstr ""
 
-#: hugin1/hugin/GLViewer.cpp:151
+#: hugin1/hugin/GLViewer.cpp:148
 msgid ""
 "Sorry, the fast preview window requires a system which supports OpenGL "
 "version 1.1 with the GL_ARB_multitexture extension.\n"
@@ -2020,7 +2026,7 @@ msgid "Number of masks"
 msgstr "Številu procesorjev:"
 
 #: hugin1/hugin/ImagesList.cpp:444 hugin1/hugin/xrc/mask_editor_panel.xrc:340
-#: hugin1/hugin/xrc/preview_frame.xrc:983
+#: hugin1/hugin/xrc/preview_frame.xrc:980
 msgid "Crop"
 msgstr "Obreži"
 
@@ -2057,7 +2063,7 @@ msgstr ""
 msgid "The maximum Ev difference has to be greater than 0."
 msgstr ""
 
-#: hugin1/hugin/ImagesPanel.cpp:696 hugin1/hugin/ImagesTree.cpp:1282
+#: hugin1/hugin/ImagesPanel.cpp:696 hugin1/hugin/ImagesTree.cpp:1209
 #: hugin1/hugin/xrc/main_frame.xrc:351
 msgid "Stacks"
 msgstr ""
@@ -2258,7 +2264,7 @@ msgstr ""
 msgid "Shutter speed"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:162
+#: hugin1/hugin/ImagesTree.cpp:162 hugin1/ptbatcher/FindPanoDialog.cpp:1044
 msgid "ISO"
 msgstr ""
 
@@ -2433,101 +2439,101 @@ msgstr "Odziv fotoaparata"
 msgid "Camera response parameter"
 msgstr "Odziv fotoaparata"
 
-#: hugin1/hugin/ImagesTree.cpp:514 hugin1/hugin/ImagesTree.cpp:696
+#: hugin1/hugin/ImagesTree.cpp:439 hugin1/hugin/ImagesTree.cpp:621
 msgid "not active"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:517 hugin1/hugin/ImagesTree.cpp:699
+#: hugin1/hugin/ImagesTree.cpp:442 hugin1/hugin/ImagesTree.cpp:624
 msgid "active"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:659
+#: hugin1/hugin/ImagesTree.cpp:584
 #, fuzzy, c-format
 msgid "Lens %ld"
 msgstr "Objektiv"
 
-#: hugin1/hugin/ImagesTree.cpp:662
+#: hugin1/hugin/ImagesTree.cpp:587
 #, c-format
 msgid "Stack %ld"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:665
+#: hugin1/hugin/ImagesTree.cpp:590
 #, fuzzy, c-format
 msgid "Output stack %ld"
 msgstr "Izhod"
 
-#: hugin1/hugin/ImagesTree.cpp:668
+#: hugin1/hugin/ImagesTree.cpp:593
 #, fuzzy, c-format
 msgid "Output exposure layer %ld"
 msgstr "Spojeni osvetlitveni sloji"
 
-#: hugin1/hugin/ImagesTree.cpp:1180 hugin1/hugin/ImagesTree.cpp:1195
+#: hugin1/hugin/ImagesTree.cpp:1107 hugin1/hugin/ImagesTree.cpp:1122
 msgid "Link"
 msgstr "Poveži"
 
-#: hugin1/hugin/ImagesTree.cpp:1184 hugin1/hugin/ImagesTree.cpp:1191
+#: hugin1/hugin/ImagesTree.cpp:1111 hugin1/hugin/ImagesTree.cpp:1118
 msgid "Unlink"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1206
+#: hugin1/hugin/ImagesTree.cpp:1133
 msgid "Select all for current lens"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1207
+#: hugin1/hugin/ImagesTree.cpp:1134
 msgid "Unselect all for current lens"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1211
+#: hugin1/hugin/ImagesTree.cpp:1138
 msgid "Select all for current stack"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1212
+#: hugin1/hugin/ImagesTree.cpp:1139
 msgid "Unselect all for current stack"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1217 hugin1/hugin/ImagesTree.cpp:1251
-#: hugin1/hugin/ImagesTree.cpp:1420
+#: hugin1/hugin/ImagesTree.cpp:1144 hugin1/hugin/ImagesTree.cpp:1178
+#: hugin1/hugin/ImagesTree.cpp:1347
 #, fuzzy
 msgid "Select all"
 msgstr "Ponastavi"
 
-#: hugin1/hugin/ImagesTree.cpp:1219 hugin1/hugin/ImagesTree.cpp:1253
-#: hugin1/hugin/ImagesTree.cpp:1421
+#: hugin1/hugin/ImagesTree.cpp:1146 hugin1/hugin/ImagesTree.cpp:1180
+#: hugin1/hugin/ImagesTree.cpp:1348
 #, fuzzy
 msgid "Unselect all"
 msgstr "izberi"
 
-#: hugin1/hugin/ImagesTree.cpp:1223
+#: hugin1/hugin/ImagesTree.cpp:1150
 #, fuzzy
 msgid "Edit image variables..."
 msgstr "Spremenljivke slike:"
 
-#: hugin1/hugin/ImagesTree.cpp:1231
+#: hugin1/hugin/ImagesTree.cpp:1158
 #, fuzzy
 msgid "Deactivate image"
 msgstr "&Shrani kot"
 
-#: hugin1/hugin/ImagesTree.cpp:1235
+#: hugin1/hugin/ImagesTree.cpp:1162
 #, fuzzy
 msgid "Activate image"
 msgstr "&Shrani kot"
 
-#: hugin1/hugin/ImagesTree.cpp:1240
+#: hugin1/hugin/ImagesTree.cpp:1167
 #, fuzzy
 msgid "Activate images"
 msgstr "prikazane slike"
 
-#: hugin1/hugin/ImagesTree.cpp:1241
+#: hugin1/hugin/ImagesTree.cpp:1168
 #, fuzzy
 msgid "Deactivate images"
 msgstr "Število točk na sliko"
 
-#: hugin1/hugin/ImagesTree.cpp:1293
+#: hugin1/hugin/ImagesTree.cpp:1220
 #, fuzzy
 msgid "Control points"
 msgstr "Stične točke"
 
-#: hugin1/hugin/ImagesTree.cpp:1303 hugin1/hugin/xrc/lenscal_frame.xrc:212
+#: hugin1/hugin/ImagesTree.cpp:1230 hugin1/hugin/xrc/lenscal_frame.xrc:212
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:333
 #: hugin1/hugin/xrc/optimize_panel.xrc:73
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:63
@@ -2562,12 +2568,24 @@ msgstr "Zapri"
 msgid "Did you know..."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:330
+#: hugin1/hugin/MainFrame.cpp:205 hugin1/hugin/PanoOperation.cpp:230
+#: hugin1/hugin/huginApp.cpp:575
+msgid ""
+"You selected only one raw file. This is not recommended.\n"
+"All raw files should be converted at once."
+msgstr ""
+
+#: hugin1/hugin/MainFrame.cpp:212 hugin1/hugin/PanoOperation.cpp:237
+#: hugin1/hugin/huginApp.cpp:582
+msgid "Convert anyway."
+msgstr ""
+
+#: hugin1/hugin/MainFrame.cpp:374
 #, c-format
 msgid "Version %s"
 msgstr "Verzija %s"
 
-#: hugin1/hugin/MainFrame.cpp:339
+#: hugin1/hugin/MainFrame.cpp:383
 msgid ""
 "Fatal installation error\n"
 "The file data/splash.png was not found at:"
@@ -2575,127 +2593,127 @@ msgstr ""
 "Usodna namestitvena napaka\n"
 "Datoteka data/splash.png manjka:"
 
-#: hugin1/hugin/MainFrame.cpp:359 hugin1/ptbatcher/BatchFrame.cpp:144
-#: hugin1/hugin/xrc/batch_menu.xrc:56 hugin1/hugin/xrc/main_menu.xrc:145
-#: hugin1/hugin/xrc/main_menu.xrc:147 hugin1/hugin/xrc/preview_frame.xrc:1052
-#: hugin1/hugin/xrc/preview_frame.xrc:1077
+#: hugin1/hugin/MainFrame.cpp:403 hugin1/ptbatcher/BatchFrame.cpp:144
+#: hugin1/hugin/xrc/batch_menu.xrc:56 hugin1/hugin/xrc/main_menu.xrc:141
+#: hugin1/hugin/xrc/main_menu.xrc:143 hugin1/hugin/xrc/preview_frame.xrc:1049
+#: hugin1/hugin/xrc/preview_frame.xrc:1074
 msgid "&Help"
 msgstr "&Pomoč"
 
-#: hugin1/hugin/MainFrame.cpp:418
+#: hugin1/hugin/MainFrame.cpp:462
 #, fuzzy
 msgid "&Actions"
 msgstr "Možnosti"
 
-#: hugin1/hugin/MainFrame.cpp:436 hugin1/hugin/xrc/main_menu.xrc:142
+#: hugin1/hugin/MainFrame.cpp:480 hugin1/hugin/xrc/main_menu.xrc:138
 #, fuzzy
 msgid "&Output"
 msgstr "Izhod"
 
-#: hugin1/hugin/MainFrame.cpp:458
+#: hugin1/hugin/MainFrame.cpp:502
 #, c-format
 msgid "User defined sequence: %s"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:474
+#: hugin1/hugin/MainFrame.cpp:518
 msgid "User defined output sequences"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:494 hugin1/hugin/xrc/main_menu.xrc:60
-#: hugin1/hugin/xrc/preview_frame.xrc:1010
+#: hugin1/hugin/MainFrame.cpp:538 hugin1/hugin/xrc/main_menu.xrc:56
+#: hugin1/hugin/xrc/preview_frame.xrc:1007
 msgid "&Edit"
 msgstr "&Uredi"
 
-#: hugin1/hugin/MainFrame.cpp:516
+#: hugin1/hugin/MainFrame.cpp:560
 #, fuzzy, c-format
 msgid "User defined assistant: %s"
 msgstr "Asistent"
 
-#: hugin1/hugin/MainFrame.cpp:531
+#: hugin1/hugin/MainFrame.cpp:575
 #, fuzzy
 msgid "User defined assistant"
 msgstr "Asistent"
 
-#: hugin1/hugin/MainFrame.cpp:626
+#: hugin1/hugin/MainFrame.cpp:670
 msgid "Started"
 msgstr "Začel"
 
-#: hugin1/hugin/MainFrame.cpp:770 hugin1/hugin/xrc/main_frame.xrc:34
+#: hugin1/hugin/MainFrame.cpp:814 hugin1/hugin/xrc/main_frame.xrc:34
 msgid "Optimizer"
 msgstr "Optimizator"
 
-#: hugin1/hugin/MainFrame.cpp:782 hugin1/hugin/MainFrame.cpp:786
+#: hugin1/hugin/MainFrame.cpp:826 hugin1/hugin/MainFrame.cpp:830
 #: hugin1/hugin/xrc/main_frame.xrc:38 hugin1/hugin/xrc/reset_dialog.xrc:46
 msgid "Exposure"
 msgstr "Osvetlitev"
 
-#: hugin1/hugin/MainFrame.cpp:826
+#: hugin1/hugin/MainFrame.cpp:870
 msgid "Save changes to the project file before opening another project?"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:829
+#: hugin1/hugin/MainFrame.cpp:873
 msgid "Save changes to the project file before starting a new project?"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:833
+#: hugin1/hugin/MainFrame.cpp:877
 msgid "Save changes to the project file before closing?"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:846
+#: hugin1/hugin/MainFrame.cpp:890
 msgid ""
 "If you load another project without saving, your changes since last save "
 "will be discarded."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:849
+#: hugin1/hugin/MainFrame.cpp:893
 msgid ""
 "If you start a new project without saving, your changes since last save will "
 "be discarded."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:853
+#: hugin1/hugin/MainFrame.cpp:897
 msgid ""
 "If you close without saving, your changes since your last save will be "
 "discarded."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:858
+#: hugin1/hugin/MainFrame.cpp:902
 #, fuzzy
 msgid "Don't Save"
 msgstr "&Doniraj"
 
-#: hugin1/hugin/MainFrame.cpp:861
+#: hugin1/hugin/MainFrame.cpp:905
 msgid "Close without saving"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:892
+#: hugin1/hugin/MainFrame.cpp:936
 msgid "forced close"
 msgstr "prisilno zapiranje"
 
-#: hugin1/hugin/MainFrame.cpp:940
+#: hugin1/hugin/MainFrame.cpp:991
 #, c-format
 msgid "saved project %s"
 msgstr "projekt %s shranjen"
 
-#: hugin1/hugin/MainFrame.cpp:945 hugin1/hugin/MainFrame.cpp:951
-#: hugin1/hugin/MainFrame.cpp:1065 hugin1/hugin/MainFrame.cpp:1071
-#: hugin1/hugin/MainFrame.cpp:1082 hugin1/hugin/MainFrame.cpp:1088
-#: hugin1/hugin/MainFrame.cpp:1185 hugin1/hugin/MainFrame.cpp:1191
-#: hugin1/hugin/MainFrame.cpp:2247 hugin1/hugin/MainFrame.cpp:2253
-#: hugin1/hugin/MainFrame.cpp:2265 hugin1/hugin/MainFrame.cpp:2270
+#: hugin1/hugin/MainFrame.cpp:996 hugin1/hugin/MainFrame.cpp:1002
+#: hugin1/hugin/MainFrame.cpp:1116 hugin1/hugin/MainFrame.cpp:1122
+#: hugin1/hugin/MainFrame.cpp:1133 hugin1/hugin/MainFrame.cpp:1139
+#: hugin1/hugin/MainFrame.cpp:1236 hugin1/hugin/MainFrame.cpp:1242
+#: hugin1/hugin/MainFrame.cpp:2281 hugin1/hugin/MainFrame.cpp:2287
+#: hugin1/hugin/MainFrame.cpp:2299 hugin1/hugin/MainFrame.cpp:2304
 #: hugin1/hugin/xrc/main_frame.xrc:4
 #, fuzzy
 msgid "Hugin - Panorama Stitcher"
 msgstr "Hugin - grafični vmesnik za Panorama Tools"
 
-#: hugin1/hugin/MainFrame.cpp:947 hugin1/hugin/MainFrame.cpp:1067
-#: hugin1/hugin/MainFrame.cpp:1084 hugin1/hugin/MainFrame.cpp:1187
-#: hugin1/hugin/MainFrame.cpp:2248 hugin1/hugin/MainFrame.cpp:2254
+#: hugin1/hugin/MainFrame.cpp:998 hugin1/hugin/MainFrame.cpp:1118
+#: hugin1/hugin/MainFrame.cpp:1135 hugin1/hugin/MainFrame.cpp:1238
+#: hugin1/hugin/MainFrame.cpp:2282 hugin1/hugin/MainFrame.cpp:2288
 #, fuzzy
 msgid "Panorama editor"
 msgstr "Predogled panorame"
 
-#: hugin1/hugin/MainFrame.cpp:958
+#: hugin1/hugin/MainFrame.cpp:1009
 #, c-format
 msgid ""
 "Could not save project file \"%s\".\n"
@@ -2704,36 +2722,36 @@ msgid ""
 "(Error code: %s)"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:1010
+#: hugin1/hugin/MainFrame.cpp:1061
 msgid "Save PTmender script file"
 msgstr "Shrani PTmender skriptno datoteko"
 
-#: hugin1/hugin/MainFrame.cpp:1012
+#: hugin1/hugin/MainFrame.cpp:1063
 msgid "PTmender files (*.txt)|*.txt"
 msgstr "PTmender datoteke (*.txt)|*.txt"
 
-#: hugin1/hugin/MainFrame.cpp:1037
+#: hugin1/hugin/MainFrame.cpp:1088
 msgid "Open project:   "
 msgstr "Odpri project:"
 
-#: hugin1/hugin/MainFrame.cpp:1059
+#: hugin1/hugin/MainFrame.cpp:1110
 msgid "Project opened"
 msgstr "Projekt odprt"
 
-#: hugin1/hugin/MainFrame.cpp:1076
+#: hugin1/hugin/MainFrame.cpp:1127
 #, fuzzy
 msgid "Loading canceled"
 msgstr "Nalaganje slik"
 
-#: hugin1/hugin/MainFrame.cpp:1101
+#: hugin1/hugin/MainFrame.cpp:1152
 msgid "Error opening project:   "
 msgstr "Napaka pri odpiranju projekta:"
 
-#: hugin1/hugin/MainFrame.cpp:1133 hugin1/hugin/MainFrame.cpp:1645
+#: hugin1/hugin/MainFrame.cpp:1184 hugin1/hugin/MainFrame.cpp:1679
 msgid "Open project file"
 msgstr "Odpri projektno datoteko"
 
-#: hugin1/hugin/MainFrame.cpp:1143
+#: hugin1/hugin/MainFrame.cpp:1194
 #, c-format
 msgid ""
 "File %s is an image file and not a project file.\n"
@@ -2741,11 +2759,11 @@ msgid ""
 "Do you want to add this image file to the current project?"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:1169
+#: hugin1/hugin/MainFrame.cpp:1220
 msgid "Open project: cancel"
 msgstr "Odpri projekt: prekliči"
 
-#: hugin1/hugin/MainFrame.cpp:1318
+#: hugin1/hugin/MainFrame.cpp:1358
 #, c-format
 msgid ""
 "Could not load image \"%s\".\n"
@@ -2753,7 +2771,7 @@ msgid ""
 "This file will be removed from the project."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:1329
+#: hugin1/hugin/MainFrame.cpp:1369
 #, c-format
 msgid ""
 "Could not load image \"%s\".\n"
@@ -2761,34 +2779,34 @@ msgid ""
 "This file will be removed from the project."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:1678
+#: hugin1/hugin/MainFrame.cpp:1712
 #, fuzzy, c-format
 msgid "Could not read project file %s."
 msgstr "Napaka pri odpiranju datoteke:"
 
-#: hugin1/hugin/MainFrame.cpp:1687
+#: hugin1/hugin/MainFrame.cpp:1721
 #, fuzzy
 msgid "Open Papywizard xml file"
 msgstr "Odpri projekt"
 
-#: hugin1/hugin/MainFrame.cpp:1688
+#: hugin1/hugin/MainFrame.cpp:1722
 #, fuzzy
 msgid "Papywizard xml files (*.xml)|*.xml|All files (*)|*"
 msgstr "Projektne datoteke (*.pto)|*.pto|Vse datoteke (*)|*"
 
-#: hugin1/hugin/MainFrame.cpp:1704
+#: hugin1/hugin/MainFrame.cpp:1738
 msgid "Choose template project"
 msgstr "Izberi projektno predlogo"
 
-#: hugin1/hugin/MainFrame.cpp:1780
+#: hugin1/hugin/MainFrame.cpp:1814
 msgid "Fine-tuning all points"
 msgstr "Nadrobno usklajevanje vseh točk"
 
-#: hugin1/hugin/MainFrame.cpp:1780
+#: hugin1/hugin/MainFrame.cpp:1814
 msgid "Fine-tuning"
 msgstr "Nadrobno usklajevanje"
 
-#: hugin1/hugin/MainFrame.cpp:1852
+#: hugin1/hugin/MainFrame.cpp:1886
 #, c-format
 msgid ""
 "%d points fine-tuned, %d points not updated due to low correlation\n"
@@ -2816,40 +2834,40 @@ msgstr ""
 "\n"
 "Uporabi Seznam stičnih točk (F3) za pregled vseh točk trenutnega projekta\n"
 
-#: hugin1/hugin/MainFrame.cpp:1854
+#: hugin1/hugin/MainFrame.cpp:1888
 msgid "Fine-tune result"
 msgstr "Rezultati nadrobnega usklajevanja"
 
-#: hugin1/hugin/MainFrame.cpp:1872
+#: hugin1/hugin/MainFrame.cpp:1906
 #, fuzzy
 msgid "Removing control points in masks"
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/MainFrame.cpp:1881
+#: hugin1/hugin/MainFrame.cpp:1915
 #, fuzzy
 msgid "Select python script"
 msgstr "Izberite autopano skriptni vmesnik"
 
-#: hugin1/hugin/MainFrame.cpp:1883
+#: hugin1/hugin/MainFrame.cpp:1917
 #, fuzzy
 msgid "Python script (*.py)|*.py|All files (*.*)|*.*"
 msgstr "Projektne datoteke (*.pto)|*.pto|Vse datoteke (*)|*"
 
-#: hugin1/hugin/MainFrame.cpp:2124
+#: hugin1/hugin/MainFrame.cpp:2158
 #, c-format
 msgid ""
 "File \"%s\" not found.\n"
 "Maybe file was renamed, moved or deleted."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2125 hugin1/ptbatcher/Batch.cpp:362
-#: hugin1/ptbatcher/Batch.cpp:816 hugin1/ptbatcher/Batch.cpp:832
-#: hugin1/ptbatcher/Batch.cpp:1000
+#: hugin1/hugin/MainFrame.cpp:2159 hugin1/ptbatcher/Batch.cpp:369
+#: hugin1/ptbatcher/Batch.cpp:823 hugin1/ptbatcher/Batch.cpp:839
+#: hugin1/ptbatcher/Batch.cpp:1007
 #, fuzzy
 msgid "Error!"
 msgstr "Napaka"
 
-#: hugin1/hugin/MainFrame.cpp:2151
+#: hugin1/hugin/MainFrame.cpp:2185
 #, fuzzy, c-format
 msgid ""
 "Celeste model expected in %s not found, Hugin needs to be properly installed."
@@ -2857,55 +2875,55 @@ msgstr ""
 "xrc direktorija ni, hugin mora biti pravilno nameščen\n"
 "Pot:"
 
-#: hugin1/hugin/MainFrame.cpp:2156
+#: hugin1/hugin/MainFrame.cpp:2190
 #, fuzzy, c-format
 msgid "Could not load Celeste model file %s"
 msgstr "Napaka pri odpiranju datoteke:"
 
-#: hugin1/hugin/MainFrame.cpp:2290
+#: hugin1/hugin/MainFrame.cpp:2324
 msgid ""
 "Can't switch to simple interface. The project is using stacks and/or "
 "vignetting center shift.\n"
 "These features are not supported in simple interface."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2300
+#: hugin1/hugin/MainFrame.cpp:2334
 msgid ""
 "Can't switch to simple interface. The project is using translation or shear "
 "parameters.\n"
 "These parameters are not supported in simple interface."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2321
+#: hugin1/hugin/MainFrame.cpp:2355
 msgid ""
 "Can't switch to advanced interface. The project is using translation or "
 "shear parameters.\n"
 "These parameters are not supported in advanced interface."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2375
+#: hugin1/hugin/MainFrame.cpp:2410
 msgid ""
 "The assistant queue is empty. This indicates an error in the user defined "
 "assistant file."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2383
+#: hugin1/hugin/MainFrame.cpp:2418
 #, fuzzy
 msgid "Running assistant"
 msgstr "Asistent"
 
-#: hugin1/hugin/MainFrame.cpp:2400
+#: hugin1/hugin/MainFrame.cpp:2435
 msgid ""
 "The assistant could not find vertical lines. Please add vertical lines in "
 "the panorama editor and optimize project manually."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2415
+#: hugin1/hugin/MainFrame.cpp:2450
 #, c-format
 msgid "Warning %d unconnected image groups found:"
 msgstr "Pozor: %d nepovezanih skupin slik"
 
-#: hugin1/hugin/MainFrame.cpp:2416
+#: hugin1/hugin/MainFrame.cpp:2451
 #, fuzzy
 msgid ""
 "Please create control points between unconnected images using the Control "
@@ -2918,31 +2936,31 @@ msgstr ""
 "\n"
 "Nato pritisnite gumb \"Razmesti\"."
 
-#: hugin1/hugin/MainFrame.cpp:2419 hugin1/hugin/MainFrame.cpp:2425
+#: hugin1/hugin/MainFrame.cpp:2454 hugin1/hugin/MainFrame.cpp:2460
 msgid ""
 "The assistant did not complete successfully. Please check the resulting "
 "project file."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2486
+#: hugin1/hugin/MainFrame.cpp:2521
 #, fuzzy
 msgid "Project file not found"
 msgstr "Datoteka s sliko ni obstaja"
 
-#: hugin1/hugin/MainFrame.cpp:2501
+#: hugin1/hugin/MainFrame.cpp:2536
 msgid "Can't launch PTBatcherGui"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2509
+#: hugin1/hugin/MainFrame.cpp:2544
 msgid "Launched incorrect programme"
 msgstr ""
 
-#: hugin1/hugin/MaskEditorPanel.cpp:114
+#: hugin1/hugin/MaskEditorPanel.cpp:110
 #, fuzzy
 msgid "Mask type"
 msgstr "Tip objektiva:"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:455
+#: hugin1/hugin/MaskEditorPanel.cpp:451
 #, fuzzy
 msgid ""
 "Create a polygon mask by clicking with the left mouse button on image, set "
@@ -2950,33 +2968,33 @@ msgid ""
 msgstr ""
 "Centriraj panoramo z levim miškinim klikom, nastavi horizont z desnim klikom."
 
-#: hugin1/hugin/MaskEditorPanel.cpp:464 hugin1/hugin/MaskEditorPanel.cpp:477
+#: hugin1/hugin/MaskEditorPanel.cpp:460 hugin1/hugin/MaskEditorPanel.cpp:473
 #, fuzzy
 msgid "Save mask"
 msgstr "&Shrani kot"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:466 hugin1/hugin/MaskEditorPanel.cpp:498
+#: hugin1/hugin/MaskEditorPanel.cpp:462 hugin1/hugin/MaskEditorPanel.cpp:494
 #, fuzzy
 msgid "Mask files (*.msk)|*.msk|All files (*)|*"
 msgstr "Projektne datoteke (*.pto)|*.pto|Vse datoteke (*)|*"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:496
+#: hugin1/hugin/MaskEditorPanel.cpp:492
 #, fuzzy
 msgid "Load mask"
 msgstr "Nalaganje slik"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:502
+#: hugin1/hugin/MaskEditorPanel.cpp:498
 #, fuzzy
 msgid "Load mask: cancel"
 msgstr "Dodaj sliko: prekliči"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:513
+#: hugin1/hugin/MaskEditorPanel.cpp:509
 #, fuzzy, c-format
 msgid "Could not parse mask from file %s."
 msgstr "Napaka pri odpiranju datoteke:"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:878 hugin1/hugin/MaskEditorPanel.cpp:897
-#: hugin1/hugin/MaskEditorPanel.cpp:916 hugin1/hugin/MaskEditorPanel.cpp:935
+#: hugin1/hugin/MaskEditorPanel.cpp:874 hugin1/hugin/MaskEditorPanel.cpp:893
+#: hugin1/hugin/MaskEditorPanel.cpp:912 hugin1/hugin/MaskEditorPanel.cpp:931
 msgid "Please enter a valid number"
 msgstr "Prosimo vnesite ustrezno število"
 
@@ -3111,7 +3129,7 @@ msgid "Photometric alignment"
 msgstr "Fotometrično razmeščanje"
 
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:261
-#: hugin1/hugin/PanoOperation.cpp:740 hugin1/hugin/PanoOperation.cpp:803
+#: hugin1/hugin/PanoOperation.cpp:821 hugin1/hugin/PanoOperation.cpp:884
 msgid "Loading images"
 msgstr "Nalaganje slik"
 
@@ -3155,186 +3173,190 @@ msgstr ""
 msgid "Photometric optimization finished"
 msgstr "Fotometrična optimizacija končana"
 
-#: hugin1/hugin/PanoOperation.cpp:170
+#: hugin1/hugin/PanoOperation.cpp:215
 msgid "Add individual images..."
 msgstr "Dodaj posamezne slike..."
 
-#: hugin1/hugin/PanoOperation.cpp:259
+#: hugin1/hugin/PanoOperation.cpp:237
+msgid "Let me select several raw files."
+msgstr ""
+
+#: hugin1/hugin/PanoOperation.cpp:339
 msgid "Add time-series of images..."
 msgstr "Dodaj slike v časovnem zaporedju..."
 
-#: hugin1/hugin/PanoOperation.cpp:372
+#: hugin1/hugin/PanoOperation.cpp:453
 #, fuzzy
 msgid "No matching images found."
 msgstr "Nalaganje slik"
 
-#: hugin1/hugin/PanoOperation.cpp:385
+#: hugin1/hugin/PanoOperation.cpp:466
 #, fuzzy
 msgid "Manipulate image variables..."
 msgstr "Spremenljivke slike:"
 
-#: hugin1/hugin/PanoOperation.cpp:409
+#: hugin1/hugin/PanoOperation.cpp:490
 msgid "Remove selected image(s)"
 msgstr "Odstrani izbrane slike"
 
-#: hugin1/hugin/PanoOperation.cpp:424
+#: hugin1/hugin/PanoOperation.cpp:505
 msgid "Anchor this image for position"
 msgstr "Nastavi sliko za sidrišče"
 
-#: hugin1/hugin/PanoOperation.cpp:436
+#: hugin1/hugin/PanoOperation.cpp:517
 msgid "Anchor this image for exposure"
 msgstr "Nastavi to sliko za osvetlitev"
 
-#: hugin1/hugin/PanoOperation.cpp:466
+#: hugin1/hugin/PanoOperation.cpp:547
 #, fuzzy
 msgid "New lens"
 msgstr "Nov objektiv"
 
-#: hugin1/hugin/PanoOperation.cpp:490
+#: hugin1/hugin/PanoOperation.cpp:571
 msgid "Change lens..."
 msgstr "Spremeni objektiv..."
 
-#: hugin1/hugin/PanoOperation.cpp:497
+#: hugin1/hugin/PanoOperation.cpp:578
 msgid "Enter new lens number"
 msgstr "Vnesi novo številka objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:498
+#: hugin1/hugin/PanoOperation.cpp:579
 msgid "Lens number"
 msgstr "Številka objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:499
+#: hugin1/hugin/PanoOperation.cpp:580
 msgid "Change lens number"
 msgstr "Spremeni številk objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:522
+#: hugin1/hugin/PanoOperation.cpp:603
 #, fuzzy
 msgid "Load lens from lens database"
 msgstr "Naloži podatke objektiva..."
 
-#: hugin1/hugin/PanoOperation.cpp:526
+#: hugin1/hugin/PanoOperation.cpp:607
 #, fuzzy
 msgid "Load lens from ini file"
 msgstr "Naloži parametre objektiva iz datoteke"
 
-#: hugin1/hugin/PanoOperation.cpp:537
+#: hugin1/hugin/PanoOperation.cpp:618
 msgid ""
 "You selected only one image.\n"
 "Should the loaded parameters be applied to all images with the same lens?"
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:537 hugin1/ptbatcher/FindPanoDialog.cpp:235
-#: hugin1/ptbatcher/FindPanoDialog.cpp:270
+#: hugin1/hugin/PanoOperation.cpp:618 hugin1/ptbatcher/FindPanoDialog.cpp:240
+#: hugin1/ptbatcher/FindPanoDialog.cpp:275
 msgid "Question"
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:552
+#: hugin1/hugin/PanoOperation.cpp:633
 msgid ""
 "You selected images with different sizes.\n"
 "Apply lens parameter file can result in unwanted results.\n"
 "Apply settings anyway?"
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:590
+#: hugin1/hugin/PanoOperation.cpp:671
 #, fuzzy
 msgid "Save lens to ini file"
 msgstr "Shrani parametre objektiva v datoteko"
 
-#: hugin1/hugin/PanoOperation.cpp:610
+#: hugin1/hugin/PanoOperation.cpp:691
 #, fuzzy
 msgid "Remove control points"
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/PanoOperation.cpp:640
+#: hugin1/hugin/PanoOperation.cpp:721
 #, fuzzy
 msgid "Selected images have no control points."
 msgstr "Vsaj ena slika nima stičnih točk."
 
-#: hugin1/hugin/PanoOperation.cpp:649
+#: hugin1/hugin/PanoOperation.cpp:730
 #, fuzzy, c-format
 msgid "Really delete %lu control points?"
 msgstr "Zares izbrišem %d stičnih točk?"
 
-#: hugin1/hugin/PanoOperation.cpp:651
+#: hugin1/hugin/PanoOperation.cpp:732
 msgid "Delete Control Points"
 msgstr "Izbriši stične točke"
 
-#: hugin1/hugin/PanoOperation.cpp:665 hugin1/hugin/xrc/cp_editor_panel.xrc:334
+#: hugin1/hugin/PanoOperation.cpp:746 hugin1/hugin/xrc/cp_editor_panel.xrc:334
 #, fuzzy
 msgid "Clean control points"
 msgstr "Ustvari stične točke."
 
-#: hugin1/hugin/PanoOperation.cpp:676
+#: hugin1/hugin/PanoOperation.cpp:757
 #, fuzzy
 msgid "Cleaning Control points"
 msgstr "iskanje kontrolnih točk"
 
-#: hugin1/hugin/PanoOperation.cpp:676
+#: hugin1/hugin/PanoOperation.cpp:757
 msgid "Checking pairwise"
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:700
+#: hugin1/hugin/PanoOperation.cpp:781
 #, fuzzy
 msgid "Checking whole project"
 msgstr "Izberi projektno predlogo"
 
-#: hugin1/hugin/PanoOperation.cpp:717
+#: hugin1/hugin/PanoOperation.cpp:798
 msgid "Finished cleaning"
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:731
+#: hugin1/hugin/PanoOperation.cpp:812
 #, fuzzy
 msgid "Remove control points on clouds"
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/PanoOperation.cpp:852
+#: hugin1/hugin/PanoOperation.cpp:933
 msgid "Reset user defined..."
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:855
+#: hugin1/hugin/PanoOperation.cpp:936
 #, fuzzy
 msgid "Reset positions"
 msgstr "Nov projekt"
 
-#: hugin1/hugin/PanoOperation.cpp:858
+#: hugin1/hugin/PanoOperation.cpp:939
 #, fuzzy
 msgid "Reset translation parameters"
 msgstr "Poveži vrednosti"
 
-#: hugin1/hugin/PanoOperation.cpp:861
+#: hugin1/hugin/PanoOperation.cpp:942
 #, fuzzy
 msgid "Reset lens parameters"
 msgstr "Parametri objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:864
+#: hugin1/hugin/PanoOperation.cpp:945
 #, fuzzy
 msgid "Reset photometric parameters"
 msgstr "Parametri objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:1123
+#: hugin1/hugin/PanoOperation.cpp:1204
 msgid "New stack"
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:1147
+#: hugin1/hugin/PanoOperation.cpp:1228
 #, fuzzy
 msgid "Change stack..."
 msgstr "Spremeni objektiv..."
 
-#: hugin1/hugin/PanoOperation.cpp:1154
+#: hugin1/hugin/PanoOperation.cpp:1235
 #, fuzzy
 msgid "Enter new stack number"
 msgstr "Vnesi novo številka objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:1155
+#: hugin1/hugin/PanoOperation.cpp:1236
 #, fuzzy
 msgid "stack number"
 msgstr "Številka objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:1156
+#: hugin1/hugin/PanoOperation.cpp:1237
 #, fuzzy
 msgid "Change stack number"
 msgstr "Spremeni številk objektiva"
 
-#: hugin1/hugin/PanoOperation.cpp:1177
+#: hugin1/hugin/PanoOperation.cpp:1258
 #, fuzzy
 msgid "Set stack size..."
 msgstr "Spremeni objektiv..."
@@ -3452,7 +3474,7 @@ msgid "Could not create temporary project file"
 msgstr "Ustvarjanje začasne datoteke ni uspelo"
 
 #: hugin1/hugin/PanoPanel.cpp:1146 hugin1/hugin/PanoPanel.cpp:1266
-#: hugin1/hugin/PanoPanel.cpp:1431 hugin1/ptbatcher/Batch.cpp:682
+#: hugin1/hugin/PanoPanel.cpp:1431 hugin1/ptbatcher/Batch.cpp:689
 #: hugin1/stitch_project/hugin_stitch_project.cpp:394
 msgid "Specify output prefix"
 msgstr "Označi izhodno predpono"
@@ -3551,221 +3573,238 @@ msgstr ""
 msgid "Miscellaneous"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:116
+#: hugin1/hugin/PreferencesDialog.cpp:119
 msgid "System default"
 msgstr "Privzeto sistemsko"
 
-#: hugin1/hugin/PreferencesDialog.cpp:119
+#: hugin1/hugin/PreferencesDialog.cpp:122
 msgid "Basque"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:127
+#: hugin1/hugin/PreferencesDialog.cpp:130
 msgid "Catalan"
 msgstr "katalonski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:130
+#: hugin1/hugin/PreferencesDialog.cpp:133
 msgid "Chinese (Simplified)"
 msgstr "kitajski (enostavno)"
 
-#: hugin1/hugin/PreferencesDialog.cpp:133
+#: hugin1/hugin/PreferencesDialog.cpp:136
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:136
+#: hugin1/hugin/PreferencesDialog.cpp:139
 msgid "Czech"
 msgstr "češki"
 
-#: hugin1/hugin/PreferencesDialog.cpp:139
+#: hugin1/hugin/PreferencesDialog.cpp:142
 #, fuzzy
 msgid "Danish"
 msgstr "španski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:142
+#: hugin1/hugin/PreferencesDialog.cpp:145
 msgid "Dutch"
 msgstr "nizozemski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:145
+#: hugin1/hugin/PreferencesDialog.cpp:148
 msgid "English"
 msgstr "angleški"
 
-#: hugin1/hugin/PreferencesDialog.cpp:148
+#: hugin1/hugin/PreferencesDialog.cpp:151
 msgid "French"
 msgstr "francoski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:151
+#: hugin1/hugin/PreferencesDialog.cpp:154
 msgid "German"
 msgstr "nemški"
 
-#: hugin1/hugin/PreferencesDialog.cpp:154
+#: hugin1/hugin/PreferencesDialog.cpp:157
 msgid "Hungarian"
 msgstr "madžarski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:157
+#: hugin1/hugin/PreferencesDialog.cpp:160
 msgid "Italian"
 msgstr "italijanski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:160
+#: hugin1/hugin/PreferencesDialog.cpp:163
 msgid "Japanese"
 msgstr "japonski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:168
+#: hugin1/hugin/PreferencesDialog.cpp:171
 msgid "Polish"
 msgstr "poljski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:171
+#: hugin1/hugin/PreferencesDialog.cpp:174
 msgid "Portuguese (Brazilian)"
 msgstr "portugalski (Brazilija)"
 
-#: hugin1/hugin/PreferencesDialog.cpp:174
+#: hugin1/hugin/PreferencesDialog.cpp:177
 msgid "Russian"
 msgstr "ruski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:177
+#: hugin1/hugin/PreferencesDialog.cpp:180
 msgid "Slovak"
 msgstr "slovaški"
 
-#: hugin1/hugin/PreferencesDialog.cpp:185
+#: hugin1/hugin/PreferencesDialog.cpp:188
 msgid "Spanish"
 msgstr "španski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:188
+#: hugin1/hugin/PreferencesDialog.cpp:191
 msgid "Swedish"
 msgstr "švedski"
 
-#: hugin1/hugin/PreferencesDialog.cpp:196
+#: hugin1/hugin/PreferencesDialog.cpp:199
 msgid "Finnish"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:199
+#: hugin1/hugin/PreferencesDialog.cpp:202
 msgid "Valencian (Southern Catalan)"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:294
+#: hugin1/hugin/PreferencesDialog.cpp:302
 msgid "Select Enblend"
 msgstr "Izberi Enblend"
 
-#: hugin1/hugin/PreferencesDialog.cpp:297
-#: hugin1/hugin/PreferencesDialog.cpp:314 hugin1/hugin/RawImport.cpp:909
-#: hugin1/hugin/RawImport.cpp:921 hugin1/hugin/RawImport.cpp:941
+#: hugin1/hugin/PreferencesDialog.cpp:305
+#: hugin1/hugin/PreferencesDialog.cpp:322
+#: hugin1/hugin/PreferencesDialog.cpp:339
+#: hugin1/hugin/PreferencesDialog.cpp:355
+#: hugin1/hugin/PreferencesDialog.cpp:371
 msgid "Executables (*.exe)|*.exe"
 msgstr "Izvršljive (*.exe)|*.exe"
 
-#: hugin1/hugin/PreferencesDialog.cpp:311
+#: hugin1/hugin/PreferencesDialog.cpp:319
 msgid "Select Enfuse"
 msgstr "Izberi Enfuse"
 
-#: hugin1/hugin/PreferencesDialog.cpp:340
-#: hugin1/hugin/PreferencesDialog.cpp:428
-#: hugin1/hugin/xrc/pref_dialog.xrc:1002 hugin1/hugin/xrc/pref_dialog.xrc:1061
+#: hugin1/hugin/PreferencesDialog.cpp:337
+#, fuzzy
+msgid "Select dcraw"
+msgstr "Ponastavi"
+
+#: hugin1/hugin/PreferencesDialog.cpp:353
+#, fuzzy
+msgid "Select RawTherapee-cli"
+msgstr "Izberi PTStitcher.exe"
+
+#: hugin1/hugin/PreferencesDialog.cpp:369
+#, fuzzy
+msgid "Select Darktable-cli"
+msgstr "Ponastavi"
+
+#: hugin1/hugin/PreferencesDialog.cpp:397
+#: hugin1/hugin/PreferencesDialog.cpp:485
+#: hugin1/hugin/xrc/pref_dialog.xrc:1085 hugin1/hugin/xrc/pref_dialog.xrc:1144
 #, fuzzy
 msgid "Select ExifTool argfile"
 msgstr "Izberi točko na levi sliki"
 
-#: hugin1/hugin/PreferencesDialog.cpp:342
-#: hugin1/hugin/PreferencesDialog.cpp:400
-#: hugin1/hugin/PreferencesDialog.cpp:430
-#: hugin1/hugin/PreferencesDialog.cpp:470
+#: hugin1/hugin/PreferencesDialog.cpp:399
+#: hugin1/hugin/PreferencesDialog.cpp:457
+#: hugin1/hugin/PreferencesDialog.cpp:487
+#: hugin1/hugin/PreferencesDialog.cpp:527
 #, fuzzy
 msgid "ExifTool Argfiles (*.arg)|*.arg|All Files(*)|*"
 msgstr "Projektne datoteke (*.pto)|*.pto|Vse datoteke (*)|*"
 
-#: hugin1/hugin/PreferencesDialog.cpp:378
+#: hugin1/hugin/PreferencesDialog.cpp:435
 #, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should the argfile be created with default tags?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:379
-#: hugin1/hugin/PreferencesDialog.cpp:394
-#: hugin1/hugin/PreferencesDialog.cpp:449
-#: hugin1/hugin/PreferencesDialog.cpp:464
+#: hugin1/hugin/PreferencesDialog.cpp:436
+#: hugin1/hugin/PreferencesDialog.cpp:451
+#: hugin1/hugin/PreferencesDialog.cpp:506
+#: hugin1/hugin/PreferencesDialog.cpp:521
 msgid "Exiftool argfile"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:393
+#: hugin1/hugin/PreferencesDialog.cpp:450
 msgid ""
 "No file selected.\n"
 "Should an argfile be created with default tags?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:398
-#: hugin1/hugin/PreferencesDialog.cpp:468
+#: hugin1/hugin/PreferencesDialog.cpp:455
+#: hugin1/hugin/PreferencesDialog.cpp:525
 #, fuzzy
 msgid "Select new ExifTool argfile"
 msgstr "Izberi točko na levi sliki"
 
-#: hugin1/hugin/PreferencesDialog.cpp:419
-#: hugin1/hugin/PreferencesDialog.cpp:489
+#: hugin1/hugin/PreferencesDialog.cpp:476
+#: hugin1/hugin/PreferencesDialog.cpp:546
 #, fuzzy, c-format
 msgid "Could not save file \"%s\"."
 msgstr "Napaka pri odpiranju datoteke:"
 
-#: hugin1/hugin/PreferencesDialog.cpp:448
+#: hugin1/hugin/PreferencesDialog.cpp:505
 #, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should an example argfile be created?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:463
+#: hugin1/hugin/PreferencesDialog.cpp:520
 msgid ""
 "No file selected.\n"
 "Should an example argfile be created?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:786
+#: hugin1/hugin/PreferencesDialog.cpp:848
 msgid "Really reset displayed preferences to default values?"
 msgstr "Zares ponastavi nastavitve na privzete vrednosti?"
 
-#: hugin1/hugin/PreferencesDialog.cpp:786
-#: hugin1/hugin/xrc/pref_dialog.xrc:1531
+#: hugin1/hugin/PreferencesDialog.cpp:848
+#: hugin1/hugin/xrc/pref_dialog.xrc:1614
 msgid "Load Defaults"
 msgstr "Naloži privzete vrednosti"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1069
+#: hugin1/hugin/PreferencesDialog.cpp:1139
 #, fuzzy
 msgid "Please select an entry first"
 msgstr "Prosimo izberite sliko in poskusite ponovno"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1069
+#: hugin1/hugin/PreferencesDialog.cpp:1139
 #, fuzzy
 msgid "Select Entry"
 msgstr "Izberi Enfuse"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1089
+#: hugin1/hugin/PreferencesDialog.cpp:1159
 msgid ""
 "You can't delete the last setting.\n"
 "At least one setting is required."
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:1093
+#: hugin1/hugin/PreferencesDialog.cpp:1163
 #, c-format
 msgid "Do you really want to remove control point detector setting \"%s\"?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:1094
+#: hugin1/hugin/PreferencesDialog.cpp:1164
 #, fuzzy
 msgid "Delete control point detector setting"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1151
+#: hugin1/hugin/PreferencesDialog.cpp:1221
 #, fuzzy
 msgid "Load control point detector settings"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1153
-#: hugin1/hugin/PreferencesDialog.cpp:1168
+#: hugin1/hugin/PreferencesDialog.cpp:1223
+#: hugin1/hugin/PreferencesDialog.cpp:1238
 #, fuzzy
 msgid "Control point detector settings (*.setting)|*.setting"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1166
+#: hugin1/hugin/PreferencesDialog.cpp:1236
 #, fuzzy
 msgid "Save control point detector settings"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/PreviewColorPickerTool.cpp:42
+#: hugin1/hugin/PreviewColorPickerTool.cpp:45
 msgid ""
 "Click on a area which should be neutral gray / white in the final panorama."
 msgstr ""
@@ -3866,147 +3905,114 @@ msgid ""
 "One cause could be an invalid or missing image file."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:67
+#: hugin1/hugin/RawImport.cpp:75
 #, fuzzy, c-format
 msgid ""
 "Executable \"%s\" not found.\n"
-"Please specify a valid executable."
+"Please specify a valid executable in preferences."
 msgstr ""
 "autopano.exe ni mogoče najti. Izberite označite pravilno pot v nastavitvah."
 
-#: hugin1/hugin/RawImport.cpp:85
+#: hugin1/hugin/RawImport.cpp:93
 #, fuzzy, c-format
 msgid ""
 "Executable \"%s\" not found in PATH.\n"
-"Please specify a valid executable."
+"Please specify a valid executable in preferences."
 msgstr ""
 "autopano.exe ni mogoče najti. Izberite označite pravilno pot v nastavitvah."
 
-#: hugin1/hugin/RawImport.cpp:133 hugin1/hugin/RawImport.cpp:170
-#: hugin1/hugin/RawImport.cpp:231 hugin1/hugin/RawImport.cpp:252
-#: hugin1/hugin/RawImport.cpp:293 hugin1/hugin/RawImport.cpp:354
+#: hugin1/hugin/RawImport.cpp:141 hugin1/hugin/RawImport.cpp:178
+#: hugin1/hugin/RawImport.cpp:248 hugin1/hugin/RawImport.cpp:269
+#: hugin1/hugin/RawImport.cpp:346 hugin1/hugin/RawImport.cpp:407
 #, fuzzy, c-format
 msgid "Executing: %s %s"
 msgstr "Napaka izvajanja %s"
 
-#: hugin1/hugin/RawImport.cpp:139 hugin1/hugin/RawImport.cpp:176
+#: hugin1/hugin/RawImport.cpp:147 hugin1/hugin/RawImport.cpp:184
 #, c-format
 msgid "Updating EXIF data for %s"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:202
+#: hugin1/hugin/RawImport.cpp:219
 #, c-format
 msgid ""
 "Processing profile \"%s\" not found.\n"
 "Please specify a valid file or leave field empty for default settings."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:369 hugin1/hugin/xrc/import_raw_dialog.xrc:240
+#: hugin1/hugin/RawImport.cpp:457 hugin1/hugin/xrc/import_raw_dialog.xrc:159
 msgid "Import Raw Images"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:418
+#: hugin1/hugin/RawImport.cpp:506
 msgid ""
 "Could not process of output of reference image.\n"
 "Can't process further images."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:443 hugin1/hugin/RawImport.cpp:455
+#: hugin1/hugin/RawImport.cpp:531 hugin1/hugin/RawImport.cpp:543
 #: hugin1/hugin/xrc/batch_frame.xrc:464
 msgid "Close"
 msgstr "Zapri"
 
-#: hugin1/hugin/RawImport.cpp:604
-msgid "Please add at least one raw image to list before you can import it."
-msgstr ""
-
-#: hugin1/hugin/RawImport.cpp:704
-msgid ""
-"At least one raw images was not successfully converted.\n"
-"This image(s) will be skipped"
-msgstr ""
-
-#: hugin1/hugin/RawImport.cpp:739
-msgid "Import Raw Files"
-msgstr ""
-
-#: hugin1/hugin/RawImport.cpp:741
-#, fuzzy
-msgid "Raw files"
-msgstr "Nalaganje slike %s"
-
-#: hugin1/hugin/RawImport.cpp:841
+#: hugin1/hugin/RawImport.cpp:711
 msgid "Warning: Read error"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:842
+#: hugin1/hugin/RawImport.cpp:712
 msgid ""
 "The following files will be skipped because the metadata of these files "
 "could not read."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:852
+#: hugin1/hugin/RawImport.cpp:735
 msgid "Warning: raw images from different cameras"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:853
+#: hugin1/hugin/RawImport.cpp:736
 msgid ""
 "The following images were shot with different camera than the other one.\n"
 "The raw import works only for images from the same cam."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:907
-#, fuzzy
-msgid "Select dcraw"
-msgstr "Ponastavi"
+#: hugin1/hugin/RawImport.cpp:838
+msgid ""
+"At least one raw images was not successfully converted.\n"
+"This image(s) will be skipped"
+msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:919
-#, fuzzy
-msgid "Select RawTherapee-cli"
-msgstr "Izberi PTStitcher.exe"
-
-#: hugin1/hugin/RawImport.cpp:931
+#: hugin1/hugin/RawImport.cpp:866
 msgid "Select default RT processing profile"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:932
+#: hugin1/hugin/RawImport.cpp:866
 msgid "RT processing profile|*.pp3"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:939
-#, fuzzy
-msgid "Select Darktable-cli"
-msgstr "Ponastavi"
-
-#: hugin1/hugin/RawImport.cpp:969
-#, fuzzy
-msgid "(WB reference)"
-msgstr "&Nastavitve"
-
-#: hugin1/hugin/huginApp.cpp:241
+#: hugin1/hugin/huginApp.cpp:242
 #, c-format
 msgid "Directory '%s' does not exists"
 msgstr ""
 
-#: hugin1/hugin/huginApp.cpp:245
+#: hugin1/hugin/huginApp.cpp:246
 msgid "Could not set environment variable PYTHONHOME"
 msgstr ""
 
-#: hugin1/hugin/huginApp.cpp:378
+#: hugin1/hugin/huginApp.cpp:379
 #, fuzzy
 msgid "Open Batch Processor"
 msgstr "Obdelava"
 
-#: hugin1/hugin/huginApp.cpp:379 hugin1/hugin/xrc/main_menu.xrc:206
-#: hugin1/hugin/xrc/main_menu.xrc:236 hugin1/hugin/xrc/preview_frame.xrc:1108
+#: hugin1/hugin/huginApp.cpp:380 hugin1/hugin/xrc/main_menu.xrc:202
+#: hugin1/hugin/xrc/main_menu.xrc:232 hugin1/hugin/xrc/preview_frame.xrc:1105
 msgid "Opens PTBatcher, the batch processor for Hugin's project files"
 msgstr ""
 
-#: hugin1/hugin/huginApp.cpp:384
+#: hugin1/hugin/huginApp.cpp:385
 msgid "Open Lens calibrate tool"
 msgstr ""
 
-#: hugin1/hugin/huginApp.cpp:385
+#: hugin1/hugin/huginApp.cpp:386
 msgid "Opens Calibrate_lens_gui, a simple GUI for lens calibration"
 msgstr ""
 
@@ -4158,18 +4164,18 @@ msgid ""
 " Could not execute command: %s"
 msgstr ""
 
-#: hugin1/icpfind/CPDetectorConfig.cpp:137
+#: hugin1/icpfind/CPDetectorConfig.cpp:142
 #, fuzzy
 msgid "Default"
 msgstr "Izpust"
 
-#: hugin1/ptbatcher/Batch.cpp:254
+#: hugin1/ptbatcher/Batch.cpp:261
 msgid ""
 "Cannot clear batch in progress.\n"
 "Do you want to cancel it?"
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:256 hugin1/ptbatcher/BatchFrame.cpp:698
+#: hugin1/ptbatcher/Batch.cpp:263 hugin1/ptbatcher/BatchFrame.cpp:698
 #: hugin1/ptbatcher/BatchFrame.cpp:759 hugin1/ptbatcher/BatchFrame.cpp:795
 #: hugin1/ptbatcher/BatchFrame.cpp:833 hugin1/ptbatcher/BatchFrame.cpp:863
 #: hugin1/ptbatcher/BatchFrame.cpp:1136 hugin1/ptbatcher/BatchFrame.cpp:1297
@@ -4178,116 +4184,116 @@ msgstr ""
 msgid "PTBatcherGUI"
 msgstr "PTStitcher"
 
-#: hugin1/ptbatcher/Batch.cpp:269 hugin1/ptbatcher/Batch.cpp:279
+#: hugin1/ptbatcher/Batch.cpp:276 hugin1/ptbatcher/Batch.cpp:286
 msgid "Cleared batch."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:362
+#: hugin1/ptbatcher/Batch.cpp:369
 #, c-format
 msgid "Error: Could not get status, project with index %d is not in list."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:411
+#: hugin1/ptbatcher/Batch.cpp:418
 #, fuzzy
 msgid "Error: Could not load batch file."
 msgstr "Napaka: ni mogoče naložiti vseh slik"
 
-#: hugin1/ptbatcher/Batch.cpp:567
+#: hugin1/ptbatcher/Batch.cpp:574
 msgid "Batch successfully completed."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:574
+#: hugin1/ptbatcher/Batch.cpp:581
 msgid "Batch completed with errors."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:593
+#: hugin1/ptbatcher/Batch.cpp:600
 msgid "Initializing shutdown..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:593 hugin1/ptbatcher/Batch.cpp:598
+#: hugin1/ptbatcher/Batch.cpp:600 hugin1/ptbatcher/Batch.cpp:605
 msgid "Shutting down..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:618
+#: hugin1/ptbatcher/Batch.cpp:625
 msgid "Prepare to hibernate..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:619
+#: hugin1/ptbatcher/Batch.cpp:626
 msgid "Initializing hibernating..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:622
+#: hugin1/ptbatcher/Batch.cpp:629
 msgid "Prepare to suspend..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:623
+#: hugin1/ptbatcher/Batch.cpp:630
 msgid "Initializing suspend mode..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:672
+#: hugin1/ptbatcher/Batch.cpp:679
 #, fuzzy
 msgid "Specify project file"
 msgstr "Shrani projekt"
 
-#: hugin1/ptbatcher/Batch.cpp:693
+#: hugin1/ptbatcher/Batch.cpp:700
 #, fuzzy
 msgid "No output prefix specified"
 msgstr "Ni označenih projektnih datotek"
 
-#: hugin1/ptbatcher/Batch.cpp:700
+#: hugin1/ptbatcher/Batch.cpp:707
 msgid "No project files specified"
 msgstr "Ni označenih projektnih datotek"
 
-#: hugin1/ptbatcher/Batch.cpp:727
+#: hugin1/ptbatcher/Batch.cpp:734
 #: hugin1/stitch_project/hugin_stitch_project.cpp:450
 #, c-format
 msgid "%s - Stitching"
 msgstr "%s - šivanje"
 
-#: hugin1/ptbatcher/Batch.cpp:759
+#: hugin1/ptbatcher/Batch.cpp:766
 #, fuzzy, c-format
 msgid "%s - Assistant"
 msgstr "Asistent"
 
-#: hugin1/ptbatcher/Batch.cpp:816
+#: hugin1/ptbatcher/Batch.cpp:823
 #, c-format
 msgid "Error removing, project with id %d is not in list."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:832
+#: hugin1/ptbatcher/Batch.cpp:839
 #, fuzzy
 msgid "Error: Could not delete project file "
 msgstr "Napaka pri odpiranju datoteke:"
 
-#: hugin1/ptbatcher/Batch.cpp:848
+#: hugin1/ptbatcher/Batch.cpp:855
 msgid "Running batch..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:851
+#: hugin1/ptbatcher/Batch.cpp:858
 #, fuzzy
 msgid "PTBatcherGUI is stitching"
 msgstr "PTStitcher"
 
-#: hugin1/ptbatcher/Batch.cpp:857
+#: hugin1/ptbatcher/Batch.cpp:864
 msgid "Batch already in progress."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:871
+#: hugin1/ptbatcher/Batch.cpp:878
 #, fuzzy, c-format
 msgid "Running command \"%s\""
 msgstr "ukaz:"
 
-#: hugin1/ptbatcher/Batch.cpp:895
+#: hugin1/ptbatcher/Batch.cpp:902
 #, fuzzy, c-format
 msgid "Now stitching: %s"
 msgstr "Šivanje %s"
 
-#: hugin1/ptbatcher/Batch.cpp:902
+#: hugin1/ptbatcher/Batch.cpp:909
 #, fuzzy, c-format
 msgid "Now detecting: %s"
 msgstr "Napaka izvajanja %s"
 
-#: hugin1/ptbatcher/Batch.cpp:1000
+#: hugin1/ptbatcher/Batch.cpp:1007
 #, c-format
 msgid "Error: Could not set status, project with index %d is not in list."
 msgstr ""
@@ -4339,7 +4345,7 @@ msgstr ""
 msgid "Enter application"
 msgstr "Izhod"
 
-#: hugin1/ptbatcher/BatchFrame.cpp:381 hugin1/ptbatcher/FindPanoDialog.cpp:245
+#: hugin1/ptbatcher/BatchFrame.cpp:381 hugin1/ptbatcher/FindPanoDialog.cpp:250
 #, fuzzy
 msgid "Specify a directory to search for projects in"
 msgstr "Označite izvorno datoteko projekta"
@@ -4539,90 +4545,90 @@ msgstr "Nov projekt"
 msgid "E&xit"
 msgstr "E&xit\tAlt-X"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:234
+#: hugin1/ptbatcher/FindPanoDialog.cpp:239
 msgid ""
 "The list contains possibly unprocessed panoramas.\n"
 "If you close the dialog, you will lose them.\n"
 "Continue anyway?"
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:259
+#: hugin1/ptbatcher/FindPanoDialog.cpp:264
 msgid "Accepted"
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:269
+#: hugin1/ptbatcher/FindPanoDialog.cpp:274
 msgid ""
 "The list contains still not yet processed panoramas.\n"
 "If you continue, they will be disregarded.\n"
 "Do you still want to continue?"
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:279
+#: hugin1/ptbatcher/FindPanoDialog.cpp:284
 #, fuzzy
 msgid "Stop"
 msgstr "zgoraj:"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:290
+#: hugin1/ptbatcher/FindPanoDialog.cpp:295
 #, c-format
 msgid ""
 "Directory %s does not exist.\n"
 "Please give an existing directory."
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:312
+#: hugin1/ptbatcher/FindPanoDialog.cpp:317
 msgid ""
 "You have selected no possible panorama.\n"
 "Please select at least one panorama and try again."
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:335
+#: hugin1/ptbatcher/FindPanoDialog.cpp:340
 msgid ""
 "Not all project files could be written successfully.\n"
 "Maybe you have no write permission for these directories or your disc is "
 "full."
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:380
+#: hugin1/ptbatcher/FindPanoDialog.cpp:386
 #, fuzzy
 msgid "Remove image from project"
 msgstr "Odstrani izbrane slike iz tega projekta"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:386
+#: hugin1/ptbatcher/FindPanoDialog.cpp:392
 #, fuzzy
 msgid "Split here into two panoramas"
 msgstr "Šivanje Panorame"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:471
+#: hugin1/ptbatcher/FindPanoDialog.cpp:495
 #, fuzzy, c-format
 msgid "Reading file %s"
 msgstr "Nalaganje slike %s"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:568
+#: hugin1/ptbatcher/FindPanoDialog.cpp:592
 #: hugin1/hugin/xrc/batch_frame.xrc:216
 #, fuzzy
 msgid "Start"
 msgstr "Začel"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:574
+#: hugin1/ptbatcher/FindPanoDialog.cpp:598
 #, fuzzy, c-format
 msgid "Found %d possible panoramas."
 msgstr "Spojena panorama"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:578
+#: hugin1/ptbatcher/FindPanoDialog.cpp:602
 #, fuzzy
 msgid "No possible panoramas found."
 msgstr "Ni soležne točke."
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:685
+#: hugin1/ptbatcher/FindPanoDialog.cpp:709
 #, fuzzy, c-format
 msgid "%d images: %s"
 msgstr "Dodaj slike"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:918
+#: hugin1/ptbatcher/FindPanoDialog.cpp:938
 msgid "%M:%S min"
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:922
+#: hugin1/ptbatcher/FindPanoDialog.cpp:942
 #, c-format
 msgid "%S s"
 msgstr ""
@@ -4637,99 +4643,99 @@ msgstr "Zaznana je sintaktična napaka v parametrih, prekinjanje."
 msgid "PTBatcherGUI started"
 msgstr "PTStitcher"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:68
+#: hugin1/ptbatcher/ProjectArray.cpp:71
 #, fuzzy
 msgid "Waiting"
 msgstr "Šivanje"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:70
+#: hugin1/ptbatcher/ProjectArray.cpp:73
 msgid "In progress"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectArray.cpp:72
+#: hugin1/ptbatcher/ProjectArray.cpp:75
 msgid "Complete"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectArray.cpp:74
+#: hugin1/ptbatcher/ProjectArray.cpp:77
 #, fuzzy
 msgid "Failed"
 msgstr "&Datoteka"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:76
-#: hugin1/ptbatcher/ProjectListBox.cpp:230
+#: hugin1/ptbatcher/ProjectArray.cpp:79
+#: hugin1/ptbatcher/ProjectListBox.cpp:233
 msgid "File missing"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectArray.cpp:78
+#: hugin1/ptbatcher/ProjectArray.cpp:81
 msgid "Paused"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:61
+#: hugin1/ptbatcher/ProjectListBox.cpp:64
 msgid "ID"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:62
+#: hugin1/ptbatcher/ProjectListBox.cpp:65
 #, fuzzy
 msgid "Project"
 msgstr "Nov projekt"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:63
+#: hugin1/ptbatcher/ProjectListBox.cpp:66
 #, fuzzy
 msgid "Output prefix"
 msgstr "Označi izhodno predpono"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:64
+#: hugin1/ptbatcher/ProjectListBox.cpp:67
 #, fuzzy
 msgid "Status"
 msgstr "Začel"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:65
+#: hugin1/ptbatcher/ProjectListBox.cpp:68
 msgid "Last modified"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:66
+#: hugin1/ptbatcher/ProjectListBox.cpp:69
 #, fuzzy
 msgid "Output format"
 msgstr "Izhod"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:67
-#: hugin1/hugin/xrc/preview_frame.xrc:529
+#: hugin1/ptbatcher/ProjectListBox.cpp:70
+#: hugin1/hugin/xrc/preview_frame.xrc:528
 #, fuzzy
 msgid "Projection"
 msgstr "Projekt odprt"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:68
+#: hugin1/ptbatcher/ProjectListBox.cpp:71
 msgid "Size"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:153
+#: hugin1/ptbatcher/ProjectListBox.cpp:156
 #, fuzzy, c-format
 msgid "%d"
 msgstr "d"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:180
+#: hugin1/ptbatcher/ProjectListBox.cpp:183
 msgid "Error, cannot convert id"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:291
-#: hugin1/hugin/xrc/pref_dialog.xrc:279 hugin1/hugin/xrc/preview_frame.xrc:282
+#: hugin1/ptbatcher/ProjectListBox.cpp:294
+#: hugin1/hugin/xrc/pref_dialog.xrc:362 hugin1/hugin/xrc/preview_frame.xrc:282
 msgid "Assistant"
 msgstr "Asistent"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:391 hugin1/hugin/xrc/batch_frame.xrc:38
+#: hugin1/ptbatcher/ProjectListBox.cpp:394 hugin1/hugin/xrc/batch_frame.xrc:38
 msgid "Change prefix"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:392 hugin1/hugin/xrc/batch_frame.xrc:44
+#: hugin1/ptbatcher/ProjectListBox.cpp:395 hugin1/hugin/xrc/batch_frame.xrc:44
 #, fuzzy
 msgid "Reset project"
 msgstr "Nov projekt"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:393 hugin1/hugin/xrc/batch_frame.xrc:56
+#: hugin1/ptbatcher/ProjectListBox.cpp:396 hugin1/hugin/xrc/batch_frame.xrc:56
 msgid "Edit with Hugin"
 msgstr ""
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:394
+#: hugin1/ptbatcher/ProjectListBox.cpp:397
 #: hugin1/hugin/xrc/lenscal_frame.xrc:37
 #, fuzzy
 msgid "Remove"
@@ -4783,8 +4789,8 @@ msgid ""
 "Hugin can not work with this filename. Please enter a valid filename."
 msgstr ""
 
-#: hugin1/hugin/xrc/about.xrc:4 hugin1/hugin/xrc/main_menu.xrc:166
-#: hugin1/hugin/xrc/main_tool.xrc:79 hugin1/hugin/xrc/preview_frame.xrc:1071
+#: hugin1/hugin/xrc/about.xrc:4 hugin1/hugin/xrc/main_menu.xrc:162
+#: hugin1/hugin/xrc/main_tool.xrc:79 hugin1/hugin/xrc/preview_frame.xrc:1068
 msgid "About Hugin"
 msgstr "O Huginu"
 
@@ -4832,7 +4838,7 @@ msgstr "Privzeto sistemsko"
 #: hugin1/hugin/xrc/pano_panel.xrc:49 hugin1/hugin/xrc/pano_panel.xrc:91
 #: hugin1/hugin/xrc/pano_panel.xrc:138 hugin1/hugin/xrc/pano_panel.xrc:1028
 #: hugin1/hugin/xrc/pano_panel.xrc:1354 hugin1/hugin/xrc/pano_panel.xrc:1403
-#: hugin1/hugin/xrc/pref_dialog.xrc:1544
+#: hugin1/hugin/xrc/pref_dialog.xrc:1627
 #: hugin1/hugin/xrc/preview_frame.xrc:109
 #: hugin1/hugin/xrc/reset_dialog.xrc:116
 msgid "OK"
@@ -4922,12 +4928,11 @@ msgstr ""
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:143
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:182
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:243
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:76
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:131
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:160
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:195
-#: hugin1/hugin/xrc/pref_dialog.xrc:1001 hugin1/hugin/xrc/pref_dialog.xrc:1060
-#: hugin1/hugin/xrc/pref_dialog.xrc:1243 hugin1/hugin/xrc/pref_dialog.xrc:1322
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:96
+#: hugin1/hugin/xrc/pref_dialog.xrc:185 hugin1/hugin/xrc/pref_dialog.xrc:207
+#: hugin1/hugin/xrc/pref_dialog.xrc:229 hugin1/hugin/xrc/pref_dialog.xrc:1084
+#: hugin1/hugin/xrc/pref_dialog.xrc:1143 hugin1/hugin/xrc/pref_dialog.xrc:1326
+#: hugin1/hugin/xrc/pref_dialog.xrc:1405
 msgid "Choose..."
 msgstr "Izberi..."
 
@@ -5021,7 +5026,7 @@ msgstr ""
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:204
 #: hugin1/hugin/xrc/pano_panel.xrc:768 hugin1/hugin/xrc/pano_panel.xrc:795
 #: hugin1/hugin/xrc/pano_panel.xrc:822 hugin1/hugin/xrc/pano_panel.xrc:849
-#: hugin1/hugin/xrc/pref_dialog.xrc:910
+#: hugin1/hugin/xrc/pref_dialog.xrc:993
 msgid "Options"
 msgstr "Možnosti"
 
@@ -5169,12 +5174,12 @@ msgid "&Minimize to tray"
 msgstr ""
 
 #: hugin1/hugin/xrc/batch_menu.xrc:51 hugin1/hugin/xrc/lenscal_frame.xrc:463
-#: hugin1/hugin/xrc/main_menu.xrc:227 hugin1/hugin/xrc/preview_frame.xrc:1116
+#: hugin1/hugin/xrc/main_menu.xrc:223 hugin1/hugin/xrc/preview_frame.xrc:1113
 msgid "&Quit"
 msgstr "&Izhod"
 
-#: hugin1/hugin/xrc/batch_menu.xrc:52 hugin1/hugin/xrc/main_menu.xrc:229
-#: hugin1/hugin/xrc/preview_frame.xrc:1118
+#: hugin1/hugin/xrc/batch_menu.xrc:52 hugin1/hugin/xrc/main_menu.xrc:225
+#: hugin1/hugin/xrc/preview_frame.xrc:1115
 msgid "Exit program"
 msgstr "Izhod iz programa"
 
@@ -5446,7 +5451,7 @@ msgid "fit to window"
 msgstr "uravnaj na okno"
 
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:240
-#: hugin1/hugin/xrc/pref_dialog.xrc:440
+#: hugin1/hugin/xrc/pref_dialog.xrc:523
 msgid "Fine-tune"
 msgstr "Nadrobno usklajevanje"
 
@@ -5512,7 +5517,7 @@ msgstr "Stične točke"
 
 #: hugin1/hugin/xrc/cp_list_frame.xrc:17
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:758
-#: hugin1/hugin/xrc/pref_dialog.xrc:676
+#: hugin1/hugin/xrc/pref_dialog.xrc:759
 msgid "Delete"
 msgstr "Izbriši"
 
@@ -5686,8 +5691,8 @@ msgstr ""
 msgid "HFOV (v):"
 msgstr "HFOV (v):"
 
-#: hugin1/hugin/xrc/images_panel.xrc:484 hugin1/hugin/xrc/pref_dialog.xrc:587
-#: hugin1/hugin/xrc/pref_dialog.xrc:606
+#: hugin1/hugin/xrc/images_panel.xrc:484 hugin1/hugin/xrc/pref_dialog.xrc:670
+#: hugin1/hugin/xrc/pref_dialog.xrc:689
 msgid "degrees"
 msgstr "stopinj"
 
@@ -5697,19 +5702,19 @@ msgstr "Podatki naprave in objektiva"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:15
 #: hugin1/hugin/xrc/preview_frame.xrc:61
-#: hugin1/hugin/xrc/preview_frame.xrc:734
+#: hugin1/hugin/xrc/preview_frame.xrc:733
 msgid "Yaw:"
 msgstr "Odklon:"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:28
 #: hugin1/hugin/xrc/preview_frame.xrc:75
-#: hugin1/hugin/xrc/preview_frame.xrc:749
+#: hugin1/hugin/xrc/preview_frame.xrc:748
 msgid "Pitch:"
 msgstr "Odklon:"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:41
 #: hugin1/hugin/xrc/preview_frame.xrc:89
-#: hugin1/hugin/xrc/preview_frame.xrc:764
+#: hugin1/hugin/xrc/preview_frame.xrc:763
 msgid "Roll:"
 msgstr "Nagib:"
 
@@ -5719,7 +5724,7 @@ msgid "Translation parameter"
 msgstr "Poveži vrednosti"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:95
-#: hugin1/hugin/xrc/preview_frame.xrc:809
+#: hugin1/hugin/xrc/preview_frame.xrc:808
 msgid "Z:"
 msgstr ""
 
@@ -5827,7 +5832,7 @@ msgstr "Odziv fotoaparata"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:645
 #: hugin1/hugin/xrc/pano_panel.xrc:102 hugin1/hugin/xrc/pano_panel.xrc:149
-#: hugin1/hugin/xrc/pref_dialog.xrc:1555
+#: hugin1/hugin/xrc/pref_dialog.xrc:1638
 #, fuzzy
 msgid "Help"
 msgstr "&Pomoč"
@@ -5873,8 +5878,8 @@ msgid "Load"
 msgstr "Nalaganje slik"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:751
-#: hugin1/hugin/xrc/main_tool.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1593
-#: hugin1/hugin/xrc/pref_dialog.xrc:1660
+#: hugin1/hugin/xrc/main_tool.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1676
+#: hugin1/hugin/xrc/pref_dialog.xrc:1743
 msgid "Save"
 msgstr "Shrani"
 
@@ -5887,89 +5892,45 @@ msgstr ""
 msgid "Manipulate image variables"
 msgstr "Spremenljivke slike:"
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:10
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:12
 #, fuzzy
-msgid "Images"
-msgstr "Slike"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:22
-#, fuzzy
-msgid "Add image(s)..."
-msgstr "Dodaj slike"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:23
-#, fuzzy
-msgid "Add other images to list"
-msgstr "Dodaj sliko trenutnemu projektu"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:30
-#, fuzzy
-msgid "Remove image"
-msgstr "&Shrani kot"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:31
-#, fuzzy
-msgid "Remove selected image from list"
-msgstr "Odstrani izbrane slike"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:38
-#, fuzzy
-msgid "WB reference"
+msgid "WB reference:"
 msgstr "&Nastavitve"
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:39
-msgid "Mark selected image as white balance reference image"
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:35
+msgid "dcraw"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:63
-#, fuzzy
-msgid "dcraw executable:"
-msgstr "Enblend zagonska datoteka:"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:90
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:44
 #, fuzzy
 msgid "Additional dcraw parameters:"
 msgstr "Poveži vrednosti"
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:108
-msgid "dcraw"
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:72
+msgid "RawTherapee"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:118
-#, fuzzy
-msgid "RT-cli executable:"
-msgstr "Enblend zagonska datoteka:"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:145
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:81
 #, fuzzy
 msgid "Processing profile:"
 msgstr "Obdelava"
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:152
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:88
 msgid "Leave empty to use default settings in RawTherapee"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:172
-msgid "RawTherapee"
-msgstr ""
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:182
-#, fuzzy
-msgid "darktable-cli executable:"
-msgstr "Enblend zagonska datoteka:"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:207
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:118
 msgid "darktable"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:213
-#, fuzzy
-msgid "Converter settings"
-msgstr "Lestvica odkrivanja robov"
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:132
+#: hugin1/hugin/xrc/pref_dialog.xrc:164
+msgid "Raw converter"
+msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:229
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:148
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:95
-#: hugin1/hugin/xrc/pref_dialog.xrc:708
+#: hugin1/hugin/xrc/pref_dialog.xrc:791
 msgid "Import"
 msgstr ""
 
@@ -6191,21 +6152,21 @@ msgstr "Urejavalnik stičnih točk"
 msgid "Import positions from Papywizard XML"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:6 hugin1/hugin/xrc/preview_frame.xrc:995
+#: hugin1/hugin/xrc/main_menu.xrc:6 hugin1/hugin/xrc/preview_frame.xrc:992
 msgid "&Undo"
 msgstr "&Razveljavi"
 
 #: hugin1/hugin/xrc/main_menu.xrc:8 hugin1/hugin/xrc/main_tool.xrc:34
-#: hugin1/hugin/xrc/preview_frame.xrc:997
+#: hugin1/hugin/xrc/preview_frame.xrc:994
 msgid "Undo the last action"
 msgstr "Razveljavi zadnjo dejanje"
 
-#: hugin1/hugin/xrc/main_menu.xrc:11 hugin1/hugin/xrc/preview_frame.xrc:1000
+#: hugin1/hugin/xrc/main_menu.xrc:11 hugin1/hugin/xrc/preview_frame.xrc:997
 msgid "&Redo"
 msgstr "&Obnovi"
 
 #: hugin1/hugin/xrc/main_menu.xrc:13 hugin1/hugin/xrc/main_tool.xrc:40
-#: hugin1/hugin/xrc/preview_frame.xrc:1002
+#: hugin1/hugin/xrc/preview_frame.xrc:999
 msgid "Redo the last action"
 msgstr "Obnovi zadnje dejanje"
 
@@ -6219,29 +6180,20 @@ msgstr "Dodaj sliko trenutnemu projektu"
 
 #: hugin1/hugin/xrc/main_menu.xrc:21
 #, fuzzy
-msgid "Import &raw file(s)..."
-msgstr "Nov projekt"
-
-#: hugin1/hugin/xrc/main_menu.xrc:22
-msgid "Convert raw file to TIFF and add TIFF to current project"
-msgstr ""
-
-#: hugin1/hugin/xrc/main_menu.xrc:25
-#, fuzzy
 msgid "Run a&ssistant"
 msgstr "Asistent"
 
-#: hugin1/hugin/xrc/main_menu.xrc:28
+#: hugin1/hugin/xrc/main_menu.xrc:24
 #, fuzzy
 msgid "Send to assistant &queue"
 msgstr "Nov projekt"
 
-#: hugin1/hugin/xrc/main_menu.xrc:32
+#: hugin1/hugin/xrc/main_menu.xrc:28
 #, fuzzy
 msgid "Optimize only active &images"
 msgstr "Število točk na sliko"
 
-#: hugin1/hugin/xrc/main_menu.xrc:33 hugin1/hugin/xrc/optimize_panel.xrc:43
+#: hugin1/hugin/xrc/main_menu.xrc:29 hugin1/hugin/xrc/optimize_panel.xrc:43
 #, fuzzy
 msgid ""
 "Only use control points between images selected in preview window. Useful to "
@@ -6252,274 +6204,274 @@ msgstr ""
 "izogibanje napak slabega uejmanju pri slikah kot sta zenit in nadir v "
 "večini  fisheye panoram."
 
-#: hugin1/hugin/xrc/main_menu.xrc:38
+#: hugin1/hugin/xrc/main_menu.xrc:34
 #, fuzzy
 msgid "Ignore &line control points"
 msgstr "Ustvari stične točke."
 
-#: hugin1/hugin/xrc/main_menu.xrc:39 hugin1/hugin/xrc/optimize_panel.xrc:51
+#: hugin1/hugin/xrc/main_menu.xrc:35 hugin1/hugin/xrc/optimize_panel.xrc:51
 #, fuzzy
 msgid "Use only normal control points in optimization."
 msgstr "Število točk na sliko"
 
-#: hugin1/hugin/xrc/main_menu.xrc:43 hugin1/hugin/xrc/preview_frame.xrc:1006
+#: hugin1/hugin/xrc/main_menu.xrc:39 hugin1/hugin/xrc/preview_frame.xrc:1003
 msgid "&Optimize"
 msgstr "&Optimiziraj"
 
-#: hugin1/hugin/xrc/main_menu.xrc:45 hugin1/hugin/xrc/main_tool.xrc:53
-#: hugin1/hugin/xrc/preview_frame.xrc:1008
+#: hugin1/hugin/xrc/main_menu.xrc:41 hugin1/hugin/xrc/main_tool.xrc:53
+#: hugin1/hugin/xrc/preview_frame.xrc:1005
 msgid "Re-run the optimizer with current settings"
 msgstr "Ponovno zaženi optimizator s trenutnimi nastavitvami"
 
-#: hugin1/hugin/xrc/main_menu.xrc:49
+#: hugin1/hugin/xrc/main_menu.xrc:45
 msgid "Fine-&tune all Points"
 msgstr "Nadrobno usklajevanje vseh točk"
 
-#: hugin1/hugin/xrc/main_menu.xrc:50
+#: hugin1/hugin/xrc/main_menu.xrc:46
 #, fuzzy
 msgid "Runs fine-tune on all control points."
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/xrc/main_menu.xrc:53
+#: hugin1/hugin/xrc/main_menu.xrc:49
 #, fuzzy
 msgid "Remove control points in &masks"
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/xrc/main_menu.xrc:54
+#: hugin1/hugin/xrc/main_menu.xrc:50
 #, fuzzy
 msgid "Removes all control points inside masked areas."
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/xrc/main_menu.xrc:57
+#: hugin1/hugin/xrc/main_menu.xrc:53
 #, fuzzy
 msgid "Run &Python script"
 msgstr "Izberite autopano skriptni vmesnik"
 
-#: hugin1/hugin/xrc/main_menu.xrc:58
+#: hugin1/hugin/xrc/main_menu.xrc:54
 msgid "Run a python script"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:63 hugin1/hugin/xrc/preview_frame.xrc:1032
+#: hugin1/hugin/xrc/main_menu.xrc:59 hugin1/hugin/xrc/preview_frame.xrc:1029
 msgid "&View"
 msgstr "&Poglej"
 
-#: hugin1/hugin/xrc/main_menu.xrc:65 hugin1/hugin/xrc/preview_frame.xrc:1017
+#: hugin1/hugin/xrc/main_menu.xrc:61 hugin1/hugin/xrc/preview_frame.xrc:1014
 msgid "Full &Screen"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:67 hugin1/hugin/xrc/preview_frame.xrc:1020
+#: hugin1/hugin/xrc/main_menu.xrc:63 hugin1/hugin/xrc/preview_frame.xrc:1017
 msgid "Shows Hugin's main window on full-screen"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:70
+#: hugin1/hugin/xrc/main_menu.xrc:66
 msgid "&Control point table"
 msgstr "&Tabela stičnih točk"
 
-#: hugin1/hugin/xrc/main_menu.xrc:72
+#: hugin1/hugin/xrc/main_menu.xrc:68
 msgid "Shows all control point distances"
 msgstr "Prikaži razdalje vseh stičnih točk"
 
-#: hugin1/hugin/xrc/main_menu.xrc:75
+#: hugin1/hugin/xrc/main_menu.xrc:71
 msgid "&Preview window"
 msgstr "&Predogled"
 
-#: hugin1/hugin/xrc/main_menu.xrc:77
+#: hugin1/hugin/xrc/main_menu.xrc:73
 msgid "Show the preview window"
 msgstr "Pokaži okno s predogledom"
 
-#: hugin1/hugin/xrc/main_menu.xrc:80
+#: hugin1/hugin/xrc/main_menu.xrc:76
 #, fuzzy
 msgid "&Fast Preview window"
 msgstr "&Predogled"
 
-#: hugin1/hugin/xrc/main_menu.xrc:82
+#: hugin1/hugin/xrc/main_menu.xrc:78
 #, fuzzy
 msgid "Show the OpenGL preview window"
 msgstr "Pokaži okno s predogledom"
 
-#: hugin1/hugin/xrc/main_menu.xrc:86
+#: hugin1/hugin/xrc/main_menu.xrc:82
 #, fuzzy
 msgid "&Photos"
 msgstr "Fotometrično"
 
-#: hugin1/hugin/xrc/main_menu.xrc:88
+#: hugin1/hugin/xrc/main_menu.xrc:84
 #, fuzzy
 msgid "Show the Photos panel"
 msgstr "Pokaži celo panoramo"
 
-#: hugin1/hugin/xrc/main_menu.xrc:91
+#: hugin1/hugin/xrc/main_menu.xrc:87
 #, fuzzy
 msgid "&Masks"
 msgstr "Tip objektiva:"
 
-#: hugin1/hugin/xrc/main_menu.xrc:93
+#: hugin1/hugin/xrc/main_menu.xrc:89
 #, fuzzy
 msgid "Show the Masks panel"
 msgstr "Pokaži celo panoramo"
 
-#: hugin1/hugin/xrc/main_menu.xrc:96
+#: hugin1/hugin/xrc/main_menu.xrc:92
 #, fuzzy
 msgid "&Control Points"
 msgstr "Stične točke"
 
-#: hugin1/hugin/xrc/main_menu.xrc:98
+#: hugin1/hugin/xrc/main_menu.xrc:94
 #, fuzzy
 msgid "Show the Control Points panel"
 msgstr "Pokaži stične točke"
 
-#: hugin1/hugin/xrc/main_menu.xrc:101
+#: hugin1/hugin/xrc/main_menu.xrc:97
 #, fuzzy
 msgid "&Optimizer"
 msgstr "Optimizator"
 
-#: hugin1/hugin/xrc/main_menu.xrc:103
+#: hugin1/hugin/xrc/main_menu.xrc:99
 #, fuzzy
 msgid "Show the Optimizer panel"
 msgstr "Pokaži okno s predogledom"
 
-#: hugin1/hugin/xrc/main_menu.xrc:106
+#: hugin1/hugin/xrc/main_menu.xrc:102
 #, fuzzy
 msgid "&Exposure"
 msgstr "Osvetlitev"
 
-#: hugin1/hugin/xrc/main_menu.xrc:108
+#: hugin1/hugin/xrc/main_menu.xrc:104
 #, fuzzy
 msgid "Show the Exposure panel"
 msgstr "Pokaži okno s predogledom"
 
-#: hugin1/hugin/xrc/main_menu.xrc:111
+#: hugin1/hugin/xrc/main_menu.xrc:107
 #, fuzzy
 msgid "&Stitcher"
 msgstr "Šivalnik"
 
-#: hugin1/hugin/xrc/main_menu.xrc:113
+#: hugin1/hugin/xrc/main_menu.xrc:109
 #, fuzzy
 msgid "Show the Stitcher panel"
 msgstr "Pokaži celo panoramo"
 
-#: hugin1/hugin/xrc/main_menu.xrc:118 hugin1/hugin/xrc/preview_frame.xrc:1036
+#: hugin1/hugin/xrc/main_menu.xrc:114 hugin1/hugin/xrc/preview_frame.xrc:1033
 msgid "&Simple"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:123 hugin1/hugin/xrc/preview_frame.xrc:1041
+#: hugin1/hugin/xrc/main_menu.xrc:119 hugin1/hugin/xrc/preview_frame.xrc:1038
 #, fuzzy
 msgid "&Advanced"
 msgstr "Blender možnosti"
 
-#: hugin1/hugin/xrc/main_menu.xrc:127 hugin1/hugin/xrc/preview_frame.xrc:1045
+#: hugin1/hugin/xrc/main_menu.xrc:123 hugin1/hugin/xrc/preview_frame.xrc:1042
 msgid "&Expert"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:130 hugin1/hugin/xrc/preview_frame.xrc:1048
+#: hugin1/hugin/xrc/main_menu.xrc:126 hugin1/hugin/xrc/preview_frame.xrc:1045
 #, fuzzy
 msgid "&Interface"
 msgstr "Uporabniški vmesnik"
 
-#: hugin1/hugin/xrc/main_menu.xrc:134
+#: hugin1/hugin/xrc/main_menu.xrc:130
 #, fuzzy
 msgid "&Stitch"
 msgstr "Šivalnik"
 
-#: hugin1/hugin/xrc/main_menu.xrc:136
+#: hugin1/hugin/xrc/main_menu.xrc:132
 msgid "Stitch with the settings on the pano tabs"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:139
+#: hugin1/hugin/xrc/main_menu.xrc:135
 msgid "Stitch &user defined output..."
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:140
+#: hugin1/hugin/xrc/main_menu.xrc:136
 msgid "Stitch with the settings from a user defined output sequence"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:149 hugin1/hugin/xrc/preview_frame.xrc:1054
+#: hugin1/hugin/xrc/main_menu.xrc:145 hugin1/hugin/xrc/preview_frame.xrc:1051
 msgid "Some information on the different buttons and so on."
 msgstr "Informacije o različnih gumbih in tako naprej."
 
-#: hugin1/hugin/xrc/main_menu.xrc:152 hugin1/hugin/xrc/preview_frame.xrc:1057
+#: hugin1/hugin/xrc/main_menu.xrc:148 hugin1/hugin/xrc/preview_frame.xrc:1054
 msgid "&Tip of the day"
 msgstr "&Nasvet dneva"
 
-#: hugin1/hugin/xrc/main_menu.xrc:153 hugin1/hugin/xrc/preview_frame.xrc:1058
+#: hugin1/hugin/xrc/main_menu.xrc:149 hugin1/hugin/xrc/preview_frame.xrc:1055
 msgid "Show one of the tips of the day."
 msgstr "Prikažni nasvet dneva"
 
-#: hugin1/hugin/xrc/main_menu.xrc:156 hugin1/hugin/xrc/preview_frame.xrc:1061
+#: hugin1/hugin/xrc/main_menu.xrc:152 hugin1/hugin/xrc/preview_frame.xrc:1058
 msgid "&Keyboard Shortcuts"
 msgstr "&Bližnjice tipkovnice"
 
-#: hugin1/hugin/xrc/main_menu.xrc:157 hugin1/hugin/xrc/preview_frame.xrc:1062
+#: hugin1/hugin/xrc/main_menu.xrc:153 hugin1/hugin/xrc/preview_frame.xrc:1059
 msgid "keyboard shortcuts"
 msgstr "Bližnjice tipkovnice"
 
-#: hugin1/hugin/xrc/main_menu.xrc:160 hugin1/hugin/xrc/preview_frame.xrc:1065
+#: hugin1/hugin/xrc/main_menu.xrc:156 hugin1/hugin/xrc/preview_frame.xrc:1062
 msgid "&FAQ"
 msgstr "&FAQ"
 
-#: hugin1/hugin/xrc/main_menu.xrc:161 hugin1/hugin/xrc/preview_frame.xrc:1066
+#: hugin1/hugin/xrc/main_menu.xrc:157 hugin1/hugin/xrc/preview_frame.xrc:1063
 msgid "Frequently Asked Questions"
 msgstr "Pogosto zastavljena vprašanja"
 
-#: hugin1/hugin/xrc/main_menu.xrc:165 hugin1/hugin/xrc/preview_frame.xrc:1070
+#: hugin1/hugin/xrc/main_menu.xrc:161 hugin1/hugin/xrc/preview_frame.xrc:1067
 msgid "&About"
 msgstr "&O programu"
 
-#: hugin1/hugin/xrc/main_menu.xrc:169 hugin1/hugin/xrc/main_menu.xrc:223
-#: hugin1/hugin/xrc/main_menu.xrc:249 hugin1/hugin/xrc/preview_frame.xrc:1074
-#: hugin1/hugin/xrc/preview_frame.xrc:1112
-#: hugin1/hugin/xrc/preview_frame.xrc:1149
+#: hugin1/hugin/xrc/main_menu.xrc:165 hugin1/hugin/xrc/main_menu.xrc:219
+#: hugin1/hugin/xrc/main_menu.xrc:245 hugin1/hugin/xrc/preview_frame.xrc:1071
+#: hugin1/hugin/xrc/preview_frame.xrc:1109
+#: hugin1/hugin/xrc/preview_frame.xrc:1146
 msgid "&Preferences"
 msgstr "&Nastavitve"
 
-#: hugin1/hugin/xrc/main_menu.xrc:176 hugin1/hugin/xrc/preview_frame.xrc:1082
-#: hugin1/hugin/xrc/preview_frame.xrc:1124
+#: hugin1/hugin/xrc/main_menu.xrc:172 hugin1/hugin/xrc/preview_frame.xrc:1079
+#: hugin1/hugin/xrc/preview_frame.xrc:1121
 msgid "&New"
 msgstr "&Novo"
 
-#: hugin1/hugin/xrc/main_menu.xrc:178 hugin1/hugin/xrc/main_tool.xrc:7
-#: hugin1/hugin/xrc/preview_frame.xrc:1084
-#: hugin1/hugin/xrc/preview_frame.xrc:1126
+#: hugin1/hugin/xrc/main_menu.xrc:174 hugin1/hugin/xrc/main_tool.xrc:7
+#: hugin1/hugin/xrc/preview_frame.xrc:1081
+#: hugin1/hugin/xrc/preview_frame.xrc:1123
 msgid "New project"
 msgstr "Nov projekt"
 
-#: hugin1/hugin/xrc/main_menu.xrc:181 hugin1/hugin/xrc/preview_frame.xrc:1087
-#: hugin1/hugin/xrc/preview_frame.xrc:1129
+#: hugin1/hugin/xrc/main_menu.xrc:177 hugin1/hugin/xrc/preview_frame.xrc:1084
+#: hugin1/hugin/xrc/preview_frame.xrc:1126
 msgid "&Open"
 msgstr "$Odpri"
 
-#: hugin1/hugin/xrc/main_menu.xrc:183 hugin1/hugin/xrc/main_tool.xrc:13
-#: hugin1/hugin/xrc/preview_frame.xrc:1089
-#: hugin1/hugin/xrc/preview_frame.xrc:1131
+#: hugin1/hugin/xrc/main_menu.xrc:179 hugin1/hugin/xrc/main_tool.xrc:13
+#: hugin1/hugin/xrc/preview_frame.xrc:1086
+#: hugin1/hugin/xrc/preview_frame.xrc:1128
 msgid "Open project"
 msgstr "Odpri projekt"
 
-#: hugin1/hugin/xrc/main_menu.xrc:186 hugin1/hugin/xrc/preview_frame.xrc:1092
-#: hugin1/hugin/xrc/preview_frame.xrc:1134
+#: hugin1/hugin/xrc/main_menu.xrc:182 hugin1/hugin/xrc/preview_frame.xrc:1089
+#: hugin1/hugin/xrc/preview_frame.xrc:1131
 msgid "&Save"
 msgstr "&Shrani"
 
-#: hugin1/hugin/xrc/main_menu.xrc:188 hugin1/hugin/xrc/main_tool.xrc:21
-#: hugin1/hugin/xrc/preview_frame.xrc:1094
-#: hugin1/hugin/xrc/preview_frame.xrc:1136
+#: hugin1/hugin/xrc/main_menu.xrc:184 hugin1/hugin/xrc/main_tool.xrc:21
+#: hugin1/hugin/xrc/preview_frame.xrc:1091
+#: hugin1/hugin/xrc/preview_frame.xrc:1133
 msgid "Save current project file"
 msgstr "Shrani trenutno projektno datoteko"
 
-#: hugin1/hugin/xrc/main_menu.xrc:191 hugin1/hugin/xrc/preview_frame.xrc:1097
-#: hugin1/hugin/xrc/preview_frame.xrc:1139
+#: hugin1/hugin/xrc/main_menu.xrc:187 hugin1/hugin/xrc/preview_frame.xrc:1094
+#: hugin1/hugin/xrc/preview_frame.xrc:1136
 msgid "S&ave as"
 msgstr "&Shrani kot"
 
-#: hugin1/hugin/xrc/main_menu.xrc:193 hugin1/hugin/xrc/main_tool.xrc:27
-#: hugin1/hugin/xrc/preview_frame.xrc:1098
-#: hugin1/hugin/xrc/preview_frame.xrc:1140
+#: hugin1/hugin/xrc/main_menu.xrc:189 hugin1/hugin/xrc/main_tool.xrc:27
+#: hugin1/hugin/xrc/preview_frame.xrc:1095
+#: hugin1/hugin/xrc/preview_frame.xrc:1137
 msgid "Save current project to a new file"
 msgstr "Shrani trenutni projekt v novo datoteko"
 
-#: hugin1/hugin/xrc/main_menu.xrc:196
+#: hugin1/hugin/xrc/main_menu.xrc:192
 msgid "&Write PTStitcher script"
 msgstr "&Zapiši PTStitcher skripto"
 
-#: hugin1/hugin/xrc/main_menu.xrc:197
+#: hugin1/hugin/xrc/main_menu.xrc:193
 msgid ""
 "Write current project to a PTStitcher-compatible script file, useful for "
 "batch processing"
@@ -6527,56 +6479,56 @@ msgstr ""
 "Zapiši trenutni projekt v PTStitcher kompatibilno skripto, uporabno za "
 "paketno procesiranje"
 
-#: hugin1/hugin/xrc/main_menu.xrc:200 hugin1/hugin/xrc/preview_frame.xrc:1102
-#: hugin1/hugin/xrc/preview_frame.xrc:1144
+#: hugin1/hugin/xrc/main_menu.xrc:196 hugin1/hugin/xrc/preview_frame.xrc:1099
+#: hugin1/hugin/xrc/preview_frame.xrc:1141
 #, fuzzy
 msgid "Most recently &used projects"
 msgstr "Označite izvorno datoteko projekta"
 
-#: hugin1/hugin/xrc/main_menu.xrc:201 hugin1/hugin/xrc/preview_frame.xrc:1103
-#: hugin1/hugin/xrc/preview_frame.xrc:1145
+#: hugin1/hugin/xrc/main_menu.xrc:197 hugin1/hugin/xrc/preview_frame.xrc:1100
+#: hugin1/hugin/xrc/preview_frame.xrc:1142
 #, fuzzy
 msgid "List of most recently used project files"
 msgstr "Označite izvorno datoteko projekta"
 
-#: hugin1/hugin/xrc/main_menu.xrc:205 hugin1/hugin/xrc/main_menu.xrc:235
-#: hugin1/hugin/xrc/preview_frame.xrc:1107
+#: hugin1/hugin/xrc/main_menu.xrc:201 hugin1/hugin/xrc/main_menu.xrc:231
+#: hugin1/hugin/xrc/preview_frame.xrc:1104
 msgid "&Run Batch Processor"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:210 hugin1/hugin/xrc/main_menu.xrc:240
+#: hugin1/hugin/xrc/main_menu.xrc:206 hugin1/hugin/xrc/main_menu.xrc:236
 #, fuzzy
 msgid "&Merge project..."
 msgstr "Nov projekt"
 
-#: hugin1/hugin/xrc/main_menu.xrc:211 hugin1/hugin/xrc/main_menu.xrc:241
+#: hugin1/hugin/xrc/main_menu.xrc:207 hugin1/hugin/xrc/main_menu.xrc:237
 #, fuzzy
 msgid "Merges an existing project file with the current project."
 msgstr "Dodaj sliko trenutnemu projektu"
 
-#: hugin1/hugin/xrc/main_menu.xrc:214
+#: hugin1/hugin/xrc/main_menu.xrc:210
 msgid "Import settings from Papywizard &XML file..."
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:215
+#: hugin1/hugin/xrc/main_menu.xrc:211
 msgid "Read shoot settings from a Papywizard XML file"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:218 hugin1/hugin/xrc/main_menu.xrc:244
+#: hugin1/hugin/xrc/main_menu.xrc:214 hugin1/hugin/xrc/main_menu.xrc:240
 msgid "Apply &Template"
 msgstr "Uveljavi &predlogo"
 
-#: hugin1/hugin/xrc/main_menu.xrc:219 hugin1/hugin/xrc/main_menu.xrc:245
+#: hugin1/hugin/xrc/main_menu.xrc:215 hugin1/hugin/xrc/main_menu.xrc:241
 msgid ""
 "Assign the settings of a previously saved project to the current images."
 msgstr "Določi nastavitve predhodno shranjenih projektov trenutnim slikam."
 
-#: hugin1/hugin/xrc/main_menu.xrc:253
+#: hugin1/hugin/xrc/main_menu.xrc:249
 #, fuzzy
 msgid "&Close editor"
 msgstr "Zapri"
 
-#: hugin1/hugin/xrc/main_menu.xrc:254
+#: hugin1/hugin/xrc/main_menu.xrc:250
 #, fuzzy
 msgid "Closes panorama editor"
 msgstr "Panoramski čarovnik"
@@ -6632,7 +6584,7 @@ msgstr "Avtomatski predogled"
 msgid "Show the OpenGL preview image"
 msgstr "Pokaži okno s predogledom"
 
-#: hugin1/hugin/xrc/main_tool.xrc:66 hugin1/hugin/xrc/preview_frame.xrc:478
+#: hugin1/hugin/xrc/main_tool.xrc:66
 msgid "Preview panorama"
 msgstr "Predogled panorame"
 
@@ -6693,7 +6645,7 @@ msgid "Exclude region from all images of this lens"
 msgstr ""
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:88
-#: hugin1/hugin/xrc/pref_dialog.xrc:715
+#: hugin1/hugin/xrc/pref_dialog.xrc:798
 #, fuzzy
 msgid "Export"
 msgstr "Osvetlitev"
@@ -6905,39 +6857,39 @@ msgstr "Spremenljivke fotoaparata in objektiva:"
 msgid "Interpolator (i):"
 msgstr "Interpolator (i):"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:17 hugin1/hugin/xrc/pref_dialog.xrc:1164
+#: hugin1/hugin/xrc/pano_panel.xrc:17 hugin1/hugin/xrc/pref_dialog.xrc:1247
 msgid "Poly3 (Bicubic)"
 msgstr "Poly3 (Bicubic)"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:18 hugin1/hugin/xrc/pref_dialog.xrc:1165
+#: hugin1/hugin/xrc/pano_panel.xrc:18 hugin1/hugin/xrc/pref_dialog.xrc:1248
 msgid "Spline 16"
 msgstr "Polinomska 16"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:19 hugin1/hugin/xrc/pref_dialog.xrc:1166
+#: hugin1/hugin/xrc/pano_panel.xrc:19 hugin1/hugin/xrc/pref_dialog.xrc:1249
 msgid "Spline 36"
 msgstr "Polinomska 36"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1167
+#: hugin1/hugin/xrc/pano_panel.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1250
 msgid "Sinc 256"
 msgstr "Sinc 256"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:21 hugin1/hugin/xrc/pref_dialog.xrc:1168
+#: hugin1/hugin/xrc/pano_panel.xrc:21 hugin1/hugin/xrc/pref_dialog.xrc:1251
 msgid "Spline 64"
 msgstr "Polinomska 64"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:22 hugin1/hugin/xrc/pref_dialog.xrc:1169
+#: hugin1/hugin/xrc/pano_panel.xrc:22 hugin1/hugin/xrc/pref_dialog.xrc:1252
 msgid "Bilinear"
 msgstr "Bilinearna"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:23 hugin1/hugin/xrc/pref_dialog.xrc:1170
+#: hugin1/hugin/xrc/pano_panel.xrc:23 hugin1/hugin/xrc/pref_dialog.xrc:1253
 msgid "Nearest neighbor"
 msgstr "Najbližji sosed"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:24 hugin1/hugin/xrc/pref_dialog.xrc:1171
+#: hugin1/hugin/xrc/pano_panel.xrc:24 hugin1/hugin/xrc/pref_dialog.xrc:1254
 msgid "Sinc 1024"
 msgstr "Sinc 1024"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:27 hugin1/hugin/xrc/pref_dialog.xrc:1174
+#: hugin1/hugin/xrc/pano_panel.xrc:27 hugin1/hugin/xrc/pref_dialog.xrc:1257
 msgid "approximation of values between source pixels"
 msgstr "aproksimacija vrednosti med izvornimi piksli"
 
@@ -6966,7 +6918,7 @@ msgstr "Blender možnosti"
 msgid "Enfuse options"
 msgstr "Enfuse možnosti"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:198 hugin1/hugin/xrc/preview_frame.xrc:550
+#: hugin1/hugin/xrc/pano_panel.xrc:198 hugin1/hugin/xrc/preview_frame.xrc:549
 #, fuzzy
 msgid "Field of View:"
 msgstr "Vidni kot"
@@ -7231,16 +7183,16 @@ msgstr ""
 msgid "Output parameters"
 msgstr "Poljubni parametri spodaj"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:1378 hugin1/hugin/xrc/pref_dialog.xrc:843
+#: hugin1/hugin/xrc/pano_panel.xrc:1378 hugin1/hugin/xrc/pref_dialog.xrc:926
 #, fuzzy
 msgid "Seam blend mode:"
 msgstr "Način zlivanja:"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:1386 hugin1/hugin/xrc/pref_dialog.xrc:851
+#: hugin1/hugin/xrc/pano_panel.xrc:1386 hugin1/hugin/xrc/pref_dialog.xrc:934
 msgid "hard seam (faster)"
 msgstr ""
 
-#: hugin1/hugin/xrc/pano_panel.xrc:1387 hugin1/hugin/xrc/pref_dialog.xrc:852
+#: hugin1/hugin/xrc/pano_panel.xrc:1387 hugin1/hugin/xrc/pref_dialog.xrc:935
 #, fuzzy
 msgid "blend seam"
 msgstr "enblend napaka"
@@ -7312,32 +7264,48 @@ msgstr ""
 msgid "This affects the control points editor and mask editor."
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:171
+#: hugin1/hugin/xrc/pref_dialog.xrc:170
 #, fuzzy
-msgid "File Options"
-msgstr "Možnosti datotek"
+msgid "dcraw executable:"
+msgstr "Enblend zagonska datoteka:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:178
-#, fuzzy
-msgid "Temporary dir:"
-msgstr "Začasni imenik:"
-
-#: hugin1/hugin/xrc/pref_dialog.xrc:191
+#: hugin1/hugin/xrc/pref_dialog.xrc:177 hugin1/hugin/xrc/pref_dialog.xrc:199
+#: hugin1/hugin/xrc/pref_dialog.xrc:221 hugin1/hugin/xrc/pref_dialog.xrc:274
 #, fuzzy
 msgid "(leave empty for OS default)"
 msgstr "ohrani privzete vrednosti op. sistema"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:209
+#: hugin1/hugin/xrc/pref_dialog.xrc:192
+#, fuzzy
+msgid "RT-cli executable:"
+msgstr "Enblend zagonska datoteka:"
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:214
+#, fuzzy
+msgid "darktable-cli executable:"
+msgstr "Enblend zagonska datoteka:"
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:254
+#, fuzzy
+msgid "File Options"
+msgstr "Možnosti datotek"
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:261
+#, fuzzy
+msgid "Temporary dir:"
+msgstr "Začasni imenik:"
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:292
 #, fuzzy
 msgid "Default project filename:"
 msgstr "Odpri projekt"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:227
+#: hugin1/hugin/xrc/pref_dialog.xrc:310
 #, fuzzy
 msgid "Default output prefix:"
 msgstr "Označi izhodno predpono"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:246
+#: hugin1/hugin/xrc/pref_dialog.xrc:329
 #, c-format
 msgid ""
 "The following placeholders are replaced automatically:\n"
@@ -7355,47 +7323,47 @@ msgid ""
 "%projectname - project filename (only for output prefix)"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:268
+#: hugin1/hugin/xrc/pref_dialog.xrc:351
 #, fuzzy
 msgid "Default filenames"
 msgstr "Privzeti argumenti:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:276
+#: hugin1/hugin/xrc/pref_dialog.xrc:359
 #, fuzzy
 msgid "Filenames"
 msgstr "Ime datoteke"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:285
+#: hugin1/hugin/xrc/pref_dialog.xrc:368
 msgid "Image loading"
 msgstr "Nalaganje slik"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:289
+#: hugin1/hugin/xrc/pref_dialog.xrc:372
 msgid "Automatically align images after loading"
 msgstr "Samodejno razmeščanje slik po nalaganju"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:302
+#: hugin1/hugin/xrc/pref_dialog.xrc:385
 #, fuzzy
 msgid "Detect vertical lines"
 msgstr "navpična črta"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:303
+#: hugin1/hugin/xrc/pref_dialog.xrc:386
 msgid "Detects vertical lines in the images to level the pano"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:310
+#: hugin1/hugin/xrc/pref_dialog.xrc:393
 #, fuzzy
 msgid "Remove cloud-like control points (Celeste)"
 msgstr "Dodanih %d stičnih točk"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:322
+#: hugin1/hugin/xrc/pref_dialog.xrc:405
 msgid "Optional assistant steps"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:330
+#: hugin1/hugin/xrc/pref_dialog.xrc:413
 msgid "Auto align"
 msgstr "Samodejno razmeščanje"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:337
+#: hugin1/hugin/xrc/pref_dialog.xrc:420
 msgid ""
 "Number of Control Points\n"
 "per overlap"
@@ -7403,69 +7371,69 @@ msgstr ""
 "Število stičnih točk\n"
 "na prekritje"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:359
+#: hugin1/hugin/xrc/pref_dialog.xrc:442
 msgid "Downscale final pano"
 msgstr "Pomanjšanje obsega končne panorame"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:375
+#: hugin1/hugin/xrc/pref_dialog.xrc:458
 msgid "percent of max. width"
 msgstr "procent max. širine"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:393
+#: hugin1/hugin/xrc/pref_dialog.xrc:476
 msgid "Control Points Editor"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:399
+#: hugin1/hugin/xrc/pref_dialog.xrc:482
 msgid "HDR and 16 Bit display"
 msgstr "HDR in 16 bitni prikaz"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:408
+#: hugin1/hugin/xrc/pref_dialog.xrc:491
 msgid "Curve"
 msgstr "Krivulja"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:416
+#: hugin1/hugin/xrc/pref_dialog.xrc:499
 msgid "linear"
 msgstr "linearno"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:417
+#: hugin1/hugin/xrc/pref_dialog.xrc:500
 msgid "logarithmic"
 msgstr "logaritmično"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:418
+#: hugin1/hugin/xrc/pref_dialog.xrc:501
 msgid "gamma 2.2"
 msgstr "gama 2.2"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:426
+#: hugin1/hugin/xrc/pref_dialog.xrc:509
 msgid "used for display in GUI"
 msgstr "uporaba za prikaz na grafičnem vmesniku"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:447
+#: hugin1/hugin/xrc/pref_dialog.xrc:530
 msgid "Patch width:"
 msgstr "Širina zaplate:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:461 hugin1/hugin/xrc/pref_dialog.xrc:503
+#: hugin1/hugin/xrc/pref_dialog.xrc:544 hugin1/hugin/xrc/pref_dialog.xrc:586
 msgid "pixels"
 msgstr "piksli"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:468
+#: hugin1/hugin/xrc/pref_dialog.xrc:551
 #, fuzzy
 msgid "Search area width:"
 msgstr "Širina lokalnega iskalnega območja:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:482
+#: hugin1/hugin/xrc/pref_dialog.xrc:565
 #, fuzzy
 msgid "percent of image width"
 msgstr "procent max. širine"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:489
+#: hugin1/hugin/xrc/pref_dialog.xrc:572
 msgid "Local search area width:"
 msgstr "Širina lokalnega iskalnega območja:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:511
+#: hugin1/hugin/xrc/pref_dialog.xrc:594
 msgid "Correlation Threshold:"
 msgstr "Prag korelacije"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:523
+#: hugin1/hugin/xrc/pref_dialog.xrc:606
 msgid ""
 "0: no similarity\n"
 "1: maximum similarity"
@@ -7473,11 +7441,11 @@ msgstr ""
 "0: ni podobnosti\n"
 "1: maksimalna podobnost"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:531
+#: hugin1/hugin/xrc/pref_dialog.xrc:614
 msgid "Peak Curvature Threshold:"
 msgstr "Prag vrha ukrivljenosti:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:543
+#: hugin1/hugin/xrc/pref_dialog.xrc:626
 #, fuzzy
 msgid ""
 "0: no peak\n"
@@ -7486,164 +7454,164 @@ msgstr ""
 "0: ni vrha\n"
 " 0.2: razločen vrh"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:560
+#: hugin1/hugin/xrc/pref_dialog.xrc:643
 msgid "Rotation search"
 msgstr "Rotacijsko iskanje"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:564
+#: hugin1/hugin/xrc/pref_dialog.xrc:647
 msgid "Enable rotation search (slower, but more accurate)"
 msgstr "Omogoči rotacijsko iskanje (počasno, a natančno)"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:573
+#: hugin1/hugin/xrc/pref_dialog.xrc:656
 msgid "Start angle:"
 msgstr "Začetni kot:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:594
+#: hugin1/hugin/xrc/pref_dialog.xrc:677
 msgid "Stop angle:"
 msgstr "Končni kot:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:613
+#: hugin1/hugin/xrc/pref_dialog.xrc:696
 msgid "Steps:"
 msgstr "Koraki:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:640
+#: hugin1/hugin/xrc/pref_dialog.xrc:723
 #, fuzzy
 msgid "Control Point Detectors"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:646
+#: hugin1/hugin/xrc/pref_dialog.xrc:729
 #, fuzzy
 msgid "Control Point Detector Programs"
 msgstr "Urejavalnik stičnih točk"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:662
+#: hugin1/hugin/xrc/pref_dialog.xrc:745
 #, fuzzy
 msgid "New..."
 msgstr "..."
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:669 hugin1/hugin/xrc/pref_dialog.xrc:1009
-#: hugin1/hugin/xrc/pref_dialog.xrc:1068
+#: hugin1/hugin/xrc/pref_dialog.xrc:752 hugin1/hugin/xrc/pref_dialog.xrc:1092
+#: hugin1/hugin/xrc/pref_dialog.xrc:1151
 #, fuzzy
 msgid "Edit..."
 msgstr "&Uredi"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:683
+#: hugin1/hugin/xrc/pref_dialog.xrc:766
 msgid "Move up"
 msgstr "Premakni gor"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:690
+#: hugin1/hugin/xrc/pref_dialog.xrc:773
 msgid "Move down"
 msgstr "Premakni dol"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:697
+#: hugin1/hugin/xrc/pref_dialog.xrc:780
 #, fuzzy
 msgid "Set default"
 msgstr "Privzeto sistemsko"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:728
+#: hugin1/hugin/xrc/pref_dialog.xrc:811
 msgid "The assistant is using the default setting."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:750
+#: hugin1/hugin/xrc/pref_dialog.xrc:833
 #, fuzzy
 msgid "Output Format"
 msgstr "Izhod"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:757
+#: hugin1/hugin/xrc/pref_dialog.xrc:840
 #, fuzzy
 msgid "Default File Format:"
 msgstr "Privzeti argumenti:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:770
+#: hugin1/hugin/xrc/pref_dialog.xrc:853
 msgid "default output format for final panorama"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:777
+#: hugin1/hugin/xrc/pref_dialog.xrc:860
 #, fuzzy
 msgid "TIFF Compression:"
 msgstr "Kompresija:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:791
+#: hugin1/hugin/xrc/pref_dialog.xrc:874
 msgid "default TIFF compression"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:797
+#: hugin1/hugin/xrc/pref_dialog.xrc:880
 #, fuzzy
 msgid "JPEG Quality:"
 msgstr "Kakovost:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:808
+#: hugin1/hugin/xrc/pref_dialog.xrc:891
 msgid "default JPEG compression setting"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:823
+#: hugin1/hugin/xrc/pref_dialog.xrc:906
 #, fuzzy
 msgid "Blender"
 msgstr "Spajanje:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:829
+#: hugin1/hugin/xrc/pref_dialog.xrc:912
 #, fuzzy
 msgid "Default blender:"
 msgstr "Privzeti argumenti:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:836
+#: hugin1/hugin/xrc/pref_dialog.xrc:919
 msgid "Default blender which is used for new projects."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:868
+#: hugin1/hugin/xrc/pref_dialog.xrc:951
 #, fuzzy
 msgid "Processor"
 msgstr "Obdelava"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:879
+#: hugin1/hugin/xrc/pref_dialog.xrc:962
 msgid "The engine that will run the stitch"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:888
+#: hugin1/hugin/xrc/pref_dialog.xrc:971
 msgid "Start stitching jobs immediately"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:889
+#: hugin1/hugin/xrc/pref_dialog.xrc:972
 msgid ""
 "If selected, the processor will immediately resume processing the jobs "
 "queue.  Otherwise the processor is started in suspended state and the user "
 "has to start the processing manually."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:896
+#: hugin1/hugin/xrc/pref_dialog.xrc:979
 #, fuzzy
 msgid "Overwrite existing files"
 msgstr "Prepiši obstoječe slike?"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:897
+#: hugin1/hugin/xrc/pref_dialog.xrc:980
 msgid "WARNING: existing files will be silently overwritten."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:904
+#: hugin1/hugin/xrc/pref_dialog.xrc:987
 #, fuzzy
 msgid "Verbose Output"
 msgstr "Izhod"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:905
+#: hugin1/hugin/xrc/pref_dialog.xrc:988
 msgid ""
 "Enable to get the details, useful when reporting a bug or just to watch the "
 "project's progress."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:927
+#: hugin1/hugin/xrc/pref_dialog.xrc:1010
 msgid "Stitching"
 msgstr "Šivanje"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:937
+#: hugin1/hugin/xrc/pref_dialog.xrc:1020
 msgid "Copy metadata into final files using ExifTool"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:942
+#: hugin1/hugin/xrc/pref_dialog.xrc:1025
 #, fuzzy
 msgid "ExifTool options"
 msgstr "Enfuse možnosti"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:951
+#: hugin1/hugin/xrc/pref_dialog.xrc:1034
 msgid ""
 "These argfiles are used to copy metadata from the image file to the final "
 "panorama.\n"
@@ -7652,58 +7620,58 @@ msgid ""
 "\"."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:971
+#: hugin1/hugin/xrc/pref_dialog.xrc:1054
 msgid ""
 "The following argfile will be used to copy tags from the first image to all "
 "intermediate images."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:987
+#: hugin1/hugin/xrc/pref_dialog.xrc:1070
 #, fuzzy
 msgid "Intermediate ExifTool argfile:"
 msgstr "Izberi točko na levi sliki"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:993 hugin1/hugin/xrc/pref_dialog.xrc:1052
+#: hugin1/hugin/xrc/pref_dialog.xrc:1076 hugin1/hugin/xrc/pref_dialog.xrc:1135
 #, fuzzy
 msgid "Leave empty for default"
 msgstr "ohrani privzete vrednosti op. sistema"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1010 hugin1/hugin/xrc/pref_dialog.xrc:1069
+#: hugin1/hugin/xrc/pref_dialog.xrc:1093 hugin1/hugin/xrc/pref_dialog.xrc:1152
 #, fuzzy
 msgid "Edit selected ExifTool argfile"
 msgstr "Izberi točko na levi sliki"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1029
+#: hugin1/hugin/xrc/pref_dialog.xrc:1112
 msgid ""
 "The following argfile will be used to copy tags from the first image to the "
 "final panorama.\n"
 "It is applied additional to the above argfile for the intermediate images."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1046
+#: hugin1/hugin/xrc/pref_dialog.xrc:1129
 #, fuzzy
 msgid "Final ExifTool argfile:"
 msgstr "Izberi točko na levi sliki"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1086
+#: hugin1/hugin/xrc/pref_dialog.xrc:1169
 msgid "Create Photo Sphere XMP data"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1087
+#: hugin1/hugin/xrc/pref_dialog.xrc:1170
 msgid "This will only be done for equirectangular output images."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1102
+#: hugin1/hugin/xrc/pref_dialog.xrc:1185
 #, fuzzy
 msgid "Advanced options"
 msgstr "Blender možnosti"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1108
+#: hugin1/hugin/xrc/pref_dialog.xrc:1191
 #, fuzzy
 msgid "Number of threads:"
 msgstr "Številu procesorjev:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1117
+#: hugin1/hugin/xrc/pref_dialog.xrc:1200
 #, fuzzy
 msgid ""
 "Nona and the OpenMP enabled enblend/enfuse can use multiple threads for "
@@ -7714,46 +7682,46 @@ msgstr ""
 "Nona lahko uporablja večnitno procesiranje.\n"
 "Nastavi število procesorjev ali procesorskih jeder, ki so na voljo v sistemu."
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1124
+#: hugin1/hugin/xrc/pref_dialog.xrc:1207
 msgid "0 for automatic detection"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1140
+#: hugin1/hugin/xrc/pref_dialog.xrc:1223
 #, fuzzy
 msgid "Stitching (2)"
 msgstr "Šivanje"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1156
+#: hugin1/hugin/xrc/pref_dialog.xrc:1239
 #, fuzzy
 msgid "Default Interpolator (i):"
 msgstr "Interpolator (i):"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1186
+#: hugin1/hugin/xrc/pref_dialog.xrc:1269
 #, fuzzy
 msgid "Create cropped images by default"
 msgstr "Shrani neizrezane slike"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1193
+#: hugin1/hugin/xrc/pref_dialog.xrc:1276
 msgid "Use GPU for remapping"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1194
+#: hugin1/hugin/xrc/pref_dialog.xrc:1277
 msgid "Use video card GPU to speed up remapping"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1217
+#: hugin1/hugin/xrc/pref_dialog.xrc:1300
 msgid "Use alternative Enblend program"
 msgstr "Uporabi alternativni Enblend program"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1227
+#: hugin1/hugin/xrc/pref_dialog.xrc:1310
 msgid "Enblend executable:"
 msgstr "Enblend zagonska datoteka:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1252 hugin1/hugin/xrc/pref_dialog.xrc:1331
+#: hugin1/hugin/xrc/pref_dialog.xrc:1335 hugin1/hugin/xrc/pref_dialog.xrc:1414
 msgid "Default Arguments:"
 msgstr "Privzeti argumenti:"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1272 hugin1/hugin/xrc/pref_dialog.xrc:1351
+#: hugin1/hugin/xrc/pref_dialog.xrc:1355 hugin1/hugin/xrc/pref_dialog.xrc:1434
 #, fuzzy
 msgid ""
 "These are the default arguments for new projects.\n"
@@ -7764,62 +7732,62 @@ msgstr ""
 "Šivanje.\n"
 "Ne nastavite -w, -o in --compression argumentov, saj jih nastavi že hugin"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1282
+#: hugin1/hugin/xrc/pref_dialog.xrc:1365
 msgid "Enblend"
 msgstr "Enblend"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1296
+#: hugin1/hugin/xrc/pref_dialog.xrc:1379
 msgid "Use alternative Enfuse program"
 msgstr "Alternativni Enfuse program"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1306
+#: hugin1/hugin/xrc/pref_dialog.xrc:1389
 msgid "Enfuse executable:"
 msgstr "Enfuse zagonska datoteka"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1361
+#: hugin1/hugin/xrc/pref_dialog.xrc:1444
 msgid "Enfuse"
 msgstr "Enfuse"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1369
+#: hugin1/hugin/xrc/pref_dialog.xrc:1452
 #, fuzzy
 msgid "Programs"
 msgstr "Panorama"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1377
+#: hugin1/hugin/xrc/pref_dialog.xrc:1460
 #, fuzzy
 msgid "Celeste parameters"
 msgstr "Naloži parametre objektiva"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1384
+#: hugin1/hugin/xrc/pref_dialog.xrc:1467
 msgid "SVM threshold:"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1396
+#: hugin1/hugin/xrc/pref_dialog.xrc:1479
 msgid ""
 "greater than 0.5: less sensitive\n"
 "less than 0.5: more sensitive"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1403
+#: hugin1/hugin/xrc/pref_dialog.xrc:1486
 msgid "Gabor filter size"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1411
+#: hugin1/hugin/xrc/pref_dialog.xrc:1494
 msgid "small"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1412
+#: hugin1/hugin/xrc/pref_dialog.xrc:1495
 #, fuzzy
 msgid "large"
 msgstr "izbriši"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1420
+#: hugin1/hugin/xrc/pref_dialog.xrc:1503
 msgid ""
 "large is more accurate\n"
 "small can examine control points close to image border"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1438
+#: hugin1/hugin/xrc/pref_dialog.xrc:1521
 msgid ""
 "The vignetting and exposure correction is determined by analysing color "
 "values in the overlapping areas.\n"
@@ -7829,77 +7797,77 @@ msgstr ""
 "vrednosti na prekritjih.\n"
 "Za pohitritev izračuna se uporablja naključna podmnožica točk."
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1447
+#: hugin1/hugin/xrc/pref_dialog.xrc:1530
 #, fuzzy
 msgid "Number of points per image: "
 msgstr "Število točk na sliko"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1462
+#: hugin1/hugin/xrc/pref_dialog.xrc:1545
 #, fuzzy
 msgid "Photometric optimizer"
 msgstr "Fotometrična optimizacija"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1470
+#: hugin1/hugin/xrc/pref_dialog.xrc:1553
 msgid "Warnings"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1474
+#: hugin1/hugin/xrc/pref_dialog.xrc:1557
 msgid "Show message about saving project file and output prefix"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1481
+#: hugin1/hugin/xrc/pref_dialog.xrc:1564
 msgid "Show warning about big exposure difference when adding images"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1494
+#: hugin1/hugin/xrc/pref_dialog.xrc:1577
 msgid "After \"edit cp\" tool"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1502
+#: hugin1/hugin/xrc/pref_dialog.xrc:1585
 msgid "Ask user"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1503
+#: hugin1/hugin/xrc/pref_dialog.xrc:1586
 #, fuzzy
 msgid "Re-optimize panorama"
 msgstr "Optimiziranje panorame"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1504
+#: hugin1/hugin/xrc/pref_dialog.xrc:1587
 #, fuzzy
 msgid "Don't optimize panorama"
 msgstr "Optimiziraj zdaj!"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1510
+#: hugin1/hugin/xrc/pref_dialog.xrc:1593
 #, fuzzy
 msgid "Edit cp tool (on fast preview window)"
 msgstr "&Predogled"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1518
+#: hugin1/hugin/xrc/pref_dialog.xrc:1601
 msgid "Misc"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1566
+#: hugin1/hugin/xrc/pref_dialog.xrc:1649
 msgid "Preferences - hugin"
 msgstr "Nastavitve - hugin"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1574
+#: hugin1/hugin/xrc/pref_dialog.xrc:1657
 msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite_original -tagsfromfile image -@ argfile panorama\"."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1607 hugin1/hugin/xrc/pref_dialog.xrc:1674
+#: hugin1/hugin/xrc/pref_dialog.xrc:1690 hugin1/hugin/xrc/pref_dialog.xrc:1757
 #, fuzzy
 msgid "Edit ExifTool argfile"
 msgstr "Izberi točko na levi sliki"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1617
+#: hugin1/hugin/xrc/pref_dialog.xrc:1700
 msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite_original -tagsfromfile image -E -@ argfile panorama\"."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1632
+#: hugin1/hugin/xrc/pref_dialog.xrc:1715
 msgid ""
 "The following placeholders will be replaced before invoking ExifTool:\n"
 "%projection - projection name (in English)\n"
@@ -7919,11 +7887,11 @@ msgid ""
 "The placeholders are case sensitive."
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:645
+#: hugin1/hugin/xrc/preview_frame.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:644
 msgid "Center the preview horizontally"
 msgstr "Poravnaj predogled horizontalno"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:8 hugin1/hugin/xrc/preview_frame.xrc:640
+#: hugin1/hugin/xrc/preview_frame.xrc:8 hugin1/hugin/xrc/preview_frame.xrc:639
 msgid "Center"
 msgstr "Center"
 
@@ -7932,14 +7900,14 @@ msgid "Show the whole panorama"
 msgstr "Pokaži celo panoramo"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:13
-#: hugin1/hugin/xrc/preview_frame.xrc:540
-#: hugin1/hugin/xrc/preview_frame.xrc:657
+#: hugin1/hugin/xrc/preview_frame.xrc:539
+#: hugin1/hugin/xrc/preview_frame.xrc:656
 msgid "Estimate field of view"
 msgstr "Oceni zorni kot"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:14
-#: hugin1/hugin/xrc/preview_frame.xrc:535
-#: hugin1/hugin/xrc/preview_frame.xrc:652
+#: hugin1/hugin/xrc/preview_frame.xrc:534
+#: hugin1/hugin/xrc/preview_frame.xrc:651
 msgid "Fit"
 msgstr "Prilagodi"
 
@@ -7949,7 +7917,7 @@ msgid "Automatically straighten a wavy horizon"
 msgstr "Samodejno poravnaj valovit horizont."
 
 #: hugin1/hugin/xrc/preview_frame.xrc:19
-#: hugin1/hugin/xrc/preview_frame.xrc:664
+#: hugin1/hugin/xrc/preview_frame.xrc:663
 msgid "Straighten"
 msgstr "Poravnaj"
 
@@ -8067,12 +8035,12 @@ msgstr "Urejavalnik stičnih točk"
 msgid "Background:"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:489
+#: hugin1/hugin/xrc/preview_frame.xrc:488
 #, fuzzy
 msgid "Scale:"
 msgstr "Shrani"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:516
+#: hugin1/hugin/xrc/preview_frame.xrc:515
 msgid ""
 "* A gray line indicates there are no control points, but the image pair "
 "overlaps.\n"
@@ -8080,162 +8048,153 @@ msgid ""
 "* Click a line to edit the associated images in the Control Points tab."
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:525
+#: hugin1/hugin/xrc/preview_frame.xrc:524
 msgid "Layout"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:605
-#: hugin1/hugin/xrc/preview_frame.xrc:696
-#: hugin1/hugin/xrc/preview_frame.xrc:877
+#: hugin1/hugin/xrc/preview_frame.xrc:604
+#: hugin1/hugin/xrc/preview_frame.xrc:695
+#: hugin1/hugin/xrc/preview_frame.xrc:875
 msgid "Guides:"
+msgstr ""
+
+#: hugin1/hugin/xrc/preview_frame.xrc:613
+#: hugin1/hugin/xrc/preview_frame.xrc:703
+#: hugin1/hugin/xrc/preview_frame.xrc:884
+msgid "Rule of thirds"
 msgstr ""
 
 #: hugin1/hugin/xrc/preview_frame.xrc:614
 #: hugin1/hugin/xrc/preview_frame.xrc:704
-#: hugin1/hugin/xrc/preview_frame.xrc:886
-msgid "Rule of thirds"
-msgstr ""
-
-#: hugin1/hugin/xrc/preview_frame.xrc:615
-#: hugin1/hugin/xrc/preview_frame.xrc:705
-#: hugin1/hugin/xrc/preview_frame.xrc:887
+#: hugin1/hugin/xrc/preview_frame.xrc:885
 #, fuzzy
 msgid "Golden ratio"
 msgstr "Ime datoteke"
 
+#: hugin1/hugin/xrc/preview_frame.xrc:615
+#: hugin1/hugin/xrc/preview_frame.xrc:705
+#: hugin1/hugin/xrc/preview_frame.xrc:886
+msgid "Diagonal"
+msgstr ""
+
 #: hugin1/hugin/xrc/preview_frame.xrc:616
 #: hugin1/hugin/xrc/preview_frame.xrc:706
-#: hugin1/hugin/xrc/preview_frame.xrc:888
-msgid "Diagonal"
+#: hugin1/hugin/xrc/preview_frame.xrc:887
+msgid "Diagonal method"
 msgstr ""
 
 #: hugin1/hugin/xrc/preview_frame.xrc:617
 #: hugin1/hugin/xrc/preview_frame.xrc:707
-#: hugin1/hugin/xrc/preview_frame.xrc:889
-msgid "Diagonal method"
+#: hugin1/hugin/xrc/preview_frame.xrc:888
+msgid "Golden triangle (down)"
 msgstr ""
 
 #: hugin1/hugin/xrc/preview_frame.xrc:618
 #: hugin1/hugin/xrc/preview_frame.xrc:708
-#: hugin1/hugin/xrc/preview_frame.xrc:890
-msgid "Golden triangle (down)"
-msgstr ""
-
-#: hugin1/hugin/xrc/preview_frame.xrc:619
-#: hugin1/hugin/xrc/preview_frame.xrc:709
-#: hugin1/hugin/xrc/preview_frame.xrc:891
+#: hugin1/hugin/xrc/preview_frame.xrc:889
 msgid "Golden triangle (up)"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:669
+#: hugin1/hugin/xrc/preview_frame.xrc:668
 #, fuzzy
 msgid "Automatically straighten a wavy horizon."
 msgstr "Samodejno poravnaj valovit horizont."
 
-#: hugin1/hugin/xrc/preview_frame.xrc:684
+#: hugin1/hugin/xrc/preview_frame.xrc:683
 #, fuzzy
 msgid "Drag mode:"
 msgstr "način:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:824
+#: hugin1/hugin/xrc/preview_frame.xrc:823
 msgid "Apply"
 msgstr "Uveljavi"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:834
-#, fuzzy
-msgid "Move the panorama or drag images into position"
-msgstr "Nastavi sliko za sidrišče"
-
-#: hugin1/hugin/xrc/preview_frame.xrc:836
 msgid "Move/Drag"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:850
+#: hugin1/hugin/xrc/preview_frame.xrc:848
 msgid "Set the crop region to the largest rectangle covered by images"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:857
+#: hugin1/hugin/xrc/preview_frame.xrc:855
 #, fuzzy
 msgid "HDR Autocrop"
 msgstr "Auto"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:862
+#: hugin1/hugin/xrc/preview_frame.xrc:860
 msgid "Set the crop region to the largest rectangle covered by image stacks"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:913
+#: hugin1/hugin/xrc/preview_frame.xrc:911
 msgid "left:"
 msgstr "levo:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:927
+#: hugin1/hugin/xrc/preview_frame.xrc:925
 msgid "top:"
 msgstr "zgoraj:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:941
+#: hugin1/hugin/xrc/preview_frame.xrc:939
 msgid "right:"
 msgstr "desno:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:955
+#: hugin1/hugin/xrc/preview_frame.xrc:953
 msgid "bottom:"
 msgstr "spodaj:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:971
+#: hugin1/hugin/xrc/preview_frame.xrc:969
 msgid "Reset crop to maximal possible area"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:981
-msgid "Change the panorama's cropping region"
-msgstr ""
-
-#: hugin1/hugin/xrc/preview_frame.xrc:1014
+#: hugin1/hugin/xrc/preview_frame.xrc:1011
 #, fuzzy
 msgid "Panorama &editor"
 msgstr "Predogled panorame"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1023
+#: hugin1/hugin/xrc/preview_frame.xrc:1020
 #, fuzzy
 msgid "&Overview"
 msgstr "Predogled"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1024
+#: hugin1/hugin/xrc/preview_frame.xrc:1021
 #, fuzzy
 msgid "Shows the overview of the panorama sphere."
 msgstr "pokaži predogled slike v Panoramskem druidu"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1028
+#: hugin1/hugin/xrc/preview_frame.xrc:1025
 msgid "&Grid"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1029
+#: hugin1/hugin/xrc/preview_frame.xrc:1026
 msgid "Shows a grid."
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1155
+#: hugin1/hugin/xrc/preview_frame.xrc:1152
 #, fuzzy
 msgid "&All images"
 msgstr "Dodaj slike"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1160
+#: hugin1/hugin/xrc/preview_frame.xrc:1157
 #, fuzzy
 msgid "Image with &median exposure of each stack"
 msgstr "Preslikane slike"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1164
+#: hugin1/hugin/xrc/preview_frame.xrc:1161
 #, fuzzy
 msgid "&Brightest image of each stack"
 msgstr "Preslikane slike"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1168
+#: hugin1/hugin/xrc/preview_frame.xrc:1165
 #, fuzzy
 msgid "&Darkest image of each stack"
 msgstr "Preslikane slike"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1173
+#: hugin1/hugin/xrc/preview_frame.xrc:1170
 #, fuzzy
 msgid "&Keep currently selected images"
 msgstr "zamenjaj objektiv na izbranih slikah"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1178
+#: hugin1/hugin/xrc/preview_frame.xrc:1175
 #, fuzzy
 msgid "&Reset selection"
 msgstr "Nov projekt"
@@ -8478,6 +8437,42 @@ msgid ""
 "Optimization of all distortion parameters \"everything\" makes only sense "
 "with heavily overlapping images and many well distributed control points."
 msgstr ""
+
+#, fuzzy
+#~ msgid "(WB reference)"
+#~ msgstr "&Nastavitve"
+
+#, fuzzy
+#~ msgid "Images"
+#~ msgstr "Slike"
+
+#, fuzzy
+#~ msgid "Add image(s)..."
+#~ msgstr "Dodaj slike"
+
+#, fuzzy
+#~ msgid "Add other images to list"
+#~ msgstr "Dodaj sliko trenutnemu projektu"
+
+#, fuzzy
+#~ msgid "Remove image"
+#~ msgstr "&Shrani kot"
+
+#, fuzzy
+#~ msgid "Remove selected image from list"
+#~ msgstr "Odstrani izbrane slike"
+
+#, fuzzy
+#~ msgid "Converter settings"
+#~ msgstr "Lestvica odkrivanja robov"
+
+#, fuzzy
+#~ msgid "Import &raw file(s)..."
+#~ msgstr "Nov projekt"
+
+#, fuzzy
+#~ msgid "Move the panorama or drag images into position"
+#~ msgstr "Nastavi sliko za sidrišče"
 
 #, fuzzy
 #~ msgid ""
