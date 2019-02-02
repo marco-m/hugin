@@ -1070,7 +1070,9 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
                 }
             }
         }
-        XRCCTRL(*this, "ass_status_text", wxStaticText)->SetLabel(alignMsg);
+        wxStaticText* statusCtrl = XRCCTRL(*this, "ass_status_text", wxStaticText);
+        statusCtrl->SetLabel(alignMsg);
+        statusCtrl->InvalidateBestSize();
         m_tool_notebook->GetPage(0)->Layout();
         Refresh();
     }
@@ -1304,7 +1306,8 @@ void GLPreviewFrame::panoramaImagesChanged(HuginBase::Panorama &pano, const Hugi
 
     if (dirty) {
         m_ButtonSizer->FitInside(m_ButtonPanel);
-		Layout();
+        Layout();
+        SendSizeEvent();
 		DEBUG_INFO("New m_ButtonPanel width: " << (m_ButtonPanel->GetSize()).GetWidth());
 		DEBUG_INFO("New m_ButtonPanel Height: " << (m_ButtonPanel->GetSize()).GetHeight());
     }
