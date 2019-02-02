@@ -43,6 +43,7 @@
 #include "hugin/ResetDialog.h"
 #include "hugin/ChangeImageVariableDialog.h"
 #include "hugin/MainFrame.h"
+#include "hugin/RawImport.h"
 #include <vigra_ext/openmp_vigra.h>
 #include <vigra_ext/cms.h>
 
@@ -88,14 +89,14 @@ bool PanoMultiImageOperation::IsEnabled(HuginBase::Panorama& pano, HuginBase::UI
   * @param files vector, to which the selected valid filenames will be added
   * @returns true, if a valid image was selected, otherwise false
   */
-bool AddImageDialog(wxWindow* parent, std::vector<std::string>& files)
+bool AddImageDialog(wxWindow* parent, std::vector<std::string>& files, bool& withRaws)
 {
     // get stored path
     wxConfigBase* config = wxConfigBase::Get();
     wxString path = config->Read(wxT("/actualPath"), wxT(""));
     wxFileDialog dlg(parent,_("Add images"),
                      path, wxT(""),
-                     GetFileDialogImageFilters(),
+                     withRaws ? GetFileDialogImageAndRawFilters() : GetFileDialogImageFilters(),
                      wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST | wxFD_PREVIEW, wxDefaultPosition);
     dlg.SetDirectory(path);
 
@@ -106,19 +107,42 @@ bool AddImageDialog(wxWindow* parent, std::vector<std::string>& files)
       img_ext = config->Read(wxT("lastImageType")).c_str();
     }
     if (img_ext == wxT("all images"))
-      dlg.SetFilterIndex(0);
-    else if (img_ext == wxT("jpg"))
-      dlg.SetFilterIndex(1);
-    else if (img_ext == wxT("tiff"))
-      dlg.SetFilterIndex(2);
-    else if (img_ext == wxT("png"))
-      dlg.SetFilterIndex(3);
-    else if (img_ext == wxT("hdr"))
-      dlg.SetFilterIndex(4);
-    else if (img_ext == wxT("exr"))
-      dlg.SetFilterIndex(5);
-    else if (img_ext == wxT("all files"))
-      dlg.SetFilterIndex(6);
+    {
+        dlg.SetFilterIndex(0);
+    }
+    else
+    {
+        if (!withRaws)
+        {
+            if (img_ext == wxT("jpg"))
+                dlg.SetFilterIndex(1);
+            else if (img_ext == wxT("tiff"))
+                dlg.SetFilterIndex(2);
+            else if (img_ext == wxT("png"))
+                dlg.SetFilterIndex(3);
+            else if (img_ext == wxT("hdr"))
+                dlg.SetFilterIndex(4);
+            else if (img_ext == wxT("exr"))
+                dlg.SetFilterIndex(5);
+            else if (img_ext == wxT("all files"))
+                dlg.SetFilterIndex(6);
+        }
+        else
+        {
+            if (img_ext == wxT("all raws"))
+                dlg.SetFilterIndex(1);
+            else if (img_ext == wxT("jpg"))
+                dlg.SetFilterIndex(2);
+            else if (img_ext == wxT("tiff"))
+                dlg.SetFilterIndex(3);
+            else if (img_ext == wxT("png"))
+                dlg.SetFilterIndex(4);
+            else if (img_ext == wxT("hdr"))
+                dlg.SetFilterIndex(5);
+            else if (img_ext == wxT("exr"))
+                dlg.SetFilterIndex(6);
+        };
+    };
 
     // call the file dialog
     if (dlg.ShowModal() == wxID_OK)
@@ -135,16 +159,33 @@ bool AddImageDialog(wxWindow* parent, std::vector<std::string>& files)
         config->Write(wxT("/actualPath"), dlg.GetDirectory());
 #endif
         // save the image extension
-        switch (dlg.GetFilterIndex())
+        if (!withRaws)
         {
-            case 0: config->Write(wxT("lastImageType"), wxT("all images")); break;
-            case 1: config->Write(wxT("lastImageType"), wxT("jpg")); break;
-            case 2: config->Write(wxT("lastImageType"), wxT("tiff")); break;
-            case 3: config->Write(wxT("lastImageType"), wxT("png")); break;
-            case 4: config->Write(wxT("lastImageType"), wxT("hdr")); break;
-            case 5: config->Write(wxT("lastImageType"), wxT("exr")); break;
-            case 6: config->Write(wxT("lastImageType"), wxT("all files")); break;
+            switch (dlg.GetFilterIndex())
+            {
+                case 0: config->Write(wxT("lastImageType"), wxT("all images")); break;
+                case 1: config->Write(wxT("lastImageType"), wxT("jpg")); break;
+                case 2: config->Write(wxT("lastImageType"), wxT("tiff")); break;
+                case 3: config->Write(wxT("lastImageType"), wxT("png")); break;
+                case 4: config->Write(wxT("lastImageType"), wxT("hdr")); break;
+                case 5: config->Write(wxT("lastImageType"), wxT("exr")); break;
+                case 6: config->Write(wxT("lastImageType"), wxT("all files")); break;
+            };
         }
+        else
+        {
+            switch (dlg.GetFilterIndex())
+            {
+                case 0: config->Write(wxT("lastImageType"), wxT("all images")); break;
+                case 1: config->Write(wxT("lastImageType"), wxT("all raws")); break;
+                case 2: config->Write(wxT("lastImageType"), wxT("jpg")); break;
+                case 3: config->Write(wxT("lastImageType"), wxT("tiff")); break;
+                case 4: config->Write(wxT("lastImageType"), wxT("png")); break;
+                case 5: config->Write(wxT("lastImageType"), wxT("hdr")); break;
+                case 6: config->Write(wxT("lastImageType"), wxT("exr")); break;
+            }
+            withRaws = dlg.GetFilterIndex() == 1;
+        };
 
         //check for forbidden/non working chars
         wxArrayString invalidFiles;
@@ -177,11 +218,46 @@ wxString AddImageOperation::GetLabel()
 PanoCommand::PanoCommand* AddImageOperation::GetInternalCommand(wxWindow* parent, HuginBase::Panorama& pano, HuginBase::UIntSet images)
 {
     std::vector<std::string> files;
-    if(AddImageDialog(parent, files))
+    bool withRaws = true;
+    if(AddImageDialog(parent, files, withRaws))
     {
         if(!files.empty())
         {
-            return new PanoCommand::wxAddImagesCmd(pano,files);
+            if (withRaws)
+            {
+                if (files.size() == 1)
+                {
+                    wxMessageDialog message(parent, _("You selected only one raw file. This is not recommended.\nAll raw files should be converted at once."),
+#ifdef _WIN32
+                        _("Hugin"),
+#else
+                        wxT(""),
+#endif
+                        wxICON_EXCLAMATION | wxYES_NO );
+                    message.SetYesNoLabels(_("Convert anyway."), _("Let me select several raw files."));
+                    if (message.ShowModal() == wxID_NO)
+                    {
+                        // post new add image event to open dialog again
+                        wxCommandEvent newAddEvent(wxEVT_COMMAND_BUTTON_CLICKED, XRCID("action_add_images"));
+                        MainFrame::Get()->GetEventHandler()->AddPendingEvent(newAddEvent);
+                        return NULL;
+                    };
+                };
+                RawImportDialog dlg(parent, &pano, files);
+                // check that raw files are from same camera and that all can be read
+                if (dlg.CheckRawFiles())
+                {
+                    // now show dialog
+                    if (dlg.ShowModal() == wxID_OK)
+                    {
+                        return dlg.GetPanoCommand();
+                    };
+                };
+            }
+            else
+            {
+                return new PanoCommand::wxAddImagesCmd(pano, files);
+            };
         };
     };
     return NULL;
@@ -269,7 +345,8 @@ PanoCommand::PanoCommand* AddImagesSeriesOperation::GetInternalCommand(wxWindow*
     std::vector<std::string> files;
     if(pano.getNrOfImages()==0)
     {
-        if(!AddImageDialog(parent,files))
+        bool withRaws = false;
+        if(!AddImageDialog(parent,files, withRaws))
         {
             return NULL;
         };

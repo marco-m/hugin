@@ -1210,12 +1210,7 @@ void MainFrame::OnAddImages( wxCommandEvent& event )
     if(cmd!=NULL)
     {
         PanoCommand::GlobalCmdHist::getInstance().addCommand(cmd);
-    }
-    else
-    {
-        // nothing to open
-        SetStatusText( _("Add Image: cancel"));
-    }
+    };
 
     DEBUG_TRACE("");
 }
