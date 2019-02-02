@@ -2865,7 +2865,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         options.enblendOptions = value;
                         while (!is.eof()) {
                             is >> value;
-                            if (value.length() > 0) {
+                            if (!is.fail() && value.length() > 0) {
                                 options.enblendOptions += " ";
                                 options.enblendOptions += value;
                             }
@@ -2874,7 +2874,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         options.enfuseOptions = value;
                         while (!is.eof()) {
                             is >> value;
-                            if (value.length() > 0) {
+                            if (!is.fail() && value.length() > 0) {
                                 options.enfuseOptions += " ";
                                 options.enfuseOptions += value;
                             }
@@ -2883,7 +2883,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         options.hdrmergeOptions = value;
                         while (!is.eof()) {
                             is >> value;
-                            if (value.length() > 0) {
+                            if (!is.fail() && value.length() > 0) {
                                 options.hdrmergeOptions += " ";
                                 options.hdrmergeOptions += value;
                             }
@@ -2892,7 +2892,7 @@ bool PanoramaMemento::loadPTScript(std::istream &i, int & ptoVersion, const std:
                         options.verdandiOptions = value;
                         while (!is.eof()) {
                             is >> value;
-                            if (value.length() > 0) {
+                            if (!is.fail() && value.length() > 0) {
                                 options.verdandiOptions += " ";
                                 options.verdandiOptions += value;
                             }
