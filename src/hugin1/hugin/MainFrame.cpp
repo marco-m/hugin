@@ -141,21 +141,44 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
 
     // try to add as images
     std::vector<std::string> filesv;
+    std::vector<std::string> rawFilesv;
     wxArrayString invalidFiles;
     for (unsigned int i=0; i< filenames.GetCount(); i++) {
         wxFileName file(filenames[i]);
-
-        if(vigra::isImage(file.GetFullPath().mb_str(HUGIN_CONV_FILENAME)))
+        // first check if raw file
+        // vigra::isImage reports also some raw files as image because
+        // technical some of them are tiff files
+        if (IsRawExtension(file.GetExt()))
         {
-            if(containsInvalidCharacters(filenames[i]))
+            if (containsInvalidCharacters(filenames[i]))
             {
                 invalidFiles.Add(file.GetFullPath());
             }
             else
             {
-                filesv.push_back((const char *)filenames[i].mb_str(HUGIN_CONV_FILENAME));
+                rawFilesv.push_back((const char *)file.GetFullPath().mb_str(HUGIN_CONV_FILENAME));
             };
         }
+        else
+        {
+            // now check if drop file is a image
+            if (vigra::isImage(file.GetFullPath().mb_str(HUGIN_CONV_FILENAME)))
+            {
+                if (containsInvalidCharacters(filenames[i]))
+                {
+                    invalidFiles.Add(file.GetFullPath());
+                }
+                else
+                {
+                    filesv.push_back((const char *)filenames[i].mb_str(HUGIN_CONV_FILENAME));
+                };
+            };
+        };
+    }
+    // show warning about invalid file names
+    if (!invalidFiles.empty())
+    {
+        ShowFilenameWarning(mf, invalidFiles);
     }
     // we got some images to add.
     if (!filesv.empty())
@@ -174,13 +197,35 @@ bool PanoDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& file
             cmds.push_back(new PanoCommand::CenterPanoCmd(pano));
             PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::CombinedPanoCommand(pano, cmds));
         };
-
-    }
-    if(!invalidFiles.empty())
+    };
+    if (!rawFilesv.empty())
     {
-        ShowFilenameWarning(mf, invalidFiles);
-    }
-
+        if (rawFilesv.size() == 1)
+        {
+            wxMessageDialog message(mf, _("You selected only one raw file. This is not recommended.\nAll raw files should be converted at once."),
+#ifdef _WIN32
+                _("Hugin"),
+#else
+                wxT(""),
+#endif
+                wxICON_EXCLAMATION | wxOK | wxCANCEL);
+            message.SetOKLabel(_("Convert anyway."));
+            if (message.ShowModal() != wxID_OK)
+            {
+                return true;
+            };
+        };
+        RawImportDialog dlg(mf, &pano, rawFilesv);
+        // check that raw files are from same camera and that all can be read
+        if (dlg.CheckRawFiles())
+        {
+            // now show dialog
+            if (dlg.ShowModal() == wxID_OK)
+            {
+                PanoCommand::GlobalCmdHist::getInstance().addCommand(dlg.GetPanoCommand());
+            };
+        };
+    };
     return true;
 }
 
