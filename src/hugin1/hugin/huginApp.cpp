@@ -46,6 +46,7 @@
 #include "hugin/CPListFrame.h"
 #include "hugin/PreviewPanel.h"
 #include "hugin/GLPreviewFrame.h"
+#include "hugin/RawImport.h"
 #include "base_wx/PTWXDlg.h"
 #include "base_wx/CommandHistory.h"
 #include "base_wx/wxcms.h"
@@ -499,6 +500,7 @@ bool huginApp::OnInit()
             frame->LoadProjectFile(file.GetFullPath());
         } else {
             std::vector<std::string> filesv;
+            std::vector<std::string> rawFilesv;
             bool actualPathSet = false;
             for (int i=1; i< argc; i++) 
             {
@@ -520,32 +522,40 @@ bool huginApp::OnInit()
 #else
                 wxFileName file(argv[i]);
 #endif
-                if (file.GetExt().CmpNoCase(wxT("jpg")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("jpeg")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("tif")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("tiff")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("png")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("bmp")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("gif")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("pnm")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("sun")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("hdr")) == 0 ||
-                    file.GetExt().CmpNoCase(wxT("viff")) == 0 )
+                if (file.IsRelative())
                 {
-                    if(file.IsRelative())
-                        file.MakeAbsolute(cwd);
-                    if(!containsInvalidCharacters(file.GetFullPath()))
+                    file.MakeAbsolute(cwd);
+                };
+                if (IsRawExtension(file.GetExt()))
+                {
+                    // we got a raw file from command line
+                    if (!containsInvalidCharacters(file.GetFullPath()))
                     {
-                        filesv.push_back((const char *)(file.GetFullPath().mb_str(HUGIN_CONV_FILENAME)));
+                        rawFilesv.push_back((const char*)file.GetFullPath().mb_str(HUGIN_CONV_FILENAME));
+                        // Use the first filename to set actualPath.
+                        if (!actualPathSet)
+                        {
+                            config->Write(wxT("/actualPath"), file.GetPath());
+                            actualPathSet = true;
+                        };
                     };
-
-                    // Use the first filename to set actualPath.
-                    if (! actualPathSet)
-                    {
-                        config->Write(wxT("/actualPath"), file.GetPath());
-                        actualPathSet = true;
-                    }
                 }
+                else
+                {
+                    if (vigra::isImage(file.GetFullPath().mb_str(HUGIN_CONV_FILENAME)))
+                    {
+                        if (!containsInvalidCharacters(file.GetFullPath()))
+                        {
+                            filesv.push_back((const char *)(file.GetFullPath().mb_str(HUGIN_CONV_FILENAME)));
+                            // Use the first filename to set actualPath.
+                            if (!actualPathSet)
+                            {
+                                config->Write(wxT("/actualPath"), file.GetPath());
+                                actualPathSet = true;
+                            };
+                        };
+                    };
+                };
 #if defined __WXMSW__
                 } while (dir.GetNext(&foundFile));
 #endif
@@ -557,8 +567,36 @@ bool huginApp::OnInit()
                 cmds.push_back(new PanoCommand::DistributeImagesCmd(pano));
                 cmds.push_back(new PanoCommand::CenterPanoCmd(pano));
                 PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::CombinedPanoCommand(pano, cmds));
-            }
-        }
+            };
+            if (!rawFilesv.empty())
+            {
+                if (rawFilesv.size() == 1)
+                {
+                    wxMessageDialog message(GetTopWindow(), _("You selected only one raw file. This is not recommended.\nAll raw files should be converted at once."),
+#ifdef _WIN32
+                        _("Hugin"),
+#else
+                        wxT(""),
+#endif
+                        wxICON_EXCLAMATION | wxOK | wxCANCEL);
+                    message.SetOKLabel(_("Convert anyway."));
+                    if (message.ShowModal() != wxID_OK)
+                    {
+                        return true;
+                    };
+            };
+                RawImportDialog dlg(GetTopWindow(), &pano, rawFilesv);
+                // check that raw files are from same camera and that all can be read
+                if (dlg.CheckRawFiles())
+                {
+                    // now show dialog
+                    if (dlg.ShowModal() == wxID_OK)
+                    {
+                        PanoCommand::GlobalCmdHist::getInstance().addCommand(dlg.GetPanoCommand());
+                    };
+                };
+            };
+        };
     }
 #ifdef __WXMAC__
     m_macInitDone = true;
