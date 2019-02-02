@@ -62,6 +62,9 @@ protected:
     void OnRotationCheckBox(wxCommandEvent & e);
     void OnEnblendExe(wxCommandEvent & e);
     void OnEnfuseExe(wxCommandEvent & e);
+    void OnDcrawExe(wxCommandEvent & e);
+    void OnRawTherapeeExe(wxCommandEvent & e);
+    void OnDarktableExe(wxCommandEvent & e);
     void OnExifTool(wxCommandEvent & e);
     void OnExifArgfileChoose(wxCommandEvent & e);
     void OnExifArgfileEdit(wxCommandEvent & e);

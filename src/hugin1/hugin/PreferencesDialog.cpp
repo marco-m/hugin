@@ -64,6 +64,9 @@ BEGIN_EVENT_TABLE(PreferencesDialog, wxDialog)
     EVT_BUTTON(XRCID("prefs_defaults"), PreferencesDialog::OnRestoreDefaults)
     EVT_BUTTON(XRCID("prefs_enblend_select"), PreferencesDialog::OnEnblendExe)
     EVT_BUTTON(XRCID("prefs_enblend_enfuse_select"), PreferencesDialog::OnEnfuseExe)
+    EVT_BUTTON(XRCID("pref_raw_dcraw_exe_select"), PreferencesDialog::OnDcrawExe)
+    EVT_BUTTON(XRCID("pref_raw_rt_exe_select"), PreferencesDialog::OnRawTherapeeExe)
+    EVT_BUTTON(XRCID("pref_raw_darktable_exe_select"), PreferencesDialog::OnDarktableExe)
     EVT_BUTTON(XRCID("pref_exiftool_argfile_choose"), PreferencesDialog::OnExifArgfileChoose)
     EVT_BUTTON(XRCID("pref_exiftool_argfile_edit"), PreferencesDialog::OnExifArgfileEdit)
     EVT_BUTTON(XRCID("pref_exiftool_argfile2_choose"), PreferencesDialog::OnExifArgfile2Choose)
@@ -199,6 +202,11 @@ PreferencesDialog::PreferencesDialog(wxWindow* parent)
     lang_choice->Append(_("Valencian (Southern Catalan)"), lp);
     lang_choice->SetSelection(0);
 
+    // enable auto completion on raw converter executables
+    XRCCTRL(*this, "pref_raw_dcraw_exe", wxTextCtrl)->AutoCompleteFileNames();
+    XRCCTRL(*this, "pref_raw_rt_exe", wxTextCtrl)->AutoCompleteFileNames();
+    XRCCTRL(*this, "pref_raw_darktable_exe", wxTextCtrl)->AutoCompleteFileNames();
+
     // default blender settings
     FillBlenderList(XRCCTRL(*this, "pref_default_blender", wxChoice));
 
@@ -322,6 +330,55 @@ void PreferencesDialog::OnEnfuseExe(wxCommandEvent& e)
             dlg.GetPath());
     }
 }
+
+void PreferencesDialog::OnDcrawExe(wxCommandEvent & e)
+{
+    wxTextCtrl* ctrl = XRCCTRL(*this, "pref_raw_dcraw_exe", wxTextCtrl);
+    wxFileDialog dlg(this, _("Select dcraw"), "", ctrl->GetValue(),
+#ifdef __WXMSW__
+        _("Executables (*.exe)|*.exe"),
+#else
+        wxT("*"),
+#endif
+        wxFD_OPEN, wxDefaultPosition);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        ctrl->SetValue(dlg.GetPath());
+    };
+};
+
+void PreferencesDialog::OnRawTherapeeExe(wxCommandEvent & e)
+{
+    wxTextCtrl* ctrl = XRCCTRL(*this, "pref_raw_rt_exe", wxTextCtrl);
+    wxFileDialog dlg(this, _("Select RawTherapee-cli"), "", ctrl->GetValue(),
+#ifdef __WXMSW__
+        _("Executables (*.exe)|*.exe"),
+#else
+        wxT("*"),
+#endif
+        wxFD_OPEN, wxDefaultPosition);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        ctrl->SetValue(dlg.GetPath());
+    };
+};
+
+void PreferencesDialog::OnDarktableExe(wxCommandEvent & e)
+{
+    wxTextCtrl* ctrl = XRCCTRL(*this, "pref_raw_darktable_exe", wxTextCtrl);
+    wxFileDialog dlg(this, _("Select Darktable-cli"), "", ctrl->GetValue(),
+#ifdef __WXMSW__
+        _("Executables (*.exe)|*.exe"),
+#else
+        wxT("*"),
+#endif
+        wxFD_OPEN, wxDefaultPosition);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        ctrl->SetValue(dlg.GetPath());
+    };
+};
+
 
 void PreferencesDialog::OnCustomEnblend(wxCommandEvent& e)
 {
@@ -582,6 +639,11 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         // auto-rotate
         t = cfg->Read("/CPEditorPanel/AutoRot", 1l) == 1;
         MY_BOOL_VAL("pref_autorotate", t);
+
+        // raw converter programs paths
+        MY_STR_VAL("pref_raw_dcraw_exe", cfg->Read("/RawImportDialog/dcrawExe", ""));
+        MY_STR_VAL("pref_raw_rt_exe", cfg->Read("/RawImportDialog/RTExe", ""));
+        MY_STR_VAL("pref_raw_darktable_exe", cfg->Read("/RawImportDialog/DarktableExe", ""));
     };
 
     // filename panel
@@ -808,6 +870,10 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent& e)
             // projection hints
             cfg->Write(wxT("/GLPreviewFrame/ShowProjectionHints"), HUGIN_SHOW_PROJECTION_HINTS);
             cfg->Write("/CPEditorPanel/AutoRot", 1l);
+            // raw converter
+            cfg->Write("/RawImportDialog/dcrawExe", "");
+            cfg->Write("/RawImportDialog/RTExe", "");
+            cfg->Write("/RawImportDialog/DarktableExe", "");
         }
         if(noteb->GetSelection() == 1)
         {
@@ -969,6 +1035,10 @@ void PreferencesDialog::UpdateConfigData()
     cfg->Write(wxT("/GLPreviewFrame/ShowProjectionHints"), MY_G_BOOL_VAL("pref_show_projection_hints"));
     //auto-rotate
     cfg->Write("/CPEditorPanel/AutoRot", MY_G_BOOL_VAL("pref_autorotate"));
+    // raw converter
+    cfg->Write("/RawImportDialog/dcrawExe", MY_G_STR_VAL("pref_raw_dcraw_exe"));
+    cfg->Write("/RawImportDialog/RTExe", MY_G_STR_VAL("pref_raw_rt_exe"));
+    cfg->Write("/RawImportDialog/DarktableExe", MY_G_STR_VAL("pref_raw_darktable_exe"));;
     // tempdir
     cfg->Write(wxT("tempDir"),MY_G_STR_VAL("prefs_misc_tempdir"));
     // filename templates
