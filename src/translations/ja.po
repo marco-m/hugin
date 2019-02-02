@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Hugin 2011.1.0.83a530eea793\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2018-12-17 19:57+0100\n"
+"POT-Creation-Date: 2019-02-02 11:11+0100\n"
 "PO-Revision-Date: 2011-05-15 18:59+0900\n"
 "Last-Translator: KITAGAWA, Masahiro <arctica0316@gmail.com>\n"
 "Language-Team: 日本語 <ja@li.org>\n"
@@ -50,8 +50,8 @@ msgstr "以下を最適化："
 msgid "Searching for best crop..."
 msgstr "雲など動きのある対象上のコントロールポイントを探しています…"
 
-#: hugin1/base_wx/Executor.cpp:137 hugin1/base_wx/platform.cpp:163
-#: hugin1/hugin/MainFrame.cpp:1740 hugin1/hugin/MainFrame.cpp:2474
+#: hugin1/base_wx/Executor.cpp:137 hugin1/base_wx/platform.cpp:217
+#: hugin1/hugin/MainFrame.cpp:1774 hugin1/hugin/MainFrame.cpp:2509
 #: hugin1/hugin/PanoPanel.cpp:1316
 #, c-format
 msgid "External program %s not found in the bundle, reverting to system path"
@@ -88,8 +88,8 @@ msgstr ""
 
 #: hugin1/base_wx/GraphTools.cpp:84 hugin1/base_wx/LensTools.cpp:403
 #: hugin1/calibrate_lens/LensCalFrame.cpp:732
-#: hugin1/calibrate_lens/LensCalFrame.cpp:797 hugin1/hugin/MainFrame.cpp:987
-#: hugin1/hugin/MaskEditorPanel.cpp:476
+#: hugin1/calibrate_lens/LensCalFrame.cpp:797 hugin1/hugin/MainFrame.cpp:1038
+#: hugin1/hugin/MaskEditorPanel.cpp:472
 #, c-format
 msgid "File %s exists. Overwrite?"
 msgstr "%s というファイルは存在します。上書きしますか?"
@@ -126,7 +126,7 @@ msgid "The crop factor must be positive."
 msgstr "焦点距離換算係数は正でなければなりません"
 
 #: hugin1/base_wx/HFOVDialog.cpp:374 hugin1/hugin/ImageVariableDialog.cpp:202
-#: hugin1/hugin/ImagesPanel.cpp:567 hugin1/hugin/ImagesTree.cpp:2092
+#: hugin1/hugin/ImagesPanel.cpp:567 hugin1/hugin/ImagesTree.cpp:2019
 #, c-format
 msgid ""
 "You have given a field of view of %.2f degrees.\n"
@@ -136,27 +136,28 @@ msgid ""
 msgstr ""
 
 #: hugin1/base_wx/HFOVDialog.cpp:376 hugin1/base_wx/LensTools.cpp:460
-#: hugin1/base_wx/wxPanoCommand.cpp:452 hugin1/hugin/CPEditorPanel.cpp:1349
-#: hugin1/hugin/CPEditorPanel.cpp:1364 hugin1/hugin/GLPreviewFrame.cpp:1846
-#: hugin1/hugin/GLPreviewFrame.cpp:1935 hugin1/hugin/GLPreviewFrame.cpp:2952
-#: hugin1/hugin/GLPreviewFrame.cpp:3313 hugin1/hugin/GLPreviewFrame.cpp:3324
-#: hugin1/hugin/GLPreviewFrame.cpp:3335
+#: hugin1/base_wx/wxPanoCommand.cpp:452 hugin1/hugin/CPEditorPanel.cpp:1347
+#: hugin1/hugin/CPEditorPanel.cpp:1362 hugin1/hugin/GLPreviewFrame.cpp:1854
+#: hugin1/hugin/GLPreviewFrame.cpp:1943 hugin1/hugin/GLPreviewFrame.cpp:2960
+#: hugin1/hugin/GLPreviewFrame.cpp:3321 hugin1/hugin/GLPreviewFrame.cpp:3332
+#: hugin1/hugin/GLPreviewFrame.cpp:3343
 #: hugin1/hugin/ImageVariableDialog.cpp:204 hugin1/hugin/ImagesPanel.cpp:569
 #: hugin1/hugin/ImagesPanel.cpp:632 hugin1/hugin/ImagesPanel.cpp:666
-#: hugin1/hugin/ImagesTree.cpp:2094 hugin1/hugin/MainFrame.cpp:838
-#: hugin1/hugin/MainFrame.cpp:1145 hugin1/hugin/MainFrame.cpp:1320
-#: hugin1/hugin/MainFrame.cpp:1331 hugin1/hugin/OptimizePanel.cpp:163
-#: hugin1/hugin/OptimizePanel.cpp:195 hugin1/hugin/OptimizePanel.cpp:267
+#: hugin1/hugin/ImagesTree.cpp:2021 hugin1/hugin/MainFrame.cpp:207
+#: hugin1/hugin/MainFrame.cpp:882 hugin1/hugin/MainFrame.cpp:1196
+#: hugin1/hugin/MainFrame.cpp:1360 hugin1/hugin/MainFrame.cpp:1371
+#: hugin1/hugin/OptimizePanel.cpp:163 hugin1/hugin/OptimizePanel.cpp:195
+#: hugin1/hugin/OptimizePanel.cpp:267
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:149
-#: hugin1/hugin/PanoOperation.cpp:374 hugin1/hugin/PanoPanel.cpp:1676
-#: hugin1/hugin/PanoPanel.cpp:1705 hugin1/hugin/PanoPanel.cpp:1741
-#: hugin1/hugin/PanoPanel.cpp:1761 hugin1/hugin/PapywizardImport.cpp:343
-#: hugin1/hugin/PapywizardImport.cpp:355 hugin1/hugin/RawImport.cpp:69
-#: hugin1/hugin/RawImport.cpp:87 hugin1/hugin/RawImport.cpp:204
-#: hugin1/hugin/RawImport.cpp:420 hugin1/hugin/RawImport.cpp:606
-#: hugin1/hugin/RawImport.cpp:706 hugin1/hugin/xrc/main_frame.xrc:123
-#: hugin1/hugin/xrc/main_frame.xrc:183 hugin1/hugin/xrc/main_frame.xrc:255
-#: hugin1/hugin/xrc/pano_panel.xrc:1099
+#: hugin1/hugin/PanoOperation.cpp:232 hugin1/hugin/PanoOperation.cpp:455
+#: hugin1/hugin/PanoPanel.cpp:1676 hugin1/hugin/PanoPanel.cpp:1705
+#: hugin1/hugin/PanoPanel.cpp:1741 hugin1/hugin/PanoPanel.cpp:1761
+#: hugin1/hugin/PapywizardImport.cpp:343 hugin1/hugin/PapywizardImport.cpp:355
+#: hugin1/hugin/RawImport.cpp:77 hugin1/hugin/RawImport.cpp:95
+#: hugin1/hugin/RawImport.cpp:221 hugin1/hugin/RawImport.cpp:508
+#: hugin1/hugin/RawImport.cpp:840 hugin1/hugin/huginApp.cpp:577
+#: hugin1/hugin/xrc/main_frame.xrc:123 hugin1/hugin/xrc/main_frame.xrc:183
+#: hugin1/hugin/xrc/main_frame.xrc:255 hugin1/hugin/xrc/pano_panel.xrc:1099
 msgid "Hugin"
 msgstr "Hugin"
 
@@ -177,7 +178,7 @@ msgid "Full frame fisheye"
 msgstr "対角魚眼レンズ"
 
 #: hugin1/base_wx/LensTools.cpp:42 hugin1/base_wx/LensTools.cpp:85
-#: hugin1/base_wx/huginConfig.cpp:41 hugin1/hugin/GLPreviewFrame.cpp:1474
+#: hugin1/base_wx/huginConfig.cpp:40 hugin1/hugin/GLPreviewFrame.cpp:1482
 #: hugin1/hugin/PreviewFrame.cpp:618
 msgid "Equirectangular"
 msgstr "正距円筒（Equirectangular）"
@@ -248,7 +249,7 @@ msgid "Lens Project Files (*.ini)|*.ini|All files (*)|*"
 msgstr "レンズ設定ファイル (*.ini)|*.ini|すべて (*)|*"
 
 #: hugin1/base_wx/LensTools.cpp:404 hugin1/calibrate_lens/LensCalFrame.cpp:733
-#: hugin1/calibrate_lens/LensCalFrame.cpp:798 hugin1/hugin/MainFrame.cpp:988
+#: hugin1/calibrate_lens/LensCalFrame.cpp:798 hugin1/hugin/MainFrame.cpp:1039
 #: hugin1/hugin/xrc/main_tool.xrc:19
 msgid "Save project"
 msgstr "プロジェクトを保存…"
@@ -281,7 +282,7 @@ msgid "Error pausing process %ld, code 2"
 msgstr "プロセス %ld を停止。エラーコード 2."
 
 #: hugin1/base_wx/MyExternalCmdExecDialog.cpp:555
-#: hugin1/hugin/RawImport.cpp:393 hugin1/ptbatcher/RunStitchFrame.cpp:43
+#: hugin1/hugin/RawImport.cpp:481 hugin1/ptbatcher/RunStitchFrame.cpp:43
 #: hugin1/stitch_project/hugin_stitch_project.cpp:111
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:334
 #: hugin1/hugin/xrc/images_panel.xrc:555
@@ -294,8 +295,8 @@ msgstr "プロセス %ld を停止。エラーコード 2."
 #: hugin1/hugin/xrc/pano_panel.xrc:55 hugin1/hugin/xrc/pano_panel.xrc:97
 #: hugin1/hugin/xrc/pano_panel.xrc:144 hugin1/hugin/xrc/pano_panel.xrc:1034
 #: hugin1/hugin/xrc/pano_panel.xrc:1360 hugin1/hugin/xrc/pano_panel.xrc:1409
-#: hugin1/hugin/xrc/pref_dialog.xrc:1550 hugin1/hugin/xrc/pref_dialog.xrc:1599
-#: hugin1/hugin/xrc/pref_dialog.xrc:1666
+#: hugin1/hugin/xrc/pref_dialog.xrc:1633 hugin1/hugin/xrc/pref_dialog.xrc:1682
+#: hugin1/hugin/xrc/pref_dialog.xrc:1749
 #: hugin1/hugin/xrc/preview_frame.xrc:114
 #: hugin1/hugin/xrc/reset_dialog.xrc:122
 msgid "Cancel"
@@ -334,12 +335,12 @@ msgstr "経過時間： "
 msgid "Panorama Tools"
 msgstr "Panorama Tools"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:100 hugin1/base_wx/RunStitchPanel.cpp:260
+#: hugin1/base_wx/RunStitchPanel.cpp:100 hugin1/base_wx/RunStitchPanel.cpp:261
 msgid "Could not open project file:"
 msgstr "プロジェクトファイルを開けませんでした："
 
-#: hugin1/base_wx/RunStitchPanel.cpp:110 hugin1/base_wx/RunStitchPanel.cpp:272
-#: hugin1/ptbatcher/ProjectArray.cpp:89
+#: hugin1/base_wx/RunStitchPanel.cpp:110 hugin1/base_wx/RunStitchPanel.cpp:273
+#: hugin1/ptbatcher/ProjectArray.cpp:92
 #, c-format
 msgid "could not open script: %s"
 msgstr "スクリプトを開けませんでした：%s"
@@ -349,8 +350,8 @@ msgstr "スクリプトを開けませんでした：%s"
 msgid "Project %s does not contain any active images."
 msgstr ""
 
-#: hugin1/base_wx/RunStitchPanel.cpp:136 hugin1/base_wx/RunStitchPanel.cpp:280
-#: hugin1/ptbatcher/ProjectArray.cpp:126
+#: hugin1/base_wx/RunStitchPanel.cpp:136 hugin1/base_wx/RunStitchPanel.cpp:281
+#: hugin1/ptbatcher/ProjectArray.cpp:129
 #, c-format
 msgid "error while parsing panotools script: %s"
 msgstr "PanoTools スクリプトの構文解析にエラー：%s"
@@ -364,17 +365,17 @@ msgstr ""
 msgid "Could not create temporary file"
 msgstr "一時ファイルを作成できませんでした"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:210 hugin1/base_wx/RunStitchPanel.cpp:302
+#: hugin1/base_wx/RunStitchPanel.cpp:211 hugin1/base_wx/RunStitchPanel.cpp:303
 msgid "Queue is empty. This should never happen."
 msgstr ""
 
-#: hugin1/base_wx/RunStitchPanel.cpp:210 hugin1/base_wx/RunStitchPanel.cpp:244
-#: hugin1/base_wx/RunStitchPanel.cpp:250
+#: hugin1/base_wx/RunStitchPanel.cpp:211 hugin1/base_wx/RunStitchPanel.cpp:245
+#: hugin1/base_wx/RunStitchPanel.cpp:251
 #: hugin1/stitch_project/hugin_stitch_project.cpp:163
 msgid "Error during stitching"
 msgstr "スティッチ中にエラー"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:228
+#: hugin1/base_wx/RunStitchPanel.cpp:229
 msgid ""
 "Overwrite existing images?\n"
 "\n"
@@ -382,11 +383,11 @@ msgstr ""
 "既存の画像に上書きしますか？\n"
 "\n"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:228 hugin1/hugin/xrc/dlg_warning.xrc:117
+#: hugin1/base_wx/RunStitchPanel.cpp:229 hugin1/hugin/xrc/dlg_warning.xrc:117
 msgid "Overwrite existing images"
 msgstr "既存ファイルの上書き"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:243
+#: hugin1/base_wx/RunStitchPanel.cpp:244
 #, c-format
 msgid ""
 "Error while stitching project\n"
@@ -395,12 +396,12 @@ msgstr ""
 "プロジェクトのスティッチ中にエラー\n"
 "%s"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:302 hugin1/base_wx/RunStitchPanel.cpp:308
-#: hugin1/base_wx/RunStitchPanel.cpp:315
+#: hugin1/base_wx/RunStitchPanel.cpp:303 hugin1/base_wx/RunStitchPanel.cpp:309
+#: hugin1/base_wx/RunStitchPanel.cpp:316
 msgid "Error during running assistant"
 msgstr "アシスタントの実行中にエラー"
 
-#: hugin1/base_wx/RunStitchPanel.cpp:307
+#: hugin1/base_wx/RunStitchPanel.cpp:308
 #, c-format
 msgid ""
 "Error while running assistant\n"
@@ -409,305 +410,305 @@ msgstr ""
 "アシスタントの実行中にエラー\n"
 "%s"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:205
+#: hugin1/base_wx/StitchingExecutor.cpp:204
 #, fuzzy
 msgid "Stitching panorama..."
 msgstr "スチッチング中"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:208
+#: hugin1/base_wx/StitchingExecutor.cpp:207
 msgid "Platform:"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:209
+#: hugin1/base_wx/StitchingExecutor.cpp:208
 #, fuzzy
 msgid "Version:"
 msgstr "バージョン：%s"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:210
+#: hugin1/base_wx/StitchingExecutor.cpp:209
 #, fuzzy
 msgid "Working directory:"
 msgstr "ディレクトリ："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:211
+#: hugin1/base_wx/StitchingExecutor.cpp:210
 #, fuzzy
 msgid "Output prefix:"
 msgstr "出力"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:223
-#: hugin1/base_wx/StitchingExecutor.cpp:227
-#: hugin1/base_wx/StitchingExecutor.cpp:233
+#: hugin1/base_wx/StitchingExecutor.cpp:222
+#: hugin1/base_wx/StitchingExecutor.cpp:226
+#: hugin1/base_wx/StitchingExecutor.cpp:232
 #: hugin1/hugin/xrc/batch_frame.xrc:330 hugin1/hugin/xrc/pano_panel.xrc:830
 msgid "Blender:"
 msgstr "ブレンド："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:227
+#: hugin1/base_wx/StitchingExecutor.cpp:226
 msgid "Unknown blender (enblend --version failed)"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:233
+#: hugin1/base_wx/StitchingExecutor.cpp:232
 #, fuzzy
 msgid "internal"
 msgstr "内部エラー"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:242
-#: hugin1/base_wx/StitchingExecutor.cpp:246
+#: hugin1/base_wx/StitchingExecutor.cpp:241
+#: hugin1/base_wx/StitchingExecutor.cpp:245
 #, fuzzy
 msgid "Exposure fusion:"
 msgstr "露出"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:246
+#: hugin1/base_wx/StitchingExecutor.cpp:245
 msgid "Unknown exposure fusion (enfuse --version failed)"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:254
+#: hugin1/base_wx/StitchingExecutor.cpp:253
 #, fuzzy
 msgid "ExifTool version:"
 msgstr "Enfuseのオプション"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:259
+#: hugin1/base_wx/StitchingExecutor.cpp:258
 #, fuzzy
 msgid "ExifTool:"
 msgstr "Enfuseのオプション"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:259
+#: hugin1/base_wx/StitchingExecutor.cpp:258
 msgid "FAILED"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:265
+#: hugin1/base_wx/StitchingExecutor.cpp:264
 #, fuzzy
 msgid "Number of active images:"
 msgstr "画像1枚あたりのサンプル数"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:266
+#: hugin1/base_wx/StitchingExecutor.cpp:265
 #, fuzzy, c-format
 msgid "Output exposure value: %.1f"
 msgstr "出力"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:267
+#: hugin1/base_wx/StitchingExecutor.cpp:266
 #, fuzzy, c-format
 msgid "Canvas size: %dx%d"
 msgstr "キャンバスのサイズ："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:268
+#: hugin1/base_wx/StitchingExecutor.cpp:267
 #, c-format
 msgid "ROI: (%d, %d) - (%d, %d)"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:269
+#: hugin1/base_wx/StitchingExecutor.cpp:268
 #, c-format
 msgid "FOV: %.0fx%.0f"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:275
-#: hugin1/base_wx/StitchingExecutor.cpp:281
-#: hugin1/base_wx/StitchingExecutor.cpp:348
+#: hugin1/base_wx/StitchingExecutor.cpp:274
+#: hugin1/base_wx/StitchingExecutor.cpp:280
+#: hugin1/base_wx/StitchingExecutor.cpp:347
 #: hugin1/hugin/xrc/pano_panel.xrc:176
 msgid "Projection:"
 msgstr "投影法："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:284
+#: hugin1/base_wx/StitchingExecutor.cpp:283
 #, fuzzy
 msgid "Using GPU for remapping:"
 msgstr "GPU を用いたマッピング（実験的）"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:284
+#: hugin1/base_wx/StitchingExecutor.cpp:283
 msgid "true"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:284
+#: hugin1/base_wx/StitchingExecutor.cpp:283
 msgid "false"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:288
+#: hugin1/base_wx/StitchingExecutor.cpp:287
 #: hugin1/hugin/xrc/pano_panel.xrc:465
 msgid "Panorama Outputs:"
 msgstr "パノラマの出力："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:291
-#: hugin1/base_wx/StitchingExecutor.cpp:312
+#: hugin1/base_wx/StitchingExecutor.cpp:290
+#: hugin1/base_wx/StitchingExecutor.cpp:311
 #: hugin1/hugin/xrc/pano_panel.xrc:480 hugin1/hugin/xrc/pano_panel.xrc:643
 #: hugin1/hugin/xrc/pano_panel.xrc:1266
 msgid "Exposure corrected, low dynamic range"
 msgstr "露出補正あり、普通のダイナミックレンジ"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:295
+#: hugin1/base_wx/StitchingExecutor.cpp:294
 #: hugin1/hugin/xrc/pano_panel.xrc:492 hugin1/hugin/xrc/pano_panel.xrc:1281
 msgid "Exposure fused from stacks"
 msgstr "スタックからの露出合成"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:299
+#: hugin1/base_wx/StitchingExecutor.cpp:298
 #: hugin1/hugin/xrc/pano_panel.xrc:501 hugin1/hugin/xrc/pano_panel.xrc:1295
 msgid "Exposure fused from any arrangement"
 msgstr "任意の配列からの露出合成"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:303
-#: hugin1/base_wx/StitchingExecutor.cpp:320
-#: hugin1/base_wx/StitchingExecutor.cpp:333
+#: hugin1/base_wx/StitchingExecutor.cpp:302
+#: hugin1/base_wx/StitchingExecutor.cpp:319
+#: hugin1/base_wx/StitchingExecutor.cpp:332
 #: hugin1/hugin/xrc/pano_panel.xrc:570 hugin1/hugin/xrc/pano_panel.xrc:663
 #: hugin1/hugin/xrc/pano_panel.xrc:1309
 msgid "High dynamic range"
 msgstr "ハイダイナミックレンジ"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:309
+#: hugin1/base_wx/StitchingExecutor.cpp:308
 #: hugin1/hugin/xrc/pano_panel.xrc:628
 msgid "Remapped Images:"
 msgstr "再マッピングされた画像"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:316
+#: hugin1/base_wx/StitchingExecutor.cpp:315
 #: hugin1/hugin/xrc/pano_panel.xrc:654
 msgid "No exposure correction, low dynamic range"
 msgstr "露出補正なし、普通のダイナミックレンジ"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:326
+#: hugin1/base_wx/StitchingExecutor.cpp:325
 #: hugin1/hugin/xrc/pano_panel.xrc:673
 msgid "Combined stacks:"
 msgstr "結合されたスタック："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:329
+#: hugin1/base_wx/StitchingExecutor.cpp:328
 #: hugin1/hugin/xrc/pano_panel.xrc:688
 #, fuzzy
 msgid "Exposure fused stacks"
 msgstr "スタックからの露出合成"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:339
+#: hugin1/base_wx/StitchingExecutor.cpp:338
 #: hugin1/hugin/xrc/pano_panel.xrc:708
 msgid "Layers:"
 msgstr "レイヤー："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:340
+#: hugin1/base_wx/StitchingExecutor.cpp:339
 #: hugin1/hugin/xrc/pano_panel.xrc:723
 msgid "Blended layers of similar exposure, without exposure correction"
 msgstr "ブレンドされた露出の似ているレイヤー、露出補正なし"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:344
+#: hugin1/base_wx/StitchingExecutor.cpp:343
 #, fuzzy
 msgid "First input image"
 msgstr "切り抜きを画像に合わせる"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:345
+#: hugin1/base_wx/StitchingExecutor.cpp:344
 #, fuzzy
 msgid "Number:"
 msgstr "CPU の数："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:346
+#: hugin1/base_wx/StitchingExecutor.cpp:345
 msgid "Filename:"
 msgstr "ファイル名："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:347
+#: hugin1/base_wx/StitchingExecutor.cpp:346
 #, fuzzy, c-format
 msgid "Size: %dx%d"
 msgstr "キャンバスのサイズ："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:349
+#: hugin1/base_wx/StitchingExecutor.cpp:348
 #, fuzzy
 msgid "Response type:"
 msgstr "レンズタイプ："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:350
+#: hugin1/base_wx/StitchingExecutor.cpp:349
 #, c-format
 msgid "HFOV: %.0f"
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:351
+#: hugin1/base_wx/StitchingExecutor.cpp:350
 #, fuzzy, c-format
 msgid "Exposure value: %.1f"
 msgstr "露出（Eev）："
 
-#: hugin1/base_wx/StitchingExecutor.cpp:587
+#: hugin1/base_wx/StitchingExecutor.cpp:586
 msgid "Remapping and blending LDR images..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:598
+#: hugin1/base_wx/StitchingExecutor.cpp:597
 #, fuzzy
 msgid "Remapping LDR images..."
 msgstr "再マッピングされた画像"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:609
+#: hugin1/base_wx/StitchingExecutor.cpp:608
 #, fuzzy
 msgid "Blending images..."
 msgstr "画像を追加"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:658
+#: hugin1/base_wx/StitchingExecutor.cpp:657
 msgid "Remapping LDR images and blending exposure layers..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:676
+#: hugin1/base_wx/StitchingExecutor.cpp:675
 #, fuzzy
 msgid "Remapping LDR images without exposure correction..."
 msgstr "ブレンドされた露出の似ているレイヤー、露出補正なし"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:696
+#: hugin1/base_wx/StitchingExecutor.cpp:695
 #, fuzzy, c-format
 msgid "Blending exposure layer %u..."
 msgstr "出力"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:717
+#: hugin1/base_wx/StitchingExecutor.cpp:716
 msgid "Fusing all exposure layers..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:740
+#: hugin1/base_wx/StitchingExecutor.cpp:739
 #, fuzzy, c-format
 msgid "Fusing stack number %u..."
 msgstr "スタック番号を変更"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:763
-#: hugin1/base_wx/StitchingExecutor.cpp:774
+#: hugin1/base_wx/StitchingExecutor.cpp:762
+#: hugin1/base_wx/StitchingExecutor.cpp:773
 msgid "Blending all stacks..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:791
+#: hugin1/base_wx/StitchingExecutor.cpp:790
 #, fuzzy
 msgid "Remapping HDR images..."
 msgstr "再マッピングされた画像"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:813
+#: hugin1/base_wx/StitchingExecutor.cpp:812
 #, fuzzy, c-format
 msgid "Merging HDR stack number %u..."
 msgstr "スタック番号を変更"
 
-#: hugin1/base_wx/StitchingExecutor.cpp:829
-#: hugin1/base_wx/StitchingExecutor.cpp:836
+#: hugin1/base_wx/StitchingExecutor.cpp:828
+#: hugin1/base_wx/StitchingExecutor.cpp:835
 msgid "Blending HDR stacks..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:857
-#: hugin1/base_wx/StitchingExecutor.cpp:863
+#: hugin1/base_wx/StitchingExecutor.cpp:856
+#: hugin1/base_wx/StitchingExecutor.cpp:862
 msgid "Updating metadata..."
 msgstr ""
 
-#: hugin1/base_wx/StitchingExecutor.cpp:1008
-#: hugin1/base_wx/StitchingExecutor.cpp:1012
+#: hugin1/base_wx/StitchingExecutor.cpp:1007
+#: hugin1/base_wx/StitchingExecutor.cpp:1011
 #, fuzzy, c-format
 msgid "Stitching using \"%s\""
 msgstr "%s をスティッチ中"
 
-#: hugin1/base_wx/huginConfig.cpp:37
+#: hugin1/base_wx/huginConfig.cpp:36
 #, fuzzy
 msgid "first image"
 msgstr "切り抜きを画像に合わせる"
 
-#: hugin1/base_wx/huginConfig.cpp:38
+#: hugin1/base_wx/huginConfig.cpp:37
 #, fuzzy
 msgid "last image"
 msgstr "画像を追加"
 
-#: hugin1/base_wx/huginConfig.cpp:40
+#: hugin1/base_wx/huginConfig.cpp:39
 #, fuzzy
 msgid "directory"
 msgstr "ディレクトリ："
 
-#: hugin1/base_wx/huginConfig.cpp:46 hugin1/hugin/ImagesTree.cpp:155
+#: hugin1/base_wx/huginConfig.cpp:45 hugin1/hugin/ImagesTree.cpp:155
 #, fuzzy
 msgid "Camera maker"
 msgstr "カメラの製造者："
 
-#: hugin1/base_wx/huginConfig.cpp:47 hugin1/hugin/ImagesTree.cpp:156
+#: hugin1/base_wx/huginConfig.cpp:46 hugin1/hugin/ImagesTree.cpp:156
 #, fuzzy
 msgid "Camera model"
 msgstr "カメラの型番："
 
-#: hugin1/base_wx/huginConfig.cpp:48 hugin1/hugin/ImagesPanel.cpp:691
-#: hugin1/hugin/ImagesTree.cpp:157 hugin1/hugin/ImagesTree.cpp:1270
+#: hugin1/base_wx/huginConfig.cpp:47 hugin1/hugin/ImagesPanel.cpp:691
+#: hugin1/hugin/ImagesTree.cpp:157 hugin1/hugin/ImagesTree.cpp:1197
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:152
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:347
 #: hugin1/hugin/xrc/lensdb_dialogs.xrc:8
@@ -715,65 +716,70 @@ msgstr "カメラの型番："
 msgid "Lens"
 msgstr "レンズ"
 
-#: hugin1/base_wx/huginConfig.cpp:84
+#: hugin1/base_wx/huginConfig.cpp:83
 #, fuzzy
 msgid "unknown projection"
 msgstr "Thoby 投影法"
 
-#: hugin1/base_wx/platform.cpp:51
+#: hugin1/base_wx/platform.cpp:65
 #, fuzzy
 msgid "All Image files"
 msgstr "画像を追加"
 
-#: hugin1/base_wx/platform.cpp:60
+#: hugin1/base_wx/platform.cpp:79 hugin1/base_wx/platform.cpp:102
 msgid "JPEG files (*.jpg,*.jpeg)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:61
+#: hugin1/base_wx/platform.cpp:80 hugin1/base_wx/platform.cpp:103
 msgid "TIFF files (*.tif,*.tiff)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:62
+#: hugin1/base_wx/platform.cpp:81 hugin1/base_wx/platform.cpp:104
 msgid "PNG files (*.png)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:63
+#: hugin1/base_wx/platform.cpp:82 hugin1/base_wx/platform.cpp:105
 msgid "HDR files (*.hdr)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:64
+#: hugin1/base_wx/platform.cpp:83 hugin1/base_wx/platform.cpp:106
 msgid "EXR files (*.exr)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:65 hugin1/hugin/RawImport.cpp:741
+#: hugin1/base_wx/platform.cpp:84
 msgid "All files (*)"
 msgstr ""
 
-#: hugin1/base_wx/platform.cpp:163 hugin1/base_wx/wxLensDB.cpp:631
+#: hugin1/base_wx/platform.cpp:93
+#, fuzzy
+msgid "Raw files"
+msgstr "ファイル %s を読み込み中"
+
+#: hugin1/base_wx/platform.cpp:217 hugin1/base_wx/wxLensDB.cpp:631
 #: hugin1/base_wx/wxLensDB.cpp:636 hugin1/base_wx/wxLensDB.cpp:644
 #: hugin1/calibrate_lens/LensCalFrame.cpp:353
-#: hugin1/hugin/CPEditorPanel.cpp:2237 hugin1/hugin/GLViewer.cpp:139
-#: hugin1/hugin/GLViewer.cpp:151 hugin1/hugin/MainFrame.cpp:958
-#: hugin1/hugin/MainFrame.cpp:1678 hugin1/hugin/MainFrame.cpp:1740
-#: hugin1/hugin/MainFrame.cpp:2156 hugin1/hugin/MainFrame.cpp:2376
-#: hugin1/hugin/MainFrame.cpp:2416 hugin1/hugin/MainFrame.cpp:2474
-#: hugin1/hugin/MainFrame.cpp:2486 hugin1/hugin/MainFrame.cpp:2501
-#: hugin1/hugin/MainFrame.cpp:2509
+#: hugin1/hugin/CPEditorPanel.cpp:2235 hugin1/hugin/GLViewer.cpp:136
+#: hugin1/hugin/GLViewer.cpp:148 hugin1/hugin/MainFrame.cpp:1009
+#: hugin1/hugin/MainFrame.cpp:1712 hugin1/hugin/MainFrame.cpp:1774
+#: hugin1/hugin/MainFrame.cpp:2190 hugin1/hugin/MainFrame.cpp:2411
+#: hugin1/hugin/MainFrame.cpp:2451 hugin1/hugin/MainFrame.cpp:2509
+#: hugin1/hugin/MainFrame.cpp:2521 hugin1/hugin/MainFrame.cpp:2536
+#: hugin1/hugin/MainFrame.cpp:2544
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:274
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:333
-#: hugin1/hugin/PanoOperation.cpp:552 hugin1/hugin/PanoPanel.cpp:1101
+#: hugin1/hugin/PanoOperation.cpp:633 hugin1/hugin/PanoPanel.cpp:1101
 #: hugin1/hugin/PanoPanel.cpp:1316 hugin1/hugin/PanoPanel.cpp:1388
-#: hugin1/hugin/PreferencesDialog.cpp:420
-#: hugin1/hugin/PreferencesDialog.cpp:490
+#: hugin1/hugin/PreferencesDialog.cpp:477
+#: hugin1/hugin/PreferencesDialog.cpp:547
 #: hugin1/icpfind/AutoCtrlPointCreator.cpp:223
-#: hugin1/ptbatcher/FindPanoDialog.cpp:335
-#: hugin1/ptbatcher/ProjectListBox.cpp:180
+#: hugin1/ptbatcher/FindPanoDialog.cpp:340
+#: hugin1/ptbatcher/ProjectListBox.cpp:183
 #: hugin1/stitch_project/hugin_stitch_project.cpp:360
 #: hugin1/stitch_project/hugin_stitch_project.cpp:403
 msgid "Error"
 msgstr "エラー"
 
-#: hugin1/base_wx/platform.cpp:472
+#: hugin1/base_wx/platform.cpp:526
 #, c-format
 msgid ""
 "The filename(s) contains one of the following invalid characters: %s\n"
@@ -783,7 +789,7 @@ msgstr ""
 "そのファイル名は使用できない文字を含んでいます: %s\n"
 "Hugin では扱えません。ファイル名を訂正してください。"
 
-#: hugin1/base_wx/platform.cpp:489
+#: hugin1/base_wx/platform.cpp:543
 #, c-format
 msgid "Debug report generated in \"%s\"."
 msgstr ""
@@ -811,15 +817,15 @@ msgstr "入力された \"%s\" は %s に対して無効な数値です\n"
 #: hugin1/calibrate_lens/LensCalFrame.cpp:756
 #: hugin1/calibrate_lens/LensCalFrame.cpp:782
 #: hugin1/calibrate_lens/LensCalFrame.cpp:854
-#: hugin1/hugin/CPDetectorDialog.cpp:126 hugin1/hugin/GLPreviewFrame.cpp:1594
-#: hugin1/hugin/GLPreviewFrame.cpp:1601 hugin1/hugin/GLPreviewFrame.cpp:1608
-#: hugin1/hugin/GLPreviewFrame.cpp:1622 hugin1/hugin/GLPreviewFrame.cpp:1629
-#: hugin1/hugin/GLPreviewFrame.cpp:1636 hugin1/hugin/MainFrame.cpp:1910
-#: hugin1/hugin/MainFrame.cpp:2401 hugin1/hugin/MainFrame.cpp:2420
-#: hugin1/hugin/MainFrame.cpp:2426 hugin1/hugin/MaskEditorPanel.cpp:513
-#: hugin1/hugin/PanoPanel.cpp:1369 hugin1/hugin/PreferencesDialog.cpp:1089
-#: hugin1/ptbatcher/FindPanoDialog.cpp:291
-#: hugin1/ptbatcher/FindPanoDialog.cpp:312
+#: hugin1/hugin/CPDetectorDialog.cpp:131 hugin1/hugin/GLPreviewFrame.cpp:1602
+#: hugin1/hugin/GLPreviewFrame.cpp:1609 hugin1/hugin/GLPreviewFrame.cpp:1616
+#: hugin1/hugin/GLPreviewFrame.cpp:1630 hugin1/hugin/GLPreviewFrame.cpp:1637
+#: hugin1/hugin/GLPreviewFrame.cpp:1644 hugin1/hugin/MainFrame.cpp:1944
+#: hugin1/hugin/MainFrame.cpp:2436 hugin1/hugin/MainFrame.cpp:2455
+#: hugin1/hugin/MainFrame.cpp:2461 hugin1/hugin/MaskEditorPanel.cpp:509
+#: hugin1/hugin/PanoPanel.cpp:1369 hugin1/hugin/PreferencesDialog.cpp:1159
+#: hugin1/ptbatcher/FindPanoDialog.cpp:296
+#: hugin1/ptbatcher/FindPanoDialog.cpp:317
 msgid "Warning"
 msgstr "警告"
 
@@ -1005,7 +1011,7 @@ msgstr "エラー発生"
 
 #: hugin1/base_wx/wxPanoCommand.cpp:764
 #: hugin1/calibrate_lens/LensCalFrame.cpp:374
-#: hugin1/hugin/PanoOperation.cpp:92
+#: hugin1/hugin/PanoOperation.cpp:97
 msgid "Add images"
 msgstr "画像を追加"
 
@@ -1030,19 +1036,19 @@ msgstr "プロジェクトの読み込み中にエラー"
 msgid "Result"
 msgstr "結果"
 
-#: hugin1/calibrate_lens/LensCalApp.cpp:71 hugin1/hugin/huginApp.cpp:229
+#: hugin1/calibrate_lens/LensCalApp.cpp:71 hugin1/hugin/huginApp.cpp:230
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:100
 msgid "xrc directory not found in bundle"
 msgstr "Bundle内にXRCディレクトリが見つかりません。"
 
 #: hugin1/calibrate_lens/LensCalApp.cpp:71
-#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/MainFrame.cpp:2151
-#: hugin1/hugin/huginApp.cpp:229 hugin1/hugin/huginApp.cpp:275
+#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/MainFrame.cpp:2185
+#: hugin1/hugin/huginApp.cpp:230 hugin1/hugin/huginApp.cpp:276
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:100 hugin1/ptbatcher/PTBatcherGUI.cpp:134
 msgid "Fatal Error"
 msgstr "致命的エラー"
 
-#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/huginApp.cpp:275
+#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/huginApp.cpp:276
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:134
 msgid ""
 "xrc directory not found, hugin needs to be properly installed\n"
@@ -1075,7 +1081,7 @@ msgstr ""
 "追加した画像のEXIF 情報が追加済みの画像と整合性がありません。\n"
 "正しい画像を選んでいるか、再度チェックしてください。"
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:448 hugin1/hugin/MainFrame.cpp:1211
+#: hugin1/calibrate_lens/LensCalFrame.cpp:448
 msgid "Add Image: cancel"
 msgstr "画像を追加: キャンセル"
 
@@ -1141,7 +1147,7 @@ msgid "Save lens parameters to ini file"
 msgstr "レンズやカメラの数値をファイルに保存します。"
 
 #: hugin1/calibrate_lens/LensCalFrame.cpp:762
-#: hugin1/hugin/PanoOperation.cpp:586
+#: hugin1/hugin/PanoOperation.cpp:667
 #, fuzzy
 msgid "Save lens parameters to lens database"
 msgstr "レンズやカメラの数値をファイルに保存します。"
@@ -1156,13 +1162,13 @@ msgstr "レンズの設定を読み込む"
 msgid "Save lens"
 msgstr "レンズを保存"
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:786 hugin1/hugin/MainFrame.cpp:976
+#: hugin1/calibrate_lens/LensCalFrame.cpp:786 hugin1/hugin/MainFrame.cpp:1027
 msgid "Save project file"
 msgstr "プロジェクトを保存"
 
-#: hugin1/calibrate_lens/LensCalFrame.cpp:787 hugin1/hugin/MainFrame.cpp:978
-#: hugin1/hugin/MainFrame.cpp:1135 hugin1/hugin/MainFrame.cpp:1647
-#: hugin1/hugin/MainFrame.cpp:1706 hugin1/ptbatcher/Batch.cpp:674
+#: hugin1/calibrate_lens/LensCalFrame.cpp:787 hugin1/hugin/MainFrame.cpp:1029
+#: hugin1/hugin/MainFrame.cpp:1186 hugin1/hugin/MainFrame.cpp:1681
+#: hugin1/hugin/MainFrame.cpp:1740 hugin1/ptbatcher/Batch.cpp:681
 #: hugin1/ptbatcher/BatchFrame.cpp:403 hugin1/ptbatcher/BatchFrame.cpp:431
 #: hugin1/stitch_project/hugin_stitch_project.cpp:370
 msgid "Project files (*.pto)|*.pto|All files (*)|*"
@@ -1208,76 +1214,76 @@ msgstr ""
 msgid "only print commands"
 msgstr "実行中：コマンド \""
 
-#: hugin1/hugin/AboutDialog.cpp:138
+#: hugin1/hugin/AboutDialog.cpp:142
 #, c-format
 msgid "Operating System: %s"
 msgstr "オペレーティングシステム：%s"
 
-#: hugin1/hugin/AboutDialog.cpp:141
+#: hugin1/hugin/AboutDialog.cpp:145
 msgid "64 bit"
 msgstr "64 ビット"
 
-#: hugin1/hugin/AboutDialog.cpp:143
+#: hugin1/hugin/AboutDialog.cpp:147
 msgid "32 bit"
 msgstr "32 ビット"
 
-#: hugin1/hugin/AboutDialog.cpp:144
+#: hugin1/hugin/AboutDialog.cpp:148
 #, c-format
 msgid "Architecture: %s"
 msgstr "アーキテクチャ：%s"
 
-#: hugin1/hugin/AboutDialog.cpp:147
+#: hugin1/hugin/AboutDialog.cpp:151
 #, fuzzy, c-format
 msgid "Free memory: %lld kiB"
 msgstr "メモリの空き：%ld kiB"
 
-#: hugin1/hugin/AboutDialog.cpp:150
+#: hugin1/hugin/AboutDialog.cpp:154
 #, c-format
 msgid "Active Codepage: %u"
 msgstr "アクティブなコードページ：%u"
 
-#: hugin1/hugin/AboutDialog.cpp:182
+#: hugin1/hugin/AboutDialog.cpp:186
 #, c-format
 msgid "Version: %s"
 msgstr "バージョン：%s"
 
-#: hugin1/hugin/AboutDialog.cpp:183
+#: hugin1/hugin/AboutDialog.cpp:187
 #, c-format
 msgid "Path to resources: %s"
 msgstr "リソースへのパス：%s"
 
-#: hugin1/hugin/AboutDialog.cpp:184
+#: hugin1/hugin/AboutDialog.cpp:188
 #, c-format
 msgid "Path to data: %s"
 msgstr "データへのパス：%s"
 
-#: hugin1/hugin/AboutDialog.cpp:186
+#: hugin1/hugin/AboutDialog.cpp:190
 #, fuzzy, c-format
 msgid "Hugins camera and lens database: %s"
 msgstr "カメラとレンズのデータ"
 
-#: hugin1/hugin/AboutDialog.cpp:187
+#: hugin1/hugin/AboutDialog.cpp:191
 msgid "Multi-threading using C++11 std::thread and OpenMP"
 msgstr ""
 
-#: hugin1/hugin/AboutDialog.cpp:190
+#: hugin1/hugin/AboutDialog.cpp:194
 #, fuzzy, c-format
 msgid "Monitor profile: %s"
 msgstr "プロジェクトファイルを読み込めませんでした：%s"
 
-#: hugin1/hugin/AboutDialog.cpp:192
+#: hugin1/hugin/AboutDialog.cpp:196
 msgid "Libraries"
 msgstr "ライブラリ"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:98
+#: hugin1/hugin/CPDetectorDialog.cpp:103
 msgid "Autopano from http://autopano.kolor.com is not available for OS X"
 msgstr "OS X では Autopano (http://autopano.kolor.com) が使えません"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:99
+#: hugin1/hugin/CPDetectorDialog.cpp:104
 msgid "Using Autopano-Sift instead"
 msgstr "代わりに Autopano-Sift を使います"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:125
+#: hugin1/hugin/CPDetectorDialog.cpp:130
 msgid ""
 "At least one input field is empty.\n"
 "Please check your inputs."
@@ -1285,65 +1291,65 @@ msgstr ""
 "少なくともひとつ空欄があります。\n"
 "記入を確認してください。"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:220
+#: hugin1/hugin/CPDetectorDialog.cpp:225
 msgid "Try to connect all overlapping images."
 msgstr "重なり合った画像すべてを繋ごうとしています…"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:226
+#: hugin1/hugin/CPDetectorDialog.cpp:231
 msgid "Only work on image pairs without control points."
 msgstr "コントロールポイントが無い画像ペアにのみ有効です"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:254
+#: hugin1/hugin/CPDetectorDialog.cpp:259
 msgid "Select control point detector program"
 msgstr "コントロールポイント検出プログラムの選択"
 
-#: hugin1/hugin/CPDetectorDialog.cpp:262
+#: hugin1/hugin/CPDetectorDialog.cpp:267
 msgid "Executables (*.exe,*.vbs,*.cmd, *.bat)|*.exe;*.vbs;*.cmd;*.bat"
 msgstr "実行ファイル (*.exe,*.vbs,*.cmd, *.bat)|*.exe;*.vbs;*.cmd;*.bat"
 
-#: hugin1/hugin/CPEditorPanel.cpp:152
+#: hugin1/hugin/CPEditorPanel.cpp:150
 msgid "#"
 msgstr "#"
 
-#: hugin1/hugin/CPEditorPanel.cpp:153
+#: hugin1/hugin/CPEditorPanel.cpp:151
 msgid "left x"
 msgstr "左 x"
 
-#: hugin1/hugin/CPEditorPanel.cpp:154
+#: hugin1/hugin/CPEditorPanel.cpp:152
 msgid "left y"
 msgstr "左 y"
 
-#: hugin1/hugin/CPEditorPanel.cpp:155
+#: hugin1/hugin/CPEditorPanel.cpp:153
 msgid "right x"
 msgstr "右 x"
 
-#: hugin1/hugin/CPEditorPanel.cpp:156
+#: hugin1/hugin/CPEditorPanel.cpp:154
 msgid "right y"
 msgstr "右 y"
 
-#: hugin1/hugin/CPEditorPanel.cpp:157 hugin1/hugin/CPListFrame.cpp:100
+#: hugin1/hugin/CPEditorPanel.cpp:155 hugin1/hugin/CPListFrame.cpp:100
 msgid "Alignment"
 msgstr "配置"
 
-#: hugin1/hugin/CPEditorPanel.cpp:158 hugin1/hugin/CPEditorPanel.cpp:1423
+#: hugin1/hugin/CPEditorPanel.cpp:156 hugin1/hugin/CPEditorPanel.cpp:1421
 #: hugin1/hugin/CPListFrame.cpp:101 hugin1/hugin/CPListFrame.cpp:222
 msgid "Distance"
 msgstr "距離"
 
-#: hugin1/hugin/CPEditorPanel.cpp:596 hugin1/hugin/CPEditorPanel.cpp:742
+#: hugin1/hugin/CPEditorPanel.cpp:594 hugin1/hugin/CPEditorPanel.cpp:740
 msgid "new control point added"
 msgstr "コントロールポイントを追加しました"
 
-#: hugin1/hugin/CPEditorPanel.cpp:868 hugin1/hugin/CPEditorPanel.cpp:1318
+#: hugin1/hugin/CPEditorPanel.cpp:866 hugin1/hugin/CPEditorPanel.cpp:1316
 msgid "searching similar points..."
 msgstr "同じような場所を探しています…"
 
-#: hugin1/hugin/CPEditorPanel.cpp:887 hugin1/hugin/CPEditorPanel.cpp:1027
+#: hugin1/hugin/CPEditorPanel.cpp:885 hugin1/hugin/CPEditorPanel.cpp:1025
 msgid "Error during Fine-tune"
 msgstr "微調整の実行中にエラー"
 
-#: hugin1/hugin/CPEditorPanel.cpp:906 hugin1/hugin/CPEditorPanel.cpp:1051
-#: hugin1/hugin/CPEditorPanel.cpp:1341
+#: hugin1/hugin/CPEditorPanel.cpp:904 hugin1/hugin/CPEditorPanel.cpp:1049
+#: hugin1/hugin/CPEditorPanel.cpp:1339
 #, c-format
 msgid ""
 "Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, "
@@ -1352,29 +1358,29 @@ msgstr ""
 "ポイントを微調整しました。角度：%.0f 度 / 相関係数：%0.3f / 曲率：%0.3f, %"
 "0.3f "
 
-#: hugin1/hugin/CPEditorPanel.cpp:909 hugin1/hugin/CPEditorPanel.cpp:1054
+#: hugin1/hugin/CPEditorPanel.cpp:907 hugin1/hugin/CPEditorPanel.cpp:1052
 msgid "change points, or press right mouse button to add the pair"
 msgstr "ポイントの場所を変更するか、右クリックでこのポイントを追加します"
 
-#: hugin1/hugin/CPEditorPanel.cpp:930
+#: hugin1/hugin/CPEditorPanel.cpp:928
 msgid "Estimated point outside image"
 msgstr "推定された場所は画像の外です"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1313
+#: hugin1/hugin/CPEditorPanel.cpp:1311
 msgid "Distance between line control points too short, skipping fine-tune."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:1347 hugin1/hugin/CPEditorPanel.cpp:1362
+#: hugin1/hugin/CPEditorPanel.cpp:1345 hugin1/hugin/CPEditorPanel.cpp:1360
 msgid "No similar point found."
 msgstr "同じような場所が見つかりませんでした。"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1354
+#: hugin1/hugin/CPEditorPanel.cpp:1352
 msgid ""
 "An internal transformation went wrong.\n"
 "Check that the point is inside the image."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:1369
+#: hugin1/hugin/CPEditorPanel.cpp:1367
 #, c-format
 msgid ""
 "Check the similarity visually.\n"
@@ -1384,37 +1390,37 @@ msgstr ""
 "類似性を目視でチェックして下さい。\n"
 "相関係数（%.3f）が環境設定で指定された閾値より低いです。"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1392 hugin1/hugin/CPEditorPanel.cpp:1403
+#: hugin1/hugin/CPEditorPanel.cpp:1390 hugin1/hugin/CPEditorPanel.cpp:1401
 msgid "Add new Line"
 msgstr "新しい直線を追加"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1398 hugin1/hugin/CPEditorPanel.cpp:1401
-#: hugin1/hugin/CPEditorPanel.cpp:1685 hugin1/hugin/CPListFrame.cpp:192
+#: hugin1/hugin/CPEditorPanel.cpp:1396 hugin1/hugin/CPEditorPanel.cpp:1399
+#: hugin1/hugin/CPEditorPanel.cpp:1683 hugin1/hugin/CPListFrame.cpp:192
 #, c-format
 msgid "Line %d"
 msgstr "直線 %d"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1419 hugin1/hugin/CPListFrame.cpp:101
+#: hugin1/hugin/CPEditorPanel.cpp:1417 hugin1/hugin/CPListFrame.cpp:101
 #: hugin1/hugin/CPListFrame.cpp:218
 #, fuzzy
 msgid "Correlation"
 msgstr "相関係数の閾値"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1676 hugin1/hugin/CPListFrame.cpp:183
-#: hugin1/hugin/GLPreviewFrame.cpp:610 hugin1/hugin/GLPreviewFrame.cpp:3019
+#: hugin1/hugin/CPEditorPanel.cpp:1674 hugin1/hugin/CPListFrame.cpp:183
+#: hugin1/hugin/GLPreviewFrame.cpp:610 hugin1/hugin/GLPreviewFrame.cpp:3027
 #: hugin1/hugin/PreviewFrame.cpp:219 hugin1/hugin/xrc/cp_editor_panel.xrc:185
 msgid "normal"
 msgstr "通常"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1679 hugin1/hugin/CPListFrame.cpp:186
+#: hugin1/hugin/CPEditorPanel.cpp:1677 hugin1/hugin/CPListFrame.cpp:186
 msgid "vert. Line"
 msgstr "鉛直な線"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1682 hugin1/hugin/CPListFrame.cpp:189
+#: hugin1/hugin/CPEditorPanel.cpp:1680 hugin1/hugin/CPListFrame.cpp:189
 msgid "horiz. Line"
 msgstr "水平な線"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1984
+#: hugin1/hugin/CPEditorPanel.cpp:1982
 msgid ""
 "Create control points.\n"
 "To create less points,\n"
@@ -1424,94 +1430,94 @@ msgstr ""
 "生成される数を減らすには、\n"
 "値を大きくして下さい。"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1984
+#: hugin1/hugin/CPEditorPanel.cpp:1982
 msgid "Corner Detection threshold"
 msgstr "角の検出 閾値"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1984 hugin1/hugin/CPEditorPanel.cpp:1988
+#: hugin1/hugin/CPEditorPanel.cpp:1982 hugin1/hugin/CPEditorPanel.cpp:1986
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:323
 #: hugin1/hugin/xrc/images_panel.xrc:253
 msgid "Create control points"
 msgstr "コントロールポイント生成"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1988
+#: hugin1/hugin/CPEditorPanel.cpp:1986
 msgid "Corner Detection scale"
 msgstr "角の検出 スケール"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2000
+#: hugin1/hugin/CPEditorPanel.cpp:1998
 msgid "Error during control point creation:\n"
 msgstr "コントロールポイント生成中にエラー：\n"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2097
+#: hugin1/hugin/CPEditorPanel.cpp:2095
 msgid "Select point in right image"
 msgstr "右の画像上のポイントを指定してください"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2109
+#: hugin1/hugin/CPEditorPanel.cpp:2107
 msgid "Select point in left image"
 msgstr "左の画像上のポイントを指定してください"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2186
+#: hugin1/hugin/CPEditorPanel.cpp:2184
 #, c-format
 msgid "Create cp (Current setting: %s)"
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2237
+#: hugin1/hugin/CPEditorPanel.cpp:2235
 msgid ""
 "Cannot run celeste without at least one control point connecting the two "
 "images"
 msgstr ""
 "画像をつないでいるコントロールポイントがないと Celeste を実行出来ません。"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2242 hugin1/hugin/CPEditorPanel.cpp:2262
-#: hugin1/hugin/PanoOperation.cpp:736 hugin1/hugin/PanoOperation.cpp:786
+#: hugin1/hugin/CPEditorPanel.cpp:2240 hugin1/hugin/CPEditorPanel.cpp:2260
+#: hugin1/hugin/PanoOperation.cpp:817 hugin1/hugin/PanoOperation.cpp:867
 msgid "Running Celeste"
 msgstr "Celeste実行中"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2243 hugin1/hugin/PanoOperation.cpp:737
+#: hugin1/hugin/CPEditorPanel.cpp:2241 hugin1/hugin/PanoOperation.cpp:818
 msgid "Loading model file"
 msgstr "モデルファイルをロードしています"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2304 hugin1/hugin/CPEditorPanel.cpp:2340
-#: hugin1/hugin/MainFrame.cpp:1871 hugin1/hugin/PanoOperation.cpp:723
-#: hugin1/hugin/PanoOperation.cpp:815
+#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/CPEditorPanel.cpp:2338
+#: hugin1/hugin/MainFrame.cpp:1905 hugin1/hugin/PanoOperation.cpp:804
+#: hugin1/hugin/PanoOperation.cpp:896
 #, c-format
 msgid "Removed %lu control points"
 msgstr "%lu 個のコントロールポイントを削除しました"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2304 hugin1/hugin/PanoOperation.cpp:815
+#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/PanoOperation.cpp:896
 msgid "Celeste result"
 msgstr "Celeste の結果"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2340 hugin1/hugin/PanoOperation.cpp:723
+#: hugin1/hugin/CPEditorPanel.cpp:2338 hugin1/hugin/PanoOperation.cpp:804
 msgid "Cleaning"
 msgstr "クリーン中"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2352
+#: hugin1/hugin/CPEditorPanel.cpp:2350
 #, fuzzy
 msgid "Create cp"
 msgstr "作成"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2355
+#: hugin1/hugin/CPEditorPanel.cpp:2353
 msgid ""
 "Create control points for image pair with currently selected control point "
 "detector on photos tab."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2363
+#: hugin1/hugin/CPEditorPanel.cpp:2361
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:328
 msgid "Celeste"
 msgstr "Celeste"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2366
+#: hugin1/hugin/CPEditorPanel.cpp:2364
 msgid "Tries to remove control points from clouds"
 msgstr "雲など動きのある対象上のコントロールポイントの削除を試みます"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2374
+#: hugin1/hugin/CPEditorPanel.cpp:2372
 #, fuzzy
 msgid "Clean cp"
 msgstr "バッチをクリア"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2377 hugin1/hugin/xrc/pref_dialog.xrc:317
+#: hugin1/hugin/CPEditorPanel.cpp:2375 hugin1/hugin/xrc/pref_dialog.xrc:400
 msgid "Remove outlying control points by statistical method"
 msgstr "外れたコントロールポイントを削除するのに統計的手法を用いる"
 
@@ -1623,17 +1629,17 @@ msgstr ""
 "画像を動かすにはドラッグします（Shift キーを押した状態だと拘束します）。回転"
 "させるにはマウスの右ボタンまたは Ctrl キーを押してドラッグします。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:264 hugin1/hugin/GLPreviewFrame.cpp:3082
+#: hugin1/hugin/GLPreviewFrame.cpp:264 hugin1/hugin/GLPreviewFrame.cpp:3090
 msgid "Fast Panorama preview"
 msgstr "ファストパノラマプレビュー"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:335 hugin1/hugin/GLPreviewFrame.cpp:3068
-#: hugin1/hugin/GLPreviewFrame.cpp:3080 hugin1/hugin/MainFrame.cpp:364
-#: hugin1/hugin/MainFrame.cpp:2244 hugin1/hugin/MainFrame.cpp:2262
+#: hugin1/hugin/GLPreviewFrame.cpp:335 hugin1/hugin/GLPreviewFrame.cpp:3076
+#: hugin1/hugin/GLPreviewFrame.cpp:3088 hugin1/hugin/MainFrame.cpp:408
+#: hugin1/hugin/MainFrame.cpp:2278 hugin1/hugin/MainFrame.cpp:2296
 #: hugin1/hugin/xrc/batch_menu.xrc:5 hugin1/hugin/xrc/lenscal_frame.xrc:466
-#: hugin1/hugin/xrc/main_menu.xrc:231 hugin1/hugin/xrc/main_menu.xrc:256
-#: hugin1/hugin/xrc/preview_frame.xrc:1120
-#: hugin1/hugin/xrc/preview_frame.xrc:1151
+#: hugin1/hugin/xrc/main_menu.xrc:227 hugin1/hugin/xrc/main_menu.xrc:252
+#: hugin1/hugin/xrc/preview_frame.xrc:1117
+#: hugin1/hugin/xrc/preview_frame.xrc:1148
 msgid "&File"
 msgstr "ファイル (&F)"
 
@@ -1648,10 +1654,10 @@ msgstr "すべて"
 #: hugin1/hugin/GLPreviewFrame.cpp:403 hugin1/hugin/ImagesPanel.cpp:688
 #: hugin1/hugin/xrc/pano_panel.xrc:554 hugin1/hugin/xrc/pano_panel.xrc:611
 #: hugin1/hugin/xrc/pano_panel.xrc:1196 hugin1/hugin/xrc/pano_panel.xrc:1243
-#: hugin1/hugin/xrc/pref_dialog.xrc:785 hugin1/hugin/xrc/preview_frame.xrc:47
-#: hugin1/hugin/xrc/preview_frame.xrc:613
-#: hugin1/hugin/xrc/preview_frame.xrc:703
-#: hugin1/hugin/xrc/preview_frame.xrc:885
+#: hugin1/hugin/xrc/pref_dialog.xrc:868 hugin1/hugin/xrc/preview_frame.xrc:47
+#: hugin1/hugin/xrc/preview_frame.xrc:612
+#: hugin1/hugin/xrc/preview_frame.xrc:702
+#: hugin1/hugin/xrc/preview_frame.xrc:883
 msgid "None"
 msgstr "なし"
 
@@ -1676,7 +1682,7 @@ msgid "drag to change the horizontal field of view"
 msgstr "横方向の視野を調節します"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:539 hugin1/hugin/xrc/lenscal_frame.xrc:440
-#: hugin1/hugin/xrc/main_tool.xrc:67 hugin1/hugin/xrc/preview_frame.xrc:480
+#: hugin1/hugin/xrc/main_tool.xrc:67 hugin1/hugin/xrc/preview_frame.xrc:479
 msgid "Preview"
 msgstr "プレビュー"
 
@@ -1692,86 +1698,86 @@ msgstr "投影法のパラメータをデフォルト値にリセット"
 msgid "param:"
 msgstr "パラメータ："
 
-#: hugin1/hugin/GLPreviewFrame.cpp:982
+#: hugin1/hugin/GLPreviewFrame.cpp:987
 #, fuzzy
 msgid "No images loaded."
 msgstr "画像が読み込まれていません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1020
+#: hugin1/hugin/GLPreviewFrame.cpp:1025
 #, c-format
 msgid "%lu images loaded."
 msgstr "%lu 枚の画像が読み込まれました。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1037
+#: hugin1/hugin/GLPreviewFrame.cpp:1042
 #, c-format
 msgid "Images are connected by %lu control points.\n"
 msgstr ""
 "画像は %lu 個のコントロールポイントで接続されています。\n"
 "\n"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1046
+#: hugin1/hugin/GLPreviewFrame.cpp:1051
 #, fuzzy, c-format
 msgid "%lu unconnected image groups found: %s\n"
 msgstr "%d個の接続されていない画像グループがあります： "
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1052
+#: hugin1/hugin/GLPreviewFrame.cpp:1057
 msgid "Images or control points have changed, new alignment is needed."
 msgstr ""
 "画像やコントロールポイントに変更がありました。配置を更新する必要があります。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1063
+#: hugin1/hugin/GLPreviewFrame.cpp:1068
 #, fuzzy, c-format
 msgid "Mean error after optimization: %.1f pixel, max: %.1f"
 msgstr ""
 "最適化後の誤差　平均： %.1f ピクセル　最大：%.1f ピクセル\n"
 "\n"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1472 hugin1/hugin/PreviewFrame.cpp:616
+#: hugin1/hugin/GLPreviewFrame.cpp:1480 hugin1/hugin/PreviewFrame.cpp:616
 msgid "Rectilinear"
 msgstr "心射方位（Rectilinear）"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1473 hugin1/hugin/PreviewFrame.cpp:617
+#: hugin1/hugin/GLPreviewFrame.cpp:1481 hugin1/hugin/PreviewFrame.cpp:617
 msgid "Cylindrical"
 msgstr "心射円筒（Cylindrical）"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1594 hugin1/hugin/PreviewFrame.cpp:720
+#: hugin1/hugin/GLPreviewFrame.cpp:1602 hugin1/hugin/PreviewFrame.cpp:720
 msgid "Yaw value must be numeric."
 msgstr "Yaw (横)の値は数値でなければなりません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1601 hugin1/hugin/PreviewFrame.cpp:726
+#: hugin1/hugin/GLPreviewFrame.cpp:1609 hugin1/hugin/PreviewFrame.cpp:726
 msgid "Pitch value must be numeric."
 msgstr "Pitch (縦)の値は数値でなければなりません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1608 hugin1/hugin/PreviewFrame.cpp:732
+#: hugin1/hugin/GLPreviewFrame.cpp:1616 hugin1/hugin/PreviewFrame.cpp:732
 msgid "Roll value must be numeric."
 msgstr "Roll (回転)の値は数値でなければなりません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1622
+#: hugin1/hugin/GLPreviewFrame.cpp:1630
 msgid "X value must be numeric."
 msgstr "X の値は数値でなければなりません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1629
+#: hugin1/hugin/GLPreviewFrame.cpp:1637
 msgid "Y value must be numeric."
 msgstr "Y の値は数値でなければなりません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1636
+#: hugin1/hugin/GLPreviewFrame.cpp:1644
 msgid "Z value must be numeric."
 msgstr "Z の値は数値でなければなりません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1655 hugin1/hugin/GLPreviewFrame.cpp:1693
-#: hugin1/hugin/GLPreviewFrame.cpp:1724 hugin1/hugin/GLPreviewFrame.cpp:2819
-#: hugin1/hugin/GLPreviewFrame.cpp:2850
+#: hugin1/hugin/GLPreviewFrame.cpp:1663 hugin1/hugin/GLPreviewFrame.cpp:1701
+#: hugin1/hugin/GLPreviewFrame.cpp:1732 hugin1/hugin/GLPreviewFrame.cpp:2827
+#: hugin1/hugin/GLPreviewFrame.cpp:2858
 #: hugin1/hugin/ImageVariableDialog.cpp:222 hugin1/hugin/PanoPanel.cpp:672
 #: hugin1/hugin/PanoPanel.cpp:703 hugin1/hugin/PreviewFrame.cpp:755
 #: hugin1/hugin/PreviewFrame.cpp:774 hugin1/hugin/PreviewFrame.cpp:803
 msgid "Value must be numeric."
 msgstr "値は数値でなければなりません。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1698 hugin1/hugin/PreviewFrame.cpp:779
+#: hugin1/hugin/GLPreviewFrame.cpp:1706 hugin1/hugin/PreviewFrame.cpp:779
 msgid "Value for range compression is outside of valid range."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:1844 hugin1/hugin/GLPreviewFrame.cpp:1933
+#: hugin1/hugin/GLPreviewFrame.cpp:1852 hugin1/hugin/GLPreviewFrame.cpp:1941
 msgid ""
 "The mosaic/plane mode works only correct for a remapping plane of yaw=0 and "
 "pitch=0.\n"
@@ -1779,55 +1785,55 @@ msgid ""
 "Should the Tpy and Tpp parameters reset to zero?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2539 hugin1/hugin/PreviewFrame.cpp:220
+#: hugin1/hugin/GLPreviewFrame.cpp:2547 hugin1/hugin/PreviewFrame.cpp:220
 msgid "difference"
 msgstr "差分（違い）"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2565 hugin1/hugin/GLPreviewFrame.cpp:2595
-#: hugin1/hugin/PanoPanel.cpp:1057 hugin1/hugin/xrc/preview_frame.xrc:845
+#: hugin1/hugin/GLPreviewFrame.cpp:2573 hugin1/hugin/GLPreviewFrame.cpp:2603
+#: hugin1/hugin/PanoPanel.cpp:1057 hugin1/hugin/xrc/preview_frame.xrc:843
 msgid "Autocrop"
 msgstr "自動で切り抜き"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2565 hugin1/hugin/GLPreviewFrame.cpp:2595
+#: hugin1/hugin/GLPreviewFrame.cpp:2573 hugin1/hugin/GLPreviewFrame.cpp:2603
 #: hugin1/hugin/PanoPanel.cpp:1057
 msgid "Calculating optimal crop"
 msgstr "最適な切り抜きサイズを計算"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2765 hugin1/hugin/PanoPanel.cpp:782
+#: hugin1/hugin/GLPreviewFrame.cpp:2773 hugin1/hugin/PanoPanel.cpp:782
 msgid "Top needs to be an integer bigger than 0"
 msgstr "上辺の値は0より大きい整数である必要があります"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2769 hugin1/hugin/PanoPanel.cpp:786
+#: hugin1/hugin/GLPreviewFrame.cpp:2777 hugin1/hugin/PanoPanel.cpp:786
 msgid "left needs to be an integer bigger than 0"
 msgstr "左辺の値は0より大きい整数である必要があります"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2773 hugin1/hugin/PanoPanel.cpp:790
+#: hugin1/hugin/GLPreviewFrame.cpp:2781 hugin1/hugin/PanoPanel.cpp:790
 msgid "right needs to be an integer bigger than 0"
 msgstr "右辺の値は0より大きい整数である必要があります"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2777 hugin1/hugin/PanoPanel.cpp:794
+#: hugin1/hugin/GLPreviewFrame.cpp:2785 hugin1/hugin/PanoPanel.cpp:794
 msgid "bottom needs to be an integer bigger than 0"
 msgstr "下辺の値は0より大きい整数である必要があります"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2783
+#: hugin1/hugin/GLPreviewFrame.cpp:2791
 msgid "left boundary must be smaller than right"
 msgstr "左の境界は右の境界より小さい必要があります。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2789
+#: hugin1/hugin/GLPreviewFrame.cpp:2797
 msgid "top boundary must be smaller than bottom"
 msgstr "上の境界は下の境界より小さい必要があります。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2825 hugin1/hugin/PanoPanel.cpp:678
+#: hugin1/hugin/GLPreviewFrame.cpp:2833 hugin1/hugin/PanoPanel.cpp:678
 #, c-format
 msgid "Invalid HFOV value. Maximum HFOV for this projection is %lf."
 msgstr "水平画角の値が不正です. この投影法の水平画角の最大値は %lf です."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2856 hugin1/hugin/PanoPanel.cpp:709
+#: hugin1/hugin/GLPreviewFrame.cpp:2864 hugin1/hugin/PanoPanel.cpp:709
 #, c-format
 msgid "Invalid VFOV value. Maximum VFOV for this projection is %lf."
 msgstr "無効な垂直画角です。この投影法の垂直画角の最大は %lf です。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2894
+#: hugin1/hugin/GLPreviewFrame.cpp:2902
 msgid ""
 "With a wide field of view, panoramas with rectilinear projection get very "
 "stretched towards the edges.\n"
@@ -1835,23 +1841,23 @@ msgstr ""
 "画角が広い場合、心射方位投影法でパノラマを作成すると縁に向かって強く引き伸ば"
 "されたものになります。\n"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2896
+#: hugin1/hugin/GLPreviewFrame.cpp:2904
 msgid ""
 "Since the field of view is only very wide in the horizontal direction, try a "
 "cylindrical projection instead."
 msgstr ""
 "画角が水平方向にのみ広いため、代わりに心射円筒投影法を使ってみてください。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2898
+#: hugin1/hugin/GLPreviewFrame.cpp:2906
 msgid "For a very wide panorama, try equirectangular projection instead."
 msgstr ""
 "非常に幅の広いパノラマには、代わりに正距円筒投影法を使ってみてください。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2900
+#: hugin1/hugin/GLPreviewFrame.cpp:2908
 msgid " You could also try Panini projection."
 msgstr " パンニーニ投影法を使ってみることもできます。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2905
+#: hugin1/hugin/GLPreviewFrame.cpp:2913
 msgid ""
 "With a wide vertical field of view, panoramas with cylindrical projection "
 "get very stretched at the top and bottom.\n"
@@ -1862,7 +1868,7 @@ msgstr ""
 "伸ばされたものになります。正距円筒投影法では縦幅がより狭い範囲に同じ内容を収"
 "めることができます。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2911
+#: hugin1/hugin/GLPreviewFrame.cpp:2919
 msgid ""
 "Since the vertical field of view is not too wide, you could try setting the "
 "panorama projection to cylindrical.\n"
@@ -1872,7 +1878,7 @@ msgstr ""
 "ができます。正距円筒投影法とは違って、心射円筒投影法では鉛直な線はまっすぐに"
 "保たれます。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2917
+#: hugin1/hugin/GLPreviewFrame.cpp:2925
 msgid ""
 "Stereographic projection is conformal, unlike this Fisheye panorama "
 "projection.\n"
@@ -1882,7 +1888,7 @@ msgstr ""
 "魚眼パノラマ投影と違って、ステレオ投影法は等角投影です。等角投影では点の周り"
 "の角度が保たれるため、目で見やすくなることが多いです。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2922
+#: hugin1/hugin/GLPreviewFrame.cpp:2930
 msgid ""
 "Panoramas with stereographic projection and a very wide field of view "
 "stretch the image around the edges a lot.\n"
@@ -1893,13 +1899,13 @@ msgstr ""
 "ものになります。これを魚眼パノラマ投影法では圧縮できるため、中心部を適度に保"
 "ちつつ広い画角を収めることができます。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2929
+#: hugin1/hugin/GLPreviewFrame.cpp:2937
 msgid ""
 "Setting the panorama to rectilinear projection would keep the straight lines "
 "straight."
 msgstr "心射方位投影法を用いると直線を真っ直ぐなままに保てます。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2950
+#: hugin1/hugin/GLPreviewFrame.cpp:2958
 msgid ""
 "You have hidden the infobar, which shows hints about selection of "
 "projection.\n"
@@ -1908,27 +1914,27 @@ msgstr ""
 "情報バーを隠しているため、投影法の選び方についてのヒントは表示されません。"
 "バーを再び表示させたい場合は、環境設定で有効にしてください。"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3020
+#: hugin1/hugin/GLPreviewFrame.cpp:3028
 msgid "normal, individual"
 msgstr "通常、個別"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3023
+#: hugin1/hugin/GLPreviewFrame.cpp:3031
 msgid "mosaic"
 msgstr "モザイク"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3024
+#: hugin1/hugin/GLPreviewFrame.cpp:3032
 msgid "mosaic, individual"
 msgstr "モザイク、個別"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3044
+#: hugin1/hugin/GLPreviewFrame.cpp:3052
 msgid "Panosphere"
 msgstr "Panosphere"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3047
+#: hugin1/hugin/GLPreviewFrame.cpp:3055
 msgid "Mosaic plane"
 msgstr "モザイク平面"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3260
+#: hugin1/hugin/GLPreviewFrame.cpp:3268
 #, c-format
 msgid ""
 "%lu control points were removed from the panorama.\n"
@@ -1936,24 +1942,24 @@ msgid ""
 "Should the panorama now be re-optimized?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3261 hugin1/hugin/GLPreviewFrame.cpp:3568
+#: hugin1/hugin/GLPreviewFrame.cpp:3269 hugin1/hugin/GLPreviewFrame.cpp:3576
 #, c-format
 msgid "Current selected optimizer strategy is \"%s\"."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3311
+#: hugin1/hugin/GLPreviewFrame.cpp:3319
 msgid ""
 "The selected region contains no active image.\n"
 "Please select a region which is covered by at least 2 images."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3322
+#: hugin1/hugin/GLPreviewFrame.cpp:3330
 msgid ""
 "The selected region is only covered by a single image.\n"
 "Can't create control points for a single image."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3333
+#: hugin1/hugin/GLPreviewFrame.cpp:3341
 msgid ""
 "The selected rectangle is very big.\n"
 "This function is only intended for smaller areas. Otherwise unwanted side "
@@ -1962,31 +1968,31 @@ msgid ""
 "Proceed anyway?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3358 hugin1/hugin/PapywizardImport.cpp:467
+#: hugin1/hugin/GLPreviewFrame.cpp:3366 hugin1/hugin/PapywizardImport.cpp:467
 #, fuzzy
 msgid "Searching control points"
 msgstr "コントロールポイントをクリーン"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3358
+#: hugin1/hugin/GLPreviewFrame.cpp:3366
 #, fuzzy
 msgid "Processing"
 msgstr "処理："
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3365
+#: hugin1/hugin/GLPreviewFrame.cpp:3373
 msgid "Remap image to panorama projection..."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3419
+#: hugin1/hugin/GLPreviewFrame.cpp:3427
 #, fuzzy
 msgid "Matching interest points..."
 msgstr "同じような場所を探しています…"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3538
+#: hugin1/hugin/GLPreviewFrame.cpp:3546
 #, fuzzy
 msgid "Checking results..."
 msgstr "ペアの順序をチェック中"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3567
+#: hugin1/hugin/GLPreviewFrame.cpp:3575
 #, c-format
 msgid ""
 "%lu control points were added to the panorama.\n"
@@ -1994,7 +2000,7 @@ msgid ""
 "Should the panorama now be re-optimized?"
 msgstr ""
 
-#: hugin1/hugin/GLViewer.cpp:139
+#: hugin1/hugin/GLViewer.cpp:136
 msgid ""
 "Error initializing GLEW\n"
 "Fast preview window can not be opened."
@@ -2002,7 +2008,7 @@ msgstr ""
 "GLEW の初期化エラー\n"
 "ファストプレビューウィンドウを開けません。"
 
-#: hugin1/hugin/GLViewer.cpp:151
+#: hugin1/hugin/GLViewer.cpp:148
 #, fuzzy
 msgid ""
 "Sorry, the fast preview window requires a system which supports OpenGL "
@@ -2049,7 +2055,7 @@ msgid "Number of masks"
 msgstr "マスクの数："
 
 #: hugin1/hugin/ImagesList.cpp:444 hugin1/hugin/xrc/mask_editor_panel.xrc:340
-#: hugin1/hugin/xrc/preview_frame.xrc:983
+#: hugin1/hugin/xrc/preview_frame.xrc:980
 msgid "Crop"
 msgstr "切り抜き"
 
@@ -2085,7 +2091,7 @@ msgstr ""
 msgid "The maximum Ev difference has to be greater than 0."
 msgstr ""
 
-#: hugin1/hugin/ImagesPanel.cpp:696 hugin1/hugin/ImagesTree.cpp:1282
+#: hugin1/hugin/ImagesPanel.cpp:696 hugin1/hugin/ImagesTree.cpp:1209
 #: hugin1/hugin/xrc/main_frame.xrc:351
 #, fuzzy
 msgid "Stacks"
@@ -2287,7 +2293,7 @@ msgstr "シャッター速度："
 msgid "Shutter speed"
 msgstr "シャッター速度："
 
-#: hugin1/hugin/ImagesTree.cpp:162
+#: hugin1/hugin/ImagesTree.cpp:162 hugin1/ptbatcher/FindPanoDialog.cpp:1044
 #, fuzzy
 msgid "ISO"
 msgstr "ISO 感度："
@@ -2463,101 +2469,101 @@ msgstr "カメラのレスポンスカーブ"
 msgid "Camera response parameter"
 msgstr "カメラのレスポンスカーブ"
 
-#: hugin1/hugin/ImagesTree.cpp:514 hugin1/hugin/ImagesTree.cpp:696
+#: hugin1/hugin/ImagesTree.cpp:439 hugin1/hugin/ImagesTree.cpp:621
 msgid "not active"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:517 hugin1/hugin/ImagesTree.cpp:699
+#: hugin1/hugin/ImagesTree.cpp:442 hugin1/hugin/ImagesTree.cpp:624
 msgid "active"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:659
+#: hugin1/hugin/ImagesTree.cpp:584
 #, fuzzy, c-format
 msgid "Lens %ld"
 msgstr "レンズ"
 
-#: hugin1/hugin/ImagesTree.cpp:662
+#: hugin1/hugin/ImagesTree.cpp:587
 #, fuzzy, c-format
 msgid "Stack %ld"
 msgstr "スタック："
 
-#: hugin1/hugin/ImagesTree.cpp:665
+#: hugin1/hugin/ImagesTree.cpp:590
 #, fuzzy, c-format
 msgid "Output stack %ld"
 msgstr "出力"
 
-#: hugin1/hugin/ImagesTree.cpp:668
+#: hugin1/hugin/ImagesTree.cpp:593
 #, fuzzy, c-format
 msgid "Output exposure layer %ld"
 msgstr "出力"
 
-#: hugin1/hugin/ImagesTree.cpp:1180 hugin1/hugin/ImagesTree.cpp:1195
+#: hugin1/hugin/ImagesTree.cpp:1107 hugin1/hugin/ImagesTree.cpp:1122
 msgid "Link"
 msgstr "リンク"
 
-#: hugin1/hugin/ImagesTree.cpp:1184 hugin1/hugin/ImagesTree.cpp:1191
+#: hugin1/hugin/ImagesTree.cpp:1111 hugin1/hugin/ImagesTree.cpp:1118
 msgid "Unlink"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1206
+#: hugin1/hugin/ImagesTree.cpp:1133
 msgid "Select all for current lens"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1207
+#: hugin1/hugin/ImagesTree.cpp:1134
 msgid "Unselect all for current lens"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1211
+#: hugin1/hugin/ImagesTree.cpp:1138
 msgid "Select all for current stack"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1212
+#: hugin1/hugin/ImagesTree.cpp:1139
 msgid "Unselect all for current stack"
 msgstr ""
 
-#: hugin1/hugin/ImagesTree.cpp:1217 hugin1/hugin/ImagesTree.cpp:1251
-#: hugin1/hugin/ImagesTree.cpp:1420
+#: hugin1/hugin/ImagesTree.cpp:1144 hugin1/hugin/ImagesTree.cpp:1178
+#: hugin1/hugin/ImagesTree.cpp:1347
 #, fuzzy
 msgid "Select all"
 msgstr "すべてリセット"
 
-#: hugin1/hugin/ImagesTree.cpp:1219 hugin1/hugin/ImagesTree.cpp:1253
-#: hugin1/hugin/ImagesTree.cpp:1421
+#: hugin1/hugin/ImagesTree.cpp:1146 hugin1/hugin/ImagesTree.cpp:1180
+#: hugin1/hugin/ImagesTree.cpp:1348
 #, fuzzy
 msgid "Unselect all"
 msgstr "選択中でない"
 
-#: hugin1/hugin/ImagesTree.cpp:1223
+#: hugin1/hugin/ImagesTree.cpp:1150
 #, fuzzy
 msgid "Edit image variables..."
 msgstr "画像ごとの数値："
 
-#: hugin1/hugin/ImagesTree.cpp:1231
+#: hugin1/hugin/ImagesTree.cpp:1158
 #, fuzzy
 msgid "Deactivate image"
 msgstr "マスクを保存"
 
-#: hugin1/hugin/ImagesTree.cpp:1235
+#: hugin1/hugin/ImagesTree.cpp:1162
 #, fuzzy
 msgid "Activate image"
 msgstr "マスクを保存"
 
-#: hugin1/hugin/ImagesTree.cpp:1240
+#: hugin1/hugin/ImagesTree.cpp:1167
 #, fuzzy
 msgid "Activate images"
 msgstr "表示する写真"
 
-#: hugin1/hugin/ImagesTree.cpp:1241
+#: hugin1/hugin/ImagesTree.cpp:1168
 #, fuzzy
 msgid "Deactivate images"
 msgstr "画像1枚あたりのサンプル数"
 
-#: hugin1/hugin/ImagesTree.cpp:1293
+#: hugin1/hugin/ImagesTree.cpp:1220
 #, fuzzy
 msgid "Control points"
 msgstr "コントロールポイント"
 
-#: hugin1/hugin/ImagesTree.cpp:1303 hugin1/hugin/xrc/lenscal_frame.xrc:212
+#: hugin1/hugin/ImagesTree.cpp:1230 hugin1/hugin/xrc/lenscal_frame.xrc:212
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:333
 #: hugin1/hugin/xrc/optimize_panel.xrc:73
 #: hugin1/hugin/xrc/optimize_photo_panel.xrc:63
@@ -2590,12 +2596,24 @@ msgstr "閉じる (&C)"
 msgid "Did you know..."
 msgstr "知っていましたか…？"
 
-#: hugin1/hugin/MainFrame.cpp:330
+#: hugin1/hugin/MainFrame.cpp:205 hugin1/hugin/PanoOperation.cpp:230
+#: hugin1/hugin/huginApp.cpp:575
+msgid ""
+"You selected only one raw file. This is not recommended.\n"
+"All raw files should be converted at once."
+msgstr ""
+
+#: hugin1/hugin/MainFrame.cpp:212 hugin1/hugin/PanoOperation.cpp:237
+#: hugin1/hugin/huginApp.cpp:582
+msgid "Convert anyway."
+msgstr ""
+
+#: hugin1/hugin/MainFrame.cpp:374
 #, c-format
 msgid "Version %s"
 msgstr "バージョン %s"
 
-#: hugin1/hugin/MainFrame.cpp:339
+#: hugin1/hugin/MainFrame.cpp:383
 msgid ""
 "Fatal installation error\n"
 "The file data/splash.png was not found at:"
@@ -2603,130 +2621,130 @@ msgstr ""
 "致命的なインストールエラー\n"
 "ファイル data/splash.png が以下の場所に見つかりません："
 
-#: hugin1/hugin/MainFrame.cpp:359 hugin1/ptbatcher/BatchFrame.cpp:144
-#: hugin1/hugin/xrc/batch_menu.xrc:56 hugin1/hugin/xrc/main_menu.xrc:145
-#: hugin1/hugin/xrc/main_menu.xrc:147 hugin1/hugin/xrc/preview_frame.xrc:1052
-#: hugin1/hugin/xrc/preview_frame.xrc:1077
+#: hugin1/hugin/MainFrame.cpp:403 hugin1/ptbatcher/BatchFrame.cpp:144
+#: hugin1/hugin/xrc/batch_menu.xrc:56 hugin1/hugin/xrc/main_menu.xrc:141
+#: hugin1/hugin/xrc/main_menu.xrc:143 hugin1/hugin/xrc/preview_frame.xrc:1049
+#: hugin1/hugin/xrc/preview_frame.xrc:1074
 msgid "&Help"
 msgstr "ヘルプ (&H)"
 
-#: hugin1/hugin/MainFrame.cpp:418
+#: hugin1/hugin/MainFrame.cpp:462
 msgid "&Actions"
 msgstr "動作 (&A)"
 
-#: hugin1/hugin/MainFrame.cpp:436 hugin1/hugin/xrc/main_menu.xrc:142
+#: hugin1/hugin/MainFrame.cpp:480 hugin1/hugin/xrc/main_menu.xrc:138
 #, fuzzy
 msgid "&Output"
 msgstr "出力"
 
-#: hugin1/hugin/MainFrame.cpp:458
+#: hugin1/hugin/MainFrame.cpp:502
 #, c-format
 msgid "User defined sequence: %s"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:474
+#: hugin1/hugin/MainFrame.cpp:518
 msgid "User defined output sequences"
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:494 hugin1/hugin/xrc/main_menu.xrc:60
-#: hugin1/hugin/xrc/preview_frame.xrc:1010
+#: hugin1/hugin/MainFrame.cpp:538 hugin1/hugin/xrc/main_menu.xrc:56
+#: hugin1/hugin/xrc/preview_frame.xrc:1007
 msgid "&Edit"
 msgstr "編集 (&E)"
 
-#: hugin1/hugin/MainFrame.cpp:516
+#: hugin1/hugin/MainFrame.cpp:560
 #, fuzzy, c-format
 msgid "User defined assistant: %s"
 msgstr "アシスタントを実行中"
 
-#: hugin1/hugin/MainFrame.cpp:531
+#: hugin1/hugin/MainFrame.cpp:575
 #, fuzzy
 msgid "User defined assistant"
 msgstr "アシスタントを実行中"
 
-#: hugin1/hugin/MainFrame.cpp:626
+#: hugin1/hugin/MainFrame.cpp:670
 msgid "Started"
 msgstr "起動完了"
 
-#: hugin1/hugin/MainFrame.cpp:770 hugin1/hugin/xrc/main_frame.xrc:34
+#: hugin1/hugin/MainFrame.cpp:814 hugin1/hugin/xrc/main_frame.xrc:34
 msgid "Optimizer"
 msgstr "最適化"
 
-#: hugin1/hugin/MainFrame.cpp:782 hugin1/hugin/MainFrame.cpp:786
+#: hugin1/hugin/MainFrame.cpp:826 hugin1/hugin/MainFrame.cpp:830
 #: hugin1/hugin/xrc/main_frame.xrc:38 hugin1/hugin/xrc/reset_dialog.xrc:46
 msgid "Exposure"
 msgstr "露出"
 
-#: hugin1/hugin/MainFrame.cpp:826
+#: hugin1/hugin/MainFrame.cpp:870
 #, fuzzy
 msgid "Save changes to the project file before opening another project?"
 msgstr "閉じる前にパノラマの変更を保存しますか？"
 
-#: hugin1/hugin/MainFrame.cpp:829
+#: hugin1/hugin/MainFrame.cpp:873
 #, fuzzy
 msgid "Save changes to the project file before starting a new project?"
 msgstr "閉じる前にパノラマの変更を保存しますか？"
 
-#: hugin1/hugin/MainFrame.cpp:833
+#: hugin1/hugin/MainFrame.cpp:877
 #, fuzzy
 msgid "Save changes to the project file before closing?"
 msgstr "閉じる前にパノラマの変更を保存しますか？"
 
-#: hugin1/hugin/MainFrame.cpp:846
+#: hugin1/hugin/MainFrame.cpp:890
 #, fuzzy
 msgid ""
 "If you load another project without saving, your changes since last save "
 "will be discarded."
 msgstr "保存せずに閉じると、最後に保存してから後の変更は破棄されます"
 
-#: hugin1/hugin/MainFrame.cpp:849
+#: hugin1/hugin/MainFrame.cpp:893
 #, fuzzy
 msgid ""
 "If you start a new project without saving, your changes since last save will "
 "be discarded."
 msgstr "保存せずに閉じると、最後に保存してから後の変更は破棄されます"
 
-#: hugin1/hugin/MainFrame.cpp:853
+#: hugin1/hugin/MainFrame.cpp:897
 #, fuzzy
 msgid ""
 "If you close without saving, your changes since your last save will be "
 "discarded."
 msgstr "保存せずに閉じると、最後に保存してから後の変更は破棄されます"
 
-#: hugin1/hugin/MainFrame.cpp:858
+#: hugin1/hugin/MainFrame.cpp:902
 msgid "Don't Save"
 msgstr "保存しない"
 
-#: hugin1/hugin/MainFrame.cpp:861
+#: hugin1/hugin/MainFrame.cpp:905
 msgid "Close without saving"
 msgstr "保存せずに閉じる"
 
-#: hugin1/hugin/MainFrame.cpp:892
+#: hugin1/hugin/MainFrame.cpp:936
 msgid "forced close"
 msgstr "強制終了されました"
 
-#: hugin1/hugin/MainFrame.cpp:940
+#: hugin1/hugin/MainFrame.cpp:991
 #, c-format
 msgid "saved project %s"
 msgstr "プロジェクト %s を保存しました"
 
-#: hugin1/hugin/MainFrame.cpp:945 hugin1/hugin/MainFrame.cpp:951
-#: hugin1/hugin/MainFrame.cpp:1065 hugin1/hugin/MainFrame.cpp:1071
-#: hugin1/hugin/MainFrame.cpp:1082 hugin1/hugin/MainFrame.cpp:1088
-#: hugin1/hugin/MainFrame.cpp:1185 hugin1/hugin/MainFrame.cpp:1191
-#: hugin1/hugin/MainFrame.cpp:2247 hugin1/hugin/MainFrame.cpp:2253
-#: hugin1/hugin/MainFrame.cpp:2265 hugin1/hugin/MainFrame.cpp:2270
+#: hugin1/hugin/MainFrame.cpp:996 hugin1/hugin/MainFrame.cpp:1002
+#: hugin1/hugin/MainFrame.cpp:1116 hugin1/hugin/MainFrame.cpp:1122
+#: hugin1/hugin/MainFrame.cpp:1133 hugin1/hugin/MainFrame.cpp:1139
+#: hugin1/hugin/MainFrame.cpp:1236 hugin1/hugin/MainFrame.cpp:1242
+#: hugin1/hugin/MainFrame.cpp:2281 hugin1/hugin/MainFrame.cpp:2287
+#: hugin1/hugin/MainFrame.cpp:2299 hugin1/hugin/MainFrame.cpp:2304
 #: hugin1/hugin/xrc/main_frame.xrc:4
 msgid "Hugin - Panorama Stitcher"
 msgstr "Hugin - パノラマ写真作成ソフト"
 
-#: hugin1/hugin/MainFrame.cpp:947 hugin1/hugin/MainFrame.cpp:1067
-#: hugin1/hugin/MainFrame.cpp:1084 hugin1/hugin/MainFrame.cpp:1187
-#: hugin1/hugin/MainFrame.cpp:2248 hugin1/hugin/MainFrame.cpp:2254
+#: hugin1/hugin/MainFrame.cpp:998 hugin1/hugin/MainFrame.cpp:1118
+#: hugin1/hugin/MainFrame.cpp:1135 hugin1/hugin/MainFrame.cpp:1238
+#: hugin1/hugin/MainFrame.cpp:2282 hugin1/hugin/MainFrame.cpp:2288
 #, fuzzy
 msgid "Panorama editor"
 msgstr "プレビュー"
 
-#: hugin1/hugin/MainFrame.cpp:958
+#: hugin1/hugin/MainFrame.cpp:1009
 #, c-format
 msgid ""
 "Could not save project file \"%s\".\n"
@@ -2739,36 +2757,36 @@ msgstr ""
 "\n"
 "（エラーコード：%s）"
 
-#: hugin1/hugin/MainFrame.cpp:1010
+#: hugin1/hugin/MainFrame.cpp:1061
 msgid "Save PTmender script file"
 msgstr "PTmenderスクリプトに書き出し"
 
-#: hugin1/hugin/MainFrame.cpp:1012
+#: hugin1/hugin/MainFrame.cpp:1063
 msgid "PTmender files (*.txt)|*.txt"
 msgstr "PTmenderファイル (*.txt)|*.txt"
 
-#: hugin1/hugin/MainFrame.cpp:1037
+#: hugin1/hugin/MainFrame.cpp:1088
 msgid "Open project:   "
 msgstr "プロジェクトの読み込み中：   "
 
-#: hugin1/hugin/MainFrame.cpp:1059
+#: hugin1/hugin/MainFrame.cpp:1110
 msgid "Project opened"
 msgstr "プロジェクトを読み込みました"
 
-#: hugin1/hugin/MainFrame.cpp:1076
+#: hugin1/hugin/MainFrame.cpp:1127
 #, fuzzy
 msgid "Loading canceled"
 msgstr "画像の読み込み中"
 
-#: hugin1/hugin/MainFrame.cpp:1101
+#: hugin1/hugin/MainFrame.cpp:1152
 msgid "Error opening project:   "
 msgstr "プロジェクトの読み込み中にエラー   "
 
-#: hugin1/hugin/MainFrame.cpp:1133 hugin1/hugin/MainFrame.cpp:1645
+#: hugin1/hugin/MainFrame.cpp:1184 hugin1/hugin/MainFrame.cpp:1679
 msgid "Open project file"
 msgstr "プロジェクトを開く"
 
-#: hugin1/hugin/MainFrame.cpp:1143
+#: hugin1/hugin/MainFrame.cpp:1194
 #, c-format
 msgid ""
 "File %s is an image file and not a project file.\n"
@@ -2779,11 +2797,11 @@ msgstr ""
 "このファイルは「ファイル - 開く」では開けません。\n"
 "代わりにこの画像ファイルを今のプロジェクトに追加しますか？"
 
-#: hugin1/hugin/MainFrame.cpp:1169
+#: hugin1/hugin/MainFrame.cpp:1220
 msgid "Open project: cancel"
 msgstr "プロジェクトを開く: キャンセル"
 
-#: hugin1/hugin/MainFrame.cpp:1318
+#: hugin1/hugin/MainFrame.cpp:1358
 #, c-format
 msgid ""
 "Could not load image \"%s\".\n"
@@ -2791,7 +2809,7 @@ msgid ""
 "This file will be removed from the project."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:1329
+#: hugin1/hugin/MainFrame.cpp:1369
 #, c-format
 msgid ""
 "Could not load image \"%s\".\n"
@@ -2799,34 +2817,34 @@ msgid ""
 "This file will be removed from the project."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:1678
+#: hugin1/hugin/MainFrame.cpp:1712
 #, c-format
 msgid "Could not read project file %s."
 msgstr "プロジェクトファイルを読み込めませんでした：%s"
 
-#: hugin1/hugin/MainFrame.cpp:1687
+#: hugin1/hugin/MainFrame.cpp:1721
 #, fuzzy
 msgid "Open Papywizard xml file"
 msgstr "プロジェクトを開く"
 
-#: hugin1/hugin/MainFrame.cpp:1688
+#: hugin1/hugin/MainFrame.cpp:1722
 #, fuzzy
 msgid "Papywizard xml files (*.xml)|*.xml|All files (*)|*"
 msgstr "マスクファイル (*.msk)|*.msk;|すべて (*)|*"
 
-#: hugin1/hugin/MainFrame.cpp:1704
+#: hugin1/hugin/MainFrame.cpp:1738
 msgid "Choose template project"
 msgstr "テンプレートプロジェクトを選択"
 
-#: hugin1/hugin/MainFrame.cpp:1780
+#: hugin1/hugin/MainFrame.cpp:1814
 msgid "Fine-tuning all points"
 msgstr "全コントロールポイントの微調整を実行中"
 
-#: hugin1/hugin/MainFrame.cpp:1780
+#: hugin1/hugin/MainFrame.cpp:1814
 msgid "Fine-tuning"
 msgstr "微調整の実行中"
 
-#: hugin1/hugin/MainFrame.cpp:1852
+#: hugin1/hugin/MainFrame.cpp:1886
 #, c-format
 msgid ""
 "%d points fine-tuned, %d points not updated due to low correlation\n"
@@ -2854,23 +2872,23 @@ msgstr ""
 "られます。\n"
 "\n"
 
-#: hugin1/hugin/MainFrame.cpp:1854
+#: hugin1/hugin/MainFrame.cpp:1888
 msgid "Fine-tune result"
 msgstr "微調整の結果"
 
-#: hugin1/hugin/MainFrame.cpp:1872
+#: hugin1/hugin/MainFrame.cpp:1906
 msgid "Removing control points in masks"
 msgstr "マスク内のコントロールポイントを除去中"
 
-#: hugin1/hugin/MainFrame.cpp:1881
+#: hugin1/hugin/MainFrame.cpp:1915
 msgid "Select python script"
 msgstr "Python スクリプトを選択"
 
-#: hugin1/hugin/MainFrame.cpp:1883
+#: hugin1/hugin/MainFrame.cpp:1917
 msgid "Python script (*.py)|*.py|All files (*.*)|*.*"
 msgstr "Python スクリプト (*.py)|*.py;|すべて (*)|*"
 
-#: hugin1/hugin/MainFrame.cpp:2124
+#: hugin1/hugin/MainFrame.cpp:2158
 #, c-format
 msgid ""
 "File \"%s\" not found.\n"
@@ -2879,13 +2897,13 @@ msgstr ""
 "ファイル \"%s\" が見つかりません。\n"
 "名前が変更されたか、移動されたか、削除されたと思われます。"
 
-#: hugin1/hugin/MainFrame.cpp:2125 hugin1/ptbatcher/Batch.cpp:362
-#: hugin1/ptbatcher/Batch.cpp:816 hugin1/ptbatcher/Batch.cpp:832
-#: hugin1/ptbatcher/Batch.cpp:1000
+#: hugin1/hugin/MainFrame.cpp:2159 hugin1/ptbatcher/Batch.cpp:369
+#: hugin1/ptbatcher/Batch.cpp:823 hugin1/ptbatcher/Batch.cpp:839
+#: hugin1/ptbatcher/Batch.cpp:1007
 msgid "Error!"
 msgstr "エラー！"
 
-#: hugin1/hugin/MainFrame.cpp:2151
+#: hugin1/hugin/MainFrame.cpp:2185
 #, c-format
 msgid ""
 "Celeste model expected in %s not found, Hugin needs to be properly installed."
@@ -2893,54 +2911,54 @@ msgstr ""
 "%s にあるはずの Celeste モデルが見つかりません。Hugin が正しくインストールさ"
 "れていない可能性があります。"
 
-#: hugin1/hugin/MainFrame.cpp:2156
+#: hugin1/hugin/MainFrame.cpp:2190
 #, c-format
 msgid "Could not load Celeste model file %s"
 msgstr "Celeste モデルファイル %s を読み込めませんでした。"
 
-#: hugin1/hugin/MainFrame.cpp:2290
+#: hugin1/hugin/MainFrame.cpp:2324
 msgid ""
 "Can't switch to simple interface. The project is using stacks and/or "
 "vignetting center shift.\n"
 "These features are not supported in simple interface."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2300
+#: hugin1/hugin/MainFrame.cpp:2334
 msgid ""
 "Can't switch to simple interface. The project is using translation or shear "
 "parameters.\n"
 "These parameters are not supported in simple interface."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2321
+#: hugin1/hugin/MainFrame.cpp:2355
 msgid ""
 "Can't switch to advanced interface. The project is using translation or "
 "shear parameters.\n"
 "These parameters are not supported in advanced interface."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2375
+#: hugin1/hugin/MainFrame.cpp:2410
 msgid ""
 "The assistant queue is empty. This indicates an error in the user defined "
 "assistant file."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2383
+#: hugin1/hugin/MainFrame.cpp:2418
 msgid "Running assistant"
 msgstr "アシスタントを実行中"
 
-#: hugin1/hugin/MainFrame.cpp:2400
+#: hugin1/hugin/MainFrame.cpp:2435
 msgid ""
 "The assistant could not find vertical lines. Please add vertical lines in "
 "the panorama editor and optimize project manually."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:2415
+#: hugin1/hugin/MainFrame.cpp:2450
 #, c-format
 msgid "Warning %d unconnected image groups found:"
 msgstr "警告：%d 個の接続されていない画像グループがあります："
 
-#: hugin1/hugin/MainFrame.cpp:2416
+#: hugin1/hugin/MainFrame.cpp:2451
 #, fuzzy
 msgid ""
 "Please create control points between unconnected images using the Control "
@@ -2954,7 +2972,7 @@ msgstr ""
 "コントロールポイントを追加し終わったら、もう一度「配置」ボタンを押して下さ"
 "い。"
 
-#: hugin1/hugin/MainFrame.cpp:2419 hugin1/hugin/MainFrame.cpp:2425
+#: hugin1/hugin/MainFrame.cpp:2454 hugin1/hugin/MainFrame.cpp:2460
 msgid ""
 "The assistant did not complete successfully. Please check the resulting "
 "project file."
@@ -2962,24 +2980,24 @@ msgstr ""
 "アシスタントが正常に完了しませんでした。プロジェクトファイルの結果をチェック"
 "してください。"
 
-#: hugin1/hugin/MainFrame.cpp:2486
+#: hugin1/hugin/MainFrame.cpp:2521
 msgid "Project file not found"
 msgstr "プロジェクトファイルが見つかりません"
 
-#: hugin1/hugin/MainFrame.cpp:2501
+#: hugin1/hugin/MainFrame.cpp:2536
 msgid "Can't launch PTBatcherGui"
 msgstr "PTBatcherGui を実行できません。"
 
-#: hugin1/hugin/MainFrame.cpp:2509
+#: hugin1/hugin/MainFrame.cpp:2544
 #, fuzzy
 msgid "Launched incorrect programme"
 msgstr "正しくないプログラムを実行しました。"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:114
+#: hugin1/hugin/MaskEditorPanel.cpp:110
 msgid "Mask type"
 msgstr "マスクタイプ"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:455
+#: hugin1/hugin/MaskEditorPanel.cpp:451
 msgid ""
 "Create a polygon mask by clicking with the left mouse button on image, set "
 "the last point with the right mouse button."
@@ -2987,29 +3005,29 @@ msgstr ""
 "多角形マスクを作成するには画像の上で左クリックし、最後の点で右クリックしま"
 "す。"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:464 hugin1/hugin/MaskEditorPanel.cpp:477
+#: hugin1/hugin/MaskEditorPanel.cpp:460 hugin1/hugin/MaskEditorPanel.cpp:473
 msgid "Save mask"
 msgstr "マスクを保存"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:466 hugin1/hugin/MaskEditorPanel.cpp:498
+#: hugin1/hugin/MaskEditorPanel.cpp:462 hugin1/hugin/MaskEditorPanel.cpp:494
 msgid "Mask files (*.msk)|*.msk|All files (*)|*"
 msgstr "マスクファイル (*.msk)|*.msk;|すべて (*)|*"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:496
+#: hugin1/hugin/MaskEditorPanel.cpp:492
 msgid "Load mask"
 msgstr "マスクを読み込む"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:502
+#: hugin1/hugin/MaskEditorPanel.cpp:498
 msgid "Load mask: cancel"
 msgstr "マスクを読み込み：キャンセル"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:513
+#: hugin1/hugin/MaskEditorPanel.cpp:509
 #, c-format
 msgid "Could not parse mask from file %s."
 msgstr "ファイル %s のマスクを構文解析できませんでした。"
 
-#: hugin1/hugin/MaskEditorPanel.cpp:878 hugin1/hugin/MaskEditorPanel.cpp:897
-#: hugin1/hugin/MaskEditorPanel.cpp:916 hugin1/hugin/MaskEditorPanel.cpp:935
+#: hugin1/hugin/MaskEditorPanel.cpp:874 hugin1/hugin/MaskEditorPanel.cpp:893
+#: hugin1/hugin/MaskEditorPanel.cpp:912 hugin1/hugin/MaskEditorPanel.cpp:931
 msgid "Please enter a valid number"
 msgstr "有効な値を入力してください"
 
@@ -3142,7 +3160,7 @@ msgid "Photometric alignment"
 msgstr "測光学的パラメータの最適化"
 
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:261
-#: hugin1/hugin/PanoOperation.cpp:740 hugin1/hugin/PanoOperation.cpp:803
+#: hugin1/hugin/PanoOperation.cpp:821 hugin1/hugin/PanoOperation.cpp:884
 msgid "Loading images"
 msgstr "画像の読み込み中"
 
@@ -3187,68 +3205,72 @@ msgstr ""
 msgid "Photometric optimization finished"
 msgstr "測光学的パラメータの最適化処理が終了"
 
-#: hugin1/hugin/PanoOperation.cpp:170
+#: hugin1/hugin/PanoOperation.cpp:215
 msgid "Add individual images..."
 msgstr "画像を追加…"
 
-#: hugin1/hugin/PanoOperation.cpp:259
+#: hugin1/hugin/PanoOperation.cpp:237
+msgid "Let me select several raw files."
+msgstr ""
+
+#: hugin1/hugin/PanoOperation.cpp:339
 msgid "Add time-series of images..."
 msgstr "撮影時刻で追加…"
 
-#: hugin1/hugin/PanoOperation.cpp:372
+#: hugin1/hugin/PanoOperation.cpp:453
 #, fuzzy
 msgid "No matching images found."
 msgstr "画像の読み込み中"
 
-#: hugin1/hugin/PanoOperation.cpp:385
+#: hugin1/hugin/PanoOperation.cpp:466
 #, fuzzy
 msgid "Manipulate image variables..."
 msgstr "画像ごとの数値："
 
-#: hugin1/hugin/PanoOperation.cpp:409
+#: hugin1/hugin/PanoOperation.cpp:490
 msgid "Remove selected image(s)"
 msgstr "選択した画像を取り除く"
 
-#: hugin1/hugin/PanoOperation.cpp:424
+#: hugin1/hugin/PanoOperation.cpp:505
 msgid "Anchor this image for position"
 msgstr "位置決めの基準にする"
 
-#: hugin1/hugin/PanoOperation.cpp:436
+#: hugin1/hugin/PanoOperation.cpp:517
 msgid "Anchor this image for exposure"
 msgstr "露出修正の基準にする"
 
-#: hugin1/hugin/PanoOperation.cpp:466
+#: hugin1/hugin/PanoOperation.cpp:547
 #, fuzzy
 msgid "New lens"
 msgstr "新規レンズ"
 
-#: hugin1/hugin/PanoOperation.cpp:490
+#: hugin1/hugin/PanoOperation.cpp:571
 msgid "Change lens..."
 msgstr "レンズの変更…"
 
-#: hugin1/hugin/PanoOperation.cpp:497
+#: hugin1/hugin/PanoOperation.cpp:578
 msgid "Enter new lens number"
 msgstr "レンズ番号を入力"
 
-#: hugin1/hugin/PanoOperation.cpp:498
+#: hugin1/hugin/PanoOperation.cpp:579
 msgid "Lens number"
 msgstr "レンズ番号"
 
-#: hugin1/hugin/PanoOperation.cpp:499
+#: hugin1/hugin/PanoOperation.cpp:580
 msgid "Change lens number"
 msgstr "レンズ番号を変更"
 
-#: hugin1/hugin/PanoOperation.cpp:522
+#: hugin1/hugin/PanoOperation.cpp:603
 #, fuzzy
 msgid "Load lens from lens database"
 msgstr "レンズの設定を読み込む"
 
-#: hugin1/hugin/PanoOperation.cpp:526
+#: hugin1/hugin/PanoOperation.cpp:607
 #, fuzzy
 msgid "Load lens from ini file"
 msgstr "レンズの数値をファイルから読み込む"
 
-#: hugin1/hugin/PanoOperation.cpp:537
+#: hugin1/hugin/PanoOperation.cpp:618
 msgid ""
 "You selected only one image.\n"
 "Should the loaded parameters be applied to all images with the same lens?"
@@ -3256,12 +3278,12 @@ msgstr ""
 "画像がひとつしか選択されていません。\n"
 "読み込まれたパラメータを同じレンズによる画像全てに適用してよいですか？"
 
-#: hugin1/hugin/PanoOperation.cpp:537 hugin1/ptbatcher/FindPanoDialog.cpp:235
-#: hugin1/ptbatcher/FindPanoDialog.cpp:270
+#: hugin1/hugin/PanoOperation.cpp:618 hugin1/ptbatcher/FindPanoDialog.cpp:240
+#: hugin1/ptbatcher/FindPanoDialog.cpp:275
 msgid "Question"
 msgstr "質問"
 
-#: hugin1/hugin/PanoOperation.cpp:552
+#: hugin1/hugin/PanoOperation.cpp:633
 msgid ""
 "You selected images with different sizes.\n"
 "Apply lens parameter file can result in unwanted results.\n"
@@ -3271,100 +3293,100 @@ msgstr ""
 "レンズ設定ファイルを適用すると想定外の結果になることがあります。\n"
 "設定を適用して構いませんか？"
 
-#: hugin1/hugin/PanoOperation.cpp:590
+#: hugin1/hugin/PanoOperation.cpp:671
 #, fuzzy
 msgid "Save lens to ini file"
 msgstr "レンズやカメラの数値をファイルに保存します。"
 
-#: hugin1/hugin/PanoOperation.cpp:610
+#: hugin1/hugin/PanoOperation.cpp:691
 #, fuzzy
 msgid "Remove control points"
 msgstr "%d 個のコントロールポイントを削除しました"
 
-#: hugin1/hugin/PanoOperation.cpp:640
+#: hugin1/hugin/PanoOperation.cpp:721
 #, fuzzy
 msgid "Selected images have no control points."
 msgstr "コントロールポイントをクリーン"
 
-#: hugin1/hugin/PanoOperation.cpp:649
+#: hugin1/hugin/PanoOperation.cpp:730
 #, fuzzy, c-format
 msgid "Really delete %lu control points?"
 msgstr "本当にコントロールポイント %lu 個を消去しますか？"
 
-#: hugin1/hugin/PanoOperation.cpp:651
+#: hugin1/hugin/PanoOperation.cpp:732
 msgid "Delete Control Points"
 msgstr "コントロールポイントを消去"
 
-#: hugin1/hugin/PanoOperation.cpp:665 hugin1/hugin/xrc/cp_editor_panel.xrc:334
+#: hugin1/hugin/PanoOperation.cpp:746 hugin1/hugin/xrc/cp_editor_panel.xrc:334
 msgid "Clean control points"
 msgstr "コントロールポイントをクリーン"
 
-#: hugin1/hugin/PanoOperation.cpp:676
+#: hugin1/hugin/PanoOperation.cpp:757
 msgid "Cleaning Control points"
 msgstr "コントロールポイントをクリーン中"
 
-#: hugin1/hugin/PanoOperation.cpp:676
+#: hugin1/hugin/PanoOperation.cpp:757
 msgid "Checking pairwise"
 msgstr "ペアの順序をチェック中"
 
-#: hugin1/hugin/PanoOperation.cpp:700
+#: hugin1/hugin/PanoOperation.cpp:781
 msgid "Checking whole project"
 msgstr "プロジェクト全体をチェック中"
 
-#: hugin1/hugin/PanoOperation.cpp:717
+#: hugin1/hugin/PanoOperation.cpp:798
 msgid "Finished cleaning"
 msgstr "クリーン終了"
 
-#: hugin1/hugin/PanoOperation.cpp:731
+#: hugin1/hugin/PanoOperation.cpp:812
 #, fuzzy
 msgid "Remove control points on clouds"
 msgstr "マスク内のコントロールポイントを除去"
 
-#: hugin1/hugin/PanoOperation.cpp:852
+#: hugin1/hugin/PanoOperation.cpp:933
 msgid "Reset user defined..."
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:855
+#: hugin1/hugin/PanoOperation.cpp:936
 #, fuzzy
 msgid "Reset positions"
 msgstr "プロジェクトをリセット"
 
-#: hugin1/hugin/PanoOperation.cpp:858
+#: hugin1/hugin/PanoOperation.cpp:939
 #, fuzzy
 msgid "Reset translation parameters"
 msgstr "パラメータをリンク"
 
-#: hugin1/hugin/PanoOperation.cpp:861
+#: hugin1/hugin/PanoOperation.cpp:942
 #, fuzzy
 msgid "Reset lens parameters"
 msgstr "XYZ パラメータをリセットしますか？"
 
-#: hugin1/hugin/PanoOperation.cpp:864
+#: hugin1/hugin/PanoOperation.cpp:945
 #, fuzzy
 msgid "Reset photometric parameters"
 msgstr "XYZ パラメータをリセットしますか？"
 
-#: hugin1/hugin/PanoOperation.cpp:1123
+#: hugin1/hugin/PanoOperation.cpp:1204
 msgid "New stack"
 msgstr "新規スタック"
 
-#: hugin1/hugin/PanoOperation.cpp:1147
+#: hugin1/hugin/PanoOperation.cpp:1228
 msgid "Change stack..."
 msgstr "スタックの変更…"
 
-#: hugin1/hugin/PanoOperation.cpp:1154
+#: hugin1/hugin/PanoOperation.cpp:1235
 msgid "Enter new stack number"
 msgstr "新しいスタック番号を入力"
 
-#: hugin1/hugin/PanoOperation.cpp:1155
+#: hugin1/hugin/PanoOperation.cpp:1236
 msgid "stack number"
 msgstr "スタック番号"
 
-#: hugin1/hugin/PanoOperation.cpp:1156
+#: hugin1/hugin/PanoOperation.cpp:1237
 msgid "Change stack number"
 msgstr "スタック番号を変更"
 
-#: hugin1/hugin/PanoOperation.cpp:1177
+#: hugin1/hugin/PanoOperation.cpp:1258
 #, fuzzy
 msgid "Set stack size..."
 msgstr "スタックの変更…"
@@ -3479,7 +3501,7 @@ msgid "Could not create temporary project file"
 msgstr "一時プロジェクトファイルを作成できませんでした"
 
 #: hugin1/hugin/PanoPanel.cpp:1146 hugin1/hugin/PanoPanel.cpp:1266
-#: hugin1/hugin/PanoPanel.cpp:1431 hugin1/ptbatcher/Batch.cpp:682
+#: hugin1/hugin/PanoPanel.cpp:1431 hugin1/ptbatcher/Batch.cpp:689
 #: hugin1/stitch_project/hugin_stitch_project.cpp:394
 msgid "Specify output prefix"
 msgstr "出力ファイルの名前を指定"
@@ -3582,186 +3604,202 @@ msgstr "重なり合った画像すべてを繋ごうとしています…"
 msgid "Miscellaneous"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:116
+#: hugin1/hugin/PreferencesDialog.cpp:119
 msgid "System default"
 msgstr "システム標準"
 
-#: hugin1/hugin/PreferencesDialog.cpp:119
+#: hugin1/hugin/PreferencesDialog.cpp:122
 msgid "Basque"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:127
+#: hugin1/hugin/PreferencesDialog.cpp:130
 msgid "Catalan"
 msgstr "Català（カタルーニャ語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:130
+#: hugin1/hugin/PreferencesDialog.cpp:133
 msgid "Chinese (Simplified)"
 msgstr "简体中文（中国語簡体字）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:133
+#: hugin1/hugin/PreferencesDialog.cpp:136
 msgid "Chinese (Traditional)"
 msgstr "繁体中文（中国語繁体字）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:136
+#: hugin1/hugin/PreferencesDialog.cpp:139
 msgid "Czech"
 msgstr "Čeština（チェコ語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:139
+#: hugin1/hugin/PreferencesDialog.cpp:142
 msgid "Danish"
 msgstr "Danish（デンマーク語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:142
+#: hugin1/hugin/PreferencesDialog.cpp:145
 msgid "Dutch"
 msgstr "Nederlands（オランダ語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:145
+#: hugin1/hugin/PreferencesDialog.cpp:148
 msgid "English"
 msgstr "English（英語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:148
+#: hugin1/hugin/PreferencesDialog.cpp:151
 msgid "French"
 msgstr "Français（フランス語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:151
+#: hugin1/hugin/PreferencesDialog.cpp:154
 msgid "German"
 msgstr "Deutsch（ドイツ語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:154
+#: hugin1/hugin/PreferencesDialog.cpp:157
 msgid "Hungarian"
 msgstr "Magyar（ハンガリー語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:157
+#: hugin1/hugin/PreferencesDialog.cpp:160
 msgid "Italian"
 msgstr "Italiano（イタリア語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:160
+#: hugin1/hugin/PreferencesDialog.cpp:163
 msgid "Japanese"
 msgstr "日本語"
 
-#: hugin1/hugin/PreferencesDialog.cpp:168
+#: hugin1/hugin/PreferencesDialog.cpp:171
 msgid "Polish"
 msgstr "Polski（ポーランド語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:171
+#: hugin1/hugin/PreferencesDialog.cpp:174
 msgid "Portuguese (Brazilian)"
 msgstr "Português do Brasil（ブラジルポルトガル語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:174
+#: hugin1/hugin/PreferencesDialog.cpp:177
 msgid "Russian"
 msgstr "Русский（ロシア語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:177
+#: hugin1/hugin/PreferencesDialog.cpp:180
 msgid "Slovak"
 msgstr "Slovenčina（スロバキア語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:185
+#: hugin1/hugin/PreferencesDialog.cpp:188
 msgid "Spanish"
 msgstr "Español（スペイン語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:188
+#: hugin1/hugin/PreferencesDialog.cpp:191
 msgid "Swedish"
 msgstr "Svenska（スウェーデン語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:196
+#: hugin1/hugin/PreferencesDialog.cpp:199
 msgid "Finnish"
 msgstr "Suomi（フィンランド語）"
 
-#: hugin1/hugin/PreferencesDialog.cpp:199
+#: hugin1/hugin/PreferencesDialog.cpp:202
 msgid "Valencian (Southern Catalan)"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:294
+#: hugin1/hugin/PreferencesDialog.cpp:302
 msgid "Select Enblend"
 msgstr "Enblend を選択"
 
-#: hugin1/hugin/PreferencesDialog.cpp:297
-#: hugin1/hugin/PreferencesDialog.cpp:314 hugin1/hugin/RawImport.cpp:909
-#: hugin1/hugin/RawImport.cpp:921 hugin1/hugin/RawImport.cpp:941
+#: hugin1/hugin/PreferencesDialog.cpp:305
+#: hugin1/hugin/PreferencesDialog.cpp:322
+#: hugin1/hugin/PreferencesDialog.cpp:339
+#: hugin1/hugin/PreferencesDialog.cpp:355
+#: hugin1/hugin/PreferencesDialog.cpp:371
 msgid "Executables (*.exe)|*.exe"
 msgstr "実行ファイル (*.exe)|*.exe"
 
-#: hugin1/hugin/PreferencesDialog.cpp:311
+#: hugin1/hugin/PreferencesDialog.cpp:319
 msgid "Select Enfuse"
 msgstr "Enfuse を選択"
 
-#: hugin1/hugin/PreferencesDialog.cpp:340
-#: hugin1/hugin/PreferencesDialog.cpp:428
-#: hugin1/hugin/xrc/pref_dialog.xrc:1002 hugin1/hugin/xrc/pref_dialog.xrc:1061
+#: hugin1/hugin/PreferencesDialog.cpp:337
+#, fuzzy
+msgid "Select dcraw"
+msgstr "すべてリセット"
+
+#: hugin1/hugin/PreferencesDialog.cpp:353
+msgid "Select RawTherapee-cli"
+msgstr ""
+
+#: hugin1/hugin/PreferencesDialog.cpp:369
+#, fuzzy
+msgid "Select Darktable-cli"
+msgstr "すべてリセット"
+
+#: hugin1/hugin/PreferencesDialog.cpp:397
+#: hugin1/hugin/PreferencesDialog.cpp:485
+#: hugin1/hugin/xrc/pref_dialog.xrc:1085 hugin1/hugin/xrc/pref_dialog.xrc:1144
 #, fuzzy
 msgid "Select ExifTool argfile"
 msgstr "左の画像上のポイントを指定してください"
 
-#: hugin1/hugin/PreferencesDialog.cpp:342
-#: hugin1/hugin/PreferencesDialog.cpp:400
-#: hugin1/hugin/PreferencesDialog.cpp:430
-#: hugin1/hugin/PreferencesDialog.cpp:470
+#: hugin1/hugin/PreferencesDialog.cpp:399
+#: hugin1/hugin/PreferencesDialog.cpp:457
+#: hugin1/hugin/PreferencesDialog.cpp:487
+#: hugin1/hugin/PreferencesDialog.cpp:527
 #, fuzzy
 msgid "ExifTool Argfiles (*.arg)|*.arg|All Files(*)|*"
 msgstr "ログファイル (*.log)|*.log|All files (*)|*"
 
-#: hugin1/hugin/PreferencesDialog.cpp:378
+#: hugin1/hugin/PreferencesDialog.cpp:435
 #, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should the argfile be created with default tags?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:379
-#: hugin1/hugin/PreferencesDialog.cpp:394
-#: hugin1/hugin/PreferencesDialog.cpp:449
-#: hugin1/hugin/PreferencesDialog.cpp:464
+#: hugin1/hugin/PreferencesDialog.cpp:436
+#: hugin1/hugin/PreferencesDialog.cpp:451
+#: hugin1/hugin/PreferencesDialog.cpp:506
+#: hugin1/hugin/PreferencesDialog.cpp:521
 msgid "Exiftool argfile"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:393
+#: hugin1/hugin/PreferencesDialog.cpp:450
 msgid ""
 "No file selected.\n"
 "Should an argfile be created with default tags?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:398
-#: hugin1/hugin/PreferencesDialog.cpp:468
+#: hugin1/hugin/PreferencesDialog.cpp:455
+#: hugin1/hugin/PreferencesDialog.cpp:525
 #, fuzzy
 msgid "Select new ExifTool argfile"
 msgstr "左の画像上のポイントを指定してください"
 
-#: hugin1/hugin/PreferencesDialog.cpp:419
-#: hugin1/hugin/PreferencesDialog.cpp:489
+#: hugin1/hugin/PreferencesDialog.cpp:476
+#: hugin1/hugin/PreferencesDialog.cpp:546
 #, fuzzy, c-format
 msgid "Could not save file \"%s\"."
 msgstr "プロジェクトファイルを読み込めませんでした：%s"
 
-#: hugin1/hugin/PreferencesDialog.cpp:448
+#: hugin1/hugin/PreferencesDialog.cpp:505
 #, c-format
 msgid ""
 "File %s does not exist.\n"
 "Should an example argfile be created?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:463
+#: hugin1/hugin/PreferencesDialog.cpp:520
 msgid ""
 "No file selected.\n"
 "Should an example argfile be created?"
 msgstr ""
 
-#: hugin1/hugin/PreferencesDialog.cpp:786
+#: hugin1/hugin/PreferencesDialog.cpp:848
 msgid "Really reset displayed preferences to default values?"
 msgstr "本当に初期設定に戻しますか？"
 
-#: hugin1/hugin/PreferencesDialog.cpp:786
-#: hugin1/hugin/xrc/pref_dialog.xrc:1531
+#: hugin1/hugin/PreferencesDialog.cpp:848
+#: hugin1/hugin/xrc/pref_dialog.xrc:1614
 msgid "Load Defaults"
 msgstr "初期設定を読み込む"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1069
+#: hugin1/hugin/PreferencesDialog.cpp:1139
 msgid "Please select an entry first"
 msgstr "まずエントリーを選択してください"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1069
+#: hugin1/hugin/PreferencesDialog.cpp:1139
 msgid "Select Entry"
 msgstr "エントリーを選択"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1089
+#: hugin1/hugin/PreferencesDialog.cpp:1159
 msgid ""
 "You can't delete the last setting.\n"
 "At least one setting is required."
@@ -3769,29 +3807,29 @@ msgstr ""
 "最後の設定は削除できません。\n"
 "少なくとも1つの設定が必要です。"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1093
+#: hugin1/hugin/PreferencesDialog.cpp:1163
 #, c-format
 msgid "Do you really want to remove control point detector setting \"%s\"?"
 msgstr "コントロールポイント検出プログラム %s の設定を本当に削除しますか？"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1094
+#: hugin1/hugin/PreferencesDialog.cpp:1164
 msgid "Delete control point detector setting"
 msgstr "コントロールポイント検出プログラムの設定を削除"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1151
+#: hugin1/hugin/PreferencesDialog.cpp:1221
 msgid "Load control point detector settings"
 msgstr "コントロールポイント検出プログラムの設定を読み込む"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1153
-#: hugin1/hugin/PreferencesDialog.cpp:1168
+#: hugin1/hugin/PreferencesDialog.cpp:1223
+#: hugin1/hugin/PreferencesDialog.cpp:1238
 msgid "Control point detector settings (*.setting)|*.setting"
 msgstr "コントロールポイント検出プログラムの設定 (*.setting)*.setting"
 
-#: hugin1/hugin/PreferencesDialog.cpp:1166
+#: hugin1/hugin/PreferencesDialog.cpp:1236
 msgid "Save control point detector settings"
 msgstr "コントロールポイント検出プログラムの設定を保存"
 
-#: hugin1/hugin/PreviewColorPickerTool.cpp:42
+#: hugin1/hugin/PreviewColorPickerTool.cpp:45
 msgid ""
 "Click on a area which should be neutral gray / white in the final panorama."
 msgstr "最終的なパノラマで無彩色の灰色または白にしたい領域をクリックします。"
@@ -3887,147 +3925,115 @@ msgid ""
 "One cause could be an invalid or missing image file."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:67
+#: hugin1/hugin/RawImport.cpp:75
 #, c-format
 msgid ""
 "Executable \"%s\" not found.\n"
-"Please specify a valid executable."
+"Please specify a valid executable in preferences."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:85
+#: hugin1/hugin/RawImport.cpp:93
 #, c-format
 msgid ""
 "Executable \"%s\" not found in PATH.\n"
-"Please specify a valid executable."
+"Please specify a valid executable in preferences."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:133 hugin1/hugin/RawImport.cpp:170
-#: hugin1/hugin/RawImport.cpp:231 hugin1/hugin/RawImport.cpp:252
-#: hugin1/hugin/RawImport.cpp:293 hugin1/hugin/RawImport.cpp:354
+#: hugin1/hugin/RawImport.cpp:141 hugin1/hugin/RawImport.cpp:178
+#: hugin1/hugin/RawImport.cpp:248 hugin1/hugin/RawImport.cpp:269
+#: hugin1/hugin/RawImport.cpp:346 hugin1/hugin/RawImport.cpp:407
 #, fuzzy, c-format
 msgid "Executing: %s %s"
 msgstr "検出中：%s"
 
-#: hugin1/hugin/RawImport.cpp:139 hugin1/hugin/RawImport.cpp:176
+#: hugin1/hugin/RawImport.cpp:147 hugin1/hugin/RawImport.cpp:184
 #, c-format
 msgid "Updating EXIF data for %s"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:202
+#: hugin1/hugin/RawImport.cpp:219
 #, c-format
 msgid ""
 "Processing profile \"%s\" not found.\n"
 "Please specify a valid file or leave field empty for default settings."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:369 hugin1/hugin/xrc/import_raw_dialog.xrc:240
+#: hugin1/hugin/RawImport.cpp:457 hugin1/hugin/xrc/import_raw_dialog.xrc:159
 msgid "Import Raw Images"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:418
+#: hugin1/hugin/RawImport.cpp:506
 msgid ""
 "Could not process of output of reference image.\n"
 "Can't process further images."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:443 hugin1/hugin/RawImport.cpp:455
+#: hugin1/hugin/RawImport.cpp:531 hugin1/hugin/RawImport.cpp:543
 #: hugin1/hugin/xrc/batch_frame.xrc:464
 msgid "Close"
 msgstr "閉じる"
 
-#: hugin1/hugin/RawImport.cpp:604
-msgid "Please add at least one raw image to list before you can import it."
-msgstr ""
-
-#: hugin1/hugin/RawImport.cpp:704
-msgid ""
-"At least one raw images was not successfully converted.\n"
-"This image(s) will be skipped"
-msgstr ""
-
-#: hugin1/hugin/RawImport.cpp:739
-msgid "Import Raw Files"
-msgstr ""
-
-#: hugin1/hugin/RawImport.cpp:741
-#, fuzzy
-msgid "Raw files"
-msgstr "ファイル %s を読み込み中"
-
-#: hugin1/hugin/RawImport.cpp:841
+#: hugin1/hugin/RawImport.cpp:711
 msgid "Warning: Read error"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:842
+#: hugin1/hugin/RawImport.cpp:712
 msgid ""
 "The following files will be skipped because the metadata of these files "
 "could not read."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:852
+#: hugin1/hugin/RawImport.cpp:735
 msgid "Warning: raw images from different cameras"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:853
+#: hugin1/hugin/RawImport.cpp:736
 msgid ""
 "The following images were shot with different camera than the other one.\n"
 "The raw import works only for images from the same cam."
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:907
-#, fuzzy
-msgid "Select dcraw"
-msgstr "すべてリセット"
-
-#: hugin1/hugin/RawImport.cpp:919
-msgid "Select RawTherapee-cli"
+#: hugin1/hugin/RawImport.cpp:838
+msgid ""
+"At least one raw images was not successfully converted.\n"
+"This image(s) will be skipped"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:931
+#: hugin1/hugin/RawImport.cpp:866
 msgid "Select default RT processing profile"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:932
+#: hugin1/hugin/RawImport.cpp:866
 msgid "RT processing profile|*.pp3"
 msgstr ""
 
-#: hugin1/hugin/RawImport.cpp:939
-#, fuzzy
-msgid "Select Darktable-cli"
-msgstr "すべてリセット"
-
-#: hugin1/hugin/RawImport.cpp:969
-#, fuzzy
-msgid "(WB reference)"
-msgstr "環境設定… (&P)"
-
-#: hugin1/hugin/huginApp.cpp:241
+#: hugin1/hugin/huginApp.cpp:242
 #, fuzzy, c-format
 msgid "Directory '%s' does not exists"
 msgstr ""
 "ディレクトリ %s は存在しません。\n"
 "存在するディレクトリを指定してください。"
 
-#: hugin1/hugin/huginApp.cpp:245
+#: hugin1/hugin/huginApp.cpp:246
 msgid "Could not set environment variable PYTHONHOME"
 msgstr ""
 
-#: hugin1/hugin/huginApp.cpp:378
+#: hugin1/hugin/huginApp.cpp:379
 #, fuzzy
 msgid "Open Batch Processor"
 msgstr "バッチ処理"
 
-#: hugin1/hugin/huginApp.cpp:379 hugin1/hugin/xrc/main_menu.xrc:206
-#: hugin1/hugin/xrc/main_menu.xrc:236 hugin1/hugin/xrc/preview_frame.xrc:1108
+#: hugin1/hugin/huginApp.cpp:380 hugin1/hugin/xrc/main_menu.xrc:202
+#: hugin1/hugin/xrc/main_menu.xrc:232 hugin1/hugin/xrc/preview_frame.xrc:1105
 msgid "Opens PTBatcher, the batch processor for Hugin's project files"
 msgstr "PTBatcher（Hugin プロジェクトファイル用のバッチ処理プログラム）を開く"
 
-#: hugin1/hugin/huginApp.cpp:384
+#: hugin1/hugin/huginApp.cpp:385
 #, fuzzy
 msgid "Open Lens calibrate tool"
 msgstr "Hugin レンズ補正GUI"
 
-#: hugin1/hugin/huginApp.cpp:385
+#: hugin1/hugin/huginApp.cpp:386
 msgid "Opens Calibrate_lens_gui, a simple GUI for lens calibration"
 msgstr ""
 
@@ -4188,11 +4194,11 @@ msgstr ""
 "\n"
 " 以下のコマンドを実行できませんでした：%s"
 
-#: hugin1/icpfind/CPDetectorConfig.cpp:137
+#: hugin1/icpfind/CPDetectorConfig.cpp:142
 msgid "Default"
 msgstr "デフォルト"
 
-#: hugin1/ptbatcher/Batch.cpp:254
+#: hugin1/ptbatcher/Batch.cpp:261
 msgid ""
 "Cannot clear batch in progress.\n"
 "Do you want to cancel it?"
@@ -4200,7 +4206,7 @@ msgstr ""
 "実行中のバッチ処理をクリアできませんでした。\n"
 "キャンセルしますか？"
 
-#: hugin1/ptbatcher/Batch.cpp:256 hugin1/ptbatcher/BatchFrame.cpp:698
+#: hugin1/ptbatcher/Batch.cpp:263 hugin1/ptbatcher/BatchFrame.cpp:698
 #: hugin1/ptbatcher/BatchFrame.cpp:759 hugin1/ptbatcher/BatchFrame.cpp:795
 #: hugin1/ptbatcher/BatchFrame.cpp:833 hugin1/ptbatcher/BatchFrame.cpp:863
 #: hugin1/ptbatcher/BatchFrame.cpp:1136 hugin1/ptbatcher/BatchFrame.cpp:1297
@@ -4208,118 +4214,118 @@ msgstr ""
 msgid "PTBatcherGUI"
 msgstr "PTBatcherGUI"
 
-#: hugin1/ptbatcher/Batch.cpp:269 hugin1/ptbatcher/Batch.cpp:279
+#: hugin1/ptbatcher/Batch.cpp:276 hugin1/ptbatcher/Batch.cpp:286
 msgid "Cleared batch."
 msgstr "バッチをクリアしました。"
 
-#: hugin1/ptbatcher/Batch.cpp:362
+#: hugin1/ptbatcher/Batch.cpp:369
 #, c-format
 msgid "Error: Could not get status, project with index %d is not in list."
 msgstr ""
 "エラー：状態を取得できませんでした。インデックス番号 %d のプロジェクトはリス"
 "トに存在しません。"
 
-#: hugin1/ptbatcher/Batch.cpp:411
+#: hugin1/ptbatcher/Batch.cpp:418
 msgid "Error: Could not load batch file."
 msgstr "エラー：バッチファイルを読み込めません。"
 
-#: hugin1/ptbatcher/Batch.cpp:567
+#: hugin1/ptbatcher/Batch.cpp:574
 msgid "Batch successfully completed."
 msgstr "バッチが成功しました。"
 
-#: hugin1/ptbatcher/Batch.cpp:574
+#: hugin1/ptbatcher/Batch.cpp:581
 msgid "Batch completed with errors."
 msgstr "Batchが終了しましたが、エラーがあります。"
 
-#: hugin1/ptbatcher/Batch.cpp:593
+#: hugin1/ptbatcher/Batch.cpp:600
 msgid "Initializing shutdown..."
 msgstr "システム終了を開始"
 
-#: hugin1/ptbatcher/Batch.cpp:593 hugin1/ptbatcher/Batch.cpp:598
+#: hugin1/ptbatcher/Batch.cpp:600 hugin1/ptbatcher/Batch.cpp:605
 msgid "Shutting down..."
 msgstr "システム終了中…"
 
-#: hugin1/ptbatcher/Batch.cpp:618
+#: hugin1/ptbatcher/Batch.cpp:625
 msgid "Prepare to hibernate..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:619
+#: hugin1/ptbatcher/Batch.cpp:626
 #, fuzzy
 msgid "Initializing hibernating..."
 msgstr "システム終了を開始"
 
-#: hugin1/ptbatcher/Batch.cpp:622
+#: hugin1/ptbatcher/Batch.cpp:629
 msgid "Prepare to suspend..."
 msgstr ""
 
-#: hugin1/ptbatcher/Batch.cpp:623
+#: hugin1/ptbatcher/Batch.cpp:630
 #, fuzzy
 msgid "Initializing suspend mode..."
 msgstr "システム終了を開始"
 
-#: hugin1/ptbatcher/Batch.cpp:672
+#: hugin1/ptbatcher/Batch.cpp:679
 #, fuzzy
 msgid "Specify project file"
 msgstr "プロジェクトを保存"
 
-#: hugin1/ptbatcher/Batch.cpp:693
+#: hugin1/ptbatcher/Batch.cpp:700
 msgid "No output prefix specified"
 msgstr "出力ファイル名が指定されていません"
 
-#: hugin1/ptbatcher/Batch.cpp:700
+#: hugin1/ptbatcher/Batch.cpp:707
 msgid "No project files specified"
 msgstr "プロジェクトが指定されていません。"
 
-#: hugin1/ptbatcher/Batch.cpp:727
+#: hugin1/ptbatcher/Batch.cpp:734
 #: hugin1/stitch_project/hugin_stitch_project.cpp:450
 #, c-format
 msgid "%s - Stitching"
 msgstr "%s - スティッチ"
 
-#: hugin1/ptbatcher/Batch.cpp:759
+#: hugin1/ptbatcher/Batch.cpp:766
 #, c-format
 msgid "%s - Assistant"
 msgstr "%s - アシスタント"
 
-#: hugin1/ptbatcher/Batch.cpp:816
+#: hugin1/ptbatcher/Batch.cpp:823
 #, c-format
 msgid "Error removing, project with id %d is not in list."
 msgstr ""
 "エラー：削除できませんでした。番号 %d のプロジェクトはリストに存在しません。"
 
-#: hugin1/ptbatcher/Batch.cpp:832
+#: hugin1/ptbatcher/Batch.cpp:839
 msgid "Error: Could not delete project file "
 msgstr "エラー：プロジェクトファイルを削除できません "
 
-#: hugin1/ptbatcher/Batch.cpp:848
+#: hugin1/ptbatcher/Batch.cpp:855
 msgid "Running batch..."
 msgstr "バッチを実行中…"
 
-#: hugin1/ptbatcher/Batch.cpp:851
+#: hugin1/ptbatcher/Batch.cpp:858
 #, fuzzy
 msgid "PTBatcherGUI is stitching"
 msgstr "PTBatcherGUI"
 
-#: hugin1/ptbatcher/Batch.cpp:857
+#: hugin1/ptbatcher/Batch.cpp:864
 msgid "Batch already in progress."
 msgstr "バッチは既に処理中です。"
 
-#: hugin1/ptbatcher/Batch.cpp:871
+#: hugin1/ptbatcher/Batch.cpp:878
 #, fuzzy, c-format
 msgid "Running command \"%s\""
 msgstr "実行中：コマンド \""
 
-#: hugin1/ptbatcher/Batch.cpp:895
+#: hugin1/ptbatcher/Batch.cpp:902
 #, c-format
 msgid "Now stitching: %s"
 msgstr "スティッチ中：%s"
 
-#: hugin1/ptbatcher/Batch.cpp:902
+#: hugin1/ptbatcher/Batch.cpp:909
 #, c-format
 msgid "Now detecting: %s"
 msgstr "検出中：%s"
 
-#: hugin1/ptbatcher/Batch.cpp:1000
+#: hugin1/ptbatcher/Batch.cpp:1007
 #, c-format
 msgid "Error: Could not set status, project with index %d is not in list."
 msgstr ""
@@ -4373,7 +4379,7 @@ msgstr "実行するコマンドラインアプリケーション名を入力し
 msgid "Enter application"
 msgstr "アプリケーションを入力"
 
-#: hugin1/ptbatcher/BatchFrame.cpp:381 hugin1/ptbatcher/FindPanoDialog.cpp:245
+#: hugin1/ptbatcher/BatchFrame.cpp:381 hugin1/ptbatcher/FindPanoDialog.cpp:250
 msgid "Specify a directory to search for projects in"
 msgstr "プロジェクトファイルを検索するディレクトリを指定"
 
@@ -4567,7 +4573,7 @@ msgstr "アシスタント・キューにプロジェクトを追加…"
 msgid "E&xit"
 msgstr "終了 (&X)"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:234
+#: hugin1/ptbatcher/FindPanoDialog.cpp:239
 msgid ""
 "The list contains possibly unprocessed panoramas.\n"
 "If you close the dialog, you will lose them.\n"
@@ -4576,11 +4582,11 @@ msgstr ""
 "リストに処理されない可能性のあるパノラマが含まれています。ダイアログを閉じた"
 "場合、それらは失われます。続行して構いませんか？"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:259
+#: hugin1/ptbatcher/FindPanoDialog.cpp:264
 msgid "Accepted"
 msgstr "Accepted"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:269
+#: hugin1/ptbatcher/FindPanoDialog.cpp:274
 msgid ""
 "The list contains still not yet processed panoramas.\n"
 "If you continue, they will be disregarded.\n"
@@ -4589,11 +4595,11 @@ msgstr ""
 "リストにまだ処理されていないパノラマが含まれています。続行するとそれらは失わ"
 "れます。構わず続行しますか？"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:279
+#: hugin1/ptbatcher/FindPanoDialog.cpp:284
 msgid "Stop"
 msgstr "中止"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:290
+#: hugin1/ptbatcher/FindPanoDialog.cpp:295
 #, c-format
 msgid ""
 "Directory %s does not exist.\n"
@@ -4602,7 +4608,7 @@ msgstr ""
 "ディレクトリ %s は存在しません。\n"
 "存在するディレクトリを指定してください。"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:312
+#: hugin1/ptbatcher/FindPanoDialog.cpp:317
 msgid ""
 "You have selected no possible panorama.\n"
 "Please select at least one panorama and try again."
@@ -4610,7 +4616,7 @@ msgstr ""
 "パノラマが選択されていません。\n"
 "少なくともひとつ選択してから実行してください"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:335
+#: hugin1/ptbatcher/FindPanoDialog.cpp:340
 msgid ""
 "Not all project files could be written successfully.\n"
 "Maybe you have no write permission for these directories or your disc is "
@@ -4619,45 +4625,45 @@ msgstr ""
 "一部のプロジェクトファイルが正常に書き込めませんでした。\n"
 "ディレクトリの書き込み権限がないか、ディスクがいっぱいの可能性があります。"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:380
+#: hugin1/ptbatcher/FindPanoDialog.cpp:386
 #, fuzzy
 msgid "Remove image from project"
 msgstr "選択された画像をこのプロジェクトから取り除きます。"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:386
+#: hugin1/ptbatcher/FindPanoDialog.cpp:392
 #, fuzzy
 msgid "Split here into two panoramas"
 msgstr "パノラマを探しています"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:471
+#: hugin1/ptbatcher/FindPanoDialog.cpp:495
 #, c-format
 msgid "Reading file %s"
 msgstr "ファイル %s を読み込み中"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:568
+#: hugin1/ptbatcher/FindPanoDialog.cpp:592
 #: hugin1/hugin/xrc/batch_frame.xrc:216
 msgid "Start"
 msgstr "開始"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:574
+#: hugin1/ptbatcher/FindPanoDialog.cpp:598
 #, c-format
 msgid "Found %d possible panoramas."
 msgstr "%d 個のパノラマが見つかりました。"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:578
+#: hugin1/ptbatcher/FindPanoDialog.cpp:602
 msgid "No possible panoramas found."
 msgstr "パノラマが見つかりませんでした"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:685
+#: hugin1/ptbatcher/FindPanoDialog.cpp:709
 #, c-format
 msgid "%d images: %s"
 msgstr "%d 枚の画像：%s"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:918
+#: hugin1/ptbatcher/FindPanoDialog.cpp:938
 msgid "%M:%S min"
 msgstr ""
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:922
+#: hugin1/ptbatcher/FindPanoDialog.cpp:942
 #, c-format
 msgid "%S s"
 msgstr ""
@@ -4672,91 +4678,91 @@ msgstr "オプションの指定にエラーがあります。処理を中止し
 msgid "PTBatcherGUI started"
 msgstr "PTBatcherGUI"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:68
+#: hugin1/ptbatcher/ProjectArray.cpp:71
 msgid "Waiting"
 msgstr "待機中"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:70
+#: hugin1/ptbatcher/ProjectArray.cpp:73
 msgid "In progress"
 msgstr "処理中"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:72
+#: hugin1/ptbatcher/ProjectArray.cpp:75
 msgid "Complete"
 msgstr "完了"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:74
+#: hugin1/ptbatcher/ProjectArray.cpp:77
 msgid "Failed"
 msgstr "失敗"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:76
-#: hugin1/ptbatcher/ProjectListBox.cpp:230
+#: hugin1/ptbatcher/ProjectArray.cpp:79
+#: hugin1/ptbatcher/ProjectListBox.cpp:233
 msgid "File missing"
 msgstr "ファイルが見つかりません"
 
-#: hugin1/ptbatcher/ProjectArray.cpp:78
+#: hugin1/ptbatcher/ProjectArray.cpp:81
 msgid "Paused"
 msgstr "一時停止"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:61
+#: hugin1/ptbatcher/ProjectListBox.cpp:64
 msgid "ID"
 msgstr "ID"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:62
+#: hugin1/ptbatcher/ProjectListBox.cpp:65
 msgid "Project"
 msgstr "プロジェクト"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:63
+#: hugin1/ptbatcher/ProjectListBox.cpp:66
 msgid "Output prefix"
 msgstr "出力"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:64
+#: hugin1/ptbatcher/ProjectListBox.cpp:67
 msgid "Status"
 msgstr "状態"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:65
+#: hugin1/ptbatcher/ProjectListBox.cpp:68
 msgid "Last modified"
 msgstr "最終変更日時"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:66
+#: hugin1/ptbatcher/ProjectListBox.cpp:69
 msgid "Output format"
 msgstr "出力形式"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:67
-#: hugin1/hugin/xrc/preview_frame.xrc:529
+#: hugin1/ptbatcher/ProjectListBox.cpp:70
+#: hugin1/hugin/xrc/preview_frame.xrc:528
 msgid "Projection"
 msgstr "投影法"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:68
+#: hugin1/ptbatcher/ProjectListBox.cpp:71
 msgid "Size"
 msgstr "サイズ"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:153
+#: hugin1/ptbatcher/ProjectListBox.cpp:156
 #, c-format
 msgid "%d"
 msgstr "%d"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:180
+#: hugin1/ptbatcher/ProjectListBox.cpp:183
 msgid "Error, cannot convert id"
 msgstr "エラー。id を変換できません。"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:291
-#: hugin1/hugin/xrc/pref_dialog.xrc:279 hugin1/hugin/xrc/preview_frame.xrc:282
+#: hugin1/ptbatcher/ProjectListBox.cpp:294
+#: hugin1/hugin/xrc/pref_dialog.xrc:362 hugin1/hugin/xrc/preview_frame.xrc:282
 msgid "Assistant"
 msgstr "アシスタント"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:391 hugin1/hugin/xrc/batch_frame.xrc:38
+#: hugin1/ptbatcher/ProjectListBox.cpp:394 hugin1/hugin/xrc/batch_frame.xrc:38
 msgid "Change prefix"
 msgstr "ファイル名の変更"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:392 hugin1/hugin/xrc/batch_frame.xrc:44
+#: hugin1/ptbatcher/ProjectListBox.cpp:395 hugin1/hugin/xrc/batch_frame.xrc:44
 msgid "Reset project"
 msgstr "プロジェクトをリセット"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:393 hugin1/hugin/xrc/batch_frame.xrc:56
+#: hugin1/ptbatcher/ProjectListBox.cpp:396 hugin1/hugin/xrc/batch_frame.xrc:56
 msgid "Edit with Hugin"
 msgstr "Hugin で編集"
 
-#: hugin1/ptbatcher/ProjectListBox.cpp:394
+#: hugin1/ptbatcher/ProjectListBox.cpp:397
 #: hugin1/hugin/xrc/lenscal_frame.xrc:37
 msgid "Remove"
 msgstr "取り除く"
@@ -4810,8 +4816,8 @@ msgstr ""
 "そのファイル名は使用できない文字を含んでいます: %s\n"
 "Hugin では扱えません。ファイル名を訂正してください。"
 
-#: hugin1/hugin/xrc/about.xrc:4 hugin1/hugin/xrc/main_menu.xrc:166
-#: hugin1/hugin/xrc/main_tool.xrc:79 hugin1/hugin/xrc/preview_frame.xrc:1071
+#: hugin1/hugin/xrc/about.xrc:4 hugin1/hugin/xrc/main_menu.xrc:162
+#: hugin1/hugin/xrc/main_tool.xrc:79 hugin1/hugin/xrc/preview_frame.xrc:1068
 msgid "About Hugin"
 msgstr "Huginについて"
 
@@ -4855,7 +4861,7 @@ msgstr "システム"
 #: hugin1/hugin/xrc/pano_panel.xrc:49 hugin1/hugin/xrc/pano_panel.xrc:91
 #: hugin1/hugin/xrc/pano_panel.xrc:138 hugin1/hugin/xrc/pano_panel.xrc:1028
 #: hugin1/hugin/xrc/pano_panel.xrc:1354 hugin1/hugin/xrc/pano_panel.xrc:1403
-#: hugin1/hugin/xrc/pref_dialog.xrc:1544
+#: hugin1/hugin/xrc/pref_dialog.xrc:1627
 #: hugin1/hugin/xrc/preview_frame.xrc:109
 #: hugin1/hugin/xrc/reset_dialog.xrc:116
 msgid "OK"
@@ -4934,12 +4940,11 @@ msgstr "ディレクトリ："
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:143
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:182
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:243
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:76
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:131
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:160
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:195
-#: hugin1/hugin/xrc/pref_dialog.xrc:1001 hugin1/hugin/xrc/pref_dialog.xrc:1060
-#: hugin1/hugin/xrc/pref_dialog.xrc:1243 hugin1/hugin/xrc/pref_dialog.xrc:1322
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:96
+#: hugin1/hugin/xrc/pref_dialog.xrc:185 hugin1/hugin/xrc/pref_dialog.xrc:207
+#: hugin1/hugin/xrc/pref_dialog.xrc:229 hugin1/hugin/xrc/pref_dialog.xrc:1084
+#: hugin1/hugin/xrc/pref_dialog.xrc:1143 hugin1/hugin/xrc/pref_dialog.xrc:1326
+#: hugin1/hugin/xrc/pref_dialog.xrc:1405
 msgid "Choose..."
 msgstr "選択…"
 
@@ -5030,7 +5035,7 @@ msgstr ""
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:204
 #: hugin1/hugin/xrc/pano_panel.xrc:768 hugin1/hugin/xrc/pano_panel.xrc:795
 #: hugin1/hugin/xrc/pano_panel.xrc:822 hugin1/hugin/xrc/pano_panel.xrc:849
-#: hugin1/hugin/xrc/pref_dialog.xrc:910
+#: hugin1/hugin/xrc/pref_dialog.xrc:993
 msgid "Options"
 msgstr "オプション…"
 
@@ -5166,12 +5171,12 @@ msgid "&Minimize to tray"
 msgstr ""
 
 #: hugin1/hugin/xrc/batch_menu.xrc:51 hugin1/hugin/xrc/lenscal_frame.xrc:463
-#: hugin1/hugin/xrc/main_menu.xrc:227 hugin1/hugin/xrc/preview_frame.xrc:1116
+#: hugin1/hugin/xrc/main_menu.xrc:223 hugin1/hugin/xrc/preview_frame.xrc:1113
 msgid "&Quit"
 msgstr "終了 (&Q)"
 
-#: hugin1/hugin/xrc/batch_menu.xrc:52 hugin1/hugin/xrc/main_menu.xrc:229
-#: hugin1/hugin/xrc/preview_frame.xrc:1118
+#: hugin1/hugin/xrc/batch_menu.xrc:52 hugin1/hugin/xrc/main_menu.xrc:225
+#: hugin1/hugin/xrc/preview_frame.xrc:1115
 msgid "Exit program"
 msgstr "このプログラムを終了します。"
 
@@ -5417,7 +5422,7 @@ msgid "fit to window"
 msgstr "画面にあわせる"
 
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:240
-#: hugin1/hugin/xrc/pref_dialog.xrc:440
+#: hugin1/hugin/xrc/pref_dialog.xrc:523
 msgid "Fine-tune"
 msgstr "微調整"
 
@@ -5480,7 +5485,7 @@ msgstr "コントロールポイント"
 
 #: hugin1/hugin/xrc/cp_list_frame.xrc:17
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:758
-#: hugin1/hugin/xrc/pref_dialog.xrc:676
+#: hugin1/hugin/xrc/pref_dialog.xrc:759
 msgid "Delete"
 msgstr "削除"
 
@@ -5651,8 +5656,8 @@ msgstr "水平画角、または焦点距離と焦点距離換算係数を入力
 msgid "HFOV (v):"
 msgstr "水平画角 (v) :"
 
-#: hugin1/hugin/xrc/images_panel.xrc:484 hugin1/hugin/xrc/pref_dialog.xrc:587
-#: hugin1/hugin/xrc/pref_dialog.xrc:606
+#: hugin1/hugin/xrc/images_panel.xrc:484 hugin1/hugin/xrc/pref_dialog.xrc:670
+#: hugin1/hugin/xrc/pref_dialog.xrc:689
 msgid "degrees"
 msgstr "度"
 
@@ -5662,19 +5667,19 @@ msgstr "カメラとレンズのデータ"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:15
 #: hugin1/hugin/xrc/preview_frame.xrc:61
-#: hugin1/hugin/xrc/preview_frame.xrc:734
+#: hugin1/hugin/xrc/preview_frame.xrc:733
 msgid "Yaw:"
 msgstr "Yaw (横)："
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:28
 #: hugin1/hugin/xrc/preview_frame.xrc:75
-#: hugin1/hugin/xrc/preview_frame.xrc:749
+#: hugin1/hugin/xrc/preview_frame.xrc:748
 msgid "Pitch:"
 msgstr "Pitch (縦)："
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:41
 #: hugin1/hugin/xrc/preview_frame.xrc:89
-#: hugin1/hugin/xrc/preview_frame.xrc:764
+#: hugin1/hugin/xrc/preview_frame.xrc:763
 msgid "Roll:"
 msgstr "Roll (回転)："
 
@@ -5684,7 +5689,7 @@ msgid "Translation parameter"
 msgstr "パラメータをリンク"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:95
-#: hugin1/hugin/xrc/preview_frame.xrc:809
+#: hugin1/hugin/xrc/preview_frame.xrc:808
 msgid "Z:"
 msgstr "Z:"
 
@@ -5788,7 +5793,7 @@ msgstr "カメラのレスポンスカーブ"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:645
 #: hugin1/hugin/xrc/pano_panel.xrc:102 hugin1/hugin/xrc/pano_panel.xrc:149
-#: hugin1/hugin/xrc/pref_dialog.xrc:1555
+#: hugin1/hugin/xrc/pref_dialog.xrc:1638
 msgid "Help"
 msgstr "ヘルプ"
 
@@ -5832,8 +5837,8 @@ msgid "Load"
 msgstr "マスクを読み込む"
 
 #: hugin1/hugin/xrc/image_variable_dlg.xrc:751
-#: hugin1/hugin/xrc/main_tool.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1593
-#: hugin1/hugin/xrc/pref_dialog.xrc:1660
+#: hugin1/hugin/xrc/main_tool.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1676
+#: hugin1/hugin/xrc/pref_dialog.xrc:1743
 msgid "Save"
 msgstr "保存する…"
 
@@ -5846,89 +5851,45 @@ msgstr ""
 msgid "Manipulate image variables"
 msgstr "画像ごとの数値："
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:10
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:12
 #, fuzzy
-msgid "Images"
-msgstr "画像"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:22
-#, fuzzy
-msgid "Add image(s)..."
-msgstr "画像を追加"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:23
-#, fuzzy
-msgid "Add other images to list"
-msgstr "もう一枚プロジェクトに画像を追加します"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:30
-#, fuzzy
-msgid "Remove image"
-msgstr "マスクを保存"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:31
-#, fuzzy
-msgid "Remove selected image from list"
-msgstr "選択した画像を取り除く"
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:38
-#, fuzzy
-msgid "WB reference"
+msgid "WB reference:"
 msgstr "環境設定… (&P)"
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:39
-msgid "Mark selected image as white balance reference image"
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:35
+msgid "dcraw"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:63
-#, fuzzy
-msgid "dcraw executable:"
-msgstr "Enblend："
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:90
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:44
 #, fuzzy
 msgid "Additional dcraw parameters:"
 msgstr "パラメータをリンク"
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:108
-msgid "dcraw"
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:72
+msgid "RawTherapee"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:118
-#, fuzzy
-msgid "RT-cli executable:"
-msgstr "Enblend："
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:145
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:81
 #, fuzzy
 msgid "Processing profile:"
 msgstr "処理："
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:152
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:88
 msgid "Leave empty to use default settings in RawTherapee"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:172
-msgid "RawTherapee"
-msgstr ""
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:182
-#, fuzzy
-msgid "darktable-cli executable:"
-msgstr "Enblend："
-
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:207
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:118
 msgid "darktable"
 msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:213
-#, fuzzy
-msgid "Converter settings"
-msgstr "角の検出 スケール"
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:132
+#: hugin1/hugin/xrc/pref_dialog.xrc:164
+msgid "Raw converter"
+msgstr ""
 
-#: hugin1/hugin/xrc/import_raw_dialog.xrc:229
+#: hugin1/hugin/xrc/import_raw_dialog.xrc:148
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:95
-#: hugin1/hugin/xrc/pref_dialog.xrc:708
+#: hugin1/hugin/xrc/pref_dialog.xrc:791
 msgid "Import"
 msgstr "インポート"
 
@@ -6147,21 +6108,21 @@ msgstr "コントロールポイント検出の結果"
 msgid "Import positions from Papywizard XML"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:6 hugin1/hugin/xrc/preview_frame.xrc:995
+#: hugin1/hugin/xrc/main_menu.xrc:6 hugin1/hugin/xrc/preview_frame.xrc:992
 msgid "&Undo"
 msgstr "元に戻す (&U)"
 
 #: hugin1/hugin/xrc/main_menu.xrc:8 hugin1/hugin/xrc/main_tool.xrc:34
-#: hugin1/hugin/xrc/preview_frame.xrc:997
+#: hugin1/hugin/xrc/preview_frame.xrc:994
 msgid "Undo the last action"
 msgstr "最後の動作を元に戻す"
 
-#: hugin1/hugin/xrc/main_menu.xrc:11 hugin1/hugin/xrc/preview_frame.xrc:1000
+#: hugin1/hugin/xrc/main_menu.xrc:11 hugin1/hugin/xrc/preview_frame.xrc:997
 msgid "&Redo"
 msgstr "やり直し (&R)"
 
 #: hugin1/hugin/xrc/main_menu.xrc:13 hugin1/hugin/xrc/main_tool.xrc:40
-#: hugin1/hugin/xrc/preview_frame.xrc:1002
+#: hugin1/hugin/xrc/preview_frame.xrc:999
 msgid "Redo the last action"
 msgstr "最後の動作をやり直す"
 
@@ -6174,29 +6135,21 @@ msgid "Add another image to the current project"
 msgstr "もう一枚プロジェクトに画像を追加します"
 
 #: hugin1/hugin/xrc/main_menu.xrc:21
-msgid "Import &raw file(s)..."
-msgstr ""
-
-#: hugin1/hugin/xrc/main_menu.xrc:22
-msgid "Convert raw file to TIFF and add TIFF to current project"
-msgstr ""
-
-#: hugin1/hugin/xrc/main_menu.xrc:25
 #, fuzzy
 msgid "Run a&ssistant"
 msgstr "アシスタントを実行中"
 
-#: hugin1/hugin/xrc/main_menu.xrc:28
+#: hugin1/hugin/xrc/main_menu.xrc:24
 #, fuzzy
 msgid "Send to assistant &queue"
 msgstr "アシスタント・キューに送る"
 
-#: hugin1/hugin/xrc/main_menu.xrc:32
+#: hugin1/hugin/xrc/main_menu.xrc:28
 #, fuzzy
 msgid "Optimize only active &images"
 msgstr "画像1枚あたりのサンプル数"
 
-#: hugin1/hugin/xrc/main_menu.xrc:33 hugin1/hugin/xrc/optimize_panel.xrc:43
+#: hugin1/hugin/xrc/main_menu.xrc:29 hugin1/hugin/xrc/optimize_panel.xrc:43
 msgid ""
 "Only use control points between images selected in preview window. Useful to "
 "avoid errors due to badly fitting images, such as the nadir image in most "
@@ -6206,321 +6159,321 @@ msgstr ""
 "す。魚眼レンズを使ったパノラマの天底など、ぴったり収まらない画像がある時に便"
 "利です。"
 
-#: hugin1/hugin/xrc/main_menu.xrc:38
+#: hugin1/hugin/xrc/main_menu.xrc:34
 #, fuzzy
 msgid "Ignore &line control points"
 msgstr "コントロールポイント生成"
 
-#: hugin1/hugin/xrc/main_menu.xrc:39 hugin1/hugin/xrc/optimize_panel.xrc:51
+#: hugin1/hugin/xrc/main_menu.xrc:35 hugin1/hugin/xrc/optimize_panel.xrc:51
 #, fuzzy
 msgid "Use only normal control points in optimization."
 msgstr "画像1枚あたりのサンプル数"
 
-#: hugin1/hugin/xrc/main_menu.xrc:43 hugin1/hugin/xrc/preview_frame.xrc:1006
+#: hugin1/hugin/xrc/main_menu.xrc:39 hugin1/hugin/xrc/preview_frame.xrc:1003
 msgid "&Optimize"
 msgstr "最適化 (&O)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:45 hugin1/hugin/xrc/main_tool.xrc:53
-#: hugin1/hugin/xrc/preview_frame.xrc:1008
+#: hugin1/hugin/xrc/main_menu.xrc:41 hugin1/hugin/xrc/main_tool.xrc:53
+#: hugin1/hugin/xrc/preview_frame.xrc:1005
 msgid "Re-run the optimizer with current settings"
 msgstr "現在の設定で最適化を再実行します"
 
-#: hugin1/hugin/xrc/main_menu.xrc:49
+#: hugin1/hugin/xrc/main_menu.xrc:45
 msgid "Fine-&tune all Points"
 msgstr "全ポイントを微調整 (&T)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:50
+#: hugin1/hugin/xrc/main_menu.xrc:46
 #, fuzzy
 msgid "Runs fine-tune on all control points."
 msgstr "%lu 個のコントロールポイントを削除しました"
 
-#: hugin1/hugin/xrc/main_menu.xrc:53
+#: hugin1/hugin/xrc/main_menu.xrc:49
 #, fuzzy
 msgid "Remove control points in &masks"
 msgstr "マスク内のコントロールポイントを除去"
 
-#: hugin1/hugin/xrc/main_menu.xrc:54
+#: hugin1/hugin/xrc/main_menu.xrc:50
 #, fuzzy
 msgid "Removes all control points inside masked areas."
 msgstr "マスク内のコントロールポイントを除去"
 
-#: hugin1/hugin/xrc/main_menu.xrc:57
+#: hugin1/hugin/xrc/main_menu.xrc:53
 msgid "Run &Python script"
 msgstr "&Python スクリプトを実行"
 
-#: hugin1/hugin/xrc/main_menu.xrc:58
+#: hugin1/hugin/xrc/main_menu.xrc:54
 msgid "Run a python script"
 msgstr "Python スクリプトを実行"
 
-#: hugin1/hugin/xrc/main_menu.xrc:63 hugin1/hugin/xrc/preview_frame.xrc:1032
+#: hugin1/hugin/xrc/main_menu.xrc:59 hugin1/hugin/xrc/preview_frame.xrc:1029
 msgid "&View"
 msgstr "表示 (&V)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:65 hugin1/hugin/xrc/preview_frame.xrc:1017
+#: hugin1/hugin/xrc/main_menu.xrc:61 hugin1/hugin/xrc/preview_frame.xrc:1014
 #, fuzzy
 msgid "Full &Screen"
 msgstr "全画面表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:67 hugin1/hugin/xrc/preview_frame.xrc:1020
+#: hugin1/hugin/xrc/main_menu.xrc:63 hugin1/hugin/xrc/preview_frame.xrc:1017
 msgid "Shows Hugin's main window on full-screen"
 msgstr "Hugin のメインウィンドウを全画面表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:70
+#: hugin1/hugin/xrc/main_menu.xrc:66
 msgid "&Control point table"
 msgstr "コントロールポイント一覧 (&C)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:72
+#: hugin1/hugin/xrc/main_menu.xrc:68
 msgid "Shows all control point distances"
 msgstr "すべてのコントロールポイントの距離を表示します"
 
-#: hugin1/hugin/xrc/main_menu.xrc:75
+#: hugin1/hugin/xrc/main_menu.xrc:71
 msgid "&Preview window"
 msgstr "プレビューウィンドウを表示 (&P)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:77
+#: hugin1/hugin/xrc/main_menu.xrc:73
 msgid "Show the preview window"
 msgstr "プレビューウィンドウを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:80
+#: hugin1/hugin/xrc/main_menu.xrc:76
 msgid "&Fast Preview window"
 msgstr "ファストプレビューウィンドウを表示 (&F)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:82
+#: hugin1/hugin/xrc/main_menu.xrc:78
 msgid "Show the OpenGL preview window"
 msgstr "OpenGL プレビューウィンドウを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:86
+#: hugin1/hugin/xrc/main_menu.xrc:82
 #, fuzzy
 msgid "&Photos"
 msgstr "測光学的"
 
-#: hugin1/hugin/xrc/main_menu.xrc:88
+#: hugin1/hugin/xrc/main_menu.xrc:84
 #, fuzzy
 msgid "Show the Photos panel"
 msgstr "「切り抜き」パネルを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:91
+#: hugin1/hugin/xrc/main_menu.xrc:87
 #, fuzzy
 msgid "&Masks"
 msgstr "マスク："
 
-#: hugin1/hugin/xrc/main_menu.xrc:93
+#: hugin1/hugin/xrc/main_menu.xrc:89
 #, fuzzy
 msgid "Show the Masks panel"
 msgstr "「マスク」パネルを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:96
+#: hugin1/hugin/xrc/main_menu.xrc:92
 #, fuzzy
 msgid "&Control Points"
 msgstr "コントロールポイント"
 
-#: hugin1/hugin/xrc/main_menu.xrc:98
+#: hugin1/hugin/xrc/main_menu.xrc:94
 msgid "Show the Control Points panel"
 msgstr "「コントロールポイント」パネルを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:101
+#: hugin1/hugin/xrc/main_menu.xrc:97
 #, fuzzy
 msgid "&Optimizer"
 msgstr "最適化"
 
-#: hugin1/hugin/xrc/main_menu.xrc:103
+#: hugin1/hugin/xrc/main_menu.xrc:99
 msgid "Show the Optimizer panel"
 msgstr "「最適化」パネルを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:106
+#: hugin1/hugin/xrc/main_menu.xrc:102
 #, fuzzy
 msgid "&Exposure"
 msgstr "露出"
 
-#: hugin1/hugin/xrc/main_menu.xrc:108
+#: hugin1/hugin/xrc/main_menu.xrc:104
 msgid "Show the Exposure panel"
 msgstr "「露出」パネルを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:111
+#: hugin1/hugin/xrc/main_menu.xrc:107
 #, fuzzy
 msgid "&Stitcher"
 msgstr "スティッチャー"
 
-#: hugin1/hugin/xrc/main_menu.xrc:113
+#: hugin1/hugin/xrc/main_menu.xrc:109
 msgid "Show the Stitcher panel"
 msgstr "「スティッチャー」パネルを表示"
 
-#: hugin1/hugin/xrc/main_menu.xrc:118 hugin1/hugin/xrc/preview_frame.xrc:1036
+#: hugin1/hugin/xrc/main_menu.xrc:114 hugin1/hugin/xrc/preview_frame.xrc:1033
 msgid "&Simple"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:123 hugin1/hugin/xrc/preview_frame.xrc:1041
+#: hugin1/hugin/xrc/main_menu.xrc:119 hugin1/hugin/xrc/preview_frame.xrc:1038
 #, fuzzy
 msgid "&Advanced"
 msgstr "上級オプション"
 
-#: hugin1/hugin/xrc/main_menu.xrc:127 hugin1/hugin/xrc/preview_frame.xrc:1045
+#: hugin1/hugin/xrc/main_menu.xrc:123 hugin1/hugin/xrc/preview_frame.xrc:1042
 msgid "&Expert"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:130 hugin1/hugin/xrc/preview_frame.xrc:1048
+#: hugin1/hugin/xrc/main_menu.xrc:126 hugin1/hugin/xrc/preview_frame.xrc:1045
 #, fuzzy
 msgid "&Interface"
 msgstr "インターフェース"
 
-#: hugin1/hugin/xrc/main_menu.xrc:134
+#: hugin1/hugin/xrc/main_menu.xrc:130
 #, fuzzy
 msgid "&Stitch"
 msgstr "スティッチを実行"
 
-#: hugin1/hugin/xrc/main_menu.xrc:136
+#: hugin1/hugin/xrc/main_menu.xrc:132
 msgid "Stitch with the settings on the pano tabs"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:139
+#: hugin1/hugin/xrc/main_menu.xrc:135
 msgid "Stitch &user defined output..."
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:140
+#: hugin1/hugin/xrc/main_menu.xrc:136
 msgid "Stitch with the settings from a user defined output sequence"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:149 hugin1/hugin/xrc/preview_frame.xrc:1054
+#: hugin1/hugin/xrc/main_menu.xrc:145 hugin1/hugin/xrc/preview_frame.xrc:1051
 msgid "Some information on the different buttons and so on."
 msgstr "ボタンやボックスについての情報などがあります。"
 
-#: hugin1/hugin/xrc/main_menu.xrc:152 hugin1/hugin/xrc/preview_frame.xrc:1057
+#: hugin1/hugin/xrc/main_menu.xrc:148 hugin1/hugin/xrc/preview_frame.xrc:1054
 msgid "&Tip of the day"
 msgstr "今日のヒント (&T)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:153 hugin1/hugin/xrc/preview_frame.xrc:1058
+#: hugin1/hugin/xrc/main_menu.xrc:149 hugin1/hugin/xrc/preview_frame.xrc:1055
 msgid "Show one of the tips of the day."
 msgstr "「今日のヒント」からひとつを見る"
 
-#: hugin1/hugin/xrc/main_menu.xrc:156 hugin1/hugin/xrc/preview_frame.xrc:1061
+#: hugin1/hugin/xrc/main_menu.xrc:152 hugin1/hugin/xrc/preview_frame.xrc:1058
 msgid "&Keyboard Shortcuts"
 msgstr "ショートカット (&K)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:157 hugin1/hugin/xrc/preview_frame.xrc:1062
+#: hugin1/hugin/xrc/main_menu.xrc:153 hugin1/hugin/xrc/preview_frame.xrc:1059
 msgid "keyboard shortcuts"
 msgstr "ショートカットの一覧"
 
-#: hugin1/hugin/xrc/main_menu.xrc:160 hugin1/hugin/xrc/preview_frame.xrc:1065
+#: hugin1/hugin/xrc/main_menu.xrc:156 hugin1/hugin/xrc/preview_frame.xrc:1062
 msgid "&FAQ"
 msgstr "&FAQ"
 
-#: hugin1/hugin/xrc/main_menu.xrc:161 hugin1/hugin/xrc/preview_frame.xrc:1066
+#: hugin1/hugin/xrc/main_menu.xrc:157 hugin1/hugin/xrc/preview_frame.xrc:1063
 msgid "Frequently Asked Questions"
 msgstr "よく訊かれる質問と答"
 
-#: hugin1/hugin/xrc/main_menu.xrc:165 hugin1/hugin/xrc/preview_frame.xrc:1070
+#: hugin1/hugin/xrc/main_menu.xrc:161 hugin1/hugin/xrc/preview_frame.xrc:1067
 msgid "&About"
 msgstr "Hugin について (&A)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:169 hugin1/hugin/xrc/main_menu.xrc:223
-#: hugin1/hugin/xrc/main_menu.xrc:249 hugin1/hugin/xrc/preview_frame.xrc:1074
-#: hugin1/hugin/xrc/preview_frame.xrc:1112
-#: hugin1/hugin/xrc/preview_frame.xrc:1149
+#: hugin1/hugin/xrc/main_menu.xrc:165 hugin1/hugin/xrc/main_menu.xrc:219
+#: hugin1/hugin/xrc/main_menu.xrc:245 hugin1/hugin/xrc/preview_frame.xrc:1071
+#: hugin1/hugin/xrc/preview_frame.xrc:1109
+#: hugin1/hugin/xrc/preview_frame.xrc:1146
 msgid "&Preferences"
 msgstr "環境設定… (&P)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:176 hugin1/hugin/xrc/preview_frame.xrc:1082
-#: hugin1/hugin/xrc/preview_frame.xrc:1124
+#: hugin1/hugin/xrc/main_menu.xrc:172 hugin1/hugin/xrc/preview_frame.xrc:1079
+#: hugin1/hugin/xrc/preview_frame.xrc:1121
 msgid "&New"
 msgstr "新規 (&N)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:178 hugin1/hugin/xrc/main_tool.xrc:7
-#: hugin1/hugin/xrc/preview_frame.xrc:1084
-#: hugin1/hugin/xrc/preview_frame.xrc:1126
+#: hugin1/hugin/xrc/main_menu.xrc:174 hugin1/hugin/xrc/main_tool.xrc:7
+#: hugin1/hugin/xrc/preview_frame.xrc:1081
+#: hugin1/hugin/xrc/preview_frame.xrc:1123
 msgid "New project"
 msgstr "新規プロジェクト"
 
-#: hugin1/hugin/xrc/main_menu.xrc:181 hugin1/hugin/xrc/preview_frame.xrc:1087
-#: hugin1/hugin/xrc/preview_frame.xrc:1129
+#: hugin1/hugin/xrc/main_menu.xrc:177 hugin1/hugin/xrc/preview_frame.xrc:1084
+#: hugin1/hugin/xrc/preview_frame.xrc:1126
 msgid "&Open"
 msgstr "開く (&O)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:183 hugin1/hugin/xrc/main_tool.xrc:13
-#: hugin1/hugin/xrc/preview_frame.xrc:1089
-#: hugin1/hugin/xrc/preview_frame.xrc:1131
+#: hugin1/hugin/xrc/main_menu.xrc:179 hugin1/hugin/xrc/main_tool.xrc:13
+#: hugin1/hugin/xrc/preview_frame.xrc:1086
+#: hugin1/hugin/xrc/preview_frame.xrc:1128
 msgid "Open project"
 msgstr "プロジェクトを開く"
 
-#: hugin1/hugin/xrc/main_menu.xrc:186 hugin1/hugin/xrc/preview_frame.xrc:1092
-#: hugin1/hugin/xrc/preview_frame.xrc:1134
+#: hugin1/hugin/xrc/main_menu.xrc:182 hugin1/hugin/xrc/preview_frame.xrc:1089
+#: hugin1/hugin/xrc/preview_frame.xrc:1131
 msgid "&Save"
 msgstr "保存 (&S)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:188 hugin1/hugin/xrc/main_tool.xrc:21
-#: hugin1/hugin/xrc/preview_frame.xrc:1094
-#: hugin1/hugin/xrc/preview_frame.xrc:1136
+#: hugin1/hugin/xrc/main_menu.xrc:184 hugin1/hugin/xrc/main_tool.xrc:21
+#: hugin1/hugin/xrc/preview_frame.xrc:1091
+#: hugin1/hugin/xrc/preview_frame.xrc:1133
 msgid "Save current project file"
 msgstr "プロジェクトを保存"
 
-#: hugin1/hugin/xrc/main_menu.xrc:191 hugin1/hugin/xrc/preview_frame.xrc:1097
-#: hugin1/hugin/xrc/preview_frame.xrc:1139
+#: hugin1/hugin/xrc/main_menu.xrc:187 hugin1/hugin/xrc/preview_frame.xrc:1094
+#: hugin1/hugin/xrc/preview_frame.xrc:1136
 msgid "S&ave as"
 msgstr "別名で保存 (&A)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:193 hugin1/hugin/xrc/main_tool.xrc:27
-#: hugin1/hugin/xrc/preview_frame.xrc:1098
-#: hugin1/hugin/xrc/preview_frame.xrc:1140
+#: hugin1/hugin/xrc/main_menu.xrc:189 hugin1/hugin/xrc/main_tool.xrc:27
+#: hugin1/hugin/xrc/preview_frame.xrc:1095
+#: hugin1/hugin/xrc/preview_frame.xrc:1137
 msgid "Save current project to a new file"
 msgstr "プロジェクトを別名で保存"
 
-#: hugin1/hugin/xrc/main_menu.xrc:196
+#: hugin1/hugin/xrc/main_menu.xrc:192
 msgid "&Write PTStitcher script"
 msgstr "PTStitcher用スクリプトの書き出し (&W)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:197
+#: hugin1/hugin/xrc/main_menu.xrc:193
 msgid ""
 "Write current project to a PTStitcher-compatible script file, useful for "
 "batch processing"
 msgstr ""
 "プロジェクトをPTStitcher互換のスクリプトに保存します。バッチ処理に便利です。"
 
-#: hugin1/hugin/xrc/main_menu.xrc:200 hugin1/hugin/xrc/preview_frame.xrc:1102
-#: hugin1/hugin/xrc/preview_frame.xrc:1144
+#: hugin1/hugin/xrc/main_menu.xrc:196 hugin1/hugin/xrc/preview_frame.xrc:1099
+#: hugin1/hugin/xrc/preview_frame.xrc:1141
 #, fuzzy
 msgid "Most recently &used projects"
 msgstr "最近使ったプロジェクト"
 
-#: hugin1/hugin/xrc/main_menu.xrc:201 hugin1/hugin/xrc/preview_frame.xrc:1103
-#: hugin1/hugin/xrc/preview_frame.xrc:1145
+#: hugin1/hugin/xrc/main_menu.xrc:197 hugin1/hugin/xrc/preview_frame.xrc:1100
+#: hugin1/hugin/xrc/preview_frame.xrc:1142
 msgid "List of most recently used project files"
 msgstr "最近使ったプロジェクトファイルのリスト"
 
-#: hugin1/hugin/xrc/main_menu.xrc:205 hugin1/hugin/xrc/main_menu.xrc:235
-#: hugin1/hugin/xrc/preview_frame.xrc:1107
+#: hugin1/hugin/xrc/main_menu.xrc:201 hugin1/hugin/xrc/main_menu.xrc:231
+#: hugin1/hugin/xrc/preview_frame.xrc:1104
 msgid "&Run Batch Processor"
 msgstr "バッチ処理を実行 (&R)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:210 hugin1/hugin/xrc/main_menu.xrc:240
+#: hugin1/hugin/xrc/main_menu.xrc:206 hugin1/hugin/xrc/main_menu.xrc:236
 msgid "&Merge project..."
 msgstr "プロジェクトをマージ (&M) "
 
-#: hugin1/hugin/xrc/main_menu.xrc:211 hugin1/hugin/xrc/main_menu.xrc:241
+#: hugin1/hugin/xrc/main_menu.xrc:207 hugin1/hugin/xrc/main_menu.xrc:237
 msgid "Merges an existing project file with the current project."
 msgstr "既存のプロジェクトファイルを現在のプロジェクトにマージします。"
 
-#: hugin1/hugin/xrc/main_menu.xrc:214
+#: hugin1/hugin/xrc/main_menu.xrc:210
 msgid "Import settings from Papywizard &XML file..."
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:215
+#: hugin1/hugin/xrc/main_menu.xrc:211
 msgid "Read shoot settings from a Papywizard XML file"
 msgstr ""
 
-#: hugin1/hugin/xrc/main_menu.xrc:218 hugin1/hugin/xrc/main_menu.xrc:244
+#: hugin1/hugin/xrc/main_menu.xrc:214 hugin1/hugin/xrc/main_menu.xrc:240
 msgid "Apply &Template"
 msgstr "テンプレートを適用 (&T)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:219 hugin1/hugin/xrc/main_menu.xrc:245
+#: hugin1/hugin/xrc/main_menu.xrc:215 hugin1/hugin/xrc/main_menu.xrc:241
 msgid ""
 "Assign the settings of a previously saved project to the current images."
 msgstr "他のプロジェクトの設定を現在のプロジェクトに適用します。"
 
-#: hugin1/hugin/xrc/main_menu.xrc:253
+#: hugin1/hugin/xrc/main_menu.xrc:249
 #, fuzzy
 msgid "&Close editor"
 msgstr "閉じる (&C)"
 
-#: hugin1/hugin/xrc/main_menu.xrc:254
+#: hugin1/hugin/xrc/main_menu.xrc:250
 msgid "Closes panorama editor"
 msgstr ""
 
@@ -6572,7 +6525,7 @@ msgstr "ファストプレビュー"
 msgid "Show the OpenGL preview image"
 msgstr "OpenGL プレビューを表示"
 
-#: hugin1/hugin/xrc/main_tool.xrc:66 hugin1/hugin/xrc/preview_frame.xrc:478
+#: hugin1/hugin/xrc/main_tool.xrc:66
 msgid "Preview panorama"
 msgstr "プレビューを見る"
 
@@ -6629,7 +6582,7 @@ msgid "Exclude region from all images of this lens"
 msgstr "このレンズでのどの画像からの領域も含めない"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:88
-#: hugin1/hugin/xrc/pref_dialog.xrc:715
+#: hugin1/hugin/xrc/pref_dialog.xrc:798
 msgid "Export"
 msgstr "エクスポート"
 
@@ -6830,39 +6783,39 @@ msgstr "カメラとレンズの数値："
 msgid "Interpolator (i):"
 msgstr "画像補完法 (i)："
 
-#: hugin1/hugin/xrc/pano_panel.xrc:17 hugin1/hugin/xrc/pref_dialog.xrc:1164
+#: hugin1/hugin/xrc/pano_panel.xrc:17 hugin1/hugin/xrc/pref_dialog.xrc:1247
 msgid "Poly3 (Bicubic)"
 msgstr "Poly3 (バイキュービック法)"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:18 hugin1/hugin/xrc/pref_dialog.xrc:1165
+#: hugin1/hugin/xrc/pano_panel.xrc:18 hugin1/hugin/xrc/pref_dialog.xrc:1248
 msgid "Spline 16"
 msgstr "Spline 16"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:19 hugin1/hugin/xrc/pref_dialog.xrc:1166
+#: hugin1/hugin/xrc/pano_panel.xrc:19 hugin1/hugin/xrc/pref_dialog.xrc:1249
 msgid "Spline 36"
 msgstr "Spline 36"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1167
+#: hugin1/hugin/xrc/pano_panel.xrc:20 hugin1/hugin/xrc/pref_dialog.xrc:1250
 msgid "Sinc 256"
 msgstr "Sinc 256"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:21 hugin1/hugin/xrc/pref_dialog.xrc:1168
+#: hugin1/hugin/xrc/pano_panel.xrc:21 hugin1/hugin/xrc/pref_dialog.xrc:1251
 msgid "Spline 64"
 msgstr "Spline 64"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:22 hugin1/hugin/xrc/pref_dialog.xrc:1169
+#: hugin1/hugin/xrc/pano_panel.xrc:22 hugin1/hugin/xrc/pref_dialog.xrc:1252
 msgid "Bilinear"
 msgstr "バイリニア法"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:23 hugin1/hugin/xrc/pref_dialog.xrc:1170
+#: hugin1/hugin/xrc/pano_panel.xrc:23 hugin1/hugin/xrc/pref_dialog.xrc:1253
 msgid "Nearest neighbor"
 msgstr "ニアレストネイバー法"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:24 hugin1/hugin/xrc/pref_dialog.xrc:1171
+#: hugin1/hugin/xrc/pano_panel.xrc:24 hugin1/hugin/xrc/pref_dialog.xrc:1254
 msgid "Sinc 1024"
 msgstr "Sinc 1024"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:27 hugin1/hugin/xrc/pref_dialog.xrc:1174
+#: hugin1/hugin/xrc/pano_panel.xrc:27 hugin1/hugin/xrc/pref_dialog.xrc:1257
 msgid "approximation of values between source pixels"
 msgstr "画素間の補完"
 
@@ -6890,7 +6843,7 @@ msgstr "ブレンドのオプション"
 msgid "Enfuse options"
 msgstr "Enfuseのオプション"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:198 hugin1/hugin/xrc/preview_frame.xrc:550
+#: hugin1/hugin/xrc/pano_panel.xrc:198 hugin1/hugin/xrc/preview_frame.xrc:549
 msgid "Field of View:"
 msgstr "画角："
 
@@ -7152,16 +7105,16 @@ msgstr ""
 msgid "Output parameters"
 msgstr "カスタマイズ"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:1378 hugin1/hugin/xrc/pref_dialog.xrc:843
+#: hugin1/hugin/xrc/pano_panel.xrc:1378 hugin1/hugin/xrc/pref_dialog.xrc:926
 #, fuzzy
 msgid "Seam blend mode:"
 msgstr "ブレンドモード:"
 
-#: hugin1/hugin/xrc/pano_panel.xrc:1386 hugin1/hugin/xrc/pref_dialog.xrc:851
+#: hugin1/hugin/xrc/pano_panel.xrc:1386 hugin1/hugin/xrc/pref_dialog.xrc:934
 msgid "hard seam (faster)"
 msgstr ""
 
-#: hugin1/hugin/xrc/pano_panel.xrc:1387 hugin1/hugin/xrc/pref_dialog.xrc:852
+#: hugin1/hugin/xrc/pano_panel.xrc:1387 hugin1/hugin/xrc/pref_dialog.xrc:935
 msgid "blend seam"
 msgstr ""
 
@@ -7230,29 +7183,45 @@ msgstr ""
 msgid "This affects the control points editor and mask editor."
 msgstr "マスク内のコントロールポイントを除去"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:171
-msgid "File Options"
-msgstr "ファイルの設定"
+#: hugin1/hugin/xrc/pref_dialog.xrc:170
+#, fuzzy
+msgid "dcraw executable:"
+msgstr "Enblend："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:178
-msgid "Temporary dir:"
-msgstr "一時ディレクトリ："
-
-#: hugin1/hugin/xrc/pref_dialog.xrc:191
+#: hugin1/hugin/xrc/pref_dialog.xrc:177 hugin1/hugin/xrc/pref_dialog.xrc:199
+#: hugin1/hugin/xrc/pref_dialog.xrc:221 hugin1/hugin/xrc/pref_dialog.xrc:274
 msgid "(leave empty for OS default)"
 msgstr "（OS の標準設定を使うには空白にします）"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:209
+#: hugin1/hugin/xrc/pref_dialog.xrc:192
+#, fuzzy
+msgid "RT-cli executable:"
+msgstr "Enblend："
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:214
+#, fuzzy
+msgid "darktable-cli executable:"
+msgstr "Enblend："
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:254
+msgid "File Options"
+msgstr "ファイルの設定"
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:261
+msgid "Temporary dir:"
+msgstr "一時ディレクトリ："
+
+#: hugin1/hugin/xrc/pref_dialog.xrc:292
 #, fuzzy
 msgid "Default project filename:"
 msgstr "プロジェクトを開く"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:227
+#: hugin1/hugin/xrc/pref_dialog.xrc:310
 #, fuzzy
 msgid "Default output prefix:"
 msgstr "出力ファイルの名前を指定"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:246
+#: hugin1/hugin/xrc/pref_dialog.xrc:329
 #, c-format
 msgid ""
 "The following placeholders are replaced automatically:\n"
@@ -7270,111 +7239,111 @@ msgid ""
 "%projectname - project filename (only for output prefix)"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:268
+#: hugin1/hugin/xrc/pref_dialog.xrc:351
 #, fuzzy
 msgid "Default filenames"
 msgstr "デフォルトのファイル形式："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:276
+#: hugin1/hugin/xrc/pref_dialog.xrc:359
 #, fuzzy
 msgid "Filenames"
 msgstr "ファイル名"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:285
+#: hugin1/hugin/xrc/pref_dialog.xrc:368
 msgid "Image loading"
 msgstr "画像の読み込み"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:289
+#: hugin1/hugin/xrc/pref_dialog.xrc:372
 msgid "Automatically align images after loading"
 msgstr "画像を読み込み後、自動配置を実行する"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:302
+#: hugin1/hugin/xrc/pref_dialog.xrc:385
 msgid "Detect vertical lines"
 msgstr "鉛直な線を検出"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:303
+#: hugin1/hugin/xrc/pref_dialog.xrc:386
 msgid "Detects vertical lines in the images to level the pano"
 msgstr "画像内の鉛直な線を検出することで pano を水平に合わせる"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:310
+#: hugin1/hugin/xrc/pref_dialog.xrc:393
 msgid "Remove cloud-like control points (Celeste)"
 msgstr "雲など動きのある対象上のコントロールポイントを削除（Celeste）"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:322
+#: hugin1/hugin/xrc/pref_dialog.xrc:405
 msgid "Optional assistant steps"
 msgstr "アシスタントでの追加のステップ"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:330
+#: hugin1/hugin/xrc/pref_dialog.xrc:413
 msgid "Auto align"
 msgstr "自動配置"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:337
+#: hugin1/hugin/xrc/pref_dialog.xrc:420
 msgid ""
 "Number of Control Points\n"
 "per overlap"
 msgstr "重複している領域一カ所あたりの検出するコントロールポイントの数"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:359
+#: hugin1/hugin/xrc/pref_dialog.xrc:442
 msgid "Downscale final pano"
 msgstr "パノラマの縮小"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:375
+#: hugin1/hugin/xrc/pref_dialog.xrc:458
 msgid "percent of max. width"
 msgstr "%"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:393
+#: hugin1/hugin/xrc/pref_dialog.xrc:476
 msgid "Control Points Editor"
 msgstr "コントロールポイントの編集"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:399
+#: hugin1/hugin/xrc/pref_dialog.xrc:482
 msgid "HDR and 16 Bit display"
 msgstr "HDRと16bit画像の表示"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:408
+#: hugin1/hugin/xrc/pref_dialog.xrc:491
 msgid "Curve"
 msgstr "トーンカーブ"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:416
+#: hugin1/hugin/xrc/pref_dialog.xrc:499
 msgid "linear"
 msgstr "リニア"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:417
+#: hugin1/hugin/xrc/pref_dialog.xrc:500
 msgid "logarithmic"
 msgstr "対数"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:418
+#: hugin1/hugin/xrc/pref_dialog.xrc:501
 msgid "gamma 2.2"
 msgstr "ガンマ 2.2"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:426
+#: hugin1/hugin/xrc/pref_dialog.xrc:509
 msgid "used for display in GUI"
 msgstr "表示に使用"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:447
+#: hugin1/hugin/xrc/pref_dialog.xrc:530
 msgid "Patch width:"
 msgstr "パッチの幅："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:461 hugin1/hugin/xrc/pref_dialog.xrc:503
+#: hugin1/hugin/xrc/pref_dialog.xrc:544 hugin1/hugin/xrc/pref_dialog.xrc:586
 msgid "pixels"
 msgstr "ピクセル"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:468
+#: hugin1/hugin/xrc/pref_dialog.xrc:551
 msgid "Search area width:"
 msgstr "検索する範囲の幅"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:482
+#: hugin1/hugin/xrc/pref_dialog.xrc:565
 msgid "percent of image width"
 msgstr "% (画像の幅に対して)"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:489
+#: hugin1/hugin/xrc/pref_dialog.xrc:572
 msgid "Local search area width:"
 msgstr "ローカルな検索範囲の幅"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:511
+#: hugin1/hugin/xrc/pref_dialog.xrc:594
 msgid "Correlation Threshold:"
 msgstr "相関係数の閾値"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:523
+#: hugin1/hugin/xrc/pref_dialog.xrc:606
 msgid ""
 "0: no similarity\n"
 "1: maximum similarity"
@@ -7382,11 +7351,11 @@ msgstr ""
 "0: 全く違う\n"
 "1: ほとんど同じ"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:531
+#: hugin1/hugin/xrc/pref_dialog.xrc:614
 msgid "Peak Curvature Threshold:"
 msgstr "曲率のピークの閾値"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:543
+#: hugin1/hugin/xrc/pref_dialog.xrc:626
 msgid ""
 "0: no peak\n"
 "0.2: distinctive peak"
@@ -7394,114 +7363,114 @@ msgstr ""
 "0  : ピークなし\n"
 "0.2: はっきりとしたピーク"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:560
+#: hugin1/hugin/xrc/pref_dialog.xrc:643
 msgid "Rotation search"
 msgstr "回転もさせて検索"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:564
+#: hugin1/hugin/xrc/pref_dialog.xrc:647
 msgid "Enable rotation search (slower, but more accurate)"
 msgstr "回転もさせて検索する（遅いが精確）"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:573
+#: hugin1/hugin/xrc/pref_dialog.xrc:656
 msgid "Start angle:"
 msgstr "開始角度："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:594
+#: hugin1/hugin/xrc/pref_dialog.xrc:677
 msgid "Stop angle:"
 msgstr "終了角度："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:613
+#: hugin1/hugin/xrc/pref_dialog.xrc:696
 msgid "Steps:"
 msgstr "ステップ数："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:640
+#: hugin1/hugin/xrc/pref_dialog.xrc:723
 msgid "Control Point Detectors"
 msgstr "コントロールポイントの検出"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:646
+#: hugin1/hugin/xrc/pref_dialog.xrc:729
 msgid "Control Point Detector Programs"
 msgstr "コントロールポイント検出プログラム"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:662
+#: hugin1/hugin/xrc/pref_dialog.xrc:745
 msgid "New..."
 msgstr "新規…"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:669 hugin1/hugin/xrc/pref_dialog.xrc:1009
-#: hugin1/hugin/xrc/pref_dialog.xrc:1068
+#: hugin1/hugin/xrc/pref_dialog.xrc:752 hugin1/hugin/xrc/pref_dialog.xrc:1092
+#: hugin1/hugin/xrc/pref_dialog.xrc:1151
 msgid "Edit..."
 msgstr "編集…"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:683
+#: hugin1/hugin/xrc/pref_dialog.xrc:766
 msgid "Move up"
 msgstr "順番を上に"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:690
+#: hugin1/hugin/xrc/pref_dialog.xrc:773
 msgid "Move down"
 msgstr "順番を下に"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:697
+#: hugin1/hugin/xrc/pref_dialog.xrc:780
 msgid "Set default"
 msgstr "デフォルトに設定"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:728
+#: hugin1/hugin/xrc/pref_dialog.xrc:811
 msgid "The assistant is using the default setting."
 msgstr "アシスタントはデフォルト設定を使用します。"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:750
+#: hugin1/hugin/xrc/pref_dialog.xrc:833
 msgid "Output Format"
 msgstr "出力形式"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:757
+#: hugin1/hugin/xrc/pref_dialog.xrc:840
 msgid "Default File Format:"
 msgstr "デフォルトのファイル形式："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:770
+#: hugin1/hugin/xrc/pref_dialog.xrc:853
 msgid "default output format for final panorama"
 msgstr "最終的なパノラマのデフォルトの出力形式"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:777
+#: hugin1/hugin/xrc/pref_dialog.xrc:860
 msgid "TIFF Compression:"
 msgstr "TIFF の圧縮形式："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:791
+#: hugin1/hugin/xrc/pref_dialog.xrc:874
 msgid "default TIFF compression"
 msgstr "デフォルトの TIFF の圧縮形式"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:797
+#: hugin1/hugin/xrc/pref_dialog.xrc:880
 msgid "JPEG Quality:"
 msgstr "JPEG の画質："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:808
+#: hugin1/hugin/xrc/pref_dialog.xrc:891
 msgid "default JPEG compression setting"
 msgstr "デフォルトの JPEG の圧縮率設定"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:823
+#: hugin1/hugin/xrc/pref_dialog.xrc:906
 #, fuzzy
 msgid "Blender"
 msgstr "ブレンド："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:829
+#: hugin1/hugin/xrc/pref_dialog.xrc:912
 #, fuzzy
 msgid "Default blender:"
 msgstr "デフォルトのファイル形式："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:836
+#: hugin1/hugin/xrc/pref_dialog.xrc:919
 msgid "Default blender which is used for new projects."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:868
+#: hugin1/hugin/xrc/pref_dialog.xrc:951
 msgid "Processor"
 msgstr "処理プログラム"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:879
+#: hugin1/hugin/xrc/pref_dialog.xrc:962
 msgid "The engine that will run the stitch"
 msgstr "スティッチを実行するエンジン"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:888
+#: hugin1/hugin/xrc/pref_dialog.xrc:971
 msgid "Start stitching jobs immediately"
 msgstr "スティッチ処理をすぐに開始"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:889
+#: hugin1/hugin/xrc/pref_dialog.xrc:972
 msgid ""
 "If selected, the processor will immediately resume processing the jobs "
 "queue.  Otherwise the processor is started in suspended state and the user "
@@ -7511,19 +7480,19 @@ msgstr ""
 "以外の場合、処理プログラムはサスペンド状態に入り、ユーザが手動で処理を再開す"
 "る必要があります。"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:896
+#: hugin1/hugin/xrc/pref_dialog.xrc:979
 msgid "Overwrite existing files"
 msgstr "既存ファイルの上書き"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:897
+#: hugin1/hugin/xrc/pref_dialog.xrc:980
 msgid "WARNING: existing files will be silently overwritten."
 msgstr "警告：既存ファイルは事前確認なしに上書きされます。"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:904
+#: hugin1/hugin/xrc/pref_dialog.xrc:987
 msgid "Verbose Output"
 msgstr "詳細を出力"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:905
+#: hugin1/hugin/xrc/pref_dialog.xrc:988
 msgid ""
 "Enable to get the details, useful when reporting a bug or just to watch the "
 "project's progress."
@@ -7531,20 +7500,20 @@ msgstr ""
 "詳細を知ることができ、バグを報告するときや単にプロジェクトの進捗を確認すると"
 "きに便利です。"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:927
+#: hugin1/hugin/xrc/pref_dialog.xrc:1010
 msgid "Stitching"
 msgstr "スティッチ中"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:937
+#: hugin1/hugin/xrc/pref_dialog.xrc:1020
 msgid "Copy metadata into final files using ExifTool"
 msgstr "メタデータを最終的なファイルに ExifTool でコピーする"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:942
+#: hugin1/hugin/xrc/pref_dialog.xrc:1025
 #, fuzzy
 msgid "ExifTool options"
 msgstr "Enfuseのオプション"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:951
+#: hugin1/hugin/xrc/pref_dialog.xrc:1034
 msgid ""
 "These argfiles are used to copy metadata from the image file to the final "
 "panorama.\n"
@@ -7553,56 +7522,56 @@ msgid ""
 "\"."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:971
+#: hugin1/hugin/xrc/pref_dialog.xrc:1054
 msgid ""
 "The following argfile will be used to copy tags from the first image to all "
 "intermediate images."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:987
+#: hugin1/hugin/xrc/pref_dialog.xrc:1070
 #, fuzzy
 msgid "Intermediate ExifTool argfile:"
 msgstr "左の画像上のポイントを指定してください"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:993 hugin1/hugin/xrc/pref_dialog.xrc:1052
+#: hugin1/hugin/xrc/pref_dialog.xrc:1076 hugin1/hugin/xrc/pref_dialog.xrc:1135
 #, fuzzy
 msgid "Leave empty for default"
 msgstr "（OS の標準設定を使うには空白にします）"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1010 hugin1/hugin/xrc/pref_dialog.xrc:1069
+#: hugin1/hugin/xrc/pref_dialog.xrc:1093 hugin1/hugin/xrc/pref_dialog.xrc:1152
 #, fuzzy
 msgid "Edit selected ExifTool argfile"
 msgstr "左の画像上のポイントを指定してください"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1029
+#: hugin1/hugin/xrc/pref_dialog.xrc:1112
 msgid ""
 "The following argfile will be used to copy tags from the first image to the "
 "final panorama.\n"
 "It is applied additional to the above argfile for the intermediate images."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1046
+#: hugin1/hugin/xrc/pref_dialog.xrc:1129
 #, fuzzy
 msgid "Final ExifTool argfile:"
 msgstr "左の画像上のポイントを指定してください"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1086
+#: hugin1/hugin/xrc/pref_dialog.xrc:1169
 msgid "Create Photo Sphere XMP data"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1087
+#: hugin1/hugin/xrc/pref_dialog.xrc:1170
 msgid "This will only be done for equirectangular output images."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1102
+#: hugin1/hugin/xrc/pref_dialog.xrc:1185
 msgid "Advanced options"
 msgstr "上級オプション"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1108
+#: hugin1/hugin/xrc/pref_dialog.xrc:1191
 msgid "Number of threads:"
 msgstr "スレッドの数："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1117
+#: hugin1/hugin/xrc/pref_dialog.xrc:1200
 msgid ""
 "Nona and the OpenMP enabled enblend/enfuse can use multiple threads for "
 "processing.\n"
@@ -7613,45 +7582,45 @@ msgstr ""
 "えるようになります。\n"
 "この数字をコンピュータの CPU または CPU コアの最大数に合わせてください。"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1124
+#: hugin1/hugin/xrc/pref_dialog.xrc:1207
 msgid "0 for automatic detection"
 msgstr "自動検出するには 0"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1140
+#: hugin1/hugin/xrc/pref_dialog.xrc:1223
 #, fuzzy
 msgid "Stitching (2)"
 msgstr "スティッチ中"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1156
+#: hugin1/hugin/xrc/pref_dialog.xrc:1239
 msgid "Default Interpolator (i):"
 msgstr "デフォルトの画像補完法 (i)："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1186
+#: hugin1/hugin/xrc/pref_dialog.xrc:1269
 msgid "Create cropped images by default"
 msgstr "切り抜き画像をデフォルトで保存"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1193
+#: hugin1/hugin/xrc/pref_dialog.xrc:1276
 #, fuzzy
 msgid "Use GPU for remapping"
 msgstr "GPU を用いたマッピング（実験的）"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1194
+#: hugin1/hugin/xrc/pref_dialog.xrc:1277
 msgid "Use video card GPU to speed up remapping"
 msgstr "マッピングの高速化のためにビデオカードの GPU を利用します"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1217
+#: hugin1/hugin/xrc/pref_dialog.xrc:1300
 msgid "Use alternative Enblend program"
 msgstr "Enblendプログラムを自分で選択"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1227
+#: hugin1/hugin/xrc/pref_dialog.xrc:1310
 msgid "Enblend executable:"
 msgstr "Enblend："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1252 hugin1/hugin/xrc/pref_dialog.xrc:1331
+#: hugin1/hugin/xrc/pref_dialog.xrc:1335 hugin1/hugin/xrc/pref_dialog.xrc:1414
 msgid "Default Arguments:"
 msgstr "デフォルトの引数："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1272 hugin1/hugin/xrc/pref_dialog.xrc:1351
+#: hugin1/hugin/xrc/pref_dialog.xrc:1355 hugin1/hugin/xrc/pref_dialog.xrc:1434
 #, fuzzy
 msgid ""
 "These are the default arguments for new projects.\n"
@@ -7663,35 +7632,35 @@ msgstr ""
 "引数のうち -w, -o, --compression は使わないで下さい。Huginが自動的に指定しま"
 "す。"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1282
+#: hugin1/hugin/xrc/pref_dialog.xrc:1365
 msgid "Enblend"
 msgstr "Enblend"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1296
+#: hugin1/hugin/xrc/pref_dialog.xrc:1379
 msgid "Use alternative Enfuse program"
 msgstr "Enfuseプログラムを自分で選択"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1306
+#: hugin1/hugin/xrc/pref_dialog.xrc:1389
 msgid "Enfuse executable:"
 msgstr "Enfuse："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1361
+#: hugin1/hugin/xrc/pref_dialog.xrc:1444
 msgid "Enfuse"
 msgstr "Enfuse"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1369
+#: hugin1/hugin/xrc/pref_dialog.xrc:1452
 msgid "Programs"
 msgstr "プログラム"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1377
+#: hugin1/hugin/xrc/pref_dialog.xrc:1460
 msgid "Celeste parameters"
 msgstr "Celesteの設定"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1384
+#: hugin1/hugin/xrc/pref_dialog.xrc:1467
 msgid "SVM threshold:"
 msgstr "SVMの閾値："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1396
+#: hugin1/hugin/xrc/pref_dialog.xrc:1479
 msgid ""
 "greater than 0.5: less sensitive\n"
 "less than 0.5: more sensitive"
@@ -7699,19 +7668,19 @@ msgstr ""
 "0.5以上：より鈍感\n"
 "0.5未満：より敏感"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1403
+#: hugin1/hugin/xrc/pref_dialog.xrc:1486
 msgid "Gabor filter size"
 msgstr "ガボールフィルタのサイズ："
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1411
+#: hugin1/hugin/xrc/pref_dialog.xrc:1494
 msgid "small"
 msgstr "小"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1412
+#: hugin1/hugin/xrc/pref_dialog.xrc:1495
 msgid "large"
 msgstr "大"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1420
+#: hugin1/hugin/xrc/pref_dialog.xrc:1503
 msgid ""
 "large is more accurate\n"
 "small can examine control points close to image border"
@@ -7719,7 +7688,7 @@ msgstr ""
 "大：より正確\n"
 "小：画像の端に近いコントロールポイントも検証可能"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1438
+#: hugin1/hugin/xrc/pref_dialog.xrc:1521
 msgid ""
 "The vignetting and exposure correction is determined by analysing color "
 "values in the overlapping areas.\n"
@@ -7728,78 +7697,78 @@ msgstr ""
 "周辺光量低下と露出は重なり合っている領域のカラーの値を使って測定されます。\n"
 "処理スピードアップのため、ランダムにサンプルされた点のみが使われます。"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1447
+#: hugin1/hugin/xrc/pref_dialog.xrc:1530
 #, fuzzy
 msgid "Number of points per image: "
 msgstr "画像1枚あたりのサンプル数"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1462
+#: hugin1/hugin/xrc/pref_dialog.xrc:1545
 #, fuzzy
 msgid "Photometric optimizer"
 msgstr "測光学的パラメータの最適化"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1470
+#: hugin1/hugin/xrc/pref_dialog.xrc:1553
 #, fuzzy
 msgid "Warnings"
 msgstr "警告"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1474
+#: hugin1/hugin/xrc/pref_dialog.xrc:1557
 msgid "Show message about saving project file and output prefix"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1481
+#: hugin1/hugin/xrc/pref_dialog.xrc:1564
 msgid "Show warning about big exposure difference when adding images"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1494
+#: hugin1/hugin/xrc/pref_dialog.xrc:1577
 msgid "After \"edit cp\" tool"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1502
+#: hugin1/hugin/xrc/pref_dialog.xrc:1585
 msgid "Ask user"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1503
+#: hugin1/hugin/xrc/pref_dialog.xrc:1586
 #, fuzzy
 msgid "Re-optimize panorama"
 msgstr "パノラマを最適化中"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1504
+#: hugin1/hugin/xrc/pref_dialog.xrc:1587
 #, fuzzy
 msgid "Don't optimize panorama"
 msgstr "最適化を実行"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1510
+#: hugin1/hugin/xrc/pref_dialog.xrc:1593
 #, fuzzy
 msgid "Edit cp tool (on fast preview window)"
 msgstr "ヒントはファストプレビューウィンドウでのみ表示されます"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1518
+#: hugin1/hugin/xrc/pref_dialog.xrc:1601
 msgid "Misc"
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1566
+#: hugin1/hugin/xrc/pref_dialog.xrc:1649
 msgid "Preferences - hugin"
 msgstr "Hugin - 環境設定"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1574
+#: hugin1/hugin/xrc/pref_dialog.xrc:1657
 msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite_original -tagsfromfile image -@ argfile panorama\"."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1607 hugin1/hugin/xrc/pref_dialog.xrc:1674
+#: hugin1/hugin/xrc/pref_dialog.xrc:1690 hugin1/hugin/xrc/pref_dialog.xrc:1757
 #, fuzzy
 msgid "Edit ExifTool argfile"
 msgstr "左の画像上のポイントを指定してください"
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1617
+#: hugin1/hugin/xrc/pref_dialog.xrc:1700
 msgid ""
 "This argfile is called with command line\n"
 "\"exiftool -overwrite_original -tagsfromfile image -E -@ argfile panorama\"."
 msgstr ""
 
-#: hugin1/hugin/xrc/pref_dialog.xrc:1632
+#: hugin1/hugin/xrc/pref_dialog.xrc:1715
 msgid ""
 "The following placeholders will be replaced before invoking ExifTool:\n"
 "%projection - projection name (in English)\n"
@@ -7819,11 +7788,11 @@ msgid ""
 "The placeholders are case sensitive."
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:645
+#: hugin1/hugin/xrc/preview_frame.xrc:7 hugin1/hugin/xrc/preview_frame.xrc:644
 msgid "Center the preview horizontally"
 msgstr "パノラマを横方向中央に移動"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:8 hugin1/hugin/xrc/preview_frame.xrc:640
+#: hugin1/hugin/xrc/preview_frame.xrc:8 hugin1/hugin/xrc/preview_frame.xrc:639
 msgid "Center"
 msgstr "中央に"
 
@@ -7832,14 +7801,14 @@ msgid "Show the whole panorama"
 msgstr "パノラマ全体を表示する"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:13
-#: hugin1/hugin/xrc/preview_frame.xrc:540
-#: hugin1/hugin/xrc/preview_frame.xrc:657
+#: hugin1/hugin/xrc/preview_frame.xrc:539
+#: hugin1/hugin/xrc/preview_frame.xrc:656
 msgid "Estimate field of view"
 msgstr "最適な画角を推定"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:14
-#: hugin1/hugin/xrc/preview_frame.xrc:535
-#: hugin1/hugin/xrc/preview_frame.xrc:652
+#: hugin1/hugin/xrc/preview_frame.xrc:534
+#: hugin1/hugin/xrc/preview_frame.xrc:651
 msgid "Fit"
 msgstr "フィットさせる"
 
@@ -7848,7 +7817,7 @@ msgid "Automatically straighten a wavy horizon"
 msgstr "波打っている水平線を自動的にまっすぐにします。"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:19
-#: hugin1/hugin/xrc/preview_frame.xrc:664
+#: hugin1/hugin/xrc/preview_frame.xrc:663
 msgid "Straighten"
 msgstr "まっすぐに"
 
@@ -7966,11 +7935,11 @@ msgstr "コントロールポイント検出プログラムの設定を削除"
 msgid "Background:"
 msgstr "背景："
 
-#: hugin1/hugin/xrc/preview_frame.xrc:489
+#: hugin1/hugin/xrc/preview_frame.xrc:488
 msgid "Scale:"
 msgstr "スケール："
 
-#: hugin1/hugin/xrc/preview_frame.xrc:516
+#: hugin1/hugin/xrc/preview_frame.xrc:515
 msgid ""
 "* A gray line indicates there are no control points, but the image pair "
 "overlaps.\n"
@@ -7983,160 +7952,152 @@ msgstr ""
 "* 「コントロールポイント」タブで線をクリックすると関連する画像を編集すること"
 "ができます。"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:525
+#: hugin1/hugin/xrc/preview_frame.xrc:524
 msgid "Layout"
 msgstr "配置"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:605
-#: hugin1/hugin/xrc/preview_frame.xrc:696
-#: hugin1/hugin/xrc/preview_frame.xrc:877
+#: hugin1/hugin/xrc/preview_frame.xrc:604
+#: hugin1/hugin/xrc/preview_frame.xrc:695
+#: hugin1/hugin/xrc/preview_frame.xrc:875
 msgid "Guides:"
 msgstr "ガイド："
 
-#: hugin1/hugin/xrc/preview_frame.xrc:614
-#: hugin1/hugin/xrc/preview_frame.xrc:704
-#: hugin1/hugin/xrc/preview_frame.xrc:886
+#: hugin1/hugin/xrc/preview_frame.xrc:613
+#: hugin1/hugin/xrc/preview_frame.xrc:703
+#: hugin1/hugin/xrc/preview_frame.xrc:884
 msgid "Rule of thirds"
 msgstr "三分割法"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:615
-#: hugin1/hugin/xrc/preview_frame.xrc:705
-#: hugin1/hugin/xrc/preview_frame.xrc:887
+#: hugin1/hugin/xrc/preview_frame.xrc:614
+#: hugin1/hugin/xrc/preview_frame.xrc:704
+#: hugin1/hugin/xrc/preview_frame.xrc:885
 msgid "Golden ratio"
 msgstr "黄金比"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:616
-#: hugin1/hugin/xrc/preview_frame.xrc:706
-#: hugin1/hugin/xrc/preview_frame.xrc:888
+#: hugin1/hugin/xrc/preview_frame.xrc:615
+#: hugin1/hugin/xrc/preview_frame.xrc:705
+#: hugin1/hugin/xrc/preview_frame.xrc:886
 msgid "Diagonal"
 msgstr "対角線"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:617
-#: hugin1/hugin/xrc/preview_frame.xrc:707
-#: hugin1/hugin/xrc/preview_frame.xrc:889
+#: hugin1/hugin/xrc/preview_frame.xrc:616
+#: hugin1/hugin/xrc/preview_frame.xrc:706
+#: hugin1/hugin/xrc/preview_frame.xrc:887
 msgid "Diagonal method"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:618
-#: hugin1/hugin/xrc/preview_frame.xrc:708
-#: hugin1/hugin/xrc/preview_frame.xrc:890
+#: hugin1/hugin/xrc/preview_frame.xrc:617
+#: hugin1/hugin/xrc/preview_frame.xrc:707
+#: hugin1/hugin/xrc/preview_frame.xrc:888
 msgid "Golden triangle (down)"
 msgstr "黄金三角形（下向き）"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:619
-#: hugin1/hugin/xrc/preview_frame.xrc:709
-#: hugin1/hugin/xrc/preview_frame.xrc:891
+#: hugin1/hugin/xrc/preview_frame.xrc:618
+#: hugin1/hugin/xrc/preview_frame.xrc:708
+#: hugin1/hugin/xrc/preview_frame.xrc:889
 msgid "Golden triangle (up)"
 msgstr "黄金三角形（上向き）"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:669
+#: hugin1/hugin/xrc/preview_frame.xrc:668
 msgid "Automatically straighten a wavy horizon."
 msgstr "波打っている水平線を自動的にまっすぐにします。"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:684
+#: hugin1/hugin/xrc/preview_frame.xrc:683
 msgid "Drag mode:"
 msgstr "ドラッグモード："
 
-#: hugin1/hugin/xrc/preview_frame.xrc:824
+#: hugin1/hugin/xrc/preview_frame.xrc:823
 msgid "Apply"
 msgstr "適用"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:834
-msgid "Move the panorama or drag images into position"
-msgstr "パノラマを移動させるか画像をドラッグします。"
-
-#: hugin1/hugin/xrc/preview_frame.xrc:836
 msgid "Move/Drag"
 msgstr "移動／ドラッグ"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:850
+#: hugin1/hugin/xrc/preview_frame.xrc:848
 msgid "Set the crop region to the largest rectangle covered by images"
 msgstr "切り抜き領域を画像に内接する最大の長方形に設定"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:857
+#: hugin1/hugin/xrc/preview_frame.xrc:855
 #, fuzzy
 msgid "HDR Autocrop"
 msgstr "自動で切り抜き"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:862
+#: hugin1/hugin/xrc/preview_frame.xrc:860
 #, fuzzy
 msgid "Set the crop region to the largest rectangle covered by image stacks"
 msgstr "切り抜き領域を画像に内接する最大の長方形に設定"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:913
+#: hugin1/hugin/xrc/preview_frame.xrc:911
 msgid "left:"
 msgstr "左:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:927
+#: hugin1/hugin/xrc/preview_frame.xrc:925
 msgid "top:"
 msgstr "上:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:941
+#: hugin1/hugin/xrc/preview_frame.xrc:939
 msgid "right:"
 msgstr "右:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:955
+#: hugin1/hugin/xrc/preview_frame.xrc:953
 msgid "bottom:"
 msgstr "下:"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:971
+#: hugin1/hugin/xrc/preview_frame.xrc:969
 msgid "Reset crop to maximal possible area"
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:981
-msgid "Change the panorama's cropping region"
-msgstr "パノラマの切り抜き領域を変更"
-
-#: hugin1/hugin/xrc/preview_frame.xrc:1014
+#: hugin1/hugin/xrc/preview_frame.xrc:1011
 #, fuzzy
 msgid "Panorama &editor"
 msgstr "プレビュー"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1023
+#: hugin1/hugin/xrc/preview_frame.xrc:1020
 #, fuzzy
 msgid "&Overview"
 msgstr "概観"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1024
+#: hugin1/hugin/xrc/preview_frame.xrc:1021
 #, fuzzy
 msgid "Shows the overview of the panorama sphere."
 msgstr "パノラマ全体を表示する"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1028
+#: hugin1/hugin/xrc/preview_frame.xrc:1025
 #, fuzzy
 msgid "&Grid"
 msgstr "グリッド"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1029
+#: hugin1/hugin/xrc/preview_frame.xrc:1026
 msgid "Shows a grid."
 msgstr ""
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1155
+#: hugin1/hugin/xrc/preview_frame.xrc:1152
 #, fuzzy
 msgid "&All images"
 msgstr "画像を追加"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1160
+#: hugin1/hugin/xrc/preview_frame.xrc:1157
 #, fuzzy
 msgid "Image with &median exposure of each stack"
 msgstr "スタック全体で位置をリンク"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1164
+#: hugin1/hugin/xrc/preview_frame.xrc:1161
 #, fuzzy
 msgid "&Brightest image of each stack"
 msgstr "スタック全体で位置をリンク"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1168
+#: hugin1/hugin/xrc/preview_frame.xrc:1165
 #, fuzzy
 msgid "&Darkest image of each stack"
 msgstr "スタック全体で位置をリンク"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1173
+#: hugin1/hugin/xrc/preview_frame.xrc:1170
 #, fuzzy
 msgid "&Keep currently selected images"
 msgstr "選択された画像のレンズを変更します"
 
-#: hugin1/hugin/xrc/preview_frame.xrc:1178
+#: hugin1/hugin/xrc/preview_frame.xrc:1175
 #, fuzzy
 msgid "&Reset selection"
 msgstr "プロジェクトをリセット"
@@ -8433,6 +8394,40 @@ msgstr ""
 "「すべて」の数値を最適化するのは、大きく重なりあっている画像にたくさんのコン"
 "トロールポイントがうまく散らばって設定されている場合でなければ意味がありませ"
 "ん。"
+
+#, fuzzy
+#~ msgid "(WB reference)"
+#~ msgstr "環境設定… (&P)"
+
+#, fuzzy
+#~ msgid "Images"
+#~ msgstr "画像"
+
+#, fuzzy
+#~ msgid "Add image(s)..."
+#~ msgstr "画像を追加"
+
+#, fuzzy
+#~ msgid "Add other images to list"
+#~ msgstr "もう一枚プロジェクトに画像を追加します"
+
+#, fuzzy
+#~ msgid "Remove image"
+#~ msgstr "マスクを保存"
+
+#, fuzzy
+#~ msgid "Remove selected image from list"
+#~ msgstr "選択した画像を取り除く"
+
+#, fuzzy
+#~ msgid "Converter settings"
+#~ msgstr "角の検出 スケール"
+
+#~ msgid "Move the panorama or drag images into position"
+#~ msgstr "パノラマを移動させるか画像をドラッグします。"
+
+#~ msgid "Change the panorama's cropping region"
+#~ msgstr "パノラマの切り抜き領域を変更"
 
 #~ msgid "Use GPU for remapping (EXPERIMENTAL)"
 #~ msgstr "GPU を用いたマッピング（実験的）"
