@@ -285,4 +285,18 @@ const wxString GetSettingString(wxConfigBase* setting, const wxString& name, con
     return s;
 };
 
+/** return the temp dir from the preferences, ensure that it ends with path separator */
+const wxString GetConfigTempDir(const wxConfigBase* config)
+{
+    wxString tempDir = config->Read(wxT("tempDir"), wxT(""));
+    if (!tempDir.IsEmpty())
+    {
+        if (tempDir.Last() != wxFileName::GetPathSeparator())
+        {
+            tempDir.Append(wxFileName::GetPathSeparator());
+        }
+    };
+    return tempDir;
+};
+
 }; // namespace

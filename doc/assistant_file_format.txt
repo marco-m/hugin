@@ -27,7 +27,8 @@ Program=cpfind
 
 # arguments for the command, use placeholder %project% 
 # for project filename and %image0% for first image
-# file
+# file, %imagelist% return a temporary file with
+# all images (one filename per line)
 Arguments=--multirow --output=%project% %project%
 
 # Condition, if the step should be executed

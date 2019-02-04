@@ -128,7 +128,7 @@ namespace HuginQueue
         return commands;
     }
     
-    CommandQueue * GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString & ExePath, const wxString & project, const wxString & assistantSetting, std::ostream& errStream)
+    CommandQueue * GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString & ExePath, const wxString & project, const wxString & assistantSetting, wxArrayString& tempFilesDelete, std::ostream& errStream)
     {
         CommandQueue* commands = new CommandQueue;
         const wxString quotedProject(wxEscapeFilename(project));
@@ -172,6 +172,7 @@ namespace HuginQueue
                 };
             };
         };
+        wxString imageListFile;
 
         for (size_t i = 0; i < stepCount; ++i)
         {
@@ -228,6 +229,25 @@ namespace HuginQueue
             }
             args.Replace("%project%", quotedProject, true);
             args.Replace("%image0%", quotedImage0, true);
+            // build image list file if needed
+            if (imageListFile.IsEmpty() && args.Find("%imagelist%") != wxNOT_FOUND)
+            {
+                wxFileName tempImageList(wxFileName::CreateTempFileName(GetConfigTempDir(wxConfig::Get()) + wxT("hi")));
+                imageListFile = tempImageList.GetFullPath();
+                tempFilesDelete.Add(imageListFile);
+                wxFFileOutputStream outputStream(imageListFile);
+                wxTextOutputStream outputFile(outputStream);
+                // write image list file
+                for (auto i = 0; i < pano.getNrOfImages(); ++i)
+                {
+                    outputFile << wxString(pano.getImage(i).getFilename().c_str(), HUGIN_CONV_FILENAME) << endl;
+                }
+                outputFile.Flush();
+            };
+            if (!imageListFile.IsEmpty())
+            {
+                args.Replace("%imagelist%", wxEscapeFilename(imageListFile));
+            };
             const wxString description = GetSettingString(&settings, wxT("Description"));
             commands->push_back(new NormalCommand(prog, args, description));
         }

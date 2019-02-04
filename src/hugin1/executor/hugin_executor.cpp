@@ -135,7 +135,7 @@ class HuginExecutor : public APP
             }
             else
             {
-                commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, m_utilsBinDir, m_input, m_userAssistant, std::cerr);
+                commands = HuginQueue::GetAssistantCommandQueueUserDefined(pano, m_utilsBinDir, m_input, m_userAssistant, tempfiles, std::cerr);
             };
         }
         else
