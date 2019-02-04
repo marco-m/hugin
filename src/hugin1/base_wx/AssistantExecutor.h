@@ -45,7 +45,7 @@ namespace HuginQueue
         @param errStream output stream on which the error should be written
     @return pointer to CommandQueue
     */
-    WXIMPEX CommandQueue* GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& assistantSetting, std::ostream& errStream);
+    WXIMPEX CommandQueue* GetAssistantCommandQueueUserDefined(const HuginBase::Panorama & pano, const wxString& ExePath, const wxString& project, const wxString& assistantSetting, wxArrayString& tempFilesDelete, std::ostream& errStream);
 }; // namespace 
 
 #endif
