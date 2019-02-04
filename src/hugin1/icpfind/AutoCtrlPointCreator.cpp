@@ -377,7 +377,9 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
         return cps;
     }
     // create suitable command line..
-    wxString autopanoExe = GetProgPath(setting.GetProg());
+    const wxString autopanoExe = GetProgPath(setting.GetProg());
+    const bool isGeocpset = (autopanoExe.Find("geocpset") != wxNOT_FOUND);
+    size_t oldCpsSize = -1;
     if(setting.IsTwoStepDetector())
     {
         std::vector<wxString> keyFiles(pano.getNrOfImages());
@@ -452,8 +454,17 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
         //delete all existing control points in temp project
         //otherwise the existing control points will be loaded again
         HuginBase::Panorama tempPano = pano.duplicate();
-        HuginBase::CPVector emptyCPV;
-        tempPano.setCtrlPoints(emptyCPV);
+        // exception is when we can geocpset
+        // geocpset needs the other cp to work properly
+        if (isGeocpset)
+        {
+            oldCpsSize = tempPano.getNrOfCtrlPoints();
+        }
+        else
+        {
+            HuginBase::CPVector emptyCPV;
+            tempPano.setCtrlPoints(emptyCPV);
+        };
         tempPano.printPanoramaScript(ptoinstream, tempPano.getOptimizeVector(), tempPano.getOptions(), imgs, false);
     }
 
@@ -499,6 +510,11 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
 
     // read and update control points
     cps = readUpdatedControlPoints((const char*)ptofile.mb_str(HUGIN_CONV_FILENAME), pano, imgs, !use_inputscript);
+    if (isGeocpset && oldCpsSize >= 0)
+    {
+        // for geocpset remove all old cps from the vector
+        cps.erase(cps.begin(), cps.begin() + oldCpsSize);
+    };
 
     if (namefile_name != wxString(wxT(""))) {
         namefile.Close();
