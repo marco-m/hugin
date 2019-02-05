@@ -205,6 +205,35 @@ namespace vigra
         }
 
 
+        class threshold_alpha_transform
+        {
+        public:
+            threshold_alpha_transform(const range_t& source, const range_t& destination) :
+                threshold_((source.second - source.first)/2.0),
+                zero_(destination.first),
+                max_(destination.second)
+            {
+            }
+
+            template <typename T>
+            double operator()(T x) const
+            {
+                if (static_cast<double>(x) >= threshold_)
+                {
+                    return max_;
+                }
+                else
+                {
+                    return zero_;
+                }
+            }
+
+        private:
+            const double threshold_;
+            const double zero_;
+            const double max_;
+        };
+
         template <class ImageIterator, class ImageAccessor,
         class AlphaIterator, class AlphaAccessor>
             void
@@ -220,93 +249,47 @@ namespace vigra
 
             const range_t alpha_source_range(vigra_ext::LUTTraits<ImageValueType>::min(), vigra_ext::LUTTraits<ImageValueType>::max());
             const range_t mask_destination_range(vigra_ext::LUTTraits<AlphaValueType>::min(), vigra_ext::LUTTraits<AlphaValueType>::max());
-            if (alpha_source_range.first != mask_destination_range.first || alpha_source_range.second != mask_destination_range.second)
+            // we need to scale the alpha channel, we are applying a threshold function at the same time
+            const threshold_alpha_transform alpha_rescaler(alpha_source_range, mask_destination_range);
+            switch (pixel_t_of_string(decoder->getPixelType()))
             {
-                // we need to scale the alpha channel
-                const linear_transform alpha_rescaler(alpha_source_range, mask_destination_range);
-                switch (pixel_t_of_string(decoder->getPixelType()))
-                {
-                    case UNSIGNED_INT_8:
-                        read_image_band_and_alpha<UInt8>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case UNSIGNED_INT_16:
-                        read_image_band_and_alpha<UInt16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case UNSIGNED_INT_32:
-                        read_image_band_and_alpha<UInt32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case SIGNED_INT_16:
-                        read_image_band_and_alpha<Int16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case SIGNED_INT_32:
-                        read_image_band_and_alpha<Int32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case IEEE_FLOAT_32:
-                        read_image_band_and_alpha<float>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case IEEE_FLOAT_64:
-                        read_image_band_and_alpha<double>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    default:
-                        vigra_fail("vigra::detail::importImageAlpha<scalar>: not reached");
-                }
-            }
-            else
-            {
-                switch (pixel_t_of_string(decoder->getPixelType()))
-                {
-                    case UNSIGNED_INT_8:
-                        read_image_band_and_alpha<UInt8>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case UNSIGNED_INT_16:
-                        read_image_band_and_alpha<UInt16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case UNSIGNED_INT_32:
-                        read_image_band_and_alpha<UInt32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case SIGNED_INT_16:
-                        read_image_band_and_alpha<Int16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case SIGNED_INT_32:
-                        read_image_band_and_alpha<Int32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case IEEE_FLOAT_32:
-                        read_image_band_and_alpha<float>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case IEEE_FLOAT_64:
-                        read_image_band_and_alpha<double>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    default:
-                        vigra_fail("vigra::detail::importImageAlpha<scalar>: not reached");
-                }
+                case UNSIGNED_INT_8:
+                    read_image_band_and_alpha<UInt8>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case UNSIGNED_INT_16:
+                    read_image_band_and_alpha<UInt16>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case UNSIGNED_INT_32:
+                    read_image_band_and_alpha<UInt32>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case SIGNED_INT_16:
+                    read_image_band_and_alpha<Int16>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case SIGNED_INT_32:
+                    read_image_band_and_alpha<Int32>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case IEEE_FLOAT_32:
+                    read_image_band_and_alpha<float>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case IEEE_FLOAT_64:
+                    read_image_band_and_alpha<double>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                default:
+                    vigra_fail("vigra::detail::importImageAlpha<scalar>: not reached");
             }
 
             decoder->close();
@@ -328,93 +311,47 @@ namespace vigra
 
             const range_t alpha_source_range(vigra_ext::LUTTraits<ImageValueType>::min(), vigra_ext::LUTTraits<ImageValueType>::max());
             const range_t mask_destination_range(vigra_ext::LUTTraits<AlphaValueType>::min(), vigra_ext::LUTTraits<AlphaValueType>::max());
-            if (alpha_source_range.first != mask_destination_range.first || alpha_source_range.second != mask_destination_range.second)
+            // we need to scale the alpha channel, applying threshold function at the same time
+            const threshold_alpha_transform alpha_rescaler(alpha_source_range, mask_destination_range);
+            switch (pixel_t_of_string(decoder->getPixelType()))
             {
-                // we need to scale the alpha channel
-                const linear_transform alpha_rescaler(alpha_source_range, mask_destination_range);
-                switch (pixel_t_of_string(decoder->getPixelType()))
-                {
-                    case UNSIGNED_INT_8:
-                        read_image_bands_and_alpha<UInt8>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case UNSIGNED_INT_16:
-                        read_image_bands_and_alpha<UInt16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case UNSIGNED_INT_32:
-                        read_image_bands_and_alpha<UInt32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case SIGNED_INT_16:
-                        read_image_bands_and_alpha<Int16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case SIGNED_INT_32:
-                        read_image_bands_and_alpha<Int32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case IEEE_FLOAT_32:
-                        read_image_bands_and_alpha<float>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    case IEEE_FLOAT_64:
-                        read_image_bands_and_alpha<double>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, alpha_rescaler);
-                        break;
-                    default:
-                        vigra_fail("vigra::detail::importImageAlpha<scalar>: not reached");
-                }
-            }
-            else
-            {
-                switch (pixel_t_of_string(decoder->getPixelType()))
-                {
-                    case UNSIGNED_INT_8:
-                        read_image_bands_and_alpha<UInt8>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case UNSIGNED_INT_16:
-                        read_image_bands_and_alpha<UInt16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case UNSIGNED_INT_32:
-                        read_image_bands_and_alpha<UInt32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case SIGNED_INT_16:
-                        read_image_bands_and_alpha<Int16>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case SIGNED_INT_32:
-                        read_image_bands_and_alpha<Int32>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case IEEE_FLOAT_32:
-                        read_image_bands_and_alpha<float>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    case IEEE_FLOAT_64:
-                        read_image_bands_and_alpha<double>(decoder.get(),
-                            image_iterator, image_accessor,
-                            alpha_iterator, alpha_accessor, identity());
-                        break;
-                    default:
-                        vigra_fail("vigra::detail::importImageAlpha<scalar>: not reached");
-                }
+                case UNSIGNED_INT_8:
+                    read_image_bands_and_alpha<UInt8>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case UNSIGNED_INT_16:
+                    read_image_bands_and_alpha<UInt16>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case UNSIGNED_INT_32:
+                    read_image_bands_and_alpha<UInt32>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case SIGNED_INT_16:
+                    read_image_bands_and_alpha<Int16>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case SIGNED_INT_32:
+                    read_image_bands_and_alpha<Int32>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case IEEE_FLOAT_32:
+                    read_image_bands_and_alpha<float>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                case IEEE_FLOAT_64:
+                    read_image_bands_and_alpha<double>(decoder.get(),
+                        image_iterator, image_accessor,
+                        alpha_iterator, alpha_accessor, alpha_rescaler);
+                    break;
+                default:
+                    vigra_fail("vigra::detail::importImageAlpha<scalar>: not reached");
             }
 
             decoder->close();
