@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2019-02-02 10:59+0100\n"
-"PO-Revision-Date: 2017-12-12 08:49+0100\n"
+"PO-Revision-Date: 2019-02-05 17:35+0100\n"
 "Last-Translator: Harry van der Wolf <hvdwolf@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@lists.kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -160,7 +160,7 @@ msgstr "Hugin"
 
 #: hugin1/base_wx/LensTools.cpp:38 hugin1/base_wx/LensTools.cpp:81
 msgid "Normal (rectilinear)"
-msgstr "Normaal (rectilinear)"
+msgstr "Normaal (rectilineair)"
 
 #: hugin1/base_wx/LensTools.cpp:39 hugin1/base_wx/LensTools.cpp:82
 msgid "Panoramic (cylindrical)"
@@ -701,38 +701,36 @@ msgid "unknown projection"
 msgstr "onbekende projectie"
 
 #: hugin1/base_wx/platform.cpp:65
-#, fuzzy
 msgid "All Image files"
-msgstr "Afbeeldingsbestand:"
+msgstr "Alle afbeeldingsbestanden"
 
 #: hugin1/base_wx/platform.cpp:79 hugin1/base_wx/platform.cpp:102
 msgid "JPEG files (*.jpg,*.jpeg)"
-msgstr ""
+msgstr "JPEG bestanden (*.jpg,*.jpeg)"
 
 #: hugin1/base_wx/platform.cpp:80 hugin1/base_wx/platform.cpp:103
 msgid "TIFF files (*.tif,*.tiff)"
-msgstr ""
+msgstr "TIFF bestanden (*.tif,*.tiff)"
 
 #: hugin1/base_wx/platform.cpp:81 hugin1/base_wx/platform.cpp:104
 msgid "PNG files (*.png)"
-msgstr ""
+msgstr "PNG bestanden (*.png)"
 
 #: hugin1/base_wx/platform.cpp:82 hugin1/base_wx/platform.cpp:105
 msgid "HDR files (*.hdr)"
-msgstr ""
+msgstr "HDR bestanden (*.hdr)"
 
 #: hugin1/base_wx/platform.cpp:83 hugin1/base_wx/platform.cpp:106
 msgid "EXR files (*.exr)"
-msgstr ""
+msgstr "EXR bestanden (*.exr)"
 
 #: hugin1/base_wx/platform.cpp:84
 msgid "All files (*)"
-msgstr ""
+msgstr "Ale bestanden (*)"
 
 #: hugin1/base_wx/platform.cpp:93
-#, fuzzy
 msgid "Raw files"
-msgstr "Openen van bestand %s"
+msgstr "Raw bestanden"
 
 #: hugin1/base_wx/platform.cpp:217 hugin1/base_wx/wxLensDB.cpp:631
 #: hugin1/base_wx/wxLensDB.cpp:636 hugin1/base_wx/wxLensDB.cpp:644
@@ -1378,7 +1376,7 @@ msgstr "Het berekende punt ligt buiten de afbeelding"
 
 #: hugin1/hugin/CPEditorPanel.cpp:1311
 msgid "Distance between line control points too short, skipping fine-tune."
-msgstr ""
+msgstr "Afstand tussen lijn ijkpunten te kort, fine-tuning wordt overgeslagen."
 
 #: hugin1/hugin/CPEditorPanel.cpp:1345 hugin1/hugin/CPEditorPanel.cpp:1360
 msgid "No similar point found."
@@ -1415,9 +1413,8 @@ msgstr "Lijn %d"
 
 #: hugin1/hugin/CPEditorPanel.cpp:1417 hugin1/hugin/CPListFrame.cpp:101
 #: hugin1/hugin/CPListFrame.cpp:218
-#, fuzzy
 msgid "Correlation"
-msgstr "Correlatiedrempel:"
+msgstr "Correlatie"
 
 #: hugin1/hugin/CPEditorPanel.cpp:1674 hugin1/hugin/CPListFrame.cpp:183
 #: hugin1/hugin/GLPreviewFrame.cpp:610 hugin1/hugin/GLPreviewFrame.cpp:3027
@@ -1783,8 +1780,9 @@ msgid "Value must be numeric."
 msgstr "De waarde moet numeriek zijn."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1706 hugin1/hugin/PreviewFrame.cpp:779
+#, fuzzy
 msgid "Value for range compression is outside of valid range."
-msgstr ""
+msgstr "Waarde voor reeks compressie valt buiten het toegestane bereik."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1852 hugin1/hugin/GLPreviewFrame.cpp:1941
 msgid ""
@@ -3713,19 +3711,16 @@ msgid "Select Enfuse"
 msgstr "Selecteer Enfuse"
 
 #: hugin1/hugin/PreferencesDialog.cpp:337
-#, fuzzy
 msgid "Select dcraw"
-msgstr "Alles selecteren"
+msgstr "Selecteer dcraw"
 
 #: hugin1/hugin/PreferencesDialog.cpp:353
-#, fuzzy
 msgid "Select RawTherapee-cli"
-msgstr "Selecteer PTStitcher.exe"
+msgstr "Selecteer RawTherapee-cli"
 
 #: hugin1/hugin/PreferencesDialog.cpp:369
-#, fuzzy
 msgid "Select Darktable-cli"
-msgstr "Alles selecteren"
+msgstr "Selecteer Darktable-cli"
 
 #: hugin1/hugin/PreferencesDialog.cpp:397
 #: hugin1/hugin/PreferencesDialog.cpp:485
@@ -3904,7 +3899,6 @@ msgid "EV:"
 msgstr "EV:"
 
 #: hugin1/hugin/PreviewFrame.cpp:281 hugin1/hugin/xrc/preview_frame.xrc:397
-#, fuzzy
 msgid "Range compression:"
 msgstr "Compressie:"
 
@@ -3957,7 +3951,8 @@ msgid ""
 "Executable \"%s\" not found.\n"
 "Please specify a valid executable in preferences."
 msgstr ""
-"\"%s\" niet gevonden. Specificeer een geldig pad in het voorkeuren scherm"
+"Programma \"%s\" niet gevonden.\n"
+"Specificeer een geldig programma"
 
 #: hugin1/hugin/RawImport.cpp:93
 #, fuzzy, c-format
@@ -3965,19 +3960,20 @@ msgid ""
 "Executable \"%s\" not found in PATH.\n"
 "Please specify a valid executable in preferences."
 msgstr ""
-"\"%s\" niet gevonden. Specificeer een geldig pad in het voorkeuren scherm"
+"Programma \"%s\" niet gevonden in PAD.\n"
+"Specificeer een geldigprogramma."
 
 #: hugin1/hugin/RawImport.cpp:141 hugin1/hugin/RawImport.cpp:178
 #: hugin1/hugin/RawImport.cpp:248 hugin1/hugin/RawImport.cpp:269
 #: hugin1/hugin/RawImport.cpp:346 hugin1/hugin/RawImport.cpp:407
-#, fuzzy, c-format
+#, c-format
 msgid "Executing: %s %s"
-msgstr "Nu detecteren: %s"
+msgstr "Uitvoeren: %s %s"
 
 #: hugin1/hugin/RawImport.cpp:147 hugin1/hugin/RawImport.cpp:184
 #, c-format
 msgid "Updating EXIF data for %s"
-msgstr ""
+msgstr "Bijwerken EXIF data voor %s"
 
 #: hugin1/hugin/RawImport.cpp:219
 #, c-format
@@ -3985,16 +3981,21 @@ msgid ""
 "Processing profile \"%s\" not found.\n"
 "Please specify a valid file or leave field empty for default settings."
 msgstr ""
+"Verwerkings profiel \"%s\" niet gevonden.\n"
+"Geef alstublieft een correct bestand op of laat leeg voor standaard "
+"instellingen."
 
 #: hugin1/hugin/RawImport.cpp:457 hugin1/hugin/xrc/import_raw_dialog.xrc:159
 msgid "Import Raw Images"
-msgstr ""
+msgstr "Importeer Raw afbeeldingen"
 
 #: hugin1/hugin/RawImport.cpp:506
 msgid ""
 "Could not process of output of reference image.\n"
 "Can't process further images."
 msgstr ""
+"Kan uitvoer van referentie afbeelding niet verwerken.\n"
+"Kan verdere afbeeldingen niet verwerken."
 
 #: hugin1/hugin/RawImport.cpp:531 hugin1/hugin/RawImport.cpp:543
 #: hugin1/hugin/xrc/batch_frame.xrc:464
@@ -4003,40 +4004,43 @@ msgstr "Sluiten"
 
 #: hugin1/hugin/RawImport.cpp:711
 msgid "Warning: Read error"
-msgstr ""
+msgstr "Waarschuwing: leesfout"
 
 #: hugin1/hugin/RawImport.cpp:712
-#, fuzzy
 msgid ""
 "The following files will be skipped because the metadata of these files "
 "could not read."
 msgstr ""
-"Het volgende arg bestand wordt gebruikt om de labels uit de eerste "
-"afbeelding te kopiëren naar de tussen afbeeldingen."
+"De volgende bestanden worden overgeslagen omdat de metadata niet gelezen kon "
+"worden."
 
 #: hugin1/hugin/RawImport.cpp:735
 msgid "Warning: raw images from different cameras"
-msgstr ""
+msgstr "Waarschuwing: raw afbeeldingen van verschillende camera's"
 
 #: hugin1/hugin/RawImport.cpp:736
 msgid ""
 "The following images were shot with different camera than the other one.\n"
 "The raw import works only for images from the same cam."
 msgstr ""
+"De volgende afbeeldingen zijn met een andere camera gemaakt dan de vorige.\n"
+"De raw import werkt alleen voor afbeeldingen van dezelfde camera."
 
 #: hugin1/hugin/RawImport.cpp:838
 msgid ""
 "At least one raw images was not successfully converted.\n"
 "This image(s) will be skipped"
 msgstr ""
+"Tenminste één raw afbeelding is niet succesvol geconverteerd.\n"
+"Deze afbeelding(en) word(t)(en) overgeslagen."
 
 #: hugin1/hugin/RawImport.cpp:866
 msgid "Select default RT processing profile"
-msgstr ""
+msgstr "Selecteer het standaard RT bewerkings profiel"
 
 #: hugin1/hugin/RawImport.cpp:866
 msgid "RT processing profile|*.pp3"
-msgstr ""
+msgstr "RT bewerkings profiel|*.pp3"
 
 #: hugin1/hugin/huginApp.cpp:242
 #, c-format
@@ -5505,9 +5509,8 @@ msgid "Select by Distance"
 msgstr "Selecteer op afstand"
 
 #: hugin1/hugin/xrc/dlg_warning.xrc:55
-#, fuzzy
 msgid "Warning: Invalid filenames"
-msgstr "incorrecte bestandsnamen"
+msgstr "Waarschuwing: incorrecte bestandsnamen"
 
 #: hugin1/hugin/xrc/dlg_warning.xrc:74
 msgid ""
@@ -5515,6 +5518,9 @@ msgid ""
 "They will be overwritten when running the raw import.\n"
 "Do you want to overwrite these files?"
 msgstr ""
+"De volgende bestanden bestaan al.\n"
+"Ze worden overschreven wanneer u de raw import uitvoert.\n"
+"Wilt u deze bestanden overschrijven?"
 
 #: hugin1/hugin/xrc/dlg_warning.xrc:102 hugin1/hugin/xrc/main_frame.xrc:106
 msgid "Yes"
@@ -5553,11 +5559,12 @@ msgid "Minimum overlap:"
 msgstr "Minimale overlap:"
 
 #: hugin1/hugin/xrc/images_panel.xrc:51
-#, fuzzy
 msgid ""
 "Minimum overlap for output stack detection\n"
 "With -1 the assigned stacks in the project are used."
-msgstr "Minimale overlap voor detecteren van uitvoer lagen"
+msgstr ""
+"Minimale overlap voor detecteren van uitvoer lagen\n"
+"De toegekende lagen -1 worden in het project gebruikt."
 
 #: hugin1/hugin/xrc/images_panel.xrc:67
 msgid "Maximum Ev difference:"
@@ -5853,33 +5860,31 @@ msgstr "Bewerk afbeeldings variabelen"
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:12
 #, fuzzy
 msgid "WB reference:"
-msgstr "&Instellingen"
+msgstr "WB referentie"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:35
 msgid "dcraw"
-msgstr ""
+msgstr "dcraw"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:44
-#, fuzzy
 msgid "Additional dcraw parameters:"
-msgstr "Parameters Koppelen "
+msgstr "Additionele dcraw parameters:"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:72
 msgid "RawTherapee"
-msgstr ""
+msgstr "RawTherapee"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:81
-#, fuzzy
 msgid "Processing profile:"
-msgstr "Verwerken van:"
+msgstr "Verwerkings profiel:"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:88
 msgid "Leave empty to use default settings in RawTherapee"
-msgstr ""
+msgstr "Leeglaten om standaard RawTherapee instellingen te gebruiken"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:118
 msgid "darktable"
-msgstr ""
+msgstr "darktable"
 
 #: hugin1/hugin/xrc/import_raw_dialog.xrc:132
 #: hugin1/hugin/xrc/pref_dialog.xrc:164
@@ -7160,9 +7165,8 @@ msgid "This affects the control points editor and mask editor."
 msgstr "Dit beïnvloedt de ijkpunt editor en de masker editor."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:170
-#, fuzzy
 msgid "dcraw executable:"
-msgstr "Enblend programma:"
+msgstr "dcraw programma:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:177 hugin1/hugin/xrc/pref_dialog.xrc:199
 #: hugin1/hugin/xrc/pref_dialog.xrc:221 hugin1/hugin/xrc/pref_dialog.xrc:274
@@ -7170,14 +7174,12 @@ msgid "(leave empty for OS default)"
 msgstr "Laat leeg om standaardwaarde besturingssysteem te gebruiken"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:192
-#, fuzzy
 msgid "RT-cli executable:"
-msgstr "Enblend programma:"
+msgstr "RT-cli programma:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:214
-#, fuzzy
 msgid "darktable-cli executable:"
-msgstr "Enblend programma:"
+msgstr "darktable-cli programma:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:254
 msgid "File Options"
@@ -7594,9 +7596,8 @@ msgid "Create cropped images by default"
 msgstr "Altijd bijgesneden afbeeldingen maken"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1276
-#, fuzzy
 msgid "Use GPU for remapping"
-msgstr "Gebruik GPU voor positioneren:"
+msgstr "Gebruik GPU voor positioneren"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1277
 msgid "Use video card GPU to speed up remapping"
@@ -7615,7 +7616,6 @@ msgid "Default Arguments:"
 msgstr "Standaardparameters:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1355 hugin1/hugin/xrc/pref_dialog.xrc:1434
-#, fuzzy
 msgid ""
 "These are the default arguments for new projects.\n"
 "They can be changed for individual projects in the Stitcher tab.\n"
@@ -7624,7 +7624,7 @@ msgstr ""
 "Dit zijn de standaard parameters voor nieuwe projecten.\n"
 "Ze kunnen veranderd worden per project in het  Samenvoegen tabblad.\n"
 "Voer geen waarden in voor de -w, -o en --compression parameters, deze worden "
-"door hugin ingevuld"
+"door hugin ingevuld."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1365
 msgid "Enblend"
@@ -8416,37 +8416,29 @@ msgstr ""
 "Optimalisatie van alle vervormingsparameters. Optie \"alles\" heeft alleen "
 "zin bij sterk overlappende afbeeldingen met vele goed verspreide ijkpunten."
 
-#, fuzzy
 #~ msgid "(WB reference)"
-#~ msgstr "&Instellingen"
+#~ msgstr "(WB referentie)"
 
-#, fuzzy
 #~ msgid "Images"
-#~ msgstr "Afbeeld&ingen..."
+#~ msgstr "Afbeeldingen..."
 
-#, fuzzy
 #~ msgid "Add image(s)..."
-#~ msgstr "Voeg afbeeldingen toe.."
+#~ msgstr "Voeg afbeelding(en) toe.."
 
-#, fuzzy
 #~ msgid "Add other images to list"
-#~ msgstr "Voeg nog een afbeelding toe aan het huidige project"
+#~ msgstr "Voeg andere afbeeldingen toe aan de lijst"
 
-#, fuzzy
 #~ msgid "Remove image"
-#~ msgstr "Bewaar afbeelding"
+#~ msgstr "Verwijder afbeelding"
 
-#, fuzzy
 #~ msgid "Remove selected image from list"
-#~ msgstr "Verwijder de geselecteerde afbeelding(en)"
+#~ msgstr "Verwijder de geselecteerde afbeelding"
 
-#, fuzzy
 #~ msgid "Converter settings"
-#~ msgstr "Hoekdetectieschaal"
+#~ msgstr "conversie instellingen"
 
-#, fuzzy
 #~ msgid "Import &raw file(s)..."
-#~ msgstr "&Importeer Project..."
+#~ msgstr "Importeer &raw bestand(en)..."
 
 #~ msgid "Move the panorama or drag images into position"
 #~ msgstr "Verplaats het panorama of sleep afbeeldingen naar de juiste positie"
@@ -10116,3 +10108,19 @@ msgstr ""
 
 #~ msgid "Could not read number"
 #~ msgstr "Kan het nummer niet interpreteren"
+
+#~ msgid "Please add at least one raw image to list before you can import it."
+#~ msgstr ""
+#~ "Voeg tenminste een raw afbeelding aan de lijst toe om dee te kunnen "
+#~ "importeren."
+
+#~ msgid "Import Raw Files"
+#~ msgstr "Importeren Raw bestanden"
+
+#~ msgid "Mark selected image as white balance reference image"
+#~ msgstr ""
+#~ "Markeer geselecteerde afbeelding als witbalans referentie afbeelding"
+
+#~ msgid "Convert raw file to TIFF and add TIFF to current project"
+#~ msgstr ""
+#~ "Converteer raw bestand naar TIFF en voeg TIFF toe aan huidig project"
