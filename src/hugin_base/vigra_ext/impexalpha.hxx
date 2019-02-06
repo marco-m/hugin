@@ -209,7 +209,7 @@ namespace vigra
         {
         public:
             threshold_alpha_transform(const range_t& source, const range_t& destination) :
-                threshold_((source.second - source.first)/2.0),
+                threshold_((source.second - source.first)/255.0),
                 zero_(destination.first),
                 max_(destination.second)
             {
