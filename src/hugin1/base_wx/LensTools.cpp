@@ -575,4 +575,3 @@ wxString GetIso(const HuginBase::SrcPanoImage* img)
 
 
 
-
