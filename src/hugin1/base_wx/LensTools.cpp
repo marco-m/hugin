@@ -130,8 +130,8 @@ void SaveLensParameters(const wxString filename, HuginBase::Panorama* pano, unsi
     const char ** varname = HuginBase::Lens::variableNames;
     while (*varname)
     {
-        //ignore exposure value and hfov, hfov is separately handled by the code above
-        if (std::string(*varname) == "Eev" || std::string(*varname) == "v")
+        //ignore hfov, hfov is separately handled by the code above
+        if (std::string(*varname) == "v")
         {
             varname++;
             continue;
@@ -188,7 +188,7 @@ bool ApplyLensParameters(wxWindow * parent, HuginBase::Panorama *pano, HuginBase
             vars[i]=pano->getImageVariables(*it);
             for (HuginBase::LensVarMap::iterator it2 = lens.variables.begin(); it2 != lens.variables.end(); ++it2)
             {
-                if(it2->second.getName()=="EeV")
+                if (it2->second.getName() == "Eev" || it2->second.getName() == "Er" || it2->second.getName() == "Eb")
                 {
                     continue;
                 };
@@ -205,7 +205,7 @@ bool ApplyLensParameters(wxWindow * parent, HuginBase::Panorama *pano, HuginBase
         std::set<HuginBase::ImageVariableGroup::ImageVariableEnum> unlinkedVariables;
         for (HuginBase::LensVarMap::iterator it = lens.variables.begin(); it != lens.variables.end(); ++it)
         {
-            if(it->second.getName()=="EeV")
+            if(it->second.getName()=="Eev" || it->second.getName() == "Er" || it->second.getName() == "Eb")
             {
                 continue;
             };
@@ -321,11 +321,6 @@ bool LoadLensParametersChoose(wxWindow * parent, HuginBase::Lens & lens,
             // loop to load lens variables
             const char ** varname = HuginBase::Lens::variableNames;
             while (*varname) {
-                if (std::string(*varname) == "Eev")
-                {
-                    varname++;
-                    continue;
-                }
                 wxString key(wxT("Lens/"));
                 key.append(wxString(*varname, wxConvLocal));
                 d = 0;
@@ -577,6 +572,7 @@ wxString GetIso(const HuginBase::SrcPanoImage* img)
 };
 
 };
+
 
 
 

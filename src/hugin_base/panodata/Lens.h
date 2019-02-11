@@ -85,9 +85,6 @@ class IMPEX Lens {
          */
         bool isLandscape() const;
         
-        /** set the exposure value */
-        void setEV(double ev);
-
         /** get the image size, in pixels */
         vigra::Size2D getImageSize() const
         { return m_imageSize; }
