@@ -305,10 +305,6 @@ void HFOVDialog::OnLoadLensParameters(wxCommandEvent & e)
         t.y = const_map_get(lens.variables,"Vy").getValue();
         m_srcImg.setRadialVigCorrCenterShift(t);
 
-//        m_srcImg.setExposureValue(const_map_get(vars,"Eev").getValue());
-        m_srcImg.setWhiteBalanceRed(const_map_get(lens.variables,"Er").getValue());
-        m_srcImg.setWhiteBalanceBlue(const_map_get(lens.variables,"Eb").getValue());
-
         std::vector<float> resp(5);
         resp[0] = const_map_get(lens.variables,"Ra").getValue();
         resp[1] = const_map_get(lens.variables,"Rb").getValue();

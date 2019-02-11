@@ -42,7 +42,6 @@ Lens::Lens()
 
 const char* Lens::variableNames[] = { "v", "a", "b", "c", "d", "e", "g", "t",
                                     "Va", "Vb", "Vc", "Vd", "Vx", "Vy", 
-                                    "Eev", "Er", "Eb",
                                     "Ra", "Rb", "Rc", "Rd", "Re",  0};
 
 double Lens::getHFOV() const
@@ -60,11 +59,6 @@ double Lens::getFocalLength() const
 
     double HFOV = const_map_get(variables,"v").getValue();
     return SrcPanoImage::calcFocalLength(m_projectionFormat,HFOV,getCropFactor(),m_imageSize);
-}
-
-void Lens::setEV(double ev)
-{
-    map_get(variables, "Eev").setValue(ev);
 }
 
 double Lens::getAspectRatio() const
