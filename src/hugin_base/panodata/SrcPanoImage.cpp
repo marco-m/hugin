@@ -657,6 +657,23 @@ std::string SrcPanoImage::getDBLensName() const
     return std::string();
 };
 
+bool isFisheye(const BaseSrcPanoImage::Projection& proj)
+{
+    switch (proj)
+    {
+        case BaseSrcPanoImage::CIRCULAR_FISHEYE:
+        case BaseSrcPanoImage::FULL_FRAME_FISHEYE:
+        case BaseSrcPanoImage::FISHEYE_ORTHOGRAPHIC:
+        case BaseSrcPanoImage::FISHEYE_STEREOGRAPHIC:
+        case BaseSrcPanoImage::FISHEYE_EQUISOLID:
+        case BaseSrcPanoImage::FISHEYE_THOBY:
+            return true;
+        default:
+            return false;
+    };
+    return false;
+};
+
 bool SrcPanoImage::readProjectionFromDB()
 {
     bool success=false;
@@ -686,6 +703,21 @@ bool SrcPanoImage::readProjectionFromDB()
                 const double newFov = calcHFOV(getProjection(), newFocal, getCropFactor(), getSize());
                 setHFOV(newFov);
                 oldFocal = 0;
+                // for fisheye lenses read also automatically the distortions parameters from lens db
+                // because fisheye often don't follow exactly one of the projection models and need
+                // the distortion parameters to model the real projection of the used fisheye lens
+                if(isFisheye(getProjection()))
+                { 
+                    std::vector<double> dist;
+                    if (lensDB.GetDistortion(lensname, focal, dist))
+                    {
+                        if (dist.size() == 3)
+                        {
+                            dist.push_back(1.0 - dist[0] - dist[1] - dist[2]);
+                            setRadialDistortion(dist);
+                        };
+                    };
+                };
             };
             vigra::Rect2D dbCropRect;
             if (lensDB.GetCrop(lensname, focal, getSize(), dbCropRect))
