@@ -213,11 +213,9 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
         int ok = wxMessageBox(_("The same vignetting and response parameters should\nbe applied for all images of a lens.\nCurrently each image can have different parameters.\nLink parameters?"), _("Link parameters"), wxYES_NO | wxICON_INFORMATION);
         if (ok == wxYES)
         {
-            // perform all the commands we stocked up earilier.
-            for (std::vector<PanoCommand::PanoCommand *>::iterator it = commands.begin(); it != commands.end(); ++it)
-            {
-                PanoCommand::GlobalCmdHist::getInstance().addCommand(*it);
-            }
+            // perform all the commands we stocked up earilier using a CombinedPanoCommand, so only
+            // one command is in the history stack.
+            PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::CombinedPanoCommand(*m_pano, commands));
         }
         else
         {
@@ -396,15 +394,13 @@ void OptimizePhotometricPanel::runOptimizer(const HuginBase::UIntSet & imgs)
         DEBUG_DEBUG("Applying vignetting corr");
         // TODO: merge into a single update command
         const HuginBase::VariableMapVector & vars = optPano.getVariables();
-        PanoCommand::GlobalCmdHist::getInstance().addCommand(
-                new PanoCommand::UpdateImagesVariablesCmd(*m_pano, imgs, vars)
-                                               );
+        std::vector<PanoCommand::PanoCommand*> optCommands;
+        optCommands.push_back(new PanoCommand::UpdateImagesVariablesCmd(*m_pano, imgs, vars));
         //now update panorama exposure value
         HuginBase::PanoramaOptions opts = m_pano->getOptions();
         opts.outputExposureValue = HuginBase::CalculateMeanExposure::calcMeanExposure(*m_pano);
-        PanoCommand::GlobalCmdHist::getInstance().addCommand(
-                new PanoCommand::SetPanoOptionsCmd(*m_pano, opts)
-                                               );
+        optCommands.push_back(new PanoCommand::SetPanoOptionsCmd(*m_pano, opts));
+        PanoCommand::GlobalCmdHist::getInstance().addCommand(new PanoCommand::CombinedPanoCommand(*m_pano, optCommands));
     }
 }
 
