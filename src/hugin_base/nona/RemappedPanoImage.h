@@ -423,7 +423,7 @@ template <class ImageType>
 ImageType CopyImageNewSize(const ImageType& image, const vigra::Size2D& newSize)
 {
     ImageType newImage(newSize);
-    vigra::omp::copyImage(vigra::srcImageRange(image), vigra::destImage(newImage));
+    vigra::omp::copyImage(vigra::srcImageRange(image, vigra::Rect2D(newSize)), vigra::destImage(newImage));
     return newImage;
 };
 
