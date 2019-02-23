@@ -1873,12 +1873,22 @@ void ImagesTreeCtrl::SelectAllParameters(bool select, bool allImages)
             if(select)
             {
                 if((*it=="y" || *it=="p" || *it=="r" || *it=="TrX" || *it=="TrY" || *it=="TrZ" || *it=="Tpy" || *it=="Tpp") && 
-                    *img==m_pano->getOptions().optimizeReferenceImage)
+                    (*img==m_pano->getOptions().optimizeReferenceImage || m_pano->getImage(*img).YawisLinkedWith(m_pano->getImage(m_pano->getOptions().optimizeReferenceImage))))
                 {
                     optVec[*img].erase(*it);
                     continue;
                 };
-                if((*it=="Eev" || *it=="Er" || *it=="Eb") && *img==m_pano->getOptions().colorReferenceImage)
+                if(*it=="Eev" && (*img==m_pano->getOptions().colorReferenceImage || m_pano->getImage(*img).ExposureValueisLinkedWith(m_pano->getImage(m_pano->getOptions().colorReferenceImage))))
+                {
+                    optVec[*img].erase(*it);
+                    continue;
+                };
+                if (*it == "Er" && (*img == m_pano->getOptions().colorReferenceImage || m_pano->getImage(*img).WhiteBalanceRedisLinkedWith(m_pano->getImage(m_pano->getOptions().colorReferenceImage))))
+                {
+                    optVec[*img].erase(*it);
+                    continue;
+                };
+                if (*it == "Eb" && (*img == m_pano->getOptions().colorReferenceImage || m_pano->getImage(*img).WhiteBalanceBlueisLinkedWith(m_pano->getImage(m_pano->getOptions().colorReferenceImage))))
                 {
                     optVec[*img].erase(*it);
                     continue;
