@@ -361,6 +361,11 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
                        )
                     {
                         // add image
+                        if (srcImg.getCropFactor() <= 0.1)
+                        {
+                            // set crop factor to 1 if not set
+                            srcImg.setCropFactor(other.getCropFactor());
+                        };
                         int imgNr = pano.addImage(srcImg);
                         variable_groups.update();
                         lenses.switchParts(imgNr, lenses.getPartNumber(i));
