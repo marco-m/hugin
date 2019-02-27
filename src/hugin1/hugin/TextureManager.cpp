@@ -792,21 +792,31 @@ void TextureManager::TextureInfo::DefineLevels(int min,
                 wxImage rawImage;
                 Exiv2::PreviewImage previewImage = previews->getPreviewImage(lists[previewIndex]);
                 wxMemoryInputStream stream(previewImage.pData(), previewImage.size());
-                rawImage.LoadFile(stream, wxString(previewImage.mimeType().c_str(), wxConvLocal), -1);
-                placeholderWidth = rawImage.GetWidth();
-                placeholderHeight = rawImage.GetHeight();
-                placeholder_image = new GLubyte[placeholderWidth * placeholderHeight * 4];
-                size_t index = 0;
-                for (size_t y = 0; y < placeholderHeight; ++y)
+                // disable logging for loading preview images
+                wxLog::EnableLogging(false);
+                if (rawImage.LoadFile(stream, wxString(previewImage.mimeType().c_str(), wxConvLocal), -1))
                 {
-                    for (size_t x = 0; x < placeholderWidth; ++x)
+                    placeholderWidth = rawImage.GetWidth();
+                    placeholderHeight = rawImage.GetHeight();
+                    placeholder_image = new GLubyte[placeholderWidth * placeholderHeight * 4];
+                    size_t index = 0;
+                    for (size_t y = 0; y < placeholderHeight; ++y)
                     {
-                        placeholder_image[index++] = rawImage.GetRed(x, y);
-                        placeholder_image[index++] = rawImage.GetGreen(x, y);
-                        placeholder_image[index++] = rawImage.GetBlue(x, y);
-                        placeholder_image[index++] = 63;
+                        for (size_t x = 0; x < placeholderWidth; ++x)
+                        {
+                            placeholder_image[index++] = rawImage.GetRed(x, y);
+                            placeholder_image[index++] = rawImage.GetGreen(x, y);
+                            placeholder_image[index++] = rawImage.GetBlue(x, y);
+                            placeholder_image[index++] = 63;
+                        };
                     };
+                }
+                else
+                {
+                    hasPreview = false;
                 };
+                // re-enable logging
+                wxLog::EnableLogging(true);
             };
         };
         if (!hasPreview)
