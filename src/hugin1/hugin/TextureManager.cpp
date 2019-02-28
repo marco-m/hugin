@@ -927,8 +927,16 @@ void TextureManager::TextureInfo::DefineLevels(int min,
             // setup photometric transform for this image type
             // this corrects for response curve, white balance, exposure and
             // radial vignetting
+            HuginBase::SrcPanoImage tempSrcImg(src_img);
+            // for linear float image reset response type 
+            // because ImageCache returns already modified image information 
+            // depending on settings in the preferences
+            if (entry->imageFloat->size().area() > 0 && tempSrcImg.getResponseType() == HuginBase::SrcPanoImage::RESPONSE_LINEAR)
+            {
+                tempSrcImg.setResponseType(HuginBase::SrcPanoImage::RESPONSE_EMOR);
+            }
             HuginBase::Photometric::InvResponseTransform < unsigned char, double >
-                invResponse(src_img);
+                invResponse(tempSrcImg);
             // Assume LDR for now.
             // if (m_destImg.outputMode == PanoramaOptions::OUTPUT_LDR) {
             // select exposure and response curve for LDR output
