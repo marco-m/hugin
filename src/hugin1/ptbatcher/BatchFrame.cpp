@@ -1043,36 +1043,42 @@ bool BatchFrame::GetCheckSaveLog()
 
 void BatchFrame::OnCheckOverwrite(wxCommandEvent& event)
 {
+    wxConfigBase* config=wxConfigBase::Get();
     if(event.IsChecked())
     {
         m_batch->overwrite = true;
-        wxConfigBase::Get()->Write(wxT("/BatchFrame/OverwriteCheck"), 1l);
+        config->Write(wxT("/BatchFrame/OverwriteCheck"), 1l);
     }
     else
     {
         m_batch->overwrite = false;
-        wxConfigBase::Get()->Write(wxT("/BatchFrame/OverwriteCheck"), 0l);
+        config->Write(wxT("/BatchFrame/OverwriteCheck"), 0l);
     }
+    config->Flush();
 }
 
 void BatchFrame::OnChoiceEnd(wxCommandEvent& event)
 {
     m_batch->atEnd = static_cast<Batch::EndTask>((size_t)m_endChoice->GetClientData(event.GetSelection()));
-    wxConfigBase::Get()->Write(wxT("/BatchFrame/AtEnd"), static_cast<long>(m_batch->atEnd));
+    wxConfigBase* config=wxConfigBase::Get();
+    config->Write(wxT("/BatchFrame/AtEnd"), static_cast<long>(m_batch->atEnd));
+    config->Flush();
 }
 
 void BatchFrame::OnCheckVerbose(wxCommandEvent& event)
 {
+    wxConfigBase* config=wxConfigBase::Get();
     if(event.IsChecked())
     {
         m_batch->verbose = true;
-        wxConfigBase::Get()->Write(wxT("/BatchFrame/VerboseCheck"), 1l);
+        config->Write(wxT("/BatchFrame/VerboseCheck"), 1l);
     }
     else
     {
         m_batch->verbose = false;
-        wxConfigBase::Get()->Write(wxT("/BatchFrame/VerboseCheck"), 0l);
-    }
+        config->Write(wxT("/BatchFrame/VerboseCheck"), 0l);
+    };
+    config->Flush();
     m_batch->ShowOutput(m_batch->verbose);
 }
 
@@ -1397,7 +1403,9 @@ void BatchFrame::OnRefillListBox(wxCommandEvent& event)
 void BatchFrame::OnMinimizeTrayMenu(wxCommandEvent& event)
 {
     UpdateTrayIcon(event.IsChecked());
-    wxConfigBase::Get()->Write(wxT("/BatchFrame/minimizeTray"), event.IsChecked());
+    wxConfigBase* config=wxConfigBase::Get();
+    config->Write(wxT("/BatchFrame/minimizeTray"), event.IsChecked());
+    config->Flush();
 }
 
 void BatchFrame::UpdateTrayIcon(const bool createTrayIcon)
