@@ -378,7 +378,13 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
     }
     // create suitable command line..
     const wxString autopanoExe = GetProgPath(setting.GetProg());
-    const bool isGeocpset = (autopanoExe.Find("geocpset") != wxNOT_FOUND);
+    // special case
+    // geocpset needs other control points to link only unlinked images
+    // linefind needs other control points to correctly ignore nadir/zenit near images
+    //   (but only when all images are selected, ignore this limitation when user
+    //    selected certain images
+    const bool detectorNeedsOtherCp = (autopanoExe.Find("geocpset") != wxNOT_FOUND) || 
+        (autopanoExe.Find("linefind") != wxNOT_FOUND && pano.getNrOfImages()==imgs.size());
     size_t oldCpsSize = -1;
     if(setting.IsTwoStepDetector())
     {
@@ -456,7 +462,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
         HuginBase::Panorama tempPano = pano.duplicate();
         // exception is when we can geocpset
         // geocpset needs the other cp to work properly
-        if (isGeocpset)
+        if (detectorNeedsOtherCp)
         {
             oldCpsSize = tempPano.getNrOfCtrlPoints();
         }
@@ -510,7 +516,7 @@ HuginBase::CPVector AutoPanoSift::automatch(CPDetectorSetting &setting, HuginBas
 
     // read and update control points
     cps = readUpdatedControlPoints((const char*)ptofile.mb_str(HUGIN_CONV_FILENAME), pano, imgs, !use_inputscript);
-    if (isGeocpset && oldCpsSize >= 0)
+    if (detectorNeedsOtherCp && oldCpsSize >= 0)
     {
         // for geocpset remove all old cps from the vector
         cps.erase(cps.begin(), cps.begin() + oldCpsSize);
