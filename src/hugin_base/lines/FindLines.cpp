@@ -385,6 +385,13 @@ HuginBase::CPVector _getVerticalLines(const HuginBase::Panorama& pano,const unsi
         fitPano.run();
         opts.setHFOV(fitPano.getResultHorizontalFOV());
         opts.setHeight(hugin_utils::roundi(fitPano.getResultHeight()));
+        if (opts.getVFOV() > 100)
+        {
+            // limit vertical fov to 100 deg to prevent finding lines
+            // near nadir/zenit which are probably wrong with this simple
+            // line finding algorithmus
+            opts.setHeight(hugin_utils::roundi(opts.getHeight() * 90.0 / opts.getVFOV()));
+        };
         tempPano.setOptions(opts);
 
         //finally remap image
