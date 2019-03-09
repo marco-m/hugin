@@ -35,6 +35,7 @@
 #include <vigra/functorexpression.hxx>
 #include <vigra_ext/utils.h>
 #include <hugin_utils/openmp_lock.h>
+#include <algorithms/optimizer/PTOptimizer.h>
 
 extern "C"
 {
@@ -368,6 +369,10 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // disable progress messages from libpano optimizer
+    PT_setProgressFcn(ptProgress);
+    PT_setInfoDlgFcn(ptinfoDlg);
+
     std::vector<size_t> imagesToProcess;
     if(cmdlineImages.empty())
     {
@@ -395,6 +400,36 @@ int main(int argc, char* argv[])
                 std::copy(stackImages.begin(), stackImages.end(), std::back_inserter(imagesToProcess));
             };
         };
+        if (pano.getNrOfCtrlPoints())
+        {
+            // pano has already control points, so do a pair-wise optimisation to get
+            // rough positions of the images, so we can decide which images are near
+            // the zenit/nadir and ignore these images
+            HuginBase::Panorama optPano = pano.duplicate();
+            // reset translation parameters
+            HuginBase::VariableMapVector varMapVec = optPano.getVariables();
+            for (size_t i = 0; i < varMapVec.size(); i++)
+            {
+                map_get(varMapVec[i], "TrX").setValue(0);
+                map_get(varMapVec[i], "TrY").setValue(0);
+                map_get(varMapVec[i], "TrZ").setValue(0);
+            };
+            optPano.updateVariables(varMapVec);
+            // now do a pairwise optimisation
+            HuginBase::AutoOptimise(optPano).run();
+            std::vector<size_t> imagesToCheck;
+            std::swap(imagesToProcess, imagesToCheck);
+            for (auto& img:imagesToCheck)
+            {
+                // now remove all images from list where pitch > 50 or < -50 -> images near zenit/nadir
+                if (std::abs(optPano.getImage(img).getPitch()) < 50)
+                {
+                    imagesToProcess.push_back(img);
+                    std::cout << "line";
+                };
+                std::cout << std::endl;
+            };
+        }
     }
     else
     {
@@ -414,9 +449,6 @@ int main(int argc, char* argv[])
         return 1;
     };
 
-    PT_setProgressFcn(ptProgress);
-    PT_setInfoDlgFcn(ptinfoDlg);
-
     std::cout << hugin_utils::stripPath(argv[0]) << " is searching for vertical lines" << std::endl;
 #if _WIN32
     //multi threading of image loading results sometime in a race condition
@@ -425,11 +457,11 @@ int main(int argc, char* argv[])
     std::string s=vigra::impexListExtensions();
 #endif
 
-    size_t nrCPS=pano.getNrOfCtrlPoints();
-    #pragma omp parallel for schedule(dynamic)
+    const size_t nrCPS=pano.getNrOfCtrlPoints();
+#pragma omp parallel for schedule(dynamic)
     for(int i=0; i < imagesToProcess.size(); ++i)
     {
-        unsigned int imgNr=imagesToProcess[i];
+        const size_t imgNr = imagesToProcess[i];
         std::ostringstream buf;
         buf << "Working on image " << pano.getImage(imgNr).getFilename() << std::endl;
         std::cout << buf.str();
