@@ -454,8 +454,9 @@ int main(int argc, char* argv[])
 
         HuginBase::SmartPhotometricOptimizer::PhotometricOptimizeMode optmode =
             HuginBase::SmartPhotometricOptimizer::OPT_PHOTOMETRIC_LDR_WB;
-        if (opts.outputMode == HuginBase::PanoramaOptions::OUTPUT_HDR)
+        if (opts.outputMode == HuginBase::PanoramaOptions::OUTPUT_HDR || variable_groups.getStacks().getNumberOfParts() < pano.getNrOfImages())
         {
+            // use HDR algorithm is HDR mode is selected or the project contains stacks
             optmode = HuginBase::SmartPhotometricOptimizer::OPT_PHOTOMETRIC_HDR;
         }
         HuginBase::SmartPhotometricOptimizer photoOpt(pano, progressDisplay, pano.getOptimizeVector(), points, imageStepSize, optmode);
