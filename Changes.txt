@@ -10,6 +10,8 @@ Hugin 2019.0
 * Expression parser (pto_var and "manipulate image variables" in GUI) can now read also
   all image variables.
 * line_find: Ignore lines with low distance to each other to get better coverage.
+  Also use only central part of the panorama for searching for line control points
+  (ignoring zenit/nadir near areas).
 * pano_modify: Added new switch --projection-parameter to set projection parameters.
 * Store program settings according to XDG base dir specification (Linux only, needs to 
   compile with wxWidgets 3.1.1 or later).
