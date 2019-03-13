@@ -98,8 +98,8 @@ void Batch::AddProjectToBatch(wxString projectFile, wxString outputFile,Project:
 {
     wxFileName projectName(projectFile);
     wxFileName outName(outputFile);
-    projectName.Normalize();
-    outName.Normalize();
+    projectName.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_ENV_VARS);
+    outName.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_ENV_VARS);
 
     if(outputFile.Cmp(_T(""))!=0 || target==Project::DETECTING)
     {
