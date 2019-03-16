@@ -2433,6 +2433,13 @@ void MainFrame::RunAssistant(wxWindow* mainWin, const wxString& userdefinedAssis
             wxRemoveFile(f);
         };
     };
+    // check that GUI level is still approbiate
+    const GuiLevel reqGuiLevel = GetMinimumGuiLevel(pano);
+    if (reqGuiLevel > m_guiLevel)
+    {
+        // output of assistant requires higher GUI level
+        SetGuiLevel(reqGuiLevel);
+    };
     //if return value is non-zero, an error occurred in the assistant
     if(ret!=0)
     {
