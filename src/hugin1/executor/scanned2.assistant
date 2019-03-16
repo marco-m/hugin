@@ -12,7 +12,7 @@ Arguments=--projection=0 --fov=20x20 --output=%project% %project%
 Description=Searching control points
 Condition=not connected
 Program=cpfind
-Arguments=--multirow -v --output=%project% %project%
+Arguments=--multirow --output=%project% %project%
 
 [Step2]
 Description=Check result
@@ -35,7 +35,7 @@ Arguments=--output=%project% %project%
 [Step5]
 Description=Setting optimizer variables
 Program=pto_var
-Arguments=--unlink v0 --opt r,TrX,TrY,TrZ,!TrX0,!TrY0,!TrZ0 --output=%project% %project%
+Arguments=--opt r,TrX,TrY,TrZ,!TrX0,!TrY0,!TrZ0 --output=%project% %project%
 
 [Step6]
 Description=Optimizing
