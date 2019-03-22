@@ -248,7 +248,7 @@ namespace HuginQueue
             {
                 args.Replace("%imagelist%", wxEscapeFilename(imageListFile));
             };
-            const wxString description = GetSettingString(&settings, wxT("Description"));
+            const wxString description = GetSettingStringTranslated(&settings, wxT("Description"));
             commands->push_back(new NormalCommand(prog, args, description));
         }
         return commands;

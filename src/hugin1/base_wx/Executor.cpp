@@ -285,6 +285,19 @@ const wxString GetSettingString(wxConfigBase* setting, const wxString& name, con
     return s;
 };
 
+const wxString GetSettingStringTranslated(wxConfigBase* setting, const wxString& name, const wxString defaultValue)
+{
+    const wxString text = GetSettingString(setting, name, defaultValue);
+    if (text.IsEmpty())
+    {
+        return wxEmptyString;
+    }
+    else
+    {
+        return wxGetTranslation(text);
+    };
+};
+
 /** return the temp dir from the preferences, ensure that it ends with path separator */
 const wxString GetConfigTempDir(const wxConfigBase* config)
 {

@@ -95,6 +95,8 @@ namespace HuginQueue
 
     /** read a string from setting and remove all whitespaces */
     WXIMPEX const wxString GetSettingString(wxConfigBase* setting, const wxString& name, const wxString defaultValue = wxEmptyString);
+    /** read a translated string from settings and remove all whitespaces */
+    WXIMPEX const wxString GetSettingStringTranslated(wxConfigBase* setting, const wxString& name, const wxString defaultValue = wxEmptyString);
 
     /** return the temp dir from the preferences, ensure that it ends with path separator */
     WXIMPEX const wxString GetConfigTempDir(const wxConfigBase* config);

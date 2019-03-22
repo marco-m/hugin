@@ -987,7 +987,7 @@ namespace HuginQueue
             errStream << "ERROR: User-setting does not define any output steps." << std::endl;
             return commands;
         }
-        const wxString desc = GetSettingString(&settings, wxT("/General/Description"), wxEmptyString);
+        const wxString desc = GetSettingStringTranslated(&settings, wxT("/General/Description"), wxEmptyString);
         if (desc.IsEmpty())
         {
             statusText = wxString::Format(_("Stitching using \"%s\""), outputSettings.c_str());
@@ -1054,7 +1054,7 @@ namespace HuginQueue
                 CleanQueue(commands);
                 return commands;
             }
-            const wxString description = GetSettingString(&settings, wxT("Description"));
+            const wxString description = GetSettingStringTranslated(&settings, wxT("Description"));
             if (stepType.CmpNoCase(wxT("remap")) == 0)
             {
                 // build nona command

@@ -493,10 +493,8 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
                     {
                         // read descriptions from file
                         wxFileConfig executorFile(inputStream);
-                        wxString desc = executorFile.Read(wxT("/General/Description"), wxEmptyString);
-                        desc = desc.Trim(true).Trim(false);
-                        wxString help = executorFile.Read(wxT("/General/Help"), wxEmptyString);
-                        help = help.Trim(true).Trim(false);
+                        wxString desc = HuginQueue::GetSettingStringTranslated(&executorFile, wxT("/General/Description"), wxEmptyString);
+                        wxString help = HuginQueue::GetSettingStringTranslated(&executorFile, wxT("/General/Help"), wxEmptyString);
                         if (help.IsEmpty())
                         {
                             help = wxString::Format(_("User defined sequence: %s"), file);
@@ -551,9 +549,8 @@ MainFrame::MainFrame(wxWindow* parent, HuginBase::Panorama & pano)
                     {
                         // read descriptions from file
                         wxFileConfig assistantFile(inputStream);
-                        wxString desc = assistantFile.Read(wxT("/General/Description"), wxEmptyString);
-                        desc = desc.Trim(true).Trim(false);
-                        wxString help = assistantFile.Read(wxT("/General/Help"), wxEmptyString);
+                        wxString desc = HuginQueue::GetSettingStringTranslated(&assistantFile, wxT("/General/Description"), wxEmptyString);
+                        wxString help = HuginQueue::GetSettingStringTranslated(&assistantFile, wxT("/General/Help"), wxEmptyString);
                         help = help.Trim(true).Trim(false);
                         if (help.IsEmpty())
                         {

@@ -45,6 +45,16 @@ find({wanted => sub { if (-f and /\.xrc$/)
     push @xrc_to_cpp, $path_temp;
   }}, no_chdir => 1}, getcwd);
 
+# extract all translatable strings from user defined files
+my $translations_user_defined;
+(undef, $translations_user_defined) = File::Temp::tempfile(DIR => $temp_dir, OPEN => 0);
+find({wanted => sub { if (-f and /\.(assistant|executor)$/)
+  {
+    my $filename=File::Spec->abs2rel($File::Find::name);
+    say("Processing $filename");
+    system('perl', "$basedir/extract_user_defined.pl", $filename, $translations_user_defined);
+  }}, no_chdir => 1}, getcwd);
+
 #create array of all C++ files
 my @cfiles;
 my $cstartdir=getcwd;
@@ -55,6 +65,7 @@ find({wanted => sub {  if (-f) {
   }}, no_chdir => 1}, getcwd);
 @cfiles=sort @cfiles;
 push @cfiles, @xrc_to_cpp;
+push @cfiles, $translations_user_defined;
 
 # create input file list for xgettext
 say 'Extracting messages';
