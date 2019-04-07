@@ -10,14 +10,14 @@ Type=remap
 Arguments=-r ldr -m TIFF_m --ignore-exposure
 
 [Step1]
-Description=Fusing all stacks
+Description=Fusing all stacks with enfuse
 Type=stack
 Program=enfuse
 Arguments=-f%size% --output=%output% %input%
 WrapArgument=-w
 
 [Step2]
-Description=Blending all stacks
+Description=Blending stacks with enblend
 Type=merge
 Input=stacks
 Program=enblend

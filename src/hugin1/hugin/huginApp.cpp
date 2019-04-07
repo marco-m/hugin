@@ -377,7 +377,7 @@ bool huginApp::OnInit()
     exeFile.SetName("PTBatcherGUI");
     wxTaskBarJumpListItem *item1 = new wxTaskBarJumpListItem(
         NULL, wxTASKBAR_JUMP_LIST_TASK, _("Open Batch Processor"), exeFile.GetFullPath(), wxEmptyString,
-        _("Opens PTBatcher, the batch processor for Hugin's project files"),
+        _("Opens PTBatcherGUI, the batch processor for Hugin's project files"),
         exeFile.GetFullPath(), 0);
     jumpList.GetTasks().Append(item1);
     exeFile.SetName("calibrate_lens_gui");

@@ -836,7 +836,7 @@ void Batch::RemoveProjectAtIndex(int selIndex)
         {
             if(!wxRemoveFile(file.GetFullPath()))
             {
-                wxMessageBox( _("Error: Could not delete project file ")+file.GetFullPath(),_("Error!"),wxOK | wxICON_INFORMATION );
+                wxMessageBox(wxString::Format(_("Error: Could not delete project file %s"), file.GetFullPath()),_("Error!"),wxOK | wxICON_INFORMATION );
             }
         }
     }

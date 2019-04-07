@@ -75,7 +75,7 @@ void DragTool::Activate()
     helper->NotifyMe(PreviewToolHelper::MOUSE_PRESS, this);
     helper->NotifyMe(PreviewToolHelper::REALLY_DRAW_OVER_IMAGES, this);
     // a handy message for the user:
-    helper->SetStatusMessage(_("Drag to move images (optionally use shift to constrain), or roll with right-drag or Ctrl-drag."));
+    helper->SetStatusMessage(_("Drag to move images (optionally use shift to constrain), or roll with right-drag or Ctrl-drag"));
 }
 
 void DragTool::MouseMoveEvent(double x, double y, wxMouseEvent & e)
@@ -211,7 +211,7 @@ void DragTool::MouseButtonEvent(wxMouseEvent &e)
                 // we'll always rotate around the centre of the panorama.
                 start_coordinates.x = 0.0;    start_coordinates.y = 0.0;
                 shift_coordinates.x = 0.0;    shift_coordinates.y = 0.0;
-                helper->SetStatusMessage(_("Rotate around the centre to roll."));
+                helper->SetStatusMessage(_("Rotate around the centre to roll"));
             }
             if (drag_yaw || drag_pitch)
             {
@@ -232,9 +232,9 @@ void DragTool::MouseButtonEvent(wxMouseEvent &e)
                 shift_coordinates.x = yaw;    shift_coordinates.y = pitch;
                 // provide a helpfull message to the user via the staus bar.
                 if (shift) {
-                    helper->SetStatusMessage(_("Constrained drag: make a movement and it will be snapped to the yaw or pitch."));
+                    helper->SetStatusMessage(_("Constrained drag: make a movement and it will be snapped to the yaw or pitch"));
                 } else {
-                    helper->SetStatusMessage(_("Drag to move."));
+                    helper->SetStatusMessage(_("Drag to move"));
                 }
             }
             if (drag_roll || drag_yaw || drag_pitch)
@@ -355,7 +355,7 @@ void DragTool::MouseButtonEvent(wxMouseEvent &e)
         // stop dragging
         image_params.clear();
         
-        helper->SetStatusMessage(_("Drag to move images (optionally use shift to constrain), or roll with right-drag or ctrl-drag."));
+        helper->SetStatusMessage(_("Drag to move images (optionally use shift to constrain), or roll with right-drag or ctrl-drag"));
     }
 }
 

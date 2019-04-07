@@ -901,7 +901,7 @@ void CPEditorPanel::estimateAndAddOtherPoint(const hugin_utils::FDiff2D & p,
                     thisImg->setNewPoint(corrPoint.corrPos);
                     changeState(BOTH_POINTS_SELECTED);
                     wxString s1;
-                    s1.Printf(_("Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f "),
+                    s1.Printf(_("Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f"),
                               corrPoint.maxAngle, corrPoint.maxi, corrPoint.curv.x, corrPoint.curv.y );
                     
                     wxString s2 = s1 + wxT(" -- ") + wxString(_("change points, or press right mouse button to add the pair"));
@@ -1046,7 +1046,7 @@ void CPEditorPanel::NewPointChange(hugin_utils::FDiff2D p, bool left)
                     thisImg->setNewPoint(corrRes.maxpos);
                     otherImg->setNewPoint(corrRes.corrPos);
                     wxString s1;
-                    s1.Printf(_("Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f "),
+                    s1.Printf(_("Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f"),
                               corrRes.maxAngle, corrRes.maxi, corrRes.curv.x, corrRes.curv.y );
                     
                     corrMsg = s1 + wxT(" -- ") +  wxString(_("change points, or press right mouse button to add the pair"));
@@ -1336,7 +1336,7 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
     res.curv.x = - res.curv.x;
     res.curv.y = - res.curv.y;
 
-    MainFrame::Get()->SetStatusText(wxString::Format(_("Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f "),
+    MainFrame::Get()->SetStatusText(wxString::Format(_("Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, curvature: %0.3f %0.3f"),
                                     res.maxAngle, res.maxi, res.curv.x, res.curv.y ),0);
     if (res.corrPos.x < 0 || res.corrPos.y < 0 || res.maxpos.x < 0 || res.maxpos.y < 0)
     {

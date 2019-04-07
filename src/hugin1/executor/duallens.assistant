@@ -10,7 +10,7 @@ Program=pto_gen
 Arguments=--output=%project% --projection=2 --fov=393 %image0% %image0%
 
 [Step1]
-Description=Setting same advanced settings
+Description=Setting advanced settings
 Condition=single image
 Program=pto_var
 Arguments=--output=%project% --unlink=v0,d0,e0 --set=y1=180,d0=-0.25*width,d1=0.25*width,e=0 --crop=50%,94% %project%
@@ -40,7 +40,7 @@ Program=linefind
 Arguments=--output=%project% %project%
 
 [Step6]
-Description=Setting same advanced settings
+Description=Setting advanced settings
 Program=pto_var
 Arguments=--output=%project% --opt=y,p,r,v,d,e %project%
 
@@ -50,6 +50,6 @@ Program=autooptimiser
 Arguments=-n --output=%project% %project%
 
 [Step8]
-Description=Searching for best crop...
+Description=Searching for best crop
 Program=pano_modify
 Arguments=--projection=2 --fov=360x180 --canvas=70% --crop=AUTO --output=%project% %project%

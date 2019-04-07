@@ -371,7 +371,7 @@
                         <object class="sizeritem">
                           <object class="wxBitmapButton" name="exposure_default_button">
                             <bitmap stock_id="wxART_REDO"/>
-                            <tooltip>Sets the exposure value of the panorama to the mean exposure of all images.</tooltip>
+                            <tooltip>Sets the exposure value of the panorama to the mean exposure of all images</tooltip>
                           </object>
                           <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
                           <border>5</border>
@@ -423,7 +423,7 @@
                             <bitmap>data/preview_white_balance.png</bitmap>
                             <bitmapposition>wxTOP</bitmapposition>
                             <label>Gray picker</label>
-                            <tooltip>Correct global white balance by selecting a neutral gray area.</tooltip>
+                            <tooltip>Correct global white balance by selecting a neutral gray area</tooltip>
                           </object>
                           <flag>wxALIGN_CENTRE_VERTICAL</flag>
                         </object>
@@ -433,7 +433,7 @@
                             <bitmap>data/preview_control_point_tool.png</bitmap>
                             <bitmapposition>wxTOP</bitmapposition>
                             <label>Edit CP</label>
-                            <tooltip>Create or delete control points in selected rectangle.</tooltip>
+                            <tooltip>Create or delete control points in selected rectangle</tooltip>
                           </object>
                           <flag>wxALIGN_CENTRE_VERTICAL</flag>
                         </object>
@@ -665,7 +665,7 @@
                     <bitmapposition>wxTOP</bitmapposition>
                     <direction>wxTOP</direction>
                     <style>wxBU_EXACTFIT</style>
-                    <tooltip>Automatically straighten a wavy horizon.</tooltip>
+                    <tooltip>Automatically straighten a wavy horizon</tooltip>
                   </object>
                   <flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
                   <border>5</border>
@@ -1018,12 +1018,12 @@
       </object>
       <object class="wxMenuItem" name="action_show_overview">
         <label>&amp;Overview</label>
-        <help>Shows the overview of the panorama sphere.</help>
+        <help>Shows the overview of the panorama sphere</help>
         <checkable>1</checkable>
       </object>
       <object class="wxMenuItem" name="action_show_grid">
         <label>&amp;Grid</label>
-        <help>Shows a grid.</help>
+        <help>Shows a grid</help>
         <checkable>1</checkable>
       </object>
       <label>&amp;View</label>
@@ -1048,11 +1048,11 @@
       <object class="wxMenuItem" name="action_show_help">
         <label>&amp;Help</label>
         <accel>F1</accel>
-        <help>Some information on the different buttons and so on.</help>
+        <help>Some information on the different buttons and so on</help>
       </object>
       <object class="wxMenuItem" name="action_show_tip">
         <label>&amp;Tip of the day</label>
-        <help>Show one of the tips of the day.</help>
+        <help>Show one of the tips of the day</help>
       </object>
       <object class="wxMenuItem" name="action_show_shortcuts">
         <label>&amp;Keyboard Shortcuts</label>
@@ -1081,7 +1081,7 @@
       <help>New project</help>
     </object>
     <object class="wxMenuItem" name="action_load_project">
-      <label>&amp;Open</label>
+      <label>&amp;Open...</label>
       <accel>Ctrl-o</accel>
       <help>Open project</help>
     </object>
@@ -1091,7 +1091,7 @@
       <help>Save current project file</help>
     </object>
     <object class="wxMenuItem" name="action_save_as_project">
-      <label>S&amp;ave as</label>
+      <label>S&amp;ave as...</label>
       <help>Save current project to a new file</help>
       <accel>Ctrl+shift+s</accel>
     </object>
@@ -1102,11 +1102,11 @@
     <object class="separator"/>
     <object class="wxMenuItem" name="action_open_batch_processor">
       <label>&amp;Run Batch Processor</label>
-      <help>Opens PTBatcher, the batch processor for Hugin's project files</help>
+      <help>Opens PTBatcherGUI, the batch processor for Hugin's project files</help>
     </object>
     <object class="separator" platform="win|unix"/>
     <object class="wxMenuItem" name="action_show_prefs" platform="win|unix">
-      <label>&amp;Preferences</label>
+      <label>&amp;Preferences...</label>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="action_exit_preview">
@@ -1123,7 +1123,7 @@
       <help>New project</help>
     </object>
     <object class="wxMenuItem" name="action_load_project">
-      <label>&amp;Open</label>
+      <label>&amp;Open...</label>
       <accel>Ctrl-o</accel>
       <help>Open project</help>
     </object>
@@ -1133,7 +1133,7 @@
       <help>Save current project file</help>
     </object>
     <object class="wxMenuItem" name="action_save_as_project">
-      <label>S&amp;ave as</label>
+      <label>S&amp;ave as...</label>
       <help>Save current project to a new file</help>
       <accel>Ctrl+shift+s</accel>
     </object>

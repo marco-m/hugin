@@ -234,7 +234,7 @@ PanoCommand::PanoCommand* AddImageOperation::GetInternalCommand(wxWindow* parent
                         wxT(""),
 #endif
                         wxICON_EXCLAMATION | wxYES_NO );
-                    message.SetYesNoLabels(_("Convert anyway."), _("Let me select several raw files."));
+                    message.SetYesNoLabels(_("Convert anyway"), _("Let me select several raw files"));
                     if (message.ShowModal() == wxID_NO)
                     {
                         // post new add image event to open dialog again
@@ -1233,7 +1233,7 @@ PanoCommand::PanoCommand* ChangeStackOperation::GetInternalCommand(wxWindow* par
     HuginBase::StandardImageVariableGroups variable_groups(pano);
     long nr = wxGetNumberFromUser(
                             _("Enter new stack number"),
-                            _("stack number"),
+                            _("Stack number"),
                             _("Change stack number"), 0, 0,
                             variable_groups.getStacks().getNumberOfParts()-1
                                  );

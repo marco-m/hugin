@@ -595,11 +595,11 @@ void FindPanoDialog::SearchInDir(wxString dirstring, const bool includeSubdir, c
         m_button_send->Enable(!m_panos.empty());
         if(!m_panos.empty())
         {
-            m_statustext->SetLabel(wxString::Format(_("Found %d possible panoramas."), static_cast<int>(m_panos.size())));
+            m_statustext->SetLabel(wxString::Format(_("Found %d possible panoramas"), static_cast<int>(m_panos.size())));
         }
         else
         {
-            m_statustext->SetLabel(_("No possible panoramas found."));
+            m_statustext->SetLabel(_("No possible panoramas found"));
         };
         TIFFSetWarningHandler(m_oldtiffwarning);
     };

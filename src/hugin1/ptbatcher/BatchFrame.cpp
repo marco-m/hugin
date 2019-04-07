@@ -512,7 +512,7 @@ void BatchFrame::OnButtonChangePrefix(wxCommandEvent& event)
         if (project->target == Project::STITCHING)
         {
             wxFileName prefix(project->prefix);
-            wxFileDialog dlg(0,_("Specify output prefix for project ")+project->path,
+            wxFileDialog dlg(0, wxString::Format(_("Specify output prefix for project %s"), project->path),
                              prefix.GetPath(),
                              prefix.GetFullName(), wxT(""),
                              wxFD_SAVE, wxDefaultPosition);

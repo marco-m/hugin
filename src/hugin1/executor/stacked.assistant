@@ -10,13 +10,13 @@ Program=cpfind
 Arguments=--linearmatch -v --output=%project% %project%
 
 [Step1]
-Description=Check result
+Description=Checking result
 Condition=not connected
 Program=checkpto
 Arguments=%project%
 
 [Step2]
-Description=Set optimizer variables
+Description=Setting optimizer variables
 Program=pto_var
 Arguments=--opt=y,p,r --output=%project% %project%
 
@@ -26,6 +26,6 @@ Program=autooptimiser
 Arguments=-n --output=%project% %project%
 
 [Step4]
-Description=Searching for best crop...
+Description=Searching for best crop
 Program=pano_modify
 Arguments=--projection=0 --fov=AUTO --canvas=100% --crop=AUTOHDR --output-type=REMAPORIG --output=%project% %project%

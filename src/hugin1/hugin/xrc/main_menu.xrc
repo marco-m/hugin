@@ -14,7 +14,7 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="action_add_images">
-        <label>&amp;Add Image</label>
+        <label>&amp;Add Image...</label>
         <help>Add another image to the current project</help>
       </object>
       <object class="wxMenuItem" name="action_assistant">
@@ -32,7 +32,7 @@
       </object>
       <object class="wxMenuItem" name="action_optimize_ignore_line_cp">
         <label>Ignore &amp;line control points</label>
-        <help>Use only normal control points in optimization.</help>
+        <help>Use only normal control points in optimization</help>
         <checkable>1</checkable>
       </object>
       <object class="wxMenuItem" name="action_optimize">
@@ -43,14 +43,14 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="action_finetune_all_cp">
         <label>Fine-&amp;tune all Points</label>
-        <help>Runs fine-tune on all control points.</help>
+        <help>Runs fine-tune on all control points</help>
       </object>
       <object class="wxMenuItem" name="action_remove_cp_in_masks">
         <label>Remove control points in &amp;masks</label>
-        <help>Removes all control points inside masked areas.</help>
+        <help>Removes all control points inside masked areas</help>
       </object>
       <object class="wxMenuItem" name="action_python_script">
-        <label>Run &amp;Python script</label>
+        <label>Run &amp;Python script...</label>
         <help>Run a python script</help>
       </object>
       <label>&amp;Edit</label>
@@ -63,23 +63,23 @@
         <help>Shows Hugin's main window on full-screen</help>
       </object>
       <object class="wxMenuItem" name="ID_CP_TABLE">
-        <label>&amp;Control point table</label>
+        <label>Control point &amp;table</label>
         <accel>F3</accel>
         <help>Shows all control point distances</help>
       </object>
       <object class="wxMenuItem" name="ID_SHOW_PREVIEW_FRAME">
-        <label>&amp;Preview window</label>
+        <label>&amp;Panorama preview window</label>
         <accel>Ctrl-p</accel>
-        <help>Show the preview window</help>
+        <help>Show the panorama preview window</help>
       </object>
       <object class="wxMenuItem" name="ID_SHOW_GL_PREVIEW_FRAME">
-        <label>&amp;Fast Preview window</label>
+        <label>&amp;Fast panorama preview window</label>
         <accel>Ctrl-shift-p</accel>
-        <help>Show the OpenGL preview window</help>
+        <help>Show the fast panorama preview window (OpenGL)</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="ID_SHOW_PANEL_IMAGES">
-        <label>&amp;Photos</label>
+        <label>P&amp;hotos</label>
         <accel>Shift-F1</accel>
         <help>Show the Photos panel</help>
       </object>
@@ -104,7 +104,7 @@
         <help>Show the Exposure panel</help>
       </object>
       <object class="wxMenuItem" name="ID_SHOW_PANEL_PANORAMA">
-        <label>&amp;Stitcher</label>
+        <label>S&amp;titcher</label>
         <accel>Shift-F6</accel>
         <help>Show the Stitcher panel</help>
       </object>
@@ -142,11 +142,11 @@
       <object class="wxMenuItem" name="action_show_help">
         <label>&amp;Help</label>
         <accel>F1</accel>
-        <help>Some information on the different buttons and so on.</help>
+        <help>Some information on the different buttons and so on</help>
       </object>
       <object class="wxMenuItem" name="action_show_tip">
         <label>&amp;Tip of the day</label>
-        <help>Show one of the tips of the day.</help>
+        <help>Show one of the tips of the day</help>
       </object>
       <object class="wxMenuItem" name="action_show_shortcuts">
         <label>&amp;Keyboard Shortcuts</label>
@@ -174,7 +174,7 @@
       <help>New project</help>
     </object>
     <object class="wxMenuItem" name="action_load_project">
-      <label>&amp;Open</label>
+      <label>&amp;Open...</label>
       <accel>Ctrl-o</accel>
       <help>Open project</help>
     </object>
@@ -184,12 +184,12 @@
       <help>Save current project file</help>
     </object>
     <object class="wxMenuItem" name="action_save_as_project">
-      <label>S&amp;ave as</label>
+      <label>S&amp;ave as...</label>
       <accel>Ctrl-Shift-s</accel>
       <help>Save current project to a new file</help>
     </object>
     <object class="wxMenuItem" name="action_save_as_ptstitcher">
-      <label>&amp;Write PTStitcher script</label>
+      <label>&amp;Write PTStitcher script...</label>
       <help>Write current project to a PTStitcher-compatible script file, useful for batch processing</help>
     </object>
     <object class="wxMenu" name="menu_mru">
@@ -199,24 +199,24 @@
     <object class="separator"/>
     <object class="wxMenuItem" name="action_open_batch_processor">
       <label>&amp;Run Batch Processor</label>
-      <help>Opens PTBatcher, the batch processor for Hugin's project files</help>
+      <help>Opens PTBatcherGUI, the batch processor for Hugin's project files</help>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="action_import_project">
       <label>&amp;Merge project...</label>
-      <help>Merges an existing project file with the current project.</help>
+      <help>Merges an existing project file with the current project</help>
     </object>
     <object class="wxMenuItem" name="action_import_papywizard">
       <label>Import settings from Papywizard &amp;XML file...</label>
       <help>Read shoot settings from a Papywizard XML file</help>
     </object>
     <object class="wxMenuItem" name="action_apply_template">
-      <label>Apply &amp;Template</label>
-      <help>Assign the settings of a previously saved project to the current images.</help>
+      <label>Apply &amp;Template...</label>
+      <help>Assign the settings of a previously saved project to the current images</help>
     </object>
     <object class="separator" platform="win|unix"/>
     <object class="wxMenuItem" name="action_show_prefs" platform="win|unix">
-      <label>&amp;Preferences</label>
+      <label>&amp;Preferences...</label>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="action_exit_hugin">
@@ -229,20 +229,20 @@
   <object class="wxMenu" name="file_menu_simple">
     <object class="wxMenuItem" name="action_open_batch_processor">
       <label>&amp;Run Batch Processor</label>
-      <help>Opens PTBatcher, the batch processor for Hugin's project files</help>
+      <help>Opens PTBatcherGUI, the batch processor for Hugin's project files</help>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="action_import_project">
       <label>&amp;Merge project...</label>
-      <help>Merges an existing project file with the current project.</help>
+      <help>Merges an existing project file with the current project</help>
     </object>
     <object class="wxMenuItem" name="action_apply_template">
-      <label>Apply &amp;Template</label>
-      <help>Assign the settings of a previously saved project to the current images.</help>
+      <label>Apply &amp;Template...</label>
+      <help>Assign the settings of a previously saved project to the current images</help>
     </object>
     <object class="separator" platform="win|unix"/>
     <object class="wxMenuItem" name="action_show_prefs" platform="win|unix">
-      <label>&amp;Preferences</label>
+      <label>&amp;Preferences...</label>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="action_exit_hugin">

@@ -196,7 +196,7 @@ class HuginExecutor : public APP
             {
                 // short waiting time to write all files to disc
                 wxMilliSleep(100);
-                std::cout << _("Removing temporary files...") << std::endl;
+                std::cout << _("Removing temporary files") << std::endl;
                 for (size_t i = 0; i < tempfiles.size(); ++i)
                 {
                     wxRemoveFile(tempfiles[i]);

@@ -2905,7 +2905,8 @@ void GLPreviewFrame::ShowProjectionWarnings()
                 } else {
                     message += _("For a very wide panorama, try equirectangular projection instead.");
                 }
-                message += _(" You could also try Panini projection.");
+                message += wxT(" ");
+                message += _("You could also try Panini projection.");
             }
             break;
         case HuginBase::PanoramaOptions::CYLINDRICAL:

@@ -867,7 +867,7 @@ void PanoPanel::OnRemapperOptions(wxCommandEvent & e)
                 );
         }
     } else {
-        wxLogError(_(" PTmender options not yet implemented"));
+        wxLogError(_("PTmender options not yet implemented"));
     }
 }
 
@@ -937,7 +937,7 @@ void PanoPanel::OnBlenderOptions(wxCommandEvent & e)
         }
         else
         {
-            wxLogError(_(" PTblender options not yet implemented"));
+            wxLogError(_("PTblender options not yet implemented"));
         };
     };
 }
@@ -993,7 +993,7 @@ void PanoPanel::OnHDRMergeOptions(wxCommandEvent & e)
                 );
         }
     } else {
-        wxLogError(_(" Options for this HDRMerge program not yet implemented"));
+        wxLogError(_("Options for this HDRMerge program not yet implemented"));
     }
 }
 
