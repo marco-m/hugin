@@ -355,7 +355,7 @@ void DragTool::MouseButtonEvent(wxMouseEvent &e)
         // stop dragging
         image_params.clear();
         
-        helper->SetStatusMessage(_("Drag to move images (optionally use shift to constrain), or roll with right-drag or ctrl-drag"));
+        helper->SetStatusMessage(_("Drag to move images (optionally use shift to constrain), or roll with right-drag or Ctrl-drag"));
     }
 }
 
