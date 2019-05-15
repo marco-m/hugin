@@ -102,7 +102,7 @@ IF(WIN32)
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     FIND_PATH(OPENEXR_BIN_DIR 
-            NAMES Half.dll libHalf.dll
+            NAMES Half-2_3.dll Half.dll libHalf.dll
             PATHS ${DLL_SEARCH_PATH}
                   ${SOURCE_BASE_DIR}/Deploy/lib 
                   ${SOURCE_BASE_DIR}/Deploy/lib/Release 
