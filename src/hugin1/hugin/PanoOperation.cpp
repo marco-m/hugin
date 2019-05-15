@@ -282,7 +282,15 @@ time_t ReadExifTime(const char* filename)
         return 0;
     }
 
-    image->readMetadata();
+    try
+    {
+        image->readMetadata();
+    }
+    catch (const Exiv2::Error& e)
+    {
+        std::cerr << "Exiv2: Error reading metadata (" << e.what() << ")" << std::endl;
+        return 0;
+    }
     Exiv2::ExifData &exifData = image->exifData();
     if (exifData.empty())
     {

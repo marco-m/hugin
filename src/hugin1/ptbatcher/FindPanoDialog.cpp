@@ -961,11 +961,20 @@ void PossiblePano::PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs, wxArr
         catch (...)
         {
             std::cerr << __FILE__ << " " << __LINE__ << " Error opening file" << std::endl;
+            continue;
         }
         int index = -1;
         if (opened)
         {
-            image->readMetadata();
+            try
+            {
+                image->readMetadata();
+            }
+            catch (const Exiv2::Error& e)
+            {
+                std::cerr << __FILE__ << " " << __LINE__ << " Exiv2: Error reading metadata (" << e.what() << ")" << std::endl;
+                continue;
+            }
             // read all thumbnails
             Exiv2::PreviewManager previews(*image);
             Exiv2::PreviewPropertiesList lists = previews.getPreviewProperties();
