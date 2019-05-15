@@ -42,7 +42,7 @@ extern "C"
 // workaround for a conflict between exiv2 and wxWidgets/CMake built
 #define HAVE_PID_T 1
 #endif
-#include "exiv2/exiv2.hpp"
+#include <exiv2/exiv2.hpp>
 #include "lensdb/LensDB.h"
 #include "sqlite3.h"
 #include <lcms2.h>
