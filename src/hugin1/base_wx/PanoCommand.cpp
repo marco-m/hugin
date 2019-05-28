@@ -88,6 +88,7 @@ namespace PanoCommand
     bool UpdateVariablesCmd::processPanorama(HuginBase::Panorama& pano)
     {
         pano.updateVariables(vars);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 
@@ -125,6 +126,7 @@ namespace PanoCommand
     bool UpdateImageVariablesCmd::processPanorama(HuginBase::Panorama& pano)
     {
         pano.updateVariables(imgNr, vars);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 
@@ -146,6 +148,7 @@ namespace PanoCommand
         if (!m_expression.empty())
         {
             Parser::PanoParseExpression(pano, m_expression);
+            HuginBase::PTools::calcCtrlPointErrors(pano);
             return true;
         }
         else
@@ -195,6 +198,7 @@ namespace PanoCommand
         opts.setHFOV(fitPano.getResultHorizontalFOV());
         opts.setHeight(hugin_utils::roundi(fitPano.getResultHeight()));
         pano.setOptions(opts);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
 
         return true;
     }
@@ -215,6 +219,8 @@ namespace PanoCommand
         opts.setHFOV(fitPano.getResultHorizontalFOV());
         opts.setHeight(hugin_utils::roundi(fitPano.getResultHeight()));
         pano.setOptions(opts);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
+
         return true;
     }
 
@@ -296,6 +302,7 @@ namespace PanoCommand
     bool UpdateSrcImageCmd::processPanorama(HuginBase::Panorama& pano)
     {
         pano.setSrcImage(imgNr, img);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 
@@ -314,6 +321,7 @@ namespace PanoCommand
     bool SetPanoOptionsCmd::processPanorama(HuginBase::Panorama& pano)
     {
         pano.setOptions(options);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 
@@ -339,18 +347,21 @@ namespace PanoCommand
     bool RotatePanoCmd::processPanorama(HuginBase::Panorama& pano)
     {
         HuginBase::RotatePanorama(pano, y, p, r).run();
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 
     bool TranslatePanoCmd::processPanorama(HuginBase::Panorama& pano)
     {
         HuginBase::TranslatePanorama(pano, X, Y, Z).run();
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 
     bool UpdateFocalLengthCmd::processPanorama(HuginBase::Panorama& pano)
     {
         pano.UpdateFocalLength(imgNrs, m_focalLength);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 
@@ -380,6 +391,7 @@ namespace PanoCommand
             };
         };
         pano.UpdateCropFactor(allImgWithSameLens, m_cropFactor);
+        HuginBase::PTools::calcCtrlPointErrors(pano);
         return true;
     }
 

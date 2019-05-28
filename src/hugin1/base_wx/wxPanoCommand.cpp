@@ -137,6 +137,7 @@ bool wxAddCtrlPointGridCmd::processPanorama(HuginBase::Panorama& pano)
             }
         }
     }
+    HuginBase::PTools::calcCtrlPointErrors(pano);
     return true;
 }
 
@@ -874,6 +875,7 @@ bool wxApplyTemplateCmd::processPanorama(HuginBase::Panorama& pano)
     } else {
         wxMessageBox(_("Error loading project file"), _("Could not apply template"), wxICON_ERROR);
     }
+    HuginBase::PTools::calcCtrlPointErrors(pano);
     return true;
 }
 
@@ -896,7 +898,7 @@ bool PythonScriptPanoCmd::processPanorama(HuginBase::Panorama& pano)
             pano.imageChanged(i);
         };
     };
-
+    HuginBase::PTools::calcCtrlPointErrors(pano);
     return true;
 }
 #endif
