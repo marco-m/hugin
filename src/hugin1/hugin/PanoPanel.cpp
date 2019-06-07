@@ -893,13 +893,7 @@ void PanoPanel::OnBlenderOptions(wxCommandEvent & e)
         dlg.CentreOnParent();
 
         if (dlg.ShowModal() == wxID_OK) {
-            if (enblend_opts_text->GetValue().length() > 0) {
-                opt.enblendOptions = enblend_opts_text->GetValue().mb_str(wxConvLocal);
-            }
-            else
-            {
-                opt.enblendOptions = wxConfigBase::Get()->Read(wxT("Enblend/Args"),wxT(HUGIN_ENBLEND_ARGS)).mb_str(wxConvLocal);
-            };
+            opt.enblendOptions = enblend_opts_text->GetValue().mb_str(wxConvLocal);
             PanoCommand::GlobalCmdHist::getInstance().addCommand(
                 new PanoCommand::SetPanoOptionsCmd( *pano, opt )
                 );
@@ -959,13 +953,7 @@ void PanoPanel::OnFusionOptions(wxCommandEvent & e)
     dlg.CentreOnParent();
 
     if (dlg.ShowModal() == wxID_OK) {
-        if (enfuse_opts_text->GetValue().length() > 0) {
-            opt.enfuseOptions = enfuse_opts_text->GetValue().mb_str(wxConvLocal);
-        }
-        else
-        {
-            opt.enfuseOptions = wxConfigBase::Get()->Read(wxT("Enfuse/Args"),wxT(HUGIN_ENFUSE_ARGS)).mb_str(wxConvLocal);
-        };
+        opt.enfuseOptions = enfuse_opts_text->GetValue().mb_str(wxConvLocal);
         PanoCommand::GlobalCmdHist::getInstance().addCommand(
             new PanoCommand::SetPanoOptionsCmd( *pano, opt )
             );
