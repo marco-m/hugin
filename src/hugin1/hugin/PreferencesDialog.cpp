@@ -1227,7 +1227,7 @@ void PreferencesDialog::OnCPDetectorLoad(wxCommandEvent& e)
         wxString fn = dlg.GetPath();
         cpdetector_config_edit.ReadFromFile(fn);
         cpdetector_config_edit.Write();
-        UpdateDisplayData(4);
+        UpdateDisplayData(5);
     };
 };
 
