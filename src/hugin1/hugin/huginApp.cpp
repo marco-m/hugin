@@ -199,6 +199,11 @@ bool huginApp::OnInit()
 #ifdef __WXMAC__
     // do not use the native list control on OSX (it is very slow with the control point list window)
     wxSystemOptions::SetOption(wxT("mac.listctrl.always_use_generic"), 1);
+    // On OS X the file open does by default not show the file type list
+    // Apple means this is not necessary
+    // but the the add images dialog needs this selection, so force to 
+    // display always the file type list
+    wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
 #endif
 
     // register our custom pano tools dialog handlers
