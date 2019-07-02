@@ -871,7 +871,12 @@ bool wxApplyTemplateCmd::processPanorama(HuginBase::Panorama& pano)
         // keep old control points.
         newPano.setCtrlPoints(pano.getCtrlPoints());
         newPanoMem = newPano.getMemento();
+        // remmember setting of image type and icc profile
+        const int bands = pano.getNrOfBands();
+        const std::string iccProfile = pano.getICCProfileDesc();
         pano.setMemento(newPanoMem);
+        pano.setNrOfBands(bands);
+        pano.setICCProfileDesc(iccProfile);
     } else {
         wxMessageBox(_("Error loading project file"), _("Could not apply template"), wxICON_ERROR);
     }
