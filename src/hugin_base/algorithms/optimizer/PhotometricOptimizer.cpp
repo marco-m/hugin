@@ -374,7 +374,7 @@ bool IsHighVignetting(std::vector<double> vigCorr)
     for (size_t x = 0; x < 250; x += 10)
     {
         const double vigFactor = transform.calcVigFactor(hugin_utils::FDiff2D(x, x));
-        if (vigFactor<0.7 || vigFactor>1.1)
+        if (vigFactor < 0.2 || vigFactor > 1.1)
         {
             return true;
         };
