@@ -86,51 +86,44 @@ wxString Project::GetStatusText()
 
 HuginBase::PanoramaOptions Project::ReadOptions(wxString projectFile)
 {
-    std::ifstream prjfile((const char*)projectFile.mb_str(HUGIN_CONV_FILENAME));
-    if (prjfile.bad())
-    {
-        wxLogError( wxString::Format(_("could not open script: %s"), projectFile.c_str()) );
-    }
-
-    wxString pathToPTO;
-    wxFileName::SplitPath(projectFile, &pathToPTO, NULL, NULL);
-    pathToPTO.Append(wxT("/"));
-
     HuginBase::Panorama pano;
-    HuginBase::PanoramaMemento newPano;
-    int ptoVersion = 0;
-    if (newPano.loadPTScript(prjfile, ptoVersion, (const char*)pathToPTO.mb_str(HUGIN_CONV_FILENAME)))
+    std::ifstream prjfile((const char*)projectFile.mb_str(HUGIN_CONV_FILENAME));
+    if (prjfile.good())
     {
-        pano.setMemento(newPano);
-        if (ptoVersion < 2)
+        wxString pathToPTO;
+        wxFileName::SplitPath(projectFile, &pathToPTO, NULL, NULL);
+        pathToPTO.Append(wxT("/"));
+
+        HuginBase::PanoramaMemento newPano;
+        int ptoVersion = 0;
+        if (newPano.loadPTScript(prjfile, ptoVersion, (const char*)pathToPTO.mb_str(HUGIN_CONV_FILENAME)))
         {
-            HuginBase::PanoramaOptions opts = pano.getOptions();
-            // no options stored in file, use default arguments in config
-            opts.enblendOptions = wxConfigBase::Get()->Read(wxT("/Enblend/Args"), wxT("")).mb_str(wxConvLocal);
-            opts.enfuseOptions = wxConfigBase::Get()->Read(wxT("/Enfuse/Args"), wxT("")).mb_str(wxConvLocal);
-            pano.setOptions(opts);
-        }
-        // set default prefix, if not given
-        if(prefix.IsEmpty())
-        {
-            wxFileName prefixFilename(getDefaultOutputName(projectFile, pano));
-            prefixFilename.Normalize();
-            prefix=prefixFilename.GetFullPath();
+            pano.setMemento(newPano);
+            if (ptoVersion < 2)
+            {
+                HuginBase::PanoramaOptions opts = pano.getOptions();
+                // no options stored in file, use default arguments in config
+                opts.enblendOptions = wxConfigBase::Get()->Read(wxT("/Enblend/Args"), wxT("")).mb_str(wxConvLocal);
+                opts.enfuseOptions = wxConfigBase::Get()->Read(wxT("/Enfuse/Args"), wxT("")).mb_str(wxConvLocal);
+                pano.setOptions(opts);
+            }
+            // set default prefix, if not given
+            if (prefix.IsEmpty())
+            {
+                wxFileName prefixFilename(getDefaultOutputName(projectFile, pano));
+                prefixFilename.Normalize();
+                prefix = prefixFilename.GetFullPath();
+            };
+            // if project contains at least 2 images and no control points add to assistant queue
+            // a single image project is assumed as target for reprojection/remapping
+            if (pano.getNrOfImages() > 1 && pano.getNrOfCtrlPoints() == 0)
+            {
+                isAligned = false;
+            };
         };
-        // if project contains at least 2 images and no control points add to assistant queue
-        // a single image project is assumed as target for reprojection/remapping
-        if(pano.getNrOfImages()>1 && pano.getNrOfCtrlPoints()==0)
-        {
-            isAligned=false;
-        };
-    }
-    else
-    {
-        wxLogError( wxString::Format(_("error while parsing panotools script: %s"), projectFile.c_str()) );
-    }
-    // get options and correct for correct makefile
-    HuginBase::PanoramaOptions opts = pano.getOptions();
-    return opts;
+    };
+    // get options 
+    return pano.getOptions();
 }
 
 void Project::ResetOptions()
