@@ -161,7 +161,13 @@ bool ParseShoot(wxXmlNode* root, PapywizardSettings& images)
             PapywizardSettings::PapywizardImage image;
             long longVal;
             wxString s;
-            // check id
+#ifdef PAPYWIZARD_USE_ID_CHECK
+            // according to the spec the id should be unique
+            // but not all programs write the id in this way
+            // e.g. PCPano is using the same id for each image in a bracket
+            // see https://bugs.launchpad.net/hugin/+bug/1840110
+            // so the check id code is disabled for now
+            // so activate the check again define PAPYWIZARD_USE_ID_CHECK 
             if (!child->GetAttribute(wxT("id"), &s))
             {
                 return false;
@@ -175,6 +181,10 @@ bool ParseShoot(wxXmlNode* root, PapywizardSettings& images)
                 return false;
             };
             image.id = longVal;
+#else
+            // instead simply store a continous id 
+            image.id = id;
+#endif
             ++id;
             // read bracket attribute
             if(!child->GetAttribute(wxT("bracket"), &s))
