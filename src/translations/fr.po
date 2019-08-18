@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Hugin 2012-0.0\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2019-04-07 09:16+0200\n"
+"POT-Creation-Date: 2019-08-18 11:35+0200\n"
 "PO-Revision-Date: 2018-12-18 07:54+0100\n"
 "Last-Translator: Jean-Luc Coulon (f5ibh) <jean-luc.coulon@wanadoo.fr>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Lokalize 2.0\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:68
-#: hugin1/hugin/PapywizardImport.cpp:460
+#: hugin1/hugin/PapywizardImport.cpp:470
 msgid "Searching for control points..."
 msgstr "Recherche de points de contrôle…"
 
@@ -47,7 +47,7 @@ msgstr "Recherche du meilleur recadrage…"
 
 #: hugin1/base_wx/Executor.cpp:137 hugin1/base_wx/platform.cpp:217
 #: hugin1/hugin/MainFrame.cpp:1771 hugin1/hugin/MainFrame.cpp:2521
-#: hugin1/hugin/PanoPanel.cpp:1316
+#: hugin1/hugin/PanoPanel.cpp:1304
 #, c-format
 msgid "External program %s not found in the bundle, reverting to system path"
 msgstr ""
@@ -135,7 +135,7 @@ msgstr ""
 "Désirez-vous cependant utiliser une valeur aussi élevée ?"
 
 #: hugin1/base_wx/HFOVDialog.cpp:372 hugin1/base_wx/LensTools.cpp:455
-#: hugin1/base_wx/wxPanoCommand.cpp:457 hugin1/hugin/CPEditorPanel.cpp:1347
+#: hugin1/base_wx/wxPanoCommand.cpp:458 hugin1/hugin/CPEditorPanel.cpp:1347
 #: hugin1/hugin/CPEditorPanel.cpp:1362 hugin1/hugin/GLPreviewFrame.cpp:1854
 #: hugin1/hugin/GLPreviewFrame.cpp:1943 hugin1/hugin/GLPreviewFrame.cpp:2961
 #: hugin1/hugin/GLPreviewFrame.cpp:3322 hugin1/hugin/GLPreviewFrame.cpp:3333
@@ -148,13 +148,13 @@ msgstr ""
 #: hugin1/hugin/OptimizePanel.cpp:163 hugin1/hugin/OptimizePanel.cpp:195
 #: hugin1/hugin/OptimizePanel.cpp:267
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:149
-#: hugin1/hugin/PanoOperation.cpp:232 hugin1/hugin/PanoOperation.cpp:455
-#: hugin1/hugin/PanoPanel.cpp:1676 hugin1/hugin/PanoPanel.cpp:1705
-#: hugin1/hugin/PanoPanel.cpp:1741 hugin1/hugin/PanoPanel.cpp:1761
-#: hugin1/hugin/PapywizardImport.cpp:343 hugin1/hugin/PapywizardImport.cpp:355
-#: hugin1/hugin/RawImport.cpp:77 hugin1/hugin/RawImport.cpp:95
-#: hugin1/hugin/RawImport.cpp:221 hugin1/hugin/RawImport.cpp:508
-#: hugin1/hugin/RawImport.cpp:840 hugin1/hugin/huginApp.cpp:577
+#: hugin1/hugin/PanoOperation.cpp:231 hugin1/hugin/PanoOperation.cpp:462
+#: hugin1/hugin/PanoPanel.cpp:1664 hugin1/hugin/PanoPanel.cpp:1693
+#: hugin1/hugin/PanoPanel.cpp:1729 hugin1/hugin/PanoPanel.cpp:1749
+#: hugin1/hugin/PapywizardImport.cpp:353 hugin1/hugin/PapywizardImport.cpp:365
+#: hugin1/hugin/RawImport.cpp:74 hugin1/hugin/RawImport.cpp:92
+#: hugin1/hugin/RawImport.cpp:218 hugin1/hugin/RawImport.cpp:505
+#: hugin1/hugin/RawImport.cpp:837 hugin1/hugin/huginApp.cpp:582
 #: hugin1/hugin/xrc/main_frame.xrc:123 hugin1/hugin/xrc/main_frame.xrc:183
 #: hugin1/hugin/xrc/main_frame.xrc:255 hugin1/hugin/xrc/pano_panel.xrc:1099
 msgid "Hugin"
@@ -287,7 +287,7 @@ msgid "Error pausing process %ld, code 2"
 msgstr "Erreur lors de la suspension du processus %ld, code 2"
 
 #: hugin1/base_wx/MyExternalCmdExecDialog.cpp:555
-#: hugin1/hugin/RawImport.cpp:481 hugin1/ptbatcher/RunStitchFrame.cpp:43
+#: hugin1/hugin/RawImport.cpp:478 hugin1/ptbatcher/RunStitchFrame.cpp:43
 #: hugin1/stitch_project/hugin_stitch_project.cpp:111
 #: hugin1/hugin/xrc/cpdetector_dialog.xrc:334
 #: hugin1/hugin/xrc/images_panel.xrc:555
@@ -341,7 +341,6 @@ msgid "Could not open project file:"
 msgstr "Impossible d’ouvrir le fichier de projet :"
 
 #: hugin1/base_wx/RunStitchPanel.cpp:110 hugin1/base_wx/RunStitchPanel.cpp:273
-#: hugin1/ptbatcher/ProjectArray.cpp:92
 #, c-format
 msgid "could not open script: %s"
 msgstr "Impossible d’ouvrir le script : %s"
@@ -352,7 +351,6 @@ msgid "Project %s does not contain any active images."
 msgstr "Le projet %s ne comporte aucune image active."
 
 #: hugin1/base_wx/RunStitchPanel.cpp:136 hugin1/base_wx/RunStitchPanel.cpp:281
-#: hugin1/ptbatcher/ProjectArray.cpp:129
 #, c-format
 msgid "error while parsing panotools script: %s"
 msgstr "erreur d’analyse du script des outils de panorama : %s"
@@ -746,12 +744,12 @@ msgstr "Fichiers RAW"
 #: hugin1/hugin/MainFrame.cpp:2556
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:272
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:331
-#: hugin1/hugin/PanoOperation.cpp:633 hugin1/hugin/PanoPanel.cpp:1101
-#: hugin1/hugin/PanoPanel.cpp:1316 hugin1/hugin/PanoPanel.cpp:1388
+#: hugin1/hugin/PanoOperation.cpp:640 hugin1/hugin/PanoPanel.cpp:1089
+#: hugin1/hugin/PanoPanel.cpp:1304 hugin1/hugin/PanoPanel.cpp:1376
 #: hugin1/hugin/PreferencesDialog.cpp:477
 #: hugin1/hugin/PreferencesDialog.cpp:547
 #: hugin1/icpfind/AutoCtrlPointCreator.cpp:223
-#: hugin1/ptbatcher/FindPanoDialog.cpp:340
+#: hugin1/ptbatcher/FindPanoDialog.cpp:339
 #: hugin1/ptbatcher/ProjectListBox.cpp:183
 #: hugin1/stitch_project/hugin_stitch_project.cpp:360
 #: hugin1/stitch_project/hugin_stitch_project.cpp:403
@@ -785,8 +783,8 @@ msgid "The input \"%s\" is not a valid number."
 msgstr "L’entrée « %s » n’est pas un nombre valable."
 
 #: hugin1/base_wx/wxLensDB.cpp:207 hugin1/base_wx/wxLensDB.cpp:535
-#: hugin1/base_wx/wxPanoCommand.cpp:246 hugin1/base_wx/wxPanoCommand.cpp:256
-#: hugin1/base_wx/wxPanoCommand.cpp:277 hugin1/base_wx/wxPanoCommand.cpp:308
+#: hugin1/base_wx/wxPanoCommand.cpp:247 hugin1/base_wx/wxPanoCommand.cpp:257
+#: hugin1/base_wx/wxPanoCommand.cpp:278 hugin1/base_wx/wxPanoCommand.cpp:309
 #: hugin1/calibrate_lens/LensCalFrame.cpp:289
 #: hugin1/calibrate_lens/LensCalFrame.cpp:366
 #: hugin1/calibrate_lens/LensCalFrame.cpp:555
@@ -803,9 +801,9 @@ msgstr "L’entrée « %s » n’est pas un nombre valable."
 #: hugin1/hugin/GLPreviewFrame.cpp:1644 hugin1/hugin/MainFrame.cpp:1941
 #: hugin1/hugin/MainFrame.cpp:2448 hugin1/hugin/MainFrame.cpp:2467
 #: hugin1/hugin/MainFrame.cpp:2473 hugin1/hugin/MaskEditorPanel.cpp:509
-#: hugin1/hugin/PanoPanel.cpp:1369 hugin1/hugin/PreferencesDialog.cpp:1159
-#: hugin1/ptbatcher/FindPanoDialog.cpp:296
-#: hugin1/ptbatcher/FindPanoDialog.cpp:317
+#: hugin1/hugin/PanoPanel.cpp:1357 hugin1/hugin/PreferencesDialog.cpp:1159
+#: hugin1/ptbatcher/FindPanoDialog.cpp:295
+#: hugin1/ptbatcher/FindPanoDialog.cpp:316
 msgid "Warning"
 msgstr "Avertissement"
 
@@ -822,7 +820,7 @@ msgstr ""
 msgid "Could not save information into database."
 msgstr "Impossible d’enregistrer les informations dans la base de données."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:237 hugin1/base_wx/wxPanoCommand.cpp:329
+#: hugin1/base_wx/wxPanoCommand.cpp:238 hugin1/base_wx/wxPanoCommand.cpp:330
 #, c-format
 msgid ""
 "Could not decode image:\n"
@@ -833,11 +831,11 @@ msgstr ""
 "%s\n"
 "Abandon"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:237 hugin1/base_wx/wxPanoCommand.cpp:329
+#: hugin1/base_wx/wxPanoCommand.cpp:238 hugin1/base_wx/wxPanoCommand.cpp:330
 msgid "Unsupported image file format"
 msgstr "Format d’image non pris en charge"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:245
+#: hugin1/base_wx/wxPanoCommand.cpp:246
 #: hugin1/calibrate_lens/LensCalFrame.cpp:288
 #, c-format
 msgid ""
@@ -849,7 +847,7 @@ msgstr ""
 "Hugin ne prend pas en charge ce type d’image. Image sautée.\n"
 "Convertissez l’image en nuances de gris et essayez de la charger de nouveau."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:255
+#: hugin1/base_wx/wxPanoCommand.cpp:256
 #, c-format
 msgid ""
 "Hugin supports only grayscale and RGB images (without and with alpha "
@@ -867,14 +865,14 @@ msgstr ""
 "Convertissez cette image en échelle de gris ou en RVB et essayez de la "
 "charger de nouveau."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:265
+#: hugin1/base_wx/wxPanoCommand.cpp:266
 msgid ""
 "Hugin supports only grayscale or RGB images (without and with alpha channel)."
 msgstr ""
 "Hugin nne prend en charge que les image RVB ou en nuances de gris (sans ou "
 "avec un canal alpha)."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:269
+#: hugin1/base_wx/wxPanoCommand.cpp:270
 #, c-format
 msgid ""
 "File \"%s\" is a grayscale image, but other images in project are color "
@@ -883,7 +881,7 @@ msgstr ""
 "Le fichier « %s » est une image en nuances de gris, mais les autres images du "
 "projet sont des images en couleurs."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:273
+#: hugin1/base_wx/wxPanoCommand.cpp:274
 #, c-format
 msgid ""
 "File \"%s\" is a color image, but other images in project are grayscale "
@@ -892,7 +890,7 @@ msgstr ""
 "Le fichier « %s » est une image en couleurs, mais les autres images du projet "
 "sont des images en nuances de gris."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:276
+#: hugin1/base_wx/wxPanoCommand.cpp:277
 msgid ""
 "Hugin does not support this mixing. Skipping this image.\n"
 "Convert this image to grayscale or RGB image respectively and try loading "
@@ -902,7 +900,7 @@ msgstr ""
 "Convertissez cette image en nuances de gris ou en RVB respectivement et "
 "essayez de nouveau de la charger."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:293
+#: hugin1/base_wx/wxPanoCommand.cpp:294
 #, c-format
 msgid ""
 "File \"%s\" has no embedded icc profile, but other images in project have "
@@ -911,7 +909,7 @@ msgstr ""
 "Le fichier « %s » n’a pas de profil ICC intégré, mais d’autres images de ce "
 "projet on le profil « %s » intégré."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:299
+#: hugin1/base_wx/wxPanoCommand.cpp:300
 #, c-format
 msgid ""
 "File \"%s\" has icc profile \"%s\" embedded, but other images in project "
@@ -920,7 +918,7 @@ msgstr ""
 "Le fichier « %s » possède le profil ICC intégré « %s », mais les autres images "
 "de ce projet n’ont pas de profil colorimétrique intégré."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:303
+#: hugin1/base_wx/wxPanoCommand.cpp:304
 #, c-format
 msgid ""
 "File \"%s\" has icc profile \"%s\" embedded, but other images in project "
@@ -929,7 +927,7 @@ msgstr ""
 "Le fichier « %s » a le profil intégré « %s », mais les autres images de ce "
 "projet ont le profil intégré « %s »."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:307
+#: hugin1/base_wx/wxPanoCommand.cpp:308
 msgid ""
 "Hugin expects all images in the same color profile.\n"
 "Please convert all images to same color profile and try again."
@@ -938,7 +936,7 @@ msgstr ""
 "Veuillez convertir toutes les images vers le même profil de couleur et "
 "essayez de nouveau."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:447
+#: hugin1/base_wx/wxPanoCommand.cpp:448
 msgid ""
 "Hugin has image stacks detected in the added images and will assign "
 "corresponding stack numbers to the images."
@@ -946,7 +944,7 @@ msgstr ""
 "Des ensembles d’images ont été détectés par Hugin dans les images ajoutées, "
 "des numéros d’ensembles correspondants vont être assignés aux images."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:451
+#: hugin1/base_wx/wxPanoCommand.cpp:452
 msgid ""
 "Hugin has image stacks detected in the whole project. Stack numbers will be "
 "re-assigned on base of this detection. Existing stack assignments will be "
@@ -956,11 +954,11 @@ msgstr ""
 "numéros d’ensembles seront réassignés sur les bases de cette détection. Les "
 "assignations des ensembles existants seront écrasées."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:454
+#: hugin1/base_wx/wxPanoCommand.cpp:455
 msgid "Should the position of images in each stack be linked?"
 msgstr "Faut-il lier la position des images dans chacun des ensembles ?"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:462 hugin1/hugin/xrc/main_frame.xrc:215
+#: hugin1/base_wx/wxPanoCommand.cpp:463 hugin1/hugin/xrc/main_frame.xrc:215
 msgid ""
 "When shooting bracketed image stacks from a sturdy tripod the position of "
 "the images in each stack can be linked to help Hugin to process the "
@@ -974,25 +972,25 @@ msgstr ""
 "de la position (par ex. lors de la prise de vue à main levée), il ne faut "
 "alors pas lier la position."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:465 hugin1/base_wx/wxPanoCommand.cpp:469
+#: hugin1/base_wx/wxPanoCommand.cpp:466 hugin1/base_wx/wxPanoCommand.cpp:470
 #: hugin1/hugin/xrc/main_frame.xrc:236
 msgid "Link position"
 msgstr "Lier la position"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:465 hugin1/base_wx/wxPanoCommand.cpp:469
+#: hugin1/base_wx/wxPanoCommand.cpp:466 hugin1/base_wx/wxPanoCommand.cpp:470
 #: hugin1/hugin/xrc/main_frame.xrc:242
 msgid "Don't link position"
 msgstr "Ne pas lier la position"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:465 hugin1/hugin/xrc/main_frame.xrc:247
+#: hugin1/base_wx/wxPanoCommand.cpp:466 hugin1/hugin/xrc/main_frame.xrc:247
 msgid "Don't assign stacks"
 msgstr "Ne pas assigner les ensembles"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:469
+#: hugin1/base_wx/wxPanoCommand.cpp:470
 msgid "Keep existing stacks"
 msgstr "Conserver les ensembles existants"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:569
+#: hugin1/base_wx/wxPanoCommand.cpp:570
 #, c-format
 msgid ""
 "The project file \"%s\" refers to image \"%s\" which was not found.\n"
@@ -1002,16 +1000,16 @@ msgstr ""
 "introuvable.\n"
 "Veuillez sélectionner vous-même l’image correcte."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:569
+#: hugin1/base_wx/wxPanoCommand.cpp:570
 msgid "Image file not found"
 msgstr "Fichier image introuvable"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:576
+#: hugin1/base_wx/wxPanoCommand.cpp:577
 #, c-format
 msgid "Select image %s"
 msgstr "Sélectionner l’image %s"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:683
+#: hugin1/base_wx/wxPanoCommand.cpp:684
 #, c-format
 msgid ""
 "%d invalid control point(s) found.\n"
@@ -1022,17 +1020,17 @@ msgstr ""
 "\n"
 "Pressez Accepter pour les supprimer."
 
-#: hugin1/base_wx/wxPanoCommand.cpp:684
+#: hugin1/base_wx/wxPanoCommand.cpp:685
 msgid "Error Detected"
 msgstr "Erreur détectée"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:769
+#: hugin1/base_wx/wxPanoCommand.cpp:770
 #: hugin1/calibrate_lens/LensCalFrame.cpp:374
-#: hugin1/hugin/PanoOperation.cpp:97
+#: hugin1/hugin/PanoOperation.cpp:96
 msgid "Add images"
 msgstr "Ajouter des images"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:849
+#: hugin1/base_wx/wxPanoCommand.cpp:850
 #, c-format
 msgid ""
 "Error, template expects %d images,\n"
@@ -1041,31 +1039,31 @@ msgstr ""
 "Erreur, le modèle attend %d images,\n"
 "le projet actuel comporte %d images\n"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:850 hugin1/base_wx/wxPanoCommand.cpp:875
+#: hugin1/base_wx/wxPanoCommand.cpp:851 hugin1/base_wx/wxPanoCommand.cpp:881
 msgid "Could not apply template"
 msgstr "Impossible d’appliquer le modèle"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:875
+#: hugin1/base_wx/wxPanoCommand.cpp:881
 msgid "Error loading project file"
 msgstr "Erreur de chargement du fichier de projet"
 
-#: hugin1/base_wx/wxPanoCommand.cpp:889
+#: hugin1/base_wx/wxPanoCommand.cpp:896
 msgid "Result"
 msgstr "Résultat"
 
-#: hugin1/calibrate_lens/LensCalApp.cpp:71 hugin1/hugin/huginApp.cpp:230
+#: hugin1/calibrate_lens/LensCalApp.cpp:71 hugin1/hugin/huginApp.cpp:235
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:100
 msgid "xrc directory not found in bundle"
 msgstr "Répertoire xrc introuvable dans le paquet"
 
 #: hugin1/calibrate_lens/LensCalApp.cpp:71
 #: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/MainFrame.cpp:2182
-#: hugin1/hugin/huginApp.cpp:230 hugin1/hugin/huginApp.cpp:276
+#: hugin1/hugin/huginApp.cpp:235 hugin1/hugin/huginApp.cpp:281
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:100 hugin1/ptbatcher/PTBatcherGUI.cpp:134
 msgid "Fatal Error"
 msgstr "Erreur fatale"
 
-#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/huginApp.cpp:276
+#: hugin1/calibrate_lens/LensCalApp.cpp:93 hugin1/hugin/huginApp.cpp:281
 #: hugin1/ptbatcher/PTBatcherGUI.cpp:134
 msgid ""
 "xrc directory not found, hugin needs to be properly installed\n"
@@ -1166,7 +1164,7 @@ msgid "Save lens parameters to ini file"
 msgstr "Enregistrer les paramètres de l’objectif dans le fichier ini"
 
 #: hugin1/calibrate_lens/LensCalFrame.cpp:762
-#: hugin1/hugin/PanoOperation.cpp:667
+#: hugin1/hugin/PanoOperation.cpp:674
 msgid "Save lens parameters to lens database"
 msgstr ""
 "Enregistrer les paramètres de l’objectif dans la base de données des "
@@ -1496,26 +1494,26 @@ msgstr ""
 "reliant les deux images"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2240 hugin1/hugin/CPEditorPanel.cpp:2260
-#: hugin1/hugin/PanoOperation.cpp:817 hugin1/hugin/PanoOperation.cpp:867
+#: hugin1/hugin/PanoOperation.cpp:824 hugin1/hugin/PanoOperation.cpp:874
 msgid "Running Celeste"
 msgstr "Exécution de Celeste"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2241 hugin1/hugin/PanoOperation.cpp:818
+#: hugin1/hugin/CPEditorPanel.cpp:2241 hugin1/hugin/PanoOperation.cpp:825
 msgid "Loading model file"
 msgstr "Chargement du fichier de modèle"
 
 #: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/CPEditorPanel.cpp:2338
-#: hugin1/hugin/MainFrame.cpp:1902 hugin1/hugin/PanoOperation.cpp:804
-#: hugin1/hugin/PanoOperation.cpp:896
+#: hugin1/hugin/MainFrame.cpp:1902 hugin1/hugin/PanoOperation.cpp:811
+#: hugin1/hugin/PanoOperation.cpp:903
 #, c-format
 msgid "Removed %lu control points"
 msgstr "%lu points de contrôle ont été supprimés"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/PanoOperation.cpp:896
+#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/PanoOperation.cpp:903
 msgid "Celeste result"
 msgstr "Résultats de Celeste"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2338 hugin1/hugin/PanoOperation.cpp:804
+#: hugin1/hugin/CPEditorPanel.cpp:2338 hugin1/hugin/PanoOperation.cpp:811
 msgid "Cleaning"
 msgstr "Nettoyage"
 
@@ -1610,7 +1608,7 @@ msgstr "Résultat de l’analyse de l’expression"
 msgid "Errors during expression parsing"
 msgstr "Erreurs lors de l’analyse de l’expression"
 
-#: hugin1/hugin/DragTool.cpp:78
+#: hugin1/hugin/DragTool.cpp:78 hugin1/hugin/DragTool.cpp:358
 #, fuzzy
 msgid ""
 "Drag to move images (optionally use shift to constrain), or roll with right-"
@@ -1655,16 +1653,6 @@ msgstr ""
 #, fuzzy
 msgid "Drag to move"
 msgstr "Glissez pour déplacer."
-
-#: hugin1/hugin/DragTool.cpp:358
-#, fuzzy
-msgid ""
-"Drag to move images (optionally use shift to constrain), or roll with right-"
-"drag or ctrl-drag"
-msgstr ""
-"Glissez pour déplacer les images (optionnellement utilisez la touche "
-"majuscule pour contraindre), ou faites une rotation avec clic-droit-glisser "
-"ou Ctrl-glisser."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:264 hugin1/hugin/GLPreviewFrame.cpp:3091
 msgid "Fast Panorama preview"
@@ -1828,12 +1816,12 @@ msgid "difference"
 msgstr "différence"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:2573 hugin1/hugin/GLPreviewFrame.cpp:2603
-#: hugin1/hugin/PanoPanel.cpp:1057 hugin1/hugin/xrc/preview_frame.xrc:843
+#: hugin1/hugin/PanoPanel.cpp:1045 hugin1/hugin/xrc/preview_frame.xrc:843
 msgid "Autocrop"
 msgstr "Recadrage automatique"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:2573 hugin1/hugin/GLPreviewFrame.cpp:2603
-#: hugin1/hugin/PanoPanel.cpp:1057
+#: hugin1/hugin/PanoPanel.cpp:1045
 msgid "Calculating optimal crop"
 msgstr "Calcul du recadrage optimum"
 
@@ -2034,7 +2022,7 @@ msgstr ""
 "\n"
 "Faut-il poursuivre cependant ?"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3367 hugin1/hugin/PapywizardImport.cpp:467
+#: hugin1/hugin/GLPreviewFrame.cpp:3367 hugin1/hugin/PapywizardImport.cpp:477
 #: hugin1/executor/duallens.assistant:19 hugin1/executor/multirow.assistant:13
 #: hugin1/executor/normal.assistant:7 hugin1/executor/scanned.assistant:12
 #: hugin1/executor/scanned2.assistant:12 hugin1/executor/stacked.assistant:7
@@ -2336,7 +2324,7 @@ msgstr "Vitesse d’obturation"
 msgid "Shutter speed"
 msgstr "Vitesse d’obturation"
 
-#: hugin1/hugin/ImagesTree.cpp:162 hugin1/ptbatcher/FindPanoDialog.cpp:1044
+#: hugin1/hugin/ImagesTree.cpp:162 hugin1/ptbatcher/FindPanoDialog.cpp:1052
 msgid "ISO"
 msgstr "ISO"
 
@@ -2602,14 +2590,14 @@ msgstr "&Fermer"
 msgid "Did you know..."
 msgstr "Saviez-vous que…"
 
-#: hugin1/hugin/MainFrame.cpp:205 hugin1/hugin/PanoOperation.cpp:230
-#: hugin1/hugin/huginApp.cpp:575
+#: hugin1/hugin/MainFrame.cpp:205 hugin1/hugin/PanoOperation.cpp:229
+#: hugin1/hugin/huginApp.cpp:580
 msgid ""
 "You selected only one raw file. This is not recommended.\n"
 "All raw files should be converted at once."
 msgstr ""
 
-#: hugin1/hugin/MainFrame.cpp:212 hugin1/hugin/huginApp.cpp:582
+#: hugin1/hugin/MainFrame.cpp:212 hugin1/hugin/huginApp.cpp:587
 msgid "Convert anyway."
 msgstr ""
 
@@ -3203,7 +3191,7 @@ msgid "Photometric alignment"
 msgstr "Alignement photométrique"
 
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:259
-#: hugin1/hugin/PanoOperation.cpp:821 hugin1/hugin/PanoOperation.cpp:884
+#: hugin1/hugin/PanoOperation.cpp:828 hugin1/hugin/PanoOperation.cpp:891
 msgid "Loading images"
 msgstr "Chargement des images"
 
@@ -3248,74 +3236,74 @@ msgstr ""
 msgid "Photometric optimization finished"
 msgstr "Optimisation photométrique terminée"
 
-#: hugin1/hugin/PanoOperation.cpp:215
+#: hugin1/hugin/PanoOperation.cpp:214
 msgid "Add individual images..."
 msgstr "Ajouter des images individuelles…"
 
-#: hugin1/hugin/PanoOperation.cpp:237
+#: hugin1/hugin/PanoOperation.cpp:236
 #, fuzzy
 msgid "Convert anyway"
 msgstr "Toujours écraser"
 
-#: hugin1/hugin/PanoOperation.cpp:237
+#: hugin1/hugin/PanoOperation.cpp:236
 msgid "Let me select several raw files"
 msgstr ""
 
-#: hugin1/hugin/PanoOperation.cpp:339
+#: hugin1/hugin/PanoOperation.cpp:346
 msgid "Add time-series of images..."
 msgstr ""
 "Ajouter une série d’images\n"
 "prises au même moment…"
 
-#: hugin1/hugin/PanoOperation.cpp:453
+#: hugin1/hugin/PanoOperation.cpp:460
 msgid "No matching images found."
 msgstr "Aucune image correspondante trouvée."
 
-#: hugin1/hugin/PanoOperation.cpp:466
+#: hugin1/hugin/PanoOperation.cpp:473
 msgid "Manipulate image variables..."
 msgstr "Manipuler les variables de l’image…"
 
-#: hugin1/hugin/PanoOperation.cpp:490
+#: hugin1/hugin/PanoOperation.cpp:497
 msgid "Remove selected image(s)"
 msgstr "Supprimer la ou les images sélectionnées"
 
-#: hugin1/hugin/PanoOperation.cpp:505
+#: hugin1/hugin/PanoOperation.cpp:512
 msgid "Anchor this image for position"
 msgstr "Définir cette image comme référence de position"
 
-#: hugin1/hugin/PanoOperation.cpp:517
+#: hugin1/hugin/PanoOperation.cpp:524
 msgid "Anchor this image for exposure"
 msgstr "Définir cette image comme référence d’exposition"
 
-#: hugin1/hugin/PanoOperation.cpp:547
+#: hugin1/hugin/PanoOperation.cpp:554
 msgid "New lens"
 msgstr "Nouvel objectif"
 
-#: hugin1/hugin/PanoOperation.cpp:571
+#: hugin1/hugin/PanoOperation.cpp:578
 msgid "Change lens..."
 msgstr "Changer d’objectif…"
 
-#: hugin1/hugin/PanoOperation.cpp:578
+#: hugin1/hugin/PanoOperation.cpp:585
 msgid "Enter new lens number"
 msgstr "Entrer le numéro du nouvel objectif"
 
-#: hugin1/hugin/PanoOperation.cpp:579
+#: hugin1/hugin/PanoOperation.cpp:586
 msgid "Lens number"
 msgstr "Objectif numéro"
 
-#: hugin1/hugin/PanoOperation.cpp:580
+#: hugin1/hugin/PanoOperation.cpp:587
 msgid "Change lens number"
 msgstr "Changer de numéro d’objectif"
 
-#: hugin1/hugin/PanoOperation.cpp:603
+#: hugin1/hugin/PanoOperation.cpp:610
 msgid "Load lens from lens database"
 msgstr "Charger l’objectif depuis la base de données des objectifs"
 
-#: hugin1/hugin/PanoOperation.cpp:607
+#: hugin1/hugin/PanoOperation.cpp:614
 msgid "Load lens from ini file"
 msgstr "Charger l’objectif depuis le fichier ini"
 
-#: hugin1/hugin/PanoOperation.cpp:618
+#: hugin1/hugin/PanoOperation.cpp:625
 msgid ""
 "You selected only one image.\n"
 "Should the loaded parameters be applied to all images with the same lens?"
@@ -3324,12 +3312,12 @@ msgstr ""
 "Les paramètres chargés doivent-ils être appliqués à toutes les images "
 "utilisant le même objectif ?"
 
-#: hugin1/hugin/PanoOperation.cpp:618 hugin1/ptbatcher/FindPanoDialog.cpp:240
-#: hugin1/ptbatcher/FindPanoDialog.cpp:275
+#: hugin1/hugin/PanoOperation.cpp:625 hugin1/ptbatcher/FindPanoDialog.cpp:239
+#: hugin1/ptbatcher/FindPanoDialog.cpp:274
 msgid "Question"
 msgstr "Question"
 
-#: hugin1/hugin/PanoOperation.cpp:633
+#: hugin1/hugin/PanoOperation.cpp:640
 msgid ""
 "You selected images with different sizes.\n"
 "Apply lens parameter file can result in unwanted results.\n"
@@ -3340,93 +3328,93 @@ msgstr ""
 "résultats non désirés.\n"
 "Faut-il cependant appliquer le paramétrage ?"
 
-#: hugin1/hugin/PanoOperation.cpp:671
+#: hugin1/hugin/PanoOperation.cpp:678
 msgid "Save lens to ini file"
 msgstr "Enregistrer l’objectif dans le fichier ini"
 
-#: hugin1/hugin/PanoOperation.cpp:691
+#: hugin1/hugin/PanoOperation.cpp:698
 msgid "Remove control points"
 msgstr "Supprimer des points de contrôle"
 
-#: hugin1/hugin/PanoOperation.cpp:721
+#: hugin1/hugin/PanoOperation.cpp:728
 msgid "Selected images have no control points."
 msgstr "Les images sélectionnées n’ont pas de point de contrôle."
 
-#: hugin1/hugin/PanoOperation.cpp:730
+#: hugin1/hugin/PanoOperation.cpp:737
 #, c-format
 msgid "Really delete %lu control points?"
 msgstr "Faut-il vraiment supprimer %lu points de contrôle ?"
 
-#: hugin1/hugin/PanoOperation.cpp:732
+#: hugin1/hugin/PanoOperation.cpp:739
 msgid "Delete Control Points"
 msgstr "Supprimer les points de contrôle"
 
-#: hugin1/hugin/PanoOperation.cpp:746 hugin1/hugin/xrc/cp_editor_panel.xrc:334
+#: hugin1/hugin/PanoOperation.cpp:753 hugin1/hugin/xrc/cp_editor_panel.xrc:334
 msgid "Clean control points"
 msgstr "Nettoyer les points de contrôle"
 
-#: hugin1/hugin/PanoOperation.cpp:757
+#: hugin1/hugin/PanoOperation.cpp:764
 msgid "Cleaning Control points"
 msgstr "Nettoyage des points de contrôle"
 
-#: hugin1/hugin/PanoOperation.cpp:757
+#: hugin1/hugin/PanoOperation.cpp:764
 msgid "Checking pairwise"
 msgstr "Vérifications paire par paire"
 
-#: hugin1/hugin/PanoOperation.cpp:781
+#: hugin1/hugin/PanoOperation.cpp:788
 msgid "Checking whole project"
 msgstr "Vérification de l’ensemble du projet"
 
-#: hugin1/hugin/PanoOperation.cpp:798
+#: hugin1/hugin/PanoOperation.cpp:805
 msgid "Finished cleaning"
 msgstr "Nettoyage terminé"
 
-#: hugin1/hugin/PanoOperation.cpp:812
+#: hugin1/hugin/PanoOperation.cpp:819
 msgid "Remove control points on clouds"
 msgstr "Supprimer les points de contrôle situés sur des nuages"
 
-#: hugin1/hugin/PanoOperation.cpp:933
+#: hugin1/hugin/PanoOperation.cpp:940
 msgid "Reset user defined..."
 msgstr "Réinitialiser ce qui a été défini par l’utilisateur…"
 
-#: hugin1/hugin/PanoOperation.cpp:936
+#: hugin1/hugin/PanoOperation.cpp:943
 msgid "Reset positions"
 msgstr "Réinitialiser les positions"
 
-#: hugin1/hugin/PanoOperation.cpp:939
+#: hugin1/hugin/PanoOperation.cpp:946
 msgid "Reset translation parameters"
 msgstr "Réinitialiser les paramètres de translation"
 
-#: hugin1/hugin/PanoOperation.cpp:942
+#: hugin1/hugin/PanoOperation.cpp:949
 msgid "Reset lens parameters"
 msgstr "Réinitialiser les paramètres de l’objectif"
 
-#: hugin1/hugin/PanoOperation.cpp:945
+#: hugin1/hugin/PanoOperation.cpp:952
 msgid "Reset photometric parameters"
 msgstr "Réinitialiser les paramètres photométriques"
 
-#: hugin1/hugin/PanoOperation.cpp:1204
+#: hugin1/hugin/PanoOperation.cpp:1211
 msgid "New stack"
 msgstr "Nouvel ensemble"
 
-#: hugin1/hugin/PanoOperation.cpp:1228
+#: hugin1/hugin/PanoOperation.cpp:1235
 msgid "Change stack..."
 msgstr "Changer d’ensemble…"
 
-#: hugin1/hugin/PanoOperation.cpp:1235
+#: hugin1/hugin/PanoOperation.cpp:1242
 msgid "Enter new stack number"
 msgstr "Entrer le numéro du nouvel ensemble"
 
-#: hugin1/hugin/PanoOperation.cpp:1236
+#: hugin1/hugin/PanoOperation.cpp:1243
 #, fuzzy
 msgid "Stack number"
 msgstr "ensemble numéro"
 
-#: hugin1/hugin/PanoOperation.cpp:1237
+#: hugin1/hugin/PanoOperation.cpp:1244
 msgid "Change stack number"
 msgstr "Changer le numéro de l’ensemble"
 
-#: hugin1/hugin/PanoOperation.cpp:1258
+#: hugin1/hugin/PanoOperation.cpp:1265
 msgid "Set stack size..."
 msgstr "Définir les dimensions de l’ensemble…"
 
@@ -3525,29 +3513,29 @@ msgstr "La limite supérieure doit être plus petite que la basse."
 msgid "PTmender options not yet implemented"
 msgstr " Les options de PTmender ne sont pas encore implémentées"
 
-#: hugin1/hugin/PanoPanel.cpp:940
+#: hugin1/hugin/PanoPanel.cpp:934
 #, fuzzy
 msgid "PTblender options not yet implemented"
 msgstr " Les options de PTblender ne sont pas encore implémentées"
 
-#: hugin1/hugin/PanoPanel.cpp:996
+#: hugin1/hugin/PanoPanel.cpp:984
 #, fuzzy
 msgid "Options for this HDRMerge program not yet implemented"
 msgstr ""
 " Les options pour ce programme HDRMerge ne sont pas encore implémentées"
 
-#: hugin1/hugin/PanoPanel.cpp:1101 hugin1/hugin/PanoPanel.cpp:1388
+#: hugin1/hugin/PanoPanel.cpp:1089 hugin1/hugin/PanoPanel.cpp:1376
 msgid "Could not create temporary project file"
 msgstr "Impossible de créer le fichier temporaire de projet"
 
-#: hugin1/hugin/PanoPanel.cpp:1146 hugin1/hugin/PanoPanel.cpp:1266
-#: hugin1/hugin/PanoPanel.cpp:1431 hugin1/ptbatcher/Batch.cpp:689
+#: hugin1/hugin/PanoPanel.cpp:1134 hugin1/hugin/PanoPanel.cpp:1254
+#: hugin1/hugin/PanoPanel.cpp:1419 hugin1/ptbatcher/Batch.cpp:689
 #: hugin1/stitch_project/hugin_stitch_project.cpp:394
 msgid "Specify output prefix"
 msgstr "Indiquer un préfixe de sortie"
 
-#: hugin1/hugin/PanoPanel.cpp:1164 hugin1/hugin/PanoPanel.cpp:1284
-#: hugin1/hugin/PanoPanel.cpp:1449 hugin1/ptbatcher/BatchFrame.cpp:534
+#: hugin1/hugin/PanoPanel.cpp:1152 hugin1/hugin/PanoPanel.cpp:1272
+#: hugin1/hugin/PanoPanel.cpp:1437 hugin1/ptbatcher/BatchFrame.cpp:534
 #: hugin1/stitch_project/hugin_stitch_project.cpp:410
 #, c-format
 msgid ""
@@ -3557,15 +3545,15 @@ msgstr ""
 "Vous n’avez pas les droits pour écrire dans le dossier « %s ».\n"
 "Veuillez sélectionner un autre dossier pour la sortie finale."
 
-#: hugin1/hugin/PanoPanel.cpp:1352
+#: hugin1/hugin/PanoPanel.cpp:1340
 msgid "Select user defined output"
 msgstr "Sélectionner la sortie définie par l’utilisateur"
 
-#: hugin1/hugin/PanoPanel.cpp:1353
+#: hugin1/hugin/PanoPanel.cpp:1341
 msgid "User defined output|*.executor"
 msgstr "Sortie définie par l’utilisateur|*.executor"
 
-#: hugin1/hugin/PanoPanel.cpp:1674
+#: hugin1/hugin/PanoPanel.cpp:1662
 #, c-format
 msgid ""
 "The width and height of jpeg images has to be smaller than 65500 pixel. But "
@@ -3580,7 +3568,7 @@ msgstr ""
 "Diminuez les dimensions du canevas sur la fenêtre d’assemblage ou "
 "sélectionnez un format de sortie TIF ou PNG ."
 
-#: hugin1/hugin/PanoPanel.cpp:1688
+#: hugin1/hugin/PanoPanel.cpp:1676
 #, c-format
 msgid ""
 "The panorama you are trying to stitch is %.1f gigapixels.\n"
@@ -3595,7 +3583,7 @@ msgstr ""
 "panorama de cette dimension peut prendre beaucoup de temps et demander "
 "beaucoup de mémoire."
 
-#: hugin1/hugin/PanoPanel.cpp:1695
+#: hugin1/hugin/PanoPanel.cpp:1683
 msgid ""
 "The width or the height of the final panorama exceeds 32700 pixel.\n"
 "Some programs have problems to open or display such big images.\n"
@@ -3609,19 +3597,19 @@ msgstr ""
 "Si c’est trop gros, veuillez réduire les dimensions du canevas du panorama "
 "ou de la région recadrée."
 
-#: hugin1/hugin/PanoPanel.cpp:1703
+#: hugin1/hugin/PanoPanel.cpp:1691
 msgid "Are you sure you want to stitch such a large panorama?"
 msgstr "Êtes-vous certain de vouloir assembler un panorama aussi volumineux ?"
 
-#: hugin1/hugin/PanoPanel.cpp:1711 hugin1/hugin/PanoPanel.cpp:1766
+#: hugin1/hugin/PanoPanel.cpp:1699 hugin1/hugin/PanoPanel.cpp:1754
 msgid "Stitch anyway"
 msgstr "Assembler cependant"
 
-#: hugin1/hugin/PanoPanel.cpp:1711 hugin1/hugin/PanoPanel.cpp:1766
+#: hugin1/hugin/PanoPanel.cpp:1699 hugin1/hugin/PanoPanel.cpp:1754
 msgid "Let me fix that"
 msgstr "Laissez-moi corriger ceci"
 
-#: hugin1/hugin/PanoPanel.cpp:1739
+#: hugin1/hugin/PanoPanel.cpp:1727
 msgid ""
 "There are no active images in the output region.\n"
 "Please check your settings, so that at least one image is in the output "
@@ -3631,7 +3619,7 @@ msgstr ""
 "Veuillez vérifier votre paramétrage de manière à ce qu’une image au moins se "
 "trouve dans la zone de sortie."
 
-#: hugin1/hugin/PanoPanel.cpp:1759
+#: hugin1/hugin/PanoPanel.cpp:1747
 #, c-format
 msgid ""
 "The folder \"%s\" has only %.1f MiB free. This is not enough for stitching "
@@ -3644,13 +3632,13 @@ msgstr ""
 "sortie ou sélectionnez un autre dossier de sortie.\n"
 "Êtes-vous certain de vouloir l’assembler cependant ?"
 
-#: hugin1/hugin/PapywizardImport.cpp:341
+#: hugin1/hugin/PapywizardImport.cpp:351
 #, c-format
 msgid "Could not parse file %s as Papywizard XML file."
 msgstr ""
 "Impossible d’analyser le fichier %s comme étant un fichier XML de Papywizard."
 
-#: hugin1/hugin/PapywizardImport.cpp:353
+#: hugin1/hugin/PapywizardImport.cpp:363
 #, c-format
 msgid ""
 "The current project does not match with the Papywizard xml file.\n"
@@ -3661,7 +3649,7 @@ msgstr ""
 "Le fichier « %s » de Papywizard contient %lu images, mais le projet Hugin "
 "contient %lu images."
 
-#: hugin1/hugin/PapywizardImport.cpp:464
+#: hugin1/hugin/PapywizardImport.cpp:474
 msgid "Connecting overlapping images"
 msgstr "Connexion des images ayant une zone de superposition"
 
@@ -4010,7 +3998,7 @@ msgstr ""
 "Erreur :%s\n"
 "Une cause possible est un fichier image non valable ou manquant."
 
-#: hugin1/hugin/RawImport.cpp:75
+#: hugin1/hugin/RawImport.cpp:72
 #, fuzzy, c-format
 msgid ""
 "Executable \"%s\" not found.\n"
@@ -4019,7 +4007,7 @@ msgstr ""
 "Exécutable « %s » introuvable.\n"
 "Veuillez indiquer un exécutable valable."
 
-#: hugin1/hugin/RawImport.cpp:93
+#: hugin1/hugin/RawImport.cpp:90
 #, fuzzy, c-format
 msgid ""
 "Executable \"%s\" not found in PATH.\n"
@@ -4028,19 +4016,19 @@ msgstr ""
 "Exécutable « %s » introuvable dans le chemin (« PATH »).\n"
 "Veuillez indiquer un exécutable valable."
 
-#: hugin1/hugin/RawImport.cpp:141 hugin1/hugin/RawImport.cpp:178
-#: hugin1/hugin/RawImport.cpp:248 hugin1/hugin/RawImport.cpp:269
-#: hugin1/hugin/RawImport.cpp:346 hugin1/hugin/RawImport.cpp:407
+#: hugin1/hugin/RawImport.cpp:138 hugin1/hugin/RawImport.cpp:175
+#: hugin1/hugin/RawImport.cpp:245 hugin1/hugin/RawImport.cpp:266
+#: hugin1/hugin/RawImport.cpp:343 hugin1/hugin/RawImport.cpp:404
 #, c-format
 msgid "Executing: %s %s"
 msgstr "Exécution : %s %s"
 
-#: hugin1/hugin/RawImport.cpp:147 hugin1/hugin/RawImport.cpp:184
+#: hugin1/hugin/RawImport.cpp:144 hugin1/hugin/RawImport.cpp:181
 #, c-format
 msgid "Updating EXIF data for %s"
 msgstr "Mise à jour des données EXIF pour %s"
 
-#: hugin1/hugin/RawImport.cpp:219
+#: hugin1/hugin/RawImport.cpp:216
 #, c-format
 msgid ""
 "Processing profile \"%s\" not found.\n"
@@ -4050,11 +4038,11 @@ msgstr ""
 "Veuillez indiquer un fichier valable ou laisser le champ vide pour utiliser "
 "les valeurs par défaut."
 
-#: hugin1/hugin/RawImport.cpp:457 hugin1/hugin/xrc/import_raw_dialog.xrc:159
+#: hugin1/hugin/RawImport.cpp:454 hugin1/hugin/xrc/import_raw_dialog.xrc:159
 msgid "Import Raw Images"
 msgstr "Importer des images RAW"
 
-#: hugin1/hugin/RawImport.cpp:506
+#: hugin1/hugin/RawImport.cpp:503
 msgid ""
 "Could not process of output of reference image.\n"
 "Can't process further images."
@@ -4062,16 +4050,16 @@ msgstr ""
 "Impossible de traiter la sortie de l’image de référence.\n"
 "Impossible de de traiter d’autres images."
 
-#: hugin1/hugin/RawImport.cpp:531 hugin1/hugin/RawImport.cpp:543
+#: hugin1/hugin/RawImport.cpp:528 hugin1/hugin/RawImport.cpp:540
 #: hugin1/hugin/xrc/batch_frame.xrc:465
 msgid "Close"
 msgstr "Fermer"
 
-#: hugin1/hugin/RawImport.cpp:711
+#: hugin1/hugin/RawImport.cpp:708
 msgid "Warning: Read error"
 msgstr "Attention : erreur de lecture"
 
-#: hugin1/hugin/RawImport.cpp:712
+#: hugin1/hugin/RawImport.cpp:709
 msgid ""
 "The following files will be skipped because the metadata of these files "
 "could not read."
@@ -4079,11 +4067,11 @@ msgstr ""
 "Les fichiers suivants seront sautés parce les métadonnées de ces fichiers "
 "n’ont pas pu être lues."
 
-#: hugin1/hugin/RawImport.cpp:735
+#: hugin1/hugin/RawImport.cpp:732
 msgid "Warning: raw images from different cameras"
 msgstr "Attention : images RAW en provenance d’appareils photo différents"
 
-#: hugin1/hugin/RawImport.cpp:736
+#: hugin1/hugin/RawImport.cpp:733
 msgid ""
 "The following images were shot with different camera than the other one.\n"
 "The raw import works only for images from the same cam."
@@ -4093,7 +4081,7 @@ msgstr ""
 "L’importation RAW ne fonctionne que pour des images provenant du même "
 "appareil."
 
-#: hugin1/hugin/RawImport.cpp:838
+#: hugin1/hugin/RawImport.cpp:835
 msgid ""
 "At least one raw images was not successfully converted.\n"
 "This image(s) will be skipped"
@@ -4101,39 +4089,39 @@ msgstr ""
 "Au moins une image RAW n’a pas été convertie avec succès.\n"
 "Cette ou ces images seront sautées."
 
-#: hugin1/hugin/RawImport.cpp:866
+#: hugin1/hugin/RawImport.cpp:863
 msgid "Select default RT processing profile"
 msgstr "Sélectionner le profil de traitement par défaut de RT"
 
-#: hugin1/hugin/RawImport.cpp:866
+#: hugin1/hugin/RawImport.cpp:863
 msgid "RT processing profile|*.pp3"
 msgstr "Profil de traitement de RT|*.pp3"
 
-#: hugin1/hugin/huginApp.cpp:242
+#: hugin1/hugin/huginApp.cpp:247
 #, c-format
 msgid "Directory '%s' does not exists"
 msgstr "Le répertoire « %s » n’existe pas"
 
-#: hugin1/hugin/huginApp.cpp:246
+#: hugin1/hugin/huginApp.cpp:251
 msgid "Could not set environment variable PYTHONHOME"
 msgstr "Impossible de définir la variable d’environnement PYTHONHOME"
 
-#: hugin1/hugin/huginApp.cpp:379
+#: hugin1/hugin/huginApp.cpp:384
 msgid "Open Batch Processor"
 msgstr "Ouvrir le processeur de traitement par lots"
 
-#: hugin1/hugin/huginApp.cpp:380 hugin1/hugin/xrc/main_menu.xrc:202
+#: hugin1/hugin/huginApp.cpp:385 hugin1/hugin/xrc/main_menu.xrc:202
 #: hugin1/hugin/xrc/main_menu.xrc:232 hugin1/hugin/xrc/preview_frame.xrc:1105
 #, fuzzy
 msgid "Opens PTBatcherGUI, the batch processor for Hugin's project files"
 msgstr ""
 "Ouvrir PTBatcher, processeur de lots pour les fichiers de projet de Hugin"
 
-#: hugin1/hugin/huginApp.cpp:385
+#: hugin1/hugin/huginApp.cpp:390
 msgid "Open Lens calibrate tool"
 msgstr "Ouvrir l’outil de calibration d’objectif"
 
-#: hugin1/hugin/huginApp.cpp:386
+#: hugin1/hugin/huginApp.cpp:391
 msgid "Opens Calibrate_lens_gui, a simple GUI for lens calibration"
 msgstr ""
 "Ouvrir Calibrate_lens_gui, interface graphique simple pour la calibration "
@@ -4478,7 +4466,7 @@ msgstr "Veuillez entrer l’application en ligne de commandes à exécuter :"
 msgid "Enter application"
 msgstr "Entrer l’application"
 
-#: hugin1/ptbatcher/BatchFrame.cpp:381 hugin1/ptbatcher/FindPanoDialog.cpp:250
+#: hugin1/ptbatcher/BatchFrame.cpp:381 hugin1/ptbatcher/FindPanoDialog.cpp:249
 msgid "Specify a directory to search for projects in"
 msgstr "Indiquer le répertoire où rechercher des projets"
 
@@ -4673,7 +4661,7 @@ msgstr "Ajouter le projet à la file d’attente de l’assistant…"
 msgid "E&xit"
 msgstr "&Quitter"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:239
+#: hugin1/ptbatcher/FindPanoDialog.cpp:238
 msgid ""
 "The list contains possibly unprocessed panoramas.\n"
 "If you close the dialog, you will lose them.\n"
@@ -4683,11 +4671,11 @@ msgstr ""
 "Si vous choisissez de fermer la fenêtre, ils seront perdus.\n"
 "Faut-il poursuivre cependant ?"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:264
+#: hugin1/ptbatcher/FindPanoDialog.cpp:263
 msgid "Accepted"
 msgstr "Accepté"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:274
+#: hugin1/ptbatcher/FindPanoDialog.cpp:273
 msgid ""
 "The list contains still not yet processed panoramas.\n"
 "If you continue, they will be disregarded.\n"
@@ -4697,11 +4685,11 @@ msgstr ""
 "Si vous poursuivez, il seront ignorés.\n"
 "Faut-il poursuivre cependant ?"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:284
+#: hugin1/ptbatcher/FindPanoDialog.cpp:283
 msgid "Stop"
 msgstr "Arrêter"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:295
+#: hugin1/ptbatcher/FindPanoDialog.cpp:294
 #, c-format
 msgid ""
 "Directory %s does not exist.\n"
@@ -4710,7 +4698,7 @@ msgstr ""
 "Le répertoire %s n’existe pas.\n"
 "Veuillez indiquer un répertoire existant."
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:317
+#: hugin1/ptbatcher/FindPanoDialog.cpp:316
 msgid ""
 "You have selected no possible panorama.\n"
 "Please select at least one panorama and try again."
@@ -4718,7 +4706,7 @@ msgstr ""
 "Vous n’avez pas sélectionné de panorama possible.\n"
 "Veuillez sélectionner au moins un panorama et réessayer."
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:340
+#: hugin1/ptbatcher/FindPanoDialog.cpp:339
 msgid ""
 "Not all project files could be written successfully.\n"
 "Maybe you have no write permission for these directories or your disc is "
@@ -4728,44 +4716,44 @@ msgstr ""
 "Vous n’avez peut-être pas les permissions en écriture sur ces répertoires ou "
 "votre disque dur est plein."
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:386
+#: hugin1/ptbatcher/FindPanoDialog.cpp:385
 msgid "Remove image from project"
 msgstr "Supprimer l’image du projet"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:392
+#: hugin1/ptbatcher/FindPanoDialog.cpp:391
 msgid "Split here into two panoramas"
 msgstr "Séparer ici en deux panoramas"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:495
+#: hugin1/ptbatcher/FindPanoDialog.cpp:494
 #, c-format
 msgid "Reading file %s"
 msgstr "Lecture du fichier %s"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:592
+#: hugin1/ptbatcher/FindPanoDialog.cpp:591
 #: hugin1/hugin/xrc/batch_frame.xrc:217
 msgid "Start"
 msgstr "Lancer"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:598
+#: hugin1/ptbatcher/FindPanoDialog.cpp:597
 #, fuzzy, c-format
 msgid "Found %d possible panoramas"
 msgstr "%d panoramas possibles ont été trouvés."
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:602
+#: hugin1/ptbatcher/FindPanoDialog.cpp:601
 #, fuzzy
 msgid "No possible panoramas found"
 msgstr "Aucun panorama possible n’a été trouvé."
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:709
+#: hugin1/ptbatcher/FindPanoDialog.cpp:708
 #, c-format
 msgid "%d images: %s"
 msgstr "%d images : %s"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:938
+#: hugin1/ptbatcher/FindPanoDialog.cpp:937
 msgid "%M:%S min"
 msgstr "%M:%S min"
 
-#: hugin1/ptbatcher/FindPanoDialog.cpp:942
+#: hugin1/ptbatcher/FindPanoDialog.cpp:941
 #, c-format
 msgid "%S s"
 msgstr "%S s"
@@ -8903,6 +8891,15 @@ msgstr ""
 "Optimisation de tous les paramètres, « tout » n’a de sens que pour des images "
 "ayant un important recouvrement et des points de contrôle nombreux bien "
 "répartis."
+
+#, fuzzy
+#~ msgid ""
+#~ "Drag to move images (optionally use shift to constrain), or roll with "
+#~ "right-drag or ctrl-drag"
+#~ msgstr ""
+#~ "Glissez pour déplacer les images (optionnellement utilisez la touche "
+#~ "majuscule pour contraindre), ou faites une rotation avec clic-droit-"
+#~ "glisser ou Ctrl-glisser."
 
 #, fuzzy
 #~ msgid "Setting same advanced settings"
