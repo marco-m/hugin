@@ -1869,6 +1869,11 @@ void MainFrame::OnFineTuneAll(wxCommandEvent & e)
                         cps[*it].error = res.maxi;
                     }
                 }
+                else
+                {
+                    // for line control points set error = correlation to 1
+                    cps[*it].error = 1.0;
+                };
                 unsigned int rm = *it;
                 ++it;
                 unoptimized.erase(rm);
