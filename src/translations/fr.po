@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Hugin 2012-0.0\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2019-08-18 11:35+0200\n"
-"PO-Revision-Date: 2019-08-24 14:41+0100\n"
+"PO-Revision-Date: 2019-08-25 10:46+0100\n"
 "Last-Translator: Jean-Luc Coulon (f5ibh) <jean-luc.coulon@wanadoo.fr>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -436,7 +436,7 @@ msgstr "Préfixe de sortie :"
 #: hugin1/base_wx/StitchingExecutor.cpp:218
 #: hugin1/hugin/xrc/batch_frame.xrc:331 hugin1/hugin/xrc/pano_panel.xrc:830
 msgid "Blender:"
-msgstr "Outil de fusion :"
+msgstr "Outil de raccord :"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:212
 msgid "Unknown blender (enblend --version failed)"
@@ -569,7 +569,7 @@ msgstr "Calques :"
 #: hugin1/hugin/xrc/pano_panel.xrc:723
 msgid "Blended layers of similar exposure, without exposure correction"
 msgstr ""
-"Calques fusionnés ayant une exposition similaire, sans correction "
+"Calques raccordés ayant une exposition similaire, sans correction "
 "d’exposition"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:329
@@ -605,7 +605,7 @@ msgstr "Valeur de l’exposition : %.1f"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:572
 msgid "Remapping and blending LDR images..."
-msgstr "Reformatage et fusion d’images LDR (faible plage dynamique)…"
+msgstr "Reformatage et raccord d’images LDR (faible plage dynamique)…"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:583
 msgid "Remapping LDR images..."
@@ -613,11 +613,11 @@ msgstr "Refomatage des image en faible plage dynamique (« LDR ») :"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:594
 msgid "Blending images..."
-msgstr "Fusion des images…"
+msgstr "Raccord des images…"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:643
 msgid "Remapping LDR images and blending exposure layers..."
-msgstr "Reformatage des images LDR et fusion des calques d’exposition…"
+msgstr "Reformatage des images LDR et raccord des calques d’exposition…"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:661
 msgid "Remapping LDR images without exposure correction..."
@@ -626,7 +626,7 @@ msgstr "Reformatage des images LDR sans correction d’exposition…"
 #: hugin1/base_wx/StitchingExecutor.cpp:681
 #, c-format
 msgid "Blending exposure layer %u..."
-msgstr "Fusion du calque d’exposition %u…"
+msgstr "Raccord du calque d’exposition %u…"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:702
 msgid "Fusing all exposure layers..."
@@ -640,7 +640,7 @@ msgstr "Fusion de l’ensemble numéro %u…"
 #: hugin1/base_wx/StitchingExecutor.cpp:748
 #: hugin1/base_wx/StitchingExecutor.cpp:759
 msgid "Blending all stacks..."
-msgstr "Fusion de tous les ensembles…"
+msgstr "Raccord de tous les ensembles…"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:776
 msgid "Remapping HDR images..."
@@ -654,7 +654,7 @@ msgstr "Fusion de l’ensemble HDR numéro %u…"
 #: hugin1/base_wx/StitchingExecutor.cpp:814
 #: hugin1/base_wx/StitchingExecutor.cpp:821
 msgid "Blending HDR stacks..."
-msgstr "Fusion des ensembles HDR…"
+msgstr "Raccord des ensembles HDR…"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:842
 #: hugin1/base_wx/StitchingExecutor.cpp:848
@@ -3922,7 +3922,7 @@ msgstr "Projection (f) :"
 
 #: hugin1/hugin/PreviewFrame.cpp:214 hugin1/hugin/xrc/preview_frame.xrc:348
 msgid "Blend mode:"
-msgstr "Mode de fusion :"
+msgstr "Mode de raccord :"
 
 #: hugin1/hugin/PreviewFrame.cpp:236
 msgid "Output:"
@@ -6502,11 +6502,11 @@ msgstr "&Lancer le traitement par lots"
 
 #: hugin1/hugin/xrc/main_menu.xrc:206 hugin1/hugin/xrc/main_menu.xrc:236
 msgid "&Merge project..."
-msgstr "&Fusionner le projet…"
+msgstr "&Concaténer le projet…"
 
 #: hugin1/hugin/xrc/main_menu.xrc:207 hugin1/hugin/xrc/main_menu.xrc:237
 msgid "Merges an existing project file with the current project"
-msgstr "Fusionne un fichier de projet existant avec le projet en cours"
+msgstr "Concatène un fichier de projet existant avec le projet en cours"
 
 #: hugin1/hugin/xrc/main_menu.xrc:210
 msgid "Import settings from Papywizard &XML file..."
@@ -6982,7 +6982,7 @@ msgid ""
 "Blend all images into a seamless panorama, using exposure set in the "
 "Exposure tab"
 msgstr ""
-"Fusionner toutes les images sous forme d’un panorama sans raccord en "
+"Raccorder toutes les images sous forme d’un panorama sans raccord visible en "
 "utilisant l’exposition définie dans l’onglet « Exposition »"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:493
@@ -6991,15 +6991,15 @@ msgid ""
 "panorama"
 msgstr ""
 "Les images seront reformatées, l’exposition des ensembles sera fusionnée, et "
-"ils seront ensuite fusionnés afin de créer un panorama sans raccord"
+"ils seront ensuite assemblés afin de créer un panorama sans raccord"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:502 hugin1/hugin/xrc/pano_panel.xrc:1303
 msgid ""
 "Images will be remapped, blended into seamless layers, then layers exposure "
 "fused into a panorama"
 msgstr ""
-"Les images seront reformatées, fusionnées sous forme de calques sans "
-"raccord, les calques d’exposition seront ensuite fusionnés pour faire un "
+"Les images seront reformatées, assemblées sous forme de calques sans raccord "
+"visible, les calques d’exposition seront ensuite fusionnés pour faire un "
 "panorama"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:511 hugin1/hugin/xrc/pano_panel.xrc:582
@@ -7012,16 +7012,16 @@ msgid ""
 "into a seamless High Dynamic Range panorama"
 msgstr ""
 "Les images seront reformatées dans un espace colorimétrique linéaire, les "
-"ensembles seront concaténés et ensuite fusionnés en un panorama sans raccord "
-"avec une haute plage dynamique"
+"ensembles seront concaténés et ensuite assemblées en un panorama sans "
+"raccord visible avec une haute plage dynamique"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:644
 msgid ""
 "Output remapped, exposure corrected images. Useful for manual blending of an "
 "exposure corrected panorama"
 msgstr ""
-"Sortie reformatée, images avec correction d’exposition. Utile pour une "
-"fusion manuelle d’un panorama corrigé en exposition"
+"Sortie reformatée, images avec correction d’exposition. Utile pour "
+"l’assemblage manuel d’un panorama corrigé en exposition"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:655
 msgid ""
@@ -7060,8 +7060,8 @@ msgid ""
 "Output a complete blended panorama for each exposure step. Useful for manual "
 "contrast blending in an image editor"
 msgstr ""
-"Produire un panorama fusionné complet avec fusion pour chaque cran "
-"d’exposition. Utile pour la fusion manuelle du contraste dans un outil de "
+"Produire un panorama raccordé complet avec fusion pour chaque cran "
+"d’exposition. Utile pour le raccord manuel du contraste dans un outil de "
 "retouche d’images"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:735
@@ -7182,7 +7182,7 @@ msgstr "Paramètres de sortie"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1378 hugin1/hugin/xrc/pref_dialog.xrc:926
 msgid "Seam blend mode:"
-msgstr "Mode de fusion des raccords :"
+msgstr "Mode de raccord :"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:1386 hugin1/hugin/xrc/pref_dialog.xrc:934
 msgid "hard seam (faster)"
@@ -7537,15 +7537,15 @@ msgstr "paramètres de compression JPEG par défaut"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:906
 msgid "Blender"
-msgstr "Outil de fusion"
+msgstr "Outil de raccord"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:912
 msgid "Default blender:"
-msgstr "Outil de fusion par défaut :"
+msgstr "Outil de raccord par défaut :"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:919
 msgid "Default blender which is used for new projects"
-msgstr "Outil de fusion par défaut utilisé pour les nouveaux projets"
+msgstr "Outil de raccord par défaut utilisé pour les nouveaux projets"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:951
 msgid "Processor"
@@ -8238,14 +8238,13 @@ msgid "Reset values"
 msgstr "Réinitialiser les valeurs"
 
 #: hugin1/executor/blended_stacks.executor:2
-#, fuzzy
 msgid "Blended stacks"
-msgstr "Ensembles combinés :"
+msgstr "Ensembles combinés"
 
 #: hugin1/executor/blended_stacks.executor:3
-#, fuzzy
 msgid "Fuse all stacks with enfuse, then blend them with enblend"
-msgstr "Fusion de tous les ensembles…"
+msgstr ""
+"Fusionner tous les ensembles avec enfuse, les raccorder ensuite avec enblend"
 
 #: hugin1/executor/blended_stacks.executor:8
 #: hugin1/executor/fused_layers.executor:8 hugin1/executor/hdr_pano.executor:8
@@ -8255,289 +8254,252 @@ msgstr "Fusion de tous les ensembles…"
 #: hugin1/executor/normal_layered_tiff.executor:8
 #: hugin1/executor/normal_smartblend.executor:9
 #: hugin1/executor/zeronoise.executor:8
-#, fuzzy
 msgid "Remapping images"
-msgstr "Refomatage des image en faible plage dynamique (« LDR ») :"
+msgstr "Refomatage des image"
 
 #: hugin1/executor/blended_stacks.executor:13
-#, fuzzy
 msgid "Fusing all stacks with enfuse"
-msgstr "Fusion de tous les ensembles…"
+msgstr "Fusion de tous les ensembles avec enfuse"
 
 #: hugin1/executor/blended_stacks.executor:20
-#, fuzzy
 msgid "Blending stacks with enblend"
-msgstr "Fusion des images…"
+msgstr "Raccord des ensembles avec enblend"
 
 #: hugin1/executor/duallens.assistant:2
-#, fuzzy
 msgid "Assistant for dual lens images"
-msgstr "Supprimer la ou les images sélectionnées"
+msgstr "Assistant pour les images à double objectif"
 
 #: hugin1/executor/duallens.assistant:3
 msgid ""
 "Assistant for images shot with dual lens camera/one shot panoramic cameras"
 msgstr ""
+"Assistant pour les images prises avec un appareil photo à double objectif, "
+"ou les appareils compacts panoramiques"
 
 #: hugin1/executor/duallens.assistant:7
 msgid "Prepare initial pto file"
-msgstr ""
+msgstr "Préparer le fichier pto initial"
 
 #: hugin1/executor/duallens.assistant:13 hugin1/executor/duallens.assistant:43
-#, fuzzy
 msgid "Setting advanced settings"
-msgstr "Ce paramètre n’a pas d’option avancée."
+msgstr "Réglages des paramètre avancés"
 
 #: hugin1/executor/duallens.assistant:25 hugin1/executor/normal.assistant:13
 #: hugin1/executor/scanned.assistant:18 hugin1/executor/scanned2.assistant:18
-#, fuzzy
 msgid "Check result"
-msgstr "Vérification des résultats…"
+msgstr "Vérification des résultats"
 
 #: hugin1/executor/duallens.assistant:31 hugin1/executor/multirow.assistant:19
 #: hugin1/executor/normal.assistant:19 hugin1/executor/scanned.assistant:24
 #: hugin1/executor/scanned2.assistant:24
-#, fuzzy
 msgid "Cleaning control points"
 msgstr "Nettoyage des points de contrôle"
 
 #: hugin1/executor/duallens.assistant:37 hugin1/executor/multirow.assistant:31
 #: hugin1/executor/normal.assistant:25 hugin1/executor/scanned.assistant:30
 #: hugin1/executor/scanned2.assistant:30
-#, fuzzy
 msgid "Searching line cp"
-msgstr "Recherche du meilleur recadrage…"
+msgstr "Recherche de point de contrôle de ligne"
 
 #: hugin1/executor/duallens.assistant:48 hugin1/executor/multirow.assistant:37
 #: hugin1/executor/normal.assistant:31 hugin1/executor/scanned.assistant:41
 #: hugin1/executor/scanned2.assistant:41 hugin1/executor/stacked.assistant:24
-#, fuzzy
 msgid "Optimizing"
-msgstr "Optimisation…"
+msgstr "Optimisation"
 
 #: hugin1/executor/duallens.assistant:53 hugin1/executor/multirow.assistant:42
 #: hugin1/executor/normal.assistant:36 hugin1/executor/scanned.assistant:46
 #: hugin1/executor/scanned2.assistant:46 hugin1/executor/stacked.assistant:29
-#, fuzzy
 msgid "Searching for best crop"
-msgstr "Recherche du meilleur recadrage…"
+msgstr "Recherche du meilleur recadrage"
 
 #: hugin1/executor/fused_layers.executor:2
-#, fuzzy
 msgid "Fused layers"
-msgstr "Objectif utilisé"
+msgstr "Calques fusionnés"
 
 #: hugin1/executor/fused_layers.executor:3
-#, fuzzy
 msgid "Blend all exposure layers, then fuse them with enfuse"
-msgstr "Fusion du calque d’exposition %u…"
+msgstr ""
+"Raccorder tous les calques d’exposition, les fusionner ensuite avec enfuse"
 
 #: hugin1/executor/fused_layers.executor:13
-#, fuzzy
 msgid "Blending all exposure layers"
-msgstr "Fusion du calque d’exposition %u…"
+msgstr "Raccord de tous les calques d’exposition"
 
 #: hugin1/executor/fused_layers.executor:20
-#, fuzzy
 msgid "Fusing all exposure layers"
-msgstr "Fusion de tous les calques d’exposition…"
+msgstr "Fusion de tous les calques d’exposition"
 
 #: hugin1/executor/hdr_pano.executor:2
-#, fuzzy
 msgid "HDR panorama"
-msgstr "Conserver le panorama"
+msgstr "Panorama HDR"
 
 #: hugin1/executor/hdr_pano.executor:3
-#, fuzzy
 msgid "Generate a HDR panorama"
-msgstr "Optimiser l’image et le panorama"
+msgstr "Générer un panorama HDR"
 
 #: hugin1/executor/hdr_pano.executor:13
-#, fuzzy
 msgid "Merging hdr stacks"
-msgstr "Exclure la zone de l’ensemble"
+msgstr "Fusion de tous les ensembles HDR"
 
 #: hugin1/executor/hdr_pano.executor:19
-#, fuzzy
 msgid "Blending all hdr stacks"
-msgstr "Fusion de tous les ensembles…"
+msgstr "Raccord de tous les ensembles HDR"
 
 #: hugin1/executor/median_stack.executor:2
-#, fuzzy
 msgid "Median of stacked images"
-msgstr "Images affichées"
+msgstr "Médiane des images de l’ensemble"
 
 #: hugin1/executor/median_stack.executor:3
-#, fuzzy
 msgid "Output median image of stacked images"
-msgstr "Images affichées"
+msgstr "Produire en sortie l’image médiane est images empilées"
 
 #: hugin1/executor/median_stack.executor:14
-#, fuzzy
 msgid "Calculating median"
-msgstr "Calcul du recadrage optimum"
+msgstr "Calcul de la médiane"
 
 #: hugin1/executor/multirow.assistant:2
-#, fuzzy
 msgid "Multi-row (2 rows)"
-msgstr "Panorama multi-lignes"
+msgstr "Multi-lignes (2 lignes)"
 
 #: hugin1/executor/multirow.assistant:3
 msgid "Assistant for multi-row panorama (2 rows, handles orphaned images)"
 msgstr ""
+"Assistant pour panorama multi-lignes (2 lignes, prend en compte les images "
+"orphelines)"
 
 #: hugin1/executor/multirow.assistant:7
-#, fuzzy
 msgid "Assign rough positions"
-msgstr "Lier les positions"
+msgstr "Assigner des positions approximatives"
 
 #: hugin1/executor/multirow.assistant:25
-#, fuzzy
 msgid "Connect orphaned images"
-msgstr "Connecter les images isolées (avec geocpset)"
+msgstr "Connecter les images orphelines"
 
 #: hugin1/executor/normal.assistant:2
-#, fuzzy
 msgid "Standard assistant"
-msgstr "Exécuter l’a&ssistant"
+msgstr "Assistant standard"
 
 #: hugin1/executor/normal.assistant:3
-#, fuzzy
 msgid "Assistant for normal panorama"
-msgstr "Supprimer la ou les images sélectionnées"
+msgstr "Assistant de panorama normal"
 
 #: hugin1/executor/normal_enblend.executor:2
 msgid "Normal panorama with enblend"
-msgstr ""
+msgstr "Panorama normal à l’aide d’enblend"
 
 #: hugin1/executor/normal_enblend.executor:3
-#, fuzzy
 msgid "Generate normal panorama (TIF file)"
-msgstr "Optimiser l’image et le panorama"
+msgstr "Générer un panorama normal (fichier TIF)"
 
 #: hugin1/executor/normal_enblend.executor:13
 #: hugin1/executor/normal_enblend_cubic.executor:13
-#, fuzzy
 msgid "Blending with enblend"
-msgstr "Fusion des images…"
+msgstr "Raccord avec enblend"
 
 #: hugin1/executor/normal_enblend.executor:22
 #: hugin1/executor/normal_enblend_cubic.executor:22
 #: hugin1/executor/normal_layered_tiff.executor:13
-#, fuzzy
 msgid "Updating metadata"
-msgstr "Mise à jour des métadonnées…"
+msgstr "Mise à jour des métadonnées"
 
 #: hugin1/executor/normal_enblend_cubic.executor:2
 msgid "Equi and cubic"
-msgstr ""
+msgstr "Équi et cubique"
 
 #: hugin1/executor/normal_enblend_cubic.executor:3
 msgid "Creates an equirectangular and the cube faces for given project"
-msgstr ""
+msgstr "Crée un équirectangulaire et les faces du cube pour un projet donné"
 
 #: hugin1/executor/normal_enblend_cubic.executor:28
-#, fuzzy
 msgid "Create project file for cubic reprojection"
-msgstr ""
-"Faut-il enregistrer les modifications vers le fichier de projet avant de "
-"démarrer un nouveau projet ?"
+msgstr "Créer un fichier de projet pour une reprojection cubique"
 
 #: hugin1/executor/normal_enblend_cubic.executor:35
-#, fuzzy
 msgid "Set positions for reprojection"
-msgstr "Afficher des informations concernant les projections"
+msgstr "Définir les positions pour la reprojection"
 
 #: hugin1/executor/normal_enblend_cubic.executor:42
-#, fuzzy
 msgid "Set output size for reprojection"
-msgstr "Indiquer un préfixe de sortie pour le projet "
+msgstr "Définir les dimensions en sortie pour la reprojection"
 
 #: hugin1/executor/normal_enblend_cubic.executor:49
-#, fuzzy
 msgid "Create cube faces"
-msgstr "Créer un point de contrôle"
+msgstr "Créer les faces du cube"
 
 #: hugin1/executor/normal_layered_tiff.executor:2
 msgid "Normal panorama with layered TIFF output"
-msgstr ""
+msgstr "Panorama normal avec une sortie TIFF avec calques"
 
 #: hugin1/executor/normal_layered_tiff.executor:3
 msgid "Output a panorama with layered TIFF output for manual blending"
 msgstr ""
+"Créer en sortie un panorama avec des TIFF avec calques pour raccord manuel"
 
 #: hugin1/executor/normal_smartblend.executor:2
-#, fuzzy
 msgid "Normal panorama with smartblend"
-msgstr "Fusion des images…"
+msgstr "Panorama normal avec smartblend"
 
 #: hugin1/executor/normal_smartblend.executor:3
 msgid "Output a normal panorama, using smartblend for blending"
 msgstr ""
+"Créer en sortie un panorama normal, utilisant smartblend pour le raccord"
 
 #: hugin1/executor/normal_smartblend.executor:14
-#, fuzzy
 msgid "Blending with smartblend"
-msgstr "Fusion des images…"
+msgstr "Raccord avec smartblend"
 
 #: hugin1/executor/scanned.assistant:2
-#, fuzzy
 msgid "Scanned images"
-msgstr "Enregistrer l’image"
+msgstr "Images numérisées"
 
 #: hugin1/executor/scanned.assistant:3
-#, fuzzy
 msgid "Assistant for scanned images"
-msgstr "Supprimer la ou les images sélectionnées"
+msgstr "Assistant pour les images numérisées"
 
 #: hugin1/executor/scanned.assistant:7 hugin1/executor/scanned2.assistant:7
-#, fuzzy
 msgid "Setting initial values"
-msgstr "Manipuler les variables de l’image"
+msgstr "Régler les valeurs initiales"
 
 #: hugin1/executor/scanned.assistant:36 hugin1/executor/scanned2.assistant:36
 #: hugin1/executor/stacked.assistant:19
-#, fuzzy
 msgid "Setting optimizer variables"
-msgstr "Manipuler les variables de l’image"
+msgstr "Régler les variables de l’optimiseur"
 
 #: hugin1/executor/scanned2.assistant:2
-#, fuzzy
 msgid "Scanned images (TrXYZ)"
-msgstr "Enregistrer l’image"
+msgstr "Images numérisées (TrXYZ)"
 
 #: hugin1/executor/scanned2.assistant:3
-#, fuzzy
 msgid "Assistant for scanned images, using translation parameters"
-msgstr "Supprimer la ou les images sélectionnées"
+msgstr ""
+"Assistant pour images numérisées, utilisation des paramètres de translation"
 
 #: hugin1/executor/stacked.assistant:2
 msgid "Align image stack assistant"
-msgstr ""
+msgstr "Assistant d’alignement d’ensemble d’images"
 
 #: hugin1/executor/stacked.assistant:3
-#, fuzzy
 msgid "Assistant for alignment of a single stack"
-msgstr "Supprimer la ou les images sélectionnées"
+msgstr "Assistant pour l’alignement d’un seul ensemble"
 
 #: hugin1/executor/stacked.assistant:13
-#, fuzzy
 msgid "Checking result"
-msgstr "Vérification des résultats…"
+msgstr "Vérification des résultats"
 
 #: hugin1/executor/zeronoise.executor:2
-#, fuzzy
 msgid "Zero-noise output"
-msgstr "Sortie détaillée"
+msgstr "Sortie Zero-noise"
 
 #: hugin1/executor/zeronoise.executor:3
 msgid "Use with a single stack (with different exposures) to reduce noise"
 msgstr ""
+"Utiliser avec un ensemble unique (avec différentes expositions) pour réduire "
+"le bruit"
 
 #: hugin1/executor/zeronoise.executor:13
-#, fuzzy
 msgid "Merge all exposures"
-msgstr "Fusion de tous les calques d’exposition…"
+msgstr "Fusion de toutes les expositions"
 
 #: hugin1/hugin/xrc/data/tips.txt:3
 msgid ""
