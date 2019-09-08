@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the hugin package.
 #
 # Jozef Riha <jose1711@gmail.com>, 2006-2011.
-# Kornel Benko <kornel@lyx.org>, 2013-2018.
+# Kornel Benko <kornel@lyx.org>, 2013-2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: hugin\n"
@@ -430,7 +430,7 @@ msgstr "Predpona pre výstup:"
 #: hugin1/base_wx/StitchingExecutor.cpp:218
 #: hugin1/hugin/xrc/batch_frame.xrc:331 hugin1/hugin/xrc/pano_panel.xrc:830
 msgid "Blender:"
-msgstr "Lepič:"
+msgstr "Miešač:"
 
 #: hugin1/base_wx/StitchingExecutor.cpp:212
 msgid "Unknown blender (enblend --version failed)"
@@ -595,7 +595,7 @@ msgstr "Premapovanie LDR obrázkov..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:594
 msgid "Blending images..."
-msgstr "Lepenie obrázkov..."
+msgstr "Miešanie obrázkov..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:643
 msgid "Remapping LDR images and blending exposure layers..."
@@ -608,7 +608,7 @@ msgstr "Premapovanie LDR obrázkov bez expozičnej korekcie..."
 #: hugin1/base_wx/StitchingExecutor.cpp:681
 #, c-format
 msgid "Blending exposure layer %u..."
-msgstr "Lepenie expozičnej vrstvy %u..."
+msgstr "Miešanie expozičnej vrstvy %u..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:702
 msgid "Fusing all exposure layers..."
@@ -622,7 +622,7 @@ msgstr "Splynutie štósu číslo %u..."
 #: hugin1/base_wx/StitchingExecutor.cpp:748
 #: hugin1/base_wx/StitchingExecutor.cpp:759
 msgid "Blending all stacks..."
-msgstr "Lepenie všetkých štósov..."
+msgstr "Miešanie všetkých štósov..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:776
 msgid "Remapping HDR images..."
@@ -636,7 +636,7 @@ msgstr "Zlúčenie hdr štósu číslo %u..."
 #: hugin1/base_wx/StitchingExecutor.cpp:814
 #: hugin1/base_wx/StitchingExecutor.cpp:821
 msgid "Blending HDR stacks..."
-msgstr "Lepenie hdr štósov..."
+msgstr "Miešanie hdr štósov..."
 
 #: hugin1/base_wx/StitchingExecutor.cpp:842
 #: hugin1/base_wx/StitchingExecutor.cpp:848
@@ -3485,7 +3485,7 @@ msgid ""
 msgstr ""
 "Panoráma, ktorú sa snažíte zošiť má %.1f gigapixlov.\n"
 "Ak je táto hodnota príliš veľká, zmenšte veľkosť plátna panorámy a oblasť "
-"orezania a zošite panorámu v paneli Lepiča. Zošívanie panorámy takejto "
+"orezania a zošite panorámu v paneli Lepič. Zošívanie panorámy takejto "
 "veľkosti by mohlo zabrať dlhý čas a veľké množstvo pamäte."
 
 #: hugin1/hugin/PanoPanel.cpp:1683
@@ -6212,7 +6212,7 @@ msgstr "Lepič"
 
 #: hugin1/hugin/xrc/main_menu.xrc:109
 msgid "Show the Stitcher panel"
-msgstr "Zobraziť panel Lepenie"
+msgstr "Zobraziť panel Lepič"
 
 #: hugin1/hugin/xrc/main_menu.xrc:114 hugin1/hugin/xrc/preview_frame.xrc:1033
 msgid "&Simple"
@@ -6240,7 +6240,7 @@ msgstr "Lepiť s nastaveniami v paneloch panorámy"
 
 #: hugin1/hugin/xrc/main_menu.xrc:135
 msgid "Stitch &user defined output..."
-msgstr "Lepiť výstup definovaný užívateľom..."
+msgstr "Lepiť na výstup definovaný užívateľom..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:136
 msgid "Stitch with the settings from a user defined output sequence"
@@ -7367,7 +7367,7 @@ msgstr "štandardné nastavenie JPEG kompresie"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:906
 msgid "Blender"
-msgstr "Lepič"
+msgstr "Miešač"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:912
 msgid "Default blender:"
@@ -7550,7 +7550,7 @@ msgid ""
 "Do not set -w, -o and --compression arguments, they are set by hugin."
 msgstr ""
 "Toto sú štandardné argumenty pre nové projekty.\n"
-"Dajú sa zmeniť pre jednotlivé projekty v paneli Lepenie.\n"
+"Dajú sa zmeniť pre jednotlivé projekty v paneli Lepič.\n"
 "Nenastavujte prepínače -w, -o a --compression, tie zapína hugin."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1365
@@ -8061,7 +8061,7 @@ msgstr "Splynutie všetkých štósov s enfuse"
 
 #: hugin1/executor/blended_stacks.executor:20
 msgid "Blending stacks with enblend"
-msgstr "Lepenie štósov s enblend"
+msgstr "Miešanie štósov s enblend"
 
 #: hugin1/executor/duallens.assistant:2
 msgid "Assistant for dual lens images"
@@ -8121,7 +8121,7 @@ msgstr "Zlepiť všetky expozičná vrstvy, potom splynúť s enfuse"
 
 #: hugin1/executor/fused_layers.executor:13
 msgid "Blending all exposure layers"
-msgstr "Lepenie všetkých expozičných vrstiev"
+msgstr "Miešanie všetkých expozičných vrstiev"
 
 #: hugin1/executor/fused_layers.executor:20
 msgid "Fusing all exposure layers"
@@ -8141,7 +8141,7 @@ msgstr "Zlúčiť hdr štósy"
 
 #: hugin1/executor/hdr_pano.executor:19
 msgid "Blending all hdr stacks"
-msgstr "Lepenie všetkých hdr štósov"
+msgstr "Miešanie všetkých hdr štósov"
 
 #: hugin1/executor/median_stack.executor:2
 msgid "Median of stacked images"
@@ -8191,7 +8191,7 @@ msgstr "Vytvoriť normálnu panorámu (TIFF súbor)"
 #: hugin1/executor/normal_enblend.executor:13
 #: hugin1/executor/normal_enblend_cubic.executor:13
 msgid "Blending with enblend"
-msgstr "Lepenie s enblend"
+msgstr "Miešanie s enblend"
 
 #: hugin1/executor/normal_enblend.executor:22
 #: hugin1/executor/normal_enblend_cubic.executor:22
@@ -8241,7 +8241,7 @@ msgstr "Výstup je normálna panoráma, požije smartblend pre lepenie"
 
 #: hugin1/executor/normal_smartblend.executor:14
 msgid "Blending with smartblend"
-msgstr "Lepenie s smartblend"
+msgstr "Miešanie s smartblend"
 
 #: hugin1/executor/scanned.assistant:2
 msgid "Scanned images"
@@ -9072,7 +9072,7 @@ msgstr ""
 #~ "\n"
 #~ "Panoráma, ktorú sa snažíte lepiť má %.1f gigapixlov.\n"
 #~ "Ak je táto hodnota príliš veľká, zmenšite veľkosť plátna panorámy a "
-#~ "oblasť orezania a lepte panorámu v paneli Lepiča. Lepenie panorámy "
+#~ "oblasť orezania a lepte panorámu v paneli Lepič. Lepenie panorámy "
 #~ "takejto veľkosti by mohlo zabrať dlhý čas a veľké množstvo pamäte."
 
 #~ msgid "Run external autopano program on the selected images"
