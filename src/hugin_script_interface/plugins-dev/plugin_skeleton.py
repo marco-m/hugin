@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # plugin_skeleton.py - a skeleton for a hugin plugin
 # Copyright (C) 2011  Kay F. Jahnke
@@ -20,10 +20,6 @@
 # @name     Skeleton Plugin
 # @api-min  2011.1
 # @api-max  2012.0
-
-# we use modern type python print statements:
-
-from __future__ import print_function
 
 # the entry routine is called by hugin. This is the workhorse routine
 # where you actually do stuff - or don't ;-)

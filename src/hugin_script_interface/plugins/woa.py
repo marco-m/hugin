@@ -1,7 +1,5 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-from __future__ import print_function
 
 gpl = r"""
     woa.py - warped overlap analysis
@@ -25,7 +23,7 @@ gpl = r"""
 # @category Control Points
 # @name     Warped Overlap Analysis
 # @api-min  2014.0
-# @api-max  2016.3
+# @api-max  2019.2
 
 # note that if you want to read the script, it's written bottom-up, so the
 # higher-level routines are towards the end.
@@ -234,6 +232,8 @@ def get_tiff_offset ( image_file ) :
     
     for tag in output :
         t = tag.strip()
+        encoding = 'utf-8'
+        t = t.decode(encoding)
         fieldname = re.match ( r'[^\(]+' , t ) . group(0) . strip()
         fieldcontent = re.match ( r'([^<]+<)([^>]+)' , t )
         if fieldcontent:

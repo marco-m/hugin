@@ -1,11 +1,9 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
+#!/usr/bin/env python3
 
 # @category Control Points
 # @name     keep 5 CPs per image pair
 # @api-min  2011.1
-# @api-max  2016.1
+# @api-max  2019.2
 
 #    top_five.py - keep the five best CPs for each image pair
 

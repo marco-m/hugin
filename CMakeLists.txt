@@ -451,53 +451,15 @@ IF(BUILD_HSI)
   # find Python first because the version of SWIG required depends on the
   # version of Python available
   if(WIN32)
-    FIND_PACKAGE(PythonLibs REQUIRED)
+    FIND_PACKAGE(PythonLibs 3.0 REQUIRED)
   else()
     #  Linux/MacOS
-    find_package(PythonInterp REQUIRED)
+    find_package(PythonInterp 3.0 REQUIRED)
     find_package(PythonLibs ${PYTHON_VERSION_STRING} REQUIRED)
   endif()
   INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
   ADD_DEFINITIONS(-DHUGIN_HSI)
-  FIND_FILE(PYTHON_PATCHLEVEL_H patchlevel.h
-      PATHS ${PYTHON_INCLUDE_DIRS}
-  )
-  IF(${PYTHON_PATCHLEVEL_H} MATCHES "-NOTFOUND")
-      MESSAGE(FATAL_ERROR "Python patchlevel.h not found")
-  ENDIF()
-  # get version of Python libs
-  FILE(STRINGS "${PYTHON_PATCHLEVEL_H}"
-      PY_DEF_MAJOR
-      REGEX "#define[ \t]+PY_MAJOR_VERSION.*$")
-  FILE(STRINGS "${PYTHON_PATCHLEVEL_H}"
-      PY_DEF_MINOR
-      REGEX "#define[ \t]+PY_MINOR_VERSION.*$")
-
-  FILE(STRINGS "${PYTHON_PATCHLEVEL_H}"
-      PY_DEF_MICRO
-      REGEX "#define[ \t]+PY_MICRO_VERSION.*$")
-  STRING(REGEX
-        REPLACE "^.*VERSION[ \t]+([0-9]+).*" "\\1"
-        PYTHON_VERSION_MAJOR
-        "${PY_DEF_MAJOR}")
-  STRING(REGEX
-        REPLACE "^.*VERSION[ \t]+([0-9]+).*" "\\1"
-        PYTHON_VERSION_MINOR
-        "${PY_DEF_MINOR}")
-  STRING(REGEX
-        REPLACE "^.*VERSION[ \t]+([0-9]+).*" "\\1"
-        PYTHON_VERSION_PATCH
-        "${PY_DEF_MICRO}")
-  # now we can find the right SWIG version
-  find_program(SWIG_EXECUTABLE NAMES swig2.0 swig)
-  # unclean to test for Python 3, but the assumption is that by the
-  # time we have Python 4 this issue is long gone
-  IF(${PYTHON_VERSION_MAJOR} EQUAL 3 AND 
-      ${PYTHON_VERSION_MINOR} GREATER 1)
-    FIND_PACKAGE(SWIG 2.0.4 REQUIRED)
-  ELSE()
-    FIND_PACKAGE(SWIG 2.0 REQUIRED)
-  ENDIF()
+  FIND_PACKAGE(SWIG 2.0.4 REQUIRED)
   INCLUDE(${SWIG_USE_FILE})
 ENDIF()
 

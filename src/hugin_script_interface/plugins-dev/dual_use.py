@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
+#!/usr/bin/env python3
 
 gpl = r"""
     dual_use.py - a skeleton for a plugin that can also run standalone
