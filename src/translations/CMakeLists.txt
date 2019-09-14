@@ -6,7 +6,6 @@
 
 find_package(MSGFMT QUIET REQUIRED)
 
-# Check for needed programms python2, wxrc, xgettext, msgmerge, msguniq
 # simply use all po files and hugin.pot from the source directory
 FILE(GLOB PO_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.po")
 
