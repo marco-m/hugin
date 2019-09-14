@@ -187,7 +187,8 @@ SET(SWIG_MODULE_hsi_EXTRA_DEPS
 # finally, we specify the hsi module itself
 
 SET_SOURCE_FILES_PROPERTIES(hsi.i PROPERTIES CPLUSPLUS ON)
-SWIG_ADD_MODULE(hsi python hsi.i)
+SWIG_ADD_LIBRARY(hsi LANGUAGE python SOURCES hsi.i)
+SET_PROPERTY(SOURCE hsi.i PROPERTY COMPILE_OPTIONS -py3)
 SWIG_LINK_LIBRARIES(hsi ${PYTHON_LIBRARIES} ${common_libs})
 
 # The remainder defines where the files are installed.
