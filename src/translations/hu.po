@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: Hugin 2019.0.0\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2019-08-18 11:35+0200\n"
-"PO-Revision-Date: 2019-02-10 22:26+0100\n"
+"PO-Revision-Date: 2019-10-24 19:39+0200\n"
 "Last-Translator: Höss Lajos <pgc1682@freemail.hu>\n"
 "Language-Team: Balló György <ballogy@freestart.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hu_HU\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,891,-1,-1,-1,-1,-1\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:68
@@ -1175,9 +1175,8 @@ msgid "Project files (*.pto)|*.pto|All files (*)|*"
 msgstr "Projektfájlok (*.pto)|*.pto|Minden fájl (*)|*"
 
 #: hugin1/executor/hugin_executor.cpp:199
-#, fuzzy
 msgid "Removing temporary files"
-msgstr "Ideiglenes fájlok eltávolítása..."
+msgstr "Ideiglenes fájlok eltávolítása"
 
 #: hugin1/executor/hugin_executor.cpp:217
 msgid "shows this help message"
@@ -1348,13 +1347,13 @@ msgstr "Hiba finomhangolás közben"
 
 #: hugin1/hugin/CPEditorPanel.cpp:904 hugin1/hugin/CPEditorPanel.cpp:1049
 #: hugin1/hugin/CPEditorPanel.cpp:1339
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, "
 "curvature: %0.3f %0.3f"
 msgstr ""
-"Pontok finomhangolva, szög: %.0f fok, korrelációs együttható: %0.3f, "
-"görbület: %0.3f %0.3f "
+"Pont finomhangolva, szög: %.0f fok, korrelációs együttható: %0.3f, görbület: "
+"%0.3f %0.3f"
 
 #: hugin1/hugin/CPEditorPanel.cpp:907 hugin1/hugin/CPEditorPanel.cpp:1052
 msgid "change points, or press right mouse button to add the pair"
@@ -1540,7 +1539,7 @@ msgstr "bal kép"
 
 #: hugin1/hugin/CPListFrame.cpp:98
 msgid "Right Img."
-msgstr "jobb kép"
+msgstr "Jobb kép"
 
 #: hugin1/hugin/CPListFrame.cpp:99
 msgid "P CP#"
@@ -1584,13 +1583,12 @@ msgid "Errors during expression parsing"
 msgstr "Hiba történt a kifejezés értelmezése közben"
 
 #: hugin1/hugin/DragTool.cpp:78 hugin1/hugin/DragTool.cpp:358
-#, fuzzy
 msgid ""
 "Drag to move images (optionally use shift to constrain), or roll with right-"
 "drag or Ctrl-drag"
 msgstr ""
-"Húzza a képeket elmozdításhoz (opcionálisan használja a shift-et "
-"kényszerítéshez), vagy döntéshez (roll) jobb-húzás vagy Ctrl-húzás."
+"Fogja meg a képeket a mozgatáshoz (opcionálisan használja a shift-et "
+"kényszerítéshez), vagy döntéshez (roll) jobb-húzás vagy Ctrl-húzás"
 
 #: hugin1/hugin/DragTool.cpp:106
 msgid ""
@@ -1609,22 +1607,19 @@ msgstr ""
 "rá merőleges irányban kényszerítve lesz a bólintás (pitch) szerint."
 
 #: hugin1/hugin/DragTool.cpp:214
-#, fuzzy
 msgid "Rotate around the centre to roll"
-msgstr "Forgassa a középpont körül a döntéshez (roll)."
+msgstr "Forgassa a középpont körül a döntéshez (roll)"
 
 #: hugin1/hugin/DragTool.cpp:235
-#, fuzzy
 msgid ""
 "Constrained drag: make a movement and it will be snapped to the yaw or pitch"
 msgstr ""
 "Kényszerített áthelyezés: elmozdítás után, forgatás (yaw) vagy bólintás "
-"(pitch) szerint."
+"(pitch) szerint"
 
 #: hugin1/hugin/DragTool.cpp:237
-#, fuzzy
 msgid "Drag to move"
-msgstr "Húzza a mozgatáshoz."
+msgstr "Húzza a mozgatáshoz"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:264 hugin1/hugin/GLPreviewFrame.cpp:3091
 msgid "Fast Panorama preview"
@@ -1851,9 +1846,8 @@ msgstr ""
 "(equirectangular) helyette."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:2909
-#, fuzzy
 msgid "You could also try Panini projection."
-msgstr " Kipróbálhatja a Panini projekciót is."
+msgstr "Kipróbálhatja a Panini projekciót is."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:2914
 msgid ""
@@ -2684,9 +2678,8 @@ msgstr "mentett projekt %s"
 
 #: hugin1/hugin/MainFrame.cpp:993 hugin1/hugin/MainFrame.cpp:999
 #: hugin1/hugin/xrc/main_frame.xrc:4
-#, fuzzy
 msgid "Hugin - Panorama Creator"
-msgstr "Hugin - Panorama Összefűző"
+msgstr "Hugin - Panoráma Készítő"
 
 #: hugin1/hugin/MainFrame.cpp:995 hugin1/hugin/MainFrame.cpp:1115
 #: hugin1/hugin/MainFrame.cpp:1132 hugin1/hugin/MainFrame.cpp:1235
@@ -3195,14 +3188,12 @@ msgid "Add individual images..."
 msgstr "Egyéni képek hozzáadása..."
 
 #: hugin1/hugin/PanoOperation.cpp:236
-#, fuzzy
 msgid "Convert anyway"
-msgstr "Konvertáljon mindenképp."
+msgstr "Konvertáljon mindenképp"
 
 #: hugin1/hugin/PanoOperation.cpp:236
-#, fuzzy
 msgid "Let me select several raw files"
-msgstr "Válasszon ki több raw fájlt."
+msgstr "Több raw fájl kiválasztása"
 
 #: hugin1/hugin/PanoOperation.cpp:346
 msgid "Add time-series of images..."
@@ -3357,9 +3348,8 @@ msgid "Enter new stack number"
 msgstr "Írja be az új köteg számot"
 
 #: hugin1/hugin/PanoOperation.cpp:1243
-#, fuzzy
 msgid "Stack number"
-msgstr "köteg szám"
+msgstr "Köteg szám"
 
 #: hugin1/hugin/PanoOperation.cpp:1244
 msgid "Change stack number"
@@ -3460,19 +3450,16 @@ msgid "Top boundary must be smaller than bottom."
 msgstr "A felső határvonalnak kisebbnek kell lennie, mint az alsónak."
 
 #: hugin1/hugin/PanoPanel.cpp:870
-#, fuzzy
 msgid "PTmender options not yet implemented"
-msgstr " PTmender beállítások még nincsenek üzembe helyezve"
+msgstr "A PTmender beállításai még nincsenek üzembe helyezve"
 
 #: hugin1/hugin/PanoPanel.cpp:934
-#, fuzzy
 msgid "PTblender options not yet implemented"
-msgstr " PTblender beállítások még nincsenek üzembe helyezve"
+msgstr "A PTblender beállításai még nincsenek üzembe helyezve"
 
 #: hugin1/hugin/PanoPanel.cpp:984
-#, fuzzy
 msgid "Options for this HDRMerge program not yet implemented"
-msgstr " Beállítások ehhez a HDRMerge programhoz még nincsenek üzembe helyezve"
+msgstr "Beállítások ehhez a HDRMerge programhoz még nincsenek üzembe helyezve"
 
 #: hugin1/hugin/PanoPanel.cpp:1089 hugin1/hugin/PanoPanel.cpp:1376
 msgid "Could not create temporary project file"
@@ -4051,9 +4038,9 @@ msgstr "Kötegelt feldolgozó megnyitása"
 
 #: hugin1/hugin/huginApp.cpp:385 hugin1/hugin/xrc/main_menu.xrc:202
 #: hugin1/hugin/xrc/main_menu.xrc:232 hugin1/hugin/xrc/preview_frame.xrc:1105
-#, fuzzy
 msgid "Opens PTBatcherGUI, the batch processor for Hugin's project files"
-msgstr "Megnyitja a PTBatcher-t, kötegelt feldolgozó Hugin projekt fájlokhoz"
+msgstr ""
+"Megnyitja a PTBatcherGUI-t, kötegelt feldolgozó Hugin projekt fájlokhoz"
 
 #: hugin1/hugin/huginApp.cpp:390
 msgid "Open Lens calibrate tool"
@@ -4320,9 +4307,9 @@ msgstr ""
 "Hiba az eltávolítás közben, projekt azonosító (id) %d nincs a listában."
 
 #: hugin1/ptbatcher/Batch.cpp:839
-#, fuzzy, c-format
+#, c-format
 msgid "Error: Could not delete project file %s"
-msgstr "Hiba: Nem törölhető a projekt fájl "
+msgstr "Hiba: Nem törölhető a projekt fájl %s"
 
 #: hugin1/ptbatcher/Batch.cpp:855
 msgid "Running batch..."
@@ -4436,9 +4423,9 @@ msgid "Hugin's Batch processor"
 msgstr "Hugin Kötegelt feldolgozó"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:515
-#, fuzzy, c-format
+#, c-format
 msgid "Specify output prefix for project %s"
-msgstr "Kimeneti előtag megadása a projekthez "
+msgstr "Kimeneti előtag megadása a projekthez %s"
 
 #: hugin1/ptbatcher/BatchFrame.cpp:556
 msgid "The prefix of an assistant target cannot be changed."
@@ -4671,14 +4658,13 @@ msgid "Start"
 msgstr "Kezdés"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:597
-#, fuzzy, c-format
+#, c-format
 msgid "Found %d possible panoramas"
-msgstr "%d lehetséges panorámát talált."
+msgstr "%d lehetséges panorámát talált"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:601
-#, fuzzy
 msgid "No possible panoramas found"
-msgstr "Nem talált lehetséges panorámát."
+msgstr "Nem talált lehetséges panorámát"
 
 #: hugin1/ptbatcher/FindPanoDialog.cpp:708
 #, c-format
@@ -4899,28 +4885,24 @@ msgid "Batch Processor"
 msgstr "Kötegelt feldolgozó"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:26
-#, fuzzy
 msgid "Add application..."
-msgstr "Alkalmazás hozzáadása"
+msgstr "Alkalmazás hozzáadása..."
 
 #: hugin1/hugin/xrc/batch_frame.xrc:32
-#, fuzzy
 msgid "Remove completed"
 msgstr "Befejezett eltávolítása"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:38
-#, fuzzy
 msgid "Change prefix..."
-msgstr "Előtag módosítása"
+msgstr "Előtag módosítása..."
 
 #: hugin1/hugin/xrc/batch_frame.xrc:50
 msgid "Reset all"
 msgstr "Mindent alaphelyzetbe"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:56
-#, fuzzy
 msgid "Edit with Hugin..."
-msgstr "Szerkesztés Hugin-nal"
+msgstr "Szerkesztés Hugin-nal..."
 
 #: hugin1/hugin/xrc/batch_frame.xrc:62
 msgid "Move project up"
@@ -4935,29 +4917,26 @@ msgid "Overwrite always"
 msgstr "Mindig felülír"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:78
-#, fuzzy
 msgid "Overwrite existing image files without further notice"
-msgstr "Létező képek felülírása további értesítés nélkül."
+msgstr "Felülírja a meglévő képfájlokat további értesítés nélkül"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:84
 msgid "Remove finished project"
 msgstr "Befejezett projekt eltávolítása"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:85
-#, fuzzy
 msgid "Automatically remove successfully finished projects from queue"
 msgstr ""
-"Automatikus eltávolítja a sikeresen befejezett projekteket a feldolgozási "
-"sorból."
+"Automatikusan eltávolítja a sikeresen befejezett projekteket a feldolgozási "
+"sorból"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:91
 msgid "Automatic stitch after assistant"
 msgstr "Automatikus összefűzés segéd után"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:92
-#, fuzzy
 msgid "Automatically stitch projects after (successfully) running assistant"
-msgstr "Automatikus összefűző projektek segéd (sikeres) futtatása után."
+msgstr "Automatikusan összefűz projekteket a segéd (sikeres) futtatása után"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:100
 msgid "When done"
@@ -4968,9 +4947,8 @@ msgid "Verbose output"
 msgstr "Bőbeszédű kimenet"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:118
-#, fuzzy
 msgid "Show detailed output in separate window"
-msgstr "Részletes kimenet megjelenítése különálló ablakban."
+msgstr "Részletes kimenet megjelenítése különálló ablakban"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:124
 msgid "Always save log"
@@ -4981,6 +4959,8 @@ msgid ""
 "Saves always the log of the stitching process. Otherwise it is only saved "
 "for failed stitches"
 msgstr ""
+"Mindig elmenti az összefűzési folyamatot a naplóba. Egyébként csak a "
+"sikertelen összefűzések esetén menti el"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:160
 msgid "Directory:"
@@ -5032,22 +5012,20 @@ msgid "Minimum number of images:"
 msgstr "Minimális képdarabszám:"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:255
-#, fuzzy
 msgid "Minimum number of images a panorama should contain"
-msgstr "Képek minimális darabszáma egy panorámához."
+msgstr "Képek minimális darabszáma egy panorámához"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:261
 msgid "Maximum time difference:"
 msgstr "Maximális idő különbség:"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:274
-#, fuzzy
 msgid ""
 "Maximal time difference in seconds between two consecutive images belonging "
 "to one panorama"
 msgstr ""
-"Maximális időkülönbség másodpercben két egymást követő kép között amik egy "
-"panorámához tartoznak."
+"Egy panorámához tartozó két egymást követő kép közötti maximális "
+"időkülönbség másodpercben"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:290
 msgid "Stacks:"
@@ -5058,9 +5036,8 @@ msgid "Create links"
 msgstr "Linkek létrehozása"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:298
-#, fuzzy
 msgid "Check if the stacks were shot on a tripod"
-msgstr "Ellenőrizze, ha a kötegek állványon voltak fényképezve."
+msgstr "Ellenőrizze, ha a kötegek állványon voltak fényképezve"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:305
 msgid "Lens database:"
@@ -5071,22 +5048,20 @@ msgid "Load distortion data"
 msgstr "Torzítás adat betöltése"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:313
-#, fuzzy
 msgid "Tries to load distortion data from lens database if checked"
 msgstr ""
-"Megpróbálja betölteni a torzítás adatot az objektív adatbázisból, ha ki van "
-"jelölve."
+"Megpróbálja betölteni a torzítási adatot az objektív adatbázisból, ha be van "
+"jelölve"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:320
 msgid "Load vignetting data"
 msgstr "Peremsötétedés adat betöltése"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:321
-#, fuzzy
 msgid "Tries to load vignetting data from lens database if checked"
 msgstr ""
 "Megpróbálja betölteni a peremsötétedési adatot az objektív adatbázisból, ha "
-"ki van jelölve."
+"be van jelölve"
 
 #: hugin1/hugin/xrc/batch_frame.xrc:351 hugin1/hugin/xrc/lenscal_frame.xrc:199
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:204
@@ -5232,9 +5207,8 @@ msgid "Batch Stitcher &help"
 msgstr "&Kötegelt összefűző súgó"
 
 #: hugin1/hugin/xrc/batch_menu.xrc:60
-#, fuzzy
 msgid "Open Batch Stitcher help"
-msgstr "Megnyitja Kötegelt Összefűző súgóját."
+msgstr "Megnyitja a Kötegelt Összefűző súgóját"
 
 #: hugin1/hugin/xrc/batch_toolbar.xrc:9
 msgid "Clear batch"
@@ -5590,13 +5564,12 @@ msgid "Minimum overlap:"
 msgstr "Minimális átfedés:"
 
 #: hugin1/hugin/xrc/images_panel.xrc:51
-#, fuzzy
 msgid ""
 "Minimum overlap for output stack detection\n"
 "With -1 the assigned stacks in the project are used"
 msgstr ""
 "Minimális átfedés a kimeneti köteg észleléséhez\n"
-"-1-el a kijelölt kötegek a projektben használatban vannak."
+"-1-el a kijelölt kötegek a projektben használatban vannak"
 
 #: hugin1/hugin/xrc/images_panel.xrc:67
 msgid "Maximum Ev difference:"
@@ -5983,10 +5956,9 @@ msgid "&Save as project file..."
 msgstr "&Projektfájl mentése másként..."
 
 #: hugin1/hugin/xrc/lenscal_frame.xrc:458
-#, fuzzy
 msgid "Saves the images and lines as pto file for further tuning inside Hugin"
 msgstr ""
-"Elmenti a képeket és vonalakat pto fájlba, további finomításra Hugin-nal."
+"Elmenti a képeket és vonalakat pto fájlba, további finomításra a Hugin-nal"
 
 #: hugin1/hugin/xrc/lensdb_dialogs.xrc:55
 #: hugin1/hugin/xrc/lensdb_dialogs.xrc:252
@@ -6031,9 +6003,8 @@ msgid "Lens name:"
 msgstr "Objektívnév:"
 
 #: hugin1/hugin/xrc/lensdb_dialogs.xrc:208
-#, fuzzy
 msgid "Leave empty for compact cameras"
-msgstr "Hagyja üresen a kompakt fényképezőgépekhez."
+msgstr "Hagyja üresen a kompakt fényképezőgépekhez"
 
 #: hugin1/hugin/xrc/lensdb_dialogs.xrc:304
 msgid ""
@@ -6158,9 +6129,8 @@ msgid "Redo the last action"
 msgstr "Utolsó tevékenység ismét"
 
 #: hugin1/hugin/xrc/main_menu.xrc:17
-#, fuzzy
 msgid "&Add Image..."
-msgstr "&Kép hozzáadása"
+msgstr "&Kép hozzáadása..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:18 hugin1/hugin/xrc/main_tool.xrc:47
 msgid "Add another image to the current project"
@@ -6193,9 +6163,8 @@ msgid "Ignore &line control points"
 msgstr "Vo&nal kontroll pontokat figyelmen kívül hagyja"
 
 #: hugin1/hugin/xrc/main_menu.xrc:35 hugin1/hugin/xrc/optimize_panel.xrc:51
-#, fuzzy
 msgid "Use only normal control points in optimization"
-msgstr "Az optimalizáláshoz csak a normál kontroll pontokat használja."
+msgstr "Az optimalizáláshoz csak a normál kontroll pontokat használja"
 
 #: hugin1/hugin/xrc/main_menu.xrc:39 hugin1/hugin/xrc/preview_frame.xrc:1003
 msgid "&Optimize"
@@ -6211,23 +6180,20 @@ msgid "Fine-&tune all Points"
 msgstr "&Minden pont finomhangolása"
 
 #: hugin1/hugin/xrc/main_menu.xrc:46
-#, fuzzy
 msgid "Runs fine-tune on all control points"
-msgstr "Minden kontrol ponton finomhangolást futtat."
+msgstr "Finomhangolást végez az összes kontrollponton"
 
 #: hugin1/hugin/xrc/main_menu.xrc:49
 msgid "Remove control points in &masks"
 msgstr "Kont&roll pontok eltávolítása a maszkokból"
 
 #: hugin1/hugin/xrc/main_menu.xrc:50
-#, fuzzy
 msgid "Removes all control points inside masked areas"
-msgstr "Összes kontroll pont eltávolítása a maszkolt területekről."
+msgstr "Összes kontroll pont eltávolítása a maszkolt területekről"
 
 #: hugin1/hugin/xrc/main_menu.xrc:53
-#, fuzzy
 msgid "Run &Python script..."
-msgstr "&Python szkript futtatása"
+msgstr "&Python szkript futtatása..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:54
 msgid "Run a python script"
@@ -6246,7 +6212,6 @@ msgid "Shows Hugin's main window on full-screen"
 msgstr "A Hugin fő ablakának megjelenítése teljes képernyőn"
 
 #: hugin1/hugin/xrc/main_menu.xrc:66
-#, fuzzy
 msgid "Control point &table"
 msgstr "&Kontroll pont tábla"
 
@@ -6257,22 +6222,20 @@ msgstr "Minden kontroll pont távolság megjelenítése"
 #: hugin1/hugin/xrc/main_menu.xrc:71
 #, fuzzy
 msgid "&Panorama preview window"
-msgstr "Panoráma előnézet"
+msgstr "Panoráma előnézeti ablak"
 
 #: hugin1/hugin/xrc/main_menu.xrc:73
-#, fuzzy
 msgid "Show the panorama preview window"
-msgstr "OpenGL Előnézeti ablak megjelenítése"
+msgstr "Panoráma előnézeti ablakának megjelenítése"
 
 #: hugin1/hugin/xrc/main_menu.xrc:76
 #, fuzzy
 msgid "&Fast panorama preview window"
-msgstr "Gyors Panoráma előnézet"
+msgstr "Gyors panoráma előnézeti ablak"
 
 #: hugin1/hugin/xrc/main_menu.xrc:78
-#, fuzzy
 msgid "Show the fast panorama preview window (OpenGL)"
-msgstr "OpenGL Előnézeti ablak megjelenítése"
+msgstr "Gyors panoráma előnézeti ablak megjelenítése (OpenGL)"
 
 #: hugin1/hugin/xrc/main_menu.xrc:82
 #, fuzzy
@@ -6358,18 +6321,16 @@ msgstr ""
 "Összefűzés a felhasználó által megadott kimeneti sorrend beállításokkal"
 
 #: hugin1/hugin/xrc/main_menu.xrc:145 hugin1/hugin/xrc/preview_frame.xrc:1051
-#, fuzzy
 msgid "Some information on the different buttons and so on"
-msgstr "Néhány információ a különböző gombokról és a többi."
+msgstr "Néhány információ a különböző gombokról és így tovább"
 
 #: hugin1/hugin/xrc/main_menu.xrc:148 hugin1/hugin/xrc/preview_frame.xrc:1054
 msgid "&Tip of the day"
 msgstr "&A nap tippje"
 
 #: hugin1/hugin/xrc/main_menu.xrc:149 hugin1/hugin/xrc/preview_frame.xrc:1055
-#, fuzzy
 msgid "Show one of the tips of the day"
-msgstr "A nap egy tippjének megjelenítése."
+msgstr "A nap egy tippjének megjelenítése"
 
 #: hugin1/hugin/xrc/main_menu.xrc:152 hugin1/hugin/xrc/preview_frame.xrc:1058
 msgid "&Keyboard Shortcuts"
@@ -6409,9 +6370,8 @@ msgstr "Új projekt"
 
 #: hugin1/hugin/xrc/main_menu.xrc:177 hugin1/hugin/xrc/preview_frame.xrc:1084
 #: hugin1/hugin/xrc/preview_frame.xrc:1126
-#, fuzzy
 msgid "&Open..."
-msgstr "Meg&nyitás"
+msgstr "Meg&nyitás..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:179 hugin1/hugin/xrc/preview_frame.xrc:1086
 #: hugin1/hugin/xrc/preview_frame.xrc:1128
@@ -6431,9 +6391,8 @@ msgstr "Jelenlegi projektfájl mentése"
 
 #: hugin1/hugin/xrc/main_menu.xrc:187 hugin1/hugin/xrc/preview_frame.xrc:1094
 #: hugin1/hugin/xrc/preview_frame.xrc:1136
-#, fuzzy
 msgid "S&ave as..."
-msgstr "Menté&s másként"
+msgstr "Menté&s másként..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:189 hugin1/hugin/xrc/main_tool.xrc:27
 #: hugin1/hugin/xrc/preview_frame.xrc:1095
@@ -6442,9 +6401,8 @@ msgid "Save current project to a new file"
 msgstr "Jelenlegi projekt mentése új fájlba"
 
 #: hugin1/hugin/xrc/main_menu.xrc:192
-#, fuzzy
 msgid "&Write PTStitcher script..."
-msgstr "&PTStitcher szkript írása"
+msgstr "&PTStitcher szkript írása..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:193
 msgid ""
@@ -6474,9 +6432,8 @@ msgid "&Merge project..."
 msgstr "Projekt &egyesítése..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:207 hugin1/hugin/xrc/main_menu.xrc:237
-#, fuzzy
 msgid "Merges an existing project file with the current project"
-msgstr "Egyesít egy létező projekt fájlt a jelenlegi projekttel."
+msgstr "Egy létező projekt fájl egyesítése a jelenlegi projekttel"
 
 #: hugin1/hugin/xrc/main_menu.xrc:210
 msgid "Import settings from Papywizard &XML file..."
@@ -6487,21 +6444,18 @@ msgid "Read shoot settings from a Papywizard XML file"
 msgstr "Exponálás beállításokat beolvasása Papywizard XML fájlból"
 
 #: hugin1/hugin/xrc/main_menu.xrc:214 hugin1/hugin/xrc/main_menu.xrc:240
-#, fuzzy
 msgid "Apply &Template..."
-msgstr "S&ablon Alkalmazása"
+msgstr "S&ablon Alkalmazása..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:215 hugin1/hugin/xrc/main_menu.xrc:241
-#, fuzzy
 msgid "Assign the settings of a previously saved project to the current images"
 msgstr ""
-"Átadja a beállításokat a korábban mentett projektből az aktuális képekhez."
+"Egy korábban mentett projekt beállításainak áthozatala az aktuális képekhez"
 
 #: hugin1/hugin/xrc/main_menu.xrc:219 hugin1/hugin/xrc/main_menu.xrc:245
 #: hugin1/hugin/xrc/preview_frame.xrc:1109
-#, fuzzy
 msgid "&Preferences..."
-msgstr "&Beállítások"
+msgstr "&Beállítások..."
 
 #: hugin1/hugin/xrc/main_menu.xrc:249
 msgid "&Close editor"
@@ -6520,9 +6474,8 @@ msgid "Start a new project"
 msgstr "Új projekt indítása"
 
 #: hugin1/hugin/xrc/main_tool.xrc:13
-#, fuzzy
 msgid "Open project..."
-msgstr "Projekt megnyitása"
+msgstr "Projekt megnyitása..."
 
 #: hugin1/hugin/xrc/main_tool.xrc:14
 msgid "Open"
@@ -6533,9 +6486,8 @@ msgid "Open a project file"
 msgstr "Projektfájl megnyitása"
 
 #: hugin1/hugin/xrc/main_tool.xrc:25
-#, fuzzy
 msgid "Save project as..."
-msgstr "Projekt mentése másként"
+msgstr "Projekt mentése másként..."
 
 #: hugin1/hugin/xrc/main_tool.xrc:26
 msgid "Save As"
@@ -6550,14 +6502,12 @@ msgid "Redo"
 msgstr "Ismét"
 
 #: hugin1/hugin/xrc/main_tool.xrc:45
-#, fuzzy
 msgid "Add image..."
-msgstr "Képek hozzáadása..."
+msgstr "Kép hozzáadása..."
 
 #: hugin1/hugin/xrc/main_tool.xrc:60
-#, fuzzy
 msgid "Preview panorama (OpenGL)"
-msgstr "Panoráma előnézete"
+msgstr "Panoráma előnézete (OpenGL)"
 
 #: hugin1/hugin/xrc/main_tool.xrc:61
 msgid "Show the OpenGL preview window"
@@ -6670,12 +6620,11 @@ msgid "All images of selected lens"
 msgstr "A kiválasztott lencse összes képe"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:222
-#, fuzzy
 msgid ""
 "Applies all changes to all images with the same lens as the selected image(s)"
 msgstr ""
-"Minden változtatás az összes képre vonatkozik, ugyanazzal az objektívvel "
-"mint a kijelölt kép(ek)."
+"Hozzárendel minden változtatást az összes képhez, ugyanazzal az objektívvel "
+"mint a kijelölt kép(ek)"
 
 #: hugin1/hugin/xrc/mask_editor_panel.xrc:234
 #: hugin1/hugin/xrc/pano_panel.xrc:376
@@ -6824,7 +6773,7 @@ msgstr "Interpolátor (i):"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:17 hugin1/hugin/xrc/pref_dialog.xrc:1247
 msgid "Poly3 (Bicubic)"
-msgstr "kettős köbös (Poly3) /Bicubic/"
+msgstr "Kettős köbös (Poly3) /Bicubic/"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:18 hugin1/hugin/xrc/pref_dialog.xrc:1248
 msgid "Spline 16"
@@ -6989,22 +6938,20 @@ msgstr ""
 "panorámává"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:644
-#, fuzzy
 msgid ""
 "Output remapped, exposure corrected images. Useful for manual blending of an "
 "exposure corrected panorama"
 msgstr ""
-"Áttranszformált, expozíció korrigált képek. Kézi összemosáshoz hasznos egy "
-"expozíció korrigált panorámából."
+"Áttranszformált, expozíció korrigált képek. Egy expozíció korrigált panoráma "
+"kézi összemosásához hasznos"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:655
-#, fuzzy
 msgid ""
 "Output remapped images with unmodified exposure. Useful for manual exposure "
 "fusing"
 msgstr ""
 "Áttranszformált képek kimenet módosítatlan expozícióval. Kézi expozíció "
-"fúzióhoz hasznos."
+"fúzióhoz hasznos"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:664
 msgid "Produce remapped, but not merged, linear color space images"
@@ -7028,13 +6975,12 @@ msgstr ""
 "egymást erősen átfedő képekből"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:724
-#, fuzzy
 msgid ""
 "Output a complete blended panorama for each exposure step. Useful for manual "
 "contrast blending in an image editor"
 msgstr ""
-"Teljesen összemosott panoráma minden egyes expozíciós lépéssel. Kézi "
-"kontraszt összemosáshoz hasznos képszerkesztővel."
+"Teljesen összemosott panoráma minden egyes expozíciós lépéssel. Hasznos kézi "
+"kontraszt összemosáshoz egy képszerkesztőben"
 
 #: hugin1/hugin/xrc/pano_panel.xrc:735
 msgid "Processing:"
@@ -7225,10 +7171,9 @@ msgid "Autorotate images for display."
 msgstr "A képek automatikus forgatása a megjelenítéshez."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:146
-#, fuzzy
 msgid "This affects the control points editor and mask editor"
 msgstr ""
-"Ez hatással van a kontroll pontok szerkesztőjére és a maszkszerkesztőre."
+"Ez hatással van a kontroll pontok szerkesztőjére és a maszkszerkesztőre"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:170
 msgid "dcraw executable:"
@@ -7510,9 +7455,8 @@ msgid "Default blender:"
 msgstr "Alapértelmezett összemosó:"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:919
-#, fuzzy
 msgid "Default blender which is used for new projects"
-msgstr "Alapértelmezett összemosó új projektekhez."
+msgstr "Alapértelmezett összemosó új projektekhez"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:951
 msgid "Processor"
@@ -7541,22 +7485,20 @@ msgid "Overwrite existing files"
 msgstr "Létező fájlok felülírása"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:980
-#, fuzzy
 msgid "WARNING: existing files will be silently overwritten"
-msgstr "FIGYELEM: a meglévő fájlokat csendben felülírja."
+msgstr "FIGYELEM: a meglévő fájlokat csendben felülírja"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:987
 msgid "Verbose Output"
 msgstr "Részletes Kimenet"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:988
-#, fuzzy
 msgid ""
 "Enable to get the details, useful when reporting a bug or just to watch the "
 "project's progress"
 msgstr ""
 "Engedélyezze, hogy részleteket lásson, hibajelentéshez hasznos, vagy ha csak "
-"ellenőrizni akarja a projekt előrehaladását."
+"ellenőrizni akarja a projekt előrehaladását"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1010
 msgid "Stitching"
@@ -7623,11 +7565,10 @@ msgid "Create Photo Sphere XMP data"
 msgstr "Fotó Gömb XMP adat létrehozása"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1170
-#, fuzzy
 msgid "This will only be done for equirectangular output images"
 msgstr ""
 "Ez csak négyzetes hengervetületű (equirectangular) kimeneti képeknél "
-"lehetséges."
+"lehetséges"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1185
 msgid "Advanced options"
@@ -7987,32 +7928,28 @@ msgstr ""
 "vonal, annál nagyobb a hiba."
 
 #: hugin1/hugin/xrc/preview_frame.xrc:374
-#, fuzzy
 msgid ""
 "Sets the exposure value of the panorama to the mean exposure of all images"
 msgstr ""
-"Beállítja az expozíciós értékét a panorámának, hogy átlagos expozíciója "
-"legyen az összes képnek."
+"Beállítja a panoráma expozíciós értékét az összes kép átlagos expozíciójához"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:425
 msgid "Gray picker"
 msgstr "Szürke kijelölő"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:426
-#, fuzzy
 msgid "Correct global white balance by selecting a neutral gray area"
 msgstr ""
 "Globális fehéregyensúly korrigálása egy semleges szürke terület "
-"kiválasztásával."
+"kiválasztásával"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:435
 msgid "Edit CP"
 msgstr "KP szerkesztés"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:436
-#, fuzzy
 msgid "Create or delete control points in selected rectangle"
-msgstr "Kontroll pontok törlése vagy létrehozása a kijelölt téglalapban."
+msgstr "Kontroll pontok törlése vagy létrehozása a kijelölt téglalapban"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:458
 msgid "Background:"
@@ -8136,18 +8073,16 @@ msgid "&Overview"
 msgstr "Átte&kintés"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1021
-#, fuzzy
 msgid "Shows the overview of the panorama sphere"
-msgstr "Áttekintő panoráma gömb megjelenítése."
+msgstr "Áttekintő panoráma gömb megjelenítése"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1025
 msgid "&Grid"
 msgstr "Rá&cs"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1026
-#, fuzzy
 msgid "Shows a grid"
-msgstr "Rács megjelenítése."
+msgstr "Rács megjelenítése"
 
 #: hugin1/hugin/xrc/preview_frame.xrc:1152
 msgid "&All images"
@@ -8198,13 +8133,12 @@ msgid "Reset values"
 msgstr "Értékek visszaállítása"
 
 #: hugin1/executor/blended_stacks.executor:2
-#, fuzzy
 msgid "Blended stacks"
-msgstr "Kombinált kötegek:"
+msgstr "Összemosott kötegek"
 
 #: hugin1/executor/blended_stacks.executor:3
 msgid "Fuse all stacks with enfuse, then blend them with enblend"
-msgstr ""
+msgstr "Az összes köteg fúziója enfuse-vel, majd összemosása enblend-del"
 
 #: hugin1/executor/blended_stacks.executor:8
 #: hugin1/executor/fused_layers.executor:8 hugin1/executor/hdr_pano.executor:8
@@ -8214,277 +8148,248 @@ msgstr ""
 #: hugin1/executor/normal_layered_tiff.executor:8
 #: hugin1/executor/normal_smartblend.executor:9
 #: hugin1/executor/zeronoise.executor:8
-#, fuzzy
 msgid "Remapping images"
-msgstr "LDR képek áttranszformálása..."
+msgstr "Képek áttranszformálása"
 
 #: hugin1/executor/blended_stacks.executor:13
-#, fuzzy
 msgid "Fusing all stacks with enfuse"
-msgstr "Minden köteg összemosása..."
+msgstr "Az összes köteg fúziója enfuse-vel"
 
 #: hugin1/executor/blended_stacks.executor:20
-#, fuzzy
 msgid "Blending stacks with enblend"
-msgstr "Képek összemosása..."
+msgstr "Köteg összemosása enblend-del"
 
 #: hugin1/executor/duallens.assistant:2
 msgid "Assistant for dual lens images"
-msgstr ""
+msgstr "Segéd dupla objektíves képekhez"
 
 #: hugin1/executor/duallens.assistant:3
 msgid ""
 "Assistant for images shot with dual lens camera/one shot panoramic cameras"
 msgstr ""
+"Segéd dupla objektíves kamerával/egy lövéses panoráma kamerákkal készített "
+"képekhez"
 
 #: hugin1/executor/duallens.assistant:7
 msgid "Prepare initial pto file"
-msgstr ""
+msgstr "Kezdeti pto fájl készítése"
 
 #: hugin1/executor/duallens.assistant:13 hugin1/executor/duallens.assistant:43
-#, fuzzy
 msgid "Setting advanced settings"
-msgstr "Ennek a beállitásnak nincsenek további speciális opciói."
+msgstr "Speciális beállítások megadása"
 
 #: hugin1/executor/duallens.assistant:25 hugin1/executor/normal.assistant:13
 #: hugin1/executor/scanned.assistant:18 hugin1/executor/scanned2.assistant:18
-#, fuzzy
 msgid "Check result"
-msgstr "Eredmények ellenőrzése..."
+msgstr "Eredmények ellenőrzése"
 
 #: hugin1/executor/duallens.assistant:31 hugin1/executor/multirow.assistant:19
 #: hugin1/executor/normal.assistant:19 hugin1/executor/scanned.assistant:24
 #: hugin1/executor/scanned2.assistant:24
-#, fuzzy
 msgid "Cleaning control points"
 msgstr "Kontroll pontok tisztítása"
 
 #: hugin1/executor/duallens.assistant:37 hugin1/executor/multirow.assistant:31
 #: hugin1/executor/normal.assistant:25 hugin1/executor/scanned.assistant:30
 #: hugin1/executor/scanned2.assistant:30
-#, fuzzy
 msgid "Searching line cp"
-msgstr "A legjobb kivágás keresése..."
+msgstr "Egyenes kp keresése "
 
 #: hugin1/executor/duallens.assistant:48 hugin1/executor/multirow.assistant:37
 #: hugin1/executor/normal.assistant:31 hugin1/executor/scanned.assistant:41
 #: hugin1/executor/scanned2.assistant:41 hugin1/executor/stacked.assistant:24
-#, fuzzy
 msgid "Optimizing"
-msgstr "Optimalizálás..."
+msgstr "Optimalizálás"
 
 #: hugin1/executor/duallens.assistant:53 hugin1/executor/multirow.assistant:42
 #: hugin1/executor/normal.assistant:36 hugin1/executor/scanned.assistant:46
 #: hugin1/executor/scanned2.assistant:46 hugin1/executor/stacked.assistant:29
-#, fuzzy
 msgid "Searching for best crop"
-msgstr "A legjobb kivágás keresése..."
+msgstr "A legjobb kivágás keresése"
 
 #: hugin1/executor/fused_layers.executor:2
-#, fuzzy
 msgid "Fused layers"
-msgstr "Használt objektív"
+msgstr "Fuzionált rétegek"
 
 #: hugin1/executor/fused_layers.executor:3
 msgid "Blend all exposure layers, then fuse them with enfuse"
-msgstr ""
+msgstr "Összes expozíciós réteg összemosása, majd fúzió enfuse-vel"
 
 #: hugin1/executor/fused_layers.executor:13
-#, fuzzy
 msgid "Blending all exposure layers"
-msgstr "%u expozíciós réteg összemosása..."
+msgstr "Az összes expozíciós réteg összemosása"
 
 #: hugin1/executor/fused_layers.executor:20
-#, fuzzy
 msgid "Fusing all exposure layers"
-msgstr "Minden expozíciós réteg fuzionálása..."
+msgstr "Az összes expozíciós réteg fúziója"
 
 #: hugin1/executor/hdr_pano.executor:2
-#, fuzzy
 msgid "HDR panorama"
-msgstr "Összemosott HDR panoráma"
+msgstr "HDR panoráma"
 
 #: hugin1/executor/hdr_pano.executor:3
-#, fuzzy
 msgid "Generate a HDR panorama"
-msgstr "Összemosott HDR panoráma"
+msgstr "HDR panoráma készítése"
 
 #: hugin1/executor/hdr_pano.executor:13
-#, fuzzy
 msgid "Merging hdr stacks"
-msgstr "Terület kizárása a kötegből"
+msgstr "HDR kötegek egyesítése"
 
 #: hugin1/executor/hdr_pano.executor:19
-#, fuzzy
 msgid "Blending all hdr stacks"
-msgstr "Minden köteg összemosása..."
+msgstr "Az összes hdr köteg összemosása"
 
 #: hugin1/executor/median_stack.executor:2
-#, fuzzy
 msgid "Median of stacked images"
-msgstr "megjelenített képek"
+msgstr "Köteg képek mediánja"
 
 #: hugin1/executor/median_stack.executor:3
 msgid "Output median image of stacked images"
-msgstr ""
+msgstr "Kötegelt képek medián kép kimenete"
 
 #: hugin1/executor/median_stack.executor:14
-#, fuzzy
 msgid "Calculating median"
-msgstr "Optimális körbevágás kiszámítása"
+msgstr "A medián kiszámítása"
 
 #: hugin1/executor/multirow.assistant:2
-#, fuzzy
 msgid "Multi-row (2 rows)"
-msgstr "Többsoros panoráma"
+msgstr "Több sor (2 sor)"
 
 #: hugin1/executor/multirow.assistant:3
 msgid "Assistant for multi-row panorama (2 rows, handles orphaned images)"
-msgstr ""
+msgstr "Segéd többsoros panorámaképekhez (2 sor, árva képek kezelése)"
 
 #: hugin1/executor/multirow.assistant:7
-#, fuzzy
 msgid "Assign rough positions"
-msgstr "Láncolja össze a pozíciókat"
+msgstr "Durva pozíciók hozzárendelése"
 
 #: hugin1/executor/multirow.assistant:25
-#, fuzzy
 msgid "Connect orphaned images"
-msgstr "Árva képek csatlakoztatása (geocpset-el)"
+msgstr "Árva képek csatlakoztatása"
 
 #: hugin1/executor/normal.assistant:2
-#, fuzzy
 msgid "Standard assistant"
-msgstr "&Futtatási segéd"
+msgstr "Normál segéd"
 
 #: hugin1/executor/normal.assistant:3
 msgid "Assistant for normal panorama"
-msgstr ""
+msgstr "Segéd a normál panorámaképekért"
 
 #: hugin1/executor/normal_enblend.executor:2
 msgid "Normal panorama with enblend"
-msgstr ""
+msgstr "Normál panoráma enblend-el"
 
 #: hugin1/executor/normal_enblend.executor:3
-#, fuzzy
 msgid "Generate normal panorama (TIF file)"
-msgstr "PTmender-rel csak egyszerű TIFF_m fájl készíthető"
+msgstr "Normál panoráma generálása (TIF fájl)"
 
 #: hugin1/executor/normal_enblend.executor:13
 #: hugin1/executor/normal_enblend_cubic.executor:13
 msgid "Blending with enblend"
-msgstr ""
+msgstr "Összemosás enblend-el"
 
 #: hugin1/executor/normal_enblend.executor:22
 #: hugin1/executor/normal_enblend_cubic.executor:22
 #: hugin1/executor/normal_layered_tiff.executor:13
-#, fuzzy
 msgid "Updating metadata"
-msgstr "Metaadatok frissítése..."
+msgstr "Metaadatok frissítése"
 
 #: hugin1/executor/normal_enblend_cubic.executor:2
 msgid "Equi and cubic"
-msgstr ""
+msgstr "Equi és kocka"
 
 #: hugin1/executor/normal_enblend_cubic.executor:3
 msgid "Creates an equirectangular and the cube faces for given project"
 msgstr ""
+"Létrehozza a négyzetes hengervetületetet (equirectangular) és a kockalapokat "
+"egy adott projekthez"
 
 #: hugin1/executor/normal_enblend_cubic.executor:28
-#, fuzzy
 msgid "Create project file for cubic reprojection"
-msgstr "Mentse a változásokat a projekt fájlba az új projekt megkezdése előtt?"
+msgstr "Projekt fájl létrehozása kocka /cubic/ reprojekcióhoz"
 
 #: hugin1/executor/normal_enblend_cubic.executor:35
-#, fuzzy
 msgid "Set positions for reprojection"
-msgstr "Tippek megjelenítése a projekciókról"
+msgstr "Állítsa be a pozíciókat a reprojekcióhoz"
 
 #: hugin1/executor/normal_enblend_cubic.executor:42
-#, fuzzy
 msgid "Set output size for reprojection"
-msgstr "Kimeneti előtag megadása a projekthez "
+msgstr "Kimeneti méret beállítása reprojekcióhoz"
 
 #: hugin1/executor/normal_enblend_cubic.executor:49
-#, fuzzy
 msgid "Create cube faces"
-msgstr "Kp létrehozása"
+msgstr "Kockalapok létrehozása"
 
 #: hugin1/executor/normal_layered_tiff.executor:2
 msgid "Normal panorama with layered TIFF output"
-msgstr ""
+msgstr "Normál panoráma rétegelt TIFF kimenettel"
 
 #: hugin1/executor/normal_layered_tiff.executor:3
 msgid "Output a panorama with layered TIFF output for manual blending"
-msgstr ""
+msgstr "Panoráma kimenet rétegelt TIFF kimenettel a kézi összemosáshoz"
 
 #: hugin1/executor/normal_smartblend.executor:2
 msgid "Normal panorama with smartblend"
-msgstr ""
+msgstr "Normál panoráma smartblend-el"
 
 #: hugin1/executor/normal_smartblend.executor:3
 msgid "Output a normal panorama, using smartblend for blending"
-msgstr ""
+msgstr "Normál panoráma kimenet, smartblend használatával az összemosáshoz"
 
 #: hugin1/executor/normal_smartblend.executor:14
-#, fuzzy
 msgid "Blending with smartblend"
-msgstr "Képek összemosása..."
+msgstr "Összemosás smartblend-del"
 
 #: hugin1/executor/scanned.assistant:2
-#, fuzzy
 msgid "Scanned images"
-msgstr "Kép mentése"
+msgstr "Szkennelt képek"
 
 #: hugin1/executor/scanned.assistant:3
-#, fuzzy
 msgid "Assistant for scanned images"
-msgstr "forgatás (yaw) beállítása a kiválasztott kép(ek)re"
+msgstr "Segéd szkennelt képekhez"
 
 #: hugin1/executor/scanned.assistant:7 hugin1/executor/scanned2.assistant:7
 msgid "Setting initial values"
-msgstr ""
+msgstr "Kezdeti értékek beállítása"
 
 #: hugin1/executor/scanned.assistant:36 hugin1/executor/scanned2.assistant:36
 #: hugin1/executor/stacked.assistant:19
-#, fuzzy
 msgid "Setting optimizer variables"
-msgstr "Képváltozók manipulálása"
+msgstr "Az optimalizáló változóinak beállítása"
 
 #: hugin1/executor/scanned2.assistant:2
 msgid "Scanned images (TrXYZ)"
-msgstr ""
+msgstr "Szkennelt képek (TrXYZ)"
 
 #: hugin1/executor/scanned2.assistant:3
 msgid "Assistant for scanned images, using translation parameters"
-msgstr ""
+msgstr "Segéd a szkennelt képekhez, fordítási paraméterek segítségével"
 
 #: hugin1/executor/stacked.assistant:2
 msgid "Align image stack assistant"
-msgstr ""
+msgstr "Kép köteg igazítás segéd"
 
 #: hugin1/executor/stacked.assistant:3
 msgid "Assistant for alignment of a single stack"
-msgstr ""
+msgstr "Segéd egyetlen köteg beállításához"
 
 #: hugin1/executor/stacked.assistant:13
-#, fuzzy
 msgid "Checking result"
-msgstr "Eredmények ellenőrzése..."
+msgstr "Eredmény ellenőrzése"
 
 #: hugin1/executor/zeronoise.executor:2
-#, fuzzy
 msgid "Zero-noise output"
-msgstr "Bőbeszédű kimenet"
+msgstr "Nulla zaj kimenet"
 
 #: hugin1/executor/zeronoise.executor:3
 msgid "Use with a single stack (with different exposures) to reduce noise"
 msgstr ""
+"Használja egyetlen köteggel (különböző expozíciókkal) a zaj csökkentése "
+"érdekében"
 
 #: hugin1/executor/zeronoise.executor:13
-#, fuzzy
 msgid "Merge all exposures"
-msgstr "Minden expozíciós réteg fuzionálása..."
+msgstr "Minden expozíció egyesítése"
 
 #: hugin1/hugin/xrc/data/tips.txt:3
 msgid ""
