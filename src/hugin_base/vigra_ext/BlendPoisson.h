@@ -306,9 +306,6 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
     {
         // changes in current iteration
         double error = 0;
-        // parallelize using black-red pattern
-        // this requires some duplicate code, but brings significant speed increase
-        // first black pattern
         // special treatment of first line
         if (seams[0][0] > 1)
         {
@@ -325,7 +322,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
                 target[0][0] += delta;
             };
         };
-        for (int x = 2; x < width - 1; ++(++x))
+        for (int x = 1; x < width - 1; ++x)
         {
             if (seams[0][x] > 1)
             {
@@ -334,7 +331,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
                 target[0][x] += delta;
             };
         };
-        if ((width - 1) % 2 == 0 && seams[0][width - 1] > 1)
+        if (seams[0][width - 1] > 1)
         {
             if (doWrap)
             {
@@ -352,7 +349,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
 #pragma omp parallel for reduction(+: error) schedule(dynamic, 100)
         for (int y = 1; y < height - 1; ++y)
         {
-            if (y % 2 == 0 && seams[y][0] > 1)
+            if (seams[y][0] > 1)
             {
                 if (doWrap)
                 {
@@ -368,7 +365,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
                     target[y][0] += delta;
                 };
             };
-            for (int x = (y % 2 == 0) ? 2 : 1; x < width - 1; ++(++x))
+            for (int x = 1; x < width - 1; ++x)
             {
                 const typename SeamMask::value_type maskValue = seams[y][x];
                 if (maskValue > 1)
@@ -390,7 +387,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
                     };
                 };
             };
-            if ((y + width - 1) % 2 == 0 && seams[y][width - 1] > 1)
+            if (seams[y][width - 1] > 1)
             {
                 if (doWrap)
                 {
@@ -407,7 +404,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
             };
         };
         // last line
-        if ((height - 1) % 2 == 0 && seams[height - 1][0] > 1)
+        if (seams[height - 1][0] > 1)
         {
             if (doWrap)
             {
@@ -422,7 +419,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
                 target[height - 1][0] += delta;
             };
         };
-        for (int x = (height - 1) % 2 == 0 ? 2 : 1; x < width - 1; ++(++x))
+        for (int x = 1; x < width - 1; ++x)
         {
             if (seams[height - 1][x] > 1)
             {
@@ -431,130 +428,7 @@ void SOR(Image& target, const Image& gradient, const SeamMask& seams, const floa
                 target[height - 1][x] += delta;
             };
         };
-        if ((width - 1 + height - 1) % 2 == 0 && seams[height - 1][width - 1] > 1)
-        {
-            if (doWrap)
-            {
-                const TargetPixelType delta = omega * ((gradient[height - 1][width - 1] + 2 * target[height - 2][width - 1] + target[height - 1][width - 2] + target[height - 1][0]) / 4.0f - target[height - 1][width - 1]);
-                error += detail::GetRealValue(delta*delta);
-                target[height - 1][width - 1] += delta;
-            }
-            else
-            {
-                const TargetPixelType delta = omega * ((gradient[height - 1][width - 1] + 2 * target[height - 2][width - 1] + 2 * target[height - 1][width - 2]) / 4.0f - target[height - 1][width - 1]);
-                error += detail::GetRealValue(delta*delta);
-                target[height - 1][width - 1] += delta;
-            };
-        };
-        // now red pattern
-        // special treatment of first line
-        for (int x = 1; x < width - 1; ++(++x))
-        {
-            if (seams[0][x] > 1)
-            {
-                const TargetPixelType delta = omega * ((gradient[0][x] + detail::GetBorderValues(x, 0, 1, 0, target, seams) + 2 * target[1][x]) / 4.0f - target[0][x]);
-                error += detail::GetRealValue(delta*delta);
-                target[0][x] += delta;
-            };
-        };
-        if ((width - 1) % 2 == 1 && seams[0][width - 1] > 1)
-        {
-            if (doWrap)
-            {
-                const TargetPixelType delta = omega * ((gradient[0][width - 1] + target[0][width - 2] + 2 * target[1][width - 1] + target[0][0]) / 4.0f - target[0][width - 1]);
-                error += detail::GetRealValue(delta*delta);
-                target[0][width - 1] += delta;
-            }
-            else
-            {
-                const TargetPixelType delta = omega * ((gradient[0][width - 1] + 2 * target[0][width - 2] + 2 * target[1][width - 1]) / 4.0f - target[0][width - 1]);
-                error += detail::GetRealValue(delta*delta);
-                target[0][width - 1] += delta;
-            };
-        };
-#pragma omp parallel for reduction(+: error) schedule(dynamic, 100)
-        for (int y = 1; y < height - 1; ++y)
-        {
-            if (y % 2 == 1 && seams[y][0] > 1)
-            {
-                if (doWrap)
-                {
-                    const TargetPixelType delta = omega * ((gradient[y][0] + detail::GetBorderValues(0, y, 0, 1, target, seams)
-                        + target[y][1] + target[y][width - 1]) / 4.0f - target[y][0]);
-                    error += detail::GetRealValue(delta*delta);
-                    target[y][0] += delta;
-                }
-                else
-                {
-                    const TargetPixelType delta = omega * ((gradient[y][0] + detail::GetBorderValues(0, y, 0, 1, target, seams) + 2 * target[y][1]) / 4.0f - target[y][0]);
-                    error += detail::GetRealValue(delta*delta);
-                    target[y][0] += delta;
-                };
-            };
-            for (int x = (y % 2 == 1) ? 2 : 1; x < width - 1; ++(++x))
-            {
-                const typename SeamMask::value_type maskValue = seams[y][x];
-                if (maskValue > 1)
-                {
-                    if (maskValue == 2)
-                    {
-                        // border pixel
-                        const TargetPixelType sum = detail::GetBorderValues(x, y, 1, 0, target, seams) + detail::GetBorderValues(x, y, 0, 1, target, seams);
-                        const TargetPixelType delta = omega * ((gradient[y][x] + sum) / 4.0f - target[y][x]);
-                        error += detail::GetRealValue(delta*delta);
-                        target[y][x] += delta;
-                    }
-                    else
-                    {
-                        const TargetPixelType sum = target[y + 1][x] + target[y][x + 1] + target[y - 1][x] + target[y][x - 1];
-                        const TargetPixelType delta = omega * ((gradient[y][x] + sum) / 4.0f - target[y][x]);
-                        error += detail::GetRealValue(delta*delta);
-                        target[y][x] += delta;
-                    };
-                };
-            };
-            if ((y + width - 1) % 2 == 1 && seams[y][width - 1] > 1)
-            {
-                if (doWrap)
-                {
-                    const TargetPixelType delta = omega * ((gradient[y][width - 1] + detail::GetBorderValues(width - 1, y, 0, 1, target, seams) + target[y][width - 2] + target[y][0]) / 4.0f - target[y][width - 1]);
-                    error += detail::GetRealValue(delta*delta);
-                    target[y][width - 1] += delta;
-                }
-                else
-                {
-                    const TargetPixelType delta = omega * ((gradient[y][width - 1] + detail::GetBorderValues(width - 1, y, 0, 1, target, seams) + 2 * target[y][width - 2]) / 4.0f - target[y][width - 1]);
-                    error += detail::GetRealValue(delta*delta);
-                    target[y][width - 1] += delta;
-                };
-            };
-        };
-        // last line
-        if ((height - 1) % 2 == 1 && seams[height - 1][0] > 1)
-        {
-            if (doWrap)
-            {
-                const TargetPixelType delta = omega * ((gradient[height - 1][0] + 2 * target[height - 2][0] + target[height - 1][1] + target[height - 1][width - 1]) / 4.0f - target[height - 1][0]);
-                error += detail::GetRealValue(delta*delta);
-                target[height - 1][0] += delta;
-            }
-            else
-            {
-                const TargetPixelType delta = omega * ((gradient[height - 1][0] + 2 * target[height - 2][0] + 2 * target[height - 1][1]) / 4.0f - target[height - 1][0]);
-                error += detail::GetRealValue(delta*delta);
-                target[height - 1][0] += delta;
-            };
-        };
-        for (int x = (height - 1) % 2 == 1 ? 2 : 1; x < width - 1; ++(++x))
-        {
-            if (seams[height - 1][x] > 1)
-            {
-                const TargetPixelType delta = omega * ((gradient[height - 1][x] + detail::GetBorderValues(x, height - 1, 1, 0, target, seams) + 2 * target[height - 2][x]) / 4.0f - target[height - 1][x]);
-                error += detail::GetRealValue(delta*delta);
-                target[height - 1][x] += delta;
-            };
-        };
-        if ((width - 1 + height - 1) % 2 == 1 && seams[height - 1][width - 1] > 1)
+        if (seams[height - 1][width - 1] > 1)
         {
             if (doWrap)
             {
