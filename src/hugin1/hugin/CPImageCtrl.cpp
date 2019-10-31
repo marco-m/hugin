@@ -984,7 +984,16 @@ void CPImageCtrl::rescaleImage()
         imageSize.SetHeight(scale(imageSize.GetHeight()));
         DEBUG_DEBUG("rescaling to " << imageSize.GetWidth() << "x"
             << imageSize.GetHeight());
-        img = img.Scale(imageSize.GetWidth(), imageSize.GetHeight());
+        wxImageResizeQuality resizeQuality = wxIMAGE_QUALITY_NORMAL;
+        if (std::max(img.GetWidth(), img.GetHeight()) > (ULONG_MAX >> 16))
+        {
+            // wxIMAGE_QUALITY_NORMAL resizes the image with ResampleNearest
+            // this algorithm works only if image dimensions are smaller then 
+            // ULONG_MAX >> 16 (actual size of unsigned long differ from system
+            // to system)
+            resizeQuality = wxIMAGE_QUALITY_BOX_AVERAGE;
+        };
+        img = img.Scale(imageSize.GetWidth(), imageSize.GetHeight(), resizeQuality);
     };
     // need to rotate full image. warning. this can be very memory intensive
     if (m_imgRotation != ROT0)

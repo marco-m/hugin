@@ -494,7 +494,16 @@ void ImagesPanel::UpdatePreviewImage()
         // Make sure the size is positive:
         // on a small window, m_smallImgCtrl can have 0 width.
         sz.IncTo(wxSize(1,1));
-        wxImage scaled = img.Scale(sz.GetWidth(),sz.GetHeight());
+        wxImageResizeQuality resizeQuality = wxIMAGE_QUALITY_NORMAL;
+        if (std::max(img.GetWidth(), img.GetHeight()) > (ULONG_MAX >> 16))
+        {
+            // wxIMAGE_QUALITY_NORMAL resizes the image with ResampleNearest
+            // this algorithm works only if image dimensions are smaller then 
+            // ULONG_MAX >> 16 (actual size of unsigned long differ from system
+            // to system)
+            resizeQuality = wxIMAGE_QUALITY_BOX_AVERAGE;
+        };
+        wxImage scaled = img.Scale(sz.GetWidth(),sz.GetHeight(), resizeQuality);
         // now apply color profile
         if (!cacheEntry->iccProfile->empty() || huginApp::Get()->HasMonitorProfile())
         {

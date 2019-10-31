@@ -1367,7 +1367,16 @@ void MaskImageCtrl::rescaleImage()
     {
         m_imageSize.SetWidth(scale(m_imageSize.GetWidth()));
         m_imageSize.SetHeight(scale(m_imageSize.GetHeight()));
-        img=img.Scale(scale(m_realSize.GetWidth()), scale(m_realSize.GetHeight()));
+        wxImageResizeQuality resizeQuality = wxIMAGE_QUALITY_NORMAL;
+        if (std::max(img.GetWidth(), img.GetHeight()) > (ULONG_MAX >> 16))
+        {
+            // wxIMAGE_QUALITY_NORMAL resizes the image with ResampleNearest
+            // this algorithm works only if image dimensions are smaller then 
+            // ULONG_MAX >> 16 (actual size of unsigned long differ from system
+            // to system)
+            resizeQuality = wxIMAGE_QUALITY_BOX_AVERAGE;
+        };
+        img=img.Scale(scale(m_realSize.GetWidth()), scale(m_realSize.GetHeight()), resizeQuality);
     }
     else
     {
