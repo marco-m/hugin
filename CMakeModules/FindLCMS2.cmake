@@ -20,7 +20,7 @@ FIND_PATH(LCMS2_INCLUDE_DIR
 include(FindLibraryWithDebug)
 find_library_with_debug(LCMS2_LIBRARIES 
   WIN32_DEBUG_POSTFIX d    
-  NAMES lcms2 lcms2_static
+  NAMES lcms2 lcms2_static lcms
   PATHS ${SYSTEM_LIB_DIRS} ${LCMS2_ROOT_DIR}/lib ${LCMS2_ROOT_DIR}/bin ${LCMS2_ROOT_DIR}/Lib/MS
 )
 

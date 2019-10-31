@@ -160,7 +160,7 @@ IF(WIN32)
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     FIND_FILE(LCMS2_DLL
-      NAMES lcms2.dll liblcms2.dll liblcms2-2.dll
+      NAMES lcms2.dll liblcms2.dll liblcms2-2.dll lcms.dll
       PATHS ${DLL_SEARCH_PATH}
             ${LCMS2_ROOT_DIR}/bin 
       NO_SYSTEM_ENVIRONMENT_PATH
