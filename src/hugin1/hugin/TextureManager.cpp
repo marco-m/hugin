@@ -748,7 +748,11 @@ void TextureManager::TextureInfo::DefineLevels(int min,
         GLubyte* placeholder_image;
         size_t placeholderWidth = 64;
         size_t placeholderHeight = 64;
+#if defined EXIV2_VERSION && EXIV2_TEST_VERSION(0,27,99)
+        Exiv2::Image::UniquePtr image;
+#else
         Exiv2::Image::AutoPtr image;
+#endif
         bool hasPreview = false;
         try
         {

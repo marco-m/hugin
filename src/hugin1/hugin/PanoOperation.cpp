@@ -267,7 +267,11 @@ WX_DECLARE_STRING_HASH_MAP(int, StringToFlagHash);
 
 time_t ReadExifTime(const char* filename)
 {
+#if defined EXIV2_VERSION && EXIV2_TEST_VERSION(0,27,99)
+    Exiv2::Image::UniquePtr image;
+#else
     Exiv2::Image::AutoPtr image;
+#endif
     try
     {
         image = Exiv2::ImageFactory::open(filename);

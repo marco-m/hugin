@@ -346,7 +346,11 @@ public:
     bool ProcessReferenceOutput(const wxArrayString& output) override
     {
         // extract XMP package for converted reference image and store in temp
+#if defined EXIV2_VERSION && EXIV2_TEST_VERSION(0,27,99)
+        Exiv2::Image::UniquePtr image;
+#else
         Exiv2::Image::AutoPtr image;
+#endif
         try
         {
             image = Exiv2::ImageFactory::open(std::string(m_refImage.mb_str(HUGIN_CONV_FILENAME)));
@@ -366,7 +370,11 @@ public:
             return false;
         };
         m_usedSettings = wxFileName::CreateTempFileName("hugdt");
+#if defined EXIV2_VERSION && EXIV2_TEST_VERSION(0,27,99)
+        Exiv2::Image::UniquePtr image2;
+#else
         Exiv2::Image::AutoPtr image2;
+#endif
         try
         {
             image2 = Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, std::string(m_usedSettings.mb_str(HUGIN_CONV_FILENAME)));
@@ -650,7 +658,11 @@ bool RawImportDialog::CheckRawFiles()
     for (auto& file : m_rawImages)
     {
         // check that all images are from the same camera
+#if defined EXIV2_VERSION && EXIV2_TEST_VERSION(0,27,99)
+        Exiv2::Image::UniquePtr image;
+#else
         Exiv2::Image::AutoPtr image;
+#endif
         try
         {
             image = Exiv2::ImageFactory::open(std::string(file.mb_str(HUGIN_CONV_FILENAME)));

@@ -950,7 +950,11 @@ void PossiblePano::PopulateListCtrl(wxListCtrl* list, wxImageList* thumbs, wxArr
     wxBusyCursor cursor;
     for (ImageSet::iterator it = m_images.begin(); it != m_images.end(); ++it)
     {
+#if defined EXIV2_VERSION && EXIV2_TEST_VERSION(0,27,99)
+        Exiv2::Image::UniquePtr image;
+#else
         Exiv2::Image::AutoPtr image;
+#endif
         bool opened = false;
         try
         {
