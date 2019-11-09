@@ -79,8 +79,7 @@ bool BatchDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& fil
 
 enum
 {
-    wxEVT_COMMAND_RELOAD_BATCH,
-    wxEVT_COMMAND_UPDATE_LISTBOX
+    EVT_TIMER_UPDATE_LISTBOX
 };
 
 BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
@@ -121,8 +120,7 @@ BEGIN_EVENT_TABLE(BatchFrame, wxFrame)
     EVT_CHECKBOX(XRCID("cb_savelog"), BatchFrame::OnCheckSaveLog)
     EVT_END_PROCESS(-1, BatchFrame::OnProcessTerminate)
     EVT_CLOSE(BatchFrame::OnClose)
-    EVT_MENU(wxEVT_COMMAND_RELOAD_BATCH, BatchFrame::OnReloadBatch)
-    EVT_MENU(wxEVT_COMMAND_UPDATE_LISTBOX, BatchFrame::OnUpdateListBox)
+    EVT_TIMER(EVT_TIMER_UPDATE_LISTBOX, BatchFrame::OnUpdateListBox)
     EVT_COMMAND(wxID_ANY, EVT_BATCH_FAILED, BatchFrame::OnBatchFailed)
     EVT_COMMAND(wxID_ANY, EVT_INFORMATION, BatchFrame::OnBatchInformation)
     EVT_COMMAND(wxID_ANY, EVT_UPDATE_PARENT, BatchFrame::OnRefillListBox)
@@ -134,7 +132,6 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
 {
     this->SetLocaleAndXRC(locale,xrc);
     m_cancelled = false;
-    m_closeThread = false;
 
     //load xrc resources
     wxXmlResource::Get()->LoadFrame(this, (wxWindow* )NULL, wxT("batch_frame"));
@@ -184,16 +181,17 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
             wxYES_NO | wxICON_EXCLAMATION, NULL)==wxNO)
         {
             m_batch->LoadTemp();
+        }
+        else
+        {
+            // save empty batch queue
+            m_batch->SaveTemp();
         };
     }
     else
     {
         m_batch->LoadTemp();
     };
-    if(m_batch->GetLastFile().length()==0)
-    {
-        m_batch->SaveTemp();
-    }
     projListBox = XRCCTRL(*this,"project_listbox",ProjectListBox);
     // fill at end list box, check which options are available
     m_endChoice = XRCCTRL(*this, "choice_end", wxChoice);
@@ -219,8 +217,6 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     };
 #endif
 
-    this->wxThreadHelper::CreateThread();
-    this->GetThread()->Run();
     //TO-DO: include a batch or project progress gauge?
     projListBox->Fill(m_batch);
     SetDropTarget(new BatchDropTarget());
@@ -244,34 +240,9 @@ BatchFrame::BatchFrame(wxLocale* locale, wxString xrc)
     // check settings of help window and fix when needed
     FixHelpSettings();
 #endif
-}
-
-void* BatchFrame::Entry()
-{
-    //we constantly poll the working dir for new files and wait a bit on each loop
-    while(!m_closeThread)
-    {
-        //don't access GUI directly in this function (function is running as separate thread)
-        //check, if ptbt file was changed
-        wxFileName aFile(m_batch->GetLastFile());
-        if(!aFile.FileExists())
-        {
-            wxQueueEvent(this, new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH));
-        }
-        else
-        {
-            wxDateTime create;
-            aFile.GetTimes(NULL,NULL,&create);
-            if(create.IsLaterThan(m_batch->GetLastFileDate()))
-            {
-                wxQueueEvent(this, new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_RELOAD_BATCH));
-            };
-        };
-        //update project list box
-        wxQueueEvent(this, new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, wxEVT_COMMAND_UPDATE_LISTBOX));
-        GetThread()->Sleep(1000);
-    }
-    return 0;
+    m_updateProjectsTimer = new wxTimer(this, EVT_TIMER_UPDATE_LISTBOX);
+    // start timer for check for updates in project files
+    m_updateProjectsTimer->StartOnce(5000);
 }
 
 wxStatusBar* BatchFrame::OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name)
@@ -291,7 +262,7 @@ bool BatchFrame::IsPaused()
     return m_batch->IsPaused();
 };
 
-void BatchFrame::OnUpdateListBox(wxCommandEvent& event)
+void BatchFrame::OnUpdateListBox(wxTimerEvent& event)
 {
     wxFileName tempFile;
     bool change = false;
@@ -342,16 +313,9 @@ void BatchFrame::OnUpdateListBox(wxCommandEvent& event)
     if(change)
     {
         m_batch->SaveTemp();
-    }
-};
-
-void BatchFrame::OnReloadBatch(wxCommandEvent& event)
-{
-    m_batch->ClearBatch();
-    m_batch->LoadTemp();
-    projListBox->DeleteAllItems();
-    projListBox->Fill(m_batch);
-    SetStatusText(wxT(""));
+    };
+    // start timer again
+    m_updateProjectsTimer->StartOnce(2000);
 };
 
 void BatchFrame::OnUserExit(wxCommandEvent& event)
@@ -1172,16 +1136,12 @@ void BatchFrame::OnClose(wxCloseEvent& event)
         };
     }
     config->Flush();
-    m_closeThread = true;
-    if (this->GetThread() && this->GetThread()->IsRunning())
-    {
-        this->GetThread()->Wait();
-    };
     if(m_tray!=NULL)
     {
         delete m_tray;
         m_tray = NULL;
     }
+    delete m_updateProjectsTimer;
     this->Destroy();
 }
 

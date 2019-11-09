@@ -42,6 +42,7 @@
 #include "BatchTrayIcon.h"
 //#include <wx/app.h>
 #include "ProgressStatusBar.h"
+#include <wx/timer.h>
 
 /** Simple class that forward the drop to the mainframe */
 class BatchDropTarget : public wxFileDropTarget
@@ -56,13 +57,11 @@ public:
     bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 };
 
-class BatchFrame : public wxFrame, public wxThreadHelper
+class BatchFrame : public wxFrame
 {
 public:
     //Main constructor
     BatchFrame(wxLocale* locale, wxString xrc);
-    //Main thread for all file polling - checking for new projects and updating modified ones.
-    void* Entry();
     // create statusbar with progress control
     wxStatusBar* OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
 
@@ -167,10 +166,7 @@ private:
     Batch* m_batch;
     bool m_cancelled;
     bool m_paused;
-    bool m_closeThread; //included to signal the thread to finish execution
     wxChoice* m_endChoice;
-    //TO-DO: include a batch or project progress gauge? Test initialization commented out in constructor
-    //wxGauge* m_gauge;
     // help controller
     wxHelpController m_HelpController;
     BatchTaskBarIcon* m_tray;
@@ -178,14 +174,13 @@ private:
     wxIcon m_iconNormal;
     wxIcon m_iconRunning;
     wxIcon m_iconPaused;
+    // timer for checking of modified projects
+    wxTimer* m_updateProjectsTimer;
     bool m_startedMinimized;
 
     void OnProcessTerminate(wxProcessEvent& event);
-    /** called by thread when queue was changed outside of PTBatcherGUI
-    */
-    void OnReloadBatch(wxCommandEvent& event);
     /** called by thread to update listbox */
-    void OnUpdateListBox(wxCommandEvent& event);
+    void OnUpdateListBox(wxTimerEvent& event);
     /** called when batch was finished and there are failed projects */
     void OnBatchFailed(wxCommandEvent& event);
     /** called when batch wants to show some progress message */

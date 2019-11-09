@@ -71,11 +71,6 @@ Batch::Batch(wxFrame* parent) : wxFrame(parent, wxID_ANY, _T("Batch"))
     m_paused = false;
     m_running = false;
     m_clearedInProgress = false;
-    m_lastFile = wxT("");
-
-    // Required to access the preferences of hugin
-    //SetAppName(wxT("hugin"));
-
 }
 
 Batch::~Batch()
@@ -133,8 +128,6 @@ void Batch::AppendBatchFile(wxString file)
     wxFileName aFile(file);
     if(aFile.FileExists())
     {
-        m_lastFile = file;
-        aFile.GetTimes(NULL,NULL,&m_lastmod);
         wxFileInputStream fileStream(file);
         wxString projectName = _T("");
 #ifdef __WXMSW__
@@ -381,25 +374,6 @@ bool Batch::IsPaused()
     return m_paused;
 }
 
-void Batch::ListBatch()
-{
-    if(m_projList.GetCount() == 0)
-    {
-        std::cout << "Batch is empty." << std::endl;
-    }
-    else
-    {
-        std::cout << "List of projects in batch:" << std::endl <<
-             "[ID] [project path] [output filename] [status]" << std::endl <<
-             "-------------------------------------" << std::endl;
-        for(unsigned int i=0; i<m_projList.GetCount(); i++)
-        {
-            std::cout << m_projList.Item(i).id << "  "	<< (const char*)m_projList.Item(i).path.char_str()  << "  " << (const char*)m_projList.Item(i).prefix.char_str()
-                 << "  " << (const char*)m_projList.Item(i).GetStatusText().char_str() << std::endl;
-        }
-    }
-}
-
 int Batch::LoadBatchFile(wxString file)
 {
     int clearCode = ClearBatch();
@@ -422,39 +396,12 @@ int Batch::LoadBatchFile(wxString file)
 
 int Batch::LoadTemp()
 {
-    wxDir* workingDir = new wxDir(wxStandardPaths::Get().GetUserConfigDir());
-    wxString pending;
-    wxString fileTemp = _T(".ptbt*");
-    wxString temp = _T("");
-    //we check for existing temporary files
-    if(workingDir->GetFirst(&temp,fileTemp,wxDIR_FILES | wxDIR_HIDDEN))
-    {
-        //we find the last existing tempfile (there should be at most two, but we check for multiple just in case)
-        while(workingDir->GetNext(&pending))
-        {
-            wxFileName tempFile(temp);
-            wxFileName pendingFile(pending);
-            wxDateTime* create1 = new wxDateTime();
-            wxDateTime* create2 = new wxDateTime();
-            if(tempFile.FileExists() && pendingFile.FileExists())
-            {
-                tempFile.GetTimes(NULL,NULL,create1);
-                pendingFile.GetTimes(NULL,NULL,create2);
-                if(create2->IsLaterThan(*create1))
-                {
-                    wxRemoveFile(temp);
-                    temp=wxString(pending);
-                }
-            }
-            else
-            {
-                //wxMessageBox( _T("Error reading temporary file"),_T("Error!"),wxOK | wxICON_INFORMATION );
-                return 1;
-            }
-        }
-    }
+    const wxFileName batchQueue(wxStandardPaths::Get().GetUserConfigDir(), _T(".ptbt"));
     //we load the data from the temp file
-    AppendBatchFile(workingDir->GetName()+wxFileName::GetPathSeparator()+temp);
+    if (batchQueue.FileExists())
+    {
+        AppendBatchFile(batchQueue.GetFullPath());
+    };
     return 0;
 }
 
@@ -966,34 +913,12 @@ void Batch::SaveBatchFile(wxString file)
         }
     }
     fileStream.Close();
-    m_lastFile = file;
-    wxFileName aFile(file);
-    aFile.GetTimes(NULL,NULL,&m_lastmod);
 }
 
 void Batch::SaveTemp()
 {
-    wxDir* workingDir = new wxDir(wxStandardPaths::Get().GetUserConfigDir());
-    wxString fileTemp = _T(".ptbt*");
-    //we get the old temp file
-    fileTemp = workingDir->FindFirst(workingDir->GetName(),fileTemp,wxDIR_FILES | wxDIR_HIDDEN);
-    wxFileName oldFile(fileTemp);
-    //we alternate between 0 and 1
-    wxString suffix;
-    if(fileTemp.EndsWith(_T("0")))
-    {
-        suffix = _T("1");
-    }
-    else
-    {
-        suffix = _T("0");
-    }
-    SaveBatchFile(wxStandardPaths::Get().GetUserConfigDir()+wxFileName::GetPathSeparator()+_T(".ptbt")+suffix);
-    //we remove the previous temp file
-    if(oldFile.FileExists())
-    {
-        wxRemoveFile(fileTemp);
-    }
+    const wxFileName batchQueue(wxStandardPaths::Get().GetUserConfigDir(), _T(".ptbt"));
+    SaveBatchFile(batchQueue.GetFullPath());
 }
 
 void Batch::SetStatus(int index,Project::Status status)
