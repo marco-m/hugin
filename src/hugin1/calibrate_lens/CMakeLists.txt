@@ -3,7 +3,7 @@ set(CALLENSGUI_SOURCE LensCalApp.cpp LensCalFrame.cpp LensCalImageCtrl.cpp LensC
 set(CALLENSGUI_HEADER LensCalApp.h LensCalFrame.h LensCalImageCtrl.h LensCalTypes.h)
 
 IF (WIN32)
-  add_executable(calibrate_lens_gui WIN32 ${CALLENSGUI_SOURCE} ${CALLENSGUI_HEADER} calibrate_lens_gui_rc.rc)
+  add_executable(calibrate_lens_gui WIN32 ${CALLENSGUI_SOURCE} ${CALLENSGUI_HEADER} calibrate_lens_gui_rc.rc ${WINDOWS_DPI_MANIFEST})
 ELSEIF(APPLE)
 
   set( PROGNAME calibrate_lens_gui )

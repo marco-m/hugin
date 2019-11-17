@@ -5,7 +5,7 @@ set( PTBATCHERGUI_HEADER PTBatcherGUI.h Batch.h RunStitchFrame.h ProjectArray.h 
                          BatchFrame.h DirTraverser.h FindPanoDialog.h FailedProjectsDialog.h 
                          BatchTrayIcon.h ProgressStatusBar.h PTBatcherGUI_rc.rc)
 IF (WIN32)
-  add_executable(PTBatcherGUI WIN32 ${PTBATCHERGUI_SOURCE} ${PTBATCHERGUI_HEADER})
+  add_executable(PTBatcherGUI WIN32 ${PTBATCHERGUI_SOURCE} ${PTBATCHERGUI_HEADER} ${WINDOWS_DPI_MANIFEST})
   IF (MINGW)
     # MinGW doesn't support #pragma comment(lib, "PowrProf.lib")
     target_link_libraries(PTBatcherGUI -lpowrprof)

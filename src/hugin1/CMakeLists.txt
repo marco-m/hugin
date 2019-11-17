@@ -8,6 +8,17 @@ IF(WIN32)
   ADD_DEFINITIONS(-D_UNICODE -DUNICODE)
 ENDIF(WIN32)
 
+# populate correct dpi aware manifest from wxWidgets
+IF(WIN32)
+  IF(CMAKE_SIZEOF_VOID_P EQUAL 8) 
+    # 64 bit build
+    SET(WINDOWS_DPI_MANIFEST "${wxWidgets_ROOT_DIR}/include/wx/msw/amd64-dpi-aware-pmv2.manifest")
+  ELSE()
+    # 32 bit built
+    SET(WINDOWS_DPI_MANIFEST "${wxWidgets_ROOT_DIR}/include/wx/msw/wx-dpi-aware-pmv2.manifest")
+  ENDIF()
+ENDIF()
+
 add_subdirectory(base_wx)
 add_subdirectory(stitch_project)
 add_subdirectory(icpfind)

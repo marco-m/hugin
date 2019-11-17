@@ -1,7 +1,7 @@
 
 set( PROGNAME hugin_stitch_project )
 IF (WIN32)
-  add_executable(${PROGNAME} WIN32 hugin_stitch_project.cpp hugin_stitch_project_rc.rc)
+  add_executable(${PROGNAME} WIN32 hugin_stitch_project.cpp hugin_stitch_project_rc.rc ${WINDOWS_DPI_MANIFEST})
 ELSEIF(APPLE)
   set( PROGNAME HuginStitchProject )
   set( MACOSX_BUNDLE_ICON_FILE Hugin.icns )
