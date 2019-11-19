@@ -723,6 +723,10 @@ protected:
     void UnselectAllChildren (wxTreeListItem *item );
     bool SendEvent(wxEventType event_type, wxTreeListItem *item = NULL, wxTreeEvent *event = NULL);  // returns true if processed
 
+#if wxCHECK_VERSION(3,1,3)
+    void OnDpiChanged(wxDPIChangedEvent& e);
+#endif
+
 private:
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxTreeListMainWindow)
@@ -1843,6 +1847,9 @@ BEGIN_EVENT_TABLE(wxTreeListMainWindow, wxScrolledWindow)
     EVT_IDLE           (wxTreeListMainWindow::OnIdle)
     EVT_SCROLLWIN      (wxTreeListMainWindow::OnScroll)
     EVT_MOUSE_CAPTURE_LOST(wxTreeListMainWindow::OnCaptureLost)
+#if wxCHECK_VERSION(3,1,3)
+    EVT_DPI_CHANGED(wxTreeListMainWindow::OnDpiChanged)
+#endif
 END_EVENT_TABLE()
 
 
@@ -4576,6 +4583,18 @@ wxTreeEvent nevent (event_type, 0);
     return m_owner->GetEventHandler()->ProcessEvent (*event);
 }
 
+#if wxCHECK_VERSION(3,1,3)
+void wxTreeListMainWindow::OnDpiChanged(wxDPIChangedEvent& e)
+{
+    m_dirty = true;
+    m_lineHeight = LINEHEIGHT;
+    if (m_imageListNormal)
+    {
+        CalculateLineHeight();
+    };
+    Refresh();
+}
+#endif
 
 //-----------------------------------------------------------------------------
 //  wxTreeListCtrl

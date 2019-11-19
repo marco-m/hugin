@@ -78,6 +78,9 @@ BEGIN_EVENT_TABLE(ImagesTreeCtrl, wxTreeListCtrl)
     EVT_TREE_KEY_DOWN(-1, ImagesTreeCtrl::OnChar)
     EVT_TREE_BEGIN_LABEL_EDIT(-1, ImagesTreeCtrl::OnBeginEdit)
     EVT_TREE_END_LABEL_EDIT(-1, ImagesTreeCtrl::OnEndEdit)
+#if wxCHECK_VERSION(3,1,3)
+    EVT_DPI_CHANGED(ImagesTreeCtrl::OnDpiChanged)
+#endif
 END_EVENT_TABLE()
 
 class ImagesTreeData : public wxTreeItemData
@@ -942,12 +945,8 @@ void ImagesTreeCtrl::SetGuiLevel(GuiLevel newSetting)
     SetDisplayMode(m_displayMode);
 };
 
-void ImagesTreeCtrl::SetOptimizerMode()
+void ImagesTreeCtrl::CreateCheckboxImages()
 {
-    m_optimizerMode=true;
-    // connnect events with handlers
-    Bind(wxEVT_MOTION, &ImagesTreeCtrl::OnMouseMove, this);
-    Bind(wxEVT_LEFT_DOWN, &ImagesTreeCtrl::OnLeftDown, this);
     //create bitmaps for different checkboxes state
     wxRendererNative& renderer = wxRendererNative::Get();
     const wxSize checkBoxSize = renderer.GetCheckBoxSize(this);
@@ -979,6 +978,16 @@ void ImagesTreeCtrl::SetOptimizerMode()
     checkboxImageList->Add(checkBoxImage);
 
     AssignImageList(checkboxImageList);
+}
+
+void ImagesTreeCtrl::SetOptimizerMode()
+{
+    m_optimizerMode=true;
+    // connnect events with handlers
+    Bind(wxEVT_MOTION, &ImagesTreeCtrl::OnMouseMove, this);
+    Bind(wxEVT_LEFT_DOWN, &ImagesTreeCtrl::OnLeftDown, this);
+    // build image list with check box images
+    CreateCheckboxImages();
     // activate edit mode
     for(HuginBase::UIntSet::const_iterator it=m_editableColumns.begin(); it!=m_editableColumns.end(); ++it)
     {
@@ -987,7 +996,19 @@ void ImagesTreeCtrl::SetOptimizerMode()
             SetColumnEditable(*it,true);
         };
     };
-};
+}
+
+#if wxCHECK_VERSION(3,1,3)
+void ImagesTreeCtrl::OnDpiChanged(wxDPIChangedEvent& e)
+{
+    // dpi has changed, we need to update the images of the checkboxes
+    if (m_optimizerMode)
+    {
+        CreateCheckboxImages();
+        Refresh();
+    };
+}
+#endif
 
 void ImagesTreeCtrl::SetGroupMode(GroupMode newGroup)
 {
