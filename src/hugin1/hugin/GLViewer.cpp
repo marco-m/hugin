@@ -344,11 +344,13 @@ void GLViewer::Resized(wxSizeEvent& e)
         DEBUG_DEBUG("RESIZED_IN_SHOWN");
         if (m_renderer)
         {
-          int w, h;
           DEBUG_DEBUG("RESIZED_IN_RENDERER");
-          GetClientSize(&w, &h);    
+          wxSize clientSize = GetClientSize();
+#if defined __WXGTK3__
+          clientSize*=GetContentScaleFactor();
+#endif
           SetUpContext();
-          offset = m_renderer->Resize(w, h);
+          offset = m_renderer->Resize(clientSize.GetWidth(), clientSize.GetHeight());
           Redraw();
         };
     }
@@ -373,9 +375,11 @@ void GLViewer::Redraw()
     if (m_visualization_state->RequireRecalculateViewport())
     {
         // resize the viewport in case the panorama dimensions have changed.
-        int w, h;
-        GetClientSize(&w, &h);
-        offset = m_renderer->Resize(w, h);
+        wxSize clientSize = GetClientSize();
+#if defined __WXGTK3__
+        clientSize *= GetContentScaleFactor();
+#endif
+        offset = m_renderer->Resize(clientSize.GetWidth(), clientSize.GetHeight());
     }
     m_visualization_state->DoUpdates();
     m_renderer->Redraw();
