@@ -36,7 +36,7 @@ env \
  ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
  --enable-shared --enable-static=no  || fail "configure step"
 
- make clean || fail "make clean step"
+make clean || fail "make clean step"
 
- make $MAKEARGS || fail "make step"
- make install || fail "make install step"
+make $MAKEARGS || fail "make step"
+make install || fail "make install step"

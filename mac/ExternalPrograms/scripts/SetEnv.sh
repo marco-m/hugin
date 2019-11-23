@@ -20,7 +20,7 @@ DEPLOY_TARGET="10.9"
 
 # The version of your Xcode macOS-SDK. If you use a current Xcode version this is
 # will be your macOS version
-SDKVERSION=$(sw_vers -productVersion | sed "s:.[[:digit:]]*.$::g") # "10.12"
+SDKVERSION="10.14"
 
 #####################################################################
 #####################################################################

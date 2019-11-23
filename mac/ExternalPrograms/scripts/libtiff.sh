@@ -24,7 +24,7 @@ env \
  LDFLAGS="-L$REPOSITORYDIR/lib $LDFLAGS -stdlib=libc++ -lc++" \
  NEXT_ROOT="$MACSDKDIR" \
  ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
-   --enable-static=no --enable-shared --with-apple-opengl-framework --without-x \
+   --enable-static=no --enable-shared --without-x \
    || fail "configure step for $ARCH" ;
 
 make clean || fail "make clean step"

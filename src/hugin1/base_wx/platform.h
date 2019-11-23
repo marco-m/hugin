@@ -50,7 +50,7 @@ WXIMPEX bool IsRawExtension(const wxString& testExt);
 
 #if defined __WXMAC__ || defined __WXOSX_COCOA__
 
-#include "wx/osx/core/cfstring.h"
+#include <wx/osx/core/cfstring.h>
 #include <wx/osx/private.h>
 
 CFStringRef MacCreateCFStringWithWxString(const wxString& string);

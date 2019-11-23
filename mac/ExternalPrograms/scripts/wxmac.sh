@@ -39,3 +39,9 @@ make clean || fail "make clean step"
 
 make $MAKEARGS || fail "make step";
 make install || fail "make install step";
+
+cd "$REPOSITORYDIR/include"
+
+# Should be released in release after wxWidgets 3.1.3
+# https://github.com/wxWidgets/wxWidgets/commit/294c8a6b23de686436a36f076de6a004a110a4d1
+patch -p1 -N < ../../patches/wxmac-datatransfer.patch

@@ -20,7 +20,7 @@ env \
  CFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include $ARGS -O3" \
  CXXFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include $ARGS -O3" \
  CPPFLAGS="-I$REPOSITORYDIR/include" \
- LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS -prebind -stdlib=libc++ -lc++" \
+ LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS -stdlib=libc++ -lc++" \
  PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
  NEXT_ROOT="$MACSDKDIR" \
  cmake -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DCMAKE_OSX_SYSROOT="macosx${SDKVERSION}" \
