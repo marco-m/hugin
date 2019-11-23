@@ -16,6 +16,9 @@
 # 20121010.0 hvdw simplify script to make this the default non openmp one
 # -------------------------------
 
+# prevent naming conflict with clang headers
+patch -p1 -N < ../../patches/enblend.patch
+
 CC="$CC" CXX="$CXX" \
 PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
 LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS" \

@@ -28,15 +28,14 @@ env \
  CXXFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
  CPPFLAGS="-I$REPOSITORYDIR/include" \
  LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS" \
- NEXT_ROOT="$MACSDKDIR" \
- ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
  ZLIB_CFLAGS="-I$MACSDKDIR/usr/include" ZLIB_LIBS="-L$MACSDKDIR/usr/lib" \
  GETTEXT_CFLAGS="-I$REPOSITORYDIR/include" GETTEXT_LIBS="-L$REPOSITORYDIR/lib" \
  LIBFFI_CFLAGS="-I$REPOSITORYDIR/include" LIBFFI_LIBS="-L$REPOSITORYDIR/lib -lffi" \
+ NEXT_ROOT="$MACSDKDIR" \
+ ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
  --disable-selinux --disable-fam --disable-xattr \
- --disable-gtk-doc --disable-gtk-doc-html --disable-gtk-doc-pdf \
  --disable-man --disable-dtrace --disable-systemtap \
- --enable-static=no --enable-shared --with-pcre=internal || fail "configure step of $ARCH";
+ --enable-static=no --enable-shared --with-pcre=internal || fail "configure step";
 
 make clean  || fail "make clean step"
 make $MAKEARGS || fail "make step of $ARCH"
