@@ -448,9 +448,14 @@ static void usage(const char* name)
         << "                               autocenter for crop" << std::endl
         << "                               relative values can be used with %" << std::endl
         << "     --crop=iNUM=left,right,top,bottom Set the crop for image NUM" << std::endl
-        << "     --crop=iNUM=width,height  Set the crop for image NUM and" <<std::endl
-        << "                             activate autocenter for crop"<<std::endl
-        << "                             These switches can be used several times."<<std::endl
+        << "     --crop=iNUM=width,height  Set the crop for image NUM and" << std::endl
+        << "                             activate autocenter for crop" << std::endl
+        << "                             These switches can be used several times." << std::endl
+        << std::endl
+        << "     --anchor=NUM            Sets the image NUM as anchor for geometric" << std::endl
+        << "                             optimisation." << std::endl
+        << "     --color-anchor=NUM      Sets the image NUM as anchor for photometric" << std::endl
+        << "                             optimisation." << std::endl
         << std::endl;
 }
 
@@ -467,7 +472,9 @@ int main(int argc, char* argv[])
         SWITCH_SET,
         SWITCH_SET_FILE,
         OPT_MODIFY_OPTVEC,
-        SWITCH_CROP
+        SWITCH_CROP,
+        SWITCH_ANCHOR,
+        SWITCH_COLOR_ANCHOR
     };
     static struct option longOptions[] =
     {
@@ -479,6 +486,8 @@ int main(int argc, char* argv[])
         {"set-from-file", required_argument, NULL, SWITCH_SET_FILE },
         {"modify-opt", no_argument, NULL, OPT_MODIFY_OPTVEC },
         {"crop", required_argument, NULL, SWITCH_CROP },
+        {"anchor", required_argument, NULL, SWITCH_ANCHOR },
+        {"color-anchor", required_argument, NULL, SWITCH_COLOR_ANCHOR },
         {"help", no_argument, NULL, 'h' },
         0
     };
@@ -487,6 +496,8 @@ int main(int argc, char* argv[])
     Parser::ParseVarVec linkVars;
     Parser::ParseVarVec unlinkVars;
     std::string setVars, crop;
+    int anchor = -1;
+    int colorAnchor = -1;
     bool modifyOptVec=false;
     int c;
     std::string output;
@@ -543,6 +554,36 @@ int main(int argc, char* argv[])
                 };
                 crop.append(optarg);
                 break;
+            case SWITCH_ANCHOR:
+                if(hugin_utils::stringToInt(std::string(optarg), anchor))
+                { 
+                    if (anchor < 0)
+                    {
+                        std::cerr << "ERROR: Number " << anchor << " for --anchor has to be >=0." << std::endl;
+                        return 1;
+                    };
+                }
+                else
+                {
+                    std::cerr << "ERROR: \"" << optarg << "\" is not a valid number for --anchor parameter." << std::endl;
+                    return 1;
+                };
+                break;
+            case SWITCH_COLOR_ANCHOR:
+                if (hugin_utils::stringToInt(std::string(optarg), colorAnchor))
+                {
+                    if (colorAnchor < 0)
+                    {
+                        std::cerr << "ERROR: Number " << colorAnchor << " for --color-anchor has to be >=0." << std::endl;
+                        return 1;
+                    };
+                }
+                else
+                {
+                    std::cerr << "ERROR: \"" << optarg << "\" is not a valid number for --color-anchor parameter." << std::endl;
+                    return 1;
+                };
+                break;
             case ':':
             case '?':
                 // missing argument or invalid switch
@@ -568,7 +609,7 @@ int main(int argc, char* argv[])
         return 1;
     };
 
-    if(optVars.empty() && linkVars.empty() && unlinkVars.empty() && setVars.empty() && crop.empty())
+    if (optVars.empty() && linkVars.empty() && unlinkVars.empty() && setVars.empty() && crop.empty() && anchor < 0 && colorAnchor < 0)
     {
         std::cerr << hugin_utils::stripPath(argv[0]) << ": no variables to modify given" << std::endl;
         return 1;
@@ -615,6 +656,36 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
     };
 
+    // update anchor
+    if (anchor >= 0)
+    {
+        if (anchor >= pano.getNrOfImages())
+        {
+            std::cout << "WARNING: Image number " << anchor << " is not a valid number for the anchor image." << std::endl;
+        }
+        else
+        {
+            HuginBase::PanoramaOptions opts = pano.getOptions();
+            std::cout << "Setting optimizer anchor to image " << anchor << std::endl;
+            opts.optimizeReferenceImage = anchor;
+            pano.setOptions(opts);
+        };
+    };
+    // update color anchor
+    if (colorAnchor >= 0)
+    {
+        if (colorAnchor >= pano.getNrOfImages())
+        {
+            std::cout << "WARNING: Image number " << anchor << " is not a valid number for the color anchor image." << std::endl;
+        }
+        else
+        {
+            HuginBase::PanoramaOptions opts = pano.getOptions();
+            std::cout << "Setting color anchor to image " << anchor << std::endl;
+            opts.colorReferenceImage = colorAnchor;
+            pano.setOptions(opts);
+        };
+    };
     // update optimzer vector
     if(!optVars.empty())
     {
