@@ -99,7 +99,7 @@ bool checkDestinationDirectory(std::string dir, fs::path& pathTo)
     return true;
 };
 
-typedef std::vector<fs::path> pathVec;
+typedef std::set<fs::path> pathVec;
 
 bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAllFiles)
 {
@@ -127,12 +127,12 @@ bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAll
         return false;
     };
     prjfile.close();
-    pathVec imagesFrom, imagesTo;
+    pathVec imagesFrom;
+    std::map<fs::path,fs::path> imagesTo;
     // check if all images exists
     for(size_t i=0; i<pano.getNrOfImages(); i++)
     {
         fs::path p(pano.getImage(i).getFilename());
-        imagesFrom.push_back(p);
         if(!fs::exists(p) || !fs::is_regular_file(p))
         {
             std::cerr << "ERROR: image " << p.string() << " not found on disc." << std::endl
@@ -140,12 +140,20 @@ bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAll
             return false;
         };
         p=fs::absolute(p);
+        auto result = imagesFrom.insert(p);
+        if (!result.second)
+        {
+            // file is already in list, 
+            // update also this filename in pto file
+            pano.setImageFilename(i, imagesTo[p].string());
+            continue;
+        };
         // now build now image filename
         fs::path newFilename;
         if(RebaseFilename(p, newFilename, inputPathPrefix, outputPathPrefix))
         {
             pano.setImageFilename(i, newFilename.string());
-            imagesTo.push_back(newFilename);
+            imagesTo[p] = newFilename;
         };
     };
     if(!imagesFrom.empty())
@@ -175,19 +183,19 @@ bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAll
                 }
             };
             //copy/moving images
-            for(size_t i=0; i<imagesFrom.size(); i++)
+            for(const auto& imgFrom: imagesFrom)
             {
                 // check if target directory already exists
-                targetDir=fs::path(imagesTo[i]);
+                targetDir = imgFrom;
                 targetDir.remove_filename();
                 if(!checkDestinationDirectory(targetDir.string(), targetDir))
                 {
                     return false;
                 };
                 //check if target image file already exists
-                if(fs::exists(imagesTo[i]) && !overwriteAllFiles)
+                if(fs::exists(imagesTo[imgFrom]) && !overwriteAllFiles)
                 {
-                    std::cout << "Images file " << imagesTo[i] << " does already exists." << std::endl
+                    std::cout << "Images file " << imagesTo[imgFrom] << " does already exists." << std::endl
                               << "  Overwrite this file? [Y|N] ";
                     std::string userAnswer;
                     while(userAnswer.length()==0)
@@ -205,7 +213,7 @@ bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAll
                 {
                     try
                     {
-                        fs::rename(imagesFrom[i], imagesTo[i]);
+                        fs::rename(imgFrom, imagesTo[imgFrom]);
                     }
                     catch (const fs::filesystem_error& ex)
                     {
@@ -217,7 +225,7 @@ bool PTOCopyMove(bool movingFile, fs::path src, fs::path dest, bool overwriteAll
                 {
                     try
                     {
-                        fs::copy_file(imagesFrom[i], imagesTo[i], OVERWRITE_EXISTING);
+                        fs::copy_file(imgFrom, imagesTo[imgFrom], OVERWRITE_EXISTING);
                     }
                     catch (const fs::filesystem_error& ex)
                     {
@@ -292,7 +300,7 @@ bool iterateFileSystem(std::string src, pathVec& projectFiles)
             std::string ext=hugin_utils::toupper(it->path().extension().string());
             if(ext==".PTO")
             {
-                projectFiles.push_back(*it);
+                projectFiles.insert(*it);
             };
         }
     }
@@ -416,7 +424,7 @@ int main(int argc, char* argv[])
                     return 0;
                 };
                 std::cout << "Found " << projectFiles.size() << " project files." << std::endl << std::endl;
-                for(pathVec::const_iterator it=projectFiles.begin(); it!=projectFiles.end(); ++it)
+                for(pathVec::const_iterator it=projectFiles.cbegin(); it!=projectFiles.cend(); ++it)
                 {
                     fs::path newPath;
                     if(RebaseFilename(*it, newPath, p.string(), pathTo.string()))
