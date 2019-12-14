@@ -247,6 +247,7 @@ int main(int argc, char* argv[])
                 {
                     continue;
                 };
+                std::cout << "Assigning a new lens to image " << newLensImgs[i].imgNr << std::endl;
                 NewPart(pano, HuginBase::StandardImageVariableGroups::getLensVariables(), newLensImgs[i].imgNr);
             };
         }
@@ -255,6 +256,7 @@ int main(int argc, char* argv[])
             std::cout << "Warning: Pto project contains already for each image an own lens" << std::endl
                  << "         Nothing to do." << std::endl;
         };
+        std::cout << std::endl;
     };
 
     // new stacks
@@ -270,6 +272,7 @@ int main(int argc, char* argv[])
                 {
                     continue;
                 };
+                std::cout << "Assigning a new stack to image " << newStackImgs[i].imgNr << std::endl;
                 NewPart(pano, HuginBase::StandardImageVariableGroups::getStackVariables(), newStackImgs[i].imgNr);
             };
         }
@@ -278,6 +281,7 @@ int main(int argc, char* argv[])
             std::cout << "Warning: Pto project contains already for each image an own stack" << std::endl
                  << "         Nothing to do." << std::endl;
         };
+        std::cout << std::endl;
     };
 
     // change lenses
@@ -302,6 +306,7 @@ int main(int argc, char* argv[])
                 if (pano.getImage(changeLensImgs[i].imgNr).getSize() == pano.getImage(*group.getPartsSet()[changeLensImgs[i].lensStackNr].begin()).getSize())
                 {
                     // check that image size are the same
+                    std::cout << "Assigning image " << changeLensImgs[i].imgNr << " to lens " << changeLensImgs[i].lensStackNr << std::endl;
                     group.switchParts(changeLensImgs[i].imgNr, changeLensImgs[i].lensStackNr);
                 }
                 else
@@ -318,6 +323,7 @@ int main(int argc, char* argv[])
             std::cout << "Warning: Pto project contains only one lens." << std::endl
                  << "         Therefore the lens can not be changed. Use --new-lens instead." << std::endl;
         };
+        std::cout << std::endl;
     };
 
     // change stacks
@@ -342,6 +348,7 @@ int main(int argc, char* argv[])
                 if (pano.getImage(changeStackImgs[i].imgNr).getSize() == pano.getImage(*group.getPartsSet()[changeStackImgs[i].lensStackNr].begin()).getSize())
                 {
                     // check that image size are the same
+                    std::cout << "Assigning image " << changeStackImgs[i].imgNr << " to stack " << changeStackImgs[i].lensStackNr << std::endl;
                     group.switchParts(changeStackImgs[i].imgNr, changeStackImgs[i].lensStackNr);
                 }
                 else
@@ -358,6 +365,7 @@ int main(int argc, char* argv[])
             std::cout << "Warning: Pto project contains only one stack." << std::endl
                  << "         Therefore the stack can not be changed. Use --new-stack instead." << std::endl;
         };
+        std::cout << std::endl;
     };
 
     //write output
