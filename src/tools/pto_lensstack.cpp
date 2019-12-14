@@ -299,7 +299,18 @@ int main(int argc, char* argv[])
                     continue;
                 };
                 HuginBase::ImageVariableGroup group(HuginBase::StandardImageVariableGroups::getLensVariables(), pano);
-                group.switchParts(changeLensImgs[i].imgNr, changeLensImgs[i].lensStackNr);
+                if (pano.getImage(changeLensImgs[i].imgNr).getSize() == pano.getImage(*group.getPartsSet()[changeLensImgs[i].lensStackNr].begin()).getSize())
+                {
+                    // check that image size are the same
+                    group.switchParts(changeLensImgs[i].imgNr, changeLensImgs[i].lensStackNr);
+                }
+                else
+                {
+                    std::cout << "Warning: Image size of image " << changeLensImgs[i].imgNr << " is " << pano.getImage(changeLensImgs[i].imgNr).getSize() << std::endl
+                        << "         while images of lens " << changeLensImgs[i].lensStackNr << " have a size of " << pano.getImage(*group.getPartsSet()[changeLensImgs[i].lensStackNr].begin()).getSize() << "." << std::endl
+                        << "         All images of the same lens must have the same size." << std::endl
+                        << "         So skipping this image." << std::endl;
+                };
             };
         }
         else
@@ -328,7 +339,18 @@ int main(int argc, char* argv[])
                     continue;
                 };
                 HuginBase::ImageVariableGroup group(HuginBase::StandardImageVariableGroups::getStackVariables(), pano);
-                group.switchParts(changeStackImgs[i].imgNr, changeStackImgs[i].lensStackNr);
+                if (pano.getImage(changeStackImgs[i].imgNr).getSize() == pano.getImage(*group.getPartsSet()[changeStackImgs[i].lensStackNr].begin()).getSize())
+                {
+                    // check that image size are the same
+                    group.switchParts(changeStackImgs[i].imgNr, changeStackImgs[i].lensStackNr);
+                }
+                else
+                {
+                    std::cout << "Warning: Image size of image " << changeStackImgs[i].imgNr << " is " << pano.getImage(changeStackImgs[i].imgNr).getSize() << std::endl
+                        << "         while images of stack " << changeStackImgs[i].lensStackNr << " have a size of " << pano.getImage(*group.getPartsSet()[changeStackImgs[i].lensStackNr].begin()).getSize() << "." << std::endl
+                        << "         All images of the same stack must have the same size." << std::endl
+                        << "         So skipping this image." << std::endl;
+                };
             };
         }
         else

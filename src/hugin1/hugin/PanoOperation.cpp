@@ -594,6 +594,23 @@ PanoCommand::PanoCommand* ChangeLensOperation::GetInternalCommand(wxWindow* pare
     if (nr >= 0)
     {
         // user accepted
+        // check that image size are the same
+        const vigra::Size2D lensImgSize = variable_groups.getLens(nr).getImageSize();
+        for (const auto& img : images)
+        {
+            if (pano.getImage(img).getSize() != lensImgSize)
+            {
+                wxMessageBox(wxString::Format(_("Selected images and lens have different sizes. All images of the same lens have to have to same size.\n\nImage %d has size %dx%d, while lens %d has images with size of %dx%d pixel."),
+                    img, pano.getImage(img).getWidth(), pano.getImage(img).getHeight(), nr, lensImgSize.width(), lensImgSize.height()),
+#ifdef __WXMSW__
+                    wxT("Hugin"),
+#else
+                    wxT(""),
+#endif
+                    wxICON_EXCLAMATION | wxOK);
+                return NULL;
+            };
+        };
         return new PanoCommand::ChangePartNumberCmd(pano, images, nr, HuginBase::StandardImageVariableGroups::getLensVariables());
     }
     else
@@ -1251,6 +1268,24 @@ PanoCommand::PanoCommand* ChangeStackOperation::GetInternalCommand(wxWindow* par
     if (nr >= 0)
     {
         // user accepted
+        // check that image size are the same
+        const vigra::Size2D stackImgSize = pano.getImage(*variable_groups.getStacks().getPartsSet()[nr].begin()).getSize();
+        for (const auto& img : images)
+        {
+            if (pano.getImage(img).getSize() != stackImgSize)
+            {
+                wxMessageBox(wxString::Format(_("Selected images and stacks have different sizes. All images of the same stack have to have to same size.\n\nImage %d has size %dx%d, while lens %d has images with size of %dx%d pixel."),
+                    img, pano.getImage(img).getWidth(), pano.getImage(img).getHeight(), nr, stackImgSize.width(), stackImgSize.height()),
+#ifdef __WXMSW__
+                    wxT("Hugin"),
+#else
+                    wxT(""),
+#endif
+                    wxICON_EXCLAMATION | wxOK);
+                return NULL;
+            };
+        };
+
         return new PanoCommand::ChangePartNumberCmd(pano, images, nr, HuginBase::StandardImageVariableGroups::getStackVariables());
     }
     else
