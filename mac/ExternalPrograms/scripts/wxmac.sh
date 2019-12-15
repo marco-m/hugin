@@ -20,6 +20,10 @@
 # 20130205.0 hvdw temporarily downgrade to 2.9.3 again
 # -------------------------------
 
+# Will be fixed in wxWidgets 3.1.4 (http://trac.wxwidgets.org/ticket/18552):
+# https://github.com/wxWidgets/wxWidgets/commit/9d24a13c4bd5b2d80010e5776233cc49726d3e13
+patch -p1 -N < ../../patches/wxmac-execute.patch
+
 env \
   CC=clang CXX=clang++ \
   CFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
@@ -42,6 +46,6 @@ make install || fail "make install step";
 
 cd "$REPOSITORYDIR/include"
 
-# Should be released in release after wxWidgets 3.1.3
+# Will be fixed in wxWidgets 3.1.4
 # https://github.com/wxWidgets/wxWidgets/commit/294c8a6b23de686436a36f076de6a004a110a4d1
 patch -p1 -N < ../../patches/wxmac-datatransfer.patch
