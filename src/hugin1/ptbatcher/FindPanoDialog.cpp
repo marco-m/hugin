@@ -517,7 +517,7 @@ void FindPanoDialog::SearchInDir(wxString dirstring, const bool includeSubdir, c
             if(!img->getExifMake().empty() && !img->getExifModel().empty() && 
                 img->getExifFocalLength()!=0 && img->getCropFactor()!=0)
             {
-                img->readProjectionFromDB();
+                img->readProjectionFromDB(false);
                 if(loadDistortion)
                 {
                     img->readDistortionFromDB();

@@ -676,7 +676,7 @@ bool isFisheye(const BaseSrcPanoImage::Projection& proj)
     return false;
 };
 
-bool SrcPanoImage::readProjectionFromDB()
+bool SrcPanoImage::readProjectionFromDB(const bool ignoreFovRectilinear)
 {
     bool success=false;
     double oldFocal = 0;
@@ -698,7 +698,7 @@ bool SrcPanoImage::readProjectionFromDB()
             // read fov only for non rectilinear images
             // for these relay on the EXIF data, because often user manage to store
             // wrong values in the database, so ignore them for rectilinear images
-            if (getProjection() != RECTILINEAR && lensDB.GetFov(lensname, focal, fov))
+            if ((getProjection() != RECTILINEAR || !ignoreFovRectilinear) && lensDB.GetFov(lensname, focal, fov))
             {
                 // calculate FOV for given image, take different aspect ratios into account
                 const double newFocal = calcFocalLength(getProjection(), fov, getCropFactor(), vigra::Size2D(3000, 2000));

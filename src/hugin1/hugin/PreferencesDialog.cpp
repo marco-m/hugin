@@ -669,6 +669,8 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         // Assistant settings
         t = cfg->Read(wxT("/Assistant/autoAlign"), HUGIN_ASS_AUTO_ALIGN) == 1;
         MY_BOOL_VAL("prefs_ass_autoAlign", t);
+        t = cfg->Read(wxT("/General/IgnoreFovRectilinearOnAdd"), 1l) == 1l;
+        MY_BOOL_VAL("prefs_ass_loadFovRectilinear", !t);
         MY_SPIN_VAL("prefs_ass_nControlPoints",
                     cfg->Read(wxT("/Assistant/nControlPoints"), HUGIN_ASS_NCONTROLPOINTS));
         double factor = HUGIN_ASS_PANO_DOWNSIZE_FACTOR;
@@ -884,6 +886,7 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent& e)
         if (noteb->GetSelection() == 2)
         {
             cfg->Write(wxT("/Assistant/autoAlign"), HUGIN_ASS_AUTO_ALIGN);
+            cfg->Write(wxT("/General/IgnoreFovRectilinearOnAdd"), 1l);
             cfg->Write(wxT("/Assistant/nControlPoints"), HUGIN_ASS_NCONTROLPOINTS);
             cfg->Write(wxT("/Assistant/panoDownsizeFactor"),HUGIN_ASS_PANO_DOWNSIZE_FACTOR);
             cfg->Write(wxT("/Assistant/Linefind"), HUGIN_ASS_LINEFIND);
@@ -980,6 +983,7 @@ void PreferencesDialog::UpdateConfigData()
     wxConfigBase* cfg = wxConfigBase::Get();
     // Assistant
     cfg->Write(wxT("/Assistant/autoAlign"),MY_G_BOOL_VAL("prefs_ass_autoAlign"));
+    cfg->Write(wxT("/General/IgnoreFovRectilinearOnAdd"), !MY_G_BOOL_VAL("prefs_ass_loadFovRectilinear"));
     cfg->Write(wxT("/Assistant/nControlPoints"), MY_G_SPIN_VAL("prefs_ass_nControlPoints"));
     cfg->Write(wxT("/Assistant/panoDownsizeFactor"), MY_G_SPIN_VAL("prefs_ass_panoDownsizeFactor") / 100.0);
     cfg->Write(wxT("/Assistant/Linefind"), MY_G_BOOL_VAL("prefs_ass_linefind"));

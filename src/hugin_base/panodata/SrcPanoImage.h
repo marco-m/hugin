@@ -374,8 +374,11 @@ public:
     bool readCropfactorFromDB();
     /** tries to read projection and crop area from lens database
         you need to call SrcPanoImage::readEXIF before to fill some values 
+        @param ignoreFovRectilinear if this parameter is true, the fov of
+          rectilinear is not read from the database, otherwise the hfov
+          is populated with the value from the database
         @return true, if information could be read from database */
-    bool readProjectionFromDB();
+    bool readProjectionFromDB(const bool ignoreFovRectilinear=true);
     /** tries to read distortion data from lens database
         you need to call SrcPanoImage::readEXIF before to fill some values 
         @return true, if information could be read from database */

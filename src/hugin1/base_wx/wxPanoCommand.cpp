@@ -344,7 +344,8 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
             {
                 // if projection is equirectangular, we loaded info from gpano tags
                 // in this case we don't need to look up the database
-                srcImg.readProjectionFromDB();
+                const bool ignoreFovRectilinear = wxConfigBase::Get()->Read(wxT("/General/IgnoreFovRectilinearOnAdd"), 1l) == 1l;
+                srcImg.readProjectionFromDB(ignoreFovRectilinear);
             };
         };
         // save EXIF data for later to prevent double loading of EXIF data

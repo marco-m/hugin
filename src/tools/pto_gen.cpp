@@ -47,25 +47,29 @@
 static void usage(const char* name)
 {
     std::cout << name << ": generate project file from images" << std::endl
-         << name << " version " << hugin_utils::GetHuginVersion() << std::endl
-         << std::endl
-         << "Usage:  " << name << " [options] image1 [...]" << std::endl
-         << std::endl
-         << "  Options:" << std::endl
-         << "     -o, --output=file.pto  Output Hugin PTO file." << std::endl
-         << "     -p, --projection=INT   Projection type (default: 0)" << std::endl
-         << "     -f, --fov=FLOAT        Horizontal field of view of images (default: 50)" << std::endl
-         << "     -c, --crop=left,right,top,bottom        Sets the crop of input" << std::endl
-         << "                            images (especially for fisheye lenses)" << std::endl
-         << "     -s, --stacklength=INT  Number of images in stack" << std::endl
-         << "                            (default: automatic detection)" << std::endl
-         << "     -l, --linkstacks       Link image positions in stacks" << std::endl
-         << "     --distortion           Try to load distortion information from" << std::endl
-         << "                            lens database" << std::endl
-         << "     --vignetting           Try to load vignetting information from" << std::endl
-         << "                            lens database" << std::endl
-         << "     -h, --help             Shows this help" << std::endl
-         << std::endl;
+        << name << " version " << hugin_utils::GetHuginVersion() << std::endl
+        << std::endl
+        << "Usage:  " << name << " [options] image1 [...]" << std::endl
+        << std::endl
+        << "  Options:" << std::endl
+        << "     -o, --output=file.pto  Output Hugin PTO file." << std::endl
+        << "     -p, --projection=INT   Projection type (default: read from database)" << std::endl
+        << "     -f, --fov=FLOAT        Horizontal field of view of images" << std::endl
+        << "                            default: read from database" << std::endl
+        << "     --ignore-fov-rectilinear  Don't read fov for rectilinear images from" <<std::endl
+        << "                            the database, instead use only the values" << std::endl
+        << "                            from EXIF data" << std::endl
+        << "     -c, --crop=left,right,top,bottom        Sets the crop of input" << std::endl
+        << "                            images (especially for fisheye lenses)" << std::endl
+        << "     -s, --stacklength=INT  Number of images in stack" << std::endl
+        << "                            (default: automatic detection)" << std::endl
+        << "     -l, --linkstacks       Link image positions in stacks" << std::endl
+        << "     --distortion           Try to load distortion information from" << std::endl
+        << "                            lens database" << std::endl
+        << "     --vignetting           Try to load vignetting information from" << std::endl
+        << "                            lens database" << std::endl
+        << "     -h, --help             Shows this help" << std::endl
+        << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -73,16 +77,22 @@ int main(int argc, char* argv[])
     // parse arguments
     const char* optstring = "o:p:f:c:s:lh";
 
+    enum {
+        SWITCH_IGNORE_FOV_RECTILINEAR = 1000,
+        SWITCH_DISTORTION,
+        SWITCH_VIGNETTING
+    };
     static struct option longOptions[] =
     {
         {"output", required_argument, NULL, 'o' },
         {"projection", required_argument, NULL, 'p' },
         {"fov", required_argument, NULL, 'f' },
+        {"ignore-fov-rectilinear", no_argument, NULL, SWITCH_IGNORE_FOV_RECTILINEAR},
         {"crop", required_argument, NULL, 'c' },
         {"stacklength", required_argument, NULL, 's' },
         {"linkstacks", no_argument, NULL, 'l' },
-        {"distortion", no_argument, NULL, 300 },
-        {"vignetting", no_argument, NULL, 301 },
+        {"distortion", no_argument, NULL, SWITCH_DISTORTION },
+        {"vignetting", no_argument, NULL, SWITCH_VIGNETTING },
         {"help", no_argument, NULL, 'h' },
 
         0
@@ -95,6 +105,7 @@ int main(int argc, char* argv[])
     int stackLength=0;
     bool linkStacks=false;
     vigra::Rect2D cropRect(0,0,0,0);
+    bool ignoreFovRectilinear = false;
     bool loadDistortion=false;
     bool loadVignetting=false;
     while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
@@ -169,11 +180,14 @@ int main(int argc, char* argv[])
             case 'l':
                 linkStacks=true;
                 break;
-            case 300:
+            case SWITCH_DISTORTION:
                 loadDistortion=true;
                 break;
-            case 301:
+            case SWITCH_VIGNETTING:
                 loadVignetting=true;
+                break;
+            case SWITCH_IGNORE_FOV_RECTILINEAR:
+                ignoreFovRectilinear = true;
                 break;
             case ':':
             case '?':
@@ -304,7 +318,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            srcImage.readProjectionFromDB();
+            srcImage.readProjectionFromDB(ignoreFovRectilinear);
         };
         if(fov>0)
         {
