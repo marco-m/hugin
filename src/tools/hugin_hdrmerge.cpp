@@ -61,13 +61,29 @@ const uint16_t OTHER_GRAY = 1;
 
 // load all images and apply a weighted average merge, with
 // special cases for completely over or underexposed pixels.
-bool mergeWeightedAverage(std::vector<std::string> inputFiles, vigra::FRGBImage& output, vigra::BImage& alpha)
+bool mergeWeightedAverage(std::vector<std::string> inputFiles, vigra::FRGBImage& output, vigra::BImage& alpha, vigra::Rect2D& outputROI)
 {
     // load all images into memory
     std::vector<ImagePtr> images;
     std::vector<deghosting::BImagePtr> weightImages;
+    std::vector<vigra::ImageImportInfo> imageInfo;
 
-    for (size_t i=0; i < inputFiles.size(); i++)
+    // read information of all images and check ROI
+    for (size_t i = 0; i < inputFiles.size(); i++)
+    {
+        vigra::ImageImportInfo info(inputFiles[i].c_str());
+        imageInfo.push_back(info);
+        if (i == 0)
+        {
+            outputROI = vigra::Rect2D(vigra::Point2D(info.getPosition()), info.size());
+        }
+        else
+        {
+            outputROI |= vigra::Rect2D(vigra::Point2D(info.getPosition()), info.size());
+        };
+    };
+
+    for (size_t i=0; i < imageInfo.size(); i++)
     {
         ImagePtr img = ImagePtr(new ImageType());
         deghosting::BImagePtr weight = deghosting::BImagePtr(new vigra::BImage());
@@ -76,34 +92,27 @@ bool mergeWeightedAverage(std::vector<std::string> inputFiles, vigra::FRGBImage&
         {
             std::cout << "Loading image: " << inputFiles[i] << std::endl;
         }
-        vigra::ImageImportInfo info(inputFiles[i].c_str());
-        img->resize(info.size());
-        weight->resize(info.size().width(), info.size().height(), 255);
-        if (info.numBands() == 4)
+        //calculate offset
+        vigra::Point2D offset = vigra::Point2D(imageInfo[i].getPosition());
+        offset -= outputROI.upperLeft();
+        // now load images with offset
+        img->resize(outputROI.size());
+        weight->resize(img->size().width(), img->size().height(), 0);
+        if (imageInfo[i].numBands() == 4)
         {
-            importImageAlpha(info, destImage(*img), destImage(*weight));
+            importImageAlpha(imageInfo[i], destImage(*img, offset), destImage(*weight, offset));
         }
         else
         {
-            importImage(info, destImage(*img));
+            importImage(imageInfo[i], destImage(*img, offset));
+            vigra::initImage(vigra::destImageRange(*weight, vigra::Rect2D(offset, imageInfo[i].size())), 255);
         }
         images.push_back(img);
         weightImages.push_back(weight);
-    }
+    };
 
-    // ensure all images have the same size (cropped images not supported yet)
-    int width=images[0]->width();
-    int height=images[0]->height();
-    for (unsigned i=1; i < images.size(); i++)
-    {
-        if (images[i]->width() != width || images[i]->height() != height)
-        {
-            std::cerr << "Error: Input images need to be of the same size" << std::endl;
-            return false;
-        }
-    }
-    output.resize(width,height);
-    alpha.resize(width, height, 0);
+    output.resize(outputROI.size());
+    alpha.resize(output.width(), output.height(), 0);
     if (g_verbose > 0)
     {
         std::cout << "Calculating weighted average " << std::endl;
@@ -113,9 +122,9 @@ bool mergeWeightedAverage(std::vector<std::string> inputFiles, vigra::FRGBImage&
     vigra_ext::ReduceToHDRFunctor<ImageType::value_type> waverage;
 
     // loop over all pixels in the image (very low level access)
-    for (int y=0; y < height; y++)
+    for (int y=0; y < output.height(); y++)
     {
-        for (int x=0; x < width; x++)
+        for (int x=0; x < output.width(); x++)
         {
             waverage.reset();
             // loop over all exposures
@@ -324,7 +333,8 @@ int main(int argc, char* argv[])
                 std::cout << "Running simple weighted avg algorithm" << std::endl;
             }
             vigra::BImage alpha;
-            mergeWeightedAverage(inputFiles, output, alpha);
+            vigra::Rect2D outputROI;
+            mergeWeightedAverage(inputFiles, output, alpha, outputROI);
             // save output file
             if (g_verbose > 0)
             {
@@ -332,6 +342,8 @@ int main(int argc, char* argv[])
             }
             vigra::ImageExportInfo exinfo(outputFile.c_str());
             exinfo.setPixelType("FLOAT");
+            exinfo.setPosition(outputROI.upperLeft());
+            exinfo.setCanvasSize(outputROI.size());
             vigra::exportImageAlpha(srcImageRange(output), srcImage(alpha), exinfo);
         }
         else if (mode == "avg")
