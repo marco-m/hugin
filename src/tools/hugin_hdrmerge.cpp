@@ -343,7 +343,7 @@ int main(int argc, char* argv[])
             vigra::ImageExportInfo exinfo(outputFile.c_str());
             exinfo.setPixelType("FLOAT");
             exinfo.setPosition(outputROI.upperLeft());
-            exinfo.setCanvasSize(outputROI.size());
+            exinfo.setCanvasSize(vigra::Size2D(outputROI.lowerRight().x, outputROI.lowerRight().y));
             vigra::exportImageAlpha(srcImageRange(output), srcImage(alpha), exinfo);
         }
         else if (mode == "avg")
