@@ -78,8 +78,7 @@ namespace deghosting
     {
         public:
             Khan(std::vector<std::string>& inputFiles, const uint16_t flags, const uint16_t debugFlags, int iterations, double sigma, int verbosity);
-            Khan(std::vector<vigra::ImageImportInfo>& inputFiles, const uint16_t flags, const uint16_t debugFlags, int iterations, double sigma, int verbosity);
-            std::vector<FImagePtr> createWeightMasks();
+            virtual std::vector<FImagePtr> createWeightMasks() override;
             ~Khan() {}
         protected:
             typedef typename ImageTypes<PixelType>::ImageType ImageType;
@@ -165,34 +164,6 @@ namespace deghosting
     }
     
     template <class PixelType>
-    Khan<PixelType>::Khan(std::vector<vigra::ImageImportInfo>& newInputFiles, const uint16_t newFlags, const uint16_t newDebugFlags,
-                int newIterations, double newSigma, int newVerbosity) {
-        try {
-            Deghosting::loadImages(newInputFiles);
-            Deghosting::setFlags(newFlags);
-            Deghosting::setDebugFlags(newDebugFlags);
-            Deghosting::setIterationNum(newIterations);
-            Deghosting::setVerbosity(newVerbosity);
-            
-            // I don't know why, but sigma for HDR input have to approximately 10 times smaller
-            // FIXME: Maybe it would be better to use different sigma for different images in case both HDR and LDR are mixed
-            const char * fileType= newInputFiles[0].getFileType();
-            if ( (!strcmp(fileType,"TIFF") && strcmp(fileType,"UINT8")) || !strcmp(fileType,"EXR") || !strcmp(fileType,"FLOAT")) {
-                setSigma(newSigma/10);
-            } else {
-                setSigma(newSigma);
-            }
-            
-            for (unsigned int i=0; i<5; i++)
-                Deghosting::response.push_back(0);
-            PIPOW = sigma*std::sqrt(2*PI);
-            denom = 1/PIPOW;
-        } catch (...) {
-            throw;
-        }
-    }
-    
-    template <class PixelType>
     void Khan<PixelType>::setSigma(double newSigma) {
         sigma = newSigma;
     }
@@ -254,12 +225,14 @@ namespace deghosting
     void Khan<PixelType>::importRGBImage(vigra::ImageImportInfo & info, ImageType * img, vigra::VigraTrueType) {
         // NOTE: I guess this is not optimal, but it works
         vigra::RGBToGrayAccessor<vigra::FRGBImage::PixelType> color2gray;
-        vigra::FRGBImage tmpImg(info.size());
+        vigra::FRGBImage tmpImg(getOutputROI().size());
+        vigra::Point2D offset = vigra::Point2D(info.getPosition());
+        offset -= getOutputROI().upperLeft();
         if (info.numBands() == 4) {
-            vigra::BImage imgAlpha(info.size());
-            vigra::importImageAlpha(info, destImage(tmpImg), destImage(imgAlpha));
+            vigra::BImage imgAlpha(tmpImg.size());
+            vigra::importImageAlpha(info, destImage(tmpImg, offset), destImage(imgAlpha, offset));
         } else {
-            vigra::importImage(info, destImage(tmpImg));
+            vigra::importImage(info, destImage(tmpImg, offset));
         }
         vigra::transformImage(vigra::srcImageRange(tmpImg, color2gray), vigra::destImage(*img), log(vigra::functor::Arg1() + vigra::functor::Param(1.0f)));
     }
@@ -267,20 +240,22 @@ namespace deghosting
     // only load image
     template <class PixelType>
     void Khan<PixelType>::importRGBImage(vigra::ImageImportInfo & info, ImageType * img, vigra::VigraFalseType) {
+        vigra::Point2D offset = vigra::Point2D(info.getPosition());
+        offset -= getOutputROI().upperLeft();
         if (info.numBands() == 4) {
-            vigra::BImage imgAlpha(info.size());
-            vigra::importImageAlpha(info, destImage(*img), destImage(imgAlpha));
+            vigra::BImage imgAlpha(img->size());
+            vigra::importImageAlpha(info, destImage(*img, offset), destImage(imgAlpha, offset));
         } else {
-            vigra::importImage(info, destImage(*img));
+            vigra::importImage(info, destImage(*img, offset));
         }
     }
     
     template <class PixelType>
     void Khan<PixelType>::preprocessImage(unsigned int i, FImagePtr &weight, ProcessImageTypePtr &output) {
         vigra::ImageImportInfo imgInfo(inputFiles[i]);
-        ImageType * pInputImg =  new ImageType(imgInfo.size());
-        weight = FImagePtr(new vigra::FImage(imgInfo.size()));
-        output = ProcessImageTypePtr(new ProcessImageType(imgInfo.size()));
+        ImageType * pInputImg =  new ImageType(getOutputROI().size());
+        weight = FImagePtr(new vigra::FImage(getOutputROI().size()));
+        output = ProcessImageTypePtr(new ProcessImageType(getOutputROI().size()));
         
         // import image
         // NOTE: Maybe alpha can be of some use but I don't

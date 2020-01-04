@@ -31,22 +31,12 @@
 #include <vigra/imageinfo.hxx>
 
 #ifdef _MSC_VER
-#define THROWNOIMAGESBADDIMENSION
+#define THROWNOIMAGES
 #else
-#define THROWNOIMAGESBADDIMENSION throw(NoImages, BadDimensions)
+#define THROWNOIMAGES throw(NoImages)
 #endif
 
 namespace deghosting {
-    
-    /** exception called when image dimensions differ
-     */
-    class BadDimensions : public std::exception {
-        public:
-            BadDimensions() : std::exception() {};
-            virtual const char * what() const throw() {
-                return "Input images must have the same dimensions";
-            }
-    };
     
     /** exception called when there are no input images
      */
@@ -84,8 +74,7 @@ namespace deghosting {
         /** load images for processing
          * @param inputFiles images to be processed
          */
-        virtual void loadImages(std::vector<std::string>& inputFiles) THROWNOIMAGESBADDIMENSION;
-        virtual void loadImages(std::vector<vigra::ImageImportInfo>& inputFiles) THROWNOIMAGESBADDIMENSION;
+        virtual void loadImages(std::vector<std::string>& inputFiles) THROWNOIMAGES;
 
         /** set advanced flags
          * Allows to change behavior of used algorithm
@@ -113,14 +102,19 @@ namespace deghosting {
          */
         virtual void setVerbosity(int verbosity);
         virtual ~Deghosting() {}
+
+        vigra::Rect2D getOutputROI() const;
+        std::vector<vigra::Rect2D> getInputROIs() const;
         
     protected:
         std::vector<vigra::ImageImportInfo> inputFiles;
+        std::vector<vigra::Rect2D> m_inputROI;
         uint16_t flags;
         uint16_t debugFlags;
         int iterations;
         EMoR response;
         int verbosity;
+        vigra::Rect2D m_outputROI;
     };
 
 }

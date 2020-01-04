@@ -22,32 +22,24 @@
 
 namespace deghosting {
     
-    void Deghosting::loadImages(std::vector<std::string>& newInputFiles) THROWNOIMAGESBADDIMENSION {
+    void Deghosting::loadImages(std::vector<std::string>& newInputFiles) THROWNOIMAGES
+    {
         if (newInputFiles.empty())
             throw NoImages();
         const vigra::ImageImportInfo firstInfo(newInputFiles[0].c_str());
-        const int width = firstInfo.width();
-        const int height = firstInfo.height();
-        for (unsigned int i = 0; i< newInputFiles.size(); i++) {
+        const vigra::Rect2D inputRect(vigra::Point2D(firstInfo.getPosition()), firstInfo.size());
+        m_inputROI.push_back(inputRect);
+        inputFiles.push_back(firstInfo);
+        m_outputROI = inputRect;
+        for (unsigned int i = 1; i< newInputFiles.size(); i++) {
             vigra::ImageImportInfo tmpInfo(newInputFiles[i].c_str());
-            if ((width != tmpInfo.width()) || (height != tmpInfo.height()))
-                throw BadDimensions();
+            const vigra::Rect2D inputRect(vigra::Point2D(tmpInfo.getPosition()), tmpInfo.size());
+            m_inputROI.push_back(inputRect);
             inputFiles.push_back(tmpInfo);
+            m_outputROI |= inputRect;
         }
      }
     
-    void Deghosting::loadImages(std::vector<vigra::ImageImportInfo>& newInputFiles) THROWNOIMAGESBADDIMENSION {
-        if (newInputFiles.empty())
-            throw NoImages();
-        const int width = newInputFiles[0].width();
-        const int height = newInputFiles[0].height();
-        for (unsigned int i = 0; i< newInputFiles.size(); i++) {
-            if ((width != newInputFiles[i].width()) || (height != newInputFiles[i].height()))
-                throw BadDimensions();
-        }
-        inputFiles = newInputFiles;
-    }
-
     void Deghosting::setFlags(const uint16_t newFlags) {
         flags = newFlags;
     }
@@ -68,5 +60,14 @@ namespace deghosting {
         verbosity = newVerbosity;
     }
 
+    vigra::Rect2D Deghosting::getOutputROI() const
+    {
+        return m_outputROI;
+    }
+
+    std::vector<vigra::Rect2D> Deghosting::getInputROIs() const
+    {
+        return m_inputROI;
+    }
 }
 

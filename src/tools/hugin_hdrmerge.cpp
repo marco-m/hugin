@@ -151,7 +151,8 @@ bool mergeWeightedAverage(std::vector<std::string> inputFiles, vigra::FRGBImage&
 bool weightedAverageOfImageFiles(const std::vector<std::string>& inputFiles,
                                  const std::vector<deghosting::FImagePtr>& weights,
                                  vigra::FRGBImage& output,
-                                 vigra::BImage& alpha)
+                                 vigra::BImage& alpha,
+                                 const vigra::Rect2D outputROI)
 {
     if(g_verbose > 0)
     {
@@ -167,17 +168,19 @@ bool weightedAverageOfImageFiles(const std::vector<std::string>& inputFiles,
     for(unsigned i = 0; i < inputFiles.size(); i++)
     {
         vigra::ImageImportInfo inputInfo(inputFiles[i].c_str());
-        vigra::BasicImage<vigra::NumericTraits<vigra::FRGBImage::PixelType>::Promote> tmpImg(inputInfo.size());
+        vigra::BasicImage<vigra::NumericTraits<vigra::FRGBImage::PixelType>::Promote> tmpImg(outputROI.size());
 
         //load image
+        vigra::Point2D offset = vigra::Point2D(inputInfo.getPosition());
+        offset -= outputROI.upperLeft();
         if (inputInfo.numBands() == 4)
         {
-            vigra::BImage tmpMask(inputInfo.size());
-            vigra::importImageAlpha(inputInfo, vigra::destImage(tmpImg), vigra::destImage(tmpMask));
+            vigra::BImage tmpMask(tmpImg.size());
+            vigra::importImageAlpha(inputInfo, vigra::destImage(tmpImg, offset), vigra::destImage(tmpMask, offset));
         }
         else
         {
-            vigra::importImage(inputInfo, vigra::destImage(tmpImg));
+            vigra::importImage(inputInfo, vigra::destImage(tmpImg, offset));
         }
 
         //combine with weight
@@ -356,29 +359,35 @@ int main(int argc, char* argv[])
         }
         else if (mode == "khan")
         {
-            deghosting::Deghosting* deghoster = NULL;
+            if (g_verbose > 0)
+            {
+                std::cout << "Running Khan deghosting algorithm" << std::endl;
+            }
+            vigra::Rect2D outputROI;
             std::vector<deghosting::FImagePtr> weights;
 
             if (otherFlags & OTHER_GRAY)
             {
-                deghosting::Khan<float> khanDeghoster(inputFiles, flags, 0, iterations, sigma, g_verbose);
-                deghoster = &khanDeghoster;
-                weights = deghoster->createWeightMasks();
+                deghosting::Khan<float> deghoster(inputFiles, flags, 0, iterations, sigma, g_verbose);
+                weights = deghoster.createWeightMasks();
+                outputROI = deghoster.getOutputROI();
             }
             else
             {
-                deghosting::Khan<vigra::RGBValue<float> > khanDeghoster(inputFiles, flags, 0, iterations, sigma, g_verbose);
-                deghoster = &khanDeghoster;
-                weights = deghoster->createWeightMasks();
-            }
+                deghosting::Khan<vigra::RGBValue<float>> deghoster(inputFiles, flags, 0, iterations, sigma, g_verbose);
+                weights = deghoster.createWeightMasks();
+                outputROI = deghoster.getOutputROI();
+            };
             vigra::BImage alpha;
-            weightedAverageOfImageFiles(inputFiles, weights, output, alpha);
+            weightedAverageOfImageFiles(inputFiles, weights, output, alpha, outputROI);
             if (g_verbose > 0)
             {
                 std::cout << "Writing " << outputFile << std::endl;
             }
             vigra::ImageExportInfo exinfo(outputFile.c_str());
             exinfo.setPixelType("FLOAT");
+            exinfo.setPosition(outputROI.upperLeft());
+            exinfo.setCanvasSize(vigra::Size2D(outputROI.lowerRight().x, outputROI.lowerRight().y));
             vigra::exportImageAlpha(vigra::srcImageRange(output), vigra::srcImage(alpha), exinfo);
         }
         else

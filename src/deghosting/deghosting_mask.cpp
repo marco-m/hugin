@@ -321,20 +321,22 @@ int main(int argc, char *argv[]) {
             inputFiles.push_back(argv[i]);
         }
 
-        deghosting::Deghosting* deghoster = NULL;
-
         std::vector<deghosting::FImagePtr> weights;
+        std::vector<vigra::Rect2D> inputROI;
+        vigra::Rect2D outputROI;
         if (otherFlags & OTHER_GRAY)
         {
-            deghosting::Khan<float> khanDeghoster(inputFiles, flags, debugFlags, iterations, sigma, verbosity);
-            deghoster = &khanDeghoster;
-            weights = deghoster->createWeightMasks();
+            deghosting::Khan<float> deghoster(inputFiles, flags, debugFlags, iterations, sigma, verbosity);
+            weights = deghoster.createWeightMasks();
+            inputROI = deghoster.getInputROIs();
+            outputROI = deghoster.getOutputROI();
         }
         else
         {
-            deghosting::Khan<vigra::RGBValue<float> > khanDeghoster(inputFiles, flags, debugFlags, iterations, sigma, verbosity);
-            deghoster = &khanDeghoster;
-            weights = deghoster->createWeightMasks();
+            deghosting::Khan<vigra::RGBValue<float>> deghoster(inputFiles, flags, debugFlags, iterations, sigma, verbosity);
+            weights = deghoster.createWeightMasks();
+            inputROI = deghoster.getInputROIs();
+            outputROI = deghoster.getOutputROI();
         }
 
         //deghoster->setCameraResponse(response);
@@ -347,7 +349,12 @@ int main(int argc, char *argv[]) {
                 char tmpfn[100];
                 snprintf(tmpfn, 99, "%s_%u.tif", outputPrefix.c_str(), i);
                 vigra::ImageExportInfo exWeights(tmpfn);
-                vigra::exportImage(srcImageRange(*weights[i]), exWeights.setPixelType("UINT8"));
+                exWeights.setPixelType("UINT8");
+                exWeights.setPosition(inputROI[i].upperLeft());
+                exWeights.setCanvasSize(vigra::Size2D(inputROI[i].lowerRight().x, inputROI[i].lowerRight().y));
+                vigra::Rect2D roi(inputROI[i]);
+                roi.moveBy(-outputROI.upperLeft());
+                vigra::exportImage(srcImageRange(*weights[i], roi), exWeights);
             }
         }
 
@@ -367,9 +374,14 @@ int main(int argc, char *argv[]) {
             fileName = hugin_utils::stripPath(fileName);
             snprintf(tmpfn, 99, "%s_mask.tif", fileName.c_str());
             vigra::ImageExportInfo exWeights(tmpfn);
+            exWeights.setPixelType("UINT8");
+            exWeights.setPosition(inputROI[i].upperLeft());
+            exWeights.setCanvasSize(vigra::Size2D(inputROI[i].lowerRight().x, inputROI[i].lowerRight().y));
+            vigra::Rect2D roi(inputROI[i]);
+            roi.moveBy(-outputROI.upperLeft());
             vigra::BImage outImg = vigra::BImage((*thresholded[i]).size());
             simpleDenoise(vigra::srcImageRange(*thresholded[i]), destImage(outImg));
-            vigra::exportImage(vigra::srcImageRange(outImg), exWeights.setPixelType("UINT8"));
+            vigra::exportImage(vigra::srcImageRange(outImg, roi), exWeights);
         }
     }
     catch (const std::exception & e)
