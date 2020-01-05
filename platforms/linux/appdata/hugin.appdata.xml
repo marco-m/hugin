@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2014 Terry Duell -->
-<application>
- <id type="desktop">hugin.desktop</id>
- <licence>GFDL</licence>
+<component type="desktop">
+ <id>hugin.desktop</id>
+ <releases>
+  <release date="2019-12-30" version="2019.2.0" />
+  <release date="2019-04-05" version="2019.0.0" />
+  <release date="2018-02-03" version="2018.0.0" />
+  <release date="2017-06-30" version="2017.0.0" />
+ </releases>
+ <launchable type="desktop-id">hugin.desktop</launchable>
+ <translation type="gettext">hugin</translation>
+ <metadata_license>GFDL</metadata_license>
+ <project_license>GPL-2.0-or-later</project_license>
+ <content_rating type="oars-1.1" />
  <name>hugin</name>
  <summary>A panoramic photo stitcher and more</summary>
  <description>
@@ -30,5 +40,5 @@
   <screenshot width="800" height="600">http://hugin.sourceforge.net/screenshots/appdata/hugin-5.png</screenshot>
  </screenshots>
  <url type="homepage">http://hugin.sourceforge.net/</url>
- <updatecontact>tduell_at_iinet.net.au</updatecontact>
-</application>
+ <update_contact>tduell_at_iinet.net.au</update_contact>
+</component>
