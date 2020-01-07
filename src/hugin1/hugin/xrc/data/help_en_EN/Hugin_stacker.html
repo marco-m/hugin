@@ -51,10 +51,10 @@
 <ul><li>For jpeg files use values between 0 and 100</li>
 <li>For tiff files valid values are: PACKBITS, DEFLATE, LZW</li></ul></li></ul>
 <h2><a name="Mask_input_images"><span class="mw-headline">Mask input images</span></a></h2>
-<p>Beside the stacked output hugin_stacker can also mask the input images (available only for stacking modes median|winsor|clip). This mode is activated with <tt>--mask-input</tt>. In this case the stacked images is first calculated. Then each pixel is each pixel is checked: if the value of this pixel differs more then mask sigma * standard deviation from the mean/median, this pixel is made visible. If it is in the mentioned range the pixel is masked out.
+<p>Beside the stacked output hugin_stacker can also mask the input images (available only for stacking modes median|winsor|clip). This mode is activated with <tt>--mask-input</tt>. In this case the stacked image is calculated first. Then each pixel in each image is checked: if the value of this pixel differs more then mask sigma * standard deviation from the mean/median, this pixel is made visible. If it is in the mentioned range the pixel is masked out.
 </p><p>The sigma parameter for this step can be changed with <tt>--mask-sigma=NUMBER</tt> (default is 2).
-</p><p>You can output a single image for each input image. Set the suffix with <tt>--mask-suffix=STRING</tt> (default is <tt>_mask</tt>).
-Or with the option <tt>--multi-layer-output</tt> you can output a layered TIFF with the name specified with <tt>--output</tt>. The file contains the averaged images as layer 0 and all input images as additional layers with the mask as described above.
+</p><p>You can output a separate mask image for each input image. Set the suffix with <tt>--mask-suffix=STRING</tt> (default is <tt>_mask</tt>).
+Or with the option <tt>--multi-layer-output</tt> you can output a layered TIFF with the name specified with <tt>--output</tt>. The file contains the averaged image as layer 0 and all input images as additional layers with the mask as described above.
 </p>
 
 <!--
