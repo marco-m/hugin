@@ -554,6 +554,9 @@ int main2(std::vector<std::string> files, Parameters param)
         }
         srcImg.readEXIF();
         srcImg.applyEXIFValues();
+        // for maximum and minimum exposure value of all images
+        double maxEv = 0;
+        double minEv = 0;
         if (param.sortImagesByEv)
         {
             if (fabs(srcImg.getExposureValue()) < 1E-6)
@@ -561,6 +564,11 @@ int main2(std::vector<std::string> files, Parameters param)
                 // no exposure values found in file, don't sort images
                 param.sortImagesByEv = false;
             }
+            else
+            {
+                maxEv = srcImg.getExposureValue();
+                minEv = srcImg.getExposureValue();
+            };
         };
         // disable autorotate
         srcImg.setRoll(0);
@@ -657,6 +665,18 @@ int main2(std::vector<std::string> files, Parameters param)
                     << "This is not supported. Align_image_stack works only with images of the same size." << std::endl;
                 return 1;
             };
+            if (param.sortImagesByEv)
+            {
+                const double exposureValue = srcImg.getExposureValue();
+                if (exposureValue > maxEv)
+                {
+                    maxEv = exposureValue;
+                };
+                if (exposureValue < minEv)
+                {
+                    minEv = exposureValue;
+                };
+            };
 
             if(param.loadDistortion)
             {
@@ -739,7 +759,18 @@ int main2(std::vector<std::string> files, Parameters param)
         // sort now all images by exposure value
         if (param.sortImagesByEv)
         {
-            std::sort(images.begin(), images.end(), SortImageVectorEV(&pano));
+            // if exposure value spread is too small disable sorting
+            // this can happen e.g. for focus stacks
+            if (maxEv - minEv > 0.05)
+            {
+                std::sort(images.begin(), images.end(), SortImageVectorEV(&pano));
+            }
+            else
+            {
+                param.sortImagesByEv = false;
+                std::cout << "WARNING: Spread of exposure values is very small." << std::endl
+                    << "         Disabling sorting images by exposure value." << std::endl << std::endl;
+            };
         };
 
         // load first image
