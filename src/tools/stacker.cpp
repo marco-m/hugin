@@ -852,7 +852,7 @@ bool StackImagesAndMask(std::vector<InputImage*>& images, Functor& stacker)
         };
         vigra::Rect2D roi = images[i]->getROI();
         roi.moveBy(-outputROI.upperLeft());
-        vigra::combineThreeImages(vigra::srcImageRange(limits, roi), vigra::srcImage(image), vigra::srcImage(mask), vigra::destImage(mask), FilterMask<PixelType>());
+        vigra::omp::combineThreeImages(vigra::srcImageRange(limits, roi), vigra::srcImage(image), vigra::srcImage(mask), vigra::destImage(mask), FilterMask<PixelType>());
         if (hugin_utils::FileExists(images[i]->getMaskFilename()))
         {
             std::cout << "Masked file \"" << images[i]->getMaskFilename() << "\" already exists." << std::endl
