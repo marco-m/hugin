@@ -222,7 +222,8 @@ std::string doubleToString(double d, int digits)
     if (digits < 0) {
         strcpy(fmt,"%f");
     } else {
-        std::sprintf(fmt,"%%.%df",digits);
+        // max. 16 digits to prevent overflow
+        std::sprintf(fmt, "%%.%df", std::min(digits, 16));
     }
     char c[1024];
     c[1023] = 0;
