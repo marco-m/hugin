@@ -347,7 +347,8 @@ void GLViewer::Resized(wxSizeEvent& e)
           DEBUG_DEBUG("RESIZED_IN_RENDERER");
           wxSize clientSize = GetClientSize();
 #if defined __WXGTK3__
-          clientSize*=GetContentScaleFactor();
+          m_scale = GetContentScaleFactor();
+          clientSize *= m_scale;
 #endif
           SetUpContext();
           offset = m_renderer->Resize(clientSize.GetWidth(), clientSize.GetHeight());
@@ -377,7 +378,8 @@ void GLViewer::Redraw()
         // resize the viewport in case the panorama dimensions have changed.
         wxSize clientSize = GetClientSize();
 #if defined __WXGTK3__
-        clientSize *= GetContentScaleFactor();
+        m_scale = GetContentScaleFactor();
+        clientSize *= m_scale;
 #endif
         offset = m_renderer->Resize(clientSize.GetWidth(), clientSize.GetHeight());
     }
@@ -398,15 +400,15 @@ void GLViewer::OnEraseBackground(wxEraseEvent& e)
 void GLViewer::MouseMotion(wxMouseEvent& e)
 {
     if(m_renderer)
-        m_tool_helper->MouseMoved((int) e.m_x - offset.x,
-                              (int) e.m_y - offset.y, e);
+        m_tool_helper->MouseMoved(hugin_utils::roundi(e.m_x * m_scale - offset.x),
+                              hugin_utils::roundi(e.m_y * m_scale - offset.y), e);
 }
 
 void GLViewer::MouseEnter(wxMouseEvent & e)
 {
     if(m_renderer)
-        m_tool_helper->MouseEnter((int) e.m_x - offset.x,
-                              (int) e.m_y - offset.y, e);
+        m_tool_helper->MouseEnter(hugin_utils::roundi(e.m_x * m_scale - offset.x),
+                              hugin_utils::roundi(e.m_y * m_scale - offset.y), e);
 }
 
 void GLViewer::MouseLeave(wxMouseEvent & e)

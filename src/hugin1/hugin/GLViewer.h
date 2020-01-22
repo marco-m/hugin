@@ -101,6 +101,7 @@ protected:
     bool started_creation, redrawing, m_toolsInitialized;
     static bool initialised_glew;
     vigra::Diff2D offset;
+    double m_scale = 1.0;
     GLPreviewFrame *frame;
 
     bool active;
