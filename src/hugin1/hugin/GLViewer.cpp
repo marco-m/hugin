@@ -346,7 +346,7 @@ void GLViewer::Resized(wxSizeEvent& e)
         {
           DEBUG_DEBUG("RESIZED_IN_RENDERER");
           wxSize clientSize = GetClientSize();
-#if defined __WXGTK3__
+#if defined __WXGTK3__ || defined __WXOSX__
           m_scale = GetContentScaleFactor();
           clientSize *= m_scale;
 #endif
@@ -377,7 +377,7 @@ void GLViewer::Redraw()
     {
         // resize the viewport in case the panorama dimensions have changed.
         wxSize clientSize = GetClientSize();
-#if defined __WXGTK3__
+#if defined __WXGTK3__ || defined __WXOSX__
         m_scale = GetContentScaleFactor();
         clientSize *= m_scale;
 #endif
