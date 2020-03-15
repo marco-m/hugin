@@ -388,15 +388,16 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
     {
         // format text for display of canvas dimension
         wxString label = wxString::Format(wxT("%d x %d"), opt.getROI().width(), opt.getROI().height());
-        if (opt.getROI().area() >= 20000000)
+        // using opt.getROI().area() can overflow, so use width and height explicit to prevent this
+        if ( (opt.getROI().width() / 1000.0) * opt.getROI().height() / 1000.0 >= 20.0)
         {
-            label.Append(wxString::Format(wxT("=%.0f MP"), opt.getROI().area() / 1000000.0));
+            label.Append(wxString::Format(wxT("=%.0f MP"), (opt.getROI().width() / 1000.0) * opt.getROI().height() / 1000.0));
         }
         else
         {
             label.Append(wxString::Format(wxT("=%.1f MP"), opt.getROI().area() / 1000000.0));
         };
-        if (opt.getROI().area() > 0)
+        if (opt.getROI().width() >0 && opt.getROI().height() > 0)
         {
             float ratio = 1.0f*opt.getROI().width() / opt.getROI().height();
             if (ratio > 1.0f)
