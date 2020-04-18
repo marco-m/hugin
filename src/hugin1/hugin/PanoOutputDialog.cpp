@@ -78,12 +78,16 @@ PanoOutputDialog::PanoOutputDialog(wxWindow *parent, HuginBase::Panorama& pano, 
     m_exposureLayers=getExposureLayers(m_pano, images, m_pano.getOptions());
     // set initial width
     m_newOpt = m_pano.getOptions();
-    long opt_width = hugin_utils::roundi(HuginBase::CalculateOptimalScale::calcOptimalScale(m_pano) * m_newOpt.getWidth());
-
-    double sizeFactor = HUGIN_ASS_PANO_DOWNSIZE_FACTOR;
     wxConfigBase* config = wxConfigBase::Get();
-    config->Read(wxT("/Assistant/panoDownsizeFactor"), &sizeFactor, HUGIN_ASS_PANO_DOWNSIZE_FACTOR);
-    m_newOpt.setWidth(hugin_utils::floori(sizeFactor*opt_width), true);
+    if (m_newOpt.fovCalcSupported(m_newOpt.getProjection()))
+    {
+        // calc optimal size of pano, only of projection is supported
+        // otherwise use current width as start point
+        long opt_width = hugin_utils::roundi(HuginBase::CalculateOptimalScale::calcOptimalScale(m_pano) * m_newOpt.getWidth());
+        double sizeFactor = HUGIN_ASS_PANO_DOWNSIZE_FACTOR;
+        config->Read(wxT("/Assistant/panoDownsizeFactor"), &sizeFactor, HUGIN_ASS_PANO_DOWNSIZE_FACTOR);
+        m_newOpt.setWidth(hugin_utils::floori(sizeFactor*opt_width), true);
+    };
     m_initalWidth=m_newOpt.getWidth();
     m_initalROIWidth=m_newOpt.getROI().width();
     m_aspect=(double)m_newOpt.getROI().height()/m_newOpt.getROI().width();
