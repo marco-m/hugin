@@ -199,6 +199,23 @@ bool getLensDataFromUser(wxWindow * parent, HuginBase::SrcPanoImage & srcImg)
     }
 }
 
+/** return name of icc profile with same checks for comparision */
+std::string GetICCProfileNameChecked(const std::string& iccName)
+{
+    // if no icc profile given assume sRGB profile
+    if (iccName.empty())
+    {
+        return "sRGB";
+    };
+    // all profiles starting with sRGB are assumed the same
+    // even if there small? differences between them
+    if (iccName.compare(0, 3, "sRGB") == 0)
+    {
+        return "sRGB";
+    };
+    // otherwise return full name
+    return iccName;
+}
 bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
 {
     // check if the files should be sorted by date
@@ -285,7 +302,7 @@ bool wxAddImagesCmd::processPanorama(HuginBase::Panorama& pano)
             if (pano.getNrOfImages() > 0)
             {
                 const std::string newICCProfileDesc = hugin_utils::GetICCDesc(info.getICCProfile());
-                if (newICCProfileDesc != pano.getICCProfileDesc())
+                if (GetICCProfileNameChecked(newICCProfileDesc) != GetICCProfileNameChecked(pano.getICCProfileDesc()))
                 {
                     // icc profiles does not match
                     wxString warning;
