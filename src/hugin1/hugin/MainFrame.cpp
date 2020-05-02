@@ -1990,7 +1990,7 @@ void MainFrame::ShowCtrlPointEditor(unsigned int img1, unsigned int img2)
     cpe->setRightImage(img2);
 }
 
-void MainFrame::ShowMaskEditor(size_t imgNr)
+void MainFrame::ShowMaskEditor(size_t imgNr, bool switchToCropMode)
 {
     if(!IsShown())
     {
@@ -1999,6 +1999,10 @@ void MainFrame::ShowMaskEditor(size_t imgNr)
     };
     m_notebook->SetSelection(1);
     mask_panel->setImage(imgNr, true);
+    if (switchToCropMode)
+    {
+        mask_panel->SwitchToCropMode();
+    };
 };
 
 void MainFrame::ShowStitcherTab()

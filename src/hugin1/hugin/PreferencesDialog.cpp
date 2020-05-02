@@ -837,6 +837,8 @@ void PreferencesDialog::UpdateDisplayData(int panel)
         MY_BOOL_VAL("prefs_warning_save", t);
         t = cfg->Read(wxT("/ShowExposureWarning"), 1l) == 1;
         MY_BOOL_VAL("prefs_warning_exposure", t);
+        t = cfg->Read(wxT("/ShowFisheyeCropHint"), 1l) == 1;
+        MY_BOOL_VAL("prefs_warning_fisheye_crop", t);
         MY_CHOICE_VAL("pref_editcp_action", cfg->Read(wxT("/EditCPAfterAction"), 0l));
     }
 }
@@ -963,6 +965,7 @@ void PreferencesDialog::OnRestoreDefaults(wxCommandEvent& e)
             cfg->Write(wxT("/OptimizePhotometric/nRandomPointsPerImage"), HUGIN_PHOTOMETRIC_OPTIMIZER_NRPOINTS);
             cfg->Write(wxT("/ShowSaveMessage"), 1l);
             cfg->Write(wxT("/ShowExposureWarning"), 1l);
+            cfg->Write(wxT("/ShowFisheyeCropHint"), 1l);
             cfg->Write(wxT("/EditCPAfterAction"), 0l);
         }
 
@@ -1116,6 +1119,7 @@ void PreferencesDialog::UpdateConfigData()
     cfg->Write(wxT("/OptimizePhotometric/nRandomPointsPerImage"), MY_G_SPIN_VAL("prefs_photo_optimizer_nr_points"));
     cfg->Write(wxT("/ShowSaveMessage"), MY_G_BOOL_VAL("prefs_warning_save"));
     cfg->Write(wxT("/ShowExposureWarning"), MY_G_BOOL_VAL("prefs_warning_exposure"));
+    cfg->Write(wxT("/ShowFisheyeCropHint"), MY_G_BOOL_VAL("prefs_warning_fisheye_crop"));
     cfg->Write(wxT("/EditCPAfterAction"), MY_G_CHOICE_VAL("pref_editcp_action"));
 
     cfg->Flush();

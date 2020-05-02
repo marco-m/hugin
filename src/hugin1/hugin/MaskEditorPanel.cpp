@@ -987,6 +987,13 @@ void MaskEditorPanel::OnModeChanged(wxNotebookEvent& e)
     m_editImg->Refresh();
 };
 
+void MaskEditorPanel::SwitchToCropMode()
+{
+    m_maskCropCtrl->SetSelection(1);
+    wxNotebookEvent dummy;
+    OnModeChanged(dummy);
+}
+
 IMPLEMENT_DYNAMIC_CLASS(MaskEditorPanel, wxPanel)
 
 MaskEditorPanelXmlHandler::MaskEditorPanelXmlHandler()

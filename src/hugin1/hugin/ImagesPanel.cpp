@@ -538,6 +538,25 @@ void ImagesPanel::OnLensTypeChanged (wxCommandEvent & e)
         PanoCommand::GlobalCmdHist::getInstance().addCommand(
             new PanoCommand::CombinedPanoCommand(*m_pano, commands)
         );
+        // check if fisheye projections is selected
+        if (wxConfig::Get()->Read(wxT("/ShowFisheyeCropHint"), 1l) == 1 &&
+            !(var == HuginBase::BaseSrcPanoImage::RECTILINEAR ||
+                var == HuginBase::BaseSrcPanoImage::PANORAMIC ||
+                var == HuginBase::BaseSrcPanoImage::EQUIRECTANGULAR ||
+                var == HuginBase::BaseSrcPanoImage::FULL_FRAME_FISHEYE))
+        {
+            // if so, show hint about crop and open tab when requested
+            wxDialog dlg;
+            wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("fisheye_show_crop_dlg"));
+            if (dlg.ShowModal() == wxID_OK)
+            {
+                MainFrame::Get()->ShowMaskEditor(*(images.begin()), true);
+            };
+            if (XRCCTRL(dlg, "fisheye_crop_dont_ask_checkbox", wxCheckBox)->IsChecked())
+            {
+                wxConfig::Get()->Write(wxT("/ShowFisheyeCropHint"), 0l);
+            };
+        };
     };
 };
 

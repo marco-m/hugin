@@ -1174,4 +1174,75 @@
       <radio>1</radio>
     </object>
   </object>
+  <object class="wxDialog" name="fisheye_show_crop_dlg">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <object class="sizeritem">
+            <object class="wxStaticBitmap">
+              <bitmap stock_id="wxART_INFORMATION"/>
+            </object>
+            <flag>wxALL</flag>
+            <border>12</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>You have selected a fisheye as lens projection.
+It may necessary to mask out unused black space in the input image.
+Should the mask/crop tab now opened, where you can do this?</label>
+                  <style>wxALIGN_LEFT</style>
+                </object>
+              </object>
+              
+              <orient>wxVERTICAL</orient>
+            </object>
+            <flag>wxALIGN_CENTRE_VERTICAL</flag>
+          </object>
+          <orient>wxHORIZONTAL</orient>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>12</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <object class="sizeritem">
+            <object class="wxCheckBox" name="fisheye_crop_dont_ask_checkbox">
+              <label>Don't ask again</label>
+            </object>
+            <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+            <border>6</border>
+          </object>
+          <object class="spacer">
+            <option>1</option>
+            <flag>wxEXPAND</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStdDialogButtonSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="button">
+                <object class="wxButton" name="wxID_OK">
+                  <label>Yes</label>
+                  <default>1</default>
+                </object>
+              </object>
+              <object class="button">
+                <object class="wxButton" name="wxID_CANCEL">
+                  <label>No</label>
+                </object>
+              </object>
+            </object>
+          </object>
+          <orient>wxHORIZONTAL</orient>
+        </object>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>6</border>
+      </object>
+    </object>
+    <title>Hugin</title>
+    <style>wxDEFAULT_DIALOG_STYLE|wxCAPTION|wxSTAY_ON_TOP</style>
+  </object>
 </resource>

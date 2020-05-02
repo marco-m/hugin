@@ -81,6 +81,8 @@ public:
     void UpdateCrop(bool updateFromImgCtrl=false);
     /** updates the displayed crop in the text boxes (for dragging) */
     void UpdateCropFromImage();
+    /** switches the controls to crop mode */
+    void SwitchToCropMode();
 
     /** called when the panorama changes and we should
      *  update our display
