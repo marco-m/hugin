@@ -68,6 +68,9 @@ static void usage(const char* name)
         << "                            lens database" << std::endl
         << "     --vignetting           Try to load vignetting information from" << std::endl
         << "                            lens database" << std::endl
+        << "     --sort                 Sort the files by name alphanumeric" << std::endl
+        << "                            otherwise the images are processed in the order" << std::endl
+        << "                            given at the command line" << std::endl
         << "     -h, --help             Shows this help" << std::endl
         << std::endl;
 }
@@ -80,7 +83,8 @@ int main(int argc, char* argv[])
     enum {
         SWITCH_IGNORE_FOV_RECTILINEAR = 1000,
         SWITCH_DISTORTION,
-        SWITCH_VIGNETTING
+        SWITCH_VIGNETTING,
+        SWITCH_SORT_FILENAME
     };
     static struct option longOptions[] =
     {
@@ -93,6 +97,7 @@ int main(int argc, char* argv[])
         {"linkstacks", no_argument, NULL, 'l' },
         {"distortion", no_argument, NULL, SWITCH_DISTORTION },
         {"vignetting", no_argument, NULL, SWITCH_VIGNETTING },
+        {"sort", no_argument, NULL, SWITCH_SORT_FILENAME },
         {"help", no_argument, NULL, 'h' },
 
         0
@@ -108,6 +113,7 @@ int main(int argc, char* argv[])
     bool ignoreFovRectilinear = false;
     bool loadDistortion=false;
     bool loadVignetting=false;
+    bool sortByFilename = false;
     while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
         switch (c)
@@ -189,6 +195,9 @@ int main(int argc, char* argv[])
             case SWITCH_IGNORE_FOV_RECTILINEAR:
                 ignoreFovRectilinear = true;
                 break;
+            case SWITCH_SORT_FILENAME:
+                sortByFilename = true;
+                break;
             case ':':
             case '?':
                 // missing argument or invalid switch
@@ -263,8 +272,11 @@ int main(int argc, char* argv[])
         return 1;
     };
 
-    //sort filenames
-    sort(filelist.begin(),filelist.end(),doj::alphanum_less());
+    //sort filenames if requested
+    if (sortByFilename)
+    {
+        sort(filelist.begin(), filelist.end(), doj::alphanum_less());
+    };
 
     HuginBase::Panorama pano;
     double redBalanceAnchor = 1.0;
