@@ -398,6 +398,39 @@ void SetCrop(HuginBase::Panorama& pano, const std::string& crop)
     };
 };
 
+// activate or deactive images
+void EnableImages(HuginBase::Panorama& pano, const std::string& imageList, const bool enable)
+{
+    // split string at ','
+    std::vector<std::string> imagesString = hugin_utils::SplitString(imageList, ",");
+    for (auto& img : imagesString)
+    {
+        if (img.empty())
+        {
+            continue;
+        };
+        int imgNr;
+        // convert to int and check results
+        if (hugin_utils::stringToInt(img, imgNr))
+        {
+            if (imgNr >= 0 && imgNr < pano.getNrOfImages())
+            {
+                pano.activateImage(imgNr, enable);
+                std::cout << (enable ? "Enabling" : "Disabling") << " image " << imgNr << std::endl;
+            }
+            else
+            {
+                std::cerr << "Pano does not contain image with number " << imgNr << (enable ? " to activate." : " to disable.") << std::endl;
+            };
+        }
+        else
+        {
+            std::cerr << (enable ? "Enable images: " : "Disable images: ") << 
+                "string " << img << " can't be parsed as valid number." << std::endl;
+        };
+    };
+};
+
 static void usage(const char* name)
 {
     std::cout << name << ": change image variables inside pto files" << std::endl
@@ -456,6 +489,9 @@ static void usage(const char* name)
         << "                             optimisation." << std::endl
         << "     --color-anchor=NUM      Sets the image NUM as anchor for photometric" << std::endl
         << "                             optimisation." << std::endl
+        << std::endl
+        << "     --enable-image=NUM1[,NUM2...]   Enables images for stitching" << std::endl
+        << "     --disable-image=NUM1[,NUM2...]  Disables images for stitching" << std::endl
         << std::endl;
 }
 
@@ -474,7 +510,9 @@ int main(int argc, char* argv[])
         OPT_MODIFY_OPTVEC,
         SWITCH_CROP,
         SWITCH_ANCHOR,
-        SWITCH_COLOR_ANCHOR
+        SWITCH_COLOR_ANCHOR,
+        SWITCH_ENABLE_IMAGE,
+        SWITCH_DISABLE_IMAGE
     };
     static struct option longOptions[] =
     {
@@ -488,6 +526,8 @@ int main(int argc, char* argv[])
         {"crop", required_argument, NULL, SWITCH_CROP },
         {"anchor", required_argument, NULL, SWITCH_ANCHOR },
         {"color-anchor", required_argument, NULL, SWITCH_COLOR_ANCHOR },
+        {"enable-image", required_argument, NULL, SWITCH_ENABLE_IMAGE },
+        {"disable-image", required_argument, NULL, SWITCH_DISABLE_IMAGE },
         {"help", no_argument, NULL, 'h' },
         0
     };
@@ -495,7 +535,7 @@ int main(int argc, char* argv[])
     Parser::ParseVarVec optVars;
     Parser::ParseVarVec linkVars;
     Parser::ParseVarVec unlinkVars;
-    std::string setVars, crop;
+    std::string setVars, crop, enableImages, disableImages;
     int anchor = -1;
     int colorAnchor = -1;
     bool modifyOptVec=false;
@@ -584,6 +624,20 @@ int main(int argc, char* argv[])
                     return 1;
                 };
                 break;
+            case SWITCH_ENABLE_IMAGE:
+                if (!enableImages.empty())
+                {
+                    enableImages.append(",");
+                };
+                enableImages.append(optarg);
+                break;
+            case SWITCH_DISABLE_IMAGE:
+                if (!disableImages.empty())
+                {
+                    disableImages.append(",");
+                };
+                disableImages.append(optarg);
+                break;
             case ':':
             case '?':
                 // missing argument or invalid switch
@@ -609,7 +663,8 @@ int main(int argc, char* argv[])
         return 1;
     };
 
-    if (optVars.empty() && linkVars.empty() && unlinkVars.empty() && setVars.empty() && crop.empty() && anchor < 0 && colorAnchor < 0)
+    if (optVars.empty() && linkVars.empty() && unlinkVars.empty() && setVars.empty() && crop.empty() && anchor < 0 && colorAnchor < 0
+        && enableImages.empty() && disableImages.empty())
     {
         std::cerr << hugin_utils::stripPath(argv[0]) << ": no variables to modify given" << std::endl;
         return 1;
@@ -775,6 +830,20 @@ int main(int argc, char* argv[])
     {
         std::cout << "Setting image crop" << std::endl;
         SetCrop(pano, crop);
+        std::cout << std::endl;
+    };
+
+    // update active/disabled images
+    if (!enableImages.empty())
+    {
+        std::cout << "Activating images" << std::endl;
+        EnableImages(pano, enableImages, true);
+        std::cout << std::endl;
+    };
+    if (!disableImages.empty())
+    {
+        std::cout << "Disabling images" << std::endl;
+        EnableImages(pano, disableImages, false);
         std::cout << std::endl;
     };
 
