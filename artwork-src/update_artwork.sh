@@ -270,7 +270,7 @@ O_MAC="${P}src${S}hugin1${S}hugin${S}HuginFiles.icns"
 O_LIN="src${S}hugin1${S}hugin${S}xrc${S}data${S}pto_icon.png"
 Iconify
 # extra Linux option for the gnome MIME type
-cp "./${SRC}/${F}.48.png" "${P}src${S}hugin1${S}hugin${S}gnome-mime-application-x-ptoptimizer-script.png"
+cp "./${SRC}/${F}.48.png" "${P}src${S}hugin1${S}hugin${S}application-x-ptoptimizer-script.png"
 
 
 # -----------------------------------------------------------------------------
