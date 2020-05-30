@@ -73,8 +73,11 @@ static void usage(const char* name)
          << "               Used if the .pto file contains invalid HFOV values" << std::endl
          << "               (autopano-SIFT writes .pto files with invalid HFOV)" << std::endl
          << std::endl
-         << "   When using -a -l -m and -s options together, a similar operation to the \"Align\"" << std::endl
-         << "    button in hugin is performed." << std::endl
+         << "     --only-active-images  take only active images into account when" << std::endl
+         << "                optimising (only valid with -n switch)" << std::endl
+         << std::endl
+         << "   When using -a -l -m and -s options together, a similar operation to the" << std::endl
+         << "   \"Align\" button in hugin is performed." << std::endl
          << std::endl;
 }
 
@@ -83,16 +86,22 @@ int main(int argc, char* argv[])
     // parse arguments
     const char* optstring = "alho:npqsv:m";
     int c;
+    enum
+    {
+        SWITCH_ONLY_ACTIVE=1000
+    };
     static struct option longOptions[] =
     {
         { "output", required_argument, NULL, 'o'},
         { "help", no_argument, NULL, 'h' },
+        { "only-active-images", no_argument, NULL, SWITCH_ONLY_ACTIVE},
         0
     };
     std::string output;
     bool doPairwise = false;
     bool doAutoOpt = false;
     bool doNormalOpt = false;
+    bool optOnlyActive = false;
     bool doLevel = false;
     bool chooseProj = false;
     bool quiet = false;
@@ -131,6 +140,9 @@ int main(int argc, char* argv[])
                 break;
             case 'm':
                 doPhotometric = true;
+                break;
+            case SWITCH_ONLY_ACTIVE:
+                optOnlyActive = true;
                 break;
             case ':':
             case '?':
@@ -247,11 +259,35 @@ int main(int argc, char* argv[])
     }
     else if (doNormalOpt)
     {
-        if (!quiet)
+        if (optOnlyActive)
         {
-            std::cerr << "*** Optimising parameters specified in PTO file" << std::endl;
+            if (!quiet)
+            {
+                std::cerr << "*** Optimising parameters specified in PTO file (active images only)" << std::endl;
+            }
+            //optimise only active images
+            const HuginBase::UIntSet activeImages = pano.getActiveImages();
+            if (activeImages.empty())
+            {
+                std::cerr << "*** Image contains no active images. Nothing to do." << std::endl;
+            }
+            else
+            {
+                HuginBase::Panorama optPano = pano.getSubset(activeImages);
+                HuginBase::PTools::optimize(optPano);
+                // write result back into initial pano
+                pano.updateVariables(activeImages, optPano.getVariables());
+            };
         }
-        HuginBase::PTools::optimize(pano);
+        else
+        {
+            // optimise all images, independend of active state of individual images
+            if (!quiet)
+            {
+                std::cerr << "*** Optimising parameters specified in PTO file" << std::endl;
+            }
+            HuginBase::PTools::optimize(pano);
+        };
     }
     else
     {
