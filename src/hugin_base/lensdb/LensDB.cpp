@@ -2632,7 +2632,7 @@ bool SaveLensDataFromPano(const HuginBase::Panorama& pano)
             double var;
             // update cp errors
             CalculateCPStatisticsError::calcCtrlPntsErrorStats(pano, min, max, mean, var);
-            if (mean < 15)
+            if (pano.getNrOfCtrlPoints() > 3 * pano.getNrOfImages() && mean < 15)
             {
                 // save hfov and distortion only if error is small enough
                 //@TODO add more robust check which takes also distribution of cp into account
