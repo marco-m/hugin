@@ -1028,10 +1028,28 @@ void GLPreviewFrame::panoramaChanged(HuginBase::Panorama &pano)
         // update data in lens display
         const HuginBase::SrcPanoImage& img = pano.getImage(0);
         SelectListValue(m_lensTypeChoice, img.getProjection());
-        double focal_length = HuginBase::SrcPanoImage::calcFocalLength(img.getProjection(), img.getHFOV(), img.getCropFactor(), img.getSize());
-        // use ChangeValue explicit, SetValue would create EVT_TEXT event which collides with our TextKillFocusHandler
-        m_focalLengthText->ChangeValue(hugin_utils::doubleTowxString(focal_length,m_degDigits));
-        m_cropFactorText->ChangeValue(hugin_utils::doubleTowxString(img.getCropFactor(),m_degDigits));
+        if (img.getProjection() == HuginBase::SrcPanoImage::EQUIRECTANGULAR || img.getProjection() == HuginBase::SrcPanoImage::PANORAMIC)
+        {
+            XRCCTRL(*this, "ass_text_focal_length", wxStaticText)->SetLabel(_("Field of View:"));
+            m_focalLengthText->ChangeValue(hugin_utils::doubleTowxString(img.getHFOV(), m_degDigits));
+            XRCCTRL(*this, "ass_text_unit_focal_length", wxStaticText)->SetLabel(_("deg"));
+            XRCCTRL(*this, "ass_text_crop_factor", wxStaticText)->Hide();
+            m_cropFactorText->Hide();
+            XRCCTRL(*this, "ass_text_unit_crop_factor", wxStaticText)->Hide();
+        }
+        else
+        {
+            XRCCTRL(*this, "ass_text_focal_length", wxStaticText)->SetLabel(_("Focal length:"));
+            double focal_length = HuginBase::SrcPanoImage::calcFocalLength(img.getProjection(), img.getHFOV(), img.getCropFactor(), img.getSize());
+            // use ChangeValue explicit, SetValue would create EVT_TEXT event which collides with our TextKillFocusHandler
+            m_focalLengthText->ChangeValue(hugin_utils::doubleTowxString(focal_length, m_degDigits));
+            XRCCTRL(*this, "ass_text_unit_focal_length", wxStaticText)->SetLabel("mm");
+            XRCCTRL(*this, "ass_text_crop_factor", wxStaticText)->Show();
+            m_cropFactorText->Show();
+            m_cropFactorText->ChangeValue(hugin_utils::doubleTowxString(img.getCropFactor(), m_degDigits));
+            XRCCTRL(*this, "ass_text_unit_crop_factor", wxStaticText)->Show();
+        };
+        m_focalLengthText->GetParent()->Layout();
     }
 
     if (pano.getNrOfImages() > 1)
@@ -3238,11 +3256,22 @@ void GLPreviewFrame::OnFocalLengthChanged(wxCommandEvent & e)
     };    
 
     // always change first lens...
-    HuginBase::UIntSet images0;
-    images0.insert(0);
-    PanoCommand::GlobalCmdHist::getInstance().addCommand(
-        new PanoCommand::UpdateFocalLengthCmd(m_pano, images0, val)
-    );
+    if (m_pano.getImage(0).getProjection() == HuginBase::SrcPanoImage::EQUIRECTANGULAR || m_pano.getImage(0).getProjection() == HuginBase::SrcPanoImage::PANORAMIC)
+    {
+        HuginBase::VariableMap vars;
+        vars.insert(std::make_pair("v", HuginBase::Variable("v", val)));
+        PanoCommand::GlobalCmdHist::getInstance().addCommand(
+            new PanoCommand::UpdateImageVariablesCmd(m_pano, 0, vars)
+        );
+    }
+    else
+    {
+        HuginBase::UIntSet images0;
+        images0.insert(0);
+        PanoCommand::GlobalCmdHist::getInstance().addCommand(
+            new PanoCommand::UpdateFocalLengthCmd(m_pano, images0, val)
+        );
+    };
 }
 
 void GLPreviewFrame::OnCropFactorChanged(wxCommandEvent & e)
