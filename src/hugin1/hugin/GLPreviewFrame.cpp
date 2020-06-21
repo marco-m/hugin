@@ -33,6 +33,7 @@
 
 #include "panoinc_WX.h"
 #include "panoinc.h"
+#include <wx/msgdlg.h>
 
 #include "base_wx/platform.h"
 #include "base_wx/wxPlatform.h"
@@ -3209,28 +3210,94 @@ void GLPreviewFrame::OnLensTypeChanged (wxCommandEvent & e)
             );
         
         commands.push_back(new PanoCommand::UpdateFocalLengthCmd(m_pano, imgs, fl));
-        PanoCommand::GlobalCmdHist::getInstance().addCommand(
-                new PanoCommand::CombinedPanoCommand(m_pano, commands));
-        // check if fisheye projections is selected
-        if (wxConfig::Get()->Read(wxT("/ShowFisheyeCropHint"), 1l) == 1 &&
-            !(var == HuginBase::BaseSrcPanoImage::RECTILINEAR ||
-                var == HuginBase::BaseSrcPanoImage::PANORAMIC ||
-                var == HuginBase::BaseSrcPanoImage::EQUIRECTANGULAR ||
-                var == HuginBase::BaseSrcPanoImage::FULL_FRAME_FISHEYE))
+        switch (var)
         {
-            // if so, show hint about crop and open tab when requested
-            wxDialog dlg;
-            wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("fisheye_show_crop_dlg"));
-            if (dlg.ShowModal() == wxID_OK)
-            {
-                MainFrame::Get()->ShowMaskEditor(0, true);
-            };
-            if (XRCCTRL(dlg, "fisheye_crop_dont_ask_checkbox", wxCheckBox)->IsChecked())
-            {
-                wxConfig::Get()->Write(wxT("/ShowFisheyeCropHint"), 0l);
-            };
+            case HuginBase::SrcPanoImage::RECTILINEAR:
+            case HuginBase::SrcPanoImage::FULL_FRAME_FISHEYE:
+                // rectilinear and full frame lens, apply command unconditionally
+                PanoCommand::GlobalCmdHist::getInstance().addCommand(
+                    new PanoCommand::CombinedPanoCommand(m_pano, commands));
+                break;
+            case HuginBase::SrcPanoImage::PANORAMIC:
+                {
+                    // cylindrical projection, ask user again
+                    wxMessageDialog dlg(this, _("Are you sure that the *input* images are in cylindrical projection?"),
+    #ifdef __WXMSW__
+                        "Hugin",
+    #else
+                        wxEmptyString,
+    #endif
+                        wxYES_NO | wxNO_DEFAULT | wxICON_WARNING);
+                    dlg.SetExtendedMessage(_("If the images are straight from a camera it is very unlikly that the input projection is cylindrical."));
+                    if (dlg.ShowModal() == wxID_YES)
+                    {
+                        // apply command
+                        PanoCommand::GlobalCmdHist::getInstance().addCommand(
+                            new PanoCommand::CombinedPanoCommand(m_pano, commands));
+                    }
+                    else
+                    {
+                        // reset selection
+                        SelectListValue(m_lensTypeChoice, img.getProjection());
+                    };
+                };
+                break;
+            case HuginBase::SrcPanoImage::EQUIRECTANGULAR:
+                if (img.getWidth() == 2 * img.getHeight())
+                {
+                    // image is 2:1, switch to equirectangular
+                    PanoCommand::GlobalCmdHist::getInstance().addCommand(
+                        new PanoCommand::CombinedPanoCommand(m_pano, commands));
+                }
+                else
+                {
+                    // image is not 2:1, show warning
+                    wxMessageDialog dlg(this, _("Are you sure that in *input* image is an equirectangular image?"),
+#ifdef __WXMSW__
+                        "Hugin",
+#else
+                        wxEmptyString,
+#endif
+                        wxYES_NO | wxNO_DEFAULT | wxICON_WARNING);
+                    dlg.SetExtendedMessage(wxString::Format(_("An equirectangular image has normaly an ratio of 2:1. But this images has the dimensions %dx%d."), img.getWidth(), img.getHeight()));
+                    if (dlg.ShowModal() == wxID_YES)
+                    {
+                        // apply command
+                        PanoCommand::GlobalCmdHist::getInstance().addCommand(
+                            new PanoCommand::CombinedPanoCommand(m_pano, commands));
+                    }
+                    else
+                    {
+                        // reset selection
+                        SelectListValue(m_lensTypeChoice, img.getProjection());
+                    };
+                };
+                break;
+            case HuginBase::SrcPanoImage::CIRCULAR_FISHEYE:
+            case HuginBase::SrcPanoImage::FISHEYE_ORTHOGRAPHIC:
+            case HuginBase::SrcPanoImage::FISHEYE_STEREOGRAPHIC:
+            case HuginBase::SrcPanoImage::FISHEYE_EQUISOLID:
+            case HuginBase::SrcPanoImage::FISHEYE_THOBY:
+                // fisheye lens, apply command
+                PanoCommand::GlobalCmdHist::getInstance().addCommand(
+                    new PanoCommand::CombinedPanoCommand(m_pano, commands));
+                if (wxConfig::Get()->Read(wxT("/ShowFisheyeCropHint"), 1l) == 1)
+                {
+                    // show hint about crop and open tab when requested
+                    wxDialog dlg;
+                    wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("fisheye_show_crop_dlg"));
+                    if (dlg.ShowModal() == wxID_OK)
+                    {
+                        MainFrame::Get()->ShowMaskEditor(0, true);
+                    };
+                    if (XRCCTRL(dlg, "fisheye_crop_dont_ask_checkbox", wxCheckBox)->IsChecked())
+                    {
+                        wxConfig::Get()->Write(wxT("/ShowFisheyeCropHint"), 0l);
+                    };
+                };
+                break;
         };
-    }
+    };
 }
 
 void GLPreviewFrame::OnFocalLengthChanged(wxCommandEvent & e)
