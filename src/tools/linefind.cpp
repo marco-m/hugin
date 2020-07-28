@@ -425,9 +425,7 @@ int main(int argc, char* argv[])
                 if (std::abs(optPano.getImage(img).getPitch()) < 50)
                 {
                     imagesToProcess.push_back(img);
-                    std::cout << "line";
                 };
-                std::cout << std::endl;
             };
         }
     }
