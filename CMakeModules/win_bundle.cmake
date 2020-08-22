@@ -102,7 +102,7 @@ IF(WIN32)
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     FIND_PATH(OPENEXR_BIN_DIR 
-            NAMES Half-2_3.dll Half.dll libHalf.dll
+            NAMES Half-2_5.dll Half-2_4.dll Half-2_3.dll Half.dll libHalf.dll
             PATHS ${DLL_SEARCH_PATH}
                   ${SOURCE_BASE_DIR}/Deploy/lib 
                   ${SOURCE_BASE_DIR}/Deploy/lib/Release 
@@ -178,13 +178,18 @@ IF(WIN32)
     FIND_PATH(
       WXWIDGETS_DLL_PATH
       NAME 
+        wxbase315u_${WXSUFFIX}_custom.dll
+        wxbase314u_${WXSUFFIX}_custom.dll
         wxbase313u_${WXSUFFIX}_custom.dll
-        wxbase300u_${WXSUFFIX}_custom.dll
-        wxbase301u_${WXSUFFIX}_custom.dll
-        wxbase302u_${WXSUFFIX}_custom.dll
-        wxbase310u_${WXSUFFIX}_custom.dll
-        wxbase311u_${WXSUFFIX}_custom.dll
         wxbase312u_${WXSUFFIX}_custom.dll
+        wxbase311u_${WXSUFFIX}_custom.dll
+        wxbase310u_${WXSUFFIX}_custom.dll
+        wxbase305u_${WXSUFFIX}_custom.dll
+        wxbase304u_${WXSUFFIX}_custom.dll
+        wxbase303u_${WXSUFFIX}_custom.dll
+        wxbase302u_${WXSUFFIX}_custom.dll
+        wxbase301u_${WXSUFFIX}_custom.dll
+        wxbase300u_${WXSUFFIX}_custom.dll
       PATHS
         ${wxWidgets_LIB_DIR}
         ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin
@@ -196,13 +201,18 @@ IF(WIN32)
       FIND_PATH(
         WXWIDGETS_DLL_PATH
         NAME 
+          wxbase315u_${WXSUFFIX}_custom.dll
+          wxbase314u_${WXSUFFIX}_custom.dll
           wxbase313u_${WXSUFFIX}_custom.dll
-          wxbase300u_${WXSUFFIX}_custom.dll
-          wxbase301u_${WXSUFFIX}_custom.dll
-          wxbase302u_${WXSUFFIX}_custom.dll
-          wxbase310u_${WXSUFFIX}_custom.dll
-          wxbase311u_${WXSUFFIX}_custom.dll
           wxbase312u_${WXSUFFIX}_custom.dll
+          wxbase311u_${WXSUFFIX}_custom.dll
+          wxbase310u_${WXSUFFIX}_custom.dll
+          wxbase305u_${WXSUFFIX}_custom.dll
+          wxbase304u_${WXSUFFIX}_custom.dll
+          wxbase303u_${WXSUFFIX}_custom.dll
+          wxbase302u_${WXSUFFIX}_custom.dll
+          wxbase301u_${WXSUFFIX}_custom.dll
+          wxbase300u_${WXSUFFIX}_custom.dll
         PATHS
           ${wxWidgets_LIB_DIR}
           ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin
