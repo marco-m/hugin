@@ -1154,7 +1154,11 @@ void MainFrame::LoadProjectFile(const wxString & filename)
     if ( !(preview_frame->IsIconized() ||(! preview_frame->IsShown()) ) ) {
         wxCommandEvent dummy;
         preview_frame->OnUpdate(dummy);
-    }
+    };
+    if (gl_preview_frame)
+    {
+        gl_preview_frame->ResetPreviewZoom();
+    };
 }
 
 #ifdef __WXMAC__
@@ -1241,6 +1245,10 @@ void MainFrame::OnNewProject(wxCommandEvent & e)
 
     wxCommandEvent dummy;
     preview_frame->OnUpdate(dummy);
+    if (gl_preview_frame)
+    {
+        gl_preview_frame->ResetPreviewZoom();
+    };
 }
 
 void MainFrame::OnAddImages( wxCommandEvent& event )

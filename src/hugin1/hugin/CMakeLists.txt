@@ -29,7 +29,7 @@ LocalizedFileTipProvider.cpp TextureManager.cpp MeshRemapper.cpp VertexCoordRema
 TexCoordRemapper.cpp ChoosyRemapper.cpp MeshManager.cpp ViewState.cpp
 OutputProjectionInfo.cpp ToolHelper.cpp Tool.cpp  OverviewCameraTool.cpp ProjectionGridTool.cpp OverviewOutlinesTool.cpp
 PreviewCropTool.cpp DragTool.cpp PreviewIdentifyTool.cpp PanosphereSphereTool.cpp
-PreviewDifferenceTool.cpp PreviewPanoMaskTool.cpp PreviewControlPointTool.cpp
+PreviewDifferenceTool.cpp PreviewPanoMaskTool.cpp PreviewControlPointTool.cpp PreviewCameraTool.cpp
 GreatCircles.cpp AboutDialog.cpp LayoutRemapper.cpp PreviewLayoutLinesTool.cpp PreviewColorPickerTool.cpp PreviewGuideTool.cpp
 MaskEditorPanel.cpp MaskImageCtrl.cpp MaskLoadDialog.cpp HtmlWindow.cpp 
 PanoOperation.cpp treelistctrl.cpp ImagesTree.cpp PanoOutputDialog.cpp
@@ -46,7 +46,7 @@ LocalizedFileTipProvider.h TextureManager.h MeshRemapper.h VertexCoordRemapper.h
 TexCoordRemapper.h ChoosyRemapper.h MeshManager.h ViewState.h
 OutputProjectionInfo.h ToolHelper.h Tool.h OverviewCameraTool.h ProjectionGridTool.h OverviewOutlinesTool.h
 PreviewCropTool.h DragTool.h PreviewIdentifyTool.h PanosphereSphereTool.h
-PreviewDifferenceTool.h PreviewPanoMaskTool.h PreviewControlPointTool.h
+PreviewDifferenceTool.h PreviewPanoMaskTool.h PreviewControlPointTool.h PreviewCameraTool.h
 GreatCircles.h AboutDialog.h LayoutRemapper.h PreviewLayoutLinesTool.h PreviewColorPickerTool.h PreviewGuideTool.h
 MaskEditorPanel.h MaskImageCtrl.h MaskLoadDialog.h HtmlWindow.h 
 PanoOperation.h treelistctrl.h ImagesTree.h PanoOutputDialog.h

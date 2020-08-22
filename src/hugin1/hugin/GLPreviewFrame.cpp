@@ -73,6 +73,7 @@ extern "C" {
 #include "DragTool.h"
 #include "PreviewCropTool.h"
 #include "PreviewIdentifyTool.h"
+#include "PreviewCameraTool.h"
 #include "PreviewDifferenceTool.h"
 #include "PreviewPanoMaskTool.h"
 #include "PreviewControlPointTool.h"
@@ -279,6 +280,7 @@ GLPreviewFrame::GLPreviewFrame(wxFrame * frame, HuginBase::Panorama &pano)
     edit_cp_tool = NULL;
     overview_drag_tool = NULL;
     identify_tool = NULL ;
+    camera_tool = NULL;
     panosphere_overview_identify_tool = NULL;
     plane_overview_identify_tool = NULL;
     difference_tool = NULL;
@@ -1348,6 +1350,14 @@ void GLPreviewFrame::redrawPreview()
     m_GLOverview->Refresh();
 }
 
+void GLPreviewFrame::ResetPreviewZoom()
+{
+    if (preview_helper)
+    {
+        m_GLPreview->m_visualization_state->SetZoomLevel(1.0);
+    };
+}
+
 void GLPreviewFrame::OnShowEvent(wxShowEvent& e)
 {
 
@@ -2116,6 +2126,8 @@ void GLPreviewFrame::MakePreviewTools(PreviewToolHelper *preview_helper_in)
     edit_cp_tool = new PreviewEditCPTool(preview_helper);
     identify_tool = new PreviewIdentifyTool(preview_helper, this, true);
     preview_helper->ActivateTool(identify_tool);
+    camera_tool = new PreviewCameraTool(preview_helper);
+    preview_helper->ActivateTool(camera_tool);
     difference_tool = new PreviewDifferenceTool(preview_helper);
     pano_mask_tool = new PreviewPanoMaskTool(preview_helper);
     preview_control_point_tool = new PreviewControlPointTool(preview_helper);
@@ -2685,8 +2697,9 @@ void GLPreviewFrame::SetMode(int newMode)
             preview_helper->DeactivateTool(m_preview_layoutLinesTool);
             panosphere_overview_helper->DeactivateTool(m_panosphere_layoutLinesTool);
             plane_overview_helper->DeactivateTool(m_plane_layoutLinesTool);
-            // reactivate identify tool when leaving layout mode
+            // reactivate identify and camera tool when leaving layout mode
             preview_helper->ActivateTool(identify_tool);
+            preview_helper->ActivateTool(camera_tool);
             panosphere_overview_helper->ActivateTool(panosphere_overview_identify_tool);
             plane_overview_helper->ActivateTool(plane_overview_identify_tool);
             m_GLPreview->SetLayoutMode(false);
@@ -2730,6 +2743,7 @@ void GLPreviewFrame::SetMode(int newMode)
             updateBlendMode();
             // turn off things not used in layout mode.
             preview_helper->DeactivateTool(pano_mask_tool);
+            preview_helper->DeactivateTool(camera_tool);
             // deactivate identify tool in layout mode
             preview_helper->DeactivateTool(identify_tool);
             panosphere_overview_helper->DeactivateTool(panosphere_overview_identify_tool);

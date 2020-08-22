@@ -105,6 +105,9 @@ vigra::Diff2D GLPreviewRenderer::Resize(int in_width, int in_height)
   width = in_width;
   height = in_height;
   glViewport(0, 0, width, height);
+  // notify viewstate about current canvas size, 
+  // maybe needed for a changed image center
+  m_visualization_state->SetCanvasSize(vigra::Size2D(width, height));
   // we use the view_state rather than the panorama to allow interactivity.
   HuginBase::PanoramaOptions *options = m_visualization_state->getViewState()->GetOptions();
   width_o = options->getWidth();
@@ -122,20 +125,30 @@ vigra::Diff2D GLPreviewRenderer::Resize(int in_width, int in_height)
       // the screen is wider than the panorama
       scale = height_o / height;
   }
+  hugin_utils::FDiff2D center(0.5, 0.5);
+  if (!m_visualization_state->GetMeshManager()->GetLayoutMode())
+  {
+      // apply scale and translate only when not in layout mode
+      scale /= m_visualization_state->GetZoomLevel();
+      center = m_visualization_state->GetViewingCenter();
+  };
+  const hugin_utils::FDiff2D lookAt((center.x - 0.5) * width_o, (center.y - 0.5) * height_o);
+
   double x_offs = (scale * double(width) - width_o) / 2.0,
          y_offs = (scale * double(height) - height_o) / 2.0;
   // set up the projection, so we can use panorama coordinates.
   glOrtho(-x_offs, width * scale - x_offs,
           height * scale - y_offs, -y_offs,
           -1.0, 1.0);
+  glTranslatef(-lookAt.x, -lookAt.y, 0);
   // scissor to the panorama.
-  glScissor(x_offs / scale, y_offs / scale,
+  glScissor((x_offs-lookAt.x) / scale, (y_offs+lookAt.y) / scale,
             width_o / scale, height_o / scale);
   glMatrixMode(GL_MODELVIEW);
   // tell the view state the region we are displaying.
   // TODO add support for zooming and panning.
-  m_visualization_state->SetVisibleArea(vigra::Rect2D(0, 0, options->getWidth(),
-                                             options->getHeight()));
+  m_visualization_state->SetVisibleArea(vigra::Rect2D((center.x-0.5) * width_o, (center.y-0.5) * height_o,
+      (0.5 + center.x) * width_o, (0.5 + center.y) * height_o));
   m_visualization_state->SetScale(1.0 / scale);
 
   // return the offset from the top left corner of the viewpoer to the top left

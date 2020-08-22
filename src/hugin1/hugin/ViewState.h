@@ -178,6 +178,8 @@ public:
         m_mesh_manager = new M(m_pano, this);
         m_view_state->vis_states[this] = true;
         m_viewer = viewer;
+        m_zoom = 1.0;
+        m_lookAt = hugin_utils::FDiff2D(0.5, 0.5);
     }
 
     virtual ~VisualizationState();
@@ -221,6 +223,18 @@ public:
     {
         return visible_area;
     }
+    /**/
+    double GetZoomLevel() const
+    {
+        return m_zoom;
+    };
+    void SetZoomLevel(const float new_zoom);
+    hugin_utils::FDiff2D GetViewingCenter() const
+    {
+        return m_lookAt;
+    };
+    void SetViewingCenter(const hugin_utils::FDiff2D& center);
+    void SetCanvasSize(const vigra::Size2D& canvasSize);
 
     ViewState* getViewState() {return m_view_state;}
 
@@ -255,6 +269,9 @@ protected:
 
     float scale, genscale, gl_scale;
     vigra::Rect2D visible_area;
+    hugin_utils::FDiff2D m_lookAt;
+    float m_zoom;
+    vigra::Size2D m_canvasSize;
     void (*RefreshFunc)(void *);
     void *refreshArg;
 

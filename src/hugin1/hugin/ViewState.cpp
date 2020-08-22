@@ -29,8 +29,6 @@
 #include "ViewState.h"
 #include "MeshManager.h"
 
-
-
 ViewState::ViewState(HuginBase::Panorama *pano, bool supportMultiTexture)
 {
 
@@ -482,7 +480,44 @@ HuginBase::SrcPanoImage * VisualizationState::GetSrcImage(unsigned int image_nr)
     return m_view_state->GetSrcImage(image_nr);
 }
 
+void VisualizationState::SetZoomLevel(const float new_zoom)
+{
+    // remember new zoom
+    // make sure that zoom remains in valid range
+    m_zoom = std::min(std::max(new_zoom, 1.0f), 50.0f);
+    // update center
+    SetViewingCenter(m_lookAt);
+}
 
+void VisualizationState::SetViewingCenter(const hugin_utils::FDiff2D& center)
+{
+    // set new center
+    // range check so that there no unnecessary black border remains 
+    // we need the actual zoom factor, the width/height of the panorama
+    // and the width/height of the window
+    const double offset = 0.5 / m_zoom;
+    vigra::Size2D panoSize=m_view_state->GetOptions()->getSize();
+    double offsetx = offset;
+    double offsety = offset;
+    if (panoSize.width()*m_canvasSize.height() < m_canvasSize.width() * panoSize.height())
+    {
+        offsetx += ((double)m_canvasSize.width() / (double)m_canvasSize.height() * panoSize.height() / panoSize.width() - 1.0) / (2.0 * m_zoom);
+        offsetx = std::min(offsetx, 0.5);
+    }
+    else
+    {
+        offsety += ((double)m_canvasSize.height() / (double)m_canvasSize.width() * panoSize.width() / panoSize.height() - 1.0) / (2.0 * m_zoom);
+        offsety = std::min(offsety, 0.5);
+    };
+    m_lookAt = hugin_utils::simpleClipPoint(center, hugin_utils::FDiff2D(offsetx, offsety), hugin_utils::FDiff2D(1 - offsetx, 1 - offsety));
+}
+
+void VisualizationState::SetCanvasSize(const vigra::Size2D& canvasSize)
+{
+    m_canvasSize = canvasSize;
+    // update center
+    SetViewingCenter(m_lookAt);
+}
 
 PanosphereOverviewVisualizationState::PanosphereOverviewVisualizationState(HuginBase::Panorama* pano, ViewState* view_state, GLViewer * viewer, void (*RefreshFunction)(void*), void *arg)
         : OverviewVisualizationState(pano, view_state, viewer, RefreshFunction, arg, (PanosphereOverviewMeshManager*) NULL) 

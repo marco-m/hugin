@@ -67,6 +67,7 @@ class PreviewControlPointTool;
 class PreviewLayoutLinesTool;
 class PreviewColorPickerTool;
 class PreviewEditCPTool;
+class PreviewCameraTool;
 
 class PanosphereOverviewProjectionGridTool;
 class PreviewProjectionGridTool;
@@ -231,6 +232,8 @@ public:
      *  can be replaced with the real image.
      */
     void redrawPreview();
+    /** reset zoom level for preview window */
+    void ResetPreviewZoom();
     /** set status if projection hints should be shown or not*/
     void SetShowProjectionHints(bool new_value);
     void OnShowEvent(wxShowEvent& e);
@@ -462,6 +465,7 @@ private:
     PreviewCropTool *crop_tool;
     HuginBase::UIntSet imageDragGroup;
     PreviewDragTool *drag_tool;
+    PreviewCameraTool *camera_tool;
     PreviewColorPickerTool *color_picker_tool;
     PreviewEditCPTool* edit_cp_tool;
 
