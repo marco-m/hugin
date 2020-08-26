@@ -3242,7 +3242,7 @@ void GLPreviewFrame::OnLensTypeChanged (wxCommandEvent & e)
                         wxEmptyString,
     #endif
                         wxYES_NO | wxNO_DEFAULT | wxICON_WARNING);
-                    dlg.SetExtendedMessage(_("If the images are straight from a camera it is very unlikly that the input projection is cylindrical."));
+                    dlg.SetExtendedMessage(_("If the images are straight from a camera it is very unlikely that the input projection is cylindrical."));
                     if (dlg.ShowModal() == wxID_YES)
                     {
                         // apply command
@@ -3266,14 +3266,14 @@ void GLPreviewFrame::OnLensTypeChanged (wxCommandEvent & e)
                 else
                 {
                     // image is not 2:1, show warning
-                    wxMessageDialog dlg(this, _("Are you sure that in *input* image is an equirectangular image?"),
+                    wxMessageDialog dlg(this, _("Are you sure that the *input* images are equirectangular images?"),
 #ifdef __WXMSW__
                         "Hugin",
 #else
                         wxEmptyString,
 #endif
                         wxYES_NO | wxNO_DEFAULT | wxICON_WARNING);
-                    dlg.SetExtendedMessage(wxString::Format(_("An equirectangular image has normaly an ratio of 2:1. But this images has the dimensions %dx%d."), img.getWidth(), img.getHeight()));
+                    dlg.SetExtendedMessage(wxString::Format(_("An equirectangular image has normaly an ratio of 2:1. But this image has the dimensions %dx%d."), img.getWidth(), img.getHeight()));
                     if (dlg.ShowModal() == wxID_YES)
                     {
                         // apply command
