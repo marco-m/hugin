@@ -1320,8 +1320,11 @@ bool CPEditorPanel::PointFineTune(unsigned int tmplImgNr,
                               HUGIN_FT_CORR_THRESHOLD);
 
     double curvThresh = HUGIN_FT_CURV_THRESHOLD;
-    wxConfigBase::Get()->Read(wxT("/Finetune/CurvThreshold"),&curvThresh,
-                              HUGIN_FT_CURV_THRESHOLD);
+    // use default curvature threshold for line control points
+    if (tmplImgNr != subjImgNr)
+    {
+        wxConfigBase::Get()->Read(wxT("/Finetune/CurvThreshold"), &curvThresh, HUGIN_FT_CURV_THRESHOLD);
+    };
 
     // fixme: just cutout suitable gray 
     ImageCache::ImageCacheRGB8Ptr subjImg = ImageCache::getInstance().getImage(m_pano->getImage(subjImgNr).getFilename())->get8BitImage();
