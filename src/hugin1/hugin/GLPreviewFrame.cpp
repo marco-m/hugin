@@ -3150,6 +3150,24 @@ void GLPreviewFrame::OnUserExit(wxCommandEvent &e)
     Close();
 };
 
+void ShowFisheyeCropHint()
+{
+    if (wxConfig::Get()->Read(wxT("/ShowFisheyeCropHint"), 1l) == 1)
+    {
+        // show hint about crop and open tab when requested
+        wxDialog dlg;
+        wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("fisheye_show_crop_dlg"));
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            MainFrame::Get()->ShowMaskEditor(0, true);
+        };
+        if (XRCCTRL(dlg, "fisheye_crop_dont_ask_checkbox", wxCheckBox)->IsChecked())
+        {
+            wxConfig::Get()->Write(wxT("/ShowFisheyeCropHint"), 0l);
+        };
+    };
+}
+
 void GLPreviewFrame::OnLoadImages( wxCommandEvent & e )
 {
     // load the images.
@@ -3162,9 +3180,9 @@ void GLPreviewFrame::OnLoadImages( wxCommandEvent & e )
     }
     //distribute images only if the existing images are not connected
     //otherwise it would destruct the existing image pattern
-    bool distributeImages=m_pano.getNrOfCtrlPoints()==0;
+    const bool distributeImages=m_pano.getNrOfCtrlPoints()==0;
 
-    long autoAlign = wxConfigBase::Get()->Read(wxT("/Assistant/autoAlign"), HUGIN_ASS_AUTO_ALIGN); 
+    const long autoAlign = wxConfigBase::Get()->Read(wxT("/Assistant/autoAlign"), HUGIN_ASS_AUTO_ALIGN); 
     if (autoAlign)
     {
         PanoCommand::GlobalCmdHist::getInstance().addCommand(cmd);
@@ -3183,6 +3201,17 @@ void GLPreviewFrame::OnLoadImages( wxCommandEvent & e )
         PanoCommand::CombinedPanoCommand* combinedCmd = new PanoCommand::CombinedPanoCommand(m_pano, cmds);
         combinedCmd->setName("add and distribute images");
         PanoCommand::GlobalCmdHist::getInstance().addCommand(combinedCmd);
+        if(m_pano.getImage(0).isCircularCrop())
+        {
+            // show hint about crop for fisheye images
+            // skip display if we read the information from our lens database
+            HuginBase::FileMetaData metaData=m_pano.getImage(0).getFileMetadata();
+            HuginBase::FileMetaData::const_iterator pos = metaData.find("readProjectionFromDB");
+            if(!(pos != metaData.end() && pos->second == "true"))
+            {
+                ShowFisheyeCropHint();
+            };
+        };
     };
 }
 
@@ -3228,7 +3257,9 @@ void GLPreviewFrame::OnLensTypeChanged (wxCommandEvent & e)
         {
             case HuginBase::SrcPanoImage::RECTILINEAR:
             case HuginBase::SrcPanoImage::FULL_FRAME_FISHEYE:
-                // rectilinear and full frame lens, apply command unconditionally
+            case HuginBase::SrcPanoImage::FISHEYE_STEREOGRAPHIC:
+            case HuginBase::SrcPanoImage::FISHEYE_EQUISOLID:
+                // rectilinear and some fisheye lens, apply command unconditionally
                 PanoCommand::GlobalCmdHist::getInstance().addCommand(
                     new PanoCommand::CombinedPanoCommand(m_pano, commands));
                 break;
@@ -3289,26 +3320,13 @@ void GLPreviewFrame::OnLensTypeChanged (wxCommandEvent & e)
                 break;
             case HuginBase::SrcPanoImage::CIRCULAR_FISHEYE:
             case HuginBase::SrcPanoImage::FISHEYE_ORTHOGRAPHIC:
-            case HuginBase::SrcPanoImage::FISHEYE_STEREOGRAPHIC:
-            case HuginBase::SrcPanoImage::FISHEYE_EQUISOLID:
             case HuginBase::SrcPanoImage::FISHEYE_THOBY:
-                // fisheye lens, apply command
+                // fisheye lens, with circular crop
+                // apply command
                 PanoCommand::GlobalCmdHist::getInstance().addCommand(
                     new PanoCommand::CombinedPanoCommand(m_pano, commands));
-                if (wxConfig::Get()->Read(wxT("/ShowFisheyeCropHint"), 1l) == 1)
-                {
-                    // show hint about crop and open tab when requested
-                    wxDialog dlg;
-                    wxXmlResource::Get()->LoadDialog(&dlg, NULL, wxT("fisheye_show_crop_dlg"));
-                    if (dlg.ShowModal() == wxID_OK)
-                    {
-                        MainFrame::Get()->ShowMaskEditor(0, true);
-                    };
-                    if (XRCCTRL(dlg, "fisheye_crop_dont_ask_checkbox", wxCheckBox)->IsChecked())
-                    {
-                        wxConfig::Get()->Write(wxT("/ShowFisheyeCropHint"), 0l);
-                    };
-                };
+                // now show hint about crop
+                ShowFisheyeCropHint();
                 break;
         };
     };

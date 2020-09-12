@@ -735,6 +735,14 @@ bool SrcPanoImage::readProjectionFromDB(const bool ignoreFovRectilinear)
             setHFOV(newFov);
         };
     };
+    // store information about reading from database in FileMetadata map
+    if (success)
+    {
+        FileMetaData metaData = getFileMetadata();
+        metaData["readProjectionFromDB"] = "true";
+        setFileMetadata(metaData);
+    };
+
     return success;
 };
 
