@@ -228,7 +228,9 @@ namespace hugin_utils
         return rect;
     }
     
-    
+    /** function to calculate greated common divisor using Euclidean algorithm 
+     *  both arguments should be >=0 */
+    int IMPEX gcd(int a, int b);
 
 } // namespace
 

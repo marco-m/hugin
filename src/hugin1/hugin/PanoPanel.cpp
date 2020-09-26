@@ -60,6 +60,7 @@ extern "C" {
 #include "algorithms/basic/CalculateOptimalROI.h"
 #include "algorithms/nona/FitPanorama.h"
 #include "lensdb/LensDB.h"
+#include "hugin_math/hugin_math.h"
 
 #define WX_BROKEN_SIZER_UNKNOWN
 
@@ -399,40 +400,21 @@ void PanoPanel::UpdateDisplay(const HuginBase::PanoramaOptions & opt, const bool
         };
         if (opt.getROI().width() >0 && opt.getROI().height() > 0)
         {
-            float ratio = 1.0f*opt.getROI().width() / opt.getROI().height();
-            if (ratio > 1.0f)
+            const int commonDivisor = hugin_utils::gcd(opt.getROI().width(), opt.getROI().height());
+            if (commonDivisor > std::pow(10, hugin_utils::floori(log10f(std::max(opt.getROI().width(), opt.getROI().height()))) - 2))
             {
-                bool handled = false;
-                for (unsigned int i = 1; i < 10; ++i)
-                {
-                    if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
-                    {
-                        label.Append(wxString::Format(wxT(", %d:%d"), hugin_utils::roundi(i*ratio), i));
-                        handled = true;
-                        break;
-                    }
-                };
-                if (!handled)
-                {
-                    label.Append(wxString::Format(wxT(", %.2f:1"), ratio));
-                };
+                label.Append(wxString::Format(wxT(", %d:%d"), opt.getROI().width() / commonDivisor, opt.getROI().height() / commonDivisor));
             }
             else
             {
-                ratio = 1.0f / ratio;
-                bool handled = false;
-                for (unsigned int i = 1; i < 10; ++i)
+                float ratio = 1.0f * opt.getROI().width() / opt.getROI().height();
+                if (ratio > 1.0f)
                 {
-                    if (fabs(i*ratio - hugin_utils::roundi(i*ratio)) < 1e-2)
-                    {
-                        label.Append(wxString::Format(wxT(", %d:%d"), i, hugin_utils::roundi(i*ratio)));
-                        handled = true;
-                        break;
-                    }
-                };
-                if (!handled)
+                    label.Append(wxString::Format(wxT(", %.2f:1"), ratio));
+                }
+                else
                 {
-                    label.Append(wxString::Format(wxT(", 1:%.2f"), ratio));
+                    label.Append(wxString::Format(wxT(", 1:%.2f"), 1.0f/ratio));
                 };
             };
         };
