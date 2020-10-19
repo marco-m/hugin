@@ -29,6 +29,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <random>
 #include <getopt.h>
 
 #include <panodata/Panorama.h>
@@ -37,6 +38,8 @@
 #include "hugin_base/panodata/StandardImageVariableGroups.h"
 #include "algorithms/basic/CalculateCPStatistics.h"
 #include "algorithms/basic/LayerStacks.h"
+#include "hugin_base/hugin_utils/filesystem.h"
+#include "vigra/impex.hxx"
 
 static void usage(const char* name)
 {
@@ -53,6 +56,8 @@ static void usage(const char* name)
          << "  --print-lens-info       Print more information about lenses" << std::endl
          << "  --print-stack-info      Print more information about assigned stacks" << std::endl
          << "                          spaceholders will be replaced with real values" << std::endl
+         << "  --create-missing-images Creates placeholder images for non-existing" << std::endl
+         << "                          images in same directory as the pto file" << std::endl
          << std::endl
          << name << " is used by the assistant and by the stitching makefiles" << std::endl
          << std::endl;
@@ -86,6 +91,57 @@ void printImageGroup(const std::vector<HuginBase::UIntSet>& imageGroup, const st
     }
 };
 
+void CreateMissingImages(HuginBase::Panorama& pano, const std::string& output)
+{
+    // init the random generator
+    std::mt19937 rng(0);
+    std::uniform_int_distribution<> distribIndex(0, 128);
+    auto randIndex = std::bind(distribIndex, rng);
+
+    bool requiresPTOrewrite = false;
+    // store path to pto file for easier access
+    const std::string ptoPath = hugin_utils::getPathPrefix(hugin_utils::GetAbsoluteFilename(output));
+    const fs::path imagePath(ptoPath);
+    // check all images
+    for (int imgNr = 0; imgNr < pano.getNrOfImages(); ++imgNr)
+    {
+        fs::path srcFile(pano.getImage(imgNr).getFilename());
+        std::cout << "Image " << imgNr << ": " << srcFile.string();
+        if (fs::exists(srcFile))
+        {
+            std::cout << " exists." << std::endl;
+        }
+        else
+        {
+            // image does not exists
+            srcFile = fs::absolute(srcFile);
+            fs::path newImage(imagePath);
+            newImage /= srcFile.filename();
+            // file is not in the same directory as pto file, adjust path
+            if (newImage != srcFile)
+            {
+                requiresPTOrewrite = true;
+                pano.setImageFilename(imgNr, newImage.string());
+            };
+            std::cout << " does not exist. Creating " << newImage.filename() << std::endl;
+            // now create dummy image and save it to disc
+            vigra::UInt8RGBImage image(pano.getImage(imgNr).getWidth(), pano.getImage(imgNr).getHeight(),
+                vigra::RGBValue<vigra::UInt8>(64 + randIndex(), 64 + randIndex(), 64 + randIndex()));
+            vigra::ImageExportInfo imgExportInfo(newImage.string().c_str());
+            vigra::exportImage(vigra::srcImageRange(image), imgExportInfo);
+        };
+    };
+    if (requiresPTOrewrite)
+    {
+        // resave pto file in case path to some images has changed
+        std::cout << std::endl << "Writing " << output << std::endl;
+        std::ofstream of(output.c_str());
+        HuginBase::UIntSet imgs;
+        fill_set(imgs, 0, pano.getNrOfImages() - 1);
+        pano.printPanoramaScript(of, pano.getOptimizeVector(), pano.getOptions(), imgs, false, ptoPath);
+    };
+}
+
 int main(int argc, char* argv[])
 {
     // parse arguments
@@ -95,12 +151,14 @@ int main(int argc, char* argv[])
         PRINT_OUTPUT_INFO=1000,
         PRINT_LENS_INFO=1004,
         PRINT_STACK_INFO=1005,
+        CREATE_DUMMY_IMAGES=1006,
     };
     static struct option longOptions[] =
     {
         { "print-output-info", no_argument, NULL, PRINT_OUTPUT_INFO },
         { "print-lens-info", no_argument, NULL, PRINT_LENS_INFO },
         { "print-stack-info", no_argument, NULL, PRINT_STACK_INFO },
+        { "create-missing-images", no_argument, NULL, CREATE_DUMMY_IMAGES },
         { "help", no_argument, NULL, 'h' },
         0
     };
@@ -109,6 +167,7 @@ int main(int argc, char* argv[])
     bool printOutputInfo=false;
     bool printLensInfo = false;
     bool printStackInfo = false;
+    bool createDummyImages = false;
     int optionIndex = 0;
     while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
     {
@@ -125,6 +184,9 @@ int main(int argc, char* argv[])
                 break;
             case PRINT_STACK_INFO:
                 printStackInfo = true;
+                break;
+            case CREATE_DUMMY_IMAGES:
+                createDummyImages = true;
                 break;
             case '?':
             case ':':
@@ -152,6 +214,12 @@ int main(int argc, char* argv[])
 
 
     std::string input=argv[optind];
+    // filename for output if needed
+    std::string output;
+    if (createDummyImages)
+    {
+        output = input.substr(0, input.length() - 4).append("_dummy.pto");
+    };
 
     HuginBase::Panorama pano;
     std::ifstream prjfile(input.c_str());
@@ -254,6 +322,10 @@ int main(int argc, char* argv[])
         std::vector<HuginBase::UIntSet> layers=HuginBase::getExposureLayers(pano, outputImages, pano.getOptions());
         std::cout << std::endl << std::endl << "and " << layers.size() << " exposure layers:" << std::endl;
         printImageGroup(layers);
+    };
+    if (createDummyImages)
+    {
+        CreateMissingImages(pano, output);
     };
     return returnValue;
 }
