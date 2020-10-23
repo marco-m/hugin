@@ -63,7 +63,7 @@ static void usage(const char* name)
          << std::endl;
 }
 
-void printImageGroup(const std::vector<HuginBase::UIntSet>& imageGroup, const std::string& prefix=std::string())
+void PrintImageGroup(const std::vector<HuginBase::UIntSet>& imageGroup, const std::string& prefix=std::string())
 {
     for (size_t i=0; i < imageGroup.size(); i++)
     {
@@ -305,12 +305,12 @@ int main(int argc, char* argv[])
     if (printLensInfo)
     {
         std::cout << std::endl << "Lenses:" << std::endl;
-        printImageGroup(variable_groups.getLenses().getPartsSet(), "Lens");
+        PrintImageGroup(variable_groups.getLenses().getPartsSet(), "Lens");
     };
     if (printStackInfo)
     {
         std::cout << std::endl << "Stacks:" << std::endl;
-        printImageGroup(variable_groups.getStacks().getPartsSet(), "Stack");
+        PrintImageGroup(variable_groups.getStacks().getPartsSet(), "Stack");
     };
     if (printOutputInfo)
     {
@@ -318,10 +318,10 @@ int main(int argc, char* argv[])
         std::vector<HuginBase::UIntSet> stacks=HuginBase::getHDRStacks(pano, outputImages, pano.getOptions());
         std::cout << std::endl << "Output contains" << std::endl
              << stacks.size() << " images stacks:" << std::endl;
-        printImageGroup(stacks);
+        PrintImageGroup(stacks);
         std::vector<HuginBase::UIntSet> layers=HuginBase::getExposureLayers(pano, outputImages, pano.getOptions());
         std::cout << std::endl << std::endl << "and " << layers.size() << " exposure layers:" << std::endl;
-        printImageGroup(layers);
+        PrintImageGroup(layers);
     };
     if (createDummyImages)
     {
