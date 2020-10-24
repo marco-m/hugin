@@ -39,7 +39,7 @@
 #include "algorithms/basic/CalculateCPStatistics.h"
 #include "algorithms/basic/LayerStacks.h"
 #include "hugin_base/hugin_utils/filesystem.h"
-#include "vigra/impex.hxx"
+#include "vigra/impexalpha.hxx"
 
 static void usage(const char* name)
 {
@@ -56,6 +56,7 @@ static void usage(const char* name)
          << "  --print-lens-info       Print more information about lenses" << std::endl
          << "  --print-stack-info      Print more information about assigned stacks" << std::endl
          << "                          spaceholders will be replaced with real values" << std::endl
+         << "  --print-image-info      Print information about image files" << std::endl
          << "  --create-missing-images Creates placeholder images for non-existing" << std::endl
          << "                          images in same directory as the pto file" << std::endl
          << std::endl
@@ -90,6 +91,144 @@ void PrintImageGroup(const std::vector<HuginBase::UIntSet>& imageGroup, const st
         std::cout << std::endl;
     }
 };
+
+void InspectRGBImage(const vigra::FRGBImage &image)
+{
+    vigra::FindMinMax<float> minmax;
+    vigra::inspectImage(srcImageRange(image, vigra::RedAccessor<vigra::RGBValue<float>>()), minmax);
+    std::cout << "    Red channel: " << minmax.min << "-" << minmax.max << std::endl;
+    minmax.reset();
+    vigra::inspectImage(srcImageRange(image, vigra::GreenAccessor<vigra::RGBValue<float>>()), minmax);
+    std::cout << "    Green channel: " << minmax.min << "-" << minmax.max << std::endl;
+    minmax.reset();
+    vigra::inspectImage(srcImageRange(image, vigra::BlueAccessor<vigra::RGBValue<float>>()), minmax);
+    std::cout << "    Blue channel: " << minmax.min << "-" << minmax.max << std::endl;
+}
+
+void InspectGrayscaleImage(const vigra::FImage &image, const std::string text)
+{
+    vigra::FindMinMax<float> minmax;
+    vigra::inspectImage(srcImageRange(image), minmax);
+    std::cout << "    " << text << ": " << minmax.min << "-" << minmax.max << std::endl;
+}
+
+void PrintImageInfo(const HuginBase::Panorama& pano)
+{
+    // print info for all images
+    std::cout << std::endl;
+    for (int imgNr = 0; imgNr < pano.getNrOfImages(); ++imgNr)
+    {
+        const std::string filename = pano.getImage(imgNr).getFilename();
+        std::cout << "Image " << imgNr << ": " << filename;
+        if (hugin_utils::FileExists(filename))
+        {
+            if (vigra::isImage(filename.c_str()))
+            {
+                vigra::ImageImportInfo info(filename.c_str());
+                fs::path file(filename);
+                std::cout << std::endl
+                    << "    File type: " << info.getFileType() << std::endl;
+                const auto fileSize = fs::file_size(file);
+                std::cout << "    File size: ";
+                if (fileSize > 1000)
+                {
+                    std::cout << fileSize / 1000 << " kB" << std::endl;
+                }
+                else
+                {
+                    std::cout << fileSize << " B" << std::endl;
+                };
+                std::cout << "    Pixel type: " << info.getPixelType() << std::endl
+                    << "    Pixel size: " << info.width() << "x" << info.height() << std::endl
+                    << "    Resolution: " << info.getXResolution() << "/" << info.getYResolution() << std::endl
+                    << "    Offset: " << info.getPosition() << std::endl
+                    << "    Canvas size: " << info.getCanvasSize() << std::endl
+                    << "    ICC profile: " << (info.getICCProfile().empty() ? "no" : hugin_utils::GetICCDesc(info.getICCProfile())) << std::endl
+                    << "    Bands: " << info.numBands() << std::endl
+                    << "    Extra bands: " << info.numExtraBands() << std::endl;
+                if (info.numImages() > 1)
+                {
+                    std::cout << "    Subimages: " << info.numImages() << " (reading index " << info.getImageIndex() << ")" << std::endl;
+                };
+                if (info.numExtraBands() == 0)
+                {
+                    // no mask
+                    if (info.numBands() == 3)
+                    {
+                        //RGB image
+                        vigra::FRGBImage image(info.size());
+                        vigra::importImage(info, destImage(image));
+                        InspectRGBImage(image);
+                    }
+                    else
+                    {
+                        if (info.numBands() == 1)
+                        {
+                             // grayscale image
+                            vigra::FImage image(info.size());
+                            vigra::importImage(info, destImage(image));
+                            InspectGrayscaleImage(image, "Grey channel");
+                        }
+                        else
+                        {
+                            std::cout << "    Only RGB or grayscale images supported" << std::endl;
+                        };
+                    };
+                    std::cout << std::endl;
+                }
+                else
+                {
+                    if (info.numExtraBands() == 1)
+                    {
+                        // single mask
+                        if (info.numBands() == 4)
+                        {
+                            // RGB image with mask
+                            vigra::FRGBImage image(info.size());
+                            vigra::FImage mask(info.size());
+                            vigra::importImageAlpha(info, destImage(image), destImage(mask));
+                            InspectRGBImage(image);
+                            InspectGrayscaleImage(mask, "Mask");
+                        }
+                        else
+                        {
+                            if (info.numBands() == 2)
+                            {
+                                // grayscale image with mask
+                                vigra::FImage image(info.size());
+                                vigra::FImage mask(info.size());
+                                vigra::importImageAlpha(info, destImage(image), destImage(mask));
+                                InspectGrayscaleImage(image, "Grey channel");
+                                InspectGrayscaleImage(mask, "Mask");
+                            }
+                            else
+                            {
+                                std::cout << "    Only RGB or grayscale images supported" << std::endl;
+                            };
+                        };
+                        std::cout << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "    Only images with one or no alpha channel supported" << std::endl;
+                    };
+                };
+            }
+            else
+            {
+                // no recognized image type
+                fs::path file(filename);
+                std::cout << std::endl << "    not recognized by vigra as image file" << std::endl
+                    << "    File size: " << fs::file_size(file) / 1024 << " kiB" << std::endl << std::endl;
+            };
+        }
+        else
+        {
+            // file does not exists
+            std::cout << " does not exists." << std::endl <<std::endl;
+        };
+    };
+}
 
 void CreateMissingImages(HuginBase::Panorama& pano, const std::string& output)
 {
@@ -152,12 +291,14 @@ int main(int argc, char* argv[])
         PRINT_LENS_INFO=1004,
         PRINT_STACK_INFO=1005,
         CREATE_DUMMY_IMAGES=1006,
+        PRINT_IMAGE_INFO,
     };
     static struct option longOptions[] =
     {
         { "print-output-info", no_argument, NULL, PRINT_OUTPUT_INFO },
         { "print-lens-info", no_argument, NULL, PRINT_LENS_INFO },
         { "print-stack-info", no_argument, NULL, PRINT_STACK_INFO },
+        { "print-image-info", no_argument, NULL, PRINT_IMAGE_INFO },
         { "create-missing-images", no_argument, NULL, CREATE_DUMMY_IMAGES },
         { "help", no_argument, NULL, 'h' },
         0
@@ -167,6 +308,7 @@ int main(int argc, char* argv[])
     bool printOutputInfo=false;
     bool printLensInfo = false;
     bool printStackInfo = false;
+    bool printImageInfo = false;
     bool createDummyImages = false;
     int optionIndex = 0;
     while ((c = getopt_long (argc, argv, optstring, longOptions,nullptr)) != -1)
@@ -184,6 +326,9 @@ int main(int argc, char* argv[])
                 break;
             case PRINT_STACK_INFO:
                 printStackInfo = true;
+                break;
+            case PRINT_IMAGE_INFO:
+                printImageInfo = true;
                 break;
             case CREATE_DUMMY_IMAGES:
                 createDummyImages = true;
@@ -322,6 +467,12 @@ int main(int argc, char* argv[])
         std::vector<HuginBase::UIntSet> layers=HuginBase::getExposureLayers(pano, outputImages, pano.getOptions());
         std::cout << std::endl << std::endl << "and " << layers.size() << " exposure layers:" << std::endl;
         PrintImageGroup(layers);
+    };
+    if (printImageInfo)
+    {
+        std::cout << "Supported file formats: " << vigra::impexListFormats() << std::endl
+            << "Supported extensions: " << vigra::impexListExtensions() << std::endl;
+        PrintImageInfo(pano);
     };
     if (createDummyImages)
     {
