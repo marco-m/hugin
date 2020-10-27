@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: for hugin 2013.0 beta1\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
-"POT-Creation-Date: 2020-08-26 19:50+0200\n"
+"POT-Creation-Date: 2020-10-27 18:27+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ewing Kang <f039281310@yahoo.com.tw>\n"
 "Language-Team: Chinese Traditional <NA>\n"
@@ -49,7 +49,7 @@ msgstr "正在尋找建立在雲上的控制點..."
 
 #: hugin1/base_wx/Executor.cpp:137 hugin1/base_wx/platform.cpp:217
 #: hugin1/hugin/MainFrame.cpp:1779 hugin1/hugin/MainFrame.cpp:2538
-#: hugin1/hugin/PanoPanel.cpp:1305
+#: hugin1/hugin/PanoPanel.cpp:1287
 #, c-format
 msgid "External program %s not found in the bundle, reverting to system path"
 msgstr "預設軟體集中未發現您所指定的外部應用程式 %s, 回到系統路徑"
@@ -127,11 +127,11 @@ msgstr ""
 "但正投影只能被限制在180度仍然要用這麼高的視角嗎？"
 
 #: hugin1/base_wx/HFOVDialog.cpp:372 hugin1/base_wx/LensTools.cpp:455
-#: hugin1/base_wx/wxPanoCommand.cpp:476 hugin1/hugin/CPEditorPanel.cpp:1347
-#: hugin1/hugin/CPEditorPanel.cpp:1362 hugin1/hugin/GLPreviewFrame.cpp:1883
+#: hugin1/base_wx/wxPanoCommand.cpp:476 hugin1/hugin/CPEditorPanel.cpp:1350
+#: hugin1/hugin/CPEditorPanel.cpp:1365 hugin1/hugin/GLPreviewFrame.cpp:1883
 #: hugin1/hugin/GLPreviewFrame.cpp:1972 hugin1/hugin/GLPreviewFrame.cpp:2994
-#: hugin1/hugin/GLPreviewFrame.cpp:3451 hugin1/hugin/GLPreviewFrame.cpp:3462
-#: hugin1/hugin/GLPreviewFrame.cpp:3473
+#: hugin1/hugin/GLPreviewFrame.cpp:3469 hugin1/hugin/GLPreviewFrame.cpp:3480
+#: hugin1/hugin/GLPreviewFrame.cpp:3491
 #: hugin1/hugin/ImageVariableDialog.cpp:204 hugin1/hugin/ImagesPanel.cpp:597
 #: hugin1/hugin/ImagesPanel.cpp:660 hugin1/hugin/ImagesPanel.cpp:694
 #: hugin1/hugin/ImagesTree.cpp:2052 hugin1/hugin/MainFrame.cpp:207
@@ -141,8 +141,8 @@ msgstr ""
 #: hugin1/hugin/OptimizePanel.cpp:267
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:149
 #: hugin1/hugin/PanoOperation.cpp:231 hugin1/hugin/PanoOperation.cpp:466
-#: hugin1/hugin/PanoPanel.cpp:1665 hugin1/hugin/PanoPanel.cpp:1694
-#: hugin1/hugin/PanoPanel.cpp:1730 hugin1/hugin/PanoPanel.cpp:1750
+#: hugin1/hugin/PanoPanel.cpp:1647 hugin1/hugin/PanoPanel.cpp:1676
+#: hugin1/hugin/PanoPanel.cpp:1712 hugin1/hugin/PanoPanel.cpp:1732
 #: hugin1/hugin/PapywizardImport.cpp:353 hugin1/hugin/PapywizardImport.cpp:365
 #: hugin1/hugin/RawImport.cpp:74 hugin1/hugin/RawImport.cpp:92
 #: hugin1/hugin/RawImport.cpp:218 hugin1/hugin/RawImport.cpp:513
@@ -176,17 +176,17 @@ msgid "Equirectangular"
 msgstr "等距長方圓柱"
 
 #: hugin1/base_wx/LensTools.cpp:43 hugin1/base_wx/LensTools.cpp:86
-#: hugin1/hugin/PanoPanel.cpp:154
+#: hugin1/hugin/PanoPanel.cpp:155
 msgid "Orthographic"
 msgstr "正投影"
 
 #: hugin1/base_wx/LensTools.cpp:44 hugin1/base_wx/LensTools.cpp:87
-#: hugin1/hugin/PanoPanel.cpp:144
+#: hugin1/hugin/PanoPanel.cpp:145
 msgid "Stereographic"
 msgstr "立體圖片"
 
 #: hugin1/base_wx/LensTools.cpp:45 hugin1/base_wx/LensTools.cpp:88
-#: hugin1/hugin/PanoPanel.cpp:155
+#: hugin1/hugin/PanoPanel.cpp:156
 msgid "Equisolid"
 msgstr "Equisolid"
 
@@ -741,7 +741,7 @@ msgstr "讀取檔案 %s"
 #: hugin1/base_wx/platform.cpp:217 hugin1/base_wx/wxLensDB.cpp:631
 #: hugin1/base_wx/wxLensDB.cpp:636 hugin1/base_wx/wxLensDB.cpp:644
 #: hugin1/calibrate_lens/LensCalFrame.cpp:353
-#: hugin1/hugin/CPEditorPanel.cpp:2235 hugin1/hugin/GLViewer.cpp:136
+#: hugin1/hugin/CPEditorPanel.cpp:2238 hugin1/hugin/GLViewer.cpp:136
 #: hugin1/hugin/GLViewer.cpp:148 hugin1/hugin/MainFrame.cpp:1006
 #: hugin1/hugin/MainFrame.cpp:1717 hugin1/hugin/MainFrame.cpp:1779
 #: hugin1/hugin/MainFrame.cpp:2204 hugin1/hugin/MainFrame.cpp:2426
@@ -750,8 +750,8 @@ msgstr "讀取檔案 %s"
 #: hugin1/hugin/MainFrame.cpp:2573
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:272
 #: hugin1/hugin/OptimizePhotometricPanel.cpp:331
-#: hugin1/hugin/PanoOperation.cpp:661 hugin1/hugin/PanoPanel.cpp:1090
-#: hugin1/hugin/PanoPanel.cpp:1305 hugin1/hugin/PanoPanel.cpp:1377
+#: hugin1/hugin/PanoOperation.cpp:661 hugin1/hugin/PanoPanel.cpp:1072
+#: hugin1/hugin/PanoPanel.cpp:1287 hugin1/hugin/PanoPanel.cpp:1359
 #: hugin1/hugin/PreferencesDialog.cpp:477
 #: hugin1/hugin/PreferencesDialog.cpp:547
 #: hugin1/icpfind/AutoCtrlPointCreator.cpp:223
@@ -806,7 +806,7 @@ msgstr "[%s] 是無效的輸入數字"
 #: hugin1/hugin/GLPreviewFrame.cpp:1673 hugin1/hugin/MainFrame.cpp:1954
 #: hugin1/hugin/MainFrame.cpp:2465 hugin1/hugin/MainFrame.cpp:2484
 #: hugin1/hugin/MainFrame.cpp:2490 hugin1/hugin/MaskEditorPanel.cpp:509
-#: hugin1/hugin/PanoPanel.cpp:1358 hugin1/hugin/PreferencesDialog.cpp:1167
+#: hugin1/hugin/PanoPanel.cpp:1340 hugin1/hugin/PreferencesDialog.cpp:1167
 #: hugin1/ptbatcher/FindPanoDialog.cpp:295
 #: hugin1/ptbatcher/FindPanoDialog.cpp:316
 msgid "Warning"
@@ -1307,7 +1307,7 @@ msgstr "右圖 y"
 msgid "Alignment"
 msgstr "對準"
 
-#: hugin1/hugin/CPEditorPanel.cpp:156 hugin1/hugin/CPEditorPanel.cpp:1421
+#: hugin1/hugin/CPEditorPanel.cpp:156 hugin1/hugin/CPEditorPanel.cpp:1424
 #: hugin1/hugin/CPListFrame.cpp:101 hugin1/hugin/CPListFrame.cpp:222
 msgid "Distance"
 msgstr "距離"
@@ -1325,7 +1325,7 @@ msgid "Error during Fine-tune"
 msgstr "最佳調整時發生錯誤"
 
 #: hugin1/hugin/CPEditorPanel.cpp:904 hugin1/hugin/CPEditorPanel.cpp:1049
-#: hugin1/hugin/CPEditorPanel.cpp:1339
+#: hugin1/hugin/CPEditorPanel.cpp:1342
 #, fuzzy, c-format
 msgid ""
 "Point fine-tuned, angle: %.0f deg, correlation coefficient: %0.3f, "
@@ -1344,17 +1344,17 @@ msgstr "測量影像外的點"
 msgid "Distance between line control points too short, skipping fine-tune."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:1345 hugin1/hugin/CPEditorPanel.cpp:1360
+#: hugin1/hugin/CPEditorPanel.cpp:1348 hugin1/hugin/CPEditorPanel.cpp:1363
 msgid "No similar point found."
 msgstr "沒有發現相似點"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1352
+#: hugin1/hugin/CPEditorPanel.cpp:1355
 msgid ""
 "An internal transformation went wrong.\n"
 "Check that the point is inside the image."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:1367
+#: hugin1/hugin/CPEditorPanel.cpp:1370
 #, c-format
 msgid ""
 "Check the similarity visually.\n"
@@ -1364,37 +1364,37 @@ msgstr ""
 "請目視檢查相似度 \n"
 "相關係數 (%.3f) 低於偏好設定中設定的閥值."
 
-#: hugin1/hugin/CPEditorPanel.cpp:1390 hugin1/hugin/CPEditorPanel.cpp:1401
+#: hugin1/hugin/CPEditorPanel.cpp:1393 hugin1/hugin/CPEditorPanel.cpp:1404
 msgid "Add new Line"
 msgstr "增加一條線"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1396 hugin1/hugin/CPEditorPanel.cpp:1399
-#: hugin1/hugin/CPEditorPanel.cpp:1683 hugin1/hugin/CPListFrame.cpp:192
+#: hugin1/hugin/CPEditorPanel.cpp:1399 hugin1/hugin/CPEditorPanel.cpp:1402
+#: hugin1/hugin/CPEditorPanel.cpp:1686 hugin1/hugin/CPListFrame.cpp:192
 #, c-format
 msgid "Line %d"
 msgstr "線 %d"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1417 hugin1/hugin/CPListFrame.cpp:101
+#: hugin1/hugin/CPEditorPanel.cpp:1420 hugin1/hugin/CPListFrame.cpp:101
 #: hugin1/hugin/CPListFrame.cpp:218
 #, fuzzy
 msgid "Correlation"
 msgstr "相關閥值:"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1674 hugin1/hugin/CPListFrame.cpp:183
+#: hugin1/hugin/CPEditorPanel.cpp:1677 hugin1/hugin/CPListFrame.cpp:183
 #: hugin1/hugin/GLPreviewFrame.cpp:613 hugin1/hugin/GLPreviewFrame.cpp:3061
 #: hugin1/hugin/PreviewFrame.cpp:219 hugin1/hugin/xrc/cp_editor_panel.xrc:185
 msgid "normal"
 msgstr "標準的"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1677 hugin1/hugin/CPListFrame.cpp:186
+#: hugin1/hugin/CPEditorPanel.cpp:1680 hugin1/hugin/CPListFrame.cpp:186
 msgid "vert. Line"
 msgstr "垂直線"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1680 hugin1/hugin/CPListFrame.cpp:189
+#: hugin1/hugin/CPEditorPanel.cpp:1683 hugin1/hugin/CPListFrame.cpp:189
 msgid "horiz. Line"
 msgstr "水平線"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1982
+#: hugin1/hugin/CPEditorPanel.cpp:1985
 msgid ""
 "Create control points.\n"
 "To create less points,\n"
@@ -1404,93 +1404,93 @@ msgstr ""
 "如果想建立較少控制點,\n"
 "請輸入更高數字."
 
-#: hugin1/hugin/CPEditorPanel.cpp:1982
+#: hugin1/hugin/CPEditorPanel.cpp:1985
 msgid "Corner Detection threshold"
 msgstr "隅角偵測閥值"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1982 hugin1/hugin/CPEditorPanel.cpp:1986
+#: hugin1/hugin/CPEditorPanel.cpp:1985 hugin1/hugin/CPEditorPanel.cpp:1989
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:323
 #: hugin1/hugin/xrc/images_panel.xrc:253
 msgid "Create control points"
 msgstr "建立新的控制點"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1986
+#: hugin1/hugin/CPEditorPanel.cpp:1989
 msgid "Corner Detection scale"
 msgstr "尖角偵測比例"
 
-#: hugin1/hugin/CPEditorPanel.cpp:1998
+#: hugin1/hugin/CPEditorPanel.cpp:2001
 msgid "Error during control point creation:\n"
 msgstr "建立控制點時發生錯誤:\n"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2095
+#: hugin1/hugin/CPEditorPanel.cpp:2098
 msgid "Select point in right image"
 msgstr "在右圖選取點"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2107
+#: hugin1/hugin/CPEditorPanel.cpp:2110
 msgid "Select point in left image"
 msgstr "在左圖選取點"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2184
+#: hugin1/hugin/CPEditorPanel.cpp:2187
 #, c-format
 msgid "Create cp (Current setting: %s)"
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2235
+#: hugin1/hugin/CPEditorPanel.cpp:2238
 msgid ""
 "Cannot run celeste without at least one control point connecting the two "
 "images"
 msgstr "由於缺少至少一個連接兩張圖片的控制點無法執行 Celeste"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2240 hugin1/hugin/CPEditorPanel.cpp:2260
+#: hugin1/hugin/CPEditorPanel.cpp:2243 hugin1/hugin/CPEditorPanel.cpp:2263
 #: hugin1/hugin/PanoOperation.cpp:845 hugin1/hugin/PanoOperation.cpp:895
 msgid "Running Celeste"
 msgstr "執行 Celeste"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2241 hugin1/hugin/PanoOperation.cpp:846
+#: hugin1/hugin/CPEditorPanel.cpp:2244 hugin1/hugin/PanoOperation.cpp:846
 msgid "Loading model file"
 msgstr "載入模組檔案"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/CPEditorPanel.cpp:2338
+#: hugin1/hugin/CPEditorPanel.cpp:2305 hugin1/hugin/CPEditorPanel.cpp:2341
 #: hugin1/hugin/MainFrame.cpp:1915 hugin1/hugin/PanoOperation.cpp:832
 #: hugin1/hugin/PanoOperation.cpp:924
 #, c-format
 msgid "Removed %lu control points"
 msgstr "移除了 %lu 個控制點"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2302 hugin1/hugin/PanoOperation.cpp:924
+#: hugin1/hugin/CPEditorPanel.cpp:2305 hugin1/hugin/PanoOperation.cpp:924
 msgid "Celeste result"
 msgstr "Celeste 執行結果"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2338 hugin1/hugin/PanoOperation.cpp:832
+#: hugin1/hugin/CPEditorPanel.cpp:2341 hugin1/hugin/PanoOperation.cpp:832
 msgid "Cleaning"
 msgstr "清理"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2350
+#: hugin1/hugin/CPEditorPanel.cpp:2353
 #, fuzzy
 msgid "Create cp"
 msgstr "創建"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2353
+#: hugin1/hugin/CPEditorPanel.cpp:2356
 msgid ""
 "Create control points for image pair with currently selected control point "
 "detector on photos tab."
 msgstr ""
 
-#: hugin1/hugin/CPEditorPanel.cpp:2361
+#: hugin1/hugin/CPEditorPanel.cpp:2364
 #: hugin1/hugin/xrc/cp_editor_panel.xrc:328
 msgid "Celeste"
 msgstr "Celeste"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2364
+#: hugin1/hugin/CPEditorPanel.cpp:2367
 msgid "Tries to remove control points from clouds"
 msgstr "嘗試從雲朵上移除控制點"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2372
+#: hugin1/hugin/CPEditorPanel.cpp:2375
 #, fuzzy
 msgid "Clean cp"
 msgstr "清除批次處理"
 
-#: hugin1/hugin/CPEditorPanel.cpp:2375 hugin1/hugin/xrc/pref_dialog.xrc:407
+#: hugin1/hugin/CPEditorPanel.cpp:2378 hugin1/hugin/xrc/pref_dialog.xrc:407
 msgid "Remove outlying control points by statistical method"
 msgstr "以統計方法移除符合離群值的控制點"
 
@@ -1744,8 +1744,8 @@ msgstr "橫向偏移Z值必須是數字"
 #: hugin1/hugin/GLPreviewFrame.cpp:1692 hugin1/hugin/GLPreviewFrame.cpp:1730
 #: hugin1/hugin/GLPreviewFrame.cpp:1761 hugin1/hugin/GLPreviewFrame.cpp:2860
 #: hugin1/hugin/GLPreviewFrame.cpp:2891
-#: hugin1/hugin/ImageVariableDialog.cpp:222 hugin1/hugin/PanoPanel.cpp:673
-#: hugin1/hugin/PanoPanel.cpp:704 hugin1/hugin/PreviewFrame.cpp:755
+#: hugin1/hugin/ImageVariableDialog.cpp:222 hugin1/hugin/PanoPanel.cpp:655
+#: hugin1/hugin/PanoPanel.cpp:686 hugin1/hugin/PreviewFrame.cpp:755
 #: hugin1/hugin/PreviewFrame.cpp:774 hugin1/hugin/PreviewFrame.cpp:803
 msgid "Value must be numeric."
 msgstr "數值必須是數字."
@@ -1767,28 +1767,28 @@ msgid "difference"
 msgstr "差異"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:2604 hugin1/hugin/GLPreviewFrame.cpp:2634
-#: hugin1/hugin/PanoPanel.cpp:1046 hugin1/hugin/xrc/preview_frame.xrc:841
+#: hugin1/hugin/PanoPanel.cpp:1028 hugin1/hugin/xrc/preview_frame.xrc:841
 msgid "Autocrop"
 msgstr "自動裁剪"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:2604 hugin1/hugin/GLPreviewFrame.cpp:2634
-#: hugin1/hugin/PanoPanel.cpp:1046
+#: hugin1/hugin/PanoPanel.cpp:1028
 msgid "Calculating optimal crop"
 msgstr "計算最佳裁剪尺寸"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2806 hugin1/hugin/PanoPanel.cpp:783
+#: hugin1/hugin/GLPreviewFrame.cpp:2806 hugin1/hugin/PanoPanel.cpp:765
 msgid "Top needs to be an integer bigger than 0"
 msgstr "上部值需要是一個大於 0 的整數"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2810 hugin1/hugin/PanoPanel.cpp:787
+#: hugin1/hugin/GLPreviewFrame.cpp:2810 hugin1/hugin/PanoPanel.cpp:769
 msgid "left needs to be an integer bigger than 0"
 msgstr "左部值需要是一個大於 0 的整數"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2814 hugin1/hugin/PanoPanel.cpp:791
+#: hugin1/hugin/GLPreviewFrame.cpp:2814 hugin1/hugin/PanoPanel.cpp:773
 msgid "right needs to be an integer bigger than 0"
 msgstr "右部值需要是一個大於 0 的整數"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2818 hugin1/hugin/PanoPanel.cpp:795
+#: hugin1/hugin/GLPreviewFrame.cpp:2818 hugin1/hugin/PanoPanel.cpp:777
 msgid "bottom needs to be an integer bigger than 0"
 msgstr "下部值需要是一個大於 0 的整數"
 
@@ -1800,12 +1800,12 @@ msgstr "左邊界應小於右邊界"
 msgid "top boundary must be smaller than bottom"
 msgstr "上邊界應小於下邊界"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2866 hugin1/hugin/PanoPanel.cpp:679
+#: hugin1/hugin/GLPreviewFrame.cpp:2866 hugin1/hugin/PanoPanel.cpp:661
 #, c-format
 msgid "Invalid HFOV value. Maximum HFOV for this projection is %lf."
 msgstr "無效的水平視角值. 這個投影的最大水平視角值是 %lf."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:2897 hugin1/hugin/PanoPanel.cpp:710
+#: hugin1/hugin/GLPreviewFrame.cpp:2897 hugin1/hugin/PanoPanel.cpp:692
 #, c-format
 msgid "Invalid VFOV value. Maximum VFOV for this projection is %lf."
 msgstr "無效的可見視角值. 這個投影的最大可見視角值是 %lf."
@@ -1906,28 +1906,28 @@ msgstr "全景球"
 msgid "Mosaic plane"
 msgstr "雙面"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3238
+#: hugin1/hugin/GLPreviewFrame.cpp:3269
 msgid "Are you sure that the *input* images are in cylindrical projection?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3245
+#: hugin1/hugin/GLPreviewFrame.cpp:3276
 msgid ""
 "If the images are straight from a camera it is very unlikely that the input "
 "projection is cylindrical."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3269
+#: hugin1/hugin/GLPreviewFrame.cpp:3300
 msgid "Are you sure that the *input* images are equirectangular images?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3276
+#: hugin1/hugin/GLPreviewFrame.cpp:3307
 #, c-format
 msgid ""
-"An equirectangular image has normaly an ratio of 2:1. But this image has the "
+"An equirectangular image normally has a ratio of 2:1. But this image has the "
 "dimensions %dx%d."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3398
+#: hugin1/hugin/GLPreviewFrame.cpp:3416
 #, c-format
 msgid ""
 "%lu control points were removed from the panorama.\n"
@@ -1935,24 +1935,24 @@ msgid ""
 "Should the panorama now be re-optimized?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3399 hugin1/hugin/GLPreviewFrame.cpp:3706
+#: hugin1/hugin/GLPreviewFrame.cpp:3417 hugin1/hugin/GLPreviewFrame.cpp:3724
 #, c-format
 msgid "Current selected optimizer strategy is \"%s\"."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3449
+#: hugin1/hugin/GLPreviewFrame.cpp:3467
 msgid ""
 "The selected region contains no active image.\n"
 "Please select a region which is covered by at least 2 images."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3460
+#: hugin1/hugin/GLPreviewFrame.cpp:3478
 msgid ""
 "The selected region is only covered by a single image.\n"
 "Can't create control points for a single image."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3471
+#: hugin1/hugin/GLPreviewFrame.cpp:3489
 msgid ""
 "The selected rectangle is very big.\n"
 "This function is only intended for smaller areas. Otherwise unwanted side "
@@ -1961,7 +1961,7 @@ msgid ""
 "Proceed anyway?"
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3496 hugin1/hugin/PapywizardImport.cpp:477
+#: hugin1/hugin/GLPreviewFrame.cpp:3514 hugin1/hugin/PapywizardImport.cpp:477
 #: hugin1/executor/duallens.assistant:19 hugin1/executor/multirow.assistant:13
 #: hugin1/executor/normal.assistant:7 hugin1/executor/scanned.assistant:12
 #: hugin1/executor/scanned2.assistant:12 hugin1/executor/stacked.assistant:7
@@ -1969,26 +1969,26 @@ msgstr ""
 msgid "Searching control points"
 msgstr "控制點清理"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3496
+#: hugin1/hugin/GLPreviewFrame.cpp:3514
 #, fuzzy
 msgid "Processing"
 msgstr "處理工具："
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3503
+#: hugin1/hugin/GLPreviewFrame.cpp:3521
 msgid "Remap image to panorama projection..."
 msgstr ""
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3557
+#: hugin1/hugin/GLPreviewFrame.cpp:3575
 #, fuzzy
 msgid "Matching interest points..."
 msgstr "正在尋找相似點..."
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3676
+#: hugin1/hugin/GLPreviewFrame.cpp:3694
 #, fuzzy
 msgid "Checking results..."
 msgstr "檢查成對的控制點"
 
-#: hugin1/hugin/GLPreviewFrame.cpp:3705
+#: hugin1/hugin/GLPreviewFrame.cpp:3723
 #, c-format
 msgid ""
 "%lu control points were added to the panorama.\n"
@@ -3344,124 +3344,124 @@ msgstr ""
 msgid "Set stack size..."
 msgstr "修改每個堆棧的數量..."
 
-#: hugin1/hugin/PanoOutputDialog.cpp:344 hugin1/hugin/PanoPanel.cpp:579
+#: hugin1/hugin/PanoOutputDialog.cpp:344 hugin1/hugin/PanoPanel.cpp:561
 msgid "Quality:"
 msgstr "質量:"
 
-#: hugin1/hugin/PanoOutputDialog.cpp:358 hugin1/hugin/PanoPanel.cpp:564
+#: hugin1/hugin/PanoOutputDialog.cpp:358 hugin1/hugin/PanoPanel.cpp:546
 #: hugin1/hugin/xrc/pano_panel.xrc:532 hugin1/hugin/xrc/pano_panel.xrc:602
 #: hugin1/hugin/xrc/pano_panel.xrc:1177 hugin1/hugin/xrc/pano_panel.xrc:1235
 msgid "Compression:"
 msgstr "壓縮:"
 
-#: hugin1/hugin/PanoPanel.cpp:143
+#: hugin1/hugin/PanoPanel.cpp:144
 msgid "Fisheye"
 msgstr "魚眼"
 
-#: hugin1/hugin/PanoPanel.cpp:145
+#: hugin1/hugin/PanoPanel.cpp:146
 msgid "Mercator"
 msgstr "麥卡托"
 
-#: hugin1/hugin/PanoPanel.cpp:146
+#: hugin1/hugin/PanoPanel.cpp:147
 msgid "Trans Mercator"
 msgstr "反式麥卡托"
 
-#: hugin1/hugin/PanoPanel.cpp:147
+#: hugin1/hugin/PanoPanel.cpp:148
 msgid "Sinusoidal"
 msgstr "正弦"
 
-#: hugin1/hugin/PanoPanel.cpp:148
+#: hugin1/hugin/PanoPanel.cpp:149
 msgid "Lambert Cylindrical Equal Area"
 msgstr "Lambert 圓柱形等面積"
 
-#: hugin1/hugin/PanoPanel.cpp:149
+#: hugin1/hugin/PanoPanel.cpp:150
 msgid "Lambert Equal Area Azimuthal"
 msgstr "Lambert 等面積方位角"
 
-#: hugin1/hugin/PanoPanel.cpp:150
+#: hugin1/hugin/PanoPanel.cpp:151
 msgid "Albers Equal Area Conic"
 msgstr "Albers 等面積圓錐"
 
-#: hugin1/hugin/PanoPanel.cpp:151
+#: hugin1/hugin/PanoPanel.cpp:152
 msgid "Miller Cylindrical"
 msgstr "Miller 圓柱"
 
-#: hugin1/hugin/PanoPanel.cpp:152
+#: hugin1/hugin/PanoPanel.cpp:153
 msgid "Panini"
 msgstr "Panini 帕尼尼"
 
-#: hugin1/hugin/PanoPanel.cpp:153
+#: hugin1/hugin/PanoPanel.cpp:154
 msgid "Architectural"
 msgstr "建築"
 
-#: hugin1/hugin/PanoPanel.cpp:156
+#: hugin1/hugin/PanoPanel.cpp:157
 msgid "Equirectangular Panini"
 msgstr "等距長方圓柱 Panini"
 
-#: hugin1/hugin/PanoPanel.cpp:157
+#: hugin1/hugin/PanoPanel.cpp:158
 msgid "Biplane"
 msgstr "雙面"
 
-#: hugin1/hugin/PanoPanel.cpp:158
+#: hugin1/hugin/PanoPanel.cpp:159
 msgid "Triplane"
 msgstr "三面"
 
-#: hugin1/hugin/PanoPanel.cpp:159
+#: hugin1/hugin/PanoPanel.cpp:160
 msgid "Panini General"
 msgstr "一般 Panini"
 
-#: hugin1/hugin/PanoPanel.cpp:160
+#: hugin1/hugin/PanoPanel.cpp:161
 msgid "Thoby Projection"
 msgstr "Thoby 投影法"
 
-#: hugin1/hugin/PanoPanel.cpp:161
+#: hugin1/hugin/PanoPanel.cpp:162
 #, fuzzy
 msgid "Hammer-Aitoff Equal Area"
 msgstr "Lambert 等面積方位角"
 
-#: hugin1/hugin/PanoPanel.cpp:756
+#: hugin1/hugin/PanoPanel.cpp:738
 msgid "width needs to be an integer bigger than 0"
 msgstr "寬度值需要是一個大於 0 的整數"
 
-#: hugin1/hugin/PanoPanel.cpp:773
+#: hugin1/hugin/PanoPanel.cpp:755
 msgid "height needs to be an integer bigger than 0"
 msgstr "高度值需要是一個大於 0 的整數"
 
-#: hugin1/hugin/PanoPanel.cpp:802
+#: hugin1/hugin/PanoPanel.cpp:784
 msgid "Left boundary must be smaller than right."
 msgstr "左邊界應小於右邊界"
 
-#: hugin1/hugin/PanoPanel.cpp:808
+#: hugin1/hugin/PanoPanel.cpp:790
 msgid "Top boundary must be smaller than bottom."
 msgstr "上邊界應小於下邊界"
 
-#: hugin1/hugin/PanoPanel.cpp:871
+#: hugin1/hugin/PanoPanel.cpp:853
 #, fuzzy
 msgid "PTmender options not yet implemented"
 msgstr "尚未執行 PTmender 選項"
 
-#: hugin1/hugin/PanoPanel.cpp:935
+#: hugin1/hugin/PanoPanel.cpp:917
 #, fuzzy
 msgid "PTblender options not yet implemented"
 msgstr "尚未執行 PTblender 選項"
 
-#: hugin1/hugin/PanoPanel.cpp:985
+#: hugin1/hugin/PanoPanel.cpp:967
 #, fuzzy
 msgid "Options for this HDRMerge program not yet implemented"
 msgstr "尚未執行 HDRMerge 軟體選項"
 
-#: hugin1/hugin/PanoPanel.cpp:1090 hugin1/hugin/PanoPanel.cpp:1377
+#: hugin1/hugin/PanoPanel.cpp:1072 hugin1/hugin/PanoPanel.cpp:1359
 msgid "Could not create temporary project file"
 msgstr "無法產生暫存檔"
 
-#: hugin1/hugin/PanoPanel.cpp:1135 hugin1/hugin/PanoPanel.cpp:1255
-#: hugin1/hugin/PanoPanel.cpp:1420 hugin1/ptbatcher/Batch.cpp:636
+#: hugin1/hugin/PanoPanel.cpp:1117 hugin1/hugin/PanoPanel.cpp:1237
+#: hugin1/hugin/PanoPanel.cpp:1402 hugin1/ptbatcher/Batch.cpp:636
 #: hugin1/stitch_project/hugin_stitch_project.cpp:394
 msgid "Specify output prefix"
 msgstr "指定輸出檔名"
 
-#: hugin1/hugin/PanoPanel.cpp:1153 hugin1/hugin/PanoPanel.cpp:1273
-#: hugin1/hugin/PanoPanel.cpp:1438 hugin1/ptbatcher/BatchFrame.cpp:498
+#: hugin1/hugin/PanoPanel.cpp:1135 hugin1/hugin/PanoPanel.cpp:1255
+#: hugin1/hugin/PanoPanel.cpp:1420 hugin1/ptbatcher/BatchFrame.cpp:498
 #: hugin1/stitch_project/hugin_stitch_project.cpp:410
 #, c-format
 msgid ""
@@ -3469,16 +3469,16 @@ msgid ""
 "Please select another folder for the final output."
 msgstr ""
 
-#: hugin1/hugin/PanoPanel.cpp:1341
+#: hugin1/hugin/PanoPanel.cpp:1323
 #, fuzzy
 msgid "Select user defined output"
 msgstr "重設使用者定義....."
 
-#: hugin1/hugin/PanoPanel.cpp:1342
+#: hugin1/hugin/PanoPanel.cpp:1324
 msgid "User defined output|*.executor"
 msgstr ""
 
-#: hugin1/hugin/PanoPanel.cpp:1663
+#: hugin1/hugin/PanoPanel.cpp:1645
 #, c-format
 msgid ""
 "The width and height of jpeg images has to be smaller than 65500 pixel. But "
@@ -3488,7 +3488,7 @@ msgid ""
 "format."
 msgstr ""
 
-#: hugin1/hugin/PanoPanel.cpp:1677
+#: hugin1/hugin/PanoPanel.cpp:1659
 #, c-format
 msgid ""
 "The panorama you are trying to stitch is %.1f gigapixels.\n"
@@ -3500,7 +3500,7 @@ msgstr ""
 "如果太大的話，調整底圖大小並裁切範圍，然後透過接合工具標籤來拼接這麼大的全景"
 "可能會需要很多時間和很大的記憶體"
 
-#: hugin1/hugin/PanoPanel.cpp:1684
+#: hugin1/hugin/PanoPanel.cpp:1666
 msgid ""
 "The width or the height of the final panorama exceeds 32700 pixel.\n"
 "Some programs have problems to open or display such big images.\n"
@@ -3508,26 +3508,26 @@ msgid ""
 "If this is too big, reduce the panorama Canvas Size or the cropped region."
 msgstr ""
 
-#: hugin1/hugin/PanoPanel.cpp:1692
+#: hugin1/hugin/PanoPanel.cpp:1674
 msgid "Are you sure you want to stitch such a large panorama?"
 msgstr "你確定要拼接這麼大一張全景圖？"
 
-#: hugin1/hugin/PanoPanel.cpp:1700 hugin1/hugin/PanoPanel.cpp:1755
+#: hugin1/hugin/PanoPanel.cpp:1682 hugin1/hugin/PanoPanel.cpp:1737
 msgid "Stitch anyway"
 msgstr "仍然繼續接合"
 
-#: hugin1/hugin/PanoPanel.cpp:1700 hugin1/hugin/PanoPanel.cpp:1755
+#: hugin1/hugin/PanoPanel.cpp:1682 hugin1/hugin/PanoPanel.cpp:1737
 msgid "Let me fix that"
 msgstr "讓我重新設定"
 
-#: hugin1/hugin/PanoPanel.cpp:1728
+#: hugin1/hugin/PanoPanel.cpp:1710
 msgid ""
 "There are no active images in the output region.\n"
 "Please check your settings, so that at least one image is in the output "
 "region."
 msgstr ""
 
-#: hugin1/hugin/PanoPanel.cpp:1748
+#: hugin1/hugin/PanoPanel.cpp:1730
 #, c-format
 msgid ""
 "The folder \"%s\" has only %.1f MiB free. This is not enough for stitching "
