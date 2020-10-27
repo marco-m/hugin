@@ -3304,7 +3304,7 @@ void GLPreviewFrame::OnLensTypeChanged (wxCommandEvent & e)
                         wxEmptyString,
 #endif
                         wxYES_NO | wxNO_DEFAULT | wxICON_WARNING);
-                    dlg.SetExtendedMessage(wxString::Format(_("An equirectangular image has normaly an ratio of 2:1. But this image has the dimensions %dx%d."), img.getWidth(), img.getHeight()));
+                    dlg.SetExtendedMessage(wxString::Format(_("An equirectangular image normally has a ratio of 2:1. But this image has the dimensions %dx%d."), img.getWidth(), img.getHeight()));
                     if (dlg.ShowModal() == wxID_YES)
                     {
                         // apply command
