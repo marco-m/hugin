@@ -587,7 +587,7 @@ int main(int argc, char* argv[])
                 {
                     HuginBase::PanoramaOptions modOptions(opts);
                     // set output exposure to exposure value of first image of layers
-                    // normaly this this invoked with --ignore-exposure, so this has no effect
+                    // normally this this invoked with --ignore-exposure, so this has no effect
                     modOptions.outputExposureValue = pano.getImage(*(exposureLayers[i].begin())).getExposureValue();
                     // build filename
                     std::ostringstream filename;
