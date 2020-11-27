@@ -609,9 +609,15 @@ void DestroyContext()
 static GLuint GlutWindowHandle;
 bool CreateContext(int *argcp, char **argv)
 {
+    // GLUT changes the working directory to the ressource path of the bundle
+    // so we store the old working directory and restore it at the end
+    char workingDir[FILENAME_MAX];
+    getcwd(workingDir, FILENAME_MAX);
     glutInit(argcp, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA | GLUT_ALPHA);
     GlutWindowHandle = glutCreateWindow("Hugin");
+    // restore working dir, as GLUT changes it the ressource path
+    chdir(workingDir);
     return true;
 }
 
