@@ -5,20 +5,20 @@
 #
 # Ademar de Souza Reis Jr. <ademar@ademar.org>, 2005, 2006, 2007, 2009.
 # Carlos Eduardo G. Carvalho <cartola@cartola.org>, 2016.
-# Luís Henrique Camargo Quiroz <luishcq@gmail.com>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019.
+# Luís Henrique Camargo Quiroz <luishcq@gmail.com>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/hugin/\n"
 "POT-Creation-Date: 2020-11-08 09:20+0100\n"
-"PO-Revision-Date: 2019-08-24 11:34-0300\n"
+"PO-Revision-Date: 2020-12-10 18:17-0300\n"
 "Last-Translator: Luís Henrique Camargo Quiroz <luishcq@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pt_BR\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 20.08.2\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: hugin1/base_wx/AssistantExecutor.cpp:68
@@ -1719,7 +1719,6 @@ msgid "Field of View:"
 msgstr "Campo de visão:"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:1038
-#, fuzzy
 msgid "deg"
 msgstr "graus"
 
@@ -1966,17 +1965,20 @@ msgstr "Plano do mosaico"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3269
 msgid "Are you sure that the *input* images are in cylindrical projection?"
-msgstr ""
+msgstr "Tem certeza de que a imagem de *entrada* está em projeção cilíndrica?"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3276
 msgid ""
 "If the images are straight from a camera it is very unlikely that the input "
 "projection is cylindrical."
 msgstr ""
+"Se as imagens vêm diretamente de uma câmera é bem pouco provável que a "
+"projeção de entrada seja cilíndrica."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3300
 msgid "Are you sure that the *input* images are equirectangular images?"
 msgstr ""
+"Tem certeza de que a imagem de *entrada* está em projeção equirretangular?"
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3307
 #, c-format
@@ -1984,6 +1986,8 @@ msgid ""
 "An equirectangular image normally has a ratio of 2:1. But this image has the "
 "dimensions %dx%d."
 msgstr ""
+"Uma imagem equirretangular normalmente tem lados na razão de 2:1. Mas esta "
+"imagem tem dimensões %dx%d."
 
 #: hugin1/hugin/GLPreviewFrame.cpp:3416
 #, c-format
@@ -3300,6 +3304,11 @@ msgid ""
 "\n"
 "Image %d has size %dx%d, while lens %d has images with size of %dx%d pixel."
 msgstr ""
+"As imagens selecionadas, da lente selecionada, têm diferentes tamanhos. "
+"Todas as imagens da mesma lente devem ter a mesma medida.\n"
+"\n"
+"A imagem %d tem medidas %dx%d, mas a lente %d tem imagens com medidas de %dx%"
+"d pixels."
 
 #: hugin1/hugin/PanoOperation.cpp:631
 msgid "Load lens from lens database"
@@ -3427,6 +3436,11 @@ msgid ""
 "\n"
 "Image %d has size %dx%d, while stack %d has images with size of %dx%d pixel."
 msgstr ""
+"As imagens selecionadas da pilha selecionada têm diferentes medidas. Todas "
+"as imagens da mesma pilha devem ter a mesma medida.\n"
+"\n"
+"A imagem %d tem medidas %dx%d, mas a pilha %d tem imagens de medidas %dx%d "
+"pixels."
 
 #: hugin1/hugin/PanoOperation.cpp:1304
 msgid "Set stack size..."
@@ -7319,9 +7333,10 @@ msgid "Automatically align images after loading"
 msgstr "Alinhar imagens automaticamente após carregamento"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:379
-#, fuzzy
 msgid "Read FOV also for rectilinear images from lens database"
-msgstr "Carrega parâmetros de lente do banco de dados"
+msgstr ""
+"Carrega FOV (campo de visão) também para imagens retilineares do banco de "
+"dados de lente"
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:392
 msgid "Detect vertical lines"
@@ -7791,7 +7806,7 @@ msgstr "Mostra alerta sobre grande diferença de exposição ao adicionar imagen
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1578
 msgid "Show hint about crop when setting lens type to fisheye"
-msgstr ""
+msgstr "Mostra sugestão de corte ao selecionar lente tipo olho-de-peixe."
 
 #: hugin1/hugin/xrc/pref_dialog.xrc:1591
 msgid "After \"edit cp\" tool"
@@ -8187,6 +8202,11 @@ msgid ""
 "It may necessary to mask out unused black space in the input image.\n"
 "Do you want to go to the mask/crop tab, where you can perform this operation?"
 msgstr ""
+"Você escolheu olho-de-peixe como projeção da lente.\n"
+"Pode ser necessário mascarar para eliminar espaço negro não usado na foto de "
+"entrada.\n"
+"Você deseja ir à aba de máscaras/cortes, onde você poderá efetuar esta "
+"operação?"
 
 #: hugin1/hugin/xrc/reset_dialog.xrc:20
 msgid "Translation parameters"
