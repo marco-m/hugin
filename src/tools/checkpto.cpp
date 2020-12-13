@@ -2,7 +2,7 @@
 
 /** @file checkpto.cpp
  *
- *  @brief helper program for assistant makefile
+ *  @brief helper program for assistant
  *
  *
  *  @author Thomas Modes
@@ -55,12 +55,11 @@ static void usage(const char* name)
          << "  --print-output-info     Print more information about the output" << std::endl
          << "  --print-lens-info       Print more information about lenses" << std::endl
          << "  --print-stack-info      Print more information about assigned stacks" << std::endl
-         << "                          spaceholders will be replaced with real values" << std::endl
          << "  --print-image-info      Print information about image files" << std::endl
          << "  --create-missing-images Creates placeholder images for non-existing" << std::endl
          << "                          images in same directory as the pto file" << std::endl
          << std::endl
-         << name << " is used by the assistant and by the stitching makefiles" << std::endl
+         << name << " is used by the assistant" << std::endl
          << std::endl;
 }
 
