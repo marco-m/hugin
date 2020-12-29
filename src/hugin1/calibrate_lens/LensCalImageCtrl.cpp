@@ -269,7 +269,13 @@ void LensCalImageCtrl::Resize( wxSizeEvent & e )
 void LensCalImageCtrl::OnPaint(wxPaintEvent & dc)
 {
     wxPaintDC paintDC(this);
+#ifdef __WXGTK3__
+    // wxGTK3 prints an assert when trying to draw empty bitmap, Ok() is returning true in this case
+    // so check also bitmap dimensions
+    if (m_display_img.Ok() && m_display_img.GetWidth() > 0 && m_display_img.GetHeight() > 0)
+#else
     if ( m_display_img.Ok() )
+#endif
     {
         paintDC.DrawBitmap(m_display_img, 0,0, FALSE);
     }
