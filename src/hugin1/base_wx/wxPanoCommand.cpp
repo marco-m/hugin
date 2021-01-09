@@ -209,7 +209,7 @@ std::string GetICCProfileNameChecked(const std::string& iccName)
     };
     // all profiles starting with sRGB are assumed the same
     // even if there small? differences between them
-    if (iccName.compare(0, 3, "sRGB") == 0)
+    if (iccName.compare(0, 4, "sRGB") == 0)
     {
         return "sRGB";
     };
