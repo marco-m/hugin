@@ -790,7 +790,11 @@ void MainFrame::panoramaChanged(HuginBase::Panorama &pano)
     // set flag to indicate list should show correlation instead of error
     if (m_showCorrelation == 2)
     {
-        m_showCorrelation = 0;
+        const std::string lastCommand = PanoCommand::GlobalCmdHist::getInstance().getLastCommandName();
+        if (!(lastCommand == "remove control point" || lastCommand == "remove control points"))
+        {
+            m_showCorrelation = 0;
+        };
     };
     if (m_showCorrelation == 1)
     {

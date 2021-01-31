@@ -38,6 +38,7 @@
 #include "base_wx/CommandHistory.h"
 #include "base_wx/PanoCommand.h"
 #include "hugin/huginApp.h"
+#include "hugin/config_defaults.h"
 #include "hugin_base/panotools/PanoToolsUtils.h"
 #include "algorithms/basic/CalculateCPStatistics.h"
 
@@ -210,10 +211,11 @@ int CPListCtrl::OnGetItemImage(long item) const
 void CPListCtrl::panoramaChanged(HuginBase::Panorama &pano)
 {
     m_onlyActiveImages = MainFrame::Get()->GetOptimizeOnlyActiveImages();
+    const bool isShowingCorrelation = MainFrame::Get()->IsShowingCorrelation();
     wxListItem item;
     if (GetColumn(5, item))
     {
-        if (MainFrame::Get()->IsShowingCorrelation())
+        if (isShowingCorrelation)
         {
             item.SetText(_("Correlation"));
         }
@@ -223,6 +225,7 @@ void CPListCtrl::panoramaChanged(HuginBase::Panorama &pano)
         }
         SetColumn(5, item);
     };
+    XRCCTRL(*GetParent(), "cp_list_select", wxButton)->SetLabel(isShowingCorrelation ? _("Select by Correlation") : _("Select by Distance"));
     UpdateInternalCPList();
     SetItemCount(m_internalCPList.size());
     Refresh();
@@ -591,19 +594,32 @@ void CPListFrame::OnDeleteButton(wxCommandEvent & e)
 
 void CPListFrame::OnSelectButton(wxCommandEvent & e)
 {
-    // calculate the mean error and the standard deviation
-    HuginBase::PTools::calcCtrlPointErrors(m_pano);
-    double min, max, mean, var;
-    HuginBase::CalculateCPStatisticsError::calcCtrlPntsErrorStats(m_pano, min, max, mean, var);
+    double threshold;
+    const bool isShowingCorrelation = MainFrame::Get()->IsShowingCorrelation();
+    if(isShowingCorrelation)
+    { 
+        threshold = HUGIN_FT_CORR_THRESHOLD;
+        wxConfig::Get()->Read(wxT("/Finetune/CorrThreshold"), &threshold, HUGIN_FT_CORR_THRESHOLD);;
+    }
+    else
+    {
+        // calculate the mean error and the standard deviation
+        HuginBase::PTools::calcCtrlPointErrors(m_pano);
+        double min, max, mean, var;
+        HuginBase::CalculateCPStatisticsError::calcCtrlPntsErrorStats(m_pano, min, max, mean, var);
 
-    // select points whos distance is greater than the mean
-    // hmm, maybe some theory would be nice.. this is just a
-    // guess.
-    double threshold = mean + sqrt(var);
+        // select points whos distance is greater than the mean
+        // hmm, maybe some theory would be nice.. this is just a
+        // guess.
+        threshold = mean + sqrt(var);
+    };
     wxString t;
     do
     {
-        t = wxGetTextFromUser(_("Enter minimum control point error.\nAll points with a higher error will be selected"), _("Select Control Points"),
+        t = wxGetTextFromUser(isShowingCorrelation ? 
+            _("Enter minimum control point correlation.\nAll points with lower correlation will be selected.") : 
+            _("Enter minimum control point error.\nAll points with a higher error will be selected"), 
+            _("Select Control Points"),
             hugin_utils::doubleTowxString(threshold, 2));
         if (t == wxEmptyString) {
             // do not select anything
@@ -612,5 +628,5 @@ void CPListFrame::OnSelectButton(wxCommandEvent & e)
     }
     while (!hugin_utils::str2double(t, threshold));
 
-    m_list->SelectDistanceThreshold(threshold);
+    m_list->SelectDistanceThreshold(isShowingCorrelation ? -threshold : threshold);
 };
