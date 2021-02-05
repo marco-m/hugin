@@ -15,22 +15,20 @@ CXX="/usr/local/opt/llvm/bin/clang++"
 
 # The minimum macOS version required to run the compiled files
 # USE AT LEAST VERSION 10.9
-DEPLOY_TARGET="10.9"
+DEPLOY_TARGET="10.10"
 
 
-# The version of your Xcode macOS-SDK. If you use a current Xcode version this is
-# will be your macOS version
-SDKVERSION="10.14"
+# The version of your Xcode macOS-SDK.
+SDKVERSION=$(xcrun --show-sdk-version)
 
 #####################################################################
 #####################################################################
 #####################################################################
-
 
 
 # number of jobs that make can use, probably same as the number of CPUs.
 if [ "$(uname -p)" = i386 ] || [ "$(uname -p)" = x86_64 ] ; then
-  PROCESSNUM=$(hostinfo | grep "Processors active:" | sed 's/^.*://' | wc -w | sed 's/[^[:digit:]]//g');
+  PROCESSNUM=$(sysctl -n hw.physicalcpu);
 else
   PROCESSNUM="1"
 fi

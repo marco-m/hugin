@@ -1,41 +1,10 @@
-#!/usr/bin/env bash
-
-# INSTRUCTIONS FOR BUILDING A SELF CONTAINED BUNDLE (FOR DISTRIBUTION)
-# MORE DETAILS AT THE PANOTOOLS WIKI: http://wiki.panotools.org/Hugin_Compiling_OSX
-#
-# Install cmake and llvm from homebrew (OpenMP support is missing from Apple's clang)
-#
-#					brew install llvm cmake
-#
-# Build the external programs (see in folder ExternalProgramms) by running
-# download-all.sh and build-all.sh
-#
-# create and cd into a folder next to the "hugin" source folder (i.e. "build")
-#
-# someFolder
-#  |- hugin (the source folder)
-#   - build (cd into this folder)
-#
-# then run:
-#    $ ../hugin/mac/cmake-bundle.sh
-#    $ make
-#
-# for packaging:
-#
-#    $ make package   (to create a dmg image)
-#
-#     (styling the dmg can sometimes be a bit fiddly,
-#               retry if it doesn't work correctly)
-
-
-# You can add -DHUGIN_BUILDER="YOUR NAME" to the cmake call
-
 TYPE="Release"
 PREFIX="/"
 
-SDKVERSION=$(sw_vers -productVersion | sed "s:.[[:digit:]]*.$::g") # "10.12"
+SDKVERSION=$(xcrun --show-sdk-version)
 REPOSITORYDIR=$(cd .. && pwd)"/hugin/mac/ExternalPrograms/repository"
 
+MACOSX_DEPLOYMENT_TARGET=10.10 \
 PKG_CONFIG_PATH=$REPOSITORYDIR/lib/pkgconfig \
 CC=/usr/local/opt/llvm/bin/clang CXX=/usr/local/opt/llvm/bin/clang++ \
 cmake ../hugin -B. \

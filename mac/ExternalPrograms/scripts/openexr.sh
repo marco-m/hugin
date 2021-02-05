@@ -15,40 +15,15 @@
 # 20121010.0 hvdw remove ppc and ppc64 stuff
 # -------------------------------
 
-$CXX -DHAVE_CONFIG_H -I./IlmImf -I./config \
-  -I"$REPOSITORYDIR/include/OpenEXR" -D_THREAD_SAFE \
-  -I. -I./config  -I"$REPOSITORYDIR/include" \
-  -I/usr/include $ARGS \
-  -mmacosx-version-min="$DEPLOY_TARGET" -O3  -stdlib=libc++ -lc++ -L"$REPOSITORYDIR/lib" -lHalf \
-  -o "./IlmImf/b44ExpLogTable-native" ./IlmImf/b44ExpLogTable.cpp
+mkdir -p build
+cd build
 
- if [ -f "./IlmImf/b44ExpLogTable-native" ] ; then
-  echo "Created b44ExpLogTable-native"
- else
-  echo " Error Failed to create b44ExpLogTable-native"
-  exit 1
- fi
+CC="$CC" CXX="$CXX" \
+LDFLAGS="$LDARGS" \
+cmake .. -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DBUILD_TESTING=OFF \
+  -DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" -DCMAKE_OSX_SYSROOT="$MACSDKDIR" \
+  -DCMAKE_INSTALL_NAME_DIR="$REPOSITORYDIR/lib" \
+  || fail "cmake step";
 
- if [ -f "./IlmImf/Makefile.in-original" ]; then
-  echo "original already exists!";
- else
-  mv "./IlmImf/Makefile.in" "./IlmImf/Makefile.in-original"
- fi
- sed -e 's/\.\/b44ExpLogTable/\.\/b44ExpLogTable-native/' \
-    "./IlmImf/Makefile.in-original" > "./IlmImf/Makefile.in"
-
-
-env \
-  CC="$CC" CXX="$CXX" \
-  CFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
-  CXXFLAGS="-isysroot $MACSDKDIR $ARGS -O3" \
-  CPPFLAGS="-I$REPOSITORYDIR/include" \
-  LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS -prebind -stdlib=libc++ -lc++" \
-  NEXT_ROOT="$MACSDKDIR" \
-  PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
-  ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking \
-    --enable-shared --enable-static=no || fail "configure step ";
-
-make clean || fail "make clean step"
-make $MAKEARGS all || fail "make step";
+make $MAKEARGS || fail "make step";
 make install || fail "make install step";

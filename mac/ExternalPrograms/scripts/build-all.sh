@@ -46,7 +46,7 @@ build(){
 cd "$REPOSITORYDIR"
 mkdir -p _built
 
-build "libomp"    libomp*       ../../scripts/libomp.sh
+build "libomp"    openmp*       ../../scripts/libomp.sh
 build "boost"     boost*        ../../scripts/boost.sh
 build "gettext"   gettext*      ../../scripts/gettext.sh
 build "libffi"    libffi*       ../../scripts/libffi.sh
@@ -57,7 +57,6 @@ build "gsl"       gsl*          ../../scripts/gsl.sh
 build "libjpeg"   jpeg*         ../../scripts/libjpeg.sh
 build "libpng"    libpng*       ../../scripts/libpng.sh
 build "libtiff"   tiff*         ../../scripts/libtiff.sh
-build "ilmbase"   ilmbase*      ../../scripts/ilmbase.sh
 build "openexr"   openexr*      ../../scripts/openexr.sh
 build "libpano"   libpano13*    ../../scripts/pano13.sh
 build "libexiv2"  exiv2*        ../../scripts/libexiv2.sh

@@ -39,6 +39,10 @@
 
 #if DEBUG
 #include <fstream>
+// pano13 include <Carbon/Carbon.h> -> /usr/include/MacTypes.h, causing a name collision with boost
+#if defined(__APPLE__) && defined(nil) 
+#undef nil
+#endif
 #include <boost/graph/graphviz.hpp>
 #endif
 
