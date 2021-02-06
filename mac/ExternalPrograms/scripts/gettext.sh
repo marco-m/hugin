@@ -29,9 +29,9 @@ env \
     --enable-shared --enable-static=no --disable-csharp --disable-java \
     --with-included-gettext --with-included-glib \
     --with-included-libxml --without-examples --with-libexpat-prefix="$REPOSITORYDIR" \
-    --with-included-libcroco  --without-emacs --with-libiconv-prefix="$REPOSITORYDIR" || fail "configure step for $ARCH" ;
+    --with-included-libcroco  --without-emacs --with-libiconv-prefix="$REPOSITORYDIR" || fail "configure step" ;
 
 
 make clean || fail "make clean step"
-make $MAKEARGS || fail "failed at make step of $ARCH";
-make install || fail "make install step of $ARCH";
+make $MAKEARGS || fail "failed at make step";
+make install || fail "make install step";

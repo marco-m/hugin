@@ -25,17 +25,22 @@ SDKVERSION=$(xcrun --show-sdk-version)
 #####################################################################
 #####################################################################
 
-
 # number of jobs that make can use, probably same as the number of CPUs.
-if [ "$(uname -p)" = i386 ] || [ "$(uname -p)" = x86_64 ] ; then
-  PROCESSNUM=$(sysctl -n hw.physicalcpu);
-else
-  PROCESSNUM="1"
-fi
+PROCESSNUM=$(sysctl -n hw.physicalcpu)
 
 DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
 REPOSITORYDIR="$(realpath "$DIR/..")/repository" # "..../mac/ExternalPrograms/repository"
 mkdir -p "$REPOSITORYDIR"
+
+export \
+ REPOSITORYDIR SDKVERSION DEPLOY_TARGET CC CXX \
+ MACSDKDIR=$(xcrun --show-sdk-path) \
+ MAKEARGS="--jobs=$PROCESSNUM" \
+ OPTIMIZE="-march=core2" \
+ ARGS="$OPTIMIZE -mmacosx-version-min=$DEPLOY_TARGET" \
+ LDARGS="-mmacosx-version-min=$DEPLOY_TARGET" \
+ PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
+ PATH="$REPOSITORYDIR/bin:$PATH"
 
 fail()
 {
@@ -43,16 +48,19 @@ fail()
     echo "** Failed at $1 **"
     exit 1
 }
-export -f fail
+cmake() {
+	command cmake "$@" \
+		-DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" \
+		-DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" \
+		-DCMAKE_OSX_SYSROOT="$MACSDKDIR" \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INCLUDE_PATH="$REPOSITORYDIR/include" \
+		-DCMAKE_LIBRARY_PATH="$REPOSITORYDIR/lib" \
+		-DCMAKE_INSTALL_NAME_DIR="$REPOSITORYDIR/lib" \
+		-DCMAKE_C_FLAGS="$OPTIMIZE" \
+		-DCMAKE_CXX_FLAGS="$OPTIMIZE"
+}
+export -f fail cmake
 
-export \
- REPOSITORYDIR SDKVERSION DEPLOY_TARGET CC CXX\
- MACSDKDIR="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${SDKVERSION}.sdk" \
- MAKEARGS="--jobs=$PROCESSNUM" \
- OPTIMIZE="-march=core2 -mtune=core2 -ftree-vectorize" \
- ARGS="$OPTIMIZE -mmacosx-version-min=$DEPLOY_TARGET" \
- LDARGS="-mmacosx-version-min=$DEPLOY_TARGET"
 
-# cmake settings
-export CMAKE_INCLUDE_PATH="$REPOSITORYDIR/include"
-export CMAKE_LIBRARY_PATH="$REPOSITORYDIR/lib"
+

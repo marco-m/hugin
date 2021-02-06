@@ -36,8 +36,5 @@ env \
 mkdir build && cd build
 
 make clean || fail "make clean step"
-
 make $MAKEARGS || fail "make step";
 make install || fail "make install step";
-
-cd "$REPOSITORYDIR/include"

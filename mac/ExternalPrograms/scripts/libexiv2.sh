@@ -14,21 +14,16 @@
 # 20121010.0 hvdw update to 0.23
 # -------------------------------
 
-env \
- PATH="$REPOSITORYDIR/bin:$PATH" \
- CC="$CC" CXX="$CXX" \
- CFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include $ARGS -O3" \
+CFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include $ARGS -O3" \
  CXXFLAGS="-isysroot $MACSDKDIR -I$REPOSITORYDIR/include $ARGS -O3" \
  CPPFLAGS="-I$REPOSITORYDIR/include" \
  LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS -stdlib=libc++ -lc++" \
- PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
- NEXT_ROOT="$MACSDKDIR" \
- cmake -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DCMAKE_OSX_SYSROOT="macosx${SDKVERSION}" \
-  -DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" \
+ cmake \
   -DEXIV2_ENABLE_LENSDATA=OFF -DEXIV2_BUILD_EXIV2_COMMAND=OFF -DEXIV2_BUILD_SAMPLES=OFF . \
   || fail "cmake step";
 
-make $MAKEARGS || fail "make step of $ARCH";
-make install || fail "make install step of $ARCH";
+make clean || fail "make clean step"
+make $MAKEARGS || fail "make step";
+make install || fail "make install step";
 
 install_name_tool -id "$REPOSITORYDIR/lib/libexiv2."??".dylib" "$REPOSITORYDIR/lib/libexiv2."??".dylib"

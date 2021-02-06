@@ -20,10 +20,8 @@ cd build
 
 CC="$CC" CXX="$CXX" \
 LDFLAGS="$LDARGS" \
-cmake .. -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DBUILD_TESTING=OFF \
-  -DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" -DCMAKE_OSX_SYSROOT="$MACSDKDIR" \
-  -DCMAKE_INSTALL_NAME_DIR="$REPOSITORYDIR/lib" \
-  || fail "cmake step";
+cmake .. -DBUILD_TESTING=OFF  || fail "cmake step";
 
+make clean || fail "make clean step"
 make $MAKEARGS || fail "make step";
 make install || fail "make install step";

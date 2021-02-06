@@ -9,5 +9,6 @@ env \
   NEXT_ROOT="$MACSDKDIR" \
   ./configure --prefix="$REPOSITORYDIR" --disable-dependency-tracking || fail "configure step"
 
+make clean || fail "make clean step"
 make $MAKEARGS || fail "make step"
 make install || fail "make install step"

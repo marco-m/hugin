@@ -19,13 +19,9 @@
 # prevent naming conflict with clang headers
 patch -p1 -N < ../../patches/enblend.patch
 
-CC="$CC" CXX="$CXX" \
-PKG_CONFIG_PATH="$REPOSITORYDIR/lib/pkgconfig" \
 LDFLAGS="-L$REPOSITORYDIR/lib $LDARGS" \
-cmake . -DCMAKE_INSTALL_PREFIX="$REPOSITORYDIR" -DENABLE_OPENMP=ON \
-	-DCMAKE_OSX_DEPLOYMENT_TARGET="$DEPLOY_TARGET" -DCMAKE_OSX_SYSROOT="$MACSDKDIR"
-
+cmake . -DENABLE_OPENMP=ON
 
 make clean || fail "make clean step"
-make $MAKEARGS || fail "make step";
-make install || fail "make install step";
+make $MAKEARGS || fail "make step"
+make install || fail "make install step"

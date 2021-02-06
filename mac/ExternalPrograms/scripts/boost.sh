@@ -48,8 +48,8 @@ echo "using darwin : : $CXX :  ;" > ./user-conf.jam
 $B2 -a --prefix="$REPOSITORYDIR" --user-config=./user-conf.jam install \
   --with-filesystem --with-system \
   variant=release \
-  cxxflags="$OPTIMIZE -std=c++11 -stdlib=libc++ -mmacosx-version-min=$DEPLOY_TARGET" \
-  linkflags="-stdlib=libc++ -lc++ -mmacosx-version-min=$DEPLOY_TARGET" || fail "building"
+  cxxflags="$ARGS -std=c++11 -stdlib=libc++" \
+  linkflags="-stdlib=libc++ -lc++ $LDARGS" || fail "building"
 
 
 if [ -f "$REPOSITORYDIR/lib/libboost_filesystem.dylib" ]; then

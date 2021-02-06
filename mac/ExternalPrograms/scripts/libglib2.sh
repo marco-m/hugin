@@ -7,16 +7,10 @@
 # script skeleton Copyright (c) 2007, Ippei Ukai
 # libglib2 specifics 2012, Harry van der Wolf
 
-
-# prepare
-
 # -------------------------------
 # 20120411.0 HvdW Script tested
 # 20121010.0 hvdw remove openmp stuff
 # -------------------------------
-
-# init
-
 
 export MSGFMT="$REPOSITORYDIR/bin/msgfmt"
 
