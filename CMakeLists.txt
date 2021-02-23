@@ -290,7 +290,12 @@ ENDIF(WIN32)
 INCLUDE(CheckCXXSourceCompiles)
 check_cxx_source_compiles(
   "
-    #include <filesystem>
+    #if defined _MSC_VER && _MSC_VER >= 1920
+      #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+      #include <experimental/filesystem>
+    #else
+      #include <filesystem>
+    #endif
     #include <string>
     
     #if defined _MSC_VER && _MSC_VER <= 1900
@@ -913,6 +918,19 @@ IF(MSVC_VERSION EQUAL 1900)
   ELSE()
     SET(CPACK_WIX_EXTRA_SOURCES
       "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist_vc14_x86.wxs"
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/filetype.wxs"
+    )
+  ENDIF()
+  SET(CPACK_WIX_PATCH_FILE "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist.xml")
+ELSEIF(MSVC_VERSION GREATER_EQUAL 1920)
+  IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    SET(CPACK_WIX_EXTRA_SOURCES 
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist_vc16_x64.wxs"
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/filetype.wxs"
+    )
+  ELSE()
+    SET(CPACK_WIX_EXTRA_SOURCES
+      "${CMAKE_SOURCE_DIR}/platforms/windows/wix/redist_vc16_x86.wxs"
       "${CMAKE_SOURCE_DIR}/platforms/windows/wix/filetype.wxs"
     )
   ENDIF()

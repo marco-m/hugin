@@ -61,7 +61,7 @@ BEGIN_EVENT_TABLE(FindPanoDialog,wxDialog)
     EVT_CLOSE(FindPanoDialog::OnClose)
 END_EVENT_TABLE()
 
-bool SortFilename::operator()(const HuginBase::SrcPanoImage* img1, const HuginBase::SrcPanoImage* img2)
+bool SortFilename::operator()(const HuginBase::SrcPanoImage* img1, const HuginBase::SrcPanoImage* img2) const
 {
     return doj::alphanum_comp(img1->getFilename(),img2->getFilename())<0;
 };

@@ -112,7 +112,7 @@ private:
 
 struct SortFilename
 {
-    bool operator() (const HuginBase::SrcPanoImage* img1, const HuginBase::SrcPanoImage* img2);
+    bool operator() (const HuginBase::SrcPanoImage* img1, const HuginBase::SrcPanoImage* img2) const;
 };
 
 typedef std::set<HuginBase::SrcPanoImage*, SortFilename> ImageSet;

@@ -29,7 +29,12 @@
 #define _HUGIN_UTILS_FILESYSTEM_H
 #include "hugin_config.h"
 #ifdef HAVE_STD_FILESYSTEM
-    #include <filesystem>
+    #if defined _MSC_VER && _MSC_VER >= 1920
+      #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+      #include <experimental/filesystem>
+    #else
+      #include <filesystem>
+    #endif
     #if defined _MSC_VER && _MSC_VER <= 1900
         // MSVC 2015 has implemented in std::tr2::sys
         namespace fs = std::tr2::sys;
