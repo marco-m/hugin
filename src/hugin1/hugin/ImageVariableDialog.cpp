@@ -42,6 +42,7 @@ BEGIN_EVENT_TABLE(ImageVariableDialog,wxDialog)
     EVT_BUTTON(XRCID("image_show_distortion_graph"), ImageVariableDialog::OnShowDistortionGraph)
     EVT_BUTTON(XRCID("image_show_vignetting_graph"), ImageVariableDialog::OnShowVignettingGraph)
     EVT_BUTTON(XRCID("image_show_response_graph"), ImageVariableDialog::OnShowResponseGraph)
+    EVT_CHOICE(XRCID("image_variable_responseType"), ImageVariableDialog::OnResponseSelected)
 END_EVENT_TABLE()
 
 ImageVariableDialog::ImageVariableDialog(wxWindow *parent, HuginBase::Panorama* pano, HuginBase::UIntSet imgs)
@@ -149,6 +150,8 @@ void ImageVariableDialog::InitValues()
             GetImageVariableControl(this, *varname)->SetValue(hugin_utils::doubleTowxString(val,ndigits));
         };
     };
+    wxCommandEvent dummy;
+    OnResponseSelected(dummy);
 };
 
 void ImageVariableDialog::SetGuiLevel(GuiLevel newLevel)
@@ -283,6 +286,26 @@ void ImageVariableDialog::OnHelp(wxCommandEvent & e)
             MainFrame::Get()->DisplayHelp(wxT("Image_positioning_model.html"));
             break;
     };
+};
+
+void ImageVariableDialog::OnResponseSelected(wxCommandEvent& e)
+{
+    const bool showResponseParam = XRCCTRL(*this, "image_variable_responseType", wxChoice)->GetSelection() == 0;
+    wxTextCtrl* control = XRCCTRL(*this, "image_variable_Ra", wxTextCtrl);
+    control->Enable(showResponseParam);
+    control->Show(showResponseParam);
+    control = XRCCTRL(*this, "image_variable_Rb", wxTextCtrl);
+    control->Enable(showResponseParam);
+    control->Show(showResponseParam);
+    control = XRCCTRL(*this, "image_variable_Rc", wxTextCtrl);
+    control->Enable(showResponseParam);
+    control->Show(showResponseParam);
+    control = XRCCTRL(*this, "image_variable_Rd", wxTextCtrl);
+    control->Enable(showResponseParam);
+    control->Show(showResponseParam);
+    control = XRCCTRL(*this, "image_variable_Re", wxTextCtrl);
+    control->Enable(showResponseParam);
+    control->Show(showResponseParam);
 };
 
 const char *ImageVariableDialog::m_varNames[] = { "y", "p", "r", "TrX", "TrY", "TrZ", "Tpy", "Tpp", 

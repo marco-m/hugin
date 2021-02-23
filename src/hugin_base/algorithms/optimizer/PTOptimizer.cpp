@@ -634,7 +634,8 @@ OptimizeVector SmartOptimizerStub::createOptVars(const PanoramaData& optPano, in
             imgopt.insert("Vx");
             imgopt.insert("Vy");
         }
-        if (mode & OPT_RESP) {
+        if ((mode & OPT_RESP) && iImage.getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR) {
+            // ignore Ra..Re if reponse is linear
             imgopt.insert("Ra");
             imgopt.insert("Rb");
             imgopt.insert("Rc");

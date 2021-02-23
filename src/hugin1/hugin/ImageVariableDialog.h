@@ -60,6 +60,8 @@ protected:
     void OnShowVignettingGraph(wxCommandEvent & e);
     /** shows a popup with response graph */
     void OnShowResponseGraph(wxCommandEvent & e);
+    /** response type changed */
+    void OnResponseSelected(wxCommandEvent& e);
 
 private:
     HuginBase::Panorama* m_pano;

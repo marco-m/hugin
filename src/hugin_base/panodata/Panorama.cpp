@@ -1508,11 +1508,11 @@ void Panorama::updateOptimizeVector()
             UpdateOptVectorSet(state.optvec[i],"Vd", (state.optPhotoSwitch & OPT_VIGNETTING)>0);
             UpdateOptVectorSet(state.optvec[i],"Vx", (state.optPhotoSwitch & OPT_VIGNETTING_CENTER)>0);
             UpdateOptVectorSet(state.optvec[i],"Vy", (state.optPhotoSwitch & OPT_VIGNETTING_CENTER)>0);
-            UpdateOptVectorSet(state.optvec[i],"Ra", (state.optPhotoSwitch & OPT_RESPONSE)>0);
-            UpdateOptVectorSet(state.optvec[i],"Rb", (state.optPhotoSwitch & OPT_RESPONSE)>0);
-            UpdateOptVectorSet(state.optvec[i],"Rc", (state.optPhotoSwitch & OPT_RESPONSE)>0);
-            UpdateOptVectorSet(state.optvec[i],"Rd", (state.optPhotoSwitch & OPT_RESPONSE)>0);
-            UpdateOptVectorSet(state.optvec[i],"Re", (state.optPhotoSwitch & OPT_RESPONSE)>0);
+            UpdateOptVectorSet(state.optvec[i], "Ra", (state.optPhotoSwitch & OPT_RESPONSE) > 0 && state.images[i]->getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR);
+            UpdateOptVectorSet(state.optvec[i], "Rb", (state.optPhotoSwitch & OPT_RESPONSE) > 0 && state.images[i]->getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR);
+            UpdateOptVectorSet(state.optvec[i], "Rc", (state.optPhotoSwitch & OPT_RESPONSE) > 0 && state.images[i]->getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR);
+            UpdateOptVectorSet(state.optvec[i], "Rd", (state.optPhotoSwitch & OPT_RESPONSE) > 0 && state.images[i]->getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR);
+            UpdateOptVectorSet(state.optvec[i], "Re", (state.optPhotoSwitch & OPT_RESPONSE) > 0 && state.images[i]->getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR);
         };
     };
 };

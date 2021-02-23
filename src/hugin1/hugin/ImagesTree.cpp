@@ -569,12 +569,25 @@ void ImagesTreeCtrl::UpdateImageText(wxTreeItemId item)
     }
     else
     {
-        std::vector<float> vec=img.getEMoRParams();
-        SetItemText(item, m_columnMap["Ra"], hugin_utils::doubleTowxString(vec[0],m_distDigits));
-        SetItemText(item, m_columnMap["Rb"], hugin_utils::doubleTowxString(vec[1],m_distDigits));
-        SetItemText(item, m_columnMap["Rc"], hugin_utils::doubleTowxString(vec[2],m_distDigits));
-        SetItemText(item, m_columnMap["Rd"], hugin_utils::doubleTowxString(vec[3],m_distDigits));
-        SetItemText(item, m_columnMap["Re"], hugin_utils::doubleTowxString(vec[4],m_distDigits));
+        if (img.getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR)
+        {
+            // display Ra..Re only when response type is emor
+                        // otherwise they have no meaning
+            std::vector<float> vec = img.getEMoRParams();
+            SetItemText(item, m_columnMap["Ra"], hugin_utils::doubleTowxString(vec[0], m_distDigits));
+            SetItemText(item, m_columnMap["Rb"], hugin_utils::doubleTowxString(vec[1], m_distDigits));
+            SetItemText(item, m_columnMap["Rc"], hugin_utils::doubleTowxString(vec[2], m_distDigits));
+            SetItemText(item, m_columnMap["Rd"], hugin_utils::doubleTowxString(vec[3], m_distDigits));
+            SetItemText(item, m_columnMap["Re"], hugin_utils::doubleTowxString(vec[4], m_distDigits));
+        }
+        else
+        {
+            SetItemText(item, m_columnMap["Ra"], wxEmptyString);
+            SetItemText(item, m_columnMap["Rb"], wxEmptyString);
+            SetItemText(item, m_columnMap["Rc"], wxEmptyString);
+            SetItemText(item, m_columnMap["Rd"], wxEmptyString);
+            SetItemText(item, m_columnMap["Re"], wxEmptyString);
+        };
     };
 };
 
@@ -753,7 +766,7 @@ void ImagesTreeCtrl::UpdateGroupText(wxTreeItemId item)
             SetItemText(item, m_columnMap["Vy"], wxEmptyString);
         };
 
-        if (m_groupMode == GROUP_LENS && (img.EMoRParamsisLinked() || haveSingleChild))
+        if (m_groupMode == GROUP_LENS && (img.getResponseType() == HuginBase::SrcPanoImage::RESPONSE_EMOR && (img.EMoRParamsisLinked()) || haveSingleChild))
         {
             std::vector<float> vec=img.getEMoRParams();
             SetItemText(item, m_columnMap["Ra"], hugin_utils::doubleTowxString(vec[0],m_distDigits));
