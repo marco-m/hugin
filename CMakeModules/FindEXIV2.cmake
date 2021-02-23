@@ -71,20 +71,6 @@ else (EXIV2_INCLUDE_DIR AND EXIV2_LIBRARIES)
                /usr/local/include
                /usr/include
                ${SOURCE_BASE_DIR}/exiv2/include
-               ${SOURCE_BASE_DIR}/exiv2/msvc2012/include
-               ${SOURCE_BASE_DIR}/exiv2/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.25/msvc2012/include
-               ${SOURCE_BASE_DIR}/exiv2-0.24/msvc2012/include
-               ${SOURCE_BASE_DIR}/exiv2-0.23/msvc64/include
-               ${SOURCE_BASE_DIR}/exiv2-0.23/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.22/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.21.1/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.20/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.16/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.18/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.18.1/msvc/include
-               ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/include
               )
 
      include(FindLibraryWithDebug)
@@ -95,53 +81,13 @@ else (EXIV2_INCLUDE_DIR AND EXIV2_LIBRARIES)
           NAMES exiv2 libexiv2
           PATHS 
             ${SOURCE_BASE_DIR}/exiv2/lib
-            ${SOURCE_BASE_DIR}/exiv2/msvc2012/exiv2lib/x64/ReleaseDLL
-            ${SOURCE_BASE_DIR}/exiv2/msvc2012/exiv2lib/x64/DebugDLL
-            ${SOURCE_BASE_DIR}/exiv2-0.25/msvc2012/exiv2lib/x64/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.25/msvc2012/exiv2lib/Win32/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.24/msvc2012/exiv2lib/x64/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.24/msvc2012/exiv2lib/Win32/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.23/msvc64/exiv2lib/x64/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.23/msvc64/exiv2lib/Win32/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.22/msvc/bin/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.21.1/msvc/bin/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.20/msvc/bin/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/bin/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/bin/ReleaseDLL
        )
 
-       find_library_with_debug(EXIV2EXPAT_LIBRARIES
-          WIN32_DEBUG_POSTFIX d
-          NAMES libexpat expat wxexpat
-          PATHS 
-            ${SOURCE_BASE_DIR}/expat/lib
-            ${SOURCE_BASE_DIR}/exiv2/msvc2012/exiv2lib/x64/ReleaseDLL
-            ${SOURCE_BASE_DIR}/exiv2/msvc2012/exiv2lib/x64/DebugDLL
-            ${SOURCE_BASE_DIR}/exiv2-0.25/msvc2012/exiv2lib/x64/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.25/msvc2012/exiv2lib/Win32/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.24/msvc2012/exiv2lib/x64/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.24/msvc2012/exiv2lib/Win32/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.23/msvc64/exiv2lib/x64/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/exiv2-0.23/msvc64/exiv2lib/Win32/ReleaseDLL 
-            ${SOURCE_BASE_DIR}/expat-2.0.1/win32/bin/Release
-            ${wxWidgets_LIB_DIR}
-       )
-       IF(VCPKG_TOOLCHAIN AND NOT EXIV2EXPAT_LIBRARIES_DEBUG)
-         find_library_with_debug(EXIV2EXPAT_LIBRARIES_DEBUG
-            NAMES libexpat expat wxexpat
-         )
-       ENDIF()
      ELSE(${HUGIN_SHARED})
        find_library_with_debug(EXIV2_LIBRARIES
           WIN32_DEBUG_POSTFIX d
           NAMES exiv2s exiv2 libexiv2
-          PATHS ${SYSTEM_LIB_DIRS} ${SOURCE_BASE_DIR}/exiv2/lib ${SOURCE_BASE_DIR}/exiv2/msvc2012/lib ${SOURCE_BASE_DIR}/exiv2/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.25/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.24/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.23/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.22/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.16/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.18/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.18.1/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.20/msvc/lib
-       )
-
-       find_library_with_debug(EXIV2EXPAT_LIBRARIES
-          WIN32_DEBUG_POSTFIX d
-          NAMES libexpat expat wxexpat
-          PATHS ${SYSTEM_LIB_DIRS} ${SOURCE_BASE_DIR}/expat/lib ${SOURCE_BASE_DIR}/exiv2/msvc2012/lib ${SOURCE_BASE_DIR}/exiv2/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.25/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.24/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.23/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.22/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.16/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.18/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.18.1/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.18.2/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/lib ${SOURCE_BASE_DIR}/exiv2-0.20/msvc/lib ${wxWidgets_LIB_DIR}
+          PATHS ${SYSTEM_LIB_DIRS} ${SOURCE_BASE_DIR}/exiv2/lib 
        )
 
        # since exiv 0.19, xmpsdk needs explicit linked in static build
@@ -150,21 +96,12 @@ else (EXIV2_INCLUDE_DIR AND EXIV2_LIBRARIES)
           NAMES xmpsdk xmp
           PATHS 
                 ${SOURCE_BASE_DIR}/exiv2/lib
-                ${SOURCE_BASE_DIR}/exiv2/msvc2012/lib
-                ${SOURCE_BASE_DIR}/exiv2-0.25/msvc2012/lib
-                ${SOURCE_BASE_DIR}/exiv2-0.24/msvc2012/lib
-                ${SOURCE_BASE_DIR}/exiv2-0.23/msvc/lib
-                ${SOURCE_BASE_DIR}/exiv2-0.22/msvc/lib
-                ${SOURCE_BASE_DIR}/exiv2-0.20/msvc/lib
-                ${SOURCE_BASE_DIR}/exiv2-0.19/msvc/lib
        )
        IF(XMP_LIBRARIES)
          SET(EXIV2_LIBRARIES ${EXIV2_LIBRARIES} ${XMP_LIBRARIES})
        ENDIF(XMP_LIBRARIES)
 
      ENDIF(${HUGIN_SHARED})
-
-     SET(EXIV2_LIBRARIES ${EXIV2_LIBRARIES} ${EXIV2EXPAT_LIBRARIES})
 
      include(FindPackageHandleStandardArgs)
      find_package_handle_standard_args(EXIV2 DEFAULT_MSG 

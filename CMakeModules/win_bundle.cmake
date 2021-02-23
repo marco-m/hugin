@@ -134,21 +134,15 @@ IF(WIN32)
             ${SOURCE_BASE_DIR}/exiv2/bin 
       NO_SYSTEM_ENVIRONMENT_PATH
     )
-    FIND_FILE(LIBEXPAT_DLL 
-      NAMES libexpat.dll expat.dll
-      PATHS ${DLL_SEARCH_PATH}
-        ${SOURCE_BASE_DIR}/expat/bin 
-      NO_SYSTEM_ENVIRONMENT_PATH
-    )
     FIND_FILE(LIBICONV_DLL 
-      NAMES libiconv.dll
+      NAMES libiconv.dll iconv-2.dll
       PATHS ${DLL_SEARCH_PATH}
         ${SOURCE_BASE_DIR}/expat/bin 
       NO_SYSTEM_ENVIRONMENT_PATH
     )
     IF(LIBICONV_DLL)
       FIND_FILE(LIBCHARSET_DLL
-        NAMES libcharset.dll
+        NAMES libcharset.dll charset-1.dll
         PATHS ${DLL_SEARCH_PATH}
         NO_SYSTEM_ENVIRONMENT_PATH
       )
