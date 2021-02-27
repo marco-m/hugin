@@ -1,0 +1,100 @@
+# Specifications for GitHub-hosted runners
+# https://docs.github.com/en/actions/reference/specifications-for-github-hosted-runners
+
+name: build
+
+on: [push]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  # build-linux:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Install dependencies
+  #     run: >
+  #       sudo apt-get install
+  #       gettext
+  #       libboost-all-dev
+  #       liblcms2-dev
+  #       libexiv2-dev
+  #       libflann-dev
+  #       libglew-dev
+  #       liblapack-dev
+  #       libopenexr-dev
+  #       libpano13-dev
+  #       libsqlite3-dev
+  #       libvigraimpex-dev
+  #       libwxgtk3.0-gtk3-dev
+  #       ninja-build
+  #   - name: Look around
+  #     # "cmake --help" shows also the default generator.
+  #     run: |
+  #       lsb_release --all
+  #       cmake --version
+  #       cmake --help
+  #       env
+  #   - name: Create Build Environment
+  #     run: cmake -E make_directory ${{github.workspace}}/build
+  #   - name: Configure CMake
+  #     working-directory: ${{github.workspace}}/build
+  #     run: cmake -G Ninja $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  #   - name: Build
+  #     working-directory: ${{github.workspace}}/build
+  #     # Since we are using Ninja, the build will expact to all available cores.
+  #     run: cmake --build .
+  #   - name: Package
+  #     # FIXME: still to be tested:
+  #     # hugin-2020.1.0.0-Linux.tar.gz
+  #     # hugin-2020.1.0.0-Linux.deb
+  #     run: cmake --build . --target package
+  #   # - name: Store artifacts
+  #   # https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts
+
+  build-mac:
+    # In Feb 2021, macos-11.0 (Big Sur) is available only as private preview
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      # brew doesn't have vigra, but hugin ships a vendored copy
+      run: >
+        brew install
+        gettext
+        boost
+        lcms2
+        exiv2
+        flann
+        glew
+        lapack
+        openexr
+        libpano
+        sqlite3
+        wxwidgets
+        ninja
+    - name: Look around
+      # "cmake --help" shows also the default generator.
+      run: |
+        cmake --version
+        cmake --help
+        env
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{github.workspace}}/build
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/build
+      run: cmake -G Ninja $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      # Since we are using Ninja, the build will expact to all available cores.
+      run: cmake --build .
+    - name: Package
+      # FIXME: still to be tested:
+      run: cmake --build . --target package
