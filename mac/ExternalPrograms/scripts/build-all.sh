@@ -13,6 +13,8 @@
 # 20121010.0 hvdw update lots of scripts
 # -------------------------------
 
+set -e
+
 DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$DIR" || exit 1
 source SetEnv.sh

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 pre="<<<<<<<<<<<<<<<<<<<<"
 pst=">>>>>>>>>>>>>>>>>>>>"
 
@@ -13,9 +15,9 @@ download(){
     out=$3
     echo "$pre Downloading $name $pst"
     if [[ -n $out ]]; then
-        curl -L -o "$out" "$url"
+        curl --silent --show-error -L -o "$out" "$url"
     else
-        curl -L -O "$url"
+        curl --silent --show-error -L -O "$url"
     fi
     if [[ $? != 0 ]]; then
         echo "++++++ Download of $name failed"

@@ -61,6 +61,3 @@ cmake() {
 		-DCMAKE_CXX_FLAGS="$OPTIMIZE"
 }
 export -f fail cmake
-
-
-

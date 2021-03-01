@@ -36,11 +36,9 @@ jobs:
   #       libwxgtk3.0-gtk3-dev
   #       ninja-build
   #   - name: Look around
-  #     # "cmake --help" shows also the default generator.
   #     run: |
   #       lsb_release --all
   #       cmake --version
-  #       cmake --help
   #       env
   #   - name: Create Build Environment
   #     run: cmake -E make_directory ${{github.workspace}}/build
@@ -64,36 +62,59 @@ jobs:
     runs-on: macos-10.15
     steps:
     - uses: actions/checkout@v2
+
+    # Ah no, there is a custom approach for macos, see hugin/mac/README.md
+
     - name: Install dependencies
-      # brew doesn't have vigra, but hugin ships a vendored copy
+      # brew doesn't have vigra
+        # gettext
+        # boost
+        # lcms2
+        # exiv2
+        # flann
+        # glew
+        # lapack
+        # openexr
+        # libpano
+        # sqlite3
+        # wxwidgets
+        #
+        # cmake and llvm are already installed
+        # coreutils is for realpath, used by download-all.sh
+        # I might be able to avoid it if I replace the scripts with cmake
+        # marcurial is needed to download enblend; it is possible to download a snapshot instead
       run: >
         brew install
-        gettext
-        boost
-        lcms2
-        exiv2
-        flann
-        glew
-        lapack
-        openexr
-        libpano
-        sqlite3
-        wxwidgets
+        cmake
+        llvm
+        coreutils
         ninja
+        mercurial
     - name: Look around
-      # "cmake --help" shows also the default generator.
       run: |
         cmake --version
-        cmake --help
         env
+
+    - name: magic but it works :-(
+      # This is needed to avoid:
+      # xcrun --sdk macosx10.15 --show-sdk-path
+      # xcodebuild: error: SDK "macosx10.15" cannot be located.
+      run: sudo xcode-select --switch /Library/Developer/CommandLineTools/
+    - name: Download dependencies
+      working-directory: ${{github.workspace}}/mac/ExternalPrograms/scripts
+      run: ./download-all.sh
+    - name: Build dependencies
+      working-directory: ${{github.workspace}}/mac/ExternalPrograms/scripts
+      run: ./build-all.sh
     - name: Create Build Environment
       run: cmake -E make_directory ${{github.workspace}}/build
     - name: Configure CMake
       working-directory: ${{github.workspace}}/build
-      run: cmake -G Ninja $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      #run: cmake -G Ninja $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: ../hugin/mac/configure-bundle.sh
     - name: Build
       working-directory: ${{github.workspace}}/build
-      # Since we are using Ninja, the build will expact to all available cores.
+      # FIXME Since we are using Ninja, the build will expact to all available cores.
       run: cmake --build .
     - name: Package
       # FIXME: still to be tested:
